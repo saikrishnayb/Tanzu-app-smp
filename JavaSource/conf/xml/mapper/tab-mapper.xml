@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.2//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.penske.apps.adminconsole.dao.TabDao">
+  	
+  	<update id="updateDefaultTemplate">
+  		UPDATE SMC.SMC_TAB_MASTER
+  		
+  		SET    TEMPLATE_ID = #{searchTemplateForm.templateId}
+  		
+  		WHERE  TAB_ID = #{searchTemplateForm.tabId}
+  	</update>
+
+</mapper>

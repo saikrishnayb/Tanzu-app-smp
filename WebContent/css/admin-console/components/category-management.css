@@ -1,0 +1,23 @@
+
+.po-category-div{
+	margin-right:20px;
+}
+
+.save-cancel{
+	position:absolute;
+	bottom:3px;
+	right:5px;
+}
+ 
+ .category label{
+	width:140px;
+	display:inline-block;
+}
+
+ .category select{
+	width:170px;
+		
+} 
+.error{
+	display:none;
+}

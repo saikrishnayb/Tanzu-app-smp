@@ -1,0 +1,38 @@
+.margin-bottom-10 {
+	margin-bottom: 10px;
+}
+
+#search-content {
+	width: 400px;
+	height: 155px;
+	margin: 0 auto;
+}
+
+#advanced-search-form label {
+	margin-left: 10px;
+}
+
+#advanced-search-form fieldset {
+	padding: 10px 0;
+}
+
+.error {
+	margin: 5px 10px 0 0;
+}
+
+a:visited {
+	color: #2D73CF;
+}
+
+#search-content .reset,
+.cancel {
+	margin: 5px 5px 0 0;
+}
+
+#deactivate-modal #message-text {
+	margin-bottom: 20px;
+}
+
+#deactivate-modal #message-text .errorMsg {
+	font-size: 14px;
+}

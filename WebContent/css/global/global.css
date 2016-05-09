@@ -1,0 +1,265 @@
+/** Header **************************************************/
+#title h1.qa:after{
+    content: " (QA)";
+}
+#title h1.training:after{
+    content: " (Training)";
+}
+#title h1.training{
+    font-size: 28px;
+    line-height: 33px;
+    margin-top: 1px;
+}
+#title h1.development:after{
+    content: " (Dev)";
+}
+#title h1.development{
+   color: orange;
+}
+#title h1.local:after{
+    content: " (Local)";
+}
+#title h1.local{
+   color: olive;
+}
+
+.custom-ajax-error-div > img{
+	float:left;
+}
+
+.role-modal > .accordion-headers > .accordion-panel > .permissions-checkbox{
+	display:inline-block;
+	width: 47%;
+	margin-right: 10px;
+	float: left;
+}
+.role-modal-blurb{
+	margin-bottom: 10px;
+}
+
+.role-modal .permissions-checkbox {
+	width: 300px;
+	float: left;
+}
+
+.role-modal .accordion-headers {
+	width: 100%;
+}
+
+i{
+	font-style: italic;
+}
+
+#utility .settings > img{
+	height: 13px;
+	vertical-align: bottom;
+}
+
+#title .app-name-acronym{
+	display: none;
+}
+
+@media screen and (max-width: 1150px){
+	#title .app-name-full-name{
+		display: none;
+	}
+	#title .app-name-acronym{
+		display: inline-block;
+	}
+}
+
+#utility {
+	margin-right: 10px;
+}
+
+/** Footer ***************************************************/
+#rightFooter {
+	margin-right: 10px;
+}
+
+#leftFooter {
+	margin-left: 10px;
+}
+
+/** Penske Common Overwrites *********************************/
+#mainContent{
+	display: inline-block;
+}
+#utility .user, #title {
+	width: auto;
+}
+
+.ui-dialog{
+	margin-top: 0%;
+}
+
+.leftNav {
+	width: 170px;
+}
+
+.leftNavAdjacentContainer {
+	margin-left: 170px;
+}
+
+.threeColumnContainer {
+	vertical-align: top;
+}
+
+.sorting_desc:after, .sorting_asc:after{
+	margin-left: 5px;
+}
+
+/** Hacks and Tools ******************************************/
+.cursor-pointer{
+	cursor: pointer;
+}
+
+.clear-left {
+	clear: left;
+}
+
+.clear-both {
+	clear: both;
+}
+
+.width-full {
+	width: 100%;
+}
+
+.width-100 {
+	width: 100px;
+}
+
+.width-150 {
+	width: 150px;
+}
+
+.width-200 {
+	width: 200px;
+}
+
+.width-250 {
+	width: 250px;
+}
+
+.width-300 {
+	width: 300px;
+}
+
+/** Bootstrap Inspired Columns ******************************/
+.row {
+	margin-right: -15px;
+	margin-left: -15px;
+	box-sizing: border-box;
+}
+.row *{
+	box-sizing: border-box;
+}
+.row:before, .row:after{
+	display: table;
+	content: " ";
+}
+.row *:before, .row *:after{
+	box-sizing: border-box;
+}
+.col-xs-6{
+	width: 50%
+}
+.col-xs-6{
+	float: left;
+}
+.col-xs-6{
+	position: relative;
+	min-height: 1px;
+	padding-right: 15px;
+	padding-left: 15px;
+}
+
+/** Generic Status ***************************************/
+.status-alert {
+	clear: both;
+	min-height: 40px;
+	padding: 15px 0px;
+}
+
+/** Status Alert Classes ****************************************/
+.alert {
+	padding: 10px;
+	border: 1px solid transparent;
+	border-radius: 4px;
+}
+
+.alert.alert-success {
+	color: #3c763d;
+	background-color: #dff0d8;
+	border-color: #ebccd1;
+}
+
+.alert.alert-danger {
+	color: #a94442;
+	background-color: #f2dede;
+	border-color: #ebccd1;
+}
+
+p.tandc-paragraph { padding-bottom: 10px; }
+
+/* Overlay and Loading dialog */
+.overlayadmin {
+   position:fixed;
+    top:0px;
+    bottom:0px;
+    left:0px;
+    right:0px;
+    width: 100%;
+    height: 100%;
+   z-index: 1000;
+    background-color: #000;
+     /* IE 8 */
+ 	 -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)" !important;
+
+  	/* IE 5-7 */
+  	filter: alpha(opacity=30) !important;
+
+  	/* Netscape */
+  	-moz-opacity: 0.3 !important;
+
+  	/* Safari 1.x */
+  	-khtml-opacity: 0.3 !important;
+
+  	/* Good browsers */
+  	opacity: 0.3 !important;
+  	
+  	-webkit-backface-visibility: hidden;
+  	-webkit-transform: translate3d(0, 0, 0);
+}
+
+/*
+ * Processing indicator
+ */
+.processingImg {
+	position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-left: -125px;
+	margin-top: -15px;
+	width: 250px;
+     background-color: #FFF;
+   border: 1px solid #777;
+    padding: 25px;
+    text-align: center;
+    z-index: 1001;
+     /* IE 8 */
+ 	 -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)" !important;
+
+  	/* IE 5-7 */
+  	filter: alpha(opacity=30) !important;
+
+  	/* Netscape */
+  	-moz-opacity: 1 !important;
+
+  	/* Safari 1.x */
+  	-khtml-opacity: 1 !important;
+
+  	/* Good browsers */
+  	opacity: 1 !important;
+}

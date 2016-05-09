@@ -1,0 +1,61 @@
+.primary-functions {
+	float:right;
+	margin-top:20px;
+}
+
+.edit-section {
+	margin-top:10px;
+}
+
+.edit-display-sequence {
+	margin-top:20px;
+}
+
+.label-span {
+	display:block;
+	width:150px;
+	float:left;
+}
+
+.info-span {
+	width:300px;
+	float:none;
+	display:inline-block;
+}
+
+.edit-template-name {
+	float:none;
+}
+
+.cancel {
+	margin-right:10px;
+}
+
+.display-sequence-text {
+	width:20px;
+	text-align:center;
+}
+
+.ui-dialog {
+	margin-top:10%;
+}
+
+.save-template-name {
+	margin-right:20px;
+}
+
+.edit-name {
+	width:250px;
+}
+
+.error-img {
+	margin-right:5px;
+}
+
+.error {
+	visibility:hidden;
+}
+
+.template-name {
+	height:15px;
+}

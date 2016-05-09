@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.2//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.penske.apps.adminconsole.dao.SearchTemplateDao">
+
+  	<select id="selectAllSearchTemplates" resultType="com.penske.apps.adminconsole.model.SearchTemplate">
+		SELECT t.TABNAME AS tabName,
+			   t.TAB_ID AS tabId,
+               st.TEMPLATE_NAME AS templateName,
+               st.DISPLAY_SEQUENCE AS displaySequence,
+               CASE WHEN t.TEMPLATE_ID = st.TEMPLATE_ID
+               		THEN 1
+                    ELSE 0
+               END AS defaultForTab,
+               st.TEMPLATE_ID AS templateId,
+               st.VISIBILITY_PENSKE AS visibilityPenske,
+               st.VISIBILITY_VENDOR AS visibilityVendor
+		FROM  SMC.SMC_SEARCH_TEMPLATES st LEFT JOIN  SMC.SMC_ALERTS a  ON a.TEMPLATE_ID = st.TEMPLATE_ID
+		LEFT JOIN SMC.SMC_ALERT_HEADER ah ON ah.HEADER_ID = a.HEADER_ID LEFT JOIN SMC.SMC_TAB_MASTER t ON t.TAB_ID = ah.TAB_ID
+  	</select>
+  	
+  	<select id="selectSearchTemplate" resultType="com.penske.apps.adminconsole.model.SearchTemplate">
+		SELECT t.TABNAME AS tabName,
+			   t.TAB_ID AS tabId,
+               st.TEMPLATE_NAME AS templateName,
+               st.DISPLAY_SEQUENCE AS displaySequence,
+               CASE WHEN t.TEMPLATE_ID = st.TEMPLATE_ID
+               		THEN 1
+                    ELSE 0
+               END AS defaultForTab,
+               st.TEMPLATE_ID AS templateId,
+               st.VISIBILITY_PENSKE AS visibilityPenske,
+               st.VISIBILITY_VENDOR AS visibilityVendor
+		FROM  SMC.SMC_SEARCH_TEMPLATES st LEFT JOIN  SMC.SMC_ALERTS a  ON a.TEMPLATE_ID = st.TEMPLATE_ID
+		LEFT JOIN SMC.SMC_ALERT_HEADER ah ON ah.HEADER_ID = a.HEADER_ID LEFT JOIN SMC.SMC_TAB_MASTER t ON t.TAB_ID = ah.TAB_ID
+  		WHERE	st.TEMPLATE_ID = #{templateId}
+  	</select>
+  	
+  	<select id="selectSearchTemplateByName" resultType="com.penske.apps.adminconsole.model.SearchTemplate">
+  		SELECT t.TABNAME AS tabName,
+			   t.TAB_ID AS tabId,
+               st.TEMPLATE_NAME AS templateName,
+               st.DISPLAY_SEQUENCE AS displaySequence,
+               CASE WHEN t.TEMPLATE_ID = st.TEMPLATE_ID
+               		THEN 1
+                    ELSE 0
+               END AS defaultForTab,
+               st.TEMPLATE_ID AS templateId,
+               st.VISIBILITY_PENSKE AS visibilityPenske,
+               st.VISIBILITY_VENDOR AS visibilityVendor
+		FROM  SMC.SMC_SEARCH_TEMPLATES st LEFT JOIN  SMC.SMC_ALERTS a  ON a.TEMPLATE_ID = st.TEMPLATE_ID
+		LEFT JOIN SMC.SMC_ALERT_HEADER ah ON ah.HEADER_ID = a.HEADER_ID LEFT JOIN SMC.SMC_TAB_MASTER t ON t.TAB_ID = ah.TAB_ID
+  		WHERE	st.TEMPLATE_NAME = #{templateName} AND st.TEMPLATE_ID != #{templateId}
+  	</select>
+  	
+  	<update id="updateSearchTemplate">
+  		UPDATE SMC.SMC_SEARCH_TEMPLATES
+  		SET	   TEMPLATE_NAME = #{searchTemplateForm.templateName},
+  			   DISPLAY_SEQUENCE = #{searchTemplateForm.displaySequence},
+  			   VISIBILITY_VENDOR = #{searchTemplateForm.visibilityVendor},
+  			   VISIBILITY_PENSKE = #{searchTemplateForm.visibilityPenske}
+  		WHERE  TEMPLATE_ID = #{searchTemplateForm.templateId}
+  	</update>
+
+</mapper>

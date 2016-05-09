@@ -1,0 +1,14 @@
+.add-association label{
+	width:140px;
+	display:inline-block;	
+}
+
+.add-association select{
+	width:200px;
+		
+}
+.close-save{
+	position:absolute;
+	bottom:3px;
+	right:5px;
+}

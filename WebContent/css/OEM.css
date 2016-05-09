@@ -1,0 +1,79 @@
+#mainContentLogin{
+	width: 100%;
+	min-height: 600px;
+	min-width: 990px;
+	min-width: 910px\0/; /* IE8 hack */
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+    box-sizing: border-box;
+	margin-top: -25px;
+	border-left: 20px solid #E7E7E7;
+	border-right: 20px solid #E7E7E7;
+	border-bottom: 20px solid #E7E7E7;
+	padding: 15px;
+}
+
+.rightAlignPadding {
+	TEXT-ALIGN: right !important; PADDING-BOTTOM: 3px !important; PADDING-LEFT: 10px !important; PADDING-RIGHT: 18px !important; PADDING-TOP: 3px !important
+}
+
+.paddingAdvSearch{
+allign:center;padding-top:10px;
+}
+
+.paddingBottom{
+padding-bottom:8px;
+}
+
+.paddingTop{
+padding-top:8px;
+}
+
+.paddingRFC{
+padding-right:55px;
+}
+
+.wrapword{
+white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+white-space: -pre-wrap;      /* Opera 4-6 */
+white-space: -o-pre-wrap;    /* Opera 7 */
+white-space: pre-wrap;       /* css-3 */
+word-wrap: break-word;       /* Internet Explorer 5.5+ */
+word-break: break-all;
+white-space: normal;
+}
+
+.marginLeftOEM{
+margin-left:4px;
+ }
+ 
+ .marginLeftAll{
+margin-left:16px;
+ }
+
+.marginLeftbutton{
+margin-left:8px;
+ }
+
+
+.evenRow td, .oddRow td, .even td, .odd td, .oddRow, .odd, .oddRowNoBorder, .oddNoBorder, .evenRow, .even {
+    height: 0px !important;
+}
+
+.ms-choice {
+    border-radius: 0px !important;
+    line-height: 17px !important;
+    height: 17px !important;
+}
+
+.ms-choice > div {
+    height: 16px !important;
+}
+
+.ms-drop > ul {
+    margin-left: 0px !important;
+}
+
+.selectedItem {
+    border: 1px solid black;
+}

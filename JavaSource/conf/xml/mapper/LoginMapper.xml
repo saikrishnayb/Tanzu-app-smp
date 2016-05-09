@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.2//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.penske.apps.suppliermgmt.dao.LoginDAO">
+
+ 	
+	<select id="getUserDetails"	parameterType="com.penske.apps.suppliermgmt.model.User" resultMap="userDetailsMap">
+		
+SELECT 
+        USER_ID,
+		SSO,
+		FIRST_NAME,
+		LAST_NAME, 
+		EMAIL,
+		PHONE,
+		STATUS, 
+		EXTENSION,
+		ROLE_ID,
+		DEPT_ID,
+		TYPE_ID,
+		ORG_ID
+		FROM SMC_USER_MASTER 
+		WHERE UPPER(SSO)=UPPER(#{sso})
+		AND STATUS =#{status}
+	</select>  
+	
+	<resultMap id="userDetailsMap" type="com.penske.apps.suppliermgmt.model.User">
+	    <result property="userId" column="USER_ID" javaType="int" jdbcType="VARCHAR"/>
+		<result property="sso" column="SSO" javaType="String" jdbcType="VARCHAR"/>
+		<result property="firstName" column="FIRST_NAME" javaType="String" jdbcType="VARCHAR"/>
+		<result property="lastName" column="LAST_NAME" javaType="String" jdbcType="VARCHAR"/>
+		<result property="email" column="EMAIL" javaType="String" jdbcType="VARCHAR"/>
+		<result property="phone" column="PHONE" javaType="String" jdbcType="VARCHAR"/>
+		<result property="status" column="STATUS" javaType="String" jdbcType="CHAR"/>
+		<result property="extension" column="EXTENSION" javaType="String" jdbcType="VARCHAR"/>
+		<result property="userType" column="TYPE_ID" javaType="int" jdbcType="VARCHAR"/>
+    	<result property="roleId" column="ROLE_ID" javaType="int" jdbcType="INTEGER"/>
+    	<result property="userDept" column="DEPT_ID" javaType="int" jdbcType="VARCHAR"/>
+    	<result property="orgId" column="ORG_ID" javaType="int" jdbcType="VARCHAR"/>
+ 	</resultMap>
+ 	
+ 	  <select id="getAssociatedVendors" parameterType="int" resultMap="associatedVendorsMap">
+			SELECT  SVC.VENDOR_ID,
+		        SVC.VENDOR_NUMBER,
+		        SVC.CORP,
+		        SVC.VENDOR_NAME,
+		        SVC.NOTIFICATION_EXCEPTION,
+		        SVC.ANNUAL_AGREEMENT,
+		        SVC.MFR 
+		FROM    SMC_VENDOR_MASTER SVC 
+		JOIN    SMC_ORG_VENDOR_ASSOC SOVA 
+		 ON SVC.VENDOR_ID = SOVA.VENDOR_ID 
+		WHERE SOVA.ORG_ID=#{orgId}
+		AND SVC.STATUS='A'
+	</select> 
+		
+	<resultMap id="associatedVendorsMap" type="com.penske.apps.suppliermgmt.model.VendorLocation">
+	<result property="vendorId" column="VENDOR_ID" javaType="int" jdbcType="INTEGER"/>
+		<result property="vendorNumber" column="VENDOR_NUMBER" javaType="int" jdbcType="INTEGER"/>
+		<result property="corpCode" column="CORP" javaType="String" jdbcType="VARCHAR"/>
+		<result property="vendorName" column="VENDOR_NAME" javaType="String" jdbcType="VARCHAR"/>
+		<result property="notificationException" column="NOTIFICATION_EXCEPTION" javaType="String" jdbcType="CHAR"/>
+		<result property="annualAgreement" column="ANNUAL_AGREEMENT" javaType="String" jdbcType="CHAR"/>
+       	<result property="manufacturer" column="MFR" javaType="String" jdbcType="VARCHAR"/> 
+	</resultMap>
+	
+	 <select id="getTabs" parameterType="int" resultMap="tabsMap">
+      SELECT DISTINCT(ST.TAB_ID) AS TAB_ID,
+        ST.TABNAME,
+		ST.DISPLAY_SEQUENCE,
+		ST.IMG_URL,
+		ST.TEMPLATE_ID,
+		ST.DASHBOARD_TAB
+		FROM SMC_TAB_MASTER ST 
+		JOIN SMC_SECURITY_FUNCTION SF 
+		ON ST.TAB_ID = SF.TAB_ID 
+		JOIN SMC_ROLE_SEC_FUNCTIONS RSF
+		ON RSF.SEC_FUNC_ID = SF.SEC_FUNC_ID
+		WHERE RSF.ROLE_ID=#{roleId}
+		AND ST.STATUS='A'
+	</select>  
+		
+	<resultMap id="tabsMap" type="com.penske.apps.suppliermgmt.model.Tab">
+		<result property="tabId" column="TAB_ID" javaType="int" jdbcType="INTEGER"/>
+		<result property="tabName" column="TABNAME" javaType="String" jdbcType="VARCHAR"/>
+		<result property="displaySequence" column="DISPLAY_SEQUENCE" javaType="int" jdbcType="INTEGER"/>
+		<result property="imageUrl" column="IMG_URL" javaType="String" jdbcType="VARCHAR"/>
+		<result property="defaultTemplateId" column="TEMPLATE_ID" javaType="int" jdbcType="INTEGER"/>
+		<result property="dashboardTab" column="DASHBOARD_TAB" javaType="int" jdbcType="INTEGER"/>
+	</resultMap> 
+	
+  	<select id="getSecurityFunctions" resultType="String">
+		SELECT SF.NAME 
+		FROM SMC_SECURITY_FUNCTION SF 
+		JOIN SMC_TAB_MASTER ST
+		ON SF.TAB_ID = ST.TAB_ID 
+		JOIN SMC_ROLE_SEC_FUNCTIONS RSF
+		ON RSF.SEC_FUNC_ID = SF.SEC_FUNC_ID
+		WHERE RSF.ROLE_ID=#{roleId}
+		AND ST.TAB_ID=#{tabId}
+		AND SF.STATUS ='A' 
+	</select> 
+		
+</mapper>

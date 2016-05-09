@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.2//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.penske.apps.adminconsole.dao.HeaderDao">
+	<select id="getApplicationUser" resultType="com.penske.apps.adminconsole.model.HeaderUser">
+		SELECT 	U.USER_ID AS userId,
+				SSO AS sso,
+				EMAIL AS email,
+				FIRST_NAME AS firstName,
+				LAST_NAME AS lastName,
+				ROLE_NAME AS roleName,
+				R.ROLE_ID AS roleId,
+				U.TYPE_ID AS userTypeId,
+				T.DESCRIPTION AS userTypeDesc,
+				<!--M.MFR AS manufacturer,-->
+				U.ORG_ID AS orgId
+		FROM 	SMC.SMC_USER_MASTER U,
+				<!-- LEFT OUTER JOIN 
+				
+			 	(SELECT	V.USER_ID, 
+										L.MFR 
+										
+								FROM	SMC.SMC_VENDOR_USER_ASSOC V, 
+								 		SMC.SMC_VENDOR_MASTER L 
+								 		
+								WHERE	V.VENDOR_ID = L.VENDOR_ID
+								
+								GROUP BY MFR, USER_ID) M
+				ON 	U.USER_ID = M.USER_ID,-->
+					SMC.smc_user_roles R,
+					SMC.SMC_USER_TYPES T
+					
+		WHERE 	U.ROLE_ID = R.ROLE_ID
+		AND 	U.TYPE_ID = T.TYPE_ID
+		AND 	U.USER_ID = #{value}
+		AND 	U.STATUS = 'A'
+	</select>
+	
+	<select id="getAllTabNames" resultType="string">
+ 		SELECT 	TABNAME
+ 		
+		FROM 	SMC.SMC_TAB_MASTER T
+		
+		GROUP BY TABNAME
+ 	</select>
+ 	
+ 	<select id="getPermissions" resultType="com.penske.apps.adminconsole.model.Permission">
+ 		SELECT 	NAME AS name,  
+ 				DESCRIPTION AS description, 
+ 				TABNAME AS tabName
+ 				
+ 		FROM 	SMC.SMC_ROLE_SEC_FUNCTIONS F, 
+ 			 	SMC.SMC_SECURITY_FUNCTION S, 
+ 			 	SMC.SMC_TAB_MASTER T 
+ 			 	
+ 		WHERE 	F.SEC_FUNC_ID = S.SEC_FUNC_ID 
+ 		AND 	S.TAB_ID = T.TAB_ID 
+ 		AND 	ROLE_ID = #{value}
+ 	</select>
+</mapper>

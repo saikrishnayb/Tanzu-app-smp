@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.2//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.penske.apps.suppliermgmt.dao.UserDAO">
+ 	
+	<select id="getUserList"   resultMap="userDetailsMap">		
+		SELECT 
+		USER_ID,
+		SSO,
+		UPPER(FIRST_NAME) as FIRST_NAME,
+		UPPER(LAST_NAME) as LAST_NAME, 
+		EMAIL,
+		PHONE,
+		STATUS, 
+		EXTENSION,
+		DEPT_ID,
+		TYPE_ID
+		ROLE_ID
+		FROM SMC_USER_MASTER SUI 
+		WHERE TYPE_ID=#{userType}
+		ORDER BY DEPT_ID		
+	</select>  
+		<resultMap id="userDetailsMap" type="com.penske.apps.suppliermgmt.model.User">
+	    <result property="userId" column="USER_ID" javaType="int" jdbcType="INTEGER"/>
+	    <result property="sso" column="SSO" javaType="String" jdbcType="VARCHAR"/>
+	    <result property="email" column="EMAIL" javaType="String" jdbcType="VARCHAR"/>
+	    <result property="firstName" column="FIRST_NAME" javaType="String" jdbcType="VARCHAR"/>
+	   	<result property="lastName" column="LAST_NAME" javaType="String" jdbcType="VARCHAR"/>
+		<result property="phone" column="PHONE" javaType="String" jdbcType="VARCHAR"/>
+		<result property="extension" column="EXTENSION" javaType="String" jdbcType="VARCHAR"/>
+		<result property="status" column="STATUS" javaType="String" jdbcType="CHAR"/>
+		<result property="userType" column="TYPE_ID" javaType="int" jdbcType="INTEGER"/>
+		<result property="roleId" column="ROLE_ID" javaType="int" jdbcType="INTEGER"/>
+		<result property="userDept" column="DEPT_ID" javaType="int" jdbcType="INTEGER"/>
+					
+	</resultMap>
+	<delete id = "deleteBuddyList" parameterType = "com.penske.apps.suppliermgmt.model.Buddies"> 
+ 		DELETE SMC_BUDDIES 
+ 		WHERE 
+ 		SSO = #{userSso}
+ 	</delete>
+ 	
+	<!-- if random users selected in buddies -->			
+	<insert id = "addBuddyList" parameterType="list">
+ 		INSERT INTO SMC_BUDDIES(SSO, BUDDY_SSO, USER_DEPT, CREATED_BY,CREATED_DATE,SELECTION_TYPE)
+ 		VALUES
+ 		<foreach item="item"  collection="list" separator=",">
+ 	 		(#{item.sso},#{item.buddySso}, #{item.userDept}, #{item.sso},CURRENT TIMESTAMP,#{item.selectionType})
+ 		</foreach>
+ 	</insert>	
+ 	
+ 	<!-- if all users selected in buddies -->
+ 	<insert id = "addBuddyBasedOnselectionType" parameterType="com.penske.apps.suppliermgmt.model.Buddies">
+ 		INSERT INTO SMC_BUDDIES(SSO, BUDDY_SSO, USER_DEPT, CREATED_BY,CREATED_DATE,SELECTION_TYPE)
+ 		VALUES
+ 		
+ 	 		(#{sso},#{buddySso}, #{userDept}, #{sso},CURRENT TIMESTAMP,#{selectionType})
+ 		
+ 	</insert>
+ 	
+ 	<select id="getSelectionType" parameterType="String" resultType="String">
+ 		SELECT DISTINCT(SELECTION_TYPE) FROM SMC_BUDDIES WHERE SSO=#{loggedInSso} AND BUDDY_SSO=#{loggedInSso}
+ 	</select>
+ 	
+ 	<select id="getExistingBuddiesListFromUserMaster" parameterType="String" resultType="com.penske.apps.suppliermgmt.model.Buddies">
+ 	
+ 		SELECT SSO AS buddySso
+		FROM SMC_USER_MASTER
+		<where>
+			( TYPE_ID=1
+			<if test="selectionType != 'ALL'">
+			
+				<if test="selectionType == 'ALLBUYERS'">
+					AND DEPT_ID=1
+				</if>
+				<if test="selectionType == 'ALLPLANNING'">
+					AND DEPT_ID=2
+				</if>
+			</if>
+			)
+			OR SSO=#{loggedInSso}
+ 		</where>
+ 		
+ 		
+ 		
+ 	</select>
+ 	
+ 	<select id="getExistingBuddiesList" resultType="com.penske.apps.suppliermgmt.model.Buddies">
+		select
+		SSO AS sso,
+		BUDDY_SSO AS buddySso,
+		USER_DEPT AS userDept,
+		CREATED_BY AS createdBy,
+		CREATED_DATE AS createdDate,
+		SELECTION_TYPE AS selectionType
+		from SMC_BUDDIES
+		where SSO=#{userSso}
+	</select>
+ 	<select id="getDeptDetailList" resultType="com.penske.apps.suppliermgmt.model.LabelValue">
+ 	select 
+ 	DEPT_ID AS labelId,
+ 	USER_DEPT AS labelValue
+ 	from SMC_USER_DEPT
+ 	</select>
+	<select id="getTermsAndCondition" resultType="String" >
+		select TC_TEXT from SMC_TERMS_AND_CONDITIONS 
+		where status = #{status} 
+		and START_DATE &lt;= #{date} 
+		and END_DATE &gt;= #{date}
+	</select>
+ 		
+</mapper>
+

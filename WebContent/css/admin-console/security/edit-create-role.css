@@ -1,0 +1,50 @@
+#column-one {
+	width: 40%;
+}
+
+#column-two {
+	width: 58%;
+	min-height: 490px;
+	padding-left: 10px;
+	border-left: 3px solid #f3f3f3;
+}
+
+.accordion-header {
+	height: 30px;
+	width: 100%;
+}
+
+.accordion div.ui-accordion-content {
+	margin-top: 0;
+}
+
+.header-span {
+	margin: .5em;
+	font-weight: normal;
+}
+
+.function-name {
+	width: 48%;
+	min-width: 200px;
+	margin: 5px 0;
+}
+
+#role-hierarchy ul.group {
+	margin-left: 0;
+}
+
+span.selected-role {
+	padding: 4px 6px;
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	background-color: #D7F7FF;
+}
+
+#center-links {
+	width: 250px;
+	margin: 15px auto 0 auto;
+}
+
+#modify-role-buttons {
+	margin-top: 10px;
+}

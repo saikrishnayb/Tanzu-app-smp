@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.2//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.penske.apps.adminconsole.dao.RoleDao">
+
+	<select id="getAllRoles" resultType="com.penske.apps.adminconsole.model.Role">
+		SELECT	role.ROLE_ID AS roleId,
+				role.ROLE_NAME AS roleName,
+				role.BASE_ROLE_ID AS baseRoleId,
+				base.ROLE_NAME AS baseRoleName,
+				role.STATUS AS status,
+				role.DESCRIPTION AS roleDescription
+				
+		FROM	SMC.smc_user_roles role
+				LEFT OUTER JOIN SMC.smc_user_roles base
+				ON	role.BASE_ROLE_ID = base.ROLE_ID
+				
+	
+		WHERE	role.STATUS = #{value}
+
+	</select>
+	
+	<select id="getAllRolesForVendor" resultType="com.penske.apps.adminconsole.model.Role">
+	WITH result (ROLE_ID , ROLE_NAME, BASE_ROLE_ID,STATUS,roleDescription)
+	AS
+	(
+	SELECT role.ROLE_ID AS roleId,
+	role.ROLE_NAME AS roleName,
+	role.BASE_ROLE_ID AS baseRoleId,
+	role.STATUS AS status,
+	role.DESCRIPTION AS roleDescription
+
+	FROM SMC.smc_user_roles role
+	WHERE role.BASE_ROLE_ID = #{value}
+	and role.STATUS = 'A'
+	
+	UNION ALL
+	
+	SELECT a.ROLE_ID,a.ROLE_NAME,a.BASE_ROLE_ID,a.STATUS,a.roleDescription
+	FROM SMC.smc_user_roles a
+	INNER JOIN result s ON a.BASE_ROLE_ID = s.ROLE_ID
+	and a.STATUS = 'A')
+	SELECT r.ROLE_ID as roleId, r.ROLE_NAME as roleName,(select ROLE_NAME from
+	SMC.smc_user_roles where ROLE_ID=r.BASE_ROLE_ID) as
+	baseRoleName,r.status as status,r.roleDescription as roleDescription FROM result r
+
+	</select>
+	<select id="getRolesBySearchContent" resultType="com.penske.apps.adminconsole.model.Role">
+		SELECT	role.ROLE_ID AS roleId,
+				role.ROLE_NAME AS roleName,
+				role.BASE_ROLE_ID AS baseRoleId,
+				base.ROLE_NAME AS baseRoleName,
+				role.STATUS AS status,
+				role.DESCRIPTION AS roleDescription
+				
+		FROM	SMC.smc_user_roles role
+				LEFT OUTER JOIN SMC.smc_user_roles base
+				ON	role.BASE_ROLE_ID = base.ROLE_ID
+		
+		WHERE	1 = 1
+		<if test="roleName != null">
+		AND		role.ROLE_NAME = #{roleName}
+		</if>
+		<choose>
+			<when test="baseRoleId == -1">
+			AND		role.BASE_ROLE_ID IS NULL
+			</when>
+			<when test="baseRoleId != 0">
+			AND		role.BASE_ROLE_ID = #{baseRoleId}
+			</when>
+		</choose>
+	<if test="status != null and status != ''">
+		AND		role.STATUS = #{status}
+	</if>
+	</select>
+	
+	<select id="getSecurityFunctionTabs" resultType="com.penske.apps.adminconsole.model.Tab">
+		SELECT	DISTINCT 
+				tab.TAB_ID AS tabId,
+				tab.TABNAME AS tabName
+				
+		FROM 	SMC.SMC_ROLE_SEC_FUNCTIONS rfn, 
+				SMC.SMC_SECURITY_FUNCTION sfn, 
+				SMC.SMC_TAB_MASTER tab 
+				
+		WHERE 	rfn.SEC_FUNC_ID = sfn.SEC_FUNC_ID 
+		AND 	sfn.TAB_ID = tab.TAB_ID
+		<if test="value != 0">
+		AND		rfn.ROLE_ID = #{value}
+		</if>
+	</select>
+	
+	<select id="getRolePermissions" resultType="com.penske.apps.adminconsole.model.Permission">
+		SELECT	sfn.SEC_FUNC_ID AS securityFunctionId,
+				sfn.NAME AS name,
+				sfn.DESCRIPTION as description
+		FROM 	SMC.SMC_ROLE_SEC_FUNCTIONS rfn, 
+				SMC.SMC_SECURITY_FUNCTION sfn, 
+				SMC.SMC_TAB_MASTER tab 
+				
+		WHERE 	rfn.SEC_FUNC_ID = sfn.SEC_FUNC_ID 
+		AND 	sfn.TAB_ID = tab.TAB_ID
+		<if test="roleId != 0">
+		AND		rfn.ROLE_ID = #{roleId}
+		</if>
+		AND		tab.TAB_ID = #{tabId}
+	</select>
+	
+	<select id="getAllRolePermissions" resultType="com.penske.apps.adminconsole.model.Permission">
+		SELECT	sfn.SEC_FUNC_ID AS securityFunctionId,
+				sfn.NAME AS name
+				
+		FROM 	SMC.SMC_SECURITY_FUNCTION sfn, 
+				SMC.SMC_TAB_MASTER tab 
+				
+		WHERE 	sfn.TAB_ID = tab.TAB_ID
+		AND		tab.TAB_ID = #{value}
+	</select>
+	
+	<select id="getRoleSecurityFunctions" resultType="Integer">
+		SELECT	SEC_FUNC_ID
+		
+		FROM	SMC.SMC_ROLE_SEC_FUNCTIONS
+		
+		WHERE	ROLE_ID = #{value}
+	</select>
+	
+	<select id="getBaseRoleId" resultType="com.penske.apps.adminconsole.model.Role">
+		SELECT	role.ROLE_ID AS roleId,
+				role.ROLE_NAME AS roleName,
+				role.DESCRIPTION AS roleDescription,
+				role.BASE_ROLE_ID AS baseRoleId,
+				role.STATUS AS status
+				
+		FROM	SMC.smc_user_roles role
+		
+		WHERE	role.ROLE_ID = #{value}
+	</select>
+	
+	<select id="getAllChildRoles" resultType="com.penske.apps.adminconsole.model.Role">
+		SELECT	role.ROLE_ID AS roleId,
+				role.ROLE_NAME AS roleName,
+				role.BASE_ROLE_ID AS baseRoleId
+				
+		FROM	SMC.smc_user_roles role
+		
+		WHERE	role.BASE_ROLE_ID = #{value}
+	</select>
+	
+	<select id="getUsersByRoleId" resultType="Integer">
+		SELECT	1
+
+		FROM	SMC.SMC_USER_MASTER usr
+				
+		WHERE	usr.STATUS = 'A'
+		AND		usr.ROLE_ID IN (SELECT rol.ROLE_ID
+				
+								FROM SMC.smc_user_roles rol
+								
+								START WITH 	rol.ROLE_ID = #{value}
+								AND			rol.STATUS = 'A'
+								CONNECT BY	rol.BASE_ROLE_ID = PRIOR rol.ROLE_ID
+								AND			rol.STATUS = 'A')
+						
+		FETCH FIRST ROW ONLY
+	</select>
+	
+	<select id="getNewRoleId" resultType="Integer">
+		SELECT	MAX(ROLE_ID)
+
+		FROM	SMC.smc_user_roles
+	</select>
+	
+	<insert id="addRole">
+		INSERT INTO SMC.smc_user_roles
+		( ROLE_NAME, <if test="baseRoleId != 0">BASE_ROLE_ID,</if>DESCRIPTION,OEM, STATUS,CREATED_BY,
+ 				CREATED_DATE,MODIFIED_BY,MODIFIED_DATE)
+		VALUES( #{roleName}, <if test="baseRoleId != 0">#{baseRoleId},</if> #{roleDescription},#{oem} ,'A',#{createdBy},CURRENT TIMESTAMP,#{createdBy},CURRENT TIMESTAMP )
+	</insert>
+	
+	<insert id="addRoleSecurityFunction">
+		INSERT INTO SMC.SMC_ROLE_SEC_FUNCTIONS
+		( SEC_FUNC_ID, ROLE_ID )
+		VALUES( #{functionId}, #{roleId} )
+	</insert>
+	
+	<delete id="removeRoleSecurityFunction">
+		DELETE FROM	SMC.SMC_ROLE_SEC_FUNCTIONS
+
+		WHERE	SEC_FUNC_ID = #{functionId}
+		AND 	ROLE_ID = #{roleId} 
+		
+		<!-- IN (SELECT ROLE_ID
+		
+							FROM SMC.smc_user_roles 
+							
+							START WITH ROLE_ID = #{roleId} 
+							CONNECT BY BASE_ROLE_ID = PRIOR ROLE_ID)
+		-->
+	</delete>
+	
+	<update id="modifyRoleName">
+		UPDATE	SMC.smc_user_roles
+		
+		SET		ROLE_NAME = #{roleName},
+				MODIFIED_BY =#{modifiedBy},
+				DESCRIPTION = #{roleDescription},
+ 				MODIFIED_DATE = CURRENT TIMESTAMP,
+ 				BASE_ROLE_ID = #{baseRoleId}
+		WHERE	ROLE_ID = #{roleId}
+	</update>
+	
+	<delete id="removeAllFunctionByRoleAndDescend">
+		DELETE FROM	SMC.SMC_ROLE_SEC_FUNCTIONS
+
+		WHERE ROLE_ID IN (SELECT ROLE_ID
+							FROM SMC.smc_user_roles WHERE STATUS='A'
+							START WITH ROLE_ID = #{roleId} 
+							CONNECT BY BASE_ROLE_ID = PRIOR ROLE_ID)
+	</delete>
+	
+	<update id="modifyRoleStatus">
+		UPDATE	SMC.smc_user_roles
+		SET		STATUS = 'I',
+				MODIFIED_BY =#{modifiedBy},
+ 				MODIFIED_DATE = CURRENT TIMESTAMP
+		WHERE ROLE_ID IN(
+				SELECT ROLE_ID	FROM SMC.smc_user_roles WHERE STATUS='A'
+				START WITH ROLE_ID = #{roleId} 
+				CONNECT BY BASE_ROLE_ID = PRIOR ROLE_ID
+			)	
+		<!--  ROLE_ID = #{roleId}-->
+	</update>
+
+	<select id="getMyRoleDescend" resultType="com.penske.apps.adminconsole.model.Role">
+			WITH result (roleId , roleName, baseRoleId,STATUS,oem)
+			AS
+			( 
+				SELECT role.ROLE_ID AS roleId,
+					role.ROLE_NAME AS roleName,
+					role.BASE_ROLE_ID AS baseRoleId,
+					role.STATUS AS status,role.OEM as oem
+					FROM SMC.smc_user_roles role
+					WHERE role.ROLE_ID =#{roleId}
+					and role.STATUS = 'A'
+				UNION ALL
+				
+				SELECT  a.ROLE_ID AS roleId,
+					a.ROLE_NAME AS roleName,
+					a.BASE_ROLE_ID AS baseRoleId,
+					a.STATUS AS status, a.OEM as oem
+					FROM SMC.smc_user_roles a
+				INNER JOIN result s ON a.BASE_ROLE_ID = s.roleId and a.STATUS = 'A'
+			) 
+			
+			SELECT r.roleId , r.roleName,(select ROLE_NAME from
+				SMC.smc_user_roles where ROLE_ID=r.baseRoleId) as
+				baseRoleName,r.status as status,r.oem as oem,(SELECT NAME FROM SMC.SMC_ORG_MASTER as orgMst where r.oem=orgMst.ORG_ID) as orgName  FROM result r ORDER BY r.roleId
+	</select>
+	
+	
+	<select id="getMyRoles" resultType="com.penske.apps.adminconsole.model.Role">
+			WITH result (roleId , roleName, baseRoleId,roleDescription,STATUS,oem)
+			AS
+			( 
+				SELECT role.ROLE_ID AS roleId,
+					role.ROLE_NAME AS roleName,
+					role.BASE_ROLE_ID AS baseRoleId,
+					role.DESCRIPTION AS roleDescription,
+					role.STATUS AS status,role.OEM as oem
+					FROM SMC.smc_user_roles role
+					WHERE role.ROLE_ID =#{currUserRoleId}
+					and role.STATUS = 'A'
+				UNION ALL
+				
+				SELECT  a.ROLE_ID AS roleId,
+					a.ROLE_NAME AS roleName,
+					a.BASE_ROLE_ID AS baseRoleId,
+					a.DESCRIPTION AS roleDescription,
+					a.STATUS AS status, a.OEM as oem
+					FROM SMC.smc_user_roles a
+				INNER JOIN result s ON a.BASE_ROLE_ID = s.roleId and a.STATUS = 'A'
+			) 
+			
+			SELECT r.roleId , r.roleName,(select ROLE_NAME from
+				SMC.smc_user_roles where ROLE_ID=r.baseRoleId) as
+				baseRoleName,r.roleDescription AS roleDescription,r.baseRoleId as baseRoleId,r.status as status,r.oem as oem,(SELECT NAME FROM SMC.SMC_ORG_MASTER as orgMst where r.oem=orgMst.ORG_ID) as orgName FROM result r 
+				WHERE 1=1
+				<if test="roleName != null">
+				AND r.roleName = #{roleName}
+				</if>
+				<choose>
+					<when test="baseRoleId == -1">
+					AND	r.baseRoleId IS NULL
+					</when>
+					<when test="baseRoleId != 0">
+					AND	r.baseRoleId = #{baseRoleId}
+					</when>
+				</choose>
+			ORDER BY r.roleId
+	</select>
+	
+	<select id="checkRoleExist" resultType="int">
+		SELECT ROLE_ID FROM SMC.smc_user_roles 
+			WHERE ROLE_NAME=#{roleName} AND BASE_ROLE_ID=#{baseRoleId} AND OEM=#{oem} AND STATUS='A' 
+	</select>
+	
+	<select id="getMyDescendRole" resultType="com.penske.apps.adminconsole.model.Role">
+		SELECT 	ROLE_ID AS roleId, BASE_ROLE_ID as baseRoleId,ROLE_NAME AS roleName
+	 		FROM 	SMC.smc_user_roles 
+	 		WHERE	STATUS = 'A'
+	 		START 	WITH ROLE_ID = #{roleId}
+	 		CONNECT BY BASE_ROLE_ID = PRIOR ROLE_ID
+	 		ORDER BY ROLE_ID
+	</select>
+	
+	<select id="getMyDescendRoleByOrgId" resultType="String">
+		SELECT   ROLE_NAME AS roleName
+			FROM     SMC.SMC_USER_ROLES
+			WHERE    STATUS = 'A'
+			AND      OEM IN 
+			(
+					SELECT   ORG_ID
+					FROM     SMC.SMC_ORG_MASTER START WITH ORG_ID =#{orgId} 
+				    CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID
+					ORDER BY ORG_ID
+			) CONNECT BY BASE_ROLE_ID = PRIOR ROLE_ID
+		ORDER BY ROLE_NAME
+	</select>
+	
+	<select id="getAllVendorRoles" resultType="com.penske.apps.adminconsole.model.Role">
+	 SELECT 	ROLE_ID AS roleId,ROLE_NAME AS roleName,BASE_ROLE_ID as baseRoleId, 
+	 (select ROLE_NAME from SMC.smc_user_roles where ROLE_ID=userRoles.BASE_ROLE_ID) as baseRoleName
+	,status as status,oem as oem,(SELECT NAME FROM SMC.SMC_ORG_MASTER as orgMst where oem=orgMst.ORG_ID) as orgName
+	 FROM 	SMC.smc_user_roles  as userRoles
+	 WHERE	STATUS = 'A'
+	 <if test="roleName != null">
+	AND ROLE_NAME = #{roleName}
+	</if>
+	<choose>
+		<when test="baseRoleId == -1">
+		AND	BASE_ROLE_ID IS NULL
+		</when>
+		<when test="baseRoleId != 0">
+		AND	BASE_ROLE_ID = #{baseRoleId}
+		</when>
+	</choose>
+	 START 	WITH ROLE_ID IN(
+	   SELECT ROLE_ID FROM SMC.SMC_USER_ROLES WHERE BASE_ROLE_ID =0 AND ROLE_ID !=1
+	 )
+	 CONNECT BY BASE_ROLE_ID = PRIOR ROLE_ID
+	 ORDER BY ROLE_ID
+	</select>
+</mapper>

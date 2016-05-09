@@ -1,0 +1,174 @@
+.text-number {
+	width:20px;
+	height:18px;
+	text-align:center;
+}
+
+.notification-name {
+	height:30px;
+}
+
+.compliance-dropdown {
+	height:17px;
+}
+
+.contact-header {
+	background-color:#002496;
+	width:100%;
+	height:20px;
+}
+
+.contact-header-text {
+	color:white;
+	margin-left:10px;
+	position:absolute;
+	height:15px;
+	margin-top:2px;
+}
+
+.contacts-fieldset {
+	float:left;
+	width:33%;
+}
+
+.contact-fieldset-right {
+	float:right;
+	width:33%;
+}
+
+.escalation-column {
+	width:30%;
+	margin-left:10px;
+}
+
+.escalation-header {
+	margin-left:5px;
+	margin-top:3px;
+	margin-bottom:3px;
+}
+
+.vendor-emails {
+	border-style:solid;
+	border-width:1px;
+	padding-top:3px;
+	margin-bottom:5px;
+	padding-bottom:3px;
+}
+
+.email-checkbox {
+	margin-left:5px;
+}
+
+.additional-users {
+	height:13px;
+	width:30px;
+}
+
+.add-button {
+	height:13px;
+}
+
+.add-button-span {
+	display:inline-block;
+	visibility:hidden;
+}
+
+.additional-users-input {
+	width:100%;
+	text-align:center;
+	margin-top:6px;
+	display:block;
+	height:10px;
+	visibility:hidden;
+}
+
+.additional-users-links {
+	visibility:hidden;
+	float:right;
+	margin-bottom:10px;
+}
+
+.primary-functions {
+	float:right;
+	margin-top:5px;
+}
+
+.delete-addl-user {
+	height:10px;
+	margin-top:5px;
+}
+
+.ui-dialog {
+	margin-top:3%;
+}
+
+.addl-user-input {
+	margin-top:6px;
+	width:160px;
+}
+
+.delete-addl-user-span {
+	vertical-align:middle;
+}
+
+.addl-users-checkbox-span {
+	margin-left:6px;
+	vertical-align:text-bottom;
+}
+
+.addl-smc-users {
+	margin-left:25px;
+}
+
+.addl-users-select {
+	margin-left:8px;
+}
+
+.cancel-addl-users-link-span {
+	width:100%;
+	text-align:right;
+	display:block;
+	margin-bottom:10px;
+	height:10px;
+	padding-bottom:10px;
+	visibility:hidden;
+}
+
+.cancel-addl-users-link {
+	margin-right:15px;
+}
+
+.delete-user-image {
+	height:10px;
+	width:10px;
+}
+
+.addl-user {
+	margin-top:2px;
+	width:100%;
+}
+
+.error-img {
+	height:12px;
+}
+
+.error {
+	margin-left:2px;
+	visibility:hidden;
+}
+
+.addl-user-email {
+	margin-left:5px;
+}
+
+.add-user {
+	width:200px;
+}
+
+.no-display {
+	display:none;
+}
+
+.note {
+	margin-top:20px;
+}

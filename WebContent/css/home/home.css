@@ -1,0 +1,94 @@
+ul#tab-display {
+	width: 830px;
+	height: 270px;
+	margin: 0 auto 10px auto;
+	padding: 0;
+	
+	list-style-type: none;
+}
+
+li.tab {
+	width: 200px;
+	height: 270px;
+	margin-left: 10px;
+}
+
+li.tab:first-child {
+	margin-left: 0;
+}
+
+.tab-name-display {
+	width: 200px;
+	height: 60px;
+	border-bottom: 2px solid #999;
+	margin-bottom: 10px;
+	
+	font-size: 22px;
+	line-height: 25px;
+	color: #bbb;
+	
+	display: table-cell;
+	vertical-align: bottom;
+}
+
+.tab-image-display {
+	width: 194px;
+	height: 194px;
+	margin-top: 5px;
+	padding: 3px;
+}
+
+.tab-image {
+	width: 170px;
+	height: 170px;
+	padding: 12px;
+}
+
+.selected-tab {
+	padding: 0;
+	border: 3px solid #666;
+}
+
+.header table th:first-child {
+	width: 90%; /*changed to adjust Home screen table*/
+	padding-left: 10px;
+}
+/********************************
+To set compliance flag column width 
+*/
+.header table th:nth-child(2) {
+	width: 5%;
+}
+.header thead tr {
+	line-height: 24px;
+}
+
+.header table td:first-child {
+	padding-left: 20px;
+}
+
+.help-text-image {
+	margin-left: 10px;
+	top: 5px;
+	border-radius: 100%;
+	background-color: #fff;
+	border: 2px solid #fff;
+}
+
+
+/*for increasing the min-height
+	overriding common.css style
+*/
+#mainContent {
+	min-height:692px;
+}
+
+/***************************
+To set alert table position 
+*/
+
+#alertTable {
+	width: 800px;
+	margin: 0 auto 10px auto;
+	padding: 0;	
+}

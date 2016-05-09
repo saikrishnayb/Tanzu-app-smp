@@ -1,0 +1,1048 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.2//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.penske.apps.adminconsole.dao.SecurityDao">
+
+	<resultMap id="VendorTreeMap" type="com.penske.apps.adminconsole.model.VendorTree">
+		 <id property="vendorName" column="VENDOR_NAME" />
+		 <collection property="vendorNumberList" 
+		 column="VENDOR_NAME" ofType="com.penske.apps.adminconsole.model.Vendor" javaType="ArrayList" resultMap="vendorNumListId"> <!-- select="selectVendorNumber" /> -->
+		 </collection>
+	 </resultMap>
+	  <resultMap id="vendorNumListId" type="com.penske.apps.adminconsole.model.Vendor">
+	 	<id property="vendorId" column="VENDOR_ID" />
+	 	<result property="vendorNumber" column="VENDOR_NUMBER" />
+	 </resultMap>
+	
+ 	<select id="getUserSearchList" resultType="com.penske.apps.adminconsole.model.User">
+ 		SELECT 	USER_ID AS userId,
+ 				SSO AS userName,
+				EMAIL AS email,
+				FIRST_NAME AS firstName,
+				LAST_NAME AS lastName,
+				PHONE AS phone,
+				EXTENSION AS extension,
+				SSO as ssoId,
+				U.STATUS AS status,
+				T.USER_TYPE AS "userType.userType",
+				U.ROLE_ID AS "role.roleId",
+				ROLE_NAME AS "role.roleName"
+		FROM	SMC.SMC_USER_MASTER U, 
+				SMC.smc_user_roles R, 
+				SMC.SMC_USER_TYPES T
+		WHERE 	U.ROLE_ID = R.ROLE_ID AND 
+				U.TYPE_ID = T.TYPE_ID AND
+				<if test="email != ''">
+					UPPER(U.EMAIL) LIKE #{email} AND
+				</if>
+				<if test="roleId != 0">
+					U.ROLE_ID = #{roleId} AND
+				</if>
+				<if test="firstName != ''">
+					UPPER(U.FIRST_NAME) LIKE #{firstName} AND
+				</if>
+				<if test="lastName != ''">
+					UPPER(U.LAST_NAME) LIKE #{lastName} AND
+				</if>
+				<if test="userTypeId != 0">
+					U.TYPE_ID = #{userTypeId} AND
+				</if>
+				U.STATUS = 'A' AND
+				R.STATUS = 'A'
+ 	</select>
+ 	
+ <!--  	<select id="getSupplierUsers" resultType="com.penske.apps.adminconsole.model.User">
+ 		SELECT 	DISTINCT U.USER_ID AS userId,
+ 				SSO AS userName,
+				EMAIL AS email,
+				FIRST_NAME AS firstName,
+				LAST_NAME AS lastName,
+				PHONE AS phone,
+				EXTENSION AS extension,
+				U.STATUS AS status,
+				SSO as ssoId,
+				T.USER_TYPE AS "userType.userType",
+				U.ROLE_ID AS "role.roleId",
+				ROLE_NAME AS "role.roleName",
+				V.MFR	AS "vendor.vendorName",
+				sso as ssoId
+		FROM	SMC.SMC_USER_MASTER U
+		LEFT	OUTER JOIN
+					(SELECT USER_ID,
+							MFR
+					 FROM 	SMC.SMC_VENDOR_USER_ASSOC  V,
+					 		SMC.SMC_VENDOR_MASTER L 
+					 WHERE 	L.VENDOR_ID = V.VENDOR_ID ) V
+				ON V.USER_ID = U.USER_ID,
+				SMC.smc_user_roles R, 
+				SMC.SMC_USER_TYPES T
+		WHERE 	U.ROLE_ID = R.ROLE_ID
+				AND U.TYPE_ID = T.TYPE_ID
+				AND U.STATUS = 'A'
+				AND R.STATUS = 'A'
+				AND U.TYPE_ID = 2
+				AND V.MFR = #{value}
+ 	</select>
+ 	-->
+ 	<select id="getUser" resultType="com.penske.apps.adminconsole.model.User">  
+ 		SELECT 	USER_ID AS userId,
+ 				SSO AS userName,
+				EMAIL AS email,
+				FIRST_NAME AS firstName,
+				LAST_NAME AS lastName,
+				SSO as ssoId,
+				PHONE AS phone,
+				EXTENSION AS extension,
+				U.STATUS AS status,
+				T.USER_TYPE AS "userType.userType",
+				U.ROLE_ID AS "role.roleId",
+				ROLE_NAME AS "role.roleName",
+				U.ORG_ID AS orgId
+		FROM	SMC.SMC_USER_MASTER U, 
+				SMC.smc_user_roles R, 
+				SMC.SMC_USER_TYPES T
+		WHERE 	U.ROLE_ID = R.ROLE_ID
+				AND U.TYPE_ID = T.TYPE_ID
+				AND U.STATUS = 'A'
+				AND R.STATUS = 'A'
+				AND U.USER_ID = #{value}
+ 	</select> 
+ 	
+ 	<select id="getPenskeUserInfo" resultType="com.penske.apps.adminconsole.model.User">  
+ 		SELECT  U.USER_ID AS userId,
+ 				U.SSO AS userName, 
+				U.EMAIL AS email, 
+				U.FIRST_NAME AS firstName, 
+        		U.LAST_NAME AS lastName, 
+        		U.GESSOUID AS gessouid,
+        		U.PHONE AS phone, 
+        		U.EXTENSION AS extension, 
+        		U.STATUS AS status, 
+        		T.USER_TYPE AS "userType.userType",
+        		T.DESCRIPTION AS "userType.description",
+        		T.TYPE_ID AS "userType.userTypeId",
+        		U.ROLE_ID AS "role.roleId",
+        		R.ROLE_NAME AS "role.roleName", 
+        		UI.INIT_FILE AS "initFile.bytes", 
+        		UI.SIGN_FILE AS "signFile.bytes",
+        		UI.INIT_FILE AS "initString", 
+        		UI.SIGN_FILE AS "signString",
+        		D.USER_DEPT AS "userDept.userDept", 
+        		D.DEPT_ID AS "userDept.userDeptId",
+        		U.SSO AS ssoId,
+        		U.ORG_ID AS orgId
+		FROM 	SMC.SMC_USER_MASTER U
+        		INNER 	JOIN SMC.smc_user_roles R 
+        				ON 	U.ROLE_ID=R.ROLE_ID
+        		INNER 	JOIN SMC.SMC_USER_TYPES T
+        				ON 	U.TYPE_ID = T.TYPE_ID
+        				INNER 	JOIN SMC.SMC_USER_DEPT D
+        				ON 	D.DEPT_ID = U.DEPT_ID
+        				LEFT OUTER 	JOIN SMC.SMC_USER_INITIALS UI
+        				ON 	UI.USER_ID = U.USER_ID
+
+		WHERE 	U.STATUS = 'A' 
+				AND R.STATUS = 'A'
+				AND U.USER_ID = #{value}    
+ 	</select> 
+ 	
+ 	<select id="getVendorUserInfo" resultType="com.penske.apps.adminconsole.model.User"> 
+ 		<!-- SELECT  DISTINCT
+ 				U.USER_ID AS userId,
+ 				U.SSO AS userName, 
+				U.EMAIL AS email, 
+				U.FIRST_NAME AS firstName, 
+       			U.LAST_NAME AS lastName, 
+        		U.PHONE AS phone, 
+        		U.EXTENSION AS extension, 
+        		U.STATUS AS status, 
+        		U.SSO as ssoId,
+        		T.DESCRIPTION AS "userType.description", 
+        		R.ROLE_NAME AS "role.roleName",
+        		U.ROLE_ID AS "role.roleId",
+				U.OEM AS "vendor.vendorName"
+		FROM	SMC.SMC_USER_MASTER U
+        		INNER JOIN SMC.smc_user_roles R 
+        			ON U.ROLE_ID = R.ROLE_ID
+        		INNER JOIN SMC.SMC_USER_TYPES T
+        			ON U.TYPE_ID = T.TYPE_ID
+				
+        WHERE	U.STATUS = 'A'
+        		AND R.STATUS = 'A'
+        		AND U.USER_ID = #{value}   -->
+	 	SELECT   U.USER_ID AS userId,
+	         U.SSO AS userName,
+	         U.EMAIL AS email,
+	         U.FIRST_NAME AS firstName,
+	         U.LAST_NAME AS lastName,
+	         U.PHONE AS phone,
+	         U.EXTENSION AS extension,
+	         U.GESSOUID AS gessouid,
+	         U.STATUS AS status,
+	         T.USER_TYPE AS "userType.userType",
+	         T.DESCRIPTION AS "userType.description",
+	         T.TYPE_ID AS "userType.userTypeId",
+	         U.ROLE_ID AS "role.roleId",
+	         R.ROLE_NAME AS "role.roleName",
+	         U.SSO AS ssoId,
+	         U.ORG_ID AS orgId
+		FROM     SMC.SMC_USER_MASTER U 
+		         INNER JOIN SMC.smc_user_roles R ON U.ROLE_ID=R.ROLE_ID 
+		         INNER JOIN SMC.SMC_USER_TYPES T ON U.TYPE_ID = T.TYPE_ID
+		WHERE    U.STATUS = 'A'
+		AND      R.STATUS = 'A'
+		AND      U.USER_ID = #{userId}
+	</select>
+ 	
+ 	<select id="getVendorUserLocations" resultType="com.penske.apps.adminconsole.model.VendorLocation">
+ 		SELECT 	VENDOR_ID AS vendorId
+ 		FROM 	SMC.SMC_VENDOR_USER_ASSOC
+ 		WHERE 	USER_ID = #{value}
+ 	</select>
+ 	
+ 	<select id="getPenskeUserSupplierRoles" resultType="com.penske.apps.adminconsole.model.Role">
+ 		SELECT 	ROLE_ID AS roleId, 
+ 				ROLE_NAME AS roleName
+ 		FROM 	SMC.smc_user_roles 
+ 		WHERE
+ 				 STATUS = 'A'
+ 		
+ 		CONNECT BY BASE_ROLE_ID = PRIOR ROLE_ID
+ 	</select>
+ 	
+ 	<select id="getVendorUserSpecificRoles" resultType="com.penske.apps.adminconsole.model.Role">
+ 			WITH result (ROLE_ID , ROLE_NAME, BASE_ROLE_ID,STATUS)
+	AS
+	(
+	SELECT role.ROLE_ID AS roleId,
+	role.ROLE_NAME AS roleName,
+	role.BASE_ROLE_ID AS baseRoleId,
+	role.STATUS AS status
+
+	FROM SMC.smc_user_roles role
+	WHERE role.BASE_ROLE_ID = #{roleId}
+	and role.STATUS = 'A'
+	
+	UNION ALL
+	
+	SELECT a.ROLE_ID,a.ROLE_NAME,a.BASE_ROLE_ID,a.STATUS
+	FROM SMC.smc_user_roles a
+	INNER JOIN result s ON a.BASE_ROLE_ID = s.ROLE_ID
+	and a.STATUS = 'A')
+	SELECT r.ROLE_ID as roleId, r.ROLE_NAME as roleName,(select ROLE_NAME from
+	SMC.smc_user_roles where ROLE_ID=r.BASE_ROLE_ID) as
+	baseRoleName,r.status as status FROM result r
+ 	</select>
+ 	
+ 	<select id="getVendorLocationInfo" resultType="com.penske.apps.adminconsole.model.VendorLocation">
+ 		SELECT	CASE WHEN pur.PVSCTY IS NULL or pur.PVSCTY = '' THEN pur.PVOCTY ELSE pur.PVSCTY END as city,
+				CASE WHEN pur.PVSST IS NULL or pur.PVSST = '' THEN pur.PVOST ELSE pur.PVSST END  as state,
+				t.TEMPLATE_ID as templateId,
+				l.MFR as manufacture,
+				t.CORP_CODE as corpCode
+		FROM 	SMC.SMC_VENDOR_TEMPLATE t, 
+				SMC.SMC_VENDOR_MASTER l,
+				CORP.FPURVND pur,
+				CORP.NVOEDIVND edi 
+		WHERE 	pur.PVCORP = edi.EDI_CORP and 
+				pur.PVNBR = edi.EDI_VENDOR and 
+				t.VENDOR_ID = pur.PVNBR and 
+				l.MFR = edi.EDI_MFR and
+				t.CORP_CODE = pur.PVCORP and
+				l.VENDOR_NUMBER = pur.PVNBR and
+				l.VENDOR_ID = #{value}
+ 	</select>
+
+ 	<!-- ********************************dropdowns and accordions********************************************* -->
+ 	
+ 	<select id="getAllVendorNames" resultType="String">
+ 		SELECT 	MFR AS vendorName
+		FROM 	SMC.SMC_VENDOR_MASTER
+		WHERE   MFR is not null
+		GROUP 	BY MFR
+ 	</select>
+ 		<select id="getAllVendorFullNames" resultType="String">
+ 		SELECT 	VENDOR_NAME AS vendorName
+		FROM 	SMC.SMC_VENDOR_MASTER
+		WHERE   VENDOR_NAME is not null
+		GROUP 	BY VENDOR_NAME
+ 	</select>
+ 	<select id="getAllTabNames" resultType="string">
+ 		SELECT 	TABNAME
+		FROM 	SMC.SMC_TAB_MASTER T
+		GROUP 	BY TABNAME
+ 	</select>
+ 	
+ 	<select id="getAllUserDepts" resultType="com.penske.apps.adminconsole.model.UserDept">
+ 		SELECT 	USER_DEPT AS userDept,
+ 				DEPT_ID AS userDeptId 
+		FROM 	SMC.SMC_USER_DEPT
+ 	</select>
+ 	
+ 	<select id="getAllUserRoles" resultType="com.penske.apps.adminconsole.model.Role">
+ 		<!-- SELECT 	ROLE_NAME AS roleName,
+ 				ROLE_ID AS roleId
+ 		FROM 	SMC.smc_user_roles 
+ 		WHERE 	STATUS = 'A' -->
+ 		SELECT ROLE_NAME AS roleName,
+ 				ROLE_ID AS roleId
+	 		FROM 	SMC.smc_user_roles 
+	 		WHERE	STATUS = 'A'
+	 		START 	WITH ROLE_ID = 1
+	 		CONNECT BY BASE_ROLE_ID = PRIOR ROLE_ID
+ 	</select>
+ 	
+ 	<select id="getPenskeRoles" resultType="com.penske.apps.adminconsole.model.Role">
+ 		SELECT 	ROLE_ID AS roleId, 
+ 				ROLE_NAME AS roleName
+ 		FROM 	SMC.smc_user_roles 
+ 		WHERE	STATUS = 'A'
+ 		START 	WITH ROLE_ID = #{value}
+ 		CONNECT BY BASE_ROLE_ID = PRIOR ROLE_ID
+ 	</select>
+ 	
+ 	<select id="getSupplierAdminRole" resultType="com.penske.apps.adminconsole.model.Role">
+ 		SELECT 	ROLE_ID AS roleId, 
+ 				ROLE_NAME AS roleName
+ 		FROM 	SMC.smc_user_roles 
+ 		WHERE 	ROLE_NAME='Vendor Admin'
+ 	</select>
+ 	
+ 	<select id="getSupplierRoles" resultType="com.penske.apps.adminconsole.model.Role">
+ 		WITH result (ROLE_ID , ROLE_NAME, BASE_ROLE_ID,STATUS)
+	AS
+	(
+	SELECT role.ROLE_ID AS roleId,
+	role.ROLE_NAME AS roleName,
+	role.BASE_ROLE_ID AS baseRoleId,
+	role.STATUS AS status
+
+	FROM SMC.smc_user_roles role
+	WHERE role.BASE_ROLE_ID = #{roleId}
+	and role.STATUS = 'A'
+	
+	UNION ALL
+	
+	SELECT a.ROLE_ID,a.ROLE_NAME,a.BASE_ROLE_ID,a.STATUS
+	FROM SMC.smc_user_roles a
+	INNER JOIN result s ON a.BASE_ROLE_ID = s.ROLE_ID
+	and a.STATUS = 'A')
+	SELECT r.ROLE_ID as roleId, r.ROLE_NAME as roleName,(select ROLE_NAME from
+	SMC.smc_user_roles where ROLE_ID=r.BASE_ROLE_ID) as
+	baseRoleName,r.status as status FROM result r
+ 	</select>
+ 	
+ 	<select id="getAllUserTypes" resultType="com.penske.apps.adminconsole.model.UserType">
+ 		SELECT 	DESCRIPTION AS description,
+ 				TYPE_ID AS userTypeId
+ 		FROM 	SMC.SMC_USER_TYPES
+ 	</select>
+ 	
+ 	<select id="getVendorLocations" resultType="com.penske.apps.adminconsole.model.VendorLocation">
+ 		SELECT 	CASE WHEN pur.PVSCTY IS NULL or pur.PVSCTY = '' THEN pur.PVOCTY ELSE pur.PVSCTY END as city,
+				CASE WHEN pur.PVSST IS NULL or pur.PVSST = '' THEN pur.PVOST ELSE pur.PVSST END  as state,
+				l.MFR as manufacturer,
+				l.vendor_number as vendorNumber,
+				l.vendor_id as vendorId,
+				l.corp as corpCode
+				from smc.SMC_VENDOR_MASTER l,
+				CORP.FPURVND pur,corp.NVOEDIVND edi 
+		WHERE 	pur.PVCORP = edi.EDI_CORP and 
+				pur.PVNBR = edi.EDI_VENDOR and 
+				l.vendor_number=pur.PVNBR and 
+				l.MFR = edi.edi_mfr and
+				l.corp=pur.PVCORP and
+				l.vendor_number = pur.PVNBR and
+				l.MFR = #{value}
+ 	</select>
+ 	
+ 	<select id="getPermissions" resultType="com.penske.apps.adminconsole.model.Permission">
+ 		SELECT 	NAME AS name,  
+ 				DESCRIPTION AS description, 
+ 				TABNAME AS tabName			
+ 		FROM 	SMC.SMC_ROLE_SEC_FUNCTIONS F, 
+ 			 	SMC.SMC_SECURITY_FUNCTION S, 
+ 			 	SMC.SMC_TAB_MASTER T 		 	
+ 		WHERE 	F.SEC_FUNC_ID = S.SEC_FUNC_ID 
+ 				AND S.TAB_ID = T.TAB_ID 
+ 				AND ROLE_ID = #{value}
+ 	</select>
+ 	
+ 	<select id="getVendorTemplates" resultType="com.penske.apps.adminconsole.model.TemplatePoCategorySubCategory">
+ 		SELECT 	DISTINCT P.PO_CATEGORY AS "poCategory.categoryName",
+				PO_SUBCATEGORY AS "subCategory.subCategoryName",
+				T.PO_CATEGORY_ID AS "poCategory.categoryId",
+				PO_SUBCATEGORY_ID AS "subCategory.subCategoryId",
+				T.TEMPLATE_ID AS templateId
+ 		FROM 	SMC.SMC_TEMPLATE_COMPONENTS T, 
+ 				SMC.SMC_PO_CATEGORY P,
+ 				SMC.SMC_PO_SUBCATEGORY
+ 		WHERE 	T.TEMPLATE_ID = #{value}
+ 				AND P.PO_CATEGORY_ID = T.PO_CATEGORY_ID
+ 				AND PO_SUBCATEGORY_ID = SUB_CATEGORY_ID  
+ 	</select>
+ 	
+ 	<select id="getTemplateComponent" resultType="com.penske.apps.adminconsole.model.TemplateComponents" parameterType="com.penske.apps.adminconsole.model.TemplatePoCategorySubCategory">
+ 		SELECT  TEMP_COMP_ID AS tempCompId,
+				TEMPLATE_ID AS templateId,
+				DATA_ID AS componentId,
+				VISIBLE AS visible,
+				EDITABLE AS editable,
+				REQUIRED AS required,
+				DATA_TYPE AS dataType
+		FROM 	SMC.SMC_TEMPLATE_COMPONENTS TCOM
+		WHERE	TCOM.PO_CATEGORY_ID = #{poCategory.categoryId} 
+				AND TCOM.SUB_CATEGORY_ID = #{subCategory.subCategoryId} 
+				AND TCOM.TEMPLATE_ID = #{templateId}
+ 	</select>
+ 	
+ 	<select id="getRegularComponentName" resultType="string">
+ 		SELECT 	COMPONENT_NAME 
+ 		FROM 	SMC.SMC_COMPONENT_INFO 
+ 		WHERE 	COMPONENT_ID = #{value}
+ 	</select>
+ 	
+ 	<select id="getVehicleComponentName" resultType="string">
+ 		SELECT 	DESCRIPTION 
+ 		FROM 	SMC.SMC_VEHICLE_INFO 
+ 		WHERE 	VEHICLE_INFO_ID = #{value}
+ 	</select>
+ 	
+ 	<select id="getUserName" resultType="string">
+ 		SELECT 	sso 
+ 		FROM 	SMC.SMC_USER_MASTER 
+ 		WHERE 	UPPER(SSO) = #{userName}
+ 				<if test="userId != 0">
+ 				AND USER_ID != #{userId}
+ 				</if>
+ 			<!--  	AND STATUS = 'A' -->
+ 	</select>
+ 	
+ 	<select id="getVendorUserLocationInfo" resultType="com.penske.apps.adminconsole.model.VendorLocation">
+ 		SELECT 	CASE WHEN vmaster.city IS NULL or vmaster.city  = '' THEN vmaster.city  ELSE vmaster.city  END as city,
+				CASE WHEN vmaster.state  IS NULL or vmaster.state  = '' THEN vmaster.state  ELSE vmaster.state  END  as state,
+			
+				vmaster.MFR as manufacturer,
+				vmaster.vendor_number as vendorNumber,
+				vmaster.corp as corpCode,
+				vtemp.template_id as templateId
+		FROM 
+				smc.SMC_VENDOR_MASTER vmaster
+				left outer join smc.smc_vendor_template vtemp
+			    on vmaster.vendor_id = vtemp.vendor_id 
+			    left outer join smc.smc_template_components tcomp
+			    on tcomp.template_id = vtemp.template_id
+		WHERE 
+				vmaster.vendor_id = #{value}
+ 	</select>
+ 	
+ 	<select id="getRole" resultType="com.penske.apps.adminconsole.model.Role">
+ 		SELECT 	ROLE_NAME AS roleName,
+ 				BASE_ROLE_ID AS baseRoleId
+ 		FROM 	SMC.smc_user_roles
+ 		WHERE 	ROLE_ID = #{value}
+ 				AND STATUS = 'A'
+ 	</select>
+ 	
+ 	<select id="getSignatureImage" resultType="string">
+ 		SELECT 	SIGN_FILE 
+ 		FROM 	SMC.SMC_USER_INITIALS
+ 		WHERE 	USER_ID = #{value}
+ 	</select>
+ 	
+ 	<select id="getInitialsImage" resultType="string">
+ 		SELECT 	INIT_FILE
+ 		FROM 	SMC.SMC_USER_INITIALS
+ 		WHERE 	USER_ID = #{value} 
+ 	</select>
+
+
+	<select id="getSignatureInitialByUserId" resultType="com.penske.apps.adminconsole.model.SignatureInitial">
+ 		SELECT USER_ID as userId,INIT_FILE as initString,
+ 				SIGN_FILE as signString 
+ 	 	FROM SMC.SMC_USER_INITIALS WHERE USER_ID= #{value} 
+ 	</select>
+
+
+	<select id="getEditOrgInfo" resultType="com.penske.apps.adminconsole.model.Org">
+	SELECT Org_id as orgId, name as orgName, parent_org_id as parentOrgId,
+	DESCRIPTION as orgDescription from
+	SMC.SMC_ORG_MASTER
+	WHERE Org_id = #{value}
+	</select>
+
+	<update id="updateOrg">
+		UPDATE SMC.SMC_ORG_MASTER
+		SET NAME = #{orgName},
+		DESCRIPTION = #{orgDescription} ,
+		PARENT_ORG_ID = #{parentOrgId},
+		MODIFIED_BY = #{modifiedBy},
+		MODIFIED_DATE = CURRENT TIMESTAMP
+
+		WHERE ORG_ID = #{orgId}
+	</update>
+ 	<select id="getPenskeUserOrgList" resultType="com.penske.apps.adminconsole.model.Org">
+ 	select orgMaster.ORG_ID as orgId,
+	orgMaster.NAME as orgName,
+	orgMaster1.name as parentOrgName,
+	orgMaster.DESCRIPTION as orgDescription,
+	orgMaster.CREATED_BY as createdBy
+	from SMC.SMC_ORG_MASTER
+	orgMaster
+	Left OUTER Join SMC.SMC_ORG_MASTER orgMaster1
+	on
+	orgMaster.PARENT_ORG_ID = orgMaster1.ORG_ID
+ 	</select>
+ 	<!-- ***********************************editing users********************************** -->
+ 	<update id="modifyUserStatus">
+ 		UPDATE 	SMC.SMC_USER_MASTER
+ 		SET 	STATUS = 'I',
+ 				MODIFIED_BY =#{modifiedBy},
+ 				MODIFIED_DATE = CURRENT TIMESTAMP
+ 		WHERE 	USER_ID = #{userId}
+ 	</update>
+ 	
+ 	<update id="modifyUserInfo" parameterType="com.penske.apps.adminconsole.model.User">
+ 		UPDATE 	SMC.SMC_USER_MASTER
+		SET 	SSO = #{ssoId},
+				GESSOUID  = #{gessouid},
+				EMAIL = #{email},
+				FIRST_NAME = #{firstName},
+				LAST_NAME = #{lastName},
+				PHONE = #{phone},
+				EXTENSION  = #{extension},
+				TYPE_ID = #{userType.userTypeId},
+				ROLE_ID= #{role.roleId},
+				DEPT_ID =#{userDept.userDeptId},
+				ORG_ID =#{orgId},
+				MODIFIED_BY =#{modifiedBy},
+ 				MODIFIED_DATE = CURRENT TIMESTAMP
+				WHERE USER_ID = #{userId}
+ 	</update>
+ 	<update id="refreshUserWithSSOData" parameterType="com.penske.apps.adminconsole.model.User">
+ 		UPDATE 	SMC.SMC_USER_MASTER
+		SET 	
+				EMAIL = #{email},
+				FIRST_NAME = #{firstName},
+				LAST_NAME = #{lastName},
+				PHONE = #{phoneLdap},
+				EXTENSION  = #{extension},
+				GESSOUID  = #{gessouid},
+				MODIFIED_BY =#{modifiedBy},
+ 				MODIFIED_DATE = CURRENT TIMESTAMP
+				WHERE USER_ID = #{userId}
+ 	</update>
+ 	
+ 	
+ 	<insert id="addUser">
+ 		INSERT 	INTO SMC.SMC_USER_MASTER 
+ 				(	SSO,
+ 				GESSOUID, 
+ 				EMAIL,  
+ 				FIRST_NAME,  
+ 				LAST_NAME,  
+ 				PHONE,
+ 				<if test="extension != null"> 
+ 					EXTENSION,  
+ 				</if> 
+ 				STATUS,  
+ 				TYPE_ID,
+ 				ORG_ID,  
+ 				ROLE_ID,dept_id,created_by,created_date) 
+ 		VALUES 	( #{ssoId} ,
+ 					#{gessouid},
+		 		#{email}, 
+		 		#{firstName},  
+		 		#{lastName}, 
+		 		#{phone},
+		 		<if test="extension != null"> 
+		 			#{extension},  
+		 		</if>  
+		 		'A', 
+		 		#{userType.userTypeId},
+		 		#{orgId},
+		 		#{role.roleId},#{userDept.userDeptId},#{createdBy},CURRENT TIMESTAMP)
+ 	</insert>
+ 	
+ 	<insert id="addOrg">
+ 		INSERT 	INTO SMC.SMC_ORG_MASTER 
+ 				(NAME,
+  DESCRIPTION,
+  PARENT_ORG_ID,
+  CREATED_BY,
+  CREATED_DATE) VALUES 	( #{orgName} ,
+ 					#{orgDescription},
+		 		#{parentOrgId}, 
+		 		#{createdBy},CURRENT TIMESTAMP)
+		   <selectKey resultType="int" keyProperty="orgId" order="AFTER" >
+           SELECT IDENTITY_VAL_LOCAL() as identity_val FROM SYSIBM.SYSDUMMY1
+		</selectKey> 
+ 	</insert>
+ 	
+ 	
+ 	<insert id="addUserInitials">
+ 		INSERT 	INTO SMC.SMC_USER_INITIALS 
+ 				(USER_ID,
+ 				INIT_FILE,
+ 				SIGN_FILE,
+ 				CREATED_BY,
+ 				CREATED_DATE) 
+ 		VALUES 	( #{userId} ,
+ 					#{initString},  
+ 					#{signString}, 
+ 					#{createdBy},
+ 					CURRENT TIMESTAMP)
+ 	</insert>
+ 	<select id="getNewUserId" resultType="int">
+ 		SELECT 	MAX(USER_ID)
+		FROM 	SMC.SMC_USER_MASTER
+ 	</select>
+ 	<!-- modified -->
+ 	<insert id="addPenskeUser">
+ 		INSERT 	INTO SMC.SMC_USER_INITIALS
+ 				(USER_ID,
+ 					INIT_FILE ,
+ 					SIGN_FILE
+ 				)
+		VALUES 	(#{userId},
+					#{initString} ,   
+					#{signString})  
+ 	</insert>
+ 	
+ 	<update id="modifyPenskeUser">
+ 		UPDATE 	SMC.SMC_USER_INITIALS
+		SET  	
+		INIT_FILE = #{initString} ,  
+		SIGN_FILE = #{signString},
+		MODIFIED_BY =#{modifiedBy},
+ 				MODIFIED_DATE = CURRENT TIMESTAMP  
+		WHERE 	USER_ID = #{userId}
+ 	</update>
+ 	
+ 	<update id="deleteInitialsImage">
+ 		UPDATE 	SMC.SMC_USER_INITIALS
+		SET  	
+		INIT_FILE = '',  
+		MODIFIED_BY =#{ssoId},
+ 				MODIFIED_DATE = CURRENT TIMESTAMP  
+		WHERE 	USER_ID = #{userId}
+ 	</update>
+ 	<update id="deleteSignatureImage">
+ 		UPDATE 	SMC.SMC_USER_INITIALS
+		SET  	
+		SIGN_FILE = '',
+		MODIFIED_BY =#{ssoId},
+ 				MODIFIED_DATE = CURRENT TIMESTAMP  
+		WHERE 	USER_ID = #{userId}
+ 	</update>
+ 	<delete id="removePenskeUserAssoc">
+ 		DELETE 	FROM SMC.SMC_USER_INITIALS 
+ 		WHERE 	USER_ID = #{value}
+ 	</delete>
+ 	
+ 	
+ 	<delete id="deleteOrg">
+ 		DELETE 	FROM SMC.SMC_ORG_MASTER 
+ 		WHERE ORG_ID IN(
+			SELECT ORG_ID FROM SMC.SMC_ORG_MASTER 
+			START  WITH ORG_ID =#{value}
+		 	CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID ORDER BY ORG_ID
+		)
+ 	</delete>
+ 	<!-- <insert id="addVendorUserAssoc">
+ 		INSERT 	INTO SMC.SMC_VENDOR_USER_ASSOC 
+ 				VALUES(#{param1}, #{param2})
+ 	</insert> -->
+ 	
+ 	<delete  id="removeVendorUserAssoc">
+ 		DELETE 	FROM SMC.SMC_VENDOR_USER_ASSOC
+ 		WHERE 	USER_ID = #{userId}
+ 		AND 	VENDOR_ID = #{vendorId}
+ 	</delete>
+ 	
+ 	
+ 	<!--<select id="selectVendorNumber" resultType="Integer">
+ 		SELECT VENDOR_NUMBER FROM SMC.SMC_VENDOR_MASTER WHERE VENDOR_NAME=#{VENDOR_NAME}
+ 	</select>
+ 	 <select id="getVendorList" resultMap="VendorTreeMap">
+ 		SELECT VENDOR_NAME FROM SMC.SMC_VENDOR_MASTER GROUP BY VENDOR_NAME 
+ 	</select> -->
+ 	<!--  <select id="getVendorList" resultMap="VendorTreeMap">
+ 		SELECT VENDOR_ID,VENDOR_NAME,VENDOR_NUMBER FROM SMC.SMC_VENDOR_MASTER 
+ 		<where>
+		  <if test="corp != ''">
+		  	CORP=#{corp}
+		  </if>
+	  	 <if test="vendor != ''">
+	  	 	AND VENDOR_NAME=#{vendor}
+	  	 </if>
+  	 </where>
+  	  order by  VENDOR_NAME ,VENDOR_NUMBER 
+ 	</select>-->
+ 	
+ 	<select id="getVendorList" resultMap="VendorTreeMap">
+	SELECT m.VENDOR_ID, m.VENDOR_NAME, m.VENDOR_NUMBER FROM
+	SMC.SMC_ORG_VENDOR_ASSOC as asso JOIN
+	SMC.SMC_VENDOR_MASTER m ON asso.VENDOR_ID=m.VENDOR_ID
+	<where>
+		
+		  <if test="corp != ''">
+		  	CORP=#{corp}
+		  </if>
+	  	 <if test="vendor != ''">
+	  	 	AND VENDOR_NAME=#{vendor}
+	  	 </if>
+	  	 <if test="orgId != ''">
+			 AND asso.ORG_ID=#{orgId} 
+			 <!--  ORG_ID IN(
+				 SELECT ORG_ID FROM SMC.SMC_ORG_MASTER
+				 START WITH ORG_ID=#{orgId} CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID ORDER BY ORG_ID
+			) -->
+		</if>
+  	 </where>
+  	GROUP BY m.VENDOR_ID, m.VENDOR_NAME, m.VENDOR_NUMBER
+	order by VENDOR_NAME ,VENDOR_NUMBER 
+ 	</select>
+ 	
+ 	
+ 	<select id="getOrgId" resultType="int">
+ 		SELECT 	MAX(ORG_ID)
+		FROM 	SMC.SMC_ORG_MASTER
+ 	</select>
+ 	<insert id="addOrgVendor">
+ 	Insert into SMC.SMC_ORG_VENDOR_ASSOC (ORG_ID, VENDOR_ID) VALUES(#{orgId} ,
+ 					#{vendorNumber})
+ 	</insert>
+ 	<delete id="deleteVendorAssocaWithChild">
+ 		DELETE FROM SMC.SMC_ORG_VENDOR_ASSOC WHERE ORG_ID IN(
+			SELECT ORG_ID FROM SMC.SMC_ORG_MASTER 
+			START  WITH ORG_ID =#{orgId}
+		 	CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID ORDER BY ORG_ID
+		)
+ 	</delete>
+ 	
+ 	<delete id="deleteVendorAssoc">
+ 		DELETE FROM SMC.SMC_ORG_VENDOR_ASSOC WHERE ORG_ID=#{orgId}
+ 	</delete>
+
+	<select id="getPenskeUserOrgSearch" resultType="com.penske.apps.adminconsole.model.Org">
+ 	select orgMaster.ORG_ID as orgId,
+	orgMaster.NAME as orgName,
+	orgMaster1.name as parentOrgName,
+	orgMaster.DESCRIPTION as orgDescription,
+	orgMaster.CREATED_BY as createdBy
+	from SMC.SMC_ORG_MASTER
+	orgMaster
+	Left OUTER Join SMC.SMC_ORG_MASTER orgMaster1
+	on
+	orgMaster.PARENT_ORG_ID = orgMaster1.ORG_ID
+ 	<where>
+		  <if test="orgName != null">
+		  	orgMaster.NAME=#{orgName}
+		  </if>
+	  	 <if test="parentOrgId != null">
+	  	 	AND orgMaster.ORG_ID=#{parentOrgId}
+	  	 </if>
+  	 </where>
+ 	</select>
+ 	<select id="getOrgVendor"  resultType="int">
+ 		SELECT VENDOR_ID FROM SMC.SMC_ORG_VENDOR_ASSOC WHERE ORG_ID=#{orgId}
+ 	</select>
+ 	
+ 	<select id="getAllTemplates"  resultType="com.penske.apps.adminconsole.model.Template">
+ 		SELECT TEMPLATE_ID as templateID, TEMPLATE_HASH as templateHash, TEMPLATE_NAME as templateName,
+ 		 TEMPLATE_DESC as templateDesc, PO_CATEGORY_ASSOC_ID as poCatAssID  FROM SMC.SMC_TEMPLATE_MASTER 
+ 	</select>
+ 	
+ 	<select id="getAllPoAssociation"  resultType="com.penske.apps.adminconsole.model.TemplatePoAssociation">
+ 		<!--  SELECT asso.PO_CATEGORY_ASSOC_ID as poCatAssocID, asso.PO_CATEGORY_ID as poCatID,asso.PO_SUBCATEGORY_ID as poSubCatID,cat.PO_CATEGORY || '/' || subcat.PO_SUBCATEGORY as poCatSubCatDesc  FROM SMC.SMC_PO_CATEGORY_ASSOC as asso
+		JOIN SMC.SMC_PO_CATEGORY as cat ON asso.PO_CATEGORY_ID=cat.PO_CATEGORY_ID
+		JOIN SMC.SMC_PO_SUBCATEGORY subcat ON asso.PO_SUBCATEGORY_ID=subcat.PO_SUBCATEGORY_ID-->
+		SELECT CATEGORY || '/' || SUBCATEGORY as poCatSubCatDesc, ASSOC_ID as poCatAssocID FROM SMC.V_SMC_PO_CATEGORY_COMBINATIONS
+
+ 	</select>
+ 	<select id="getTemplatesById"  resultType="com.penske.apps.adminconsole.model.Template">
+ 		SELECT TEMPLATE_ID as templateID, TEMPLATE_HASH as templateHash, TEMPLATE_NAME as templateName,
+ 		 TEMPLATE_DESC as templateDesc, PO_CATEGORY_ASSOC_ID as poCatAssID  FROM SMC.SMC_TEMPLATE_MASTER 
+ 		 WHERE  TEMPLATE_ID=#{templateID}
+ 	</select>
+ 	
+ 	<select id="getAllComponent"  resultType="com.penske.apps.adminconsole.model.Components">
+ 		SELECT COMPONENT_ID as componentId, DISPLAY_NAME as componentName FROM  SMC.V_SMC_COMPONENTS
+ 	</select>
+ 	
+ 	<insert id="addTemplate">
+ 		INSERT 	INTO SMC.SMC_TEMPLATE_MASTER  
+ 				(TEMPLATE_HASH,TEMPLATE_DESC,TEMPLATE_NAME,
+ 				CREATED_BY,MODIFIED_BY,PO_CATEGORY_ASSOC_ID) 
+ 		VALUES 	(#{templateHash},#{templateDesc},#{templateDesc}, #{createdBy},#{createdBy},#{poCatAssID})
+ 		 <selectKey resultType="int" keyProperty="templateID" order="AFTER" >
+           SELECT IDENTITY_VAL_LOCAL() as identity_val FROM SYSIBM.SYSDUMMY1
+		</selectKey> 
+ 	</insert>
+ 	
+ 	<insert id="addTemplateComponents">
+ 		INSERT INTO SMC.SMC_TEMPLATE_COMPONENTS
+ 		(TEMPLATE_ID, COMPONENT_ID, COMPONENT_ACCESS, AVAIL_TO_OTHER_PO, EXPORT_TO_EXCEL, 
+ 		GROUP_SEQUENCE, CREATED_BY, CREATED_DATE, MODIFIED_BY, MODIFIED_DATE, DISPLAY_SEQUENCE)
+ 		VALUES 	(#{templateId},#{componentId},#{editRequiredStr},#{dispOtherPOStr},#{excelStr},'0',#{createdBy}
+ 		,CURRENT TIMESTAMP,#{modifiedBy},CURRENT TIMESTAMP,'0')
+ 	</insert>
+ 	
+ 	<delete  id="deleteTemplate">
+ 		DELETE 	FROM SMC.SMC_TEMPLATE_MASTER 
+ 		WHERE 	TEMPLATE_ID = #{templateID}
+ 	</delete>
+ 	
+ 	<delete  id="deleteTemplateComponents">
+ 		DELETE 	FROM SMC.SMC_TEMPLATE_COMPONENTS
+ 		WHERE 	TEMPLATE_ID = #{templateID}
+ 	</delete>
+ 	<select id="getTemplateComponentById" resultType="com.penske.apps.adminconsole.model.Components">
+ 		Select TEMPLATE_ID as templateId, COMPONENT_ID as componentId, COMPONENT_ACCESS as editRequiredStr, AVAIL_TO_OTHER_PO as dispOtherPOStr, EXPORT_TO_EXCEL as excelStr
+ 			FROM SMC.SMC_TEMPLATE_COMPONENTS WHERE TEMPLATE_ID=#{templateID}
+ 	</select>
+
+ 	<update id="updateTemplate">
+ 		UPDATE SMC.SMC_TEMPLATE_MASTER 
+		SET TEMPLATE_HASH=#{templateHash},TEMPLATE_DESC=#{templateDesc},TEMPLATE_NAME=#{templateDesc},
+ 			MODIFIED_BY=#{createdBy},PO_CATEGORY_ASSOC_ID=#{poCatAssID}
+ 		WHERE TEMPLATE_ID = #{templateID}
+ 	</update>
+ 	<select id="findTemplateExist"  resultType="int">
+ 		Select TEMPLATE_ID from SMC.SMC_TEMPLATE_MASTER WHERE TEMPLATE_HASH=#{templateHash} OR PO_CATEGORY_ASSOC_ID=#{poCatAssID}
+ 	</select>
+ 	
+ 	<insert id="addBuddies">
+ 		INSERT 	INTO SMC.SMC_BUDDIES 
+ 				(SSO,
+ 				BUDDY_SSO, 
+ 				USER_DEPT,  
+ 				CREATED_BY,  
+ 				CREATED_DATE,
+ 				SELECTION_TYPE) 
+ 		VALUES 	( #{ssoId} ,
+ 					#{ssoId},#{userDept.userDept},#{createdBy},CURRENT TIMESTAMP,'')
+ 	</insert>
+ 	
+ 	<select id="getUserDeptsById" resultType="com.penske.apps.adminconsole.model.UserDept">
+ 		SELECT 	USER_DEPT AS userDept,
+ 				DEPT_ID AS userDeptId 
+		FROM 	SMC.SMC_USER_DEPT where DEPT_ID=#{deptId}
+ 	</select>
+ 	
+ 	<update id="updateBuddies">
+ 		UPDATE SMC.SMC_BUDDIES
+		SET USER_DEPT=#{userDept.userDept},SELECTION_TYPE=''
+ 		WHERE SSO = #{ssoId}
+ 	</update>
+ 	
+ 	<select id="getUsersByOrgId" resultType="int">
+ 		<!--  SELECT COUNT(1) as cnt FROM 
+			SMC.SMC_USER_MASTER userMst 
+			JOIN 
+		SMC.SMC_ORG_MASTER org ON userMst.ORG_ID=org.ORG_ID
+			WHERE userMst.STATUS='A'
+			START  WITH org.ORG_ID = #{orgId}
+ 			CONNECT BY org.PARENT_ORG_ID = PRIOR org.ORG_ID -->
+ 			
+ 			SELECT COUNT(1) as cnt FROM 
+			SMC.SMC_USER_MASTER WHERE STATUS='A' AND ORG_ID IN
+			(
+				SELECT ORG_ID FROM SMC.SMC_ORG_MASTER 
+				START  WITH ORG_ID =#{orgId}
+		 		CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID ORDER BY ORG_ID
+		 	)
+ 	</select>
+ 	<select id="getOrgChild" resultType="com.penske.apps.adminconsole.model.Org">
+		SELECT ORG_ID as orgId, NAME as orgName, PARENT_ORG_ID as parentOrgId FROM SMC.SMC_ORG_MASTER 
+		START  WITH PARENT_ORG_ID =#{orgId}
+	 	CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID ORDER BY ORG_ID
+ 	</select>
+ 	
+ 	
+ 	
+ 	<delete id="removeAllRoleFunctionByOrgId">
+		DELETE FROM	SMC.SMC_ROLE_SEC_FUNCTIONS
+		WHERE ROLE_ID IN 
+		(
+			SELECT   ROLE_ID AS roleId
+			FROM     SMC.SMC_USER_ROLES
+			WHERE    STATUS = 'A'
+			AND      OEM IN 
+			(
+					SELECT   ORG_ID
+					FROM     SMC.SMC_ORG_MASTER START WITH ORG_ID =#{orgId}
+				    CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID
+					ORDER BY ORG_ID
+			) CONNECT BY BASE_ROLE_ID = PRIOR ROLE_ID
+			GROUP BY ROLE_ID ORDER BY ROLE_ID
+		)
+	</delete>
+	
+	<update id="modifyRoleStatusByOrgId">
+		UPDATE	SMC.smc_user_roles
+		SET		STATUS = 'I',
+				MODIFIED_BY =#{modifiedBy},
+ 				MODIFIED_DATE = CURRENT TIMESTAMP
+		WHERE ROLE_ID IN
+		(
+			SELECT   ROLE_ID AS roleId
+				FROM     SMC.SMC_USER_ROLES
+				WHERE    STATUS = 'A'
+				AND      OEM IN 
+				(
+						SELECT   ORG_ID
+						FROM     SMC.SMC_ORG_MASTER START WITH ORG_ID =#{orgId}
+					    CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID
+						ORDER BY ORG_ID
+				) 
+			CONNECT BY BASE_ROLE_ID = PRIOR ROLE_ID
+			GROUP BY ROLE_ID ORDER BY ROLE_ID
+		)	
+	</update>
+	
+	<!--  Vendor  User Change  - 03/02/16-->
+	
+	<select id="getVendorUserList" resultType="com.penske.apps.adminconsole.model.User">
+ 		SELECT 	USER_ID AS userId,
+ 				SSO AS userName,
+				EMAIL AS email,
+				FIRST_NAME AS firstName,
+				LAST_NAME AS lastName,
+				PHONE AS phone,
+				EXTENSION AS extension,
+				SSO as ssoId,
+				U.STATUS AS status,
+				T.USER_TYPE AS "userType.userType",
+				U.ROLE_ID AS "role.roleId",
+				ROLE_NAME AS "role.roleName"
+		FROM	SMC.SMC_USER_MASTER U, 
+				SMC.smc_user_roles R, 
+				SMC.SMC_USER_TYPES T
+		WHERE 	U.ROLE_ID = R.ROLE_ID AND 
+				U.TYPE_ID = T.TYPE_ID AND
+				T.USER_TYPE ='VENDOR' AND
+				U.STATUS = 'A' AND
+				R.STATUS = 'A'
+ 	</select>
+ 	
+ 	<select id="getVendorRoles" resultType="com.penske.apps.adminconsole.model.Role">
+ 		SELECT 	ROLE_NAME AS roleName,
+ 				ROLE_ID AS roleId
+ 		FROM 	SMC.smc_user_roles 
+ 		WHERE 	STATUS = 'A'
+ 		AND ROLE_ID NOT IN(
+ 			SELECT 	ROLE_ID 
+	 		FROM 	SMC.smc_user_roles 
+	 		WHERE	STATUS = 'A'
+	 		START 	WITH ROLE_ID = 1
+	 		<!-- 
+	 		(
+	 		  SELECT ROLE_ID FROM SMC.smc_user_roles WHERE ROLE_NAME='Penske Admin (SU)'
+	 		) -->
+	 		CONNECT BY BASE_ROLE_ID = PRIOR ROLE_ID
+ 		)
+ 		<if test="isVendor==true">
+ 		START 	WITH ROLE_ID = #{roleId}
+	 	CONNECT BY BASE_ROLE_ID = PRIOR ROLE_ID
+	 	</if>
+ 	</select>
+ 	<select id="getVendorUserTypes" resultType="com.penske.apps.adminconsole.model.UserType">
+ 		SELECT 	DESCRIPTION AS description,
+ 				TYPE_ID AS userTypeId
+ 		FROM 	SMC.SMC_USER_TYPES
+ 		WHERE USER_TYPE='VENDOR'
+ 	</select>
+ 	
+ 	<select id="getVendorOrg"  resultType="com.penske.apps.adminconsole.model.Org">
+ 		SELECT   ORG_ID as orgId,
+         NAME as orgName,
+         PARENT_ORG_ID as parentOrgId
+		FROM     SMC.SMC_ORG_MASTER
+		WHERE    ORG_ID NOT IN
+		( 
+		SELECT ORG_ID FROM SMC.SMC_ORG_MASTER
+		    START WITH ORG_ID=1 CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID ORDER BY ORG_ID 
+		)
+		<if test="isVendor==true">
+	 		START 	WITH ORG_ID = #{orgId}
+		 	CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID
+		 </if>
+ 	</select>
+ 	
+ 	
+ 	<select id="getOrgList" resultType="com.penske.apps.adminconsole.model.Org">
+		WITH result (Org_id , name, parent_org_id,description)
+		AS
+		(
+		SELECT Org_id , name, parent_org_id,description from
+		SMC.SMC_ORG_MASTER
+		WHERE Org_id = #{orgId}
+		UNION ALL
+		SELECT a.Org_id,a.name,a.parent_org_id,a.description
+		FROM SMC.SMC_ORG_MASTER a 
+		INNER JOIN result s ON a.parent_org_id = s.Org_id)
+		SELECT r.Org_id as orgId, r.name as orgName, r.description as orgDescription,(select name from
+		SMC.SMC_ORG_MASTER where org_id=r.parent_org_id) as parentorgname,r.parent_org_id as parentOrgId FROM
+		result r
+			<where>
+		  <if test="orgName != null">
+		  	r.name=#{orgName}
+		  </if>
+	  	 <if test="parentOrgId != null">
+	  	 	AND r.parent_org_id=#{parentOrgId}
+	  	 </if>
+  	 </where>
+	</select>
+	
+	
+	
+ 	<select id="getAllVendorOrg"  resultType="com.penske.apps.adminconsole.model.Org">
+ 		SELECT   ORG_ID as orgId,
+         NAME as orgName,
+         DESCRIPTION as orgDescription,
+         PARENT_ORG_ID as parentOrgId,
+        (select name from
+		SMC.SMC_ORG_MASTER WHERE ORG_ID=orgMaster.PARENT_ORG_ID) as parentOrgName
+		FROM     SMC.SMC_ORG_MASTER as orgMaster
+		WHERE    ORG_ID NOT IN
+		( 
+		SELECT ORG_ID FROM SMC.SMC_ORG_MASTER
+		    START WITH ORG_ID=1 CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID ORDER BY ORG_ID 
+		)
+		<if test="orgName != null">
+		  	AND NAME=#{orgName}
+		  </if>
+	  	 <if test="parentOrgId != null">
+	  	 	AND PARENT_ORG_ID=#{parentOrgId}
+	  	 </if>
+ 		START 	WITH ORG_ID IN(
+	   			SELECT ORG_ID FROM SMC.SMC_ORG_MASTER WHERE PARENT_ORG_ID IS NULL AND ORG_ID !=1
+ 		)
+	 	CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID
+ 	</select>
+	
+	<insert id="addEmailSent">
+		Insert into SMC.SMC_EMAIL (USER_SSO, TO_ADDRESS,EMAIL_BODY, EMAIL_SUBJECT, CREATED_DATE,
+		CREATED_BY, IS_PROCESSED) VALUES(#{userId},
+		#{toList}, #{messageContent}, #{subject}, CURRENT TIMESTAMP,#{userId}, 'N')
+		  <selectKey resultType="int" keyProperty="emailAuditId" order="AFTER" >
+          	 SELECT IDENTITY_VAL_LOCAL() as identity_val FROM SYSIBM.SYSDUMMY1
+		</selectKey> 
+	</insert>
+	
+	<insert id="updateEmailSent">
+		Update SMC.SMC_EMAIL Set IS_PROCESSED='Y', PROCESSED_DATE=CURRENT TIMESTAMP
+		 where EMAIL_AUDIT_ID=#{emailAuditId}
+	</insert>
+	<delete id="deleteUserFromBuddy">
+		DELETE FROM SMC.SMC_BUDDIES WHERE BUDDY_SSO=#{userSSO}
+		AND SSO !=#{userSSO}
+	</delete>
+	
+	<select id="getMyOrgAndChild" resultType="com.penske.apps.adminconsole.model.Org">
+		SELECT ORG_ID as orgId, NAME as orgName, PARENT_ORG_ID as parentOrgId FROM SMC.SMC_ORG_MASTER 
+		START  WITH ORG_ID =#{orgId}
+	 	CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID ORDER BY ORG_ID
+ 	</select>
+ </mapper>

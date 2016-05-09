@@ -1,0 +1,488 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.2//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.penske.apps.adminconsole.dao.ComponentVendorTemplateDao">
+
+
+
+<select id="getVendorTemplates" resultType="com.penske.apps.adminconsole.model.VendorTemplate">
+		select 
+	
+		t.template_id as templateId,
+		vmaster.MFR as manufacture,
+		vmaster.vendor_id as vendorNumber,
+		vmaster.corp as corpCode
+	from smc.smc_vendor_template t,
+		smc.smc_vendor_master vmaster
+	where 
+		t.vendor_id= vmaster.vendor_id 
+</select>	
+<select id="getVendorCategories" resultType="com.penske.apps.adminconsole.model.VendorTemplate">
+	select 
+		CASE WHEN pur.PVSCTY IS NULL or pur.PVSCTY = '' THEN pur.PVOCTY ELSE pur.PVSCTY END as city,
+		CASE WHEN pur.PVSST IS NULL or pur.PVSST = '' THEN pur.PVOST ELSE pur.PVSST END  as state,
+		t.template_id as templateId,
+		edi.EDI_MFR as manufacture,
+		t.vendor_id as vendorNumber,
+		t.corp_code as corpCode
+	from smc.smc_vendor_template t,
+		CORP.FPURVND pur,corp.NVOEDIVND edi
+	where 
+		pur.PVCORP = edi.EDI_CORP and 
+		pur.PVNBR = edi.EDI_VENDOR and 
+		t.vendor_id=pur.PVNBR and 
+		t.corp_code=pur.PVCORP and
+		t.vendor_id=#{vendorNumber} and
+		t.corp_code=#{corpCode}
+</select>
+	
+<select id="getVendorTemplate" resultType="com.penske.apps.adminconsole.model.VendorTemplate">
+	select 
+		CASE WHEN pur.PVSCTY IS NULL or pur.PVSCTY = '' THEN pur.PVOCTY ELSE pur.PVSCTY END as city,
+		CASE WHEN pur.PVSST IS NULL or pur.PVSST = '' THEN pur.PVOST ELSE pur.PVSST END  as state,
+		t.template_id as templateId,
+		edi.EDI_MFR as manufacture,
+		t.vendor_id as vendorNumber,
+		t.corp_code as corpCode
+	from smc.smc_vendor_template t,
+		CORP.FPURVND pur,corp.NVOEDIVND edi
+	where 
+		pur.PVCORP = edi.EDI_CORP and 
+		pur.PVNBR = edi.EDI_VENDOR and 
+		t.vendor_id=pur.PVNBR and 
+		t.corp_code=pur.PVCORP
+		and t.TEMPLATE_ID =#{templateId}
+
+</select>
+
+	
+	<select id="getTemplateComponents" resultType="com.penske.apps.adminconsole.model.TemplateComponents">
+	select  
+			temp_comp_id as tempCompId,
+			template_id as templateId,
+			component_id as componentId,
+			visible as visible,
+			coponent_accesss as editable,
+			component_type as dataType
+	from 	
+			SMC.SMC_TEMPLATE_COMPONENTS TCOM
+	where	tcom.PO_CATEGORY_ID=#{poCategoryId} and tcom.SUB_CATEGORY_ID=#{subCategoryId} and tcom.template_id=#{templateId}
+	
+	</select> 
+	
+	 <select id="getTemplatePoCategorySubCategory"  resultType="com.penske.apps.adminconsole.model.TemplatePoCategorySubCategory">
+	SELECT distinct
+		CAT.PO_CATEGORY_ID as "poCategory.categoryId", 
+		CAT.PO_CATEGORY as "poCategory.categoryName", 
+		TMCL.TEMPLATE_ID as templateId,
+		SUBC.PO_SUBCATEGORY as "subCategory.subCategoryName",
+		SUBC.PO_SUBCATEGORY_ID as "subCategory.subCategoryId"
+	FROM SMC.SMC_TEMPLATE_COMPONENTS TMCL 
+	LEFT JOIN 	
+		SMC.SMC_PO_CATEGORY_ASSOC CATASSOC
+		ON TMCL.PO_CATEGORY_ASSOC_ID = CATASSOC.PO_CATEGORY_ASSOC_ID
+	LEFT JOIN SMC.SMC_PO_CATEGORY CAT
+		ON CATASSOC.PO_CATEGORY_ID = CAT.PO_CATEGORY_ID
+	LEFT JOIN SMC.SMC_PO_SUBCATEGORY SUBC
+		ON CATASSOC.PO_SUBCATEGORY_ID = SUBC.PO_SUBCATEGORY_ID
+	WHERE 
+		TMCL.TEMPLATE_ID IS NOT NULL
+	</select>	 
+	<select id="getSearchTemplatePoCategorySubCategory"  resultType="com.penske.apps.adminconsole.model.TemplatePoCategorySubCategory">
+	
+	SELECT distinct
+		POC.PO_CATEGORY_ID as "poCategory.categoryId", 
+		POC.PO_CATEGORY as "poCategory.categoryName", 
+		TMCL.TEMPLATE_ID as templateId,
+		SUBC.PO_SUBCATEGORY as "subCategory.subCategoryName",
+		SUBC.PO_SUBCATEGORY_ID as "subCategory.subCategoryId"
+	FROM SMC.SMC_PO_CATEGORY POC 
+	LEFT JOIN 	
+		SMC.SMC_TEMPLATE_COMPONENTS TMCL
+		ON POC.PO_CATEGORY_ID = TMCL.PO_CATEGORY_ID
+	LEFT JOIN SMC.SMC_PO_SUBCATEGORY SUBC
+		ON SUBC.PO_SUBCATEGORY_ID = TMCL.SUB_CATEGORY_ID
+	WHERE 
+		TMCL.TEMPLATE_ID IS NOT NULL 
+		<if test="poCategoryId !=0">
+			AND	TMCL.PO_CATEGORY_ID =#{poCategoryId}
+		</if>
+		<if test="subCategoryId !=0">
+			AND	TMCL.SUB_CATEGORY_ID =#{subCategoryId}
+		</if>
+	
+	</select>	 
+	<!-- toPopulate Search dropdown -->
+	 <select id="getTemplatePoCategory"  resultType="com.penske.apps.adminconsole.model.PoCategory">
+
+	SELECT distinct
+	POC.PO_CATEGORY_ID as categoryId,
+	POC.PO_CATEGORY as categoryName
+	FROM SMC.SMC_PO_CATEGORY POC
+
+	LEFT JOIN
+	SMC.SMC_PO_CATEGORY_ASSOC CATASSOC
+	ON POC.PO_CATEGORY_ID = CATASSOC.PO_CATEGORY_ID
+	LEFT JOIN
+	SMC.SMC_TEMPLATE_COMPONENTS TC
+	ON CATASSOC.PO_CATEGORY_ASSOC_ID = TC.PO_CATEGORY_ASSOC_ID
+	WHERE
+	TC.TEMPLATE_ID IS NOT NULL
+	
+	</select>	 
+	
+	
+
+
+<select id="getManufacture" resultType="com.penske.apps.adminconsole.model.Manufacture">
+
+SELECT DISTINCT LOC.MFR as manufacture
+from 
+	smc.SMC_VENDOR_MASTER LOC
+WHERE 
+	LOC.VENDOR_NUMBER NOT IN (select tMPL.VENDOR_ID FROM smc.smc_vendor_template tMPL)
+	and LOC.MFR IS NOT NULL
+</select>
+
+<select id ="getCorpCodes" resultType="com.penske.apps.adminconsole.model.CorpCode">
+
+	SELECT DISTINCT
+	LOC.CORP as corpCode,
+	LOC.MFR as manufacture
+from 
+	smc.SMC_VENDOR_MASTER LOC WHERE 	
+	LOC.VENDOR_NUMBER NOT IN (SELECT tMPL.VENDOR_ID FROM smc.smc_vendor_template tMPL) 
+	AND LOC.MFR=#{MFR}
+</select>
+
+
+
+<select id="getVendorLocation" resultType="com.penske.apps.adminconsole.model.VendorLocation">
+	
+	Select 
+	smcv.MFR as manufacturer ,
+	 smcv.CORP as corpCode, 
+	 smcv.VENDOR_NUMBER as vendorNumber , 
+	smcv.city as city,
+		smcv.state as state
+from 
+
+	smc.SMC_VENDOR_MASTER smcv 
+where 
+
+	smcv.CORP=#{corpCode} and 
+	smcv.MFR= #{manufacture} and 
+	smcv.VENDOR_ID not in (SELECT tMPL.VENDOR_ID FROM smc.smc_vendor_template tMPL)
+
+</select>
+
+<select id="getSelectedVendorTemplate" resultType="com.penske.apps.adminconsole.model.VendorTemplate">
+	select 
+		CASE WHEN pur.PVSCTY IS NULL or pur.PVSCTY = '' THEN pur.PVOCTY ELSE pur.PVSCTY END as city,
+		CASE WHEN pur.PVSST IS NULL or pur.PVSST = '' THEN pur.PVOST ELSE pur.PVSST END  as state,
+		t.template_id as templateId,
+		edi.EDI_MFR as manufacture,
+		t.vendor_id as vendorNumber,
+		t.corp_code as corpCode
+	from smc.smc_vendor_template t,
+		CORP.FPURVND pur,corp.NVOEDIVND edi
+	where 
+		pur.PVCORP = edi.EDI_CORP and 
+		pur.PVNBR = edi.EDI_VENDOR and 
+		t.vendor_id=pur.PVNBR and 
+		t.corp_code=pur.PVCORP and
+		edi.EDI_MFR =#{MFR}
+
+
+</select>
+
+<select id="getVendorTemplateSelectedCorpCode" resultType="com.penske.apps.adminconsole.model.VendorTemplate">
+	
+	select 
+			CASE WHEN pur.PVSCTY IS NULL or pur.PVSCTY = '' THEN pur.PVOCTY ELSE pur.PVSCTY END as city,
+			CASE WHEN pur.PVSST IS NULL or pur.PVSST = '' THEN pur.PVOST ELSE pur.PVSST END  as state,
+			t.template_id as templateId,
+			edi.EDI_MFR as manufacture,
+			t.vendor_id as vendorNumber,
+			t.corp_code as corpCode
+		from smc.smc_vendor_template t,
+			CORP.FPURVND pur,corp.NVOEDIVND edi
+		where 
+			pur.PVCORP = edi.EDI_CORP and 
+			pur.PVNBR = edi.EDI_VENDOR and 
+			t.vendor_id=pur.PVNBR and 
+			t.corp_code=pur.PVCORP and
+			edi.EDI_MFR =#{MFR} and 	
+			t.corp_code=#{corpCode}
+			
+</select>
+
+<!-- <select id="getDeleteModalContent"  resultType="TemplatePoCategorySubCategory">
+
+	SELECT  distinct
+		POC.PO_CATEGORY_ID as "poCategory.categoryId", 
+		POC.PO_CATEGORY as "poCategory.categoryName", 
+		SUBC.PO_SUBCATEGORY as "subCategory.subCategoryName",
+		SUBC.PO_SUBCATEGORY_ID as "subCategory.subCategoryId" 
+	FROM SMC.SMC_PO_CATEGORY POC 
+	LEFT JOIN 	
+		SMC.SMC_TEMPLATE_COMPONENTS TMCL
+	ON POC.PO_CATEGORY_ID = TMCL.PO_CATEGORY_ID
+	LEFT JOIN SMC.SMC_PO_SUBCATEGORY SUBC
+	ON SUBC.PO_SUBCATEGORY_ID = TMCL.SUB_CATEGORY_ID
+	WHERE
+			TMCL.PO_CATEGORY_ID=#{poCategoryId} and
+			TMCL.SUB_CATEGORY_ID=#{subCategoryId}
+			
+</select>
+ -->
+<select id="getDeleteInEditModalContent"  resultType="com.penske.apps.adminconsole.model.TemplatePoCategorySubCategory">
+
+	SELECT  distinct
+		POC.PO_CATEGORY_ID as "poCategory.categoryId", 
+		POC.PO_CATEGORY as "poCategory.categoryName", 
+		SUBC.PO_SUBCATEGORY as "subCategory.subCategoryName",
+		SUBC.PO_SUBCATEGORY_ID as "subCategory.subCategoryId",
+		TMCL.template_id as templateId 
+	FROM SMC.SMC_PO_CATEGORY POC 
+	LEFT JOIN 	
+		SMC.SMC_TEMPLATE_COMPONENTS TMCL
+	ON POC.PO_CATEGORY_ID = TMCL.PO_CATEGORY_ID
+	LEFT JOIN SMC.SMC_PO_SUBCATEGORY SUBC
+	ON SUBC.PO_SUBCATEGORY_ID = TMCL.SUB_CATEGORY_ID
+	WHERE
+			TMCL.PO_CATEGORY_ID=#{poCategoryId} and
+			TMCL.SUB_CATEGORY_ID=#{subCategoryId} and
+			TMCL.template_id =#{templateId}
+</select>
+
+
+<select id="getPoCategories"  resultType="com.penske.apps.adminconsole.model.PoCategory">
+
+SELECT 
+	PO_CATEGORY as categoryName,
+	PO_CATEGORY_ID as categoryId,
+	DESCRIPTION as description,
+	STATUS as status
+FROM 
+	SMC.SMC_PO_CATEGORY
+
+
+</select>
+
+
+<select id="getSubCategories" resultType="com.penske.apps.adminconsole.model.SubCategory">
+SELECT 
+		SUBC.PO_SUBCATEGORY as subCategoryName,
+		SUBC.PO_SUBCATEGORY_ID as subCategoryId
+FROM
+		SMC.SMC_PO_SUBCATEGORY SUBC
+WHERE
+		SUBC.PO_SUBCATEGORY_ID  in(SELECT asoc.PO_SUBCATEGORY_ID from SMC.SMC_PO_CATEGORY_ASSOC asoc where asoc.PO_CATEGORY_ID =#{poCategoryId})
+
+</select>
+ <select id="getPoCategorySubCategory"  resultType="com.penske.apps.adminconsole.model.TemplatePoCategorySubCategory">
+	
+	SELECT distinct
+		POC.PO_CATEGORY_ID as "poCategory.categoryId", 
+		POC.PO_CATEGORY as "poCategory.categoryName", 
+		SUBC.PO_SUBCATEGORY as "subCategory.subCategoryName",
+		SUBC.PO_SUBCATEGORY_ID as "subCategory.subCategoryId"
+	FROM SMC.SMC_PO_CATEGORY POC 
+	LEFT JOIN 	
+		SMC.SMC_PO_CATEGORY_ASSOC asoc
+		ON POC.PO_CATEGORY_ID = asoc.PO_CATEGORY_ID
+	LEFT JOIN SMC.SMC_PO_SUBCATEGORY SUBC
+		ON SUBC.PO_SUBCATEGORY_ID = asoc.PO_SUBCATEGORY_ID
+	WHERE 
+		asoc.PO_CATEGORY_ID =#{poCategoryId} AND asoc.PO_SUBCATEGORY_ID =#{subCategoryId}
+	</select>	 
+
+<select id="getCategoryComponents" resultType="com.penske.apps.adminconsole.model.TemplateComponents">
+SELECT 
+	'smc_component_info' as dataType,
+	catmap.component_group ||catmap.sub_group || catmap.sub_component_name as componentName,
+	catmap.COMPONENT_ID as componentId
+	
+FROM 
+	SMC.SMC_PO_CATEGORY_ASSOC catassoc
+	inner join smc.smc_comp_category_map catmap 
+	on catassoc.PO_CATEGORY_ASSOC_ID = catmap.PO_CATEGORY_ASSOC_ID
+WHERE 
+	catassoc.PO_CATEGORY_ID =#{poCategoryId}  AND 
+	catassoc.PO_SUBCATEGORY_ID =#{subCategoryId}  
+	
+union
+
+SELECT 
+	'smc_component_info' as dataType,
+	catmap.component_group ||catmap.sub_group || catmap.sub_component_name as componentName,
+	catmap.COMPONENT_ID as componentId
+	
+FROM 
+	SMC.SMC_PO_CATEGORY_ASSOC catassoc
+	inner join smc.smc_template_components catmap 
+	on catassoc.PO_CATEGORY_ASSOC_ID = catmap.PO_CATEGORY_ASSOC_ID
+WHERE 
+	catassoc.PO_CATEGORY_ID =#{poCategoryId}  AND 
+	catassoc.PO_SUBCATEGORY_ID =#{subCategoryId}  
+	
+
+</select>
+
+<delete id="deleteCategory">
+	DELETE
+	 FROM 
+	 	SMC.SMC_TEMPLATE_COMPONENTS 
+	 WHERE  TEMPLATE_ID=#{templateId} AND 
+	 		PO_CATEGORY_ID=#{poCategoryId} AND 
+	 		SUB_CATEGORY_ID =#{subCategoryId}
+
+</delete>
+
+
+
+<insert id="addTemplate">
+INSERT into 
+	smc.smc_vendor_template(vendor_ID,created_by,created_date) values(#{vendorNumber},#{createdBy},CURRENT TIMESTAMP)
+
+
+</insert>
+
+<select id="getTemplateId" resultType="com.penske.apps.adminconsole.model.VendorTemplate">
+SELECT 
+	TEMPLATE_ID as templateId,
+	VENDOR_ID as vendorNumber
+FROM 
+	smc.smc_vendor_template 
+WHERE 
+	VENDOR_ID =#{vendorNumber} 
+
+
+</select>
+
+<insert id="addTemplateComponents">
+
+INSERT into 
+	SMC.SMC_TEMPLATE_COMPONENTS(TEMPLATE_ID,  DATA_ID, VISIBLE, EDITABLE, REQUIRED, PO_CATEGORY_ID, SUB_CATEGORY_ID,DATA_TYPE)
+	values(#{templateComponents.templateId},#{templateComponents.componentId},#{templateComponents.visible},#{templateComponents.editable},#{templateComponents.required},#{poCategoryId},#{subCategoryId},#{templateComponents.dataType})
+
+</insert>
+
+
+<update id="updateTemplateComponents">
+
+UPDATE
+	 smc.smc_template_components 
+SET 
+	VISIBLE=#{visible}, 
+	EDITABLE=#{editable}, 
+	REQUIRED=#{required} 
+WHERE 
+	TEMP_COMP_ID =#{tempCompId}
+
+
+</update>
+
+
+
+<select id="getAllTemplateManufactures" resultType="java.lang.String">
+		
+	SELECT DISTINCT 
+		vmaster.MFR  from smc.smc_vendor_template tmpl,
+	smc.smc_vendor_master vmaster
+
+where  	tmpl.vendor_id= vmaster.vendor_id 
+
+
+
+</select>
+
+<select id="getComponentName" resultType="com.penske.apps.adminconsole.model.TemplateComponents">
+SELECT
+	component_name as componentName,
+	COMPONENT_ID as componentId
+FROM
+	smc.smc_component_info
+WHERE
+	COMPONENT_ID=#{componentId}
+
+</select>
+
+
+
+<select id="getVehicleComponentName" resultType="com.penske.apps.adminconsole.model.TemplateComponents">
+SELECT
+	 DESCRIPTION as componentName,
+	 VEHICLE_INFO_ID as componentId
+FROM
+	smc.smc_vehicle_info
+WHERE
+	 VEHICLE_INFO_ID=#{componentId}
+
+
+</select>
+
+
+<delete id="deleteTemplateComponents">
+DELETE
+FROM
+	SMC.SMC_TEMPLATE_COMPONENTS
+WHERE
+	 TEMPLATE_ID =#{templateId}
+</delete>
+
+<delete id="deleteTemplate">
+DELETE
+FROM
+	SMC.SMC_VENDOR_TEMPLATE
+WHERE
+	TEMPLATE_ID=#{templateId}
+</delete>
+
+<select id="selectVenderBySearchCriteria" resultType="com.penske.apps.adminconsole.model.VendorTemplate">
+select 
+		CASE WHEN pur.PVSCTY IS NULL or pur.PVSCTY = '' THEN pur.PVOCTY ELSE pur.PVSCTY END as city,
+		CASE WHEN pur.PVSST IS NULL or pur.PVSST = '' THEN pur.PVOST ELSE pur.PVSST END  as state,
+		t.template_id as templateId,
+		edi.EDI_MFR as manufacture,
+		t.vendor_id as vendorNumber,
+		t.corp_code as corpCode
+	from smc.smc_vendor_template t,
+		CORP.FPURVND pur,corp.NVOEDIVND edi
+	where 
+		pur.PVCORP = edi.EDI_CORP and 
+		pur.PVNBR = edi.EDI_VENDOR and 
+		t.vendor_id=pur.PVNBR and 
+		t.corp_code=pur.PVCORP 
+		<if test="manufacture !='select'">
+			AND	 edi.EDI_MFR = #{manufacture}
+		</if>
+		<if test="vendorNumber != 0">
+			AND	 t.vendor_id = #{vendorNumber}
+		</if>
+		
+
+</select>
+
+<select id="getTemplateComponentCount" resultType="Integer">
+SELECT 
+	count(*) 
+FROM 
+	SMC.SMC_TEMPLATE_COMPONENTS 
+WHERE
+ TEMPLATE_ID = #{templateId}
+</select>
+
+<select id="getVendorNumberByMfr" resultType="Integer">
+select 
+		t.vendor_id
+	from smc.smc_vendor_template t,
+		CORP.FPURVND pur,corp.NVOEDIVND edi
+	where 
+		pur.PVCORP = edi.EDI_CORP and 
+		pur.PVNBR = edi.EDI_VENDOR and 
+		t.vendor_id=pur.PVNBR and 
+		edi.EDI_MFR =#{MFR}
+
+</select>
+</mapper>
