@@ -517,11 +517,5 @@ function changeCurrentTab(value){
 	if(value=="massUpload"){
 		selectCurrentNavigation("massUploadSubTab",'');
 	}
-	if(value=="edi870"){
-		selectCurrentNavigation("edi870Error",'');
-	}
-	if(value=="dataconflict"){
-		selectCurrentNavigation("dataConflict",'');
-	}
 	
 }

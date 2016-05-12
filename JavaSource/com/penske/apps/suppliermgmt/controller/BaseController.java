@@ -64,7 +64,6 @@ public class BaseController {
 			mv.addObject("supportNum",lookUp.getLookUpValue());
 		}
 		mv.addObject(model);
-		mv.addObject("isNavigationExists",true);
 		return mv;
 	}
 	
@@ -116,7 +115,6 @@ public class BaseController {
 		ModelAndView mv = new ModelAndView("error/GlobalErrorPage");
 		mv.addObject("supportNum",lookUp.getLookUpValue());
 		mv.addObject(model);
-		mv.addObject("isNavigationExists",true);
 		return mv;
 
 	}
