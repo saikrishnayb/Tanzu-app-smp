@@ -31,7 +31,7 @@
 		<li><a href="#" id="production" onmousedown="redirectToTab('production')">Production</a>
 						<ul>
 						     <li><a id="productionStatus"  onmousedown="redirectToTab('productionStatus')">Production Status</a></li>
-						     <li><a href="#" id="communicationsProd">Data Transmission</a></li>
+						    <!--  <li><a href="#" id="communicationsProd">Data Transmission</a></li> -->
 						     <li><a href="#" id="edi870Error" onmousedown="redirectToTab('edi870Error')">EDI 870 Errors</a></li>
 						     <li><a href="#" id="dataConflict" onmousedown="redirectToTab('dataConflict')">Data Conflicts</a></li>
 						     <li><a href="#" id="updateDateSubTab">Update Date</a></li>

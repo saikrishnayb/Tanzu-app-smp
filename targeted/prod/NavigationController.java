@@ -46,31 +46,42 @@ public class NavigationController extends BaseController {
 	@RequestMapping(value = "/navigate", method = RequestMethod.POST)
 	public String navigateapplication(@RequestParam(value="path") String destination, 
 			@RequestParam(value="controllerName") String controllerName,
+			@RequestParam(value="templateId") String templateId,
 									 HttpServletRequest request) throws Exception{
 		
 		
 		String app = "";
 		StringBuffer url = null;
+
 		UserContext userContext = new UserContext();
 		try
 		{
+      
 			url=new StringBuffer();
 			app = destination.toLowerCase();
 			 userContext = getUserContext(request);
-			if ("adminconsole".equalsIgnoreCase(destination)) {
-				url.append(request.getContextPath()).append(ApplicationConstants.SLASH).append("admin-console/app-config/dynamic-rules.htm");
-			} else {
+			if("adminconsole".equalsIgnoreCase(destination)){
+				url.append(request.getContextPath()).append(ApplicationConstants.SLASH).append(ApplicationConstants.PENSKE_USER_URL);
+			}else if("Home".equalsIgnoreCase(destination)){
+				url.append(request.getContextPath()).append(ApplicationConstants.SLASH).append("home/homePage.htm");
+			}else{
+
+			
 				url.append(ApplicationConstants.SLASH).append(app).append(ApplicationConstants.ENTRY_SERVLET);
+
 				if(controllerName!=null){
 					url.append(ApplicationConstants.CONTROLLER_NAME).append(controllerName);
 				}
+				if(!templateId.equalsIgnoreCase("0")){
+					url.append(ApplicationConstants.DEV_TEMPLATE_ID).append(templateId);
+				}
 			}
-			LOGGER.info("Nvaigating the iframe to the URL"+url);
+			LOGGER.info("Navigating the iframe to the URL"+url);
 		}
+
 		catch(Exception e)
 		{
-			LOGGER.error("NavigationController navigateapplication - " +e.getMessage(),e);
-			throw e;
+			handleException(e, request);
 		}
 		LOGGER.debug("Tab Application URL ::"+ url.toString());
 		return url.toString();
