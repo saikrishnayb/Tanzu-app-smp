@@ -25,8 +25,8 @@ public class Tab{
 	/**
 	 * 
 	 */
-	private Integer tabId;
 	private String tabKey;
+	private int tabId;
 	private String tabName;
 	private Integer displaySequence;
 	private String imageUrl;
@@ -35,12 +35,6 @@ public class Tab{
 	private List<AlertHeader> alertHeaders;	  // the list of alert headers for the tab
 	private List<Permission> permissions;
 	
-	public Integer getTabId() {
-		return tabId;
-	}
-	public void setTabId(Integer tabId) {
-		this.tabId = tabId;
-	}
 	public String getTabName() {
 		return tabName;
 	}
@@ -101,10 +95,11 @@ public class Tab{
 	public void setTabKey(String tabKey) {
 		this.tabKey = tabKey;
 	}
-	
-	
-	
-	
-	
+	public int getTabId() {
+		return tabId;
+	}
+	public void setTabId(int tabId) {
+		this.tabId = tabId;
+	}
 
 }

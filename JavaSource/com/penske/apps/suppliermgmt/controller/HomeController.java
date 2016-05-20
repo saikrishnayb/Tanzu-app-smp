@@ -31,11 +31,11 @@ import com.penske.apps.suppliermgmt.service.HomeDashboardService;
 * @Version        : 1.0
 * @FileName       : HomeController
 * @Date Created	  : May 15,2015
-* @Date Modified  : 
-* @Modified By    : 
+* @Date Modified  : May 13,2016
+* @Modified By    : Seenu
 * @Contact        :
-* @Description    : 
-* @History        :
+* @Description    : Controller class for Home/dashboard page. This class is used to 
+* 					process request for displaying Home/Dashboard page details.
 *
 ************************************************************************************/
 
@@ -103,9 +103,9 @@ public class HomeController extends BaseController{
 		try{
 			UserContext userModel = getUserContext(request);
 			List<Tab> tabs = homeService.selectTabs(userModel);
-			int defaultTab = tabs.get(0).getTabId();
+			String defaultTab = tabs.get(0).getTabKey();
 			modelandView.addObject("tabs",tabs);
-			modelandView.addObject("tabID", defaultTab);
+			modelandView.addObject("TabKey", defaultTab);
 			modelandView.addObject("alertHeaders", homeService.getAlerts(userModel.getUserSSO(), defaultTab));//To display alerts with count
 		}catch(Exception e){
 			modelandView = handleException(e, request);
@@ -127,13 +127,13 @@ public class HomeController extends BaseController{
 	 */
 	
 	@RequestMapping(value = "/getAlerts", method = {RequestMethod.GET})
-	public @ResponseBody ModelAndView getAlerts(HttpServletRequest request,HttpServletResponse response,@RequestParam("tabId") int tabID){
+	public @ResponseBody ModelAndView getAlerts(HttpServletRequest request,HttpServletResponse response,@RequestParam("tabKey") String tabKey){
 		LOGGER.debug("Inside getAlerts()");
 		ModelAndView model = new ModelAndView("/home/home");
 		try{
 			UserContext userModel = getUserContext(request);	
-			model.addObject("tabID", tabID);
-			model.addObject("alertHeaders", homeService.getAlerts(userModel.getUserSSO(), tabID));
+			model.addObject("TabKey", tabKey);
+			model.addObject("alertHeaders", homeService.getAlerts(userModel.getUserSSO(), tabKey));
 		}catch(Exception e ){
 			LOGGER.debug("Error while excecuting method");
 			handleAjaxException(e, response, request);

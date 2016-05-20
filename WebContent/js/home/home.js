@@ -8,11 +8,11 @@ $(document).ready(function() {
 	// and show the clicked tab as selected.
 	$('.tab').on('click', function() {
 		var $tab = $(this);
-		var tabId = $tab.attr('id');
+		var tabKey = $tab.attr('id');
 		// Show the clicked tab image as selected. (The changes in padding are to prevent the image from "moving" when the border is added.)
 		$('.tab-image-display').removeClass('selected-tab');
 		$tab.find('.tab-image-display').addClass('selected-tab');
-		getAlertCount(tabId);
+		getAlertCount(tabKey);
 	});
 });
 
@@ -84,8 +84,9 @@ function displayTable(){
  * this method is used to call a selected template ID On click of the count in the Dash board
  * 
  */
-function redirectToTemplate(tabId,templateID){
-	parent.redirectToTemplate(tabId,templateID);	//Calling parent js for redirecting
+function redirectToTemplate(tabKey,templateID){
+	var tab= tabKey;
+	parent.redirectToTemplate(tabKey,templateID);	//Calling parent js for redirecting
 }
 /**
  * this method is used to call a selected template On click of the count of out of compliance,data conflict and 
@@ -112,8 +113,8 @@ function hideLoading(){
 	parent.hideLoading();
 	
 }
-function getAlertCount(tabId){
-	var url=getContextRoot()+"/home/getAlerts.htm?tabId="+tabId;
+function getAlertCount(tabKey){
+	var url=getContextRoot()+"/home/getAlerts.htm?tabKey="+tabKey;
 	$("#statusError").hide();
 	$("#timeoutMessage").hide();
 	showLoading();

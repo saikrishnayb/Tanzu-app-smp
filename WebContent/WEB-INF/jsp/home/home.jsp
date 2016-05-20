@@ -21,7 +21,7 @@
 		<div> <h1 class="pageTitle" style="color: red;text-align:center;">Action Items</h1> </div>
 			<ul id="tab-display">
 				<c:forEach var="tab" items="${tabs}">
-					<li class="tab floatLeft handCursor" id="${tab.tabId}">
+					<li class="tab floatLeft handCursor" id="${tab.tabKey}">
 						<div class="tab-name-display">
 							<span class="tab-name">${tab.tabName}</span>
 						</div>
@@ -40,7 +40,7 @@
 		       </span>
 	        </div>
 			<div id ="alertTable">
-				<div class="tab-header" id="${tabID}">
+				<div class="tab-header" id="${TabKey}">
 				<c:forEach var="alertHeader" items="${alertHeaders}">
 					<div class="header width-full">
 						<table class="width-full">
@@ -72,16 +72,16 @@
 										<c:when test="${alert.actionable eq 1 and not empty alert.link and alert.count != 0}">
 											<c:choose>
 												<c:when test="${alert.alertName eq 'Upstream Vendor Production Date Changes'}">
-													<a id="CountId-${tabID}-${alert.templateId }" onClick="redirectToTab('upStreamVendor');return false" <%-- href="${alert.link}" --%>>${alert.count}</a>
+													<a id="CountId-${TabKey}-${alert.templateId }" onClick="redirectToTab('upStreamVendor');return false">${alert.count}</a>
 												</c:when>
 												<c:when test="${alert.alertName eq 'Data Responsibility Conflicts'}">
-													<a id="CountId-${tabID}-${alert.templateId }" onClick="redirectToTab('dataConflict');return false" <%-- href="${alert.link}" --%>>${alert.count}</a>
+													<a id="CountId-${TabKey}-${alert.templateId }" onClick="redirectToTab('dataConflict');return false">${alert.count}</a>
 												</c:when>
 												<c:when test="${alert.alertName eq 'Out of Compliance'}">
-													<a id="CountId-${tabID}-${alert.templateId }" onClick="redirectToTab('dateValidation');return false" <%-- href="${alert.link}" --%>>${alert.count}</a>
+													<a id="CountId-${TabKey}-${alert.templateId }" onClick="redirectToTab('dateValidation');return false">${alert.count}</a>
 												</c:when>
 												<c:otherwise>
-													<a id="CountId-${tabID}-${alert.templateId }" onClick="redirectToTemplate(${tabID},${alert.templateId });return false" <%-- href="${alert.link}" --%>>${alert.count}</a>
+													<a id="CountId-${TabKey}-${alert.templateId }" onClick="redirectToTemplate('${TabKey}',${alert.templateId});return false">${alert.count}</a>
 												</c:otherwise>
 											</c:choose>
 										</c:when>

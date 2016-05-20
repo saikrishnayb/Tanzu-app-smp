@@ -5,8 +5,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-ma
 <mapper namespace="com.penske.apps.suppliermgmt.dao.HomeDashboardDao">
 
   	<select id="selectTabs" resultType="com.penske.apps.suppliermgmt.model.Tab">  
- 		SELECT	DISTINCT(ST.TAB_ID) AS tabId,
- 				ST.TAB_KEY AS tabKey,
+ 		SELECT	DISTINCT(ST.TAB_KEY) AS tabKey,
+ 				ST.TAB_ID AS tabId,
  				ST.TABNAME AS tabName,
 				ST.IMG_URL AS imageUrl,
 				ST.DISPLAY_SEQUENCE AS displaySequence
@@ -24,7 +24,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-ma
 	<select id="selectHeaders" resultType="com.penske.apps.suppliermgmt.model.AlertHeader">
 		SELECT	HEADER_NAME AS headerName,
 				HELP_TEXT AS helpText,
-				TAB_ID AS tabId,
 				HEADER_ID AS headerId
 		
 		FROM	SMC.SMC_ALERT_HEADER
@@ -49,11 +48,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-ma
 		ORDER BY DISPLAY_SEQUENCE ASC
 	</select>
 	
+	<select id="selectTabId" resultType="int">
+		SELECT	TAB_ID AS tabId
+				
+		FROM	SMC.SMC_TAB_MASTER
+		
+		WHERE	TAB_KEY = #{value}
+	</select>
 	
 	<!--  
 	 * This method  is used to access the database for getting OrderFulfillment count.
-	 * Input : current SSOId,tabId,UserTypeId
-	 * Output : Hasmap contains alertid and count corresponding to tabid
+	 * Input : current SSOId
+	 * Output : Hasmap contains alertid and count 
 	 *  
 	 */ -->
 	<select id="getOrderFullfillmentActionItems" parameterType ="java.util.HashMap" statementType="CALLABLE">
@@ -70,8 +76,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-ma
    
    <!--  
 	 * This method  is used to access the database for getting OrderConfirmation count.
-	 * Input : current SSOId,tabId,UserTypeId
-	 * Output : Hasmap contains alertid and count corresponding to tabid
+	 * Input : current SSOId
+	 * Output : Hasmap contains alertid and count 
 	 *  
 	 */ -->
 	<select id="getOrderConfirmationActionItems" parameterType ="java.util.HashMap" statementType="CALLABLE">
@@ -88,8 +94,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-ma
    
     <!--  
 	 * This method  is used to access the database for getting Production action items count.
-	 * Input : current SSOId,tabId,UserTypeId
-	 * Output : Hasmap contains alertid and count corresponding to tabid
+	 * Input : current SSOId
+	 * Output : Hasmap contains alertid and count 
 	 *  
 	 */ -->
 	<select id="getProductionActionItems" parameterType ="java.util.HashMap" statementType="CALLABLE">
@@ -106,8 +112,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-ma
    
     <!--  
 	 * This method  is used to access the database for getting Communication Action items count.
-	 * Input : current SSOId,tabId,UserTypeId
-	 * Output : Hasmap contains alertid and count corresponding to tabid
+	 * Input : current SSOId
+	 * Output : Hasmap contains alertid and count 
 	 *  
 	 */ -->
 	<select id="getCommunicationActionItems" parameterType ="java.util.HashMap" statementType="CALLABLE">

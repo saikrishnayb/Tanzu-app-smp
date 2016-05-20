@@ -30,8 +30,8 @@ $(document).ready(function(){
 		open: function(event, ui) {$(this).closest('.ui-dialog').find('.ui-dialog-titlebar-close').hide();}
 	});
 	
-	var tabid=$('nav ul li a',parent.document).first().attr('id');
-	redirect(tabid,null);
+	var tabKey=$('nav ul li a',parent.document).first().attr('id');
+	redirect(tabKey,null);
 	
 	
 	
@@ -210,20 +210,20 @@ function redirect(tabName,templateId){
 	showLoadingForPage();
 	var path = "";
 	var controllerName="";
-	if(tabName == "orderfulfillment"){
+	if(tabName == 'orderfulfillment'){
 		path = "smcof";
-	}else if(tabName == "orderconfirmation"){
+	}else if(tabName == 'orderconfirmation'){
 		path = "smcop";
 		controllerName="oc";
-	}else if(tabName == "communication"){
+	}else if(tabName == 'communication'){
 		path = "smcop";
 		controllerName="com";
-	}else if(tabName == "production"){
+	}else if(tabName == 'production'){
 		path = "smcop";
 		controllerName="prod";
-	}else if(tabName == "adminconsole"){
+	}else if(tabName == 'adminconsole'){
 		path = "adminconsole";
-	}else if(tabName == "edi870Error"){
+	}else if(tabName == 'edi870Error'){
 		path = "smcop";
 		controllerName="edi870";
 	}else if(tabName == "productionStatus"){
@@ -268,17 +268,17 @@ function redirect(tabName,templateId){
  * this method is used to call a selected template ID On click of the count in the Dash board
  * 
  */
-function redirectToTemplate(tabId,templateID){
-	if(tabId==1){	//to redirect to fulfillment Tab
+function redirectToTemplate(tabKey,templateID){
+	if(tabKey=='TAB_OF'){	//to redirect to fulfillment Tab
 		redirect("orderfulfillment",templateID);
 	}
-	else if(tabId==2){	//to redirect to Confirmation Tab
+	else if(tabKey=='TAB_OC'){	//to redirect to Confirmation Tab
 		redirect("orderconfirmation",templateID);
 	}
-	else if(tabId==3){	//to redirect to Production Tab
+	else if(tabKey=='TAB_PROD'){	//to redirect to Production Tab
 		redirect("production",templateID);
 	}
-	else if(tabId==4){	//to redirect to Communication Tab
+	else if(tabKey=='TAB_COMM'){	//to redirect to Communication Tab
 		redirect("communication",templateID);
 	}
 }

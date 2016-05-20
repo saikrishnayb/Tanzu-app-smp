@@ -39,16 +39,18 @@ public class SecurityFunction {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public Integer getTabId() {
-		return tabId;
+	
+	public String getTabKey() {
+		return tabKey;
 	}
-	public void setTabId(Integer tabId) {
-		this.tabId = tabId;
+	public void setTabKey(String tabKey) {
+		this.tabKey = tabKey;
 	}
+
 	private Integer securityFunctionId;
 	private String name;
 	private String description;
-	private Integer tabId;
+	private String tabKey;
 	
 
 }

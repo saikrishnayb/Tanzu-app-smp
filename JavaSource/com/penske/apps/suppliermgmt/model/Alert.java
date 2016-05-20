@@ -13,7 +13,7 @@ public class Alert {
 	private String alertName; 			// the alert name
 	private int displaySequence;		// the display sequence
 	private String helpText; 			// the alert help text
-	private int tabId;					// the tab ID
+	private String tabKey;					// the tab ID
 	private String tabName;				// the tab name
 	private int headerId;				// the alert header ID
 	private String headerName;			// the alert header name
@@ -36,11 +36,6 @@ public class Alert {
 	public String getAlertType() {
 		return alertType;
 	}
-
-	public int getTabId() {
-		return tabId;
-	}
-
 	public String getTabName() {
 		return tabName;
 	}
@@ -102,10 +97,6 @@ public class Alert {
 		this.alertType = alertType;
 	}
 
-	public void setTabId(int tabId) {
-		this.tabId = tabId;
-	}
-
 	public void setTabName(String tabName) {
 		this.tabName = tabName;
 	}
@@ -157,8 +148,15 @@ public class Alert {
 	public void setLink(String link) {
 		this.link = link;
 	}
-	
-	
+		
+	public String getTabKey() {
+		return tabKey;
+	}
+
+	public void setTabKey(String tabKey) {
+		this.tabKey = tabKey;
+	}
+
 	public int getCount() {
 		return count;
 	}

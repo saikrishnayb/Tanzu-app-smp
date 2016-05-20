@@ -9,18 +9,29 @@ import com.penske.apps.suppliermgmt.model.Tab;
 
 
 
-
-
 /**
- * This interface is used for queries to the database for the home/dashboard page in the Admin Console under the App Config tab.
- * 
- * @author 600143568
- */
+ *****************************************************************************************************************
+ * File Name     : HomeDashboardDao
+ * Description   : dao class for home/dashboard page. This interface is used for queries to the database 
+ * 				   for the home/dashboard page in the Admin Console under the App Config tab.
+ * Project       : SMC
+ * Package       : com.penske.apps.suppliermgmt.dao
+ * Author        : 600143568
+ * Copyright (C) 2015 GE Penske Truck Leasing
+ * Modifications :
+ * --------------------------------------------------------------------------------------------------------------
+ * Version  |   Date    |   Change Details
+ * --------------------------------------------------------------------------------------------------------------
+ *
+ * ****************************************************************************************************************
+**/
 public interface HomeDashboardDao {
 
 	public List<Tab> selectTabs(int roleId);
 
 	public List<AlertHeader> selectHeaders(int tabId);
+	
+	public int selectTabId(String tabKey);
 
 	public List<Alert> selectAlerts(int headerId);
 	
@@ -32,5 +43,4 @@ public interface HomeDashboardDao {
 	
 	public String getCommunicationActionItems(Map<String, Object> errorMap);
 	
-//	public LookUp getTheCount(OrderFulfillment orderFulfillment);
 }

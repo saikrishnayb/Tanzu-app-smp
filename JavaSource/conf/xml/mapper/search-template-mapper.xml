@@ -4,7 +4,7 @@
 
   	<select id="selectAllSearchTemplates" resultType="com.penske.apps.adminconsole.model.SearchTemplate">
 		SELECT t.TABNAME AS tabName,
-			   t.TAB_ID AS tabId,
+			   t.TAB_KEY AS tabKey,
                st.TEMPLATE_NAME AS templateName,
                st.DISPLAY_SEQUENCE AS displaySequence,
                CASE WHEN t.TEMPLATE_ID = st.TEMPLATE_ID
@@ -20,7 +20,7 @@
   	
   	<select id="selectSearchTemplate" resultType="com.penske.apps.adminconsole.model.SearchTemplate">
 		SELECT t.TABNAME AS tabName,
-			   t.TAB_ID AS tabId,
+			   t.TAB_KEY AS tabKey,
                st.TEMPLATE_NAME AS templateName,
                st.DISPLAY_SEQUENCE AS displaySequence,
                CASE WHEN t.TEMPLATE_ID = st.TEMPLATE_ID
@@ -37,7 +37,7 @@
   	
   	<select id="selectSearchTemplateByName" resultType="com.penske.apps.adminconsole.model.SearchTemplate">
   		SELECT t.TABNAME AS tabName,
-			   t.TAB_ID AS tabId,
+			   t.TAB_KEY AS tabKey,
                st.TEMPLATE_NAME AS templateName,
                st.DISPLAY_SEQUENCE AS displaySequence,
                CASE WHEN t.TEMPLATE_ID = st.TEMPLATE_ID

@@ -31,6 +31,6 @@ public interface LoginDAO {
 	
 	public List<Tab> getTabs(int roleId);
 
-	public List<String> getSecurityFunctions(@Param("roleId") int roleId,@Param("tabId") int tabId);
+	public List<String> getSecurityFunctions(@Param("roleId") int roleId,@Param("tabKey") String tabKey);
 
 }

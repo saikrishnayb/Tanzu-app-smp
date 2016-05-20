@@ -63,7 +63,7 @@ public class LoginServiceImpl implements LoginService{
 		for(Tab tabs: tabList){
 	        	securityFunctions= new HashMap<String, String>();
 	        	secFunctionList = new ArrayList<String>();
-	        	secFunctionList = loginDao.getSecurityFunctions(roleId, tabs.getTabId());
+	        	secFunctionList = loginDao.getSecurityFunctions(roleId, tabs.getTabKey());
 	        	for(String secFunction: secFunctionList){
 	        	   securityFunctions.put(secFunction,secFunction);
 	        	}

@@ -8,7 +8,7 @@
   		
   		SET    TEMPLATE_ID = #{searchTemplateForm.templateId}
   		
-  		WHERE  TAB_ID = #{searchTemplateForm.tabId}
+  		WHERE  TAB_KEY = #{searchTemplateForm.tabKey}
   	</update>
 
 </mapper>

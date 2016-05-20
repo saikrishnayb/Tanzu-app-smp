@@ -11,7 +11,7 @@ import java.util.List;
 public class AlertHeader {
 	private int headerId;			// the header ID
 	private String headerName;		// the header name
-	private int tabId;				// the header tab ID
+	private String tabKey;				// the header tab ID
 	private String helpText;		// the header help text
 	private List<Alert> alerts;		// the list of alerts for the header
 
@@ -22,10 +22,6 @@ public class AlertHeader {
 
 	public String getHeaderName() {
 		return headerName;
-	}
-
-	public int getTabId() {
-		return tabId;
 	}
 
 	public String getHelpText() {
@@ -45,8 +41,12 @@ public class AlertHeader {
 		this.headerName = headerName;
 	}
 
-	public void setTabId(int tabId) {
-		this.tabId = tabId;
+	public String getTabKey() {
+		return tabKey;
+	}
+
+	public void setTabKey(String tabKey) {
+		this.tabKey = tabKey;
 	}
 
 	public void setHelpText(String helpText) {

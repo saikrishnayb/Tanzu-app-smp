@@ -17,5 +17,5 @@ public interface HomeDashboardService {
 	public List<Tab> selectTabs(UserContext userModel);
 	//public List<LookUp> getTheCount(String headerName,List<String> templateIdList,UserContext userModel);
 	public Map<String, String[]> getActionCount (String SSO,int TabId);
-	public List<AlertHeader> getAlerts(String SSO,int TabId);
+	public List<AlertHeader> getAlerts(String SSO,String TabKey);
 }

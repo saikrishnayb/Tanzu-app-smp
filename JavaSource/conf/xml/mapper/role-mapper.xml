@@ -75,7 +75,7 @@
 	
 	<select id="getSecurityFunctionTabs" resultType="com.penske.apps.adminconsole.model.Tab">
 		SELECT	DISTINCT 
-				tab.TAB_ID AS tabId,
+				tab.TAB_KEY AS tabKey,
 				tab.TABNAME AS tabName
 				
 		FROM 	SMC.SMC_ROLE_SEC_FUNCTIONS rfn, 
@@ -102,7 +102,7 @@
 		<if test="roleId != 0">
 		AND		rfn.ROLE_ID = #{roleId}
 		</if>
-		AND		tab.TAB_ID = #{tabId}
+		AND		tab.TAB_KEY = #{tabKey}
 	</select>
 	
 	<select id="getAllRolePermissions" resultType="com.penske.apps.adminconsole.model.Permission">
@@ -112,8 +112,8 @@
 		FROM 	SMC.SMC_SECURITY_FUNCTION sfn, 
 				SMC.SMC_TAB_MASTER tab 
 				
-		WHERE 	sfn.TAB_ID = tab.TAB_ID
-		AND		tab.TAB_ID = #{value}
+		WHERE 	sfn.TAB_KEY = tab.TAB_KEY
+		AND		tab.TAB_KEY = #{value}
 	</select>
 	
 	<select id="getRoleSecurityFunctions" resultType="Integer">
