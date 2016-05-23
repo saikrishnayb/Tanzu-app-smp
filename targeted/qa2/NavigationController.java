@@ -24,7 +24,7 @@ import com.penske.apps.suppliermgmt.model.UserContext;
 * @Contact        :
 * @Description    : Class for redirecting to different application
 * @History        :
-*This class is under targeted folder, make sure the changes to be merged in targeted folder also
+* This class is under targeted folder, make sure the changes to be merged in targeted folder also
 ************************************************************************************/
 @Controller
 @RequestMapping("/navigation")
@@ -44,44 +44,33 @@ public class NavigationController extends BaseController {
 	
 	@ResponseBody
 	@RequestMapping(value = "/navigate", method = RequestMethod.POST)
-
-
-	public String navigateapplication(@RequestParam(value="path") String destination,
+	public String navigateapplication(@RequestParam(value="path") String destination, 
 			@RequestParam(value="controllerName") String controllerName,
-			@RequestParam(value="templateId") String templateId,
-			HttpServletRequest request) throws Exception{
+									 HttpServletRequest request) throws Exception{
 		
 		
 		String app = "";
 		StringBuffer url = null;
-
 		UserContext userContext = new UserContext();
 		try
 		{
-      
 			url=new StringBuffer();
 			app = destination.toLowerCase();
 			 userContext = getUserContext(request);
-			if("adminconsole".equalsIgnoreCase(destination)){
+			if ("adminconsole".equalsIgnoreCase(destination)) {
 				url.append(request.getContextPath()).append(ApplicationConstants.SLASH).append("admin-console/app-config/dynamic-rules.htm");
-			}else if("Home".equalsIgnoreCase(destination)){
-				url.append(request.getContextPath()).append(ApplicationConstants.SLASH).append("home/homePage.htm");
-			}else{
-				url.append(ApplicationConstants.SLASH).append(app).append("2").append(ApplicationConstants.ENTRY_SERVLET).append(userContext.getUserSSO());
-
+			} else {
+				url.append(ApplicationConstants.SLASH).append(app).append("2").append(ApplicationConstants.ENTRY_SERVLET);
 				if(controllerName!=null){
 					url.append(ApplicationConstants.CONTROLLER_NAME).append(controllerName);
 				}
-				if(!templateId.equalsIgnoreCase("0")){
-					url.append(ApplicationConstants.DEV_TEMPLATE_ID).append(templateId);
-				}
 			}
-			LOGGER.info("Navigating the iframe to the URL"+url);
+			LOGGER.info("Nvaigating the iframe to the URL"+url);
 		}
-
 		catch(Exception e)
 		{
-			handleException(e, request);
+			LOGGER.error("NavigationController navigateapplication - " +e.getMessage(),e);
+			throw e;
 		}
 		LOGGER.debug("Tab Application URL ::"+ url.toString());
 		return url.toString();
