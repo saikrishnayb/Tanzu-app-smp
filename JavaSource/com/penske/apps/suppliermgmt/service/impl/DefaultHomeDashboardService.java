@@ -53,7 +53,7 @@ public class DefaultHomeDashboardService implements HomeDashboardService {
 		 // Iterate through each tab and get the necessary Alert Headers and Alerts.
 		 for (Tab currentTab : tabs) {
 			// Get the list of Alert Headers for the current tab.
-			List<AlertHeader> headers = homeDashboardDao.selectHeaders(currentTab.getTabId());
+			List<AlertHeader> headers = homeDashboardDao.selectHeaders(currentTab.getTabKey());
 			
 			// Iterate through each alert header and get the necessary Alerts.
 			for (AlertHeader currentHeader : headers) {
@@ -63,14 +63,14 @@ public class DefaultHomeDashboardService implements HomeDashboardService {
 				// Set alert links for the dashboard if the alerts are actionable.
 				for (Alert alert : currentHeader.getAlerts()) {
 					if (alert.getActionable() == 1) {
-						switch(currentTab.getTabId()){
-						case ApplicationConstants.ORDERFULFILLMENT_ID : alert.setLink("./order-fulfillment?alertId=" + alert.getAlertId());
+						switch(TabKeyVal.valueOf(currentTab.getTabKey())){
+						case TAB_OF : alert.setLink("./order-fulfillment?alertId=" + alert.getAlertId());
 						break;
-						case ApplicationConstants.ORDERCONFIRMATION_ID: alert.setLink("./order-confirmation?alertId=" + alert.getAlertId());
+						case TAB_OC: alert.setLink("./order-confirmation?alertId=" + alert.getAlertId());
 						break;
-						case ApplicationConstants.PRODUCTION_ID: alert.setLink("./production?alertId=" + alert.getAlertId());
+						case TAB_PROD: alert.setLink("./production?alertId=" + alert.getAlertId());
 						break;
-						case ApplicationConstants.COMMUNICATION_ID: String alertName = alert.getAlertName();
+						case TAB_COMM: String alertName = alert.getAlertName();
 						if (alertName.length() >= 18 && alertName.substring(0, 18).equalsIgnoreCase("order confirmation")) {
 						alert.setLink("./order-confirmation?alertId=" + alert.getAlertId());
 						}
@@ -101,12 +101,12 @@ public class DefaultHomeDashboardService implements HomeDashboardService {
 	
 	public List<AlertHeader> getAlerts(String sso,String tabKey){
 		LOGGER.debug("Inside getAlerts()");
-		int tabId = homeDashboardDao.selectTabId(tabKey);
-		List<AlertHeader> headers = homeDashboardDao.selectHeaders(tabId);
+		//int tabId = homeDashboardDao.selectTabId(tabKey);
+		List<AlertHeader> headers = homeDashboardDao.selectHeaders(tabKey);
 		Set<String> alertIdList = new HashSet<String>();
 		String[] countFlagArray;
 
-		Map<String,String[]> alertMap = getActionCount(sso,tabId);
+		Map<String,String[]> alertMap = getActionCount(sso,tabKey);
 		if(alertMap != null || alertMap.size() > 0 ){
 			alertIdList =  alertMap.keySet();
 		}
@@ -118,17 +118,17 @@ public class DefaultHomeDashboardService implements HomeDashboardService {
 						if(alert.getAlertKey().equalsIgnoreCase(key)){
 							countFlagArray = alertMap.get(key);
 							alert.setCount(Integer.parseInt(countFlagArray[0]));
-							alert.setFlag(countFlagArray[1]);
-						}
+								alert.setFlag(countFlagArray[1]);
+							}
 						if(alert.getActionable() == 1) {
-						switch(tabId){
-							case ApplicationConstants.ORDERFULFILLMENT_ID : alert.setLink("./order-fulfillment?alertId=" + alert.getAlertId());
+						switch(TabKeyVal.valueOf(tabKey)){
+							case TAB_OF : alert.setLink("./order-fulfillment?alertId=" + alert.getAlertId());
 							break;
-							case ApplicationConstants.ORDERCONFIRMATION_ID: alert.setLink("./order-confirmation?alertId=" + alert.getAlertId());
+							case TAB_OC: alert.setLink("./order-confirmation?alertId=" + alert.getAlertId());
 							break;
-							case ApplicationConstants.PRODUCTION_ID: alert.setLink("./production?alertId=" + alert.getAlertId());
+							case TAB_PROD: alert.setLink("./production?alertId=" + alert.getAlertId());
 							break;
-							case ApplicationConstants.COMMUNICATION_ID: alert.setLink("./communication?alertId=" + alert.getAlertId());
+							case TAB_COMM: alert.setLink("./communication?alertId=" + alert.getAlertId());
 							break;
 							default : break;
 							}
@@ -144,7 +144,7 @@ public class DefaultHomeDashboardService implements HomeDashboardService {
 	 * @param current SSOId,tabId
 	 * @return Map<Integer,String[]>
 	 */
-	public Map<String,String[]>  getActionCount (String sso,int tabId){
+	public Map<String,String[]>  getActionCount (String sso,String tabKey){
 
 		Map<String, Object> alertParamMap = new HashMap<String, Object>();
 		Map<String,String[]> alertCountMap = new HashMap<String, String[]>();
@@ -154,16 +154,14 @@ public class DefaultHomeDashboardService implements HomeDashboardService {
 		alertParamMap.put("OUT_ACTION_ITEMS","");
 		alertParamMap.put("ERR_CODE", 0);
 		alertParamMap.put("ERR_MSG", "");
-		
-		switch(tabId){
-		case ApplicationConstants.ORDERFULFILLMENT_ID : homeDashboardDao.getOrderFullfillmentActionItems(alertParamMap);
+		switch(TabKeyVal.valueOf(tabKey)){
+		case TAB_OF : homeDashboardDao.getOrderFullfillmentActionItems(alertParamMap);
 		break;
-		case ApplicationConstants.ORDERCONFIRMATION_ID: homeDashboardDao.getOrderConfirmationActionItems(alertParamMap);
+		case TAB_OC: homeDashboardDao.getOrderConfirmationActionItems(alertParamMap);
 		break;
-		case ApplicationConstants.PRODUCTION_ID: homeDashboardDao.getProductionActionItems(alertParamMap);
+		case TAB_PROD: homeDashboardDao.getProductionActionItems(alertParamMap);
 		break;
-		case ApplicationConstants.COMMUNICATION_ID:
-			homeDashboardDao.getCommunicationActionItems(alertParamMap);
+		case TAB_COMM: homeDashboardDao.getCommunicationActionItems(alertParamMap);
 		break;
 		default : break;
 		}
@@ -188,4 +186,7 @@ public class DefaultHomeDashboardService implements HomeDashboardService {
 
 		return alertCountMap;
 	}	
+	public enum TabKeyVal{
+		TAB_OF, TAB_OC, TAB_PROD,TAB_COMM
+	}
 }

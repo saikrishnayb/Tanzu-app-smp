@@ -3,6 +3,7 @@ package com.penske.apps.suppliermgmt.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,7 +47,7 @@ public class NavigationController extends BaseController {
 	@RequestMapping(value = "/navigate", method = RequestMethod.POST)
 	public String navigateapplication(@RequestParam(value="path") String destination, 
 			@RequestParam(value="controllerName") String controllerName,
-			@RequestParam(value="templateId") String templateId,
+			@RequestParam(value="templateKey") String templateKey,
 									 HttpServletRequest request) throws Exception{
 		
 		
@@ -72,8 +73,8 @@ public class NavigationController extends BaseController {
 				if(controllerName!=null){
 					url.append(ApplicationConstants.CONTROLLER_NAME).append(controllerName);
 				}
-				if(!templateId.equalsIgnoreCase("0")){
-					url.append(ApplicationConstants.DEV_TEMPLATE_ID).append(templateId);
+				if(templateKey != null && StringUtils.isNotEmpty(templateKey)){
+					url.append(ApplicationConstants.DEV_TEMPLATE_KEY).append(templateKey);
 				}
 			}
 			LOGGER.info("Navigating the iframe to the URL"+url);

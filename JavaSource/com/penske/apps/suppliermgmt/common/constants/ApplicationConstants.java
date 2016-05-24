@@ -43,7 +43,7 @@ public class ApplicationConstants {
 	public static final String URL="/entry/ApplicationEntry?SSOID=";
 	public static final String DEV_CONTROLLER_NAME="&controllerName=";
 	public static final String CONTROLLER_NAME="?controllerName=";
-	public static final String DEV_TEMPLATE_ID="&templateId=";
+	public static final String DEV_TEMPLATE_KEY="&templateKey=";
 	
 	
 	public static final String YES="yes";
@@ -94,10 +94,10 @@ public class ApplicationConstants {
 	
 	
 	/**Home Page Constants**/
-	public static final int ORDERFULFILLMENT_ID=1;
-	public static final int ORDERCONFIRMATION_ID = 2;
-	public static final int PRODUCTION_ID = 3;
-	public static final int COMMUNICATION_ID = 4;
+	public static final String ORDER_FULFILLMENT_TAB_KEY = "TAB_OF";
+	public static final String ORDER_CONFIRMATION_TAB_KEY = "TAB_OC";
+	public static final String COMMUNICATION_TAB_KEY = "TAB_COMM";
+	public static final String PRODUCTION_TAB_KEY = "TAB_PROD";
 	
 }
 

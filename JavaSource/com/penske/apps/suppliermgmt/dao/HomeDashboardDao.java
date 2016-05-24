@@ -29,7 +29,7 @@ public interface HomeDashboardDao {
 
 	public List<Tab> selectTabs(int roleId);
 
-	public List<AlertHeader> selectHeaders(int tabId);
+	public List<AlertHeader> selectHeaders(String tabKey);
 	
 	public int selectTabId(String tabKey);
 

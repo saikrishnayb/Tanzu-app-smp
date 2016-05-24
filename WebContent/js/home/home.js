@@ -84,9 +84,8 @@ function displayTable(){
  * this method is used to call a selected template ID On click of the count in the Dash board
  * 
  */
-function redirectToTemplate(tabKey,templateID){
-	var tab= tabKey;
-	parent.redirectToTemplate(tabKey,templateID);	//Calling parent js for redirecting
+function redirectToTemplate(tabKey,templateKey){
+	parent.redirectToTemplate(tabKey,templateKey);	//Calling parent js for redirecting
 }
 /**
  * this method is used to call a selected template On click of the count of out of compliance,data conflict and 
@@ -117,7 +116,7 @@ function getAlertCount(tabKey){
 	var url=getContextRoot()+"/home/getAlerts.htm?tabKey="+tabKey;
 	$("#statusError").hide();
 	$("#timeoutMessage").hide();
-	showLoading();
+	//showLoading();
 	$.ajax({
 		url     :  url,
 		type    : "GET",

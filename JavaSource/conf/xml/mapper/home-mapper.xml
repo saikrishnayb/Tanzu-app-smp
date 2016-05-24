@@ -22,30 +22,34 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-ma
 	</select>  
 
 	<select id="selectHeaders" resultType="com.penske.apps.suppliermgmt.model.AlertHeader">
-		SELECT	HEADER_NAME AS headerName,
-				HELP_TEXT AS helpText,
-				HEADER_ID AS headerId
+		SELECT	SAH.HEADER_NAME AS headerName,
+				SAH.HELP_TEXT AS helpText,
+				SAH.HEADER_ID AS headerId
 		
-		FROM	SMC.SMC_ALERT_HEADER
+		FROM	SMC.SMC_ALERT_HEADER SAH
+		JOIN 	SMC.SMC_TAB_MASTER ST
+		ON 		SAH.TAB_ID = ST.TAB_ID
 		
-		WHERE	TAB_ID = #{value}
+		WHERE	ST.TAB_KEY = #{value}
 		
-		ORDER BY DISPLAY_SEQUENCE ASC
+		ORDER BY SAH.DISPLAY_SEQUENCE ASC
 	</select>
 	
 	<select id="selectAlerts" resultType="com.penske.apps.suppliermgmt.model.Alert">
-		SELECT	ALERT_ID AS alertId,
-				ALERT_KEY AS alertKey,
-				ALERT_NAME AS alertName,
-				ACTIONABLE AS actionable,
-				HELP_TEXT AS helpText,
-				TEMPLATE_ID AS templateId
+		SELECT	SA.ALERT_ID AS alertId,
+				SA.ALERT_KEY AS alertKey,
+				SA.ALERT_NAME AS alertName,
+				SA.ACTIONABLE AS actionable,
+				SA.HELP_TEXT AS helpText,
+				ST.TEMPLATE_KEY AS templateKey
 		
-		FROM	SMC.SMC_ALERTS
+		FROM	SMC.SMC_ALERTS SA
+		JOIN  	SMC.SMC_SEARCH_TEMPLATES ST
+		ON		SA.TEMPLATE_ID = ST.TEMPLATE_ID
 		
-		WHERE	HEADER_ID = #{value}
+		WHERE	SA.HEADER_ID = #{value}
 		
-		ORDER BY DISPLAY_SEQUENCE ASC
+		ORDER BY SA.DISPLAY_SEQUENCE ASC
 	</select>
 	
 	<select id="selectTabId" resultType="int">

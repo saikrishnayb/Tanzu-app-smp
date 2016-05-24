@@ -72,16 +72,16 @@
 										<c:when test="${alert.actionable eq 1 and not empty alert.link and alert.count != 0}">
 											<c:choose>
 												<c:when test="${alert.alertName eq 'Upstream Vendor Production Date Changes'}">
-													<a id="CountId-${TabKey}-${alert.templateId }" onClick="redirectToTab('upStreamVendor');return false">${alert.count}</a>
+													<a id="CountId-${TabKey}-${alert.templateKey }" onClick="redirectToTab('upStreamVendor');return false">${alert.count}</a>
 												</c:when>
 												<c:when test="${alert.alertName eq 'Data Responsibility Conflicts'}">
-													<a id="CountId-${TabKey}-${alert.templateId }" onClick="redirectToTab('dataConflict');return false">${alert.count}</a>
+													<a id="CountId-${TabKey}-${alert.templateKey }" onClick="redirectToTab('dataConflict');return false">${alert.count}</a>
 												</c:when>
 												<c:when test="${alert.alertName eq 'Out of Compliance'}">
-													<a id="CountId-${TabKey}-${alert.templateId }" onClick="redirectToTab('dateValidation');return false">${alert.count}</a>
+													<a id="CountId-${TabKey}-${alert.templateKey }" onClick="redirectToTab('dateValidation');return false">${alert.count}</a>
 												</c:when>
 												<c:otherwise>
-													<a id="CountId-${TabKey}-${alert.templateId }" onClick="redirectToTemplate('${TabKey}',${alert.templateId});return false">${alert.count}</a>
+													<a id="CountId-${TabKey}-${alert.templateKey }" onClick="redirectToTemplate('${TabKey}','${alert.templateKey}');return false">${alert.count}</a>
 												</c:otherwise>
 											</c:choose>
 										</c:when>
@@ -96,7 +96,7 @@
 									</td>
 								</tr>
 								<!-- hiddenTemplateIds -->
-							<input class=templateIds type="hidden" value="${alert.templateId }">
+							<input class=templateKeys type="hidden" value="${alert.templateKey }">
 							</c:forEach>
 							</tbody>
 						</table>

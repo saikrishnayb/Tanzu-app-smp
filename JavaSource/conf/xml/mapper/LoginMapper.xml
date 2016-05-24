@@ -69,13 +69,15 @@ SELECT
         ST.TABNAME,
 		ST.DISPLAY_SEQUENCE,
 		ST.IMG_URL,
-		ST.TEMPLATE_ID,
+		SST.TEMPLATE_KEY,
 		ST.DASHBOARD_TAB
 		FROM SMC_TAB_MASTER ST 
 		JOIN SMC_SECURITY_FUNCTION SF 
 		ON ST.TAB_ID = SF.TAB_ID 
 		JOIN SMC_ROLE_SEC_FUNCTIONS RSF
 		ON RSF.SEC_FUNC_ID = SF.SEC_FUNC_ID
+		JOIN SMC_SEARCH_TEMPLATES SST
+		ON ST.TEMPLATE_ID = SST.TEMPLATE_ID
 		WHERE RSF.ROLE_ID=#{roleId}
 		AND ST.STATUS='A'
 	</select>  
@@ -85,7 +87,7 @@ SELECT
 		<result property="tabName" column="TABNAME" javaType="String" jdbcType="VARCHAR"/>
 		<result property="displaySequence" column="DISPLAY_SEQUENCE" javaType="int" jdbcType="INTEGER"/>
 		<result property="imageUrl" column="IMG_URL" javaType="String" jdbcType="VARCHAR"/>
-		<result property="defaultTemplateId" column="TEMPLATE_ID" javaType="int" jdbcType="INTEGER"/>
+		<result property="defaultTemplateKey" column="TEMPLATE_KEY" javaType="String" jdbcType="VARCHAR"/>
 		<result property="dashboardTab" column="DASHBOARD_TAB" javaType="int" jdbcType="INTEGER"/>
 	</resultMap> 
 	

@@ -199,14 +199,11 @@ function redirectToTab(tabName){
 	redirect(tabName,0);
 }
 
-function redirect(tabName,templateId){
-	
+function redirect(tabName,templateKey){
 	if($('a[id="' + tabName + '"]').parent('li').hasClass('current')){
 		return false;
 		
 	}else{
-		
-	
 	showLoadingForPage();
 	var path = "";
 	var controllerName="";
@@ -254,7 +251,7 @@ function redirect(tabName,templateId){
 		 $.ajax({
 			  type: 'POST',
 			  url:  getContextRoot()+'/navigation/navigate.htm',
-			  data: { path: path,controllerName:controllerName,templateId:templateId},
+			  data: { path: path,controllerName:controllerName,templateKey:templateKey},
 			  cache	: false,
 	    	  success:function(data) {
 	    		  $('#mainFrame',parent.document).attr('src', data);
@@ -268,18 +265,18 @@ function redirect(tabName,templateId){
  * this method is used to call a selected template ID On click of the count in the Dash board
  * 
  */
-function redirectToTemplate(tabKey,templateID){
+function redirectToTemplate(tabKey,templateKey){
 	if(tabKey=='TAB_OF'){	//to redirect to fulfillment Tab
-		redirect("orderfulfillment",templateID);
+		redirect("orderfulfillment",templateKey);
 	}
 	else if(tabKey=='TAB_OC'){	//to redirect to Confirmation Tab
-		redirect("orderconfirmation",templateID);
+		redirect("orderconfirmation",templateKey);
 	}
 	else if(tabKey=='TAB_PROD'){	//to redirect to Production Tab
-		redirect("production",templateID);
+		redirect("production",templateKey);
 	}
 	else if(tabKey=='TAB_COMM'){	//to redirect to Communication Tab
-		redirect("communication",templateID);
+		redirect("communication",templateKey);
 	}
 }
 
