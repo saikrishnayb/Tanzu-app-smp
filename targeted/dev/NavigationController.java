@@ -73,7 +73,7 @@ public class NavigationController extends BaseController {
 				if(controllerName!=null){
 					url.append(ApplicationConstants.DEV_CONTROLLER_NAME).append(controllerName);
 				}
-				if(templateKey != null && StringUtils.isNotEmpty(templateKey)){
+				if(!templateKey.equalsIgnoreCase("0")){
 					url.append(ApplicationConstants.DEV_TEMPLATE_KEY).append(templateKey);
 				}
 			}
