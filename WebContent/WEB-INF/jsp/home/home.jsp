@@ -11,7 +11,7 @@
 		<script src="<c:out value='${context}'/>/jQuery/jquery.blockUI.js" type="text/javascript"></script>
 		<script src="${context}/js/home/home.js" type="text/javascript"></script>
 	</head>
-	<body>
+	<body style="overflow-y:hidden;">
 		<%@ include file="../../jsp/jsp-fragment/global/header.jsp" %>
 		<input class = "hidden" value = "${commonStaticUrl}" id = "commonStaticUrl"/>
 		<input type="hidden" name="contextRoot" id="contextRoot" value="${context }"/>
@@ -39,7 +39,7 @@
 		            <spring:message code="alert.ajax.timeout" />
 		       </span>
 	        </div>
-			<div id ="alertTable">
+			<div id ="alertTable" >
 				<div class="tab-header" id="${TabKey}">
 				<c:forEach var="alertHeader" items="${alertHeaders}">
 					<div class="header width-full">
@@ -110,6 +110,8 @@
 				</div> 
 			</div>
 		</div> 
+		
+		
 		
 	
 	</body>
