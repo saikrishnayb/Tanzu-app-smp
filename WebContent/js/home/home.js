@@ -127,6 +127,7 @@ function getAlertCount(tabKey){
 			var alertMessage = $(response).find('#alertTable').html();
 			$("#alertTable").html(alertMessage); 
 			displayTable();
+			parent.resizeAfterPaginationChange();
 			hideLoading();
 		},error: function(jqXHR, textStatus, errorThrown) {
 			hideLoading();
