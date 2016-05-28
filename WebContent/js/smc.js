@@ -502,6 +502,7 @@ function changeCurrentTab(value){
 	if(value=="update"){
 		$("#updateDateLiId").show();
 		$("#upstreamVendorLiId").hide();
+		$("#massUploadLiId").hide();
 		selectCurrentNavigation("updateDateSubTab",'');
 	}
 	/*if(value=="dateValidation"){
@@ -510,26 +511,31 @@ function changeCurrentTab(value){
 	if(value=="production"){
 		$("#updateDateLiId").hide();
 		$("#upstreamVendorLiId").hide();
+		$("#massUploadLiId").hide();
 		selectCurrentNavigation("productionStatus",'');
 	}
 	if(value=="upstreamVendor"){
 		$("#updateDateLiId").hide();
+		$("#massUploadLiId").hide();
 		$("#upstreamVendorLiId").show();
 		selectCurrentNavigation("upStreamVendorSubTab",'');
 	}
 	if(value=="massUpload"){
 		$("#updateDateLiId").hide();
 		$("#upstreamVendorLiId").hide();
+		$("#massUploadLiId").show();
 		selectCurrentNavigation("massUploadSubTab",'');
 	}
 	if(value=="edi870"){
 		$("#updateDateLiId").hide();
 		$("#upstreamVendorLiId").hide();
+		$("#massUploadLiId").hide();
 		selectCurrentNavigation("edi870Error",'');
 	}
 	if(value=="dataconflict"){
 		$("#updateDateLiId").hide();
 		$("#upstreamVendorLiId").hide();
+		$("#massUploadLiId").hide();
 		selectCurrentNavigation("dataConflict",'');
 	}
 	
