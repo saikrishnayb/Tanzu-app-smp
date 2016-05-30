@@ -16,7 +16,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-ma
 		ON ST.TAB_ID = SF.TAB_ID 
 		JOIN SMC_ROLE_SEC_FUNCTIONS RSF
 		ON RSF.SEC_FUNC_ID = SF.SEC_FUNC_ID
-		WHERE	DASHBOARD_TAB = 1 AND RSF.ROLE_ID=#{roleId} AND  ST.STATUS='A'
+		WHERE	ST.DASHBOARD_TAB = #{dashBoardId} AND RSF.ROLE_ID=#{roleId} AND  ST.STATUS= #{status}
 		ORDER BY DISPLAY_SEQUENCE ASC
 		
 	</select>  
@@ -44,22 +44,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-ma
 				ST.TEMPLATE_KEY AS templateKey
 		
 		FROM	SMC.SMC_ALERTS SA
-		JOIN  	SMC.SMC_SEARCH_TEMPLATES ST
+		LEFT JOIN  	SMC.SMC_SEARCH_TEMPLATES ST
 		ON		SA.TEMPLATE_ID = ST.TEMPLATE_ID
 		
 		WHERE	SA.HEADER_ID = #{value}
 		
 		ORDER BY SA.DISPLAY_SEQUENCE ASC
-	</select>
-	
-	<select id="selectTabId" resultType="int">
-		SELECT	TAB_ID AS tabId
-				
-		FROM	SMC.SMC_TAB_MASTER
-		
-		WHERE	TAB_KEY = #{value}
-	</select>
-	
+	</select>	
 	<!--  
 	 * This method  is used to access the database for getting OrderFulfillment count.
 	 * Input : current SSOId

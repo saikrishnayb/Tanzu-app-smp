@@ -48,7 +48,7 @@ public class DefaultHomeDashboardService implements HomeDashboardService {
 	@Override
 	public List<Tab> selectTabs(UserContext userModel) {
 		// Get the list of Dashboard Tabs from the database.
-		List<Tab> tabs = homeDashboardDao.selectTabs(userModel.getRoleId());
+		List<Tab> tabs = homeDashboardDao.selectTabs(ApplicationConstants.DASHBOARD_TAB_ID,userModel.getRoleId(),ApplicationConstants.ACTIVE);
 		
 		 // Iterate through each tab and get the necessary Alert Headers and Alerts.
 		 for (Tab currentTab : tabs) {
@@ -101,7 +101,6 @@ public class DefaultHomeDashboardService implements HomeDashboardService {
 	
 	public List<AlertHeader> getAlerts(String sso,String tabKey){
 		LOGGER.debug("Inside getAlerts()");
-		//int tabId = homeDashboardDao.selectTabId(tabKey);
 		List<AlertHeader> headers = homeDashboardDao.selectHeaders(tabKey);
 		Set<String> alertIdList = new HashSet<String>();
 		String[] countFlagArray;
@@ -186,6 +185,10 @@ public class DefaultHomeDashboardService implements HomeDashboardService {
 
 		return alertCountMap;
 	}	
+	
+	/**
+	 * enum method to provide tabKey values to check
+	 **/
 	public enum TabKeyVal{
 		TAB_OF, TAB_OC, TAB_PROD,TAB_COMM
 	}

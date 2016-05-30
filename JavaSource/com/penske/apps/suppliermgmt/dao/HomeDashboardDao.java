@@ -3,6 +3,8 @@ package com.penske.apps.suppliermgmt.dao;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.penske.apps.suppliermgmt.model.Alert;
 import com.penske.apps.suppliermgmt.model.AlertHeader;
 import com.penske.apps.suppliermgmt.model.Tab;
@@ -27,12 +29,10 @@ import com.penske.apps.suppliermgmt.model.Tab;
 **/
 public interface HomeDashboardDao {
 
-	public List<Tab> selectTabs(int roleId);
+	public List<Tab> selectTabs(@Param("dashBoardId") int dashBoardId, @Param("roleId")int roleId, @Param("status") String status);
 
 	public List<AlertHeader> selectHeaders(String tabKey);
 	
-	public int selectTabId(String tabKey);
-
 	public List<Alert> selectAlerts(int headerId);
 	
 	public String getOrderFullfillmentActionItems(Map<String, Object> errorMap);
@@ -42,5 +42,5 @@ public interface HomeDashboardDao {
 	public String getProductionActionItems(Map<String, Object> errorMap);
 	
 	public String getCommunicationActionItems(Map<String, Object> errorMap);
-	
+		
 }

@@ -71,13 +71,13 @@
 									<c:choose>
 										<c:when test="${alert.actionable eq 1 and not empty alert.link and alert.count != 0}">
 											<c:choose>
-												<c:when test="${alert.alertName eq 'Upstream Vendor Production Date Changes'}">
+												<c:when test="${alert.alertKey eq 'ALRT_PROD_UP_VEND_DATE_CHG'}">
 													<a id="CountId-${TabKey}-${alert.templateKey }" onClick="redirectToTab('upStreamVendor');return false">${alert.count}</a>
 												</c:when>
-												<c:when test="${alert.alertName eq 'Data Responsibility Conflicts'}">
+												<c:when test="${alert.alertKey eq 'ALRT_PROD_DATA_CONFLICT'}">
 													<a id="CountId-${TabKey}-${alert.templateKey }" onClick="redirectToTab('dataConflict');return false">${alert.count}</a>
 												</c:when>
-												<c:when test="${alert.alertName eq 'Out of Compliance'}">
+												<c:when test="${alert.alertKey eq 'ALRT_PROD_DELAY_COMM_REQ'}">
 													<a id="CountId-${TabKey}-${alert.templateKey }" onClick="redirectToTab('dateValidation');return false">${alert.count}</a>
 												</c:when>
 												<c:otherwise>

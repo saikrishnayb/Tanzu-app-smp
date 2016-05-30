@@ -93,11 +93,13 @@ public class ApplicationConstants {
 	public static final String VENDOR_USER_URL = "admin-console/security/vendorUsers.htm";
 	
 	
-	/**Home Page Constants**/
+	/**TAB Key constants**/
 	public static final String ORDER_FULFILLMENT_TAB_KEY = "TAB_OF";
 	public static final String ORDER_CONFIRMATION_TAB_KEY = "TAB_OC";
 	public static final String COMMUNICATION_TAB_KEY = "TAB_COMM";
 	public static final String PRODUCTION_TAB_KEY = "TAB_PROD";
+	
+	public static final int DASHBOARD_TAB_ID = 1;
 	
 }
 
