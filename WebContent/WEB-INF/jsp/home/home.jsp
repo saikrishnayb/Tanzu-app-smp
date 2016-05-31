@@ -12,7 +12,6 @@
 		<script src="${context}/js/home/home.js" type="text/javascript"></script>
 	</head>
 	<body style="overflow-y:hidden;">
-		<%@ include file="../../jsp/jsp-fragment/global/header.jsp" %>
 		<input class = "hidden" value = "${commonStaticUrl}" id = "commonStaticUrl"/>
 		<input type="hidden" name="contextRoot" id="contextRoot" value="${context }"/>
 		<c:set var = "flag" value = "Y"></c:set>

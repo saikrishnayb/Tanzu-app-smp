@@ -116,7 +116,7 @@ function getAlertCount(tabKey){
 	var url=getContextRoot()+"/home/getAlerts.htm?tabKey="+tabKey;
 	$("#statusError").hide();
 	$("#timeoutMessage").hide();
-	//showLoading();
+	showLoading();
 	$.ajax({
 		url     :  url,
 		type    : "GET",
