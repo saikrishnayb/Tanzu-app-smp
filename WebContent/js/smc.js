@@ -245,9 +245,9 @@ function redirect(tabName,templateKey){
 		}
 	if(path != ""){
 		
-		$('nav ul li.current',parent.document).removeClass('current');
-		$('a[id$="' + tabName + '"]',parent.document).parent('li').addClass('current');
-		
+		//$('nav ul li.current',parent.document).removeClass('current');
+		//$('a[id$="' + tabName + '"]',parent.document).parent('li').addClass('current');
+		selectCurrentNavigation(tabName);
 		 $.ajax({
 			  type: 'POST',
 			  url:  getContextRoot()+'/navigation/navigate.htm',
