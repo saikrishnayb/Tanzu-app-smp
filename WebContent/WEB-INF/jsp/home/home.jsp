@@ -48,7 +48,7 @@
 									<th>
 										<span>${alertHeader.headerName}</span>
 										<c:if test="${not empty alertHeader.helpText}">
-										<img rel="tooltip" src="${commonStaticUrl}/images/help.png" class="centerImage help-text-image handCursor" title="${alertHeader.helpText}"/>
+										<img rel="tooltip" src="${commonStaticUrl}/images/help_blue.png" class="centerImage help-text-image handCursor" title="${alertHeader.helpText}"/>
 										</c:if>
 									</th>
 
@@ -62,7 +62,7 @@
 									<td>
 										<span>${alert.alertName}</span>
 										<c:if test="${not empty alert.helpText}">
-										<img rel="tooltip" src="${commonStaticUrl}/images/help.png" class="centerImage help-text-image handCursor" title="${alert.helpText}"/>
+										<img rel="tooltip" src="${commonStaticUrl}/images/help_blue.png" class="centerImage help-text-image handCursor" title="${alert.helpText}"/>
 										</c:if>
 									</td>
 
