@@ -7,6 +7,8 @@ public interface IUserConstants {
 	 * Represents the error code indicating that the user already exists in LDAP server.
 	 */
 	public static final int DUP_SSO_ERROR_CODE = 1;
+	
+	public static final int NOT_STANDARD_SSO_ERROR_CODE = 11;
 
 
 	public static final int WEBSERVICE_RESPONSE_ERROR_CODE = 2;
@@ -110,4 +112,5 @@ public interface IUserConstants {
 	 */
 	public static final String USER_NOT_FOUND_LDAP_ERROR_MESSAGE = "Cant find user in LDAP";
 
+	public static final String NOT_STANDARD_SSO_ERROR_MESSAGE = "UserID does not conform to standards.'";
 }

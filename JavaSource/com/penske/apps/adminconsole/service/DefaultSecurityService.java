@@ -11,15 +11,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.penske.apps.adminconsole.dao.SecurityDao;
-import com.penske.apps.adminconsole.model.Components;
 import com.penske.apps.adminconsole.model.HeaderUser;
 import com.penske.apps.adminconsole.model.Org;
 import com.penske.apps.adminconsole.model.Permission;
 import com.penske.apps.adminconsole.model.Role;
 import com.penske.apps.adminconsole.model.SignatureInitial;
-import com.penske.apps.adminconsole.model.Template;
 import com.penske.apps.adminconsole.model.TemplateComponents;
-import com.penske.apps.adminconsole.model.TemplatePoAssociation;
 import com.penske.apps.adminconsole.model.TemplatePoCategorySubCategory;
 import com.penske.apps.adminconsole.model.User;
 import com.penske.apps.adminconsole.model.UserDept;
@@ -474,10 +471,11 @@ public class DefaultSecurityService implements SecurityService{
 		if(userSearchForm.getUserTypeId() > 0)
 			sqlSearchForm.setUserTypeId(userSearchForm.getUserTypeId());
 		
+		sqlSearchForm.setOrgId(currentUser.getOrgId());
 		List<User> userList = securityDao.getUserSearchList(sqlSearchForm);
 		List<Role> roleList = securityDao.getPenskeRoles(currentUser.getRoleId());
 		
-		if(currentUser.getUserTypeId() == ApplicationConstants.PENSKE_USER){
+		if(userSearchForm.getUserTypeId() == ApplicationConstants.PENSKE_USER){
 			Iterator<User> userIt = userList.iterator();
 			while(userIt.hasNext()){
 				User user = userIt.next();
@@ -495,7 +493,7 @@ public class DefaultSecurityService implements SecurityService{
 					}
 				}
 			}
-		} else if(currentUser.getUserTypeId() == ApplicationConstants.SUPPLIER_USER){
+		} else if(userSearchForm.getUserTypeId() == ApplicationConstants.SUPPLIER_USER){
 			roleList = securityDao.getVendorRoles(true,currentUser.getRoleId());
 			Iterator<User> userIt = userList.iterator();
 			while(userIt.hasNext()){
@@ -664,9 +662,10 @@ public class DefaultSecurityService implements SecurityService{
 	@Override
 	public List<Org> getOrgList(HeaderUser currentUser) {
 		List<Org> orgList=securityDao.getOrgList(currentUser);
-		if(currentUser.getUserTypeId() != ApplicationConstants.SUPPLIER_USER){
+	/*	if(currentUser.getUserTypeId() != ApplicationConstants.SUPPLIER_USER){
 			orgList.addAll(securityDao.getAllVendorOrg(currentUser));
 		}
+	*/
 		return orgList;
 	}
 
@@ -729,6 +728,8 @@ public class DefaultSecurityService implements SecurityService{
 				}
 			}
 		}
+		//remove all the unselected vendors
+		securityDao.removeVendorAssocFromDescendent(orgId);
 	}
 
 	@Override
@@ -740,116 +741,6 @@ public class DefaultSecurityService implements SecurityService{
 	@Override
 	public List<Integer> getOrgVendor(int orgId) {
 		return securityDao.getOrgVendor(orgId);
-	}
-	@Override
-	public List<Template> getAllTemplates(){
-		return securityDao.getAllTemplates();
-	}
-	@Override
-	public List<TemplatePoAssociation> getAllPoAssociation(){
-		return securityDao.getAllPoAssociation();
-	}
-	@Override
-	public Template getTemplatesById(int templateID){
-		return securityDao.getTemplatesById(templateID);
-	}
-	@Override
-	public List<Components> getAllComponent(){
-		return securityDao.getAllComponent();
-	}
-	
-	@Override
-	@Transactional
-	public void addTemplate(Template template) {
-		securityDao.addTemplate(template);
-		int templateID=template.getTemplateID();
-		List<Components> componentList=template.getComponentList();
-		if(componentList !=null && !componentList.isEmpty()){
-			addTemplateComponent(componentList, templateID,template);
-		}
-	}
-
-	@Override
-	@Transactional
-	public void deleteTemplate(int templateID) {
-		securityDao.deleteTemplate(templateID);
-		securityDao.deleteTemplateComponents(templateID);
-	}
-	
-	@Override
-	public List<Components> getTemplateComponentById(List<Components> compList,int templateId){
-		List<Components> availableCompList= securityDao.getTemplateComponentById(templateId);
-		if(compList !=null && !compList.isEmpty() && availableCompList !=null && !availableCompList.isEmpty()){
-			return getMassageCompList(compList, availableCompList);
-		}else{
-			return compList;
-		}
-	}
-	private List<Components> getMassageCompList(List<Components> compList,List<Components> availableCompList){
-		for (Components components : compList) {
-			for (Components availComponents : availableCompList) {
-				if(components.getComponentId() !=null && availComponents.getComponentId() !=null 
-						&& components.getComponentId().equalsIgnoreCase(availComponents.getComponentId())){
-					if(availComponents.getEditRequiredStr() !=null 
-							&& availComponents.getEditRequiredStr().equalsIgnoreCase("R")){
-						components.setEditable(true);
-						components.setRequired(true);
-					}else if(availComponents.getEditRequiredStr() !=null 
-							&& availComponents.getEditRequiredStr().equalsIgnoreCase("E")){
-						components.setEditable(true);
-					}
-					if(availComponents.getExcelStr() ==1){
-						components.setExcel(true);
-					}
-					if(availComponents.getDispOtherPOStr() ==1){
-						components.setDispOtherPO(true);
-					}
-				}
-					
-			}
-		}
-		return compList;
-	}
-
-	@Override
-	@Transactional
-	public void updateTemplate(Template template) {
-		securityDao.updateTemplate(template);
-		int templateID=template.getTemplateID();
-		securityDao.deleteTemplateComponents(templateID);
-		List<Components> componentList=template.getComponentList();
-		if(componentList !=null && !componentList.isEmpty()){
-			addTemplateComponent(componentList, templateID,template);
-		}
-	}
-	
-	private void addTemplateComponent(List<Components> componentList,int templateID,Template template){
-		for (Components components : componentList) {
-			Components dbComponents=new Components();
-			dbComponents.setTemplateId(templateID);
-			dbComponents.setComponentId(components.getComponentId());
-			dbComponents.setEditRequiredStr("I"); //Check with Dav. //TODO
-			if(components.isRequired()){
-				dbComponents.setEditRequiredStr("R");
-			}
-			if(!components.isRequired() && components.isEditable()){
-				dbComponents.setEditRequiredStr("E");
-			}
-			if(components.isDispOtherPO()){
-				dbComponents.setDispOtherPOStr(1);
-			}
-			if(components.isExcel()){
-				dbComponents.setExcelStr(1);
-			}
-			dbComponents.setCreatedBy(template.getCreatedBy());
-			dbComponents.setModifiedBy(template.getModifiedBy());
-			securityDao.addTemplateComponents(dbComponents);
-		}
-	}
-
-	@Override
-	public List<Integer> findTemplateExist(Template template) {
-		return securityDao.findTemplateExist(template);
 	}
 	
 	@Override
@@ -870,7 +761,7 @@ public class DefaultSecurityService implements SecurityService{
 	@Override
 	public List<User> getVendorUserList(HeaderUser currentUser) {
 		List<User> userList=securityDao.getVendorUserList(currentUser);
-		if(currentUser.getUserTypeId()==ApplicationConstants.SUPPLIER_USER){
+	//	if(currentUser.getUserTypeId()==ApplicationConstants.SUPPLIER_USER){
 			List<Role> roleList = securityDao.getVendorRoles(true,currentUser.getRoleId());
 			Iterator<User> userIt = userList.iterator();
 			while(userIt.hasNext()){
@@ -886,7 +777,7 @@ public class DefaultSecurityService implements SecurityService{
 					userIt.remove();
 				}
 			}
-		}
+	//	}
 		return userList;
 	}
 

@@ -55,4 +55,5 @@ public interface CategoryManagementDao {
 	public int getAssociationExist(@Param("poCategoryId") int poCategoryId,@Param("subCategoryId") int subCategoryId);
 	
 	public int getAnyOtherAssociationExist(@Param("poCatId")  int poCatId,@Param("subCatId") int subCatId,@Param("assId") int assId);
+	
 }

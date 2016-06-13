@@ -283,7 +283,72 @@ PO_SUBCATEGORY as subCategoryName
 				c.sub_Category_id = #{subCategoryId}
 	</update>
 	
+<!-- Template Page Start -->
+	<select id="getAllTemplates"  resultType="com.penske.apps.adminconsole.model.Template">
+ 		 SELECT TEMPLATE_ID as templateID, TEMPLATE_HASH as templateHash, TEMPLATE_NAME as templateName,
+ 		 TEMPLATE_DESC as templateDesc, PO_CATEGORY_ASSOC_ID as poCatAssID,
+		 COALESCE(CATEGORY,'') as poCatDesc,
+		 COALESCE(SUBCATEGORY,'') as poSubCatDesc   
+		 FROM SMC.SMC_TEMPLATE_MASTER 	INNER JOIN	SMC.V_SMC_PO_CATEGORY_COMBINATIONS 
+			ON PO_CATEGORY_ASSOC_ID= ASSOC_ID
+ 	</select>
+ 	
+ 	<select id="getAllPoAssociation"  resultType="com.penske.apps.adminconsole.model.TemplatePoAssociation">
+		SELECT CATEGORY || '/' || SUBCATEGORY as poCatSubCatDesc, ASSOC_ID as poCatAssocID FROM SMC.V_SMC_PO_CATEGORY_COMBINATIONS
+ 	</select>
+ 	<select id="getTemplatesById"  resultType="com.penske.apps.adminconsole.model.Template">
+ 		SELECT TEMPLATE_ID as templateID, TEMPLATE_HASH as templateHash, TEMPLATE_NAME as templateName,
+ 		 TEMPLATE_DESC as templateDesc, PO_CATEGORY_ASSOC_ID as poCatAssID  FROM SMC.SMC_TEMPLATE_MASTER 
+ 		 WHERE  TEMPLATE_ID=#{templateID}
+ 	</select>
+ 	
+ 	<select id="getAllComponent"  resultType="com.penske.apps.adminconsole.model.Components">
+ 		SELECT COMPONENT_ID as componentId, DISPLAY_NAME as componentName,FULL_NAME as fullName FROM SMC.V_SMC_AVAILABLE_COMPONENTS
+ 	</select>
+ 	
+ 	<insert id="addTemplate">
+ 		INSERT 	INTO SMC.SMC_TEMPLATE_MASTER  
+ 				(TEMPLATE_HASH,TEMPLATE_DESC,TEMPLATE_NAME,
+ 				CREATED_BY,MODIFIED_BY,PO_CATEGORY_ASSOC_ID) 
+ 		VALUES 	(#{templateHash},#{templateDesc},#{templateDesc}, #{createdBy},#{createdBy},#{poCatAssID})
+ 		 <selectKey resultType="int" keyProperty="templateID" order="AFTER" >
+           SELECT IDENTITY_VAL_LOCAL() as identity_val FROM SYSIBM.SYSDUMMY1
+		</selectKey> 
+ 	</insert>
+ 	
+ 	<insert id="addTemplateComponents">
+ 		INSERT INTO SMC.SMC_TEMPLATE_COMPONENTS
+ 		(TEMPLATE_ID, COMPONENT_ID, COMPONENT_ACCESS, AVAIL_TO_OTHER_PO, EXPORT_TO_EXCEL, 
+ 		CREATED_BY, CREATED_DATE, MODIFIED_BY, MODIFIED_DATE)
+ 		VALUES 	(#{templateId},#{componentId},#{editRequiredStr},#{dispOtherPOStr},#{excelStr},#{createdBy}
+ 		,CURRENT TIMESTAMP,#{modifiedBy},CURRENT TIMESTAMP)
+ 	</insert>
 	
+	<update id="updateTemplate">
+ 		UPDATE SMC.SMC_TEMPLATE_MASTER 
+		SET TEMPLATE_HASH=#{templateHash},TEMPLATE_DESC=#{templateDesc},TEMPLATE_NAME=#{templateDesc},
+ 			MODIFIED_BY=#{createdBy},PO_CATEGORY_ASSOC_ID=#{poCatAssID}
+ 		WHERE TEMPLATE_ID = #{templateID}
+ 	</update>
+		
+ 	<delete  id="deleteTemplate">
+ 		DELETE 	FROM SMC.SMC_TEMPLATE_MASTER 
+ 		WHERE 	TEMPLATE_ID = #{templateID}
+ 	</delete>
+ 	
+ 	<delete  id="deleteTemplateComponents">
+ 		DELETE 	FROM SMC.SMC_TEMPLATE_COMPONENTS
+ 		WHERE 	TEMPLATE_ID = #{templateID}
+ 	</delete>
+ 	<select id="getTemplateComponentById" resultType="com.penske.apps.adminconsole.model.Components">
+ 		Select TEMPLATE_ID as templateId, COMPONENT_ID as componentId, COMPONENT_ACCESS as editRequiredStr, AVAIL_TO_OTHER_PO as dispOtherPOStr, EXPORT_TO_EXCEL as excelStr
+ 			FROM SMC.SMC_TEMPLATE_COMPONENTS WHERE TEMPLATE_ID=#{templateID}
+ 	</select>
+
+ 	<select id="findTemplateExist"  resultType="int">
+ 		Select TEMPLATE_ID from SMC.SMC_TEMPLATE_MASTER WHERE TEMPLATE_HASH=#{templateHash} OR PO_CATEGORY_ASSOC_ID=#{poCatAssID}
+ 	</select>
+<!-- Template Page End -->	
 		
 		
 	

@@ -8,7 +8,7 @@ $(document).ready(function() {
 		
 		// Validate the form.
 		errorMsg = validateEditForm($form);
-		
+		displayFlag=false;
 		// If no error message was returned, hide any errors and submit the form data.
 		if (errorMsg.length == 0) {
 			$error.hide();

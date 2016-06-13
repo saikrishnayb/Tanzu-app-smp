@@ -120,7 +120,7 @@ $(document).ready(function() {
 	$tandcTable.on("click", ".view-t-and-c", function() {
 		var $this = $(this);
 		var versionNumber = $this.closest('.t-and-c-row').find('.tandc-version-number').val();
-		
+		displayFlag=false;
 		var $getTermsAndConditionsPromise = $.get("view-t-and-c.htm", {versionNumber:versionNumber});
 		$getTermsAndConditionsPromise.done(function(data) {
 			//$viewModal.html(data);

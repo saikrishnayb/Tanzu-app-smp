@@ -125,7 +125,7 @@ function validateForm() {
 	var $roleDescription =$('#roleDescription');
 	
 	var errorMsg = '';
-	if ($roleName.val().length == 0) {
+	if ($roleName.val().trim().length == 0) {
 		$roleName.addClass('errorMsgInput');
 		errorMsg = 'A required field is missing.';
 	}

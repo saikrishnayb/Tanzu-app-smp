@@ -19,11 +19,11 @@
 <body>
 	<%@ include file="../../../jsp/jsp-fragment/global/header.jsp"%>
 	<div id="mainContent" class="borderTop">
-		<%@ include file="../../../jsp/jsp-fragment/admin-console/security/left-nav.jsp"%>
+		<%@ include file="../../../jsp/jsp-fragment/admin-console/components/left-nav.jsp"%>
 		<div class="leftNavAdjacentContainer">
 			<div class="full-width">
 				<span class="floatRight addRow">
-					<a href="${pageContext.request.contextPath}/admin-console/security/create-modify-template-page.htm?isCreatePage=true &templateId=0">Create Template</a>
+					<a href="${pageContext.request.contextPath}/admin-console/components/create-modify-template-page.htm?isCreatePage=true &templateId=0">Create Template</a>
 					<img src="${commonStaticUrl}/images/add.png" class="centerImage handCursor" alt="Add Row"/>
 				</span>
 				<table id="template-table" >
@@ -31,6 +31,8 @@
 						<tr>
 							<th class="viewCol"></th>
 							<th>Template ID</th>
+							<th>PO Category</th>
+							<th>PO Sub Category</th>
 							<th>Description</th>
 							
 						</tr>
@@ -44,6 +46,8 @@
 								<input  class="template-id" type=hidden value="${temp.templateID}"/>
 							</td>
 							<td>${temp.templateID}</td>
+							<td class="template-Cat">${temp.poCatDesc}</td>
+							<td class="template-Cat">${temp.poSubCatDesc}</td>
 							<td class="template-name">${temp.templateDesc}</td>
 							
 						</tr>
@@ -55,5 +59,5 @@
 	</div>
 </body>
 <!-- Scripts -->		
-<script src="${context}/js/admin-console/security/template-form.js"	type="text/javascript"></script>
+<script src="${context}/js/admin-console/components/template-form.js"	type="text/javascript"></script>
 </html>

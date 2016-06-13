@@ -37,7 +37,14 @@ $(document).ready(function() {
 											//This will hide "Showing 1 to 5 of 11 entries" if we have 0 rows.
 											var infoRow = $(this).parent().children('div.dataTables_info');
 											
-											infoRow.css("display", "none");
+											//infoRow.css("display", "none");
+											var rowCount = this.fnSettings().fnRecordsDisplay();
+											if (rowCount > 0){
+												infoRow.css("display", "block");
+											} 
+											else{
+												infoRow.css("display", "none");
+											}
 										}
 	});
 	

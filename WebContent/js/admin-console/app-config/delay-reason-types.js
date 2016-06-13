@@ -47,7 +47,7 @@ $(document).ready(function() {
 		open: function(event, ui) { }
 	});
 	$('.add-delay-type').on("click", function(){
-		
+		displayFlag=false;
 		var $getAddDelayTypeModalPromise = $.get("get-add-delay-type-modal-page.htm");
 		$getAddDelayTypeModalPromise.done( function(data){
 			
@@ -122,7 +122,7 @@ $(document).ready(function() {
 		var $this = $(this);
 		var delayId = $this.closest("tr").find('.delay-type-id').val();
 		var delayType = $this.closest("tr").find('.delay-type').text();
-		
+		displayFlag=false;
 		var $getDeleteDelayTypeModalPromise = $.get("get-delete-delay-type-modal-page.htm", {typeId:delayId, delayType:delayType});
 		$getDeleteDelayTypeModalPromise.done( function(data){
 			
@@ -135,7 +135,7 @@ $(document).ready(function() {
 		// get id value in hidden input field
 		var typeId = $deleteDelayTypeModal.find('.delay-type-id').val();
 		var intId = parseInt(typeId);
-		
+		displayFlag=false;
 		// access controller and delete delay type from database
 		var $getDeleteDelayTypePromise = $.get("delete-delay-type.htm", {typeId:intId});
 		$getDeleteDelayTypePromise.done( function(){
@@ -170,8 +170,11 @@ $(document).ready(function() {
 		var $nameField = $('#edit-delay-type-name');
 		var changedName = $nameField.val();
 		var $id = $('#hidden-type-id').val();
+		var $oldVal =$('#hidden-type-val').val();
 		var intId = parseInt($id);
-		
+		if($oldVal == null || $oldVal==undefined){
+			$oldVal="";
+		}
 		$errorDiv.addClass("hidden");
 		var validated = validateFormTextFields($nameField);
 		
@@ -181,7 +184,7 @@ $(document).ready(function() {
 			var editDelayTypeFormMapping = $editForm.attr('action');
 			var $editDelayTypePromise = $.ajax({ 
 											url: editDelayTypeFormMapping, 
-											data: {typeId:$id, delayType:changedName},
+											data: {typeId:$id,oldVal:$oldVal, delayType:changedName},
 											global: false} );
 			
 			$editDelayTypePromise.done( function(data){

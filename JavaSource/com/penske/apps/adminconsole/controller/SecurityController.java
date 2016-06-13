@@ -237,27 +237,13 @@ public class SecurityController {
 		return mav;
 	}
 	
-	@RequestMapping(value ={"/template"})
-	public ModelAndView getTemplatePage(HttpSession session) {
-		ModelAndView mav = new ModelAndView("/admin-console/security/template");
-		HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
-		boolean isSupplier = currentUser.getUserTypeId() == ApplicationConstants.SUPPLIER_USER;
-		// If the user is a supplier.
-		if (isSupplier) {
-		}
-		else {
-		}
-		mav.addObject("hasBeenSearched", false);
-		mav.addObject("templateList", securityService.getAllTemplates());
-		return mav;
-	}
-	
 	private ModelAndView getVendorPageData(HttpSession session){
 		ModelAndView mav = new ModelAndView("/admin-console/security/vendorUsers");
 		HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
 		mav.addObject("userList", securityService.getVendorUserList(currentUser));
 		// If the user is a supplier.
-		mav.addObject("roleList", securityService.getVendorRoles(false,currentUser.getRoleId()));
+		boolean isVendor = currentUser.getUserTypeId() == ApplicationConstants.SUPPLIER_USER;
+		mav.addObject("roleList", securityService.getVendorRoles(isVendor,currentUser.getRoleId()));
 		mav.addObject("hasBeenSearched", false);
 		mav.addObject("userTypeList", securityService.getUserTypes());
 		mav.addObject("accessVendor",CommonUtils.hasAccess(ApplicationConstants.VENDORUSER, session));

@@ -19,6 +19,7 @@ if(!isCalled){
 	//processingImageAndTextHandler('visible','Loading page data...');
 }
 
+var displayFlag=true;
 $(document).ready(function() {
 	var $document = $(document);
 	//Turns the AJAX cache off
@@ -31,8 +32,10 @@ $(document).ready(function() {
 		var $aName=$this.text();
 		if($aName=='Edit' || $aName=='copy' || $aName=='Search' || $aName.indexOf('Create')>-1 ){
 			if(isInHideList($this)){
-				processingImageAndTextHandler('visible','Loading data...');
-				isCalled=true;
+				if(displayFlag){
+					processingImageAndTextHandler('visible','Loading data...');
+					isCalled=true;
+				}
 			}
 		}
 	});
@@ -43,7 +46,9 @@ $(document).ready(function() {
 	
 	//spinner modal listener
 	$document.ajaxSend(function(){
-		processingImageAndTextHandler('visible','Ajax Action Sent..');
+		if(displayFlag){
+			processingImageAndTextHandler('visible','Ajax Action Sent..');
+		}
 	});
 
 	$document.ajaxComplete(function() {
@@ -51,7 +56,9 @@ $(document).ready(function() {
 	});
 	
 	$document.ajaxStart(function() {
-		processingImageAndTextHandler('visible','Ajax Action Started..');
+		if(displayFlag){
+			processingImageAndTextHandler('visible','Ajax Action Started..');
+		}
 	});
 
 	processingImageAndTextHandler('hidden');

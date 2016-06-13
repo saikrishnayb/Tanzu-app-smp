@@ -4,7 +4,7 @@
 
 	<!-- Delay Management Page SQL -->
   	<select id="getDelays" resultType="com.penske.apps.adminconsole.model.DelayModel"> 
- 		SELECT 
+ 		<!-- SELECT 
 			DLAY.DELAY_ID as delayId, 
 			DLAY.DATE_TYPE as dateTypeId,
 			DLAY.DATE_TYPE as dateType,
@@ -13,7 +13,8 @@
 			DLAY.DELAY_TYPE_ID as delayTypeId,
 			DLTY.DELAY_TYPE as delayType,
 			DLAY.DELAY_REASON_ID as delayReasonId,
-			DRSN.DELAY_REASON as delayReason	 
+			DRSN.DELAY_REASON as delayReason,
+			 LOOKUP.LOOKUP_DESC as  dateTypeDesc 
 		FROM 
 			SMC.SMC_DELAYS DLAY
 		LEFT JOIN
@@ -25,6 +26,33 @@
 		LEFT JOIN
 			SMC.SMC_PO_CATEGORY PCAT
 		ON PCAT.PO_CATEGORY_ID = DLAY.PO_CATEGORY
+		LEFT JOIN
+	        SMC.SMC_LOOKUP LOOKUP
+         ON DLAY.DATE_TYPE=LOOKUP.LOOKUP_VALUE
+         -->
+         
+SELECT DLAY.DELAY_ID as delayId, 
+			DLAY.DATE_TYPE as dateTypeId,
+			DLAY.DATE_TYPE as dateType,
+			DLAY.PO_CATEGORY as poCategoryId, 
+			PCAT.PO_CATEGORY as poCategory,
+			LOOKUP.LOOKUP_DESC as  dateTypeDesc,
+             ASSOC.DELAY_TYPE_ID as delayTypeId,
+            ASSOC.DELAY_REASON_ID as delayReasonId,
+            (SELECT DRSN.DELAY_REASON FROM SMC.SMC_DELAY_REASONS as DRSN WHERE DRSN.DELAY_REASON_ID=ASSOC.DELAY_REASON_ID) as delayReason,
+(SELECT DLTY.DELAY_TYPE FROM SMC.SMC_DELAY_TYPES as DLTY WHERE DLTY.DELAY_TYPE_ID=ASSOC.DELAY_TYPE_ID) as delayType
+
+		FROM 
+			SMC.SMC_DELAYS DLAY
+		LEFT JOIN
+			SMC.SMC_PO_CATEGORY PCAT
+		ON PCAT.PO_CATEGORY_ID = DLAY.PO_CATEGORY
+		LEFT JOIN
+	        SMC.SMC_LOOKUP LOOKUP
+         ON DLAY.DATE_TYPE=LOOKUP.LOOKUP_VALUE
+       LEFT JOIN 
+         SMC.SMC_DELAY_REASONS_TYPES_ASSOC ASSOC
+       ON DLAY.DELAY_ASSOC_ID=ASSOC.DELAY_ASSOC_ID
  	</select>
  	<select id="checkDelay" resultType="Integer">
  		SELECT 1
@@ -35,9 +63,11 @@
 		AND
 			PO_CATEGORY = #{poCategoryId}
 		AND
-			DELAY_TYPE_ID = #{delayTypeId}
+		DELAY_ASSOC_ID =#{delayTypeReasonId}
+		<!-- 	DELAY_TYPE_ID = #{delayTypeId}
 		AND
 			DELAY_REASON_ID = #{delayReasonId}
+			 -->
  	</select>
  	<select id="getDateTypes" resultType="Integer">
  		SELECT
@@ -55,23 +85,25 @@
  		AND
  			DLAY.PO_CATEGORY = #{poCategoryId}
  		AND
- 			DLAY.DELAY_TYPE_ID = #{delayTypeId}
- 		AND
- 			DLAY.DELAY_REASON_ID = #{delayReasonId}
+ 			DELAY_ASSOC_ID =#{delayTypeReasonId}
+		<!-- 	DELAY_TYPE_ID = #{delayTypeId}
+		AND
+			DELAY_REASON_ID = #{delayReasonId}
+			 -->
  	</select>
  	<select id="getPOs" resultType="com.penske.apps.adminconsole.model.DelayPoModel">
  		SELECT
  			SMC.SMC_PO_CATEGORY.PO_CATEGORY_ID as categoryId,
  			SMC.SMC_PO_CATEGORY.PO_CATEGORY as categoryName
  		FROM
- 			SMC.SMC_PO_CATEGORY
+ 			SMC.SMC_PO_CATEGORY ORDER BY UPPER(PO_CATEGORY) ASC
  	</select>
 	<select id="getReasons" resultType="com.penske.apps.adminconsole.model.DelayReasonModel">
 		SELECT
 			SMC.SMC_DELAY_REASONS.DELAY_REASON_ID as reasonId,
 			SMC.SMC_DELAY_REASONS.DELAY_REASON	as delayReason
 		FROM
-			SMC.SMC_DELAY_REASONS
+			SMC.SMC_DELAY_REASONS ORDER BY UPPER(DELAY_REASON) ASC
 	</select>
 	<select id="getAssocReasonIds" resultType="Integer">
 		SELECT
@@ -90,20 +122,16 @@
 		WHERE
 			SMC.SMC_DELAY_REASONS.DELAY_REASON_ID = #{reasonId}
 	</select>
-	<select id="getTypeId" resultType="int">
-		SELECT
-			SMC.SMC_DELAYS.DELAY_TYPE_ID
-		FROM
-			SMC.SMC_DELAYS
-		WHERE
-			SMC.SMC_DELAYS.DELAY_ID = #{delayId}
+	<select id="getTypeId" resultType="com.penske.apps.adminconsole.model.DelayModel">
+		SELECT DELAY_ASSOC_ID as delayTypeReasonId,DATE_TYPE as dateType
+		FROM SMC.SMC_DELAYS WHERE DELAY_ID = #{delayId}
 	</select>
 	<select id="getTypes" resultType="com.penske.apps.adminconsole.model.DelayTypeModel">
 		SELECT
 			SMC.SMC_DELAY_TYPES.DELAY_TYPE_ID as typeId,
 			SMC.SMC_DELAY_TYPES.DELAY_TYPE as delayType
 		FROM
-			SMC.SMC_DELAY_TYPES
+			SMC.SMC_DELAY_TYPES ORDER BY UPPER(DELAY_TYPE) ASC
 	</select>
 	<update id="modifyDelay">
 		UPDATE
@@ -111,17 +139,16 @@
 		SET
 			DLAY.DATE_TYPE = #{dateTypeId},
 			DLAY.PO_CATEGORY = #{poCategoryId},
-			DLAY.DELAY_TYPE_ID = #{delayTypeId},
-			DLAY.DELAY_REASON_ID = #{delayReasonId}
+			DELAY_ASSOC_ID =  #{delayTypeReasonId}
 		WHERE
 			DLAY.DELAY_ID = #{delayId}
 	</update>
 	<insert id="addDelay" useGeneratedKeys="true" keyProperty="delayId">
 		INSERT INTO
 		SMC.SMC_DELAYS
-			(DATE_TYPE, PO_CATEGORY, DELAY_TYPE_ID, DELAY_REASON_ID)
+			(DATE_TYPE, PO_CATEGORY, DELAY_ASSOC_ID)
 		VALUES 
-			(#{dateTypeId}, #{poCategoryId}, #{delayTypeId}, #{delayReasonId} )
+			(#{dateTypeId}, #{poCategoryId}, #{delayTypeReasonId} )
 	</insert>
 	<insert id="addDelayAssoc">
 		INSERT INTO
@@ -135,12 +162,12 @@
 		WHERE
 			DELAY_ID = #{delayId}
 	</delete>
-	<delete id="deleteDelaysWithType">
+	<!-- <delete id="deleteDelaysWithType">
 		DELETE FROM
 			SMC.SMC_DELAYS
 		WHERE
 			DELAY_TYPE_ID = #{typeId}
-	</delete>
+	</delete> -->
 	<delete id="deleteDelaysWithReason">
 		DELETE FROM
 			SMC.SMC_DELAYS
@@ -198,7 +225,8 @@
 			SMC.SMC_DELAY_REASONS_TYPES_ASSOC.DELAY_TYPE_ID as delayTypeId,
 			SMC.SMC_DELAY_REASONS_TYPES_ASSOC.DELAY_REASON_ID as delayReasonId,
 			SMC.SMC_DELAY_TYPES.DELAY_TYPE as delayType,
-			SMC.SMC_DELAY_REASONS.DELAY_REASON as delayReason
+			SMC.SMC_DELAY_REASONS.DELAY_REASON as delayReason,
+			DELAY_ASSOC_ID  as delayTypeReasonId
 		FROM
 			SMC.SMC_DELAY_REASONS_TYPES_ASSOC,
 			SMC.SMC_DELAY_TYPES,
@@ -236,7 +264,7 @@
 		FROM
 			SMC.SMC_DELAY_REASONS
 		WHERE
-			DELAY_REASON = #{reasonName}
+			UPPER(DELAY_REASON) = UPPER(#{reasonName})
 	</select>
 	<update id="modifyDelayReason">
 		UPDATE
@@ -273,9 +301,92 @@
 			DELAY_REASON = #{reasonName}
 	</select>
 	<insert id="addDelayAssociation">
-		INSERT INTO
-			SMC.SMC_DELAY_REASONS_TYPES_ASSOC
+		INSERT INTO SMC.SMC_DELAY_REASONS_TYPES_ASSOC ( DELAY_TYPE_ID, DELAY_REASON_ID)
 		VALUES
 			( #{typeId}, #{reasonId} )
+		<selectKey resultType="int" keyProperty="delayAssocid" order="AFTER" >
+           SELECT IDENTITY_VAL_LOCAL() as identity_val FROM SYSIBM.SYSDUMMY1
+		</selectKey> 
 	</insert>
+	<select  id="getTypeReasonAssoc" resultType="com.penske.apps.adminconsole.model.DelayTypeReason">
+		SELECT	DELAY_REASON_ID as reasonId,DELAY_TYPE_ID as typeId
+		FROM
+			SMC.SMC_DELAY_REASONS_TYPES_ASSOC
+		WHERE DELAY_ASSOC_ID=#{typeReasonId}
+	</select>
+	
+	<select  id="getTypeReasonAssocDate" resultType="com.penske.apps.adminconsole.model.DelayTypeReason">
+	SELECT
+			SMC.SMC_DELAY_REASONS_TYPES_ASSOC.DELAY_TYPE_ID as typeId,
+			SMC.SMC_DELAY_REASONS_TYPES_ASSOC.DELAY_REASON_ID as reasonId,
+			SMC.SMC_DELAY_TYPES.DELAY_TYPE as typeVal,
+			SMC.SMC_DELAY_REASONS.DELAY_REASON as reasonVal
+		FROM
+			SMC.SMC_DELAY_REASONS_TYPES_ASSOC,
+			SMC.SMC_DELAY_TYPES,
+			SMC.SMC_DELAY_REASONS
+		WHERE
+			SMC.SMC_DELAY_REASONS_TYPES_ASSOC.DELAY_TYPE_ID = SMC.SMC_DELAY_TYPES.DELAY_TYPE_ID
+		AND
+			SMC.SMC_DELAY_REASONS_TYPES_ASSOC.DELAY_REASON_ID = SMC.SMC_DELAY_REASONS.DELAY_REASON_ID
+	   AND  DELAY_ASSOC_ID=#{typeReasonId}
+		</select>
+	<update id="modifyDelayTypeReasonAssoc">
+		UPDATE
+			SMC.SMC_DELAY_REASONS_TYPES_ASSOC
+		SET
+			(DELAY_TYPE_ID, DELAY_REASON_ID) = 
+			(#{typeId}, #{reasonId})
+		WHERE DELAY_ASSOC_ID = #{delayAssocid}
+	</update>
+	
+	<delete id="deleteDelayTypeReasonByAssoc">
+		DELETE  FROM SMC.SMC_DELAY_REASONS_TYPES_ASSOC
+		WHERE DELAY_ASSOC_ID=#{delayAssocid}
+	</delete>
+	<delete id="deleteDelayByAssoc">
+		DELETE FROM SMC.SMC_DELAYS WHERE DELAY_ASSOC_ID=#{delayAssocid}
+	</delete>
+	
+	<delete id="deleteAllDelayByReasonId">	
+		DELETE FROM SMC.SMC_DELAYS
+		WHERE DELAY_ASSOC_ID IN(
+			SELECT DELAY_ASSOC_ID 
+			FROM
+			SMC.SMC_DELAY_REASONS_TYPES_ASSOC WHERE DELAY_REASON_ID=#{reasonId}
+		)
+	</delete>
+	
+	<delete id="deleteAllTypeReasonAssocByReasonId">	
+		DELETE FROM SMC.SMC_DELAY_REASONS_TYPES_ASSOC WHERE DELAY_REASON_ID = #{reasonId}
+	</delete>
+	
+	<delete id="deleteAllDelayByTypeId">	
+		DELETE FROM SMC.SMC_DELAYS
+		WHERE DELAY_ASSOC_ID IN(
+			SELECT DELAY_ASSOC_ID 
+			FROM
+			SMC.SMC_DELAY_REASONS_TYPES_ASSOC WHERE DELAY_TYPE_ID=#{typeId}
+		)
+	</delete>
+	
+	<delete id="deleteAllTypeReasonAssocByTypeId">	
+		DELETE FROM SMC.SMC_DELAY_REASONS_TYPES_ASSOC WHERE DELAY_TYPE_ID=#{typeId}
+	</delete>
+	
+	<select  id="getAssocByTypeReasonId" resultType="com.penske.apps.adminconsole.model.DelayTypeReason">
+		SELECT	DELAY_REASON_ID as reasonId,DELAY_TYPE_ID as typeId, DELAY_ASSOC_ID as delayAssocid
+		FROM
+			SMC.SMC_DELAY_REASONS_TYPES_ASSOC
+		WHERE DELAY_REASON_ID=#{reasonId}
+		AND DELAY_TYPE_ID=#{typeId}
+	</select>
+	
+	<select id="checkDelayTypeExist" resultType="Integer">
+		SELECT 1
+		FROM
+			SMC.SMC_DELAY_TYPES
+		WHERE
+			UPPER(DELAY_TYPE) = UPPER(#{delayType})
+	</select>
 </mapper>

@@ -53,7 +53,6 @@
 				</table>
 			</div>
 		</div> 
-		<%@ include file="../../../jsp/jsp-fragment/global/footer.jsp" %>
 		<input type="hidden" id="common-url" value="${commonStaticUrl}"/>
 	</body>
 </html>

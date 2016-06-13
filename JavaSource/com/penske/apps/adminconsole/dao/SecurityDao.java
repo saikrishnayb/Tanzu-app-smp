@@ -4,15 +4,12 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-import com.penske.apps.adminconsole.model.Components;
 import com.penske.apps.adminconsole.model.HeaderUser;
 import com.penske.apps.adminconsole.model.Org;
 import com.penske.apps.adminconsole.model.Permission;
 import com.penske.apps.adminconsole.model.Role;
 import com.penske.apps.adminconsole.model.SignatureInitial;
-import com.penske.apps.adminconsole.model.Template;
 import com.penske.apps.adminconsole.model.TemplateComponents;
-import com.penske.apps.adminconsole.model.TemplatePoAssociation;
 import com.penske.apps.adminconsole.model.TemplatePoCategorySubCategory;
 import com.penske.apps.adminconsole.model.User;
 import com.penske.apps.adminconsole.model.UserDept;
@@ -97,17 +94,6 @@ public interface SecurityDao {
 	public int deleteVendorAssoc(@Param("orgId")int orgId);
 	public List<Integer> getOrgVendor(@Param("orgId")int orgId);
 	public List<Org> getPenskeUserOrgSearch(HeaderUser currentUser);
-	public List<Template> getAllTemplates();
-	public List<TemplatePoAssociation> getAllPoAssociation();
-	public Template getTemplatesById(@Param("templateID")int templateID);
-	public List<Components> getAllComponent();
-	public void addTemplate(Template template);
-	public void addTemplateComponents(Components components);
-	public void updateTemplate(Template template);
-	public void deleteTemplate(@Param("templateID")int templateID);
-	public void deleteTemplateComponents(@Param("templateID")int templateID);
-	public List<Components> getTemplateComponentById(@Param("templateID")int templateID);
-	public List<Integer> findTemplateExist(Template template);
 	public SignatureInitial getSignatureInitialByUserId(int userId);
 	public void addBuddies(User user);
 	public UserDept getUserDeptsById(@Param("deptId") int deptId);
@@ -128,4 +114,5 @@ public interface SecurityDao {
 	public void updateEmailSent(@Param("emailAuditId") int emailAuditId);
 	public void deleteUserFromBuddy(@Param("userSSO") String userSSO);
 	public List<Org> getMyOrgAndChild(@Param("orgId")int orgId);
+	public int removeVendorAssocFromDescendent(@Param("orgId")int orgId);
 }

@@ -17,6 +17,7 @@ import com.penske.apps.adminconsole.util.ApplicationConstants;
 import com.penske.apps.adminconsole.util.CommonUtils;
 import com.penske.apps.adminconsole.util.IUserConstants;
 import com.penske.apps.suppliermgmt.common.util.LookupManager;
+import com.penske.apps.suppliermgmt.model.LookUp;
 import com.penske.apps.ucsc.exception.UsrCreationSvcException;
 import com.penske.apps.ucsc.model.CreatedUser;
 import com.penske.apps.ucsc.model.LDAPAttributes;
@@ -47,9 +48,11 @@ public class UserCreationServiceImpl implements UserCreationService {
 	public User insertUserInfo(User userObj) throws UserServiceException {
 		try{
 			userObj.setUserName(userObj.getSsoId());
-			if(userObj.getReturnFlg() != 1){
+			if(userObj.getReturnFlg() != 1){ // userObj.getReturnFlg() != 1 -- User not available in the LDAP. This flag is set after validating userid with LDAP.
+				logger.info("Add User to LDAP..");
 				insertUserToLDAP(userObj);
 			}else{
+				logger.info(" Modify User to LDAP..");
 				CPTSso oSSO = new CPTSso();
 				CPBGESSOUser oB2BUser = oSSO.findUser(userObj.getUserName().trim());
 				//CPTDate datStop  = null;
@@ -63,10 +66,6 @@ public class UserCreationServiceImpl implements UserCreationService {
 				oB2BUser.setPhone(userObj.getPhone());
 				userObj.setGessouid(oB2BUser.getGESSOUID());
 				oSSO.modifyUser(oB2BUser, userObj.getUserName());
-			/*	logger.info(oB2BUser.getEmailAddress());
-				logger.info(oB2BUser.getGivenName());
-				logger.info(oB2BUser.getSurName());
-				logger.info(oB2BUser.getPhone());*/
 			}
 			//Add to DB
 			boolean status=securityDao.addUser(userObj);
@@ -88,7 +87,7 @@ public class UserCreationServiceImpl implements UserCreationService {
 						//Email Content to SMC_EMAIL-- update after email sent. Need to remove when moved to EBS.
 						securityDao.updateEmailSent(emailAuditId);
 				}catch (Exception e) {
-					logger.info("Mail Sending failed for user [ "+userObj.getUserName()+" ]");
+					logger.error("Mail Sending failed for user [ "+userObj.getUserName()+" ]",e);
 				}
 			}
 		}
@@ -107,7 +106,7 @@ public class UserCreationServiceImpl implements UserCreationService {
 	private User insertUserToLDAP(User userObj) throws UserServiceException, UsrCreationSvcException {
 		if(!CommonUtils.validUserID(userObj.getUserName())){
 			logger.error("UserID " + userObj.getUserName() + " does not conform to standards.");
-			throw new UserServiceException(IUserConstants.DUP_SSO_ERROR_CODE);
+			throw new UserServiceException(IUserConstants.NOT_STANDARD_SSO_ERROR_CODE);
 		}
 		CreatedUser user=null;
 		List<LDAPAttributes> attributeList= assignLDAPattribute(userObj);
@@ -188,11 +187,6 @@ public class UserCreationServiceImpl implements UserCreationService {
 			}
 			
 			oB2BUser = oSSO.findUser(userObj.getUserName().trim());
-			/*logger.info(oB2BUser.getEmailAddress());
-			logger.info(oB2BUser.getGivenName());
-			logger.info(oB2BUser.getSurName());
-			logger.info(oB2BUser.getPhone());
-			logger.info(oB2BUser.getGESSOStatus());*/
 		}catch (Exception e) {
 			logger.error("Exception occured while updating user  " + userObj.getUserName(), e);
 			throw new UserServiceException(e.getMessage());
@@ -244,21 +238,61 @@ public class UserCreationServiceImpl implements UserCreationService {
 			mailBody.append("<HTML><BODY>");
 			mailBody.append("<BR/>Dear ").append(userObject.getFirstName()).append(" ").append(userObject.getLastName()).append(",");
 			mailBody.append("<BR/>");
-			mailBody.append("<BR/>A Single Sign-On (SS0) account has been created for you.");
+			mailBody.append("<BR/>A Single Sign-On (SSO) account has been created for you.");
 			mailBody.append("<BR/>");
 			mailBody.append("<BR/>Please note the details of your new SSO account below.");
 			mailBody.append("<BR/>");
 			mailBody.append("<BR/>&nbsp;Name: ").append(userObject.getFirstName()).append(" ").append(userObject.getLastName());
-			mailBody.append("<BR/>&nbsp;User ID: ").append(userObject.getUserName());
+			mailBody.append("<BR/>&nbsp;SSO ID: ").append(userObject.getUserName());
 			mailBody.append("<BR/>&nbsp;Default one time use password: ").append(userObject.getDefaultPassword());
 			mailBody.append("<BR/>&nbsp;Email Address: ").append(userObject.getEmail());
 			mailBody.append("<BR/>&nbsp;Date/Time: ").append(cal.getTime());
 			mailBody.append("<BR/>");
+			
+			String signInURL=null;
+			if(lookupManager !=null){
+				List<LookUp> list= lookupManager.getLookUpListByName(ApplicationConstants.PENSKE_SIGN_ON_URL);
+				if(list !=null){
+					LookUp lookUpObj=lookupManager.getLookUpListByName(ApplicationConstants.PENSKE_SIGN_ON_URL).get(0);
+					if(lookUpObj !=null){
+						signInURL=lookupManager.getLookUpListByName(ApplicationConstants.PENSKE_SIGN_ON_URL).get(0).getLookUpValue();
+						if(signInURL==null){
+							logger.info("signInURL is null");
+						}
+					}else{
+						logger.info("lookUpObj is null");
+					}
+				}else{
+					logger.info("list is null for "+ApplicationConstants.PENSKE_SIGN_ON_URL);
+				}
+			}else{
+				logger.info("lookupManager is null");
+			}
 			mailBody.append("<BR/>To begin you will need to activate your SSO account by changing your password and " +
-					"creating a challenge question. <a href='").append(lookupManager.getLookUpListByName(ApplicationConstants.PENSKE_SIGN_ON_URL).get(0).getLookUpValue()).append("'>Click here").append("</a> " +
+					"creating a challenge question. <a href='").append(signInURL).append("'>Click here").append("</a> " +
 					"to change your password and create a challenge question.");
 			mailBody.append("<BR/>");
-			mailBody.append("<BR/>You may access your SSO ID by <a href='").append(lookupManager.getLookUpListByName(ApplicationConstants.SMC_APPLICATION_URL).get(0).getLookUpValue()).append("'> clicking here").append("</a>, only after completing the above activation process.");
+			
+			String smcURL=null;
+			if(lookupManager !=null){
+				List<LookUp> list= lookupManager.getLookUpListByName(ApplicationConstants.SMC_APPLICATION_URL);
+				if(list !=null){
+					LookUp lookUpObj=lookupManager.getLookUpListByName(ApplicationConstants.SMC_APPLICATION_URL).get(0);
+					if(lookUpObj !=null){
+						smcURL=lookupManager.getLookUpListByName(ApplicationConstants.SMC_APPLICATION_URL).get(0).getLookUpValue();
+						if(smcURL==null){
+							logger.info("smcURL is null");
+						}
+					}else{
+						logger.info("lookUpObj is null");
+					}
+				}else{
+					logger.info("list is null for "+ApplicationConstants.SMC_APPLICATION_URL);
+				}
+			}else{
+				logger.info("lookupManager is null");
+			}
+			mailBody.append("<BR/>You may access your SSO ID by <a href='").append(smcURL).append("'> clicking here").append("</a>, only after completing the above activation process.");
 			mailBody.append("<BR/>");
 			mailBody.append("<BR/>If you have any questions, contact Penske's customer service Monday through Friday at ");
 			mailBody.append("<BR/>");
@@ -303,7 +337,28 @@ public class UserCreationServiceImpl implements UserCreationService {
 			mailBody.append("Vendor User");
 			mailBody.append(" in the SUPPLIER MANAGEMENT CENTER (SMC) application.");
 			mailBody.append("<BR/>");
-			mailBody.append("<BR/>You may use your Single Sign-On (SSO) ID to access the application by ").append("<a href='").append(lookupManager.getLookUpListByName(ApplicationConstants.SMC_APPLICATION_URL).get(0).getLookUpValue()).append("'>clicking here").append("</a>");
+			
+			String smcURL=null;
+			if(lookupManager !=null){
+				List<LookUp> list= lookupManager.getLookUpListByName(ApplicationConstants.SMC_APPLICATION_URL);
+				if(list !=null){
+					LookUp lookUpObj=lookupManager.getLookUpListByName(ApplicationConstants.SMC_APPLICATION_URL).get(0);
+					if(lookUpObj !=null){
+						smcURL=lookupManager.getLookUpListByName(ApplicationConstants.SMC_APPLICATION_URL).get(0).getLookUpValue();
+						if(smcURL==null){
+							logger.info("smcURL is null");
+						}
+					}else{
+						logger.info("lookUpObj is null");
+					}
+				}else{
+					logger.info("list is null for "+ApplicationConstants.SMC_APPLICATION_URL);
+				}
+			}else{
+				logger.info("lookupManager is null");
+			}
+			
+			mailBody.append("<BR/>You may use your Single Sign-On (SSO) ID to access the application by ").append("<a href='").append(smcURL).append("'>clicking here").append("</a>");
 			mailBody.append("<BR/>");
 			mailBody.append("<BR/>If you have any questions, contact Penske's customer service Monday through Friday at ");
 			mailBody.append("<BR/>");
@@ -338,12 +393,15 @@ public class UserCreationServiceImpl implements UserCreationService {
 	}
 	
 	@Override
-	public boolean isEligibleToDeactivate(int userId,boolean isVendorUser) throws UserServiceException{
+	public boolean isEligibleToDeactivate(int userId,boolean isVendorUser,String currentUser) throws UserServiceException{
 		User user=securityDao.getVendorUserInfo(userId);
-		if(!isVendorUser){
-			updateUserInfo(user, true);
-		}else{
-			//Do role check for the deleting and deleted user
+		if(user !=null){
+			user.setModifiedBy(currentUser);
+			if(isVendorUser){
+				updateUserInfo(user, true);
+			}else{
+				//Do role check for the deleting and deleted user
+			}
 		}
 		return true;
 	}

@@ -51,7 +51,7 @@ $(document).ready(function() {
 		var typeId = $row.find('.type-id').val();
 		var delayId = $row.find('.association-id').val();
 		var delayReason = $row.find('.delay-reason').text();
-		
+		displayFlag=false;
 		var $getDeleteDelayReasonModalPromise = $.get("get-delete-delay-reason-modal-page.htm", {typeId:typeId, reasonId:delayId, delayReason:delayReason});
 		$getDeleteDelayReasonModalPromise.done( function(data){
 			
@@ -64,11 +64,11 @@ $(document).ready(function() {
 		
 		// get id value in hidden input field
 		var reasonId = $('.delay-reason-id').val();
-		var typeId = $('.delay-type-id').val();
+		//var typeId = $('.delay-type-id').val();
 		var intId = parseInt(reasonId);
-		
+		displayFlag=false;
 		// access controller and delete delay type from database
-		var $getDeleteDelayReasonPromise = $.get("delete-delay-reason.htm", {reasonId:intId, typeId:typeId});
+		var $getDeleteDelayReasonPromise = $.get("delete-delay-reason.htm", {reasonId:intId});
 		$getDeleteDelayReasonPromise.done( function(){
 			
 			$delayReasonTable.find('.association-id').each(function(){
@@ -89,8 +89,8 @@ $(document).ready(function() {
 		var typeId = $row.find('.type-id').val();
 		var delayId = $row.find('.association-id').val();
 		var delayReason = $row.find('.delay-reason').text();
-		
-		var $getEditDelayReasonModalPromise = $.get("get-edit-delay-reason-modal-page.htm", {typeId:typeId, reasonId:delayId, delayReason:delayReason});
+		displayFlag=false;
+		var $getEditDelayReasonModalPromise = $.get("get-edit-delay-reason-modal-page.htm", {reasonId:delayId, delayReason:delayReason});
 		$getEditDelayReasonModalPromise.done( function(data){
 				
 			$editDelayReasonModal.html(data);
@@ -98,11 +98,9 @@ $(document).ready(function() {
 		});
 	});
 	
+	
 	$editDelayReasonModal.on("click", ".edit-delay-reason", function(){
 		
-		var newTypeId = $('#delay-type-of-reason').val();
-		var newTypeName = $('#delay-type-of-reason option').filter(":selected").text();
-		var oldTypeId = $('#hidden-type-id').val();
 		var reasonId = $('#hidden-reason-id').val();
 		var oldReasonName = $('#hidden-reason-name').val();
 		var newReasonName = $('#edit-delay-reason-name').val();
@@ -116,7 +114,7 @@ $(document).ready(function() {
 		
 			var $getEditDelayReasonPromise = $.ajax({
 												url: "edit-delay-reason.htm", 
-												data: {oldTypeId:oldTypeId, reasonId:reasonId, oldReasonName:oldReasonName, newTypeId:newTypeId, newReasonName:newReasonName},
+												data: {reasonId:reasonId, oldReasonName:oldReasonName, newReasonName:newReasonName},
 												global: false});
 			
 			$getEditDelayReasonPromise.done( function(){
@@ -129,22 +127,15 @@ $(document).ready(function() {
 					if(delayReasonIdMatches){
 						
 						var $row = $this.closest("tr");
-						$delayReasonTable.fnUpdate( newTypeName, $row[0], 1 );
-						$delayReasonTable.fnUpdate( newReasonName, $row[0], 2 );
+						$delayReasonTable.fnUpdate( newReasonName, $row[0], 1 );
 						$row.find("td:first-child").find(".association-id").val(reasonId);
-						$row.find("td:first-child").find(".type-id").val(newTypeId);
 					}
 				});
 				$editDelayReasonModal.dialog('close').empty();
 				
 			}).fail( function(jqXHR, ajaxOptions, thrownError){
 				$ajaxErrorFlg=false;
-			     if(jqXHR.responseText.indexOf('Delay Reason already linked to selected Delay Type.')>0){
-			    	var $error= $editDelayReasonModal.find("#error-message"); 
-			    	$error.removeClass('hidden');
-			    	$error.find(".errorMsg").html('Delay Reason already linked to selected Delay Type.');
-				  }
-			     else if(jqXHR.responseText.indexOf('Delay Reason with this name already exists.')>0){
+			     if(jqXHR.responseText.indexOf('Delay Reason with this name already exists.')>0){
 			    	var $error= $editDelayReasonModal.find("#error-message"); 
 			    	$error.removeClass('hidden');
 			    	$error.find(".errorMsg").html('Delay Reason with this name already exists.');
@@ -167,8 +158,9 @@ $(document).ready(function() {
 			}
 		}
 	});
+	
 	$('.add-delay-reason').on("click", function(){
-		
+		displayFlag=false;
 		var $getAddDelayReasonModalPromise = $.get("get-add-delay-reason-modal-page.htm");
 		$getAddDelayReasonModalPromise.done( function(data){
 			
@@ -188,6 +180,7 @@ $(document).ready(function() {
 		if(validated){
 			
 			var addDelayReasonFormRequestMapping = $addDelayReasonForm.attr('action');
+			displayFlag=false;
 			var $addDelayReasonPromise = $.post( addDelayReasonFormRequestMapping, $addDelayReasonForm.serialize() );
 			$addDelayReasonPromise.done( function(data){
 				
@@ -196,17 +189,15 @@ $(document).ready(function() {
 				var typeId = reasonObj.typeId;
 				var firstColumn = "<a class='rightMargin edit-button'>Edit</a>" +
 						"<a><img src='" + commonStaticUrl + "/images/delete.png' class='centerImage rightMargin delete-button'/></a>" +
-								"<input type='hidden' class='type-id' value='" + typeId +"'/>" +
 								"<input type='hidden' class='association-id' value='" + reasonId + "'/>";
-				var rowIndex = $delayReasonTable.fnAddData( [ firstColumn, $('#delay-type-of-reason option').filter(":selected").text(), $('#add-delay-reason-name').val() ]);
+				var rowIndex = $delayReasonTable.fnAddData( [ firstColumn, $('#add-delay-reason-name').val() ]);
 				//var $newRow = $( $delayReasonTable.fnGetNodes(rowIndex[0]) );
 				//$newRow.find("td:first-child").addClass("editable centerAlign width");
 				//$newRow.find("td:nth-child(1)").addClass("delay-type");
 				var nTr  = $delayReasonTable.fnSettings().aoData[ rowIndex[0] ].nTr;
 				//var $column = $($newRow).find('td:first').addClass("editable centerAlign width");
 				$('td', nTr)[0].setAttribute( 'class', 'editable centerAlign width' );
-				$('td', nTr)[1].setAttribute( 'class', 'delay-type' );
-				$('td', nTr)[2].setAttribute( 'class', 'delay-reason' );
+				$('td', nTr)[1].setAttribute( 'class', 'delay-reason' );
 				
 				
 				$addDelayReasonModal.dialog('close').empty();

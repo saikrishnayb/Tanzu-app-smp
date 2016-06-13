@@ -27,6 +27,7 @@ public class ApplicationConstants {
 	public static final String VENDORUSER = "MANAGE_VENDOR_USERS";
 	public static final String DELAY_DATE_TYPE="DELAY_DATE_TYPE";
 	public static final String DYNAMICRULE = "DYNAMIC_RULES_MANAGEMENT";
+	public static final String UPLOAD_EXCEL = "UPLOAD_EXCEL";
 	public static final String COMPONENTS = "MANAGE_CATEGORY_ASSOCIATION";
 	public static final String TAB = "Admin Console";
 	public static final String USER_MODEL = "userModel";

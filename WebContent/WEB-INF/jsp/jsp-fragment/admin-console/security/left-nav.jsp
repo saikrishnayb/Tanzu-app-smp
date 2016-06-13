@@ -20,8 +20,5 @@
  <tl:isAuthorized tabName="Admin Console" secFunction="MANAGE_ORG"> 
 	<div class="leftNavGroup"><a href="${pageContext.request.contextPath}/admin-console/security/org.htm" id="left-nav-org" onclick="javascript:loadProcessImage();">Org Management</a></div> 
  </tl:isAuthorized>
- <tl:isAuthorized tabName="Admin Console" secFunction="MANAGE_TEMPLATE"> 
-	<div class="leftNavGroup"><a href="${pageContext.request.contextPath}/admin-console/security/template.htm" id="left-nav-template" onclick="javascript:loadProcessImage();">Template Management</a></div> 
- </tl:isAuthorized>
 
 </div>

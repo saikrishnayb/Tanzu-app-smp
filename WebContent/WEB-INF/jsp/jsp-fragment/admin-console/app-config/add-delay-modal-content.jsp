@@ -4,9 +4,9 @@
 		<div class="line">
 		<label>Date Type</label>
 		<select name="dateTypeId" id="date-type" class="input alpha alpha-name">
-			<option value="default">Date Types...</option>
+			<option value="">Date Types...</option>
 			<c:forEach items="${dateTypes}" var="dateTypes">
-			<option value="${dateTypes}">${dateTypes}</option>
+			<option value="${dateTypes.dateType}">${dateTypes.dateTypeDesc}</option>
 			</c:forEach>
 		</select>
 		</div>

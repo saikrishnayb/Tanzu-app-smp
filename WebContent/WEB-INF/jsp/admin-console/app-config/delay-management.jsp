@@ -40,7 +40,7 @@
 								<a><img src="${commonStaticUrl}/images/delete.png" class="centerImage rightMargin delete-button"/></a>
 								<input type="hidden" class="delay-id" value="${delay.delayId}"/>
 							</td>
-							<td class="date-type">${delay.dateType}</td>
+							<td class="date-type">${delay.dateTypeDesc}</td>
 							<td class="po-category">${delay.poCategory}</td>
 							<td class="delay-type">${delay.delayType}</td>
 							<td class="delay-reason">${delay.delayReason}</td>
@@ -61,7 +61,6 @@
 					</div>
 			</div>		
 		</div> 
-		<%@ include file="../../../jsp/jsp-fragment/global/footer.jsp" %>
 		<input type="hidden" id="common-url" value="${commonStaticUrl}"/>
 	</body>
 </html>

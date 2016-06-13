@@ -6,7 +6,7 @@ $(document).ready(function() {
 	selectCurrentNavigation("tab-app-config", "left-nav-subject-management");
 	
 	/* ----------- Datatable Declaration ----------- */
-	var iDisplayLength = tableRowLengthCalc();
+	var iDisplayLength = 10;//tableRowLengthCalc();
 	
 	$subjectTable.dataTable({ 					//All of the below are optional
 				"aaSorting": [[ 1, "asc" ]], 	//default sort column
@@ -33,8 +33,13 @@ $(document).ready(function() {
 											
 											//This will hide "Showing 1 to 5 of 11 entries" if we have 0 rows.
 											var infoRow = $(this).parent().children('div.dataTables_info');
-											
-											infoRow.css("display", "none");
+											var rowCount = this.fnSettings().fnRecordsDisplay();
+											if (rowCount > 0){
+												infoRow.css("display", "block");
+											} 
+											else{
+												infoRow.css("display", "none");
+											}
 										}
 	});
 	
@@ -62,7 +67,8 @@ $(document).ready(function() {
 	});
 	
 	/* ----------- Editing A Subject ----------- */
-	$('.edit-subject').on('click', function() {
+	//$('.edit-subject').on('click', function() {
+	$subjectTable.on("click", ".edit-subject", function(){
 		var $row = $(this).closest('tr');
 
 		// Populate the modal with the values of the subject selected by the user from the table.
@@ -93,7 +99,8 @@ $(document).ready(function() {
 	});
 	
 	/* ---------- Deleting A Subject ---------- */
-	$('.delete-subject').on('click', function() {
+//	$('.delete-subject').on('click', function() {
+	$subjectTable.on("click", ".delete-subject", function(){	
 		var $row = $(this).closest('tr');
 		var subjectId = $row.find('[name="subjectId"]').val();
 

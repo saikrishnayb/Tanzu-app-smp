@@ -2,15 +2,6 @@
 <div class="blank"></div>
 <form id="add-delay-reason-form" action="add-delay-reason.htm" method="post">
 	<div class="line">
-		<label>Delay Type</label>
-		<select id="delay-type-of-reason" class="edit-input input numeric numeric-whole" name="typeId">
-			<option value=""></option>
-			<c:forEach items="${types}" var="types">
-			<option value="${types.typeId}">${types.delayType}</option>
-			</c:forEach>
-		</select>
-	</div>
-	<div class="line">
 		<label>Delay Reason</label>
 		<input type="text" class="edit-input input alpha alpha-numeric" id="add-delay-reason-name" name="reasonName" value=""/>
 	</div>

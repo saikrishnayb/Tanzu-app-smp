@@ -1,7 +1,7 @@
 var $errMsg = $('.edit-buttons').find('.error-messages-container').find('.errorMsg');
 var toggleSelection="ALL";
 $(document).ready(function() {
-	selectCurrentNavigation("tab-security", "left-nav-template");
+	selectCurrentNavigation("tab-components", "left-nav-template");
 	$('.back').on('click', function(){
 		parent.history.back();
 		return false;
@@ -18,6 +18,7 @@ $(document).ready(function() {
 	$requiredChckBox=$("input[id^='required-'");
 	$dispOtherPOChckBox=$("input[id^='dispOtherPO-'");
 	$excelChckBox=$("input[id^='excel-'");
+	$viewChckBox=$("input[id^='viewable-'");
 	var iDisplayLength = 10;//tableRowLengthCalc();
 	//org summary table
 	$templateTable.dataTable( { //All of the below are optional
@@ -130,6 +131,7 @@ $(document).ready(function() {
 	$requiredChckBox.on("click",function(){
 		var str =this.id.split("-").pop();
 		 $curEditObj=$( "#editable-"+str);
+		 $curViewObj=$( "#viewable-"+str);
 		 $curDispOtherPOObj=$( "#dispOtherPO-"+str);
 		 $curExcelObj=$( "#excel-"+str);
 		 $includeClassId=$('#template-comp-tr-'+str);
@@ -138,6 +140,8 @@ $(document).ready(function() {
 			$curEditObj.attr("disabled", true);
 			$curDispOtherPOObj.attr("disabled", false);
 			$curExcelObj.attr("disabled", false);
+			$curViewObj.attr('checked', true);
+			$curViewObj.attr("disabled", true);
 			$includeClassId.html("1~~9");
 		}else{
 			$curEditObj.attr('checked', false);
@@ -146,11 +150,38 @@ $(document).ready(function() {
 			$curExcelObj.attr("disabled", true);
 			$curDispOtherPOObj.attr('checked', false);
 			$curExcelObj.attr('checked', false);
+			$curViewObj.attr('checked', false);
+			$curViewObj.attr("disabled", false);
 			$includeClassId.html("");
 		}
 	});
 	
 	$editChckBox.on("click",function(){
+		var str =this.id.split("-").pop();
+		 $curDispOtherPOObj=$( "#dispOtherPO-"+str);
+		 $curExcelObj=$( "#excel-"+str);
+		 $curViewObj=$( "#viewable-"+str);
+		 $includeClassId=$('#template-comp-tr-'+str);
+		if($(this).is(':checked')){
+			$curDispOtherPOObj.attr("disabled", false);
+			$curExcelObj.attr("disabled", false);
+			$curViewObj.attr('checked', true);
+			$curViewObj.attr("disabled", true);
+			//$includeClassId.addClass("include-filter-class");
+			$includeClassId.html("1~~9");
+		}else{
+			$curDispOtherPOObj.attr("disabled", true);
+			$curExcelObj.attr("disabled", true);
+			$curDispOtherPOObj.attr('checked', false);
+			$curExcelObj.attr('checked', false);
+			$curViewObj.attr('checked', false);
+			$curViewObj.attr("disabled", false);
+			//$includeClassId.removeClass("include-filter-class");
+			$includeClassId.html("");
+		}
+	});
+	
+	$viewChckBox.on("click",function(){
 		var str =this.id.split("-").pop();
 		 $curDispOtherPOObj=$( "#dispOtherPO-"+str);
 		 $curExcelObj=$( "#excel-"+str);
@@ -216,14 +247,18 @@ $(document).ready(function() {
 	var isCreateOrEdit=$('#is-create-page-id').val();
 	 $showSelected.click(function(e){
 		 $(this).css("color", "blue");
+		 $(this).css("font-weight", "bold");
 		 $showAll.css("color", "");
+		 $showAll.css("font-weight", "normal");
 		 toggleSelection="SELECTED";
 		 $templateComponenttable.fnDraw();
 	 });
 	 
 	 $showAll.click(function(e){
 		 $(this).css("color", "blue");
+		 $(this).css("font-weight", "bold");
 		 $showSelected.css("color", "");
+		 $showSelected.css("font-weight", "normal");
 		 toggleSelection="ALL";
 		 $templateComponenttable.fnDraw();
 	 });
@@ -265,16 +300,17 @@ function createOrUpdate(isCreate){
 		var checkBoxArry=row.find(':checkbox');
 		var hiddenArry=row.find('input:hidden');
 		if(checkBoxArry !=null && checkBoxArry.length >0){
-			var editable=checkBoxArry[0].checked;
-			var required=checkBoxArry[1].checked;
-			var otherPO=checkBoxArry[2].checked;
-			var excel=checkBoxArry[3].checked;
-			if(editable || required || otherPO || excel){
+			var viewable=checkBoxArry[0].checked;
+			var editable=checkBoxArry[1].checked;
+			var required=checkBoxArry[2].checked;
+			var otherPO=checkBoxArry[3].checked;
+			var excel=checkBoxArry[4].checked;
+			if(viewable || editable || required || otherPO || excel){
 				if(hiddenArry !=null && hiddenArry.length >0){
 					var componentId=hiddenArry[0].value;
 					var componentName=hiddenArry[1].value;
 					//console.log("componentName: "+componentName);
-					checkedListJSON=getComponetJSON(componentName,componentId, editable, required, otherPO, excel, checkedListJSON, isFirst);
+					checkedListJSON=getComponetJSON(componentName,componentId,viewable, editable, required, otherPO, excel, checkedListJSON, isFirst);
 					isFirst=false;
 				}
 			}
@@ -308,10 +344,11 @@ function createOrUpdate(isCreate){
 	}
 }
 
-function getComponetJSON(compName,compId,editable,required,otherPO,excel,checkedListJSON,isFirst){
+function getComponetJSON(compName,compId,viewable,editable,required,otherPO,excel,checkedListJSON,isFirst){
 	var component={};
 	component.componentName=compName;
 	component.componentId=compId;
+	component.viewable=viewable;
 	component.editable=editable;
 	component.required=required;
 	component.dispOtherPO=otherPO;
@@ -347,7 +384,7 @@ function validate($editForm){
 		}
 		flag = false;
 	}
-	else if(!$editChckBox.is(':checked') &&  !$requiredChckBox.is(':checked') && !$dispOtherPOChckBox.is(':checked')
+	else if(!$viewChckBox.is(':checked') && !$editChckBox.is(':checked') &&  !$requiredChckBox.is(':checked') && !$dispOtherPOChckBox.is(':checked')
 			&& !$excelChckBox.is(':checked')){
 		$errMsg.text('Error Component selection invalid!');
 		flag = false;

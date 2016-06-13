@@ -3,11 +3,12 @@ package com.penske.apps.adminconsole.dao;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
-import com.penske.apps.adminconsole.annotation.PrimaryDatabase;
+
 import com.penske.apps.adminconsole.model.DelayModel;
 import com.penske.apps.adminconsole.model.DelayPoModel;
 import com.penske.apps.adminconsole.model.DelayReasonModel;
 import com.penske.apps.adminconsole.model.DelayTypeModel;
+import com.penske.apps.adminconsole.model.DelayTypeReason;
 
 /**
  * This is the Dao interface for method calls to the database
@@ -24,14 +25,14 @@ public interface DelayDao{
 	public List<DelayReasonModel> getReasons();
 	public List<Integer> getAssocReasonIds(Integer typeId);
 	public DelayReasonModel getAssocReason(Integer reasonId);
-	public int getTypeId(int delayId);
+	public DelayModel getTypeId(int delayId);
 	public List<DelayTypeModel> getTypes();
 	public void modifyDelay(DelayModel delay);
 	public void addDelay(DelayModel delay);
 	public void addDelayAssoc(DelayModel delay);
 	public void deleteDelay(int delayId);
 	public List <DelayPoModel> getPOs();
-	public Integer getId(@Param("dateTypeId")String dateTypeId, @Param("poCategoryId")Integer poCategoryId, @Param("delayTypeId")Integer delayTypeId, @Param("delayReasonId")Integer delayReasonId);
+	public Integer getId(@Param("dateTypeId")String dateTypeId, @Param("poCategoryId")Integer poCategoryId, @Param("delayTypeReasonId")Integer delayTypeReasonId);
 	public Integer checkDelay(DelayModel delay);
 	// Delay Reason Types DAO methods
 	public void addDelayType(String delayType);
@@ -40,17 +41,28 @@ public interface DelayDao{
 	public void deleteDelayReasonOfType(Integer reasonId);
 	public void deleteDelayType(Integer typeId);
 	public void modifyDelayType(DelayTypeModel delayType);
-	public void deleteDelaysWithType(int typeId);
+	//public void deleteDelaysWithType(int typeId);
 	// Delay Reason Codes DAO methods
 	public List<DelayModel> getAssociations();
-	public void deleteDelayAssociation(@Param("reasonId")Integer reasonId, @Param("typeId")Integer typeId);
+	//public void deleteDelayAssociation(@Param("reasonId")Integer reasonId, @Param("typeId")Integer typeId);
 	public void deleteDelayReasonName(Integer reasonId);
 	public Integer checkAssociation(DelayReasonModel reason);
 	public Integer checkReason(String reasonName);
-	public void modifyDelayReason(@Param("newReason")DelayReasonModel newReason, @Param("oldReason")DelayReasonModel oldReason);
+	//public void modifyDelayReason(@Param("newReason")DelayReasonModel newReason, @Param("oldReason")DelayReasonModel oldReason);
 	public void modifyReasonName(@Param("newName")String newName, @Param("id")Integer reasonId);
 	public void addDelayReason(String reasonName);
 	public Integer getDelayReasonId(String reasonName);
-	public void addDelayAssociation(@Param("typeId")Integer typeId, @Param("reasonId")Integer reasonId);
+	public void addDelayAssociation(DelayTypeReason typeReason);
 	public void deleteDelaysWithReason(int reasonId);
+	public DelayTypeReason getTypeReasonAssoc(Integer reasonId);
+	public DelayTypeReason  getTypeReasonAssocDate(Integer reasonId);
+	public void  modifyDelayTypeReasonAssoc(DelayTypeReason typeReason);
+	public void deleteDelayTypeReasonByAssoc(@Param("delayAssocid") Integer delayAssocid);
+	public void deleteDelayByAssoc(@Param("delayAssocid") Integer delayAssocid);
+	public void deleteAllDelayByReasonId(@Param("reasonId")Integer reasonId);
+	public void deleteAllTypeReasonAssocByReasonId(@Param("reasonId")Integer reasonId);
+	public void deleteAllDelayByTypeId(@Param("typeId")Integer typeId);
+	public void deleteAllTypeReasonAssocByTypeId(@Param("typeId")Integer typeId);
+	public DelayTypeReason  getAssocByTypeReasonId(@Param("typeId")Integer typeId,@Param("reasonId")Integer reasonId);
+	public Integer checkDelayTypeExist(@Param("delayType") String delayType);
 }

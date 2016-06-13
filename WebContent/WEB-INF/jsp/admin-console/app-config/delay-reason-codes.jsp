@@ -35,7 +35,6 @@
 					<thead>
 						<tr>
 							<th></th>
-							<th>Delay Type</th>
 							<th>Delay Reason</th>
 						</tr>
 					</thead>
@@ -45,10 +44,8 @@
 							<td class="editable centerAlign width">
 								<a class="rightMargin edit-button">Edit</a>
 								<a><img src="${commonStaticUrl}/images/delete.png" class="centerImage rightMargin delete-button"/></a>
-								<input type="hidden" class="type-id" value="${delays.delayTypeId}"/>
-								<input type="hidden" class="association-id" value="${delays.delayReasonId}"/>
+								<input type="hidden" class="association-id" value="${delays.reasonId}"/>
 							</td>
-							<td class="delay-type">${delays.delayType}</td>
 							<td class="delay-reason">${delays.delayReason}</td>
 						</tr>
 					</c:forEach>
@@ -56,7 +53,6 @@
 				</table>
 			</div>
 		</div> 
-		<%@ include file="../../../jsp/jsp-fragment/global/footer.jsp" %>
 		<input type="hidden" id="common-url" value="${commonStaticUrl}"/>
 	</body>
 </html>

@@ -6,15 +6,18 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.penske.apps.adminconsole.dao.DelayDao;
 import com.penske.apps.adminconsole.model.DelayModel;
 import com.penske.apps.adminconsole.model.DelayPoModel;
 import com.penske.apps.adminconsole.model.DelayReasonModel;
 import com.penske.apps.adminconsole.model.DelayTypeModel;
+import com.penske.apps.adminconsole.model.DelayTypeReason;
 import com.penske.apps.adminconsole.util.ApplicationConstants;
 import com.penske.apps.suppliermgmt.common.util.LookupManager;
 import com.penske.apps.suppliermgmt.model.LookUp;
+import com.penske.apps.adminconsole.model.DateType;
 
 /**
  * This is the Defauly Delay Service class that implements
@@ -32,18 +35,20 @@ public class DefaultDelayService implements DelayService{
 	private LookupManager lookupManager;
 
 	@Override
-	public List<String> getDateTypes(){
+	public List<DateType> getDateTypes(){
 		
-	//	List<Integer> dateTypes = delayDao.getDateTypes();
-		List<String> dateTypes=null;
+		List<DateType> dateTypeList=null;
 		List<LookUp> lookUpDateTypes= lookupManager.getLookUpListByName(ApplicationConstants.DELAY_DATE_TYPE);
 		if(lookUpDateTypes !=null){
-			dateTypes=new ArrayList<String>();
+			dateTypeList=new ArrayList<DateType>();
 			for (LookUp lookUp : lookUpDateTypes) {
-				dateTypes.add(lookUp.getLookUpValue());
+				DateType dateType=new DateType();
+				dateType.setDateType(lookUp.getLookUpValue());
+				dateType.setDateTypeDesc(lookUp.getLookUpDesc());
+				dateTypeList.add(dateType);
 			}
 		}
-		return dateTypes;
+		return dateTypeList;
 	}
 	@Override
 	public boolean checkDelay(DelayModel delay){
@@ -53,6 +58,25 @@ public class DefaultDelayService implements DelayService{
 		else if(result == 1) return true;
 		return false;
 	}
+	
+	@Override
+	public boolean checkDelayFroModify(DelayModel delay){
+		
+		Integer result = delayDao.checkDelay(delay);
+		if(result == null) {
+			return false;
+		}
+		else if(result == 1) {
+			int delayId= delayDao.getId(delay.getDateTypeId(), delay.getPoCategoryId(), delay.getDelayTypeReasonId());
+			if(delay.getDelayId() == delayId){
+				return false;
+			}else{
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	@Override
 	public List<DelayModel> getDelays() {
 		
@@ -66,10 +90,9 @@ public class DefaultDelayService implements DelayService{
 		return reasons;
 	}
 	@Override
-	public int getTypeId(int delayId){
+	public DelayModel getTypeId(int delayId){
 		
-		int typeId = delayDao.getTypeId(delayId);
-		return typeId;
+		return delayDao.getTypeId(delayId);
 	}
 	@Override
 	public List<DelayReasonModel> getAssocReasons(Integer typeId){
@@ -113,18 +136,18 @@ public class DefaultDelayService implements DelayService{
 		return POs;
 	}
 	@Override
-	public Integer getId(String dateTypeId, Integer poCategoryId, Integer delayTypeId, Integer delayReasonId){
+	public Integer getId(String dateTypeId, Integer poCategoryId, Integer delayTypeReasonId){
 		
-		Integer id = delayDao.getId(dateTypeId, poCategoryId, delayTypeId, delayReasonId);
+		Integer id = delayDao.getId(dateTypeId, poCategoryId, delayTypeReasonId);
 		return id;
 	}
 	
 	
 	// Delay Reason Types service methods
 	@Override
-	public boolean checkForExistingType(String delayType){
+	public boolean checkDelayTypeExist(String delayType){
 		
-		List<DelayTypeModel> types = delayDao.getTypes();
+		/*List<DelayTypeModel> types = delayDao.getTypes();
 		Iterator<DelayTypeModel> typeIter = types.iterator();
 		
 		while( typeIter.hasNext() ){
@@ -139,6 +162,11 @@ public class DefaultDelayService implements DelayService{
 		}
 		// no match found.  it's good to add the new delay type
 		return false;
+		*/
+		Integer result = delayDao.checkDelayTypeExist(delayType);
+		if(result == null) return false;
+		else if(result == 1) return true;
+		return false;
 	}
 	@Override
 	public void addDelayType(String delayType){
@@ -152,9 +180,10 @@ public class DefaultDelayService implements DelayService{
 		return type;
 	}
 	@Override
+	@Transactional
 	public void deleteDelayType(Integer typeId){
 		
-		// get associated reason Ids to delete with the type
+		/*// get associated reason Ids to delete with the type
 		List<Integer> reasonIds = delayDao.getTypeAssociations(typeId);
 		// delete all of the associations and then the reasons associated
 		// with this type.  associations must go first due to ref. constraint
@@ -164,7 +193,9 @@ public class DefaultDelayService implements DelayService{
 			delayDao.deleteDelayReasonOfType( reasonIds.get(i) );
 		}
 		// delete all delays which have this typeId, then delete delay type
-		delayDao.deleteDelaysWithType(typeId);
+		delayDao.deleteDelaysWithType(typeId);*/
+		delayDao.deleteAllDelayByTypeId(typeId);//DELETE all Delays which has this TYPE association
+		delayDao.deleteAllTypeReasonAssocByTypeId(typeId);//DELETE all Type Reason association which has this TYPE
 		delayDao.deleteDelayType(typeId);
 	}
 	@Override
@@ -173,7 +204,6 @@ public class DefaultDelayService implements DelayService{
 		delayDao.modifyDelayType(delayType);
 	}
 	
-	
 	// Delay Reason Codes service methods
 	@Override
 	public List<DelayModel> getAssociations(){
@@ -181,11 +211,15 @@ public class DefaultDelayService implements DelayService{
 		List<DelayModel> assocList = delayDao.getAssociations();
 		return assocList;
 	}
-	@Override
-	public void deleteDelayReason(Integer reasonId, Integer typeId){
 		
-		delayDao.deleteDelayAssociation(reasonId, typeId);
-		delayDao.deleteDelaysWithReason(reasonId);
+	@Override
+	@Transactional
+	public void deleteDelayReason(Integer reasonId){
+		
+	//	delayDao.deleteDelayAssociation(reasonId);
+	//	delayDao.deleteDelaysWithReason(reasonId);
+		delayDao.deleteAllDelayByReasonId(reasonId);//DELETE all Delays which has this reason association
+		delayDao.deleteAllTypeReasonAssocByReasonId(reasonId);//DELETE all Type Reason association which has this reason
 		delayDao.deleteDelayReasonName(reasonId);
 	}
 	@Override
@@ -220,25 +254,62 @@ public class DefaultDelayService implements DelayService{
 	
 	
 	@Override
+	public void modifyReason(String reasonName,Integer resonId){
+		delayDao.modifyReasonName(reasonName,resonId);
+	}
+	
+	/*@Override
 	public void modifyReason(DelayReasonModel newReason, DelayReasonModel oldReason){
 		
 		// modify the reason in the Delay Reason table first
 		delayDao.modifyReasonName(newReason.getDelayReason(), newReason.getReasonId());
 		// modify the association
 		delayDao.modifyDelayReason(newReason, oldReason);
-	}
+	}*/
+	
 	@Override
-	public DelayReasonModel addDelayReason(Integer typeId, String reasonName){
+	public DelayReasonModel addDelayReason(String reasonName){
 		
 		// add the Reason to the Delay Reason table
 		delayDao.addDelayReason(reasonName);
 		// get the newly created Reason's Id for Association creation
 		Integer reasonId = delayDao.getDelayReasonId(reasonName);
-		// Create the association using the typeId passed and the returned reasonId
-		delayDao.addDelayAssociation(typeId, reasonId);
 		DelayReasonModel reason = new DelayReasonModel();
-		reason.setTypeId(typeId);
 		reason.setReasonId(reasonId);
 		return reason;
+	}
+	
+	@Override
+	 public DelayTypeReason addDelayTypeReason(Integer typeId, Integer reasonId){
+		// Create the association using the typeId passed and the returned reasonId
+		DelayTypeReason typeReason=new DelayTypeReason();
+		typeReason.setReasonId(reasonId);
+		typeReason.setTypeId(typeId);
+		delayDao.addDelayAssociation(typeReason);
+		DelayTypeReason typeReasonObj=delayDao.getTypeReasonAssocDate(typeReason.getDelayAssocid());
+		typeReasonObj.setDelayAssocid(typeReason.getDelayAssocid());
+		return typeReasonObj;
+	}
+	
+	 public DelayTypeReason getAssocTypeReasons(Integer typeResonId){
+		 return delayDao.getTypeReasonAssoc(typeResonId);
+	 }
+	@Override
+	public DelayTypeReason modifyDelayTypeReasonAssoc(DelayTypeReason typeReason) {
+		delayDao.modifyDelayTypeReasonAssoc(typeReason)	;	
+		DelayTypeReason typeReasonObj=delayDao.getTypeReasonAssocDate(typeReason.getDelayAssocid());
+		typeReasonObj.setDelayAssocid(typeReason.getDelayAssocid());
+		return typeReasonObj;
+	}
+	@Override
+	@Transactional
+	public void deleteDelayTypeReason(Integer delayAssocid) {
+		delayDao.deleteDelayByAssoc(delayAssocid);
+		delayDao.deleteDelayTypeReasonByAssoc(delayAssocid);
+	}
+	
+	@Override
+	 public DelayTypeReason  getAssocByTypeReasonId(Integer typeId,Integer reasonId){
+		return delayDao.getAssocByTypeReasonId(typeId, reasonId);
 	}
 }

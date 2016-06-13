@@ -18,10 +18,12 @@ import org.springframework.web.servlet.ModelAndView;
 import com.penske.apps.adminconsole.exceptions.DynamicRulePriorityException;
 import com.penske.apps.adminconsole.exceptions.TemplateNameAlreadyExistsException;
 import com.penske.apps.adminconsole.model.Alert;
+import com.penske.apps.adminconsole.model.DateType;
 import com.penske.apps.adminconsole.model.DelayModel;
 import com.penske.apps.adminconsole.model.DelayPoModel;
 import com.penske.apps.adminconsole.model.DelayReasonModel;
 import com.penske.apps.adminconsole.model.DelayTypeModel;
+import com.penske.apps.adminconsole.model.DelayTypeReason;
 import com.penske.apps.adminconsole.model.DynamicRule;
 import com.penske.apps.adminconsole.model.GlobalException;
 import com.penske.apps.adminconsole.model.HeaderUser;
@@ -270,7 +272,7 @@ public class AppConfigRestController {
 	@RequestMapping(value="/delete-dynamic-rule",method = RequestMethod.POST)
 	@ResponseBody
 	public void modifyDynamicRuleStatus(@RequestParam("dynamicRuleId") int dynamicRuleId,HttpSession session){
-		HeaderUser currentUser = (HeaderUser) session.getAttribute("currentUser");
+		//HeaderUser currentUser = (HeaderUser) session.getAttribute("currentUser");
 		
 		//dynamicRuleService.modifyDynamicRuleStatus(dynamicRuleId, priority,currentUser.getSso());
 		dynamicRuleService.deleteDynamicRule(dynamicRuleId);
@@ -354,7 +356,7 @@ public class AppConfigRestController {
 	
 	@RequestMapping("delete-unit-exception")
 	@ResponseBody
-	public void deleteUnitException(int exceptionId) {
+	public void deleteUnitException(@RequestParam(value="exceptionId") int exceptionId) {
 		exceptionService.deleteUnitException(exceptionId);
 	}
 	
@@ -396,7 +398,8 @@ public class AppConfigRestController {
 		List<DelayPoModel> POs = delayService.getPOs();
 		List<DelayReasonModel> reasons = delayService.getReasons();
 		List<DelayTypeModel> types = delayService.getTypes();
-		List<String> dateTypes = delayService.getDateTypes();
+		List<DateType> dateTypes = delayService.getDateTypes();
+		CommonUtils.sortDateType(dateTypes);
 		mav.addObject("dateTypes", dateTypes);
 		mav.addObject("POs", POs);
 		mav.addObject("reasons", reasons);
@@ -409,18 +412,27 @@ public class AppConfigRestController {
 	public int addDelay(DelayModel delay,HttpServletResponse response) throws Exception{
 	
 		// check if delay with these values already exists
-		boolean alreadyExists = delayService.checkDelay(delay);
-		if(alreadyExists){
-			
-			//String errorMessage = "Delay with these credentials already exists.";
-			//throw new DelayReasonAlreadyExistsException(errorMessage);
-			CommonUtils.getCommonErrorAjaxResponse(response,"Delay with these credentials already exists.");
-			return 0;
+		if(delay !=null){
+			DelayTypeReason typeReason=delayService.getAssocByTypeReasonId(delay.getDelayTypeId(), delay.getDelayReasonId());
+			if(typeReason !=null){
+				delay.setDelayTypeReasonId(typeReason.getDelayAssocid());
+				boolean alreadyExists = delayService.checkDelay(delay);
+				if(alreadyExists){
+					CommonUtils.getCommonErrorAjaxResponse(response,"Delay with these credentials already exists.");
+					return 0;
+				}else{
+					// add the delay
+					delayService.addDelay(delay);
+					int delayId = delayService.getId( delay.getDateTypeId(), delay.getPoCategoryId(), delay.getDelayTypeReasonId());
+					return delayId;
+				}
+			}else{
+				CommonUtils.getCommonErrorAjaxResponse(response,"");
+				return 0;
+			}
 		}else{
-			// add the delay
-			delayService.addDelay(delay);
-			int delayId = delayService.getId( delay.getDateTypeId(), delay.getPoCategoryId(), delay.getDelayTypeId(), delay.getDelayReasonId() );
-			return delayId;
+			CommonUtils.getCommonErrorAjaxResponse(response,"");
+			return 0;
 		}
 	}
 	
@@ -436,12 +448,24 @@ public class AppConfigRestController {
 	public ModelAndView getEditDelayModalContent(DelayModel delay){
 		
 		ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/app-config/edit-delay-modal-content");
+		List<DelayReasonModel> reasons =null;
+		String currDateType="";
 		List<DelayPoModel> POs = delayService.getPOs();
-		int delayTypeId = delayService.getTypeId( delay.getDelayId() );
-		List<DelayReasonModel> reasons = delayService.getAssocReasons( delayTypeId );
+		
+		DelayModel delayModelDB = delayService.getTypeId( delay.getDelayId() ); // GET AssocId and datetype
+		if(delayModelDB != null){
+			currDateType=delayModelDB.getDateType();
+			//GET type and reason id from assoc table
+			DelayTypeReason typeReason=delayService.getAssocTypeReasons(delayModelDB.getDelayTypeReasonId());
+			if(typeReason !=null){
+				reasons = delayService.getAssocReasons( typeReason.getTypeId() );
+			}
+		}
 		List<DelayTypeModel> types = delayService.getTypes();
-		List<String> dateTypes = delayService.getDateTypes();
+		List<DateType> dateTypes = delayService.getDateTypes();
+		CommonUtils.sortDateType(dateTypes);
 		mav.addObject("dateTypes", dateTypes);
+		mav.addObject("currDateType",currDateType);
 		mav.addObject("reasons", reasons);
 		mav.addObject("types", types);
 		mav.addObject("POs", POs);
@@ -453,15 +477,19 @@ public class AppConfigRestController {
 	@ResponseBody
 	public void editDelay(DelayModel delay,HttpServletResponse response) throws Exception{
 		
-		boolean alreadyExists = delayService.checkDelay(delay);
-		if(alreadyExists){
-			
-			//String errorMessage = "Delay with these credentials already exists.";
-			//throw new DelayReasonAlreadyExistsException(errorMessage);
-			CommonUtils.getCommonErrorAjaxResponse(response,"Delay with these credentials already exists.");
-		}else{
-		// modify the delay if one doesn't already exist with the passed credentials
-			delayService.modifyDelay(delay);
+		DelayTypeReason typeReason=delayService.getAssocByTypeReasonId(delay.getDelayTypeId(), delay.getDelayReasonId());
+		if(typeReason !=null){
+			delay.setDelayTypeReasonId(typeReason.getDelayAssocid());
+			boolean alreadyExists = delayService.checkDelayFroModify(delay);
+			if(alreadyExists){
+				
+				//String errorMessage = "Delay with these credentials already exists.";
+				//throw new DelayReasonAlreadyExistsException(errorMessage);
+				CommonUtils.getCommonErrorAjaxResponse(response,"Delay with these credentials already exists.");
+			}else{
+			// modify the delay if one doesn't already exist with the passed credentials
+				delayService.modifyDelay(delay);
+			}
 		}
 	}
 
@@ -476,7 +504,7 @@ public class AppConfigRestController {
 	
 	@RequestMapping("delete-delay")
 	@ResponseBody
-	public void deleteDelay(int delayId){
+	public void deleteDelay(@RequestParam(value="delayId") int delayId){
 		
 		delayService.deleteDelay( delayId );
 	}
@@ -509,16 +537,22 @@ public class AppConfigRestController {
 	
 	@RequestMapping("edit-delay-type")
 	@ResponseBody
-	public void editDelayType(DelayTypeModel delayType,HttpServletResponse response) throws Exception{
-		
-		boolean result = delayService.checkForExistingType( delayType.getDelayType() );
-		if(result){
-			
-			//String errorMessage = "A Delay Type with this name already exists.";
-			//throw new DelayReasonAlreadyExistsException(errorMessage);
-			CommonUtils.getCommonErrorAjaxResponse(response,"A Delay Type with this name already exists.");
-		}else{
-			delayService.modifyDelayType(delayType);
+//	public void editDelayType(DelayTypeModel delayType,HttpServletResponse response) throws Exception{
+	public void editDelayType(@RequestParam(value="typeId") int typeId,@RequestParam(value="oldVal") String oldVal,
+			@RequestParam(value="delayType") String delayType,HttpServletResponse response) throws Exception{
+		DelayTypeModel delayTypeModel=new DelayTypeModel();
+		delayTypeModel.setTypeId(typeId);
+		delayTypeModel.setDelayType(delayType);
+		if(!oldVal.equalsIgnoreCase(delayType)){
+			boolean result = delayService.checkDelayTypeExist( delayTypeModel.getDelayType() );
+			if(result){
+				
+				//String errorMessage = "A Delay Type with this name already exists.";
+				//throw new DelayReasonAlreadyExistsException(errorMessage);
+				CommonUtils.getCommonErrorAjaxResponse(response,"A Delay Type with this name already exists.");
+			}else{
+				delayService.modifyDelayType(delayTypeModel);
+			}
 		}
 	}
 
@@ -533,11 +567,29 @@ public class AppConfigRestController {
 		return new ModelAndView("/jsp-fragment/admin-console/app-config/delete-delay-reason-modal", "reason", reasons);
 	}
 	
+	@RequestMapping(value = "get-delete-delay-type-reason-page")
+	@ResponseBody
+	public ModelAndView getDeleteDelayTypeReasonModal(@RequestParam(value="reasonVal") String reasonVal,@RequestParam(value="typeVal") String typeVal,
+			@RequestParam(value="typeReasonId") int typeReasonId){
+		ModelAndView model=new ModelAndView("/jsp-fragment/admin-console/app-config/delete-delay-type-reason-modal");
+		model.addObject("reason",reasonVal);
+		model.addObject("type",typeVal);
+		model.addObject("typeReasonId",typeReasonId);
+		return model;
+	}
+	
 	@RequestMapping("delete-delay-reason")
 	@ResponseBody
-	public void deleteDelayReason(@RequestParam(value="reasonId") int reasonId,@RequestParam(value="typeId") int typeId){
+	public void deleteDelayReason(@RequestParam(value="reasonId") int reasonId){
 		
-		delayService.deleteDelayReason(reasonId, typeId);
+		delayService.deleteDelayReason(reasonId);
+	}
+	
+	@RequestMapping("delete-delay-type-reason")
+	@ResponseBody
+	public void deleteDelayTypeReason(@RequestParam(value="assocId") int assocId){
+		
+		delayService.deleteDelayTypeReason(assocId);
 	}
 	
 	@RequestMapping(value = "get-edit-delay-reason-modal-page")
@@ -552,58 +604,74 @@ public class AppConfigRestController {
 		return mav;
 	}
 	
-	@RequestMapping("edit-delay-reason")
+	
+	@RequestMapping(value = "get-edit-delay-type-reason-page")
 	@ResponseBody
-	public void editDelayReason(@RequestParam(value="oldTypeId") int oldTypeId,@RequestParam(value="reasonId") int reasonId,@RequestParam(value="oldReasonName") String oldReasonName,
-			@RequestParam(value="newTypeId") int newTypeId,@RequestParam(value="newReasonName") String newReasonName,HttpServletResponse response) throws Exception{
+	public ModelAndView getEditDelayTypeReasonModalPage(@RequestParam(value="typeReasonId") int typeReasonId){
 		
-		DelayReasonModel newReason = new DelayReasonModel();
-		newReason.setTypeId(newTypeId);
-		/* 
-		 * 	This if is necessary in order to prevent the program from throwing an error
- 			when the user attempts to edit the reason where the type is the same as the original.
- 			example:  old TypeId was 5, new TypeId is still 5.  Old name is "X", new name is "Y".
-			Because the reasonId does not change when the name is changed, the program
-		 	would throw an error whenever the user attempted to use the same Delay Type
-			and only change the Delay Reason's name.  This is a workaround for that instance.
-			The reasonId must still be set back to the passed in reasonId parameter right before
-			the final modification is done below, though.
-		 */
-		if(oldReasonName.equals(newReasonName)) newReason.setReasonId(reasonId);
-		else newReason.setReasonId(-1);
-		
-		newReason.setDelayReason(newReasonName);
-		
-		DelayReasonModel oldReason = new DelayReasonModel();
-		oldReason.setTypeId(oldTypeId);
-		oldReason.setReasonId(reasonId);
-		oldReason.setDelayReason(oldReasonName);
-		// check if new Reason exists in tables
-		boolean result = delayService.checkAssociation(newReason);
-		if(result){
+		ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/app-config/edit-delay-type-reason-assoc-modal");
+		// need to get a list of all the types in order to populate the Delay Type dropdown
+		List<DelayTypeModel> types = delayService.getTypes();
+		List<DelayReasonModel> reason = delayService.getReasons();
+		DelayTypeReason delayReasonModel=delayService.getAssocTypeReasons(typeReasonId);
+		if(delayReasonModel != null){
+			delayReasonModel.setDelayAssocid(typeReasonId);
+			mav.addObject("delayReasonModel",delayReasonModel);
+		//	mav.addObject("typeId", delayReasonModel.getTypeId());
+		//	mav.addObject("reasonId", delayReasonModel.getReasonId());
+		}
+		mav.addObject("types", types);
+		mav.addObject("reason", reason);
+		return mav;
+	}
+	
+	@RequestMapping("edit-delay-type-reason")
+	@ResponseBody
+	public DelayTypeReason editDelayReason(@RequestParam(value="oldTypeId") int oldTypeId,@RequestParam(value="newTypeId") int newTypeId,
+			@RequestParam(value="oldReasonId") int oldReasonId,@RequestParam(value="newReasonId") int newReasonId,
+			@RequestParam(value="assocId") int assocId,HttpServletResponse response) throws Exception{
 			
-			//String errorMessage = "Delay Reason already linked to selected Delay Type.";
-		//	throw new DelayReasonAlreadyExistsException(errorMessage);
-			CommonUtils.getCommonErrorAjaxResponse(response,"Delay Reason already linked to selected Delay Type.");
-		}else{
-			// check if the delay reason already exists
-			result = delayService.checkReason(newReason.getDelayReason());
+		if((oldTypeId != newTypeId) || (oldReasonId !=newReasonId)){
+			DelayReasonModel delayReasonModel=new DelayReasonModel();
+			delayReasonModel.setTypeId(newTypeId);
+			delayReasonModel.setReasonId(newReasonId);
+			boolean result = delayService.checkAssociation(delayReasonModel);
 			if(result){
-				// if so, tell user it already exists
-				//String errorMessage = "Delay Reason with this name already exists.";
-			//	throw new DelayReasonAlreadyExistsException(errorMessage);
-				CommonUtils.getCommonErrorAjaxResponse(response,"Delay Reason with this name already exists.");
-			}else{
-				// modify the old reason with the new reason's info
-				// if we made it this far, it's necessary to reset the newReason's reasonId
-				// to what was originally passed into the method in order to make the modifyReason
-				// SQL statement work.  
-				// old reason is sent so we know where/what to modify with the new data
-				newReason.setReasonId(reasonId);
-				delayService.modifyReason(newReason, oldReason);
+				CommonUtils.getCommonErrorAjaxResponse(response,"");
+				return null;
+			}
+			else{
+				DelayTypeReason typeReason=new DelayTypeReason();
+				typeReason.setTypeId(newTypeId);
+				typeReason.setReasonId(newReasonId);
+				typeReason.setDelayAssocid(assocId);
+				return delayService.modifyDelayTypeReasonAssoc(typeReason);
 			}
 		}
+		return null;
 	}
+
+	@RequestMapping("edit-delay-reason")
+	@ResponseBody
+	public void editDelayReason(@RequestParam(value="reasonId") int reasonId,@RequestParam(value="oldReasonName") String oldReasonName,
+			@RequestParam(value="newReasonName") String newReasonName,HttpServletResponse response) throws Exception{
+		
+		
+		if(!oldReasonName.equalsIgnoreCase(newReasonName)) {
+			// check if the delay reason already exists
+				boolean result = delayService.checkReason(newReasonName);
+				if(result){
+					// if so, tell user it already exists
+					//String errorMessage = "Delay Reason with this name already exists.";
+				//	throw new DelayReasonAlreadyExistsException(errorMessage);
+					CommonUtils.getCommonErrorAjaxResponse(response,"Delay Reason with this name already exists.");
+				}else{
+				
+					delayService.modifyReason(newReasonName, reasonId);
+				}
+		}
+	}
+	
 	
 	@RequestMapping(value = "get-add-delay-reason-modal-page")
 	@ResponseBody
@@ -613,9 +681,39 @@ public class AppConfigRestController {
 		return new ModelAndView("/jsp-fragment/admin-console/app-config/add-delay-reason-modal", "types", types);
 	}
 	
+	@RequestMapping(value = "get-add-delay-type-reason-page")
+	@ResponseBody
+	public ModelAndView getAddDelayTypeReasonModal(){
+		ModelAndView model=new ModelAndView("/jsp-fragment/admin-console/app-config/add-delay-type-reason-assoc-modal");
+		List<DelayTypeModel> types = delayService.getTypes();
+		List<DelayReasonModel> reason = delayService.getReasons();
+		model.addObject("types", types);
+		model.addObject("reasons", reason);
+		return model;
+	}
+	
+	@RequestMapping(value = "add-delay-type-reason")
+	@ResponseBody
+	public DelayTypeReason addDelayTypeReason(@RequestParam("typeId")int typeId, @RequestParam("reasonId")int reasonId,HttpServletResponse response) throws Exception{
+		
+		// check if Reason Name already exists
+		DelayReasonModel delayReasonModel=new DelayReasonModel();
+		delayReasonModel.setTypeId(typeId);
+		delayReasonModel.setReasonId(reasonId);
+		boolean result = delayService.checkAssociation(delayReasonModel);
+		if(result){
+			CommonUtils.getCommonErrorAjaxResponse(response,"");
+			return null;
+		}else{
+			DelayTypeReason typeReason = delayService.addDelayTypeReason(typeId, reasonId);
+			return typeReason;
+		}
+	}
+	
+	
 	@RequestMapping(value = "add-delay-reason")
 	@ResponseBody
-	public DelayReasonModel addDelayReason(@RequestParam("typeId")int typeId, @RequestParam("reasonName")String reasonName,HttpServletResponse response) throws Exception{
+	public DelayReasonModel addDelayReason(@RequestParam("reasonName")String reasonName,HttpServletResponse response) throws Exception{
 		
 		// check if Reason Name already exists
 		boolean result = delayService.checkReason(reasonName);
@@ -627,7 +725,7 @@ public class AppConfigRestController {
 			CommonUtils.getCommonErrorAjaxResponse(response,"");
 			return null;
 		}else{
-			DelayReasonModel reason = delayService.addDelayReason(typeId, reasonName);
+			DelayReasonModel reason = delayService.addDelayReason(reasonName);
 			return reason;
 		}
 	}
@@ -636,7 +734,7 @@ public class AppConfigRestController {
 	@ResponseBody
 	public DelayTypeModel addDelayType(@RequestParam(value="delayType") String delayType,HttpServletResponse response) throws Exception{
 		
-		boolean result = delayService.checkForExistingType( delayType );
+		boolean result = delayService.checkDelayTypeExist( delayType );
 		if(result){
 
 			//String errorMessage = "A Delay Type with this name already exists.";
@@ -661,9 +759,9 @@ public class AppConfigRestController {
 	/* ================== Terms And Conditions ================== */
 	@RequestMapping("update-t-and-c-frequency")
 	@ResponseBody
-	public void updateTermsAndConditionsFrequency(@RequestParam(value="frequencyDays") String frequency) {
+	public void updateTermsAndConditionsFrequency(@RequestParam(value="frequencyDays") String frequencyDays) {
 		try {
-			Integer.parseInt(frequency);
+			Integer.parseInt(frequencyDays);
 		} 
 		catch (Exception e) {
 			//Frequency was not a number, what to do here?
@@ -672,7 +770,7 @@ public class AppConfigRestController {
 			return;
 		}
 		
-		termsAndConditionsService.updateTermsAndConditionsFrequency(frequency);
+		termsAndConditionsService.updateTermsAndConditionsFrequency(frequencyDays);
 	}
 	
 	@RequestMapping("view-t-and-c")

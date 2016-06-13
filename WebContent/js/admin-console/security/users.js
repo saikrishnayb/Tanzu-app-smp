@@ -190,6 +190,7 @@ $(document).ready(function() {
 		$getEditUserModalContentPromise.done(function(data){
 			$editModal.html(data);
 			openModal($editModal);
+			$editModal.find("#first-name").focus();
 			//   $(".ui-dialog").addClass("custom_dialog_style");
 			
 		});

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.2//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.penske.apps.adminconsole.dao.TransporterDao">	
+
+
+
+ 	<resultMap id="MimeTypeMap" type="com.penske.apps.adminconsole.model.MimeTypeModel"> 
+         <result property="extn" 	column="EXTENSION"/> 
+         <result property="mimeType" 	column="MIME_TYPE"/>	 
+    </resultMap> 
+
+	
+	<select id="getMimeTypeList" resultMap="MimeTypeMap"> 
+ 		 Select EXTENSION,MIME_TYPE from CORP.vfjtransporterfiletype 
+ 	</select> 
+
+ 	<insert id="insertTransporter" parameterType="com.penske.apps.adminconsole.model.Transport"> 
+	
+ 		Insert into CORP.NVONTRNRCV  
+ 		( 
+ 			PICKUP_VENDOR,				REPORT_STATUS,		UNIT,					PKU_NOTICE_DATE,			PRODUCTION_DATE,			HOLD_DATE,		
+ 			ADV_NOTICE_CANCEL_DATE,		OEM,				PLANT_CODE,				ORIGIN_NAME,				ORIGIN_ADD_1,				ORIGIN_ADD_2,		
+ 			ORIGIN_CITY,				ORGIN_STATE_PROV,	ORIGIN_ZIP_CODE,		ORIGIN_PHONE,				DEST_CODE,					DEST_NAME,			 
+ 			DEST_ADD_1,					DEST_ADD_2,			DEST_CITY,				DEST_STATE_PROV,			DEST_ZIP_CODE,				DEST_PHONE,				 
+ 			EST_MILES,					VIN,				BODY_SERIAL,			UNIT_GVW,					PO_CATEGORY,				VEHICLE_CATEGORY,		 
+ 			VEHICLE_TYPE,				FUEL_TYPE,			SLPR_CODE,				AERO_ROOF,					AERO_SIDE,					AERO_CAB,				 
+ 			DECKING,					NO_DECKS,			FREIGHT_AMOUNT,			FUEL_SUR_CHARGE,			ADD_ON_CHARGES,				TOTAL_AMOUNT,			 
+ 			TRNST_PO,					TRNST_PO_DATE,		UNIT_DELIVERY_DATE,		ACT_DELV_REPORTED,			FLUID_AMOUNT,				BREAKDWN_AMOUNT,		 
+ 			TOLL_AMOUNT,				MISC_AMOUNT,		REVISED_AMOUNT,			SUBMIT_PAYMENT,				PENSKE_COMMENT,				TRANSPORTER_COMMENT,	 
+ 			ASSIGN_DATE,				LAST_CHANGE_DATE,	CORP,					PARENT_VENDOR,				PO_NO,						ADV_NOTICE_SEQ,		 
+ 			REPORT_ID,					TREDEL					 
+ 		)	
+ 		values  
+ 		( 
+ 			#{pickupVendor},			#{status},			#{unitNo},				#{requestedPickupDate},		#{productionDate},			#{holdNotificationDate}, 
+ 			#{advanceNoticeCancelDate},	#{oem},				#{plantCode},			#{plantName},				#{plantAdrs1},				#{plantAdrs1}, 
+ 			#{originCity},				#{originState},		#{originZipCode},		#{originContactInfo},		#{destCode},				#{dlvName},
+ 			#{dlvAdrs1},				#{dlvAdrs2},		#{destCity},			#{destState},				#{destZipCode},				#{destContactInfo}, 
+ 			#{mileage},					#{vin},				#{bodySerial},			#{unitGvw},					#{cat},						#{vehicleCategory}, 
+ 			#{vehicleType},				#{fuelType},		#{slprCode},			#{aeroRoof},				#{aeroSide},				#{aeroCab}, 
+ 			#{decking},					#{numDecks},		#{frieghtAmount},		#{fuelSurcharge},			#{penskeAddOnCharge},		#{totalAmount}, 
+ 			#{trnstPo},					#{transitPoDate},	#{actDelvry},			#{actualDeliveryReported},	#{fluids},					#{breakDown}, 
+ 			#{tolls},					#{misc},			#{revisedPOAmount},		#{isPOAmountAccepted},		#{penskeComment},			#{transporterComment}, 
+ 			#{transporterAssignDate},	#{lastChangedDate},	#{companyCode},			#{parentVendor},			#{purchasePoNum},			#{advancedNoticeSequence},
+ 			#{reportId},				#{estimatedDeliveryDate}
+ 		)
+ 	</insert>
+
+ </mapper>

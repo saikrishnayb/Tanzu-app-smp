@@ -2,20 +2,14 @@
 <div class="blank"></div>
 <form id="edit-modal-form" action="edit-delay-reason.htm">
 	<div class="line">
-		<label>Delay Type</label>
-		<input type="hidden" id="hidden-type-id" value ="${reason.typeId}"/>
+		<span class="textLabel rightMargin">Original Reason</span>
 		<input type="hidden" id="hidden-reason-id" value="${reason.reasonId}" />
 		<input type="hidden" id="hidden-reason-name" value="${reason.delayReason}"/>
-		<select id="delay-type-of-reason" class="edit-input input numeric numeric-whole">
-			<option value=""></option>
-			<c:forEach items="${types}" var="types">
-			<option value="${types.typeId}" <c:if test="${reason.typeId == types.typeId}"> selected </c:if>>${types.delayType}</option>
-			</c:forEach>
-		</select>
+		<input type="text" class="edit-modal-input" disabled="disabled" value="${reason.delayReason}"/>
 	</div>
 	<div class="line">
-		<label>Delay Reason</label>
-		<input type="text" class="edit-input alpha alpha-numeric input" id="edit-delay-reason-name" value="${reason.delayReason}"/>
+		<label>Edited Reason</label>
+		<input type="text" class="edit-modal-input alpha alpha-numeric input" id="edit-delay-reason-name" value=""/>
 	</div>
 </form>
 <div class="blank"></div>

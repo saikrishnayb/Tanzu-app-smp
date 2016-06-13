@@ -1,4 +1,5 @@
 var $errMsg = $('.edit-buttons').find('.error-messages-container').find('.errorMsg');
+var $ldapUserinfoModal;
 $(document).ready(function() { 
 	var $permissionsAccordion = $('.permission-tab-accordions');
 	var $templateAccordions = $('.templates-accordion');
@@ -23,7 +24,7 @@ $(document).ready(function() {
 	var $signFileHiddenInput = $(".sign-file-hidden-input");
 	var $initFileHiddenInput = $(".init-file-hidden-input");
 	var $ssoRefreshModal = $('#sso-updated-information'); 
-	var $ldapUserinfoModal=$("#ldap-userinfo-modal");
+	$ldapUserinfoModal=$("#ldap-userinfo-modal");
 	
 	//SSO Refresh modal
 	$ssoRefreshModal.dialog({
@@ -792,7 +793,15 @@ $('#signature-add').on('click', function(){
 						location.assign('./vendorUsers.htm');
 					});
 					$createUserPromise.fail(function(xhr, ajaxOptions, thrownError) {
-						 if(xhr.responseText.indexOf('Error while creating user')>0){
+						 if(xhr.responseText.indexOf('USER_SERVICE_DUP_SSO:1')>0){
+							  $errMsg.text('UserID '+ssoId+' already exists. Please choose a different UserID.');
+							  $('.error-messages-container').removeClass('displayNone');
+						  }
+						 else if(xhr.responseText.indexOf('USER_SERVICE_NOT_STANDARD_SSO:11')>0){
+							  $errMsg.text('UserID '+ ssoId + ' does not conform to standards.');
+							  $('.error-messages-container').removeClass('displayNone');
+						  }
+						 else if(xhr.responseText.indexOf('Error while creating user')>0){
 							  $errMsg.text('Error occured while creating user..');
 							  $('.error-messages-container').removeClass('displayNone');
 						  }
@@ -811,111 +820,17 @@ $('#signature-add').on('click', function(){
 		var isCreateOrEdit=$('#isCreateOrEdit').val();
 		if($.trim($emailVal).length>0 && isCreateOrEdit=='true'){
 			$("#sso-id").val($emailVal);
-			var ssoId = $('#sso-id').val();
-			var userId = $('#user-id').val();
-			var oldUserName=$('#sso-old-id').val();
-			if(isCreateOrEdit=='true' || (isCreateOrEdit=='false' && $.trim(ssoId) != $.trim(oldUserName))){
-				$errMsg.text("");
-				$('.error-messages-container').addClass('displayNone');
-				var $isUserNameAvailiblePromise = $.ajax({
-					type: "POST",
-					url:'./is-username-exist.htm',
-					global: false,
-					data: {ssoId:ssoId, userId:userId,isCreateOrEdit:isCreateOrEdit}
-				});
-		
-				$isUserNameAvailiblePromise.fail(function(xhr, ajaxOptions, thrownError){
-					var responseText = xhr.responseText;
-					if(responseText.indexOf('Error in processing the last request.')>0){
-						$errMsg.text("Error in processing the last request.");
-						$('.error-messages-container').removeClass('displayNone');
-					}
-				}).done(function(data){
-					$("#returnFlg").val(data.returnFlg);
-					if(isCreateOrEdit==='true'){
-						$ldapUserinfoModal.find("#ok").hide();
-						$ldapUserinfoModal.find("#yes").hide();
-					}
-					switch(data.returnFlg) {
-				    case -1:
-				       //Do nothing
-				    	if(isCreateOrEdit==='true'){
-				    		
-				    	}else{
-				    		toggleButton("");
-				    	}
-				        break;
-				    case 0:
-				    	var errorTxt="An active user already exists with the user name " + ssoId + ".";
-						if(isCreateOrEdit ==='true'){
-							$ldapUserinfoModal.find("#infoText").text(errorTxt);
-							$ldapUserinfoModal.find("#ok").show();
-							openModal($ldapUserinfoModal);
-				    	}else{
-				    		$errMsg.text(errorTxt);
-							$('.error-messages-container').removeClass('displayNone');
-				    	}
-						toggleButton("disable");
-				        break;
-				    case 1:
-				    	var errorTxt="<p>An Active user already exists with the user name " + ssoId + " in LDAP.</p>" +
-				    			"<p>But user yet been configured for access to Supplier Management Center would they like to add now?</p>";
-						if(isCreateOrEdit ==='true'){
-							$ldapUserinfoModal.find("#infoText").html(errorTxt);
-
-							$ldapUserinfoModal.find("#yes").show();
-							$ldapUserinfoModal.find("#fnameM").val(data.firstName);
-							$ldapUserinfoModal.find("#lnameM").val(data.lastName);
-							$ldapUserinfoModal.find("#phoneM").val(data.phone);
-							$ldapUserinfoModal.find("#emailM").val(data.email);
-							$ldapUserinfoModal.find("#ssoM").val(data.ssoId);
-							openModal($ldapUserinfoModal);
-				    	}else{
-				    		var errorTxt="An Active user already exists with the user name " + ssoId + " in LDAP." +
-			    			"But user yet been configured for access to Supplier Management Center would they like to add now?";
-					
-				    		$errMsg.text(errorTxt);
-							$('.error-messages-container').removeClass('displayNone');
-				    	}
-						toggleButton("");
-				        break;
-				    case 2:
-				    	var errorTxt="<p>An Inactive user already exists with the user name " + ssoId + " in LDAP.</p>" +
-				    			"<p>Please Contact Support @ "+data.supportNumber+" for further assistance.</p>";
-						if(isCreateOrEdit ==='true'){
-							$ldapUserinfoModal.find("#infoText").html(errorTxt);
-							$ldapUserinfoModal.find("#ok").show();
-							openModal($ldapUserinfoModal);
-				    	}else{
-				    		var errorTxt="An Inactive user already exists with the user name " + ssoId + " in LDAP." +
-			    			"Please Contact Support @ "+data.supportNumber+" for further assistance.";
-				    		$errMsg.text(errorTxt);
-							$('.error-messages-container').removeClass('displayNone');
-				    	}
-						toggleButton("disable");
-				        break;
-				    default:
-				    	if(isCreateOrEdit ==='true'){
-				    		 openModal($ldapUserinfoModal);
-				    	}else{
-				    		toggleButton("");
-				    	}
-				} 
-					if(!(isCreateOrEdit==='true')){
-						if(data.returnFlg==1){					
-							$('#email').val(data.email);
-							$("#sso-id").val(data.ssoId);
-							$("#first-name").val(data.firstName);
-							$("#last-name").val(data.lastName);
-							$("#phone").val(data.phone);
-						}else{
-							$("#first-name").val('');
-							$("#last-name").val('');
-							$("#phone").val('');
-						}
-					}
-				});
-			}
+			validateEmailOrUserId(isCreateOrEdit);
+		}
+	});
+	
+	$('#sso-id').on("blur", function(){
+		var $ssoVal=$(this).val();
+		var $emailVal=$('#email').val();
+		var isCreateOrEdit=$('#isCreateOrEdit').val();
+		if($.trim($ssoVal).length>0 && isCreateOrEdit=='true'
+			&& $.trim($ssoVal) !==$.trim($emailVal)){
+			validateEmailOrUserId(isCreateOrEdit);
 		}
 	});
 	
@@ -981,7 +896,16 @@ $('#signature-add').on('click', function(){
 							});
 						});
 						$editUserPromise.fail(function(xhr, ajaxOptions, thrownError) {
-							 if(xhr.responseText.indexOf('Error while updating user')>0){
+							
+							 if(xhr.responseText.indexOf('USER_SERVICE_DUP_SSO:1')>0){
+								  $errMsg.text('UserID '+ssoId+' already exists. Please choose a different UserID.');
+								  $('.error-messages-container').removeClass('displayNone');
+							  }
+							 else if(xhr.responseText.indexOf('USER_SERVICE_NOT_STANDARD_SSO:11')>0){
+								  $errMsg.text('UserID '+ ssoId + ' does not conform to standards.');
+								  $('.error-messages-container').removeClass('displayNone');
+							  }
+							 else  if(xhr.responseText.indexOf('Error while updating user')>0){
 								  $errMsg.text('Error occured while updating user..');
 								  $('.error-messages-container').removeClass('displayNone');
 							  }
@@ -1094,6 +1018,114 @@ function toggleButton(val){
 		$('#save-user-vendor-edit').removeClass( "buttonPrimary" ).addClass( "buttonDisabled" );
 	}else{
 		$('#save-user-vendor-edit').removeClass( "buttonDisabled" ).addClass( "buttonPrimary" );
+	}
+}
+
+function validateEmailOrUserId(isCreateOrEdit){
+	var ssoId = $('#sso-id').val();
+	var userId = $('#user-id').val();
+	var oldUserName=$('#sso-old-id').val();
+	if(isCreateOrEdit=='true' || (isCreateOrEdit=='false' && $.trim(ssoId) != $.trim(oldUserName))){
+		$errMsg.text("");
+		$('.error-messages-container').addClass('displayNone');
+		var $isUserNameAvailiblePromise = $.ajax({
+			type: "POST",
+			url:'./is-username-exist.htm',
+			global: true,
+			data: {ssoId:ssoId, userId:userId,isCreateOrEdit:isCreateOrEdit}
+		});
+
+		$isUserNameAvailiblePromise.fail(function(xhr, ajaxOptions, thrownError){
+			var responseText = xhr.responseText;
+			if(responseText.indexOf('Error in processing the last request.')>0){
+				$errMsg.text("Error in processing the last request.");
+				$('.error-messages-container').removeClass('displayNone');
+			}
+		}).done(function(data){
+			$("#returnFlg").val(data.returnFlg);
+			if(isCreateOrEdit==='true'){
+				$ldapUserinfoModal.find("#ok").hide();
+				$ldapUserinfoModal.find("#yes").hide();
+			}
+			switch(data.returnFlg) {
+		    case -1:
+		       //Do nothing
+		    	//if(isCreateOrEdit==='true'){
+		    		
+		    //	}else{
+		    		toggleButton("");
+		    //	}
+		        break;
+		    case 0:
+		    	var errorTxt="An active user already exists with the user name " + ssoId + ".";
+				if(isCreateOrEdit ==='true'){
+					$ldapUserinfoModal.find("#infoText").text(errorTxt);
+					$ldapUserinfoModal.find("#ok").show();
+					openModal($ldapUserinfoModal);
+		    	}else{
+		    		$errMsg.text(errorTxt);
+					$('.error-messages-container').removeClass('displayNone');
+		    	}
+				toggleButton("disable");
+		        break;
+		    case 1:
+		    	var errorTxt="<p>An Active user already exists with the user name " + ssoId + " in LDAP.</p>" +
+		    			"<p>But user yet been configured for access to Supplier Management Center would they like to add now?</p>";
+				if(isCreateOrEdit ==='true'){
+					$ldapUserinfoModal.find("#infoText").html(errorTxt);
+
+					$ldapUserinfoModal.find("#yes").show();
+					$ldapUserinfoModal.find("#fnameM").val(data.firstName);
+					$ldapUserinfoModal.find("#lnameM").val(data.lastName);
+					$ldapUserinfoModal.find("#phoneM").val(data.phone);
+					$ldapUserinfoModal.find("#emailM").val(data.email);
+					$ldapUserinfoModal.find("#ssoM").val(data.ssoId);
+					openModal($ldapUserinfoModal);
+		    	}else{
+		    		var errorTxt="An Active user already exists with the user name " + ssoId + " in LDAP." +
+	    			"But user yet been configured for access to Supplier Management Center would they like to add now?";
+			
+		    		$errMsg.text(errorTxt);
+					$('.error-messages-container').removeClass('displayNone');
+		    	}
+				toggleButton("");
+		        break;
+		    case 2:
+		    	var errorTxt="<p>An Inactive user already exists with the user name " + ssoId + " in LDAP.</p>" +
+		    			"<p>Please Contact Support @ "+data.supportNumber+" for further assistance.</p>";
+				if(isCreateOrEdit ==='true'){
+					$ldapUserinfoModal.find("#infoText").html(errorTxt);
+					$ldapUserinfoModal.find("#ok").show();
+					openModal($ldapUserinfoModal);
+		    	}else{
+		    		var errorTxt="An Inactive user already exists with the user name " + ssoId + " in LDAP." +
+	    			"Please Contact Support @ "+data.supportNumber+" for further assistance.";
+		    		$errMsg.text(errorTxt);
+					$('.error-messages-container').removeClass('displayNone');
+		    	}
+				toggleButton("disable");
+		        break;
+		    default:
+		    	if(isCreateOrEdit ==='true'){
+		    		 openModal($ldapUserinfoModal);
+		    	}else{
+		    		toggleButton("");
+		    	}
+		} 
+			if(!(isCreateOrEdit==='true')){
+				if(data.returnFlg==1){					
+					$('#email').val(data.email);
+					$("#sso-id").val(data.ssoId);
+					$("#first-name").val(data.firstName);
+					$("#last-name").val(data.lastName);
+					$("#phone").val(data.phone);
+				}else{
+					$("#first-name").val('');
+					$("#last-name").val('');
+					$("#phone").val('');
+				}
+			}
+		});
 	}
 }
 /*function formatPhone(phone){

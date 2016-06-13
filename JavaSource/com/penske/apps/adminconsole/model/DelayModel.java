@@ -18,6 +18,8 @@ public class DelayModel {
 	private String delayType; // delay type
 	private int delayReasonId; // delay reason ID
 	private String delayReason; // delay reason
+	private String dateTypeDesc; // dateTypeDesc
+	private int delayTypeReasonId; // delay Type / reason ID
 
 	// Getters
 	public int getDelayId() {
@@ -101,5 +103,21 @@ public class DelayModel {
 
 	public void setDateTypeId(String dateTypeId) {
 		this.dateTypeId = dateTypeId;
+	}
+
+	public String getDateTypeDesc() {
+		return dateTypeDesc;
+	}
+
+	public void setDateTypeDesc(String dateTypeDesc) {
+		this.dateTypeDesc = dateTypeDesc;
+	}
+
+	public int getDelayTypeReasonId() {
+		return delayTypeReasonId;
+	}
+
+	public void setDelayTypeReasonId(int delayTypeReasonId) {
+		this.delayTypeReasonId = delayTypeReasonId;
 	}
 }

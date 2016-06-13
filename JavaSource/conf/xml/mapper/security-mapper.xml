@@ -47,7 +47,11 @@
 					U.TYPE_ID = #{userTypeId} AND
 				</if>
 				U.STATUS = 'A' AND
-				R.STATUS = 'A'
+				R.STATUS = 'A' AND 
+				U.ORG_ID IN(
+					SELECT ORG_ID FROM  SMC.SMC_ORG_MASTER
+	 					START WITH ORG_ID = #{orgId} 	CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID
+				)
  	</select>
  	
  <!--  	<select id="getSupplierUsers" resultType="com.penske.apps.adminconsole.model.User">
@@ -273,7 +277,7 @@
  	</select>
  	
  	<select id="getAllUserDepts" resultType="com.penske.apps.adminconsole.model.UserDept">
- 		SELECT 	USER_DEPT AS userDept,
+ 		SELECT 	USER_DEPT AS userDept, DESCRIPTION as description,
  				DEPT_ID AS userDeptId 
 		FROM 	SMC.SMC_USER_DEPT
  	</select>
@@ -748,70 +752,6 @@
  		SELECT VENDOR_ID FROM SMC.SMC_ORG_VENDOR_ASSOC WHERE ORG_ID=#{orgId}
  	</select>
  	
- 	<select id="getAllTemplates"  resultType="com.penske.apps.adminconsole.model.Template">
- 		SELECT TEMPLATE_ID as templateID, TEMPLATE_HASH as templateHash, TEMPLATE_NAME as templateName,
- 		 TEMPLATE_DESC as templateDesc, PO_CATEGORY_ASSOC_ID as poCatAssID  FROM SMC.SMC_TEMPLATE_MASTER 
- 	</select>
- 	
- 	<select id="getAllPoAssociation"  resultType="com.penske.apps.adminconsole.model.TemplatePoAssociation">
- 		<!--  SELECT asso.PO_CATEGORY_ASSOC_ID as poCatAssocID, asso.PO_CATEGORY_ID as poCatID,asso.PO_SUBCATEGORY_ID as poSubCatID,cat.PO_CATEGORY || '/' || subcat.PO_SUBCATEGORY as poCatSubCatDesc  FROM SMC.SMC_PO_CATEGORY_ASSOC as asso
-		JOIN SMC.SMC_PO_CATEGORY as cat ON asso.PO_CATEGORY_ID=cat.PO_CATEGORY_ID
-		JOIN SMC.SMC_PO_SUBCATEGORY subcat ON asso.PO_SUBCATEGORY_ID=subcat.PO_SUBCATEGORY_ID-->
-		SELECT CATEGORY || '/' || SUBCATEGORY as poCatSubCatDesc, ASSOC_ID as poCatAssocID FROM SMC.V_SMC_PO_CATEGORY_COMBINATIONS
-
- 	</select>
- 	<select id="getTemplatesById"  resultType="com.penske.apps.adminconsole.model.Template">
- 		SELECT TEMPLATE_ID as templateID, TEMPLATE_HASH as templateHash, TEMPLATE_NAME as templateName,
- 		 TEMPLATE_DESC as templateDesc, PO_CATEGORY_ASSOC_ID as poCatAssID  FROM SMC.SMC_TEMPLATE_MASTER 
- 		 WHERE  TEMPLATE_ID=#{templateID}
- 	</select>
- 	
- 	<select id="getAllComponent"  resultType="com.penske.apps.adminconsole.model.Components">
- 		SELECT COMPONENT_ID as componentId, DISPLAY_NAME as componentName FROM  SMC.V_SMC_COMPONENTS
- 	</select>
- 	
- 	<insert id="addTemplate">
- 		INSERT 	INTO SMC.SMC_TEMPLATE_MASTER  
- 				(TEMPLATE_HASH,TEMPLATE_DESC,TEMPLATE_NAME,
- 				CREATED_BY,MODIFIED_BY,PO_CATEGORY_ASSOC_ID) 
- 		VALUES 	(#{templateHash},#{templateDesc},#{templateDesc}, #{createdBy},#{createdBy},#{poCatAssID})
- 		 <selectKey resultType="int" keyProperty="templateID" order="AFTER" >
-           SELECT IDENTITY_VAL_LOCAL() as identity_val FROM SYSIBM.SYSDUMMY1
-		</selectKey> 
- 	</insert>
- 	
- 	<insert id="addTemplateComponents">
- 		INSERT INTO SMC.SMC_TEMPLATE_COMPONENTS
- 		(TEMPLATE_ID, COMPONENT_ID, COMPONENT_ACCESS, AVAIL_TO_OTHER_PO, EXPORT_TO_EXCEL, 
- 		GROUP_SEQUENCE, CREATED_BY, CREATED_DATE, MODIFIED_BY, MODIFIED_DATE, DISPLAY_SEQUENCE)
- 		VALUES 	(#{templateId},#{componentId},#{editRequiredStr},#{dispOtherPOStr},#{excelStr},'0',#{createdBy}
- 		,CURRENT TIMESTAMP,#{modifiedBy},CURRENT TIMESTAMP,'0')
- 	</insert>
- 	
- 	<delete  id="deleteTemplate">
- 		DELETE 	FROM SMC.SMC_TEMPLATE_MASTER 
- 		WHERE 	TEMPLATE_ID = #{templateID}
- 	</delete>
- 	
- 	<delete  id="deleteTemplateComponents">
- 		DELETE 	FROM SMC.SMC_TEMPLATE_COMPONENTS
- 		WHERE 	TEMPLATE_ID = #{templateID}
- 	</delete>
- 	<select id="getTemplateComponentById" resultType="com.penske.apps.adminconsole.model.Components">
- 		Select TEMPLATE_ID as templateId, COMPONENT_ID as componentId, COMPONENT_ACCESS as editRequiredStr, AVAIL_TO_OTHER_PO as dispOtherPOStr, EXPORT_TO_EXCEL as excelStr
- 			FROM SMC.SMC_TEMPLATE_COMPONENTS WHERE TEMPLATE_ID=#{templateID}
- 	</select>
-
- 	<update id="updateTemplate">
- 		UPDATE SMC.SMC_TEMPLATE_MASTER 
-		SET TEMPLATE_HASH=#{templateHash},TEMPLATE_DESC=#{templateDesc},TEMPLATE_NAME=#{templateDesc},
- 			MODIFIED_BY=#{createdBy},PO_CATEGORY_ASSOC_ID=#{poCatAssID}
- 		WHERE TEMPLATE_ID = #{templateID}
- 	</update>
- 	<select id="findTemplateExist"  resultType="int">
- 		Select TEMPLATE_ID from SMC.SMC_TEMPLATE_MASTER WHERE TEMPLATE_HASH=#{templateHash} OR PO_CATEGORY_ASSOC_ID=#{poCatAssID}
- 	</select>
- 	
  	<insert id="addBuddies">
  		INSERT 	INTO SMC.SMC_BUDDIES 
  				(SSO,
@@ -825,7 +765,7 @@
  	</insert>
  	
  	<select id="getUserDeptsById" resultType="com.penske.apps.adminconsole.model.UserDept">
- 		SELECT 	USER_DEPT AS userDept,
+ 		SELECT 	USER_DEPT AS userDept,DESCRIPTION as description,
  				DEPT_ID AS userDeptId 
 		FROM 	SMC.SMC_USER_DEPT where DEPT_ID=#{deptId}
  	</select>
@@ -924,6 +864,10 @@
 				T.USER_TYPE ='VENDOR' AND
 				U.STATUS = 'A' AND
 				R.STATUS = 'A'
+				AND U.ORG_ID IN(
+					SELECT ORG_ID FROM  SMC.SMC_ORG_MASTER
+	 					START WITH ORG_ID = #{orgId} 	CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID
+				)
  	</select>
  	
  	<select id="getVendorRoles" resultType="com.penske.apps.adminconsole.model.Role">
@@ -931,21 +875,19 @@
  				ROLE_ID AS roleId
  		FROM 	SMC.smc_user_roles 
  		WHERE 	STATUS = 'A'
- 		AND ROLE_ID NOT IN(
+ 		<!-- AND ROLE_ID NOT IN(
  			SELECT 	ROLE_ID 
 	 		FROM 	SMC.smc_user_roles 
 	 		WHERE	STATUS = 'A'
 	 		START 	WITH ROLE_ID = 1
-	 		<!-- 
-	 		(
-	 		  SELECT ROLE_ID FROM SMC.smc_user_roles WHERE ROLE_NAME='Penske Admin (SU)'
-	 		) -->
+	 		
+	 		
 	 		CONNECT BY BASE_ROLE_ID = PRIOR ROLE_ID
  		)
- 		<if test="isVendor==true">
+ 		<if test="isVendor==true"> -->
  		START 	WITH ROLE_ID = #{roleId}
 	 	CONNECT BY BASE_ROLE_ID = PRIOR ROLE_ID
-	 	</if>
+	 	<!--  </if> -->
  	</select>
  	<select id="getVendorUserTypes" resultType="com.penske.apps.adminconsole.model.UserType">
  		SELECT 	DESCRIPTION AS description,
@@ -959,15 +901,15 @@
          NAME as orgName,
          PARENT_ORG_ID as parentOrgId
 		FROM     SMC.SMC_ORG_MASTER
-		WHERE    ORG_ID NOT IN
+	<!-- 	WHERE    ORG_ID NOT IN
 		( 
 		SELECT ORG_ID FROM SMC.SMC_ORG_MASTER
 		    START WITH ORG_ID=1 CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID ORDER BY ORG_ID 
 		)
-		<if test="isVendor==true">
+		<if test="isVendor==true"> -->
 	 		START 	WITH ORG_ID = #{orgId}
 		 	CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID
-		 </if>
+		<!--  </if> -->
  	</select>
  	
  	
@@ -1045,4 +987,20 @@
 		START  WITH ORG_ID =#{orgId}
 	 	CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID ORDER BY ORG_ID
  	</select>
+ 	
+ 	<delete id="removeVendorAssocFromDescendent">
+ 		DELETE FROM SMC.SMC_ORG_VENDOR_ASSOC 
+			WHERE 
+		      VENDOR_ID NOT IN(
+		   	       SELECT   VENDOR_ID FROM     SMC.SMC_ORG_VENDOR_ASSOC
+		               WHERE    ORG_ID=#{orgId}
+	          )
+			AND
+			ORG_ID IN(
+						SELECT ORG_ID FROM SMC.SMC_ORG_MASTER 
+		                     WHERE ORG_ID != #{orgId} 
+							 START WITH ORG_ID = #{orgId}
+							 CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID
+					)
+ 	</delete>
  </mapper>

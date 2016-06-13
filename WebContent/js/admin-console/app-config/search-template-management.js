@@ -57,7 +57,7 @@ $(document).ready(function() {
 	$('#templateTable').on('click', '.edit-template', function() {
 		var $this = $(this);
 		var templateId = $this.closest('.template-row').find('.template-id').val();
-		
+		displayFlag=false;
 		var $getTemplateModalContentPromise = $.get("get-search-template-modal-content.htm", {templateId:templateId});
 		$getTemplateModalContentPromise.done(function(data) {
 			$editModal.html(data);

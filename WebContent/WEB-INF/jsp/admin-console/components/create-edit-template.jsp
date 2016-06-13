@@ -29,9 +29,9 @@
 <body>
 	<%@ include file="../../../jsp/jsp-fragment/global/header.jsp"%>
 	<div id="mainContent" class="borderTop">
-		<%@ include file="../../../jsp/jsp-fragment/admin-console/security/left-nav.jsp"%>
+		<%@ include file="../../../jsp/jsp-fragment/admin-console/components/left-nav.jsp"%>
 		<div class="leftNavAdjacentContainer">
-			<%@ include file="../../../jsp/jsp-fragment/admin-console/security/template-form.jsp"%>
+			<%@ include file="../../../jsp/jsp-fragment/admin-console/components/template-form.jsp"%>
 			<div class="edit-buttons">
 				<span class="errorMsg">* indicates a required field</span>
 				<a class="secondaryLink back" tabIndex="-1">Cancel</a> 
@@ -50,5 +50,5 @@
 	</div>
 </body>
 <!-- Scripts -->
-<script src="${context}/js/admin-console/security/template-form.js" type="text/javascript"></script>
+<script src="${context}/js/admin-console/components/template-form.js" type="text/javascript"></script>
 </html>

@@ -51,7 +51,7 @@ $(document).ready(function() {
 	
 	// ADD DELAY
 	$('#add-new-delay').on("click", function(){
-		
+		displayFlag=false;
 		var $getAddDelayModalContentPromise = $.get("get-add-delay-modal-content.htm");
 		$getAddDelayModalContentPromise.done( function(data){
 			
@@ -63,6 +63,7 @@ $(document).ready(function() {
 		
 		var $reasonSelect = $('#delay-reason');
 		var typeId = $('#delay-type').val();
+		displayFlag=false;
 		var $getReasonsAssociatedWithTypePromise = $.get("get-associated-reasons.htm", {typeId:typeId});
 		$getReasonsAssociatedWithTypePromise.done( function(data){
 			
@@ -167,6 +168,7 @@ $(document).ready(function() {
 		var poCategory = $this.closest("tr").find('.po-category').text();
 		var delayType = $this.closest("tr").find('.delay-type').text();
 		var delayReason = $this.closest("tr").find('.delay-reason').text();
+		displayFlag=false;
 		var $getEditDelayModalContentPromise = $.get("get-edit-delay-modal-content.htm",
 													{
 														delayId:delayId,
@@ -234,6 +236,11 @@ $(document).ready(function() {
 			    	$error.removeClass('hidden');
 			    	$error.find(".errorMsg").html('Delay with these credentials already exists.');
 				  }
+			     else if(jqXHR.responseText.indexOf('Error in processing the last request.')>0){
+				    	var $error= $addDelayTypeReasonModal.find("#error-message"); 
+				    	$error.removeClass('hidden');
+				    	$error.find(".errorMsg").html('Failed Delay Creation.');
+					  }
 			});
 		}
 		else{
@@ -289,7 +296,7 @@ $(document).ready(function() {
 	$('.modal').on("click", ".delete-delay", function(){
 		
 		// delete the row from the table on screen for the user
-		var delayId = $deleteDelayModal.find('.delay-id').val()
+		var delayId = $deleteDelayModal.find('.delay-id').val();
 		var intId = parseInt(delayId);
 		
 		var $deleteDataPromise = $.get("delete-delay.htm", {delayId:delayId});

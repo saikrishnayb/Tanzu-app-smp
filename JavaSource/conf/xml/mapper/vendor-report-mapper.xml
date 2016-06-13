@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.2//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.penske.apps.adminconsole.dao.VendorReportDao">
+
+	<resultMap id="MimeTypeMap" type="com.penske.apps.adminconsole.model.MimeTypeModel">
+        <result property="extn" 	column="EXTENSION"/>
+        <result property="mimeType" 	column="MIME_TYPE"/>	
+    </resultMap>
+
+	
+	<select id="getMimeTypeList" resultMap="MimeTypeMap">
+		 Select EXTENSION,MIME_TYPE from CORP.vfjtransporterfiletype
+	</select>
+	
+	<insert id="insertVendorReport"  parameterType="com.penske.apps.adminconsole.model.VendorReport">
+	
+		Insert into CORP.NVOBNIMSF 
+		(
+				REPORT_ID,ROW_SEQ,COL_SEQ,COL_VALUE,IS_HEADER,USER_ID, CREATE_DATE	
+		)
+		values 
+		(	
+			#{reportId} ,	#{rowSeq},		#{colSeq},	#{colValue},	#{isHeader},	 #{userId},	CURRENT_TIMESTAMP
+		)
+ 
+	</insert>
+	
+	<!--  A stored procedure that returns the Message --> 
+	<parameterMap id="vendorReportResult" type = "com.penske.apps.adminconsole.model.VendorReportResults"  >
+		<parameter property="reportId" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" /> 
+		<parameter property="count" jdbcType="DECIMAL" javaType="java.math.BigDecimal" mode="IN" /> 
+		<parameter property="message" jdbcType="VARCHAR" javaType="java.lang.String" mode="OUT" /> 
+	</parameterMap>
+	
+    <select statementType="CALLABLE" id="processVendorReportStoredProc" parameterMap="vendorReportResult" >
+		{CALL objectlib.NVOBNIMSP(#{reportId, mode=IN, jdbcType=VARCHAR},#{count, mode=IN, jdbcType=DECIMAL},#{message, mode=OUT, jdbcType=VARCHAR})}
+	</select> 
+	
+	
+	<select id="getUploadLimit" resultType="java.lang.String">
+		SELECT APPLICATIONLINK  From CORP.vfjapplnk WHERE APPLICATIONNAME =  'VENDOR_UPLOAD_LIMIT' AND GROUPID = -1
+	</select>
+
+</mapper>

@@ -6,8 +6,8 @@
 			<label>Date Type</label>
 			<select id="date-type" name="dateTypeId" class="input alpha alpha-name">
 				<c:forEach items="${dateTypes}" var="dateTypeId">
-				<option value="${dateTypeId}"
-						<c:if test="${dateTypeId eq delay.dateType}"> selected</c:if>>${dateTypeId}</option>
+				<option value="${dateTypeId.dateType}"
+						<c:if test="${dateTypeId.dateType eq currDateType}"> selected</c:if>>${dateTypeId.dateTypeDesc}</option>
 				</c:forEach>
 			</select>
 		</div>

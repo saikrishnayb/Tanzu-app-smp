@@ -10,7 +10,6 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,12 +17,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.penske.apps.adminconsole.model.Components;
+import com.penske.apps.adminconsole.exceptions.UserServiceException;
 import com.penske.apps.adminconsole.model.HeaderUser;
 import com.penske.apps.adminconsole.model.ImageFile;
 import com.penske.apps.adminconsole.model.Org;
 import com.penske.apps.adminconsole.model.Role;
-import com.penske.apps.adminconsole.model.Template;
 import com.penske.apps.adminconsole.model.User;
 import com.penske.apps.adminconsole.model.Vendor;
 import com.penske.apps.adminconsole.model.VendorLocation;
@@ -33,6 +31,7 @@ import com.penske.apps.adminconsole.service.UserCreationService;
 import com.penske.apps.adminconsole.service.VendorService;
 import com.penske.apps.adminconsole.util.ApplicationConstants;
 import com.penske.apps.adminconsole.util.CommonUtils;
+import com.penske.apps.adminconsole.util.IUserConstants;
 import com.penske.apps.suppliermgmt.common.exception.SMCException;
 
 @Controller
@@ -128,11 +127,12 @@ public class SecurityRestController {
 			HeaderUser currentUser = (HeaderUser) session.getAttribute("currentUser");
 			boolean isVendor = currentUser.getUserTypeId() == ApplicationConstants.SUPPLIER_USER;
 			if(isVendorUserFlow){//going to vendor user deactivation flow
-				userCreationService.isEligibleToDeactivate(userId, isVendor);
+				userCreationService.isEligibleToDeactivate(userId, isVendorUserFlow,currentUser.getSso());
 			}else{
 				securityService.modifyUserStatus(userId, currentUser);
 			}
 		}catch (Exception e) {
+			logger.error("Error while deactivation user: "+e);
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while deactivation user.");
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		    response.getWriter().write("Error while deactivation user.");
@@ -177,6 +177,7 @@ public class SecurityRestController {
 			HeaderUser currentUser = (HeaderUser) session.getAttribute("currentUser");
 			securityService.deleteOrg(orgId, currentUser.getSso());
 		}catch (Exception e) {
+			logger.error("Error while deactivation ORG: "+e);
 			CommonUtils.getCommonErrorAjaxResponse(response,"");
 		}
 	}
@@ -260,7 +261,24 @@ public class SecurityRestController {
 			userCreationService.updateUserInfo(user, false);
 			User userInfo = securityService.getUser(user.getUserId());
 			return userInfo;
-		}catch (Exception e) {
+		}
+		catch (UserServiceException e) {
+			if(IUserConstants.DUP_SSO_ERROR_CODE==e.getErrorCode()){
+				logger.error(IUserConstants.DUP_SSO_ERROR_MESSAGE+e);
+				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,"USER_SERVICE_DUP_SSO:"+String.valueOf(e.getErrorCode()));
+			}else if(IUserConstants.NOT_STANDARD_SSO_ERROR_CODE==e.getErrorCode()){
+				logger.error(IUserConstants.NOT_STANDARD_SSO_ERROR_MESSAGE+e);
+				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,"USER_SERVICE_NOT_STANDARD_SSO:"+String.valueOf(e.getErrorCode()));
+			}else{
+				logger.error("Error while creating user: "+e);
+				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while creating user.");
+			}
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		    response.getWriter().write("Error while creating user. "+e.getErrorCode());
+		    response.flushBuffer();
+		}
+		catch (Exception e) {
+			logger.error("Error while updating user: "+e);
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while updating user.");
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		    response.getWriter().write("Error while updating user.");
@@ -323,6 +341,7 @@ public class SecurityRestController {
 			}
 			return user;
 		}catch (Exception e) {
+			logger.error("Error in processing the last request.: "+e);
 		   CommonUtils.getCommonErrorAjaxResponse(response,"");
 		}
 		return null;
@@ -385,6 +404,7 @@ public class SecurityRestController {
 			HeaderUser currentUser = (HeaderUser) session.getAttribute("currentUser");
 			securityService.addUser(user, vendorIds, currentUser);
 		}catch (Exception e) {
+				logger.error("Error while creating user: "+e);
 				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while creating user.");
 				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			    response.getWriter().write("Error while creating user.");
@@ -401,7 +421,24 @@ public class SecurityRestController {
 			HeaderUser currentUser = (HeaderUser) session.getAttribute("currentUser");
 			user.setCreatedBy(currentUser.getSso());
 			userCreationService.insertUserInfo(user);
-		}catch (Exception e) {
+		}
+		catch (UserServiceException e) {
+			if(IUserConstants.DUP_SSO_ERROR_CODE==e.getErrorCode()){
+				logger.error(IUserConstants.DUP_SSO_ERROR_MESSAGE+e);
+				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,"USER_SERVICE_DUP_SSO:"+String.valueOf(e.getErrorCode()));
+			}else if(IUserConstants.NOT_STANDARD_SSO_ERROR_CODE==e.getErrorCode()){
+				logger.error(IUserConstants.NOT_STANDARD_SSO_ERROR_MESSAGE+e);
+				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,"USER_SERVICE_NOT_STANDARD_SSO:"+String.valueOf(e.getErrorCode()));
+			}else{
+				logger.error("Error while creating user: "+e);
+				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while creating user.");
+			}
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		    response.getWriter().write("Error while creating user. "+e.getErrorCode());
+		    response.flushBuffer();
+		}
+		catch (Exception e) {
+				logger.error("Error while creating user: "+e);
 				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while creating user.");
 				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			    response.getWriter().write("Error while creating user.");
@@ -736,6 +773,7 @@ public class SecurityRestController {
 			org.setModifiedBy(currentUser.getSso());
 			securityService.updateOrg(org);
 		}catch (Exception e) {
+			logger.error("Error Processing the Org: "+e);
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error Processing the Org");
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 	        response.getWriter().write("Error Processing the Org");
@@ -775,6 +813,7 @@ public class SecurityRestController {
 			org.setCreatedBy(currentUser.getSso());
 			securityService.addOrg(org);
 		}catch (Exception e) {
+			logger.error("Error Processing the Org: "+e);
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error Processing the Org");
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 	        response.getWriter().write("Error Processing the Org");
@@ -827,87 +866,4 @@ public class SecurityRestController {
 		mav.addObject("editableOrg", editableOrg);		
 		return mav;
 	}
-	
-	@RequestMapping(value ="/create-modify-template-page")
-	@ResponseBody
-	public ModelAndView getCreateModifyTemplatePage(@RequestParam("isCreatePage") Boolean isCreatePage,@RequestParam(value="templateId") int templateId, HttpSession session) {
-		ModelAndView mav = new ModelAndView("/admin-console/security/create-edit-template");
-		HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
-		mav.addObject("currentUser", currentUser);
-		mav.addObject("allPoAssocList", securityService.getAllPoAssociation());
-		List<Components> comp=securityService.getAllComponent();
-		if(isCreatePage){
-			mav.addObject("isCreatePage",true);
-		}else{
-			mav.addObject("editableTemplate",securityService.getTemplatesById(templateId));
-			comp=securityService.getTemplateComponentById(comp,templateId);
-			mav.addObject("isCreatePage",false);
-		}
-		mav.addObject("allComponent",comp);
-		return mav;
-	}
-	
-	@RequestMapping(value ="/create-template", method = RequestMethod.POST)
-	@ResponseBody
-	public void addTemplate(@RequestParam("tempDesc") String tempDesc,@RequestParam("poCatAssID") String poCatAssID,@RequestBody List<Components> compList,HttpSession session, HttpServletResponse response) throws Exception{
-		HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
-		Template template=new Template();
-		template.setTemplateDesc(tempDesc);
-		template.setPoCatAssID(poCatAssID);
-		template.setComponentList(compList);
-		template.setCreatedBy(currentUser.getSso());
-		template.setModifiedBy(currentUser.getSso());
-		String hashCodeStr=CommonUtils.getCompnentCheckSum(compList);
-		template.setTemplateHash(hashCodeStr);
-		List<Integer> templateId=securityService.findTemplateExist(template);
-		if(templateId !=null && !templateId.isEmpty()){
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Template Already exists.");
-			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-	        response.getWriter().write("Template Already exists.");
-	        response.flushBuffer();
-		}else{
-			securityService.addTemplate(template);
-		}
-	}
-	@RequestMapping(value ="/update-template", method = RequestMethod.POST)
-	@ResponseBody
-	public void updateTemplate(@RequestParam("templateId") int templateId,@RequestParam("tempDesc") String tempDesc,@RequestParam("poCatAssID") String poCatAssID,@RequestBody List<Components> compList,HttpSession session, HttpServletResponse response) throws Exception{
-		HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
-		Template template=new Template();
-		template.setTemplateID(templateId);
-		template.setTemplateDesc(tempDesc);
-		template.setPoCatAssID(poCatAssID);
-		template.setComponentList(compList);
-		template.setCreatedBy(currentUser.getSso());
-		template.setModifiedBy(currentUser.getSso());
-		String hashCodeStr=CommonUtils.getCompnentCheckSum(compList);
-		template.setTemplateHash(hashCodeStr);
-		List<Integer> templateTemplId=securityService.findTemplateExist(template);
-		if(templateTemplId !=null && !templateTemplId.isEmpty() &&
-			((templateTemplId.size()==1 && templateTemplId.get(0) !=templateId)) || templateTemplId.size()>1){
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Template Already exists.");
-			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-	        response.getWriter().write("Template Already exists.");
-	        response.flushBuffer();
-		}else{
-			securityService.updateTemplate(template);
-		}
-	}
-	
-	@RequestMapping("get-deactivate-template-modal-content")
-	@ResponseBody
-	public ModelAndView getDeactivateTemplateInfo(@RequestParam(value="templateName") String templateName, @RequestParam(value="templateId") String templateId) {
-		ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/security/deactivate-template-modal-content");
-		mav.addObject("templateName", templateName);
-		mav.addObject("templateId", templateId);
-		
-		return mav;
-	}
-	@RequestMapping("delete-template")
-	@ResponseBody
-	public void deleteTemplate(@RequestParam(value="templateId") int templateId, HttpSession session) {
-		securityService.deleteTemplate(templateId);
-	}
-	
-
 }

@@ -7,7 +7,7 @@ $(document).ready(function() {
 	selectCurrentNavigation("tab-security", "left-nav-vendors");
 	
 	/* ----------- Datatable Declaration ----------- */
-	var iDisplayLength = tableRowLengthCalc();
+	var iDisplayLength = 100;//tableRowLengthCalc();
 	
 	$vendorTable.dataTable({ 					//All of the below are optional
 				"aaSorting": [[ 2, "asc" ]], 	//default sort column
@@ -34,8 +34,14 @@ $(document).ready(function() {
 											
 											//This will hide "Showing 1 to 5 of 11 entries" if we have 0 rows.
 											var infoRow = $(this).parent().children('div.dataTables_info');
-											
-											infoRow.css("display", "none");
+											var rowCount = this.fnSettings().fnRecordsDisplay();
+											if (rowCount > 0){
+												infoRow.css("display", "block");
+											} 
+											else{
+												infoRow.css("display", "none");
+											}
+											//infoRow.css("display", "none");
 										}
 	});
 	
@@ -118,6 +124,9 @@ $(document).ready(function() {
 		var vendorId = $row.find('[name="vendorId"]').val();
 		var analystId = $row.find('[name="planningAnalyst"]').val();
 		var specialistId = $row.find('[name="supplySpecialist"]').val();
+		//for pop up positioning 
+		var x = ($(window).width() - 415) / 2;
+		var y = $(this).offset().top + $(this).height();
 		
 		$.post('./edit-vendor.htm',
 				{'vendorId': vendorId},
@@ -126,7 +135,8 @@ $(document).ready(function() {
 					var specialistFound = false;
 					
 					$editVendorModal.html(data);
-					$editVendorModal.dialog('open');
+					//$editVendorModal.dialog('open');
+					$editVendorModal.dialog("option", "position", [x,y]).dialog("open");
 					
 					/*$editVendorModal.find('[name="planningAnalyst.userId"] option').each(function() {
 						if (!analystFound && $(this).val() == analystId) {
@@ -148,12 +158,14 @@ $(document).ready(function() {
 	$vendorTable.on('click', '.view-vendor', function() {
 		var $row = $(this).closest('tr');
 		var vendorId = $row.find('[name="vendorId"]').val();
-		
+		var x = ($(window).width() - 415) / 2;
+		var y = $(this).offset().top + $(this).height();
 		$.get('./view-vendor.htm',
 				{'vendorId': vendorId},
 				function(data) {
 					$viewVendorModal.html(data);
-					$viewVendorModal.dialog('open');
+					//$viewVendorModal.dialog('open');
+					$viewVendorModal.dialog("option", "position", [x,y]).dialog("open");
 				});
 	});
 	

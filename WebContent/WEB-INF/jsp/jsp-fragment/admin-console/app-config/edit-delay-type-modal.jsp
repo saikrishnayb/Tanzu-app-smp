@@ -4,6 +4,7 @@
 	<div class="line">
 		<span class="textLabel rightMargin">Original Name</span>
 		<input type="hidden" id="hidden-type-id" value="${type.typeId}" />
+		<input type="hidden" id="hidden-type-val" value="${type.delayType}" />
 		<input type="text" class="edit-modal-input" disabled="disabled" value="${type.delayType}"/>
 	</div>
 	<div class="line">

@@ -187,15 +187,15 @@
 		DELETE FROM	SMC.SMC_ROLE_SEC_FUNCTIONS
 
 		WHERE	SEC_FUNC_ID = #{functionId}
-		AND 	ROLE_ID = #{roleId} 
+		<!--AND 	ROLE_ID = #{roleId} -->
 		
-		<!-- IN (SELECT ROLE_ID
+		 AND 	ROLE_ID IN (SELECT ROLE_ID
 		
 							FROM SMC.smc_user_roles 
 							
 							START WITH ROLE_ID = #{roleId} 
 							CONNECT BY BASE_ROLE_ID = PRIOR ROLE_ID)
-		-->
+		
 	</delete>
 	
 	<update id="modifyRoleName">

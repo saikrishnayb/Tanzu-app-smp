@@ -5,16 +5,18 @@ public class Components {
 	private String componentId;
 	private int templateId;
 	private String visibility;
+	private boolean viewable;
 	private boolean editable;
 	private boolean required;
 	private boolean dispOtherPO;
 	private boolean excel;
 	private String editRequiredStr;
-	private int dispOtherPOStr=0;
-	private int excelStr=0;
+	private String dispOtherPOStr="N";
+	private String excelStr="N";
 	private String wasChecked;
 	private String createdBy;
 	private String modifiedBy;
+	private String fullName;
 	public String getComponentName() {
 		return componentName;
 	}
@@ -69,16 +71,16 @@ public class Components {
 	public void setEditRequiredStr(String editRequiredStr) {
 		this.editRequiredStr = editRequiredStr;
 	}
-	public int getDispOtherPOStr() {
+	public String getDispOtherPOStr() {
 		return dispOtherPOStr;
 	}
-	public void setDispOtherPOStr(int dispOtherPOStr) {
+	public void setDispOtherPOStr(String dispOtherPOStr) {
 		this.dispOtherPOStr = dispOtherPOStr;
 	}
-	public int getExcelStr() {
+	public String getExcelStr() {
 		return excelStr;
 	}
-	public void setExcelStr(int excelStr) {
+	public void setExcelStr(String excelStr) {
 		this.excelStr = excelStr;
 	}
 	public int getTemplateId() {
@@ -99,5 +101,18 @@ public class Components {
 	public void setModifiedBy(String modifiedBy) {
 		this.modifiedBy = modifiedBy;
 	}
+	public boolean isViewable() {
+		return viewable;
+	}
+	public void setViewable(boolean viewable) {
+		this.viewable = viewable;
+	}
+	public String getFullName() {
+		return fullName;
+	}
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+	
 	
 }

@@ -414,11 +414,11 @@ public class User {
 	
 	public boolean validateUserWithSSOData(User ssoUser){
 		boolean isUpdated = false;
-		if(!ssoUser.getEmail().equalsIgnoreCase(this.email) ||
-				!ssoUser.getFirstName().equalsIgnoreCase(this.firstName) ||
-				!ssoUser.getLastName().equalsIgnoreCase(this.lastName) ||
-				(ssoUser.getPhone() !=null && !ssoUser.getPhone().equalsIgnoreCase(this.phone))
-				|| (ssoUser.getGessouid() !=null &&    !ssoUser.getGessouid().equalsIgnoreCase(this.gessouid))){
+		if((ssoUser.getEmail() !=null && !ssoUser.getEmail().equalsIgnoreCase(this.email)) ||
+			(ssoUser.getFirstName() !=null && !ssoUser.getFirstName().equalsIgnoreCase(this.firstName)) ||
+			(ssoUser.getLastName() !=null && !ssoUser.getLastName().equalsIgnoreCase(this.lastName)) ||
+			(ssoUser.getPhone() !=null && !ssoUser.getPhone().equalsIgnoreCase(this.phone))	|| 
+			(ssoUser.getGessouid() !=null && !ssoUser.getGessouid().equalsIgnoreCase(this.gessouid))){
 			isUpdated = true;
 		}
 		return isUpdated;

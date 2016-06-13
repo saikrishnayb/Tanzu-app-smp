@@ -143,5 +143,4 @@ public class DefaultCategoryManagementService implements CategoryManagementServi
 		return categoryDao.getAssociationExist(poCategoryId, subCategoryId);
 	}
 
-	
 }

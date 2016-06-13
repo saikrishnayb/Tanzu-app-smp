@@ -5,7 +5,7 @@ $(document).ready(function() {
 		var $form = $addSubjectModal.find('#add-subject-form');
 		var $error = $addSubjectModal.find('.error');
 		var errorMsg = validateAddForm($form);
-		
+		displayFlag=false;
 		// If no error message was returned, hide any errors and submit the form data.
 		if (errorMsg.length == 0) {
 			$error.hide();

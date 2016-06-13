@@ -10,7 +10,9 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -18,16 +20,20 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.penske.apps.adminconsole.model.CategoryAssociation;
 import com.penske.apps.adminconsole.model.ComponentVisibility;
+import com.penske.apps.adminconsole.model.Components;
 import com.penske.apps.adminconsole.model.HeaderUser;
 import com.penske.apps.adminconsole.model.PoCategory;
 import com.penske.apps.adminconsole.model.SubCategory;
+import com.penske.apps.adminconsole.model.Template;
 import com.penske.apps.adminconsole.model.TemplateComponents;
 import com.penske.apps.adminconsole.model.TemplatePoCategorySubCategory;
 import com.penske.apps.adminconsole.model.VendorTemplate;
 import com.penske.apps.adminconsole.service.CategoryManagementService;
+import com.penske.apps.adminconsole.service.ComponentService;
 import com.penske.apps.adminconsole.service.ComponentVendorTemplateService;
 import com.penske.apps.adminconsole.service.ComponentVisibilityService;
 import com.penske.apps.adminconsole.util.ApplicationConstants;
+import com.penske.apps.adminconsole.util.CommonUtils;
 
 /**
  * 
@@ -52,6 +58,9 @@ public class ComponentsRestController {
 	
 	@Autowired
 	private CategoryManagementService categoryManagementService;
+	
+	@Autowired
+	private ComponentService componentService;
 	
 	@RequestMapping(value="get-add-visibility-modal-content")
 	@ResponseBody
@@ -181,7 +190,7 @@ public class ComponentsRestController {
 	
 	@RequestMapping(value="delete-category-content")
 	@ResponseBody
-	public ModelAndView deleteCategoryContent(int poCategoryId,int subCategoryId)
+	public ModelAndView deleteCategoryContent(@RequestParam("poCategoryId") int poCategoryId,@RequestParam("subCategoryId") int subCategoryId)
 	{
 		
 		ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/components/category-delete-modal-content");
@@ -193,7 +202,7 @@ public class ComponentsRestController {
 	
 	@RequestMapping(value="delete-category-content-edit")
 	@ResponseBody
-	public ModelAndView deleteCategoryContentEditModal(int templateId,int poCategoryId,int subCategoryId)
+	public ModelAndView deleteCategoryContentEditModal(@RequestParam("templateId") int templateId,@RequestParam("poCategoryId") int poCategoryId,@RequestParam("subCategoryId") int subCategoryId)
 	{
 		
 		ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/components/template-category-edit-delete-modal-content");
@@ -230,7 +239,7 @@ public class ComponentsRestController {
 	
 	@RequestMapping(value="get-category-components")
 	@ResponseBody
-	public ModelAndView getCategoryComponents(int poCategoryId,@RequestParam("subCategoryIds[]") int [] subCategoryIds) {
+	public ModelAndView getCategoryComponents(@RequestParam("poCategoryId") int poCategoryId,@RequestParam("subCategoryIds[]") int [] subCategoryIds) {
 		
 		List<TemplatePoCategorySubCategory> poCategorySubCategory =new ArrayList<TemplatePoCategorySubCategory>();
 		for (int subCategoryId : subCategoryIds) {
@@ -248,7 +257,7 @@ public class ComponentsRestController {
 	
 	@RequestMapping(value="get-add-category-components")
 	@ResponseBody
-	public ModelAndView getAddCategoryComponents(int poCategoryId,@RequestParam("subCategoryIds[]") int [] subCategoryIds) {
+	public ModelAndView getAddCategoryComponents(@RequestParam("poCategoryId") int poCategoryId,@RequestParam("subCategoryIds[]") int [] subCategoryIds) {
 		
 		List<TemplatePoCategorySubCategory> poCategorySubCategory =new ArrayList<TemplatePoCategorySubCategory>();
 		for (int subCategoryId : subCategoryIds) {
@@ -265,7 +274,7 @@ public class ComponentsRestController {
 	
 	@RequestMapping(value="get-delete-template-modal-content")
 	@ResponseBody
-	public ModelAndView getVendorInfo(int templateId) {
+	public ModelAndView getVendorInfo(@RequestParam("templateId") int templateId) {
 		
 		VendorTemplate vendorTemplate =componentVendorTemplateService.getVendorTemplate(templateId);
 		ModelAndView mav =new ModelAndView("/jsp-fragment/admin-console/components/template-delete-modal-content");
@@ -276,7 +285,7 @@ public class ComponentsRestController {
 	
 	@RequestMapping(value="delete-template-table-content")
 	@ResponseBody
-	public void deleteTemplateTableContent(int templateId) {
+	public void deleteTemplateTableContent(@RequestParam("templateId") int templateId) {
 		
 		componentVendorTemplateService.deleteTemplate(templateId);
 	}
@@ -447,4 +456,86 @@ public class ComponentsRestController {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	@RequestMapping(value ="/create-modify-template-page")
+	@ResponseBody
+	public ModelAndView getCreateModifyTemplatePage(@RequestParam("isCreatePage") Boolean isCreatePage,@RequestParam(value="templateId") int templateId, HttpSession session) {
+		ModelAndView mav = new ModelAndView("/admin-console/components/create-edit-template");
+		HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
+		mav.addObject("currentUser", currentUser);
+		mav.addObject("allPoAssocList", componentService.getAllPoAssociation());
+		List<Components> comp=componentService.getAllComponent();
+		if(isCreatePage){
+			mav.addObject("isCreatePage",true);
+		}else{
+			mav.addObject("editableTemplate",componentService.getTemplatesById(templateId));
+			comp=componentService.getTemplateComponentById(comp,templateId);
+			mav.addObject("isCreatePage",false);
+		}
+		mav.addObject("allComponent",comp);
+		return mav;
+	}
+	
+	@RequestMapping(value ="/create-template", method = RequestMethod.POST)
+	@ResponseBody
+	public void addTemplate(@RequestParam("tempDesc") String tempDesc,@RequestParam("poCatAssID") String poCatAssID,@RequestBody List<Components> compList,HttpSession session, HttpServletResponse response) throws Exception{
+		HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
+		Template template=new Template();
+		template.setTemplateDesc(tempDesc);
+		template.setPoCatAssID(poCatAssID);
+		template.setComponentList(compList);
+		template.setCreatedBy(currentUser.getSso());
+		template.setModifiedBy(currentUser.getSso());
+		String hashCodeStr=CommonUtils.getCompnentCheckSum(compList);
+		template.setTemplateHash(hashCodeStr);
+		List<Integer> templateId=componentService.findTemplateExist(template);
+		if(templateId !=null && !templateId.isEmpty()){
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Template Already exists.");
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+	        response.getWriter().write("Template Already exists.");
+	        response.flushBuffer();
+		}else{
+			componentService.addTemplate(template);
+		}
+	}
+	@RequestMapping(value ="/update-template", method = RequestMethod.POST)
+	@ResponseBody
+	public void updateTemplate(@RequestParam("templateId") int templateId,@RequestParam("tempDesc") String tempDesc,@RequestParam("poCatAssID") String poCatAssID,@RequestBody List<Components> compList,HttpSession session, HttpServletResponse response) throws Exception{
+		HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
+		Template template=new Template();
+		template.setTemplateID(templateId);
+		template.setTemplateDesc(tempDesc);
+		template.setPoCatAssID(poCatAssID);
+		template.setComponentList(compList);
+		template.setCreatedBy(currentUser.getSso());
+		template.setModifiedBy(currentUser.getSso());
+		String hashCodeStr=CommonUtils.getCompnentCheckSum(compList);
+		template.setTemplateHash(hashCodeStr);
+		List<Integer> templateTemplId=componentService.findTemplateExist(template);
+		if(templateTemplId !=null && !templateTemplId.isEmpty() &&
+			((templateTemplId.size()==1 && templateTemplId.get(0) !=templateId)) || templateTemplId.size()>1){
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Template Already exists.");
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+	        response.getWriter().write("Template Already exists.");
+	        response.flushBuffer();
+		}else{
+			componentService.updateTemplate(template);
+		}
+	}
+	
+	@RequestMapping("get-deactivate-template-modal-content")
+	@ResponseBody
+	public ModelAndView getDeactivateTemplateInfo(@RequestParam(value="templateName") String templateName, @RequestParam(value="templateId") String templateId) {
+		ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/components/deactivate-template-modal-content");
+		mav.addObject("templateName", templateName);
+		mav.addObject("templateId", templateId);
+		
+		return mav;
+	}
+	@RequestMapping("delete-template")
+	@ResponseBody
+	public void deleteTemplate(@RequestParam(value="templateId") int templateId, HttpSession session) {
+		componentService.deleteTemplate(templateId);
+	}
+	
 }

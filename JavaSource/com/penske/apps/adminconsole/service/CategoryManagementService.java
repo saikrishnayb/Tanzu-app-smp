@@ -46,4 +46,6 @@ public interface CategoryManagementService {
 	public void modifyAssStatus(int assId,String status,int poCatId, int subCatId);
 	
 	public int getAssociationExist(int poCategoryId, int subCategoryId);
+	
+	
 }

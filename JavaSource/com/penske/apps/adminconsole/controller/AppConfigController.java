@@ -6,12 +6,18 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.penske.apps.adminconsole.annotation.DefaultController;
+import com.penske.apps.adminconsole.model.ExcelUploadHandler;
 import com.penske.apps.adminconsole.model.GlobalException;
 import com.penske.apps.adminconsole.model.Notification;
+import com.penske.apps.adminconsole.model.TransportUploadHandler;
 import com.penske.apps.adminconsole.model.UnitException;
+import com.penske.apps.adminconsole.model.VendorUploadHandler;
 import com.penske.apps.adminconsole.service.AlertService;
 import com.penske.apps.adminconsole.service.DefaultSubjectService;
 import com.penske.apps.adminconsole.service.DelayService;
@@ -19,10 +25,12 @@ import com.penske.apps.adminconsole.service.DynamicRuleService;
 import com.penske.apps.adminconsole.service.ExceptionService;
 import com.penske.apps.adminconsole.service.NotificationService;
 import com.penske.apps.adminconsole.service.SearchTemplateService;
-import com.penske.apps.adminconsole.service.TabService;
 import com.penske.apps.adminconsole.service.TermsAndConditionsService;
+import com.penske.apps.adminconsole.service.TransporterServiceImpl;
+import com.penske.apps.adminconsole.service.VendorReportServiceImpl;
 import com.penske.apps.adminconsole.util.ApplicationConstants;
 import com.penske.apps.adminconsole.util.CommonUtils;
+import com.penske.apps.suppliermgmt.model.UserContext;
 
 
 /**
@@ -53,14 +61,18 @@ public class AppConfigController {
 	@Autowired 
 	private SearchTemplateService searchTemplateService;
 	
-	@Autowired
-	private TabService tabService;
 	
 	@Autowired 
 	private AlertService alertService;
 	
 	@Autowired
 	private TermsAndConditionsService termsAndConditionsService;
+	
+	@Autowired
+	private TransporterServiceImpl objTransporterService;
+	
+	@Autowired
+	private VendorReportServiceImpl objVendorService;
 
 	/* ================== Subject Management ================== */
 	@RequestMapping(value={"/subject-management"})
@@ -72,6 +84,79 @@ public class AppConfigController {
 		return mav;
 	}
 
+	
+	/* ================== Excel Uploads    ================== */
+	/**
+	 * Mapping for the excel upload page.
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping("/excelUploads")
+	public ModelAndView getExcelUploadPage(HttpSession session){
+		ModelAndView mav = new ModelAndView("/admin-console/app-config/excelUploads");
+		mav.addObject("access",CommonUtils.hasAccess(ApplicationConstants.UPLOAD_EXCEL, session));
+		return mav;
+	}
+	
+	/**
+	 * This controller will handle uploading a transport excel file.
+	 * The information will be modified and saved to the database.
+	 * The savedocument call will always have false in the pilot param
+	 * this is a hold over from when this functionality was in vsportal.
+	 * @param file -- .xls file
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(method = RequestMethod.POST, value = "/upload")
+	public ModelAndView uploadTransportExcelFile(@RequestParam(value = "file") MultipartFile file, HttpSession session, @RequestParam(value = "uploadSelect") String uploadSelect) throws Exception
+	{
+		UserContext userContext = (UserContext) session.getAttribute(ApplicationConstants.USER_MODEL);
+		
+		ModelAndView mav = new ModelAndView("/admin-console/app-config/excelUploads");
+		mav.addObject("access",CommonUtils.hasAccess(ApplicationConstants.UPLOAD_EXCEL, session));
+		
+		//This will handle calling the different save functions.
+		ExcelUploadHandler excelUploadHandler = null;
+		
+		//The file name is required for the save function.	
+		String fileName = file.getOriginalFilename();
+		
+		//message to be displayed back to screen.
+		String message = null;
+		
+		//t is for transport; v is for vendor; anything else is banned.
+		if(null == uploadSelect || (!uploadSelect.equalsIgnoreCase("t") && !uploadSelect.equalsIgnoreCase("v")) )
+		{
+			mav.addObject("transport_message", "Selection not recognized.");
+			return mav;
+		}
+		else if(uploadSelect.equalsIgnoreCase("t"))
+		{
+			excelUploadHandler = new TransportUploadHandler();
+			
+			//Message to be displayed back to the screen.
+			message = excelUploadHandler.saveDocument(fileName, file, objTransporterService, false);
+		}
+		else if(uploadSelect.equalsIgnoreCase("v"))
+		{
+			excelUploadHandler = new VendorUploadHandler(); 
+			
+			//this is for use in the vendor upload.
+			excelUploadHandler.setUserId(userContext.getUserSSO());
+			
+			//Message to be displayed back to the screen.
+			message = excelUploadHandler.saveDocument(fileName, file, objVendorService, false);
+		}
+
+		//returns the message.
+		mav.addObject("transport_message", message);
+
+		return mav;
+		
+		
+	}
+	
+	
 	/* ================== Notifications ================== */
 	@RequestMapping("/notifications")
 	public ModelAndView getNotificationsPage(){
@@ -169,6 +254,15 @@ public class AppConfigController {
 	@RequestMapping("/delay-reason-codes")
 	public ModelAndView getReasonCodesPage(){
 		ModelAndView mav = new ModelAndView("/admin-console/app-config/delay-reason-codes");
+		
+		mav.addObject("delays", delayService.getReasons());
+
+		return mav;
+	}
+	
+	@RequestMapping("/delay-type-reason-assoc")
+	public ModelAndView getTypeReasonassocPage(){
+		ModelAndView mav = new ModelAndView("/admin-console/app-config/delay-type-reason-assoc");
 		
 		mav.addObject("delays", delayService.getAssociations());
 

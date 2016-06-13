@@ -20,7 +20,7 @@ public class UserServiceException extends Exception {
 	 * 
 	 */	
 	public UserServiceException(int errorCode) {	
-		
+		this.errorCode=errorCode;
 	}
 	
 

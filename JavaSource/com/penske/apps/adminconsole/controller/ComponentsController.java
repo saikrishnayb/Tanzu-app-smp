@@ -12,12 +12,14 @@ import org.springframework.web.servlet.ModelAndView;
 import com.penske.apps.adminconsole.annotation.DefaultController;
 import com.penske.apps.adminconsole.model.CategoryAssociation;
 import com.penske.apps.adminconsole.model.ComponentVisibility;
+import com.penske.apps.adminconsole.model.HeaderUser;
 import com.penske.apps.adminconsole.model.Manufacture;
 import com.penske.apps.adminconsole.model.PoCategory;
 import com.penske.apps.adminconsole.model.SubCategory;
 import com.penske.apps.adminconsole.model.VendorTemplate;
 import com.penske.apps.adminconsole.model.VendorTemplateSearch;
 import com.penske.apps.adminconsole.service.CategoryManagementService;
+import com.penske.apps.adminconsole.service.ComponentService;
 import com.penske.apps.adminconsole.service.ComponentVendorTemplateService;
 import com.penske.apps.adminconsole.service.ComponentVisibilityService;
 import com.penske.apps.adminconsole.util.ApplicationConstants;
@@ -41,6 +43,9 @@ public class ComponentsController {
 	
 	@Autowired
 	private CategoryManagementService categoryManagementService;
+	
+	@Autowired
+	private ComponentService componentService;
 	
 	
 	@RequestMapping(value={"/visibility-by-category"})
@@ -120,7 +125,20 @@ public class ComponentsController {
 	}
 	
 	
-	
+	@RequestMapping(value ={"/template"})
+	public ModelAndView getTemplatePage(HttpSession session) {
+		ModelAndView mav = new ModelAndView("/admin-console/components/template");
+		HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
+		boolean isSupplier = currentUser.getUserTypeId() == ApplicationConstants.SUPPLIER_USER;
+		// If the user is a supplier.
+		if (isSupplier) {
+		}
+		else {
+		}
+		mav.addObject("hasBeenSearched", false);
+		mav.addObject("templateList", componentService.getAllTemplates());
+		return mav;
+	}
 	
 	
 

@@ -16,6 +16,8 @@ public class Template {
 	private String createdBy;
 	private String modifiedBy;
 	private List<Components> componentList;
+	private String poCatDesc;
+	private String poSubCatDesc;
 	
 	public int getTemplateID() {
 		return templateID;
@@ -65,5 +67,19 @@ public class Template {
 	public void setComponentList(List<Components> componentList) {
 		this.componentList = componentList;
 	}
+	public String getPoCatDesc() {
+		return poCatDesc;
+	}
+	public void setPoCatDesc(String poCatDesc) {
+		this.poCatDesc = poCatDesc;
+	}
+	public String getPoSubCatDesc() {
+		return poSubCatDesc;
+	}
+	public void setPoSubCatDesc(String poSubCatDesc) {
+		this.poSubCatDesc = poSubCatDesc;
+	}
+	
+	
 	
 }

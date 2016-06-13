@@ -3,13 +3,10 @@ package com.penske.apps.adminconsole.service;
 import java.util.HashMap;
 import java.util.List;
 
-import com.penske.apps.adminconsole.model.Components;
 import com.penske.apps.adminconsole.model.HeaderUser;
 import com.penske.apps.adminconsole.model.Org;
 import com.penske.apps.adminconsole.model.Permission;
 import com.penske.apps.adminconsole.model.Role;
-import com.penske.apps.adminconsole.model.Template;
-import com.penske.apps.adminconsole.model.TemplatePoAssociation;
 import com.penske.apps.adminconsole.model.User;
 import com.penske.apps.adminconsole.model.UserDept;
 import com.penske.apps.adminconsole.model.UserType;
@@ -53,15 +50,6 @@ public interface SecurityService {
 	public List<VendorTree> getVendorList(String corp,String vendor,int orgId);
 	public List<Integer> getOrgVendor(int orgId);
 	public List<Org> getPenskeUserOrgSearch(HeaderUser currentUser);
-	public List<Template> getAllTemplates();
-	public List<TemplatePoAssociation> getAllPoAssociation();
-	public Template getTemplatesById(int templateID);
-	public List<Components> getAllComponent();
-	public void addTemplate(Template template);
-	public void updateTemplate(Template template);
-	public void deleteTemplate(int templateId);
-	public List<Components> getTemplateComponentById(List<Components> compList,int templateId);
-	public List<Integer> findTemplateExist(Template template);
 	public boolean checkForUsers(int orgId);
 	public List<Org> getOrgChild(int orgId);
 	

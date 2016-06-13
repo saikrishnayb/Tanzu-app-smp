@@ -104,7 +104,7 @@
 								<c:forEach items="${userDepts}" var="dept">
 									<option value="${dept.userDeptId}"
 										<c:if test="${dept.userDeptId eq editableUser.userDept.userDeptId}"> selected</c:if>
-										<c:if test="${editableUser.userType.description == 'Supplier User'}">selected</c:if>>${dept.userDept}</option>
+										<c:if test="${editableUser.userType.description == 'Supplier User'}">selected</c:if>>${dept.description}</option>
 								</c:forEach>
 							</select>
 						</div>

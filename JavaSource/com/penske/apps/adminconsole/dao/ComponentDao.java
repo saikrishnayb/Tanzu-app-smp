@@ -3,10 +3,13 @@ package com.penske.apps.adminconsole.dao;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
-import com.penske.apps.adminconsole.annotation.PrimaryDatabase;
+
 import com.penske.apps.adminconsole.model.ComponentVisibility;
+import com.penske.apps.adminconsole.model.Components;
 import com.penske.apps.adminconsole.model.PoCategory;
 import com.penske.apps.adminconsole.model.SubCategory;
+import com.penske.apps.adminconsole.model.Template;
+import com.penske.apps.adminconsole.model.TemplatePoAssociation;
 /**
  * 
  * @author 600144005
@@ -43,4 +46,31 @@ public interface ComponentDao {
 	public List<SubCategory> getSubCategoryList(int poCategoryId);
 
 	public List<ComponentVisibility> getComponentList(int poCategoryId);
+	
+	
+	//Template Page --- start
+	
+	public List<Template> getAllTemplates();
+	
+	public List<TemplatePoAssociation> getAllPoAssociation();
+	
+	public Template getTemplatesById(@Param("templateID")int templateID);
+	
+	public List<Components> getAllComponent();
+	
+	public void addTemplate(Template template);
+	
+	public void addTemplateComponents(Components components);
+	
+	public void updateTemplate(Template template);
+	
+	public void deleteTemplate(@Param("templateID")int templateID);
+	
+	public void deleteTemplateComponents(@Param("templateID")int templateID);
+	
+	public List<Components> getTemplateComponentById(@Param("templateID")int templateID);
+	
+	public List<Integer> findTemplateExist(Template template);
+		
+		//Template Page --- End
 }

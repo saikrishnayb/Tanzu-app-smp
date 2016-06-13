@@ -334,18 +334,18 @@ public class DefaultRoleService implements RoleService {
 	@Override
 	public List<Role> getMyRoleDescend(int roleId,int currOrgId,boolean isSupplier) {
 		List<Role> myRoles =  roleDao.getMyRoleDescend(roleId,currOrgId);
-		if(!isSupplier){
+		/*if(!isSupplier){
 			myRoles.addAll(roleDao.getAllVendorRoles( 0,null));
-		}
+		}*/
 		return myRoles;
 	}
 	
 	@Override
 	public List<Role> getMyRoles(int currUserRoleId,int currOrgId, int baseRoleId,String roleName,boolean isSupplier){
 		List<Role> myRoles = roleDao.getMyRoles(currUserRoleId,currOrgId,baseRoleId,roleName);
-		if(!isSupplier){
+		/*if(!isSupplier){
 			myRoles.addAll(roleDao.getAllVendorRoles(baseRoleId,roleName));
-		}
+		}*/
 		return myRoles;
 	}
 
