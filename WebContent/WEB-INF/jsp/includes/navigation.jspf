@@ -34,9 +34,9 @@
 						    <!--  <li><a href="#" id="communicationsProd">Data Transmission</a></li> -->
 						     <li><a href="#" id="edi870Error" onmousedown="redirectToTab('edi870Error')">EDI 870 Errors</a></li>
 						     <li><a href="#" id="dataConflict" onmousedown="redirectToTab('dataConflict')">Data Conflicts</a></li>
+						     <li><a href="#" id="upStreamVendor" onmousedown="redirectToTab('upStreamVendor')">Upstream Vendor</a></li>
 						     <li style="display:none;" id="massUploadLiId"><a href="#" id="massUploadSubTab" style="pointer-events: none;">Mass Upload</a></li>
 						     <li style="display:none;" id="updateDateLiId"><a href="#" id="updateDateSubTab" style="pointer-events: none;">Update Date</a></li>
-						     <li style="display:none;" id="upstreamVendorLiId"><a href="#" id="upStreamVendorSubTab" style="pointer-events:none;">Upstream Vendor</a></li>
 						</ul>
 						
 				</li>
