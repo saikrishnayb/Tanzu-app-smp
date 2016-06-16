@@ -64,7 +64,7 @@ public class NavigationController extends BaseController {
 			if("adminconsole".equalsIgnoreCase(destination)){
 				url.append(request.getContextPath()).append(ApplicationConstants.SLASH).append(ApplicationConstants.PENSKE_USER_URL);
 			}else if("Home".equalsIgnoreCase(destination)){
-				url.append(request.getContextPath()).append(ApplicationConstants.SLASH).append("home/homePage.htm");
+				url.append(request.getContextPath()).append(ApplicationConstants.SLASH).append("home/homePage.htm?tabId=").append(controllerName);
 			}else{
 
 			

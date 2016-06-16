@@ -17,6 +17,7 @@
 		<c:set var = "flag" value = "Y"></c:set>
 		<div id="homePage"></div> <!-- div for identifying the page while unblocking the screen -->
 		<div id="mainContent" class="borderTop">
+		<c:set var="tabKey"/>
 		<div> <h1 class="pageTitle" style="color: red;text-align:center;">Action Items</h1> </div>
 			<ul id="tab-display">
 				<c:forEach var="tab" items="${tabs}">
@@ -24,7 +25,7 @@
 						<div class="tab-name-display">
 							<span class="tab-name">${tab.tabName}</span>
 						</div>
-						<div class="tab-image-display"><img class="tab-image" src="${context}/${tab.imageUrl}" /></div>
+						<div class="tab-image-display" id="link${tab.tabKey}"><img class="tab-image" src="${context}/${tab.imageUrl}" /></div>
 					</li>
 				</c:forEach>
 			</ul>
@@ -41,6 +42,7 @@
 			<div id ="alertTable" >
 				<div class="tab-header" id="${TabKey}">
 				<c:forEach var="alertHeader" items="${alertHeaders}">
+					<c:set var="tabKey" value="${TabKey}"/>
 					<div class="header width-full">
 						<table class="width-full">
 							<thead>
@@ -108,6 +110,7 @@
 					<span>Indicates items are out of compliance</span>
 				</div> 
 			</div>
+			<input type="hidden" value="${tabKey}" id="hiddenTabId"/>
 		</div> 
 		
 		

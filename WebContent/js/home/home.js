@@ -1,6 +1,7 @@
 $(document).ready(function() {
 	selectCurrentNavigation("tab-home");
 	
+	var tabId=$("#hiddenTabId").val();
 	initializePage();
 	$("#timeoutMessage").hide();
 	$("#statusError").hide();
@@ -14,6 +15,29 @@ $(document).ready(function() {
 		$tab.find('.tab-image-display').addClass('selected-tab');
 		getAlertCount(tabKey);
 	});
+	
+	if(tabId=='TAB_OC') {
+		$("#linkTAB_OF").removeClass("selected-tab");
+		$("#linkTAB_OC").addClass("selected-tab");
+		$("#linkTAB_COMM").removeClass("selected-tab");
+		$("#linkTAB_PROD").removeClass("selected-tab");
+	}else if(tabId=='TAB_PROD') {
+		$("#linkTAB_OF").removeClass("selected-tab");
+		$("#linkTAB_OC").removeClass("selected-tab");
+		$("#linkTAB_COMM").removeClass("selected-tab");
+		$("#linkTAB_PROD").addClass("selected-tab");
+	}else if(tabId=='TAB_COMM'){
+		$("#linkTAB_OF").removeClass("selected-tab");
+		$("#linkTAB_OC").removeClass("selected-tab");
+		$("#linkTAB_COMM").addClass("selected-tab");
+		$("#linkTAB_PROD").removeClass("selected-tab");
+	}else{
+		$("#linkTAB_OF").addClass("selected-tab");
+		$("#linkTAB_OC").removeClass("selected-tab");
+		$("#linkTAB_COMM").removeClass("selected-tab");
+		$("#linkTAB_PROD").removeClass("selected-tab");
+	}
+	
 });
 
 function initializePage() {

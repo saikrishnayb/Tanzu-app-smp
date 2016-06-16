@@ -1,5 +1,6 @@
 package com.penske.apps.suppliermgmt.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -97,13 +98,24 @@ public class HomeController extends BaseController{
 	 * @author 600143568
 	 */
 	@RequestMapping(value = "/homePage", method = {RequestMethod.GET})
-	public ModelAndView getHomePage(HttpServletRequest request){
+	public ModelAndView getHomePage(HttpServletRequest request,@RequestParam("tabId") String tabId){
 		LOGGER.debug("Inside getHomePage()");
 		ModelAndView modelandView = new ModelAndView("/home/home");
+		String defaultTab="";
+		List<String> tabIdList=new ArrayList<String>();
 		try{
 			UserContext userModel = getUserContext(request);
 			List<Tab> tabs = homeService.selectTabs(userModel);
-			String defaultTab = tabs.get(0).getTabKey();
+			for(Tab tab:tabs) {
+				tabIdList.add(tab.getTabKey());
+			}
+			
+			if(tabIdList.contains(tabId)) {
+				defaultTab=tabId;	
+			}else{
+				defaultTab = tabs.get(0).getTabKey();
+			}
+			
 			modelandView.addObject("tabs",tabs);
 			modelandView.addObject("TabKey", defaultTab);
 			modelandView.addObject("alertHeaders", homeService.getAlerts(userModel.getUserSSO(), defaultTab));//To display alerts with count

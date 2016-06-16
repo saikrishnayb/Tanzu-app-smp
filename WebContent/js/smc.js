@@ -8,7 +8,7 @@ var currentTime;
 var popUpInterval=300;							//Time in seconds before which session timeout pop up comes
 var count=popUpInterval;									
 var sessionTimeout=240;							//Time in Minutes Session Timeout value
-
+var tabId="0";
 
 
 $(document).ready(function(){ 
@@ -242,6 +242,7 @@ function redirect(tabName,templateKey){
 	else if(tabName="Home")
 		{
 		path = "Home";
+		controllerName=tabId;
 		}
 	if(path != ""){
 		
@@ -533,4 +534,9 @@ function changeCurrentTab(value){
 		selectCurrentNavigation("dataConflict",'');
 	}
 	
+}
+
+
+function setTabId(tab) {
+	tabId=tab;
 }
