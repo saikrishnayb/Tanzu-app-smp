@@ -4,6 +4,7 @@ $(document).ready(function() {
 	var tabId=$("#hiddenTabId").val();
 	initializePage();
 	$("#timeoutMessage").hide();
+	parent.linkRequest('home');
 	$("#statusError").hide();
 	// When a tab is clicked, hide all Alert Headers and Alerts except for those pertaining to the clicked tab,
 	// and show the clicked tab as selected.

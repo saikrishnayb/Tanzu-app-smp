@@ -9,6 +9,7 @@ var popUpInterval=300;							//Time in seconds before which session timeout pop 
 var count=popUpInterval;									
 var sessionTimeout=240;							//Time in Minutes Session Timeout value
 var tabId="0";
+var upstreamLink=0;
 
 
 $(document).ready(function(){ 
@@ -238,6 +239,12 @@ function redirect(tabName,templateKey){
 	}else if(tabName=="upStreamVendor"){
 		path = "smcop";
 		controllerName="upStreamVendor";
+		
+		if(upstreamLink==1){
+			templateKey=1;	
+		}else{
+			templateKey=2;	
+		}
 	}
 	else if(tabName="Home")
 		{
@@ -539,4 +546,13 @@ function changeCurrentTab(value){
 
 function setTabId(tab) {
 	tabId=tab;
+}
+
+function linkRequest(request){
+	if(request=='home'){
+		upstreamLink=2;
+	}	
+	if(request=='button'){
+		upstreamLink=1;	
+	}
 }
