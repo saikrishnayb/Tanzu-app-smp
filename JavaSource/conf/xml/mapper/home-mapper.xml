@@ -47,8 +47,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-ma
 		LEFT JOIN  	SMC.SMC_SEARCH_TEMPLATES ST
 		ON		SA.TEMPLATE_ID = ST.TEMPLATE_ID
 		
-		WHERE	SA.HEADER_ID = #{value}
-		
+		WHERE	SA.HEADER_ID = #{headerId}
+		<!-- Penske User -->
+		<if test="userType == 1">
+			AND SA.VISIBILITY_PENSKE = 1
+		</if>
+		<!-- Vendor User -->
+		<if test="userType == 2">
+			AND SA.VISIBILITY_VENDOR = 1
+		</if>
 		ORDER BY SA.DISPLAY_SEQUENCE ASC
 	</select>	
 	<!--  

@@ -33,7 +33,7 @@ public interface HomeDashboardDao {
 
 	public List<AlertHeader> selectHeaders(String tabKey);
 	
-	public List<Alert> selectAlerts(int headerId);
+	public List<Alert> selectAlerts(@Param("headerId")int headerId,@Param("userType")int userType);
 	
 	public String getOrderFullfillmentActionItems(Map<String, Object> errorMap);
 	

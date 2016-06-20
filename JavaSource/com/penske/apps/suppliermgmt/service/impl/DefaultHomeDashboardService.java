@@ -58,7 +58,7 @@ public class DefaultHomeDashboardService implements HomeDashboardService {
 			// Iterate through each alert header and get the necessary Alerts.
 			for (AlertHeader currentHeader : headers) {
 				// Get the list of Alerts for the current alert header.
-				currentHeader.setAlerts(homeDashboardDao.selectAlerts(currentHeader.getHeaderId()));
+				currentHeader.setAlerts(homeDashboardDao.selectAlerts(currentHeader.getHeaderId(),userModel.getUserType()));
 				
 				// Set alert links for the dashboard if the alerts are actionable.
 				for (Alert alert : currentHeader.getAlerts()) {
@@ -99,7 +99,7 @@ public class DefaultHomeDashboardService implements HomeDashboardService {
 	 * @return List<AlertHeader>
 	 */
 	
-	public List<AlertHeader> getAlerts(String sso,String tabKey){
+	public List<AlertHeader> getAlerts(String sso,String tabKey,int userType){
 		LOGGER.debug("Inside getAlerts()");
 		List<AlertHeader> headers = homeDashboardDao.selectHeaders(tabKey);
 		Set<String> alertIdList = new HashSet<String>();
@@ -110,7 +110,7 @@ public class DefaultHomeDashboardService implements HomeDashboardService {
 			alertIdList =  alertMap.keySet();
 		}
 		for (AlertHeader currentHeader : headers) {
-			currentHeader.setAlerts(homeDashboardDao.selectAlerts(currentHeader.getHeaderId()));
+			currentHeader.setAlerts(homeDashboardDao.selectAlerts(currentHeader.getHeaderId(),userType));
 			for(Alert alert : currentHeader.getAlerts()){
 				if(alertIdList != null || alertIdList.size() > 0){
 					for(String key : alertIdList){

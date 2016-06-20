@@ -118,7 +118,7 @@ public class HomeController extends BaseController{
 			
 			modelandView.addObject("tabs",tabs);
 			modelandView.addObject("TabKey", defaultTab);
-			modelandView.addObject("alertHeaders", homeService.getAlerts(userModel.getUserSSO(), defaultTab));//To display alerts with count
+			modelandView.addObject("alertHeaders", homeService.getAlerts(userModel.getUserSSO(), defaultTab,userModel.getUserType()));//To display alerts with count
 		}catch(Exception e){
 			modelandView = handleException(e, request);
 		}
@@ -145,7 +145,7 @@ public class HomeController extends BaseController{
 		try{
 			UserContext userModel = getUserContext(request);	
 			model.addObject("TabKey", tabKey);
-			model.addObject("alertHeaders", homeService.getAlerts(userModel.getUserSSO(), tabKey));
+			model.addObject("alertHeaders", homeService.getAlerts(userModel.getUserSSO(), tabKey,userModel.getUserType()));
 		}catch(Exception e ){
 			LOGGER.debug("Error while excecuting method");
 			handleAjaxException(e, response, request);
