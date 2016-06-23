@@ -275,7 +275,15 @@ function redirect(tabName,templateKey){
  */
 function redirectToTemplate(tabKey,templateKey){
 	if(tabKey=='TAB_OF'){	//to redirect to fulfillment Tab
-		redirect("orderfulfillment",templateKey);
+		//Redirecting to admin console for vendor alert items
+		if(templateKey == 'ALRT_OF_VEND_ANLYST_ASSG_REQ' || templateKey == 'ALRT_OF_NEW_VEND_SETUP_REQ' || templateKey == 'ALRT_OF_VEND_USER_SETUP_REQ')
+			{
+			redirect("adminconsole",templateKey);
+			
+			}else{
+				
+				redirect("orderfulfillment",templateKey);
+			}
 	}
 	else if(tabKey=='TAB_OC'){	//to redirect to Confirmation Tab
 		redirect("orderconfirmation",templateKey);

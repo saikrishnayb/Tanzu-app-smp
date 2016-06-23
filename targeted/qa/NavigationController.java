@@ -62,7 +62,14 @@ public class NavigationController extends BaseController {
 			app = destination.toLowerCase();
 			 userContext = getUserContext(request);
 			if("adminconsole".equalsIgnoreCase(destination)){
-				url.append(request.getContextPath()).append(ApplicationConstants.SLASH).append("admin-console/app-config/dynamic-rules.htm");
+
+				if(!templateKey.equalsIgnoreCase("0")){
+					//If user comes from Home page dash board
+					url.append(request.getContextPath()).append(ApplicationConstants.SLASH).append(ApplicationConstants.VENDOR_TEMPLATE_URL).append(templateKey);
+				}else{
+					//Dircetly On click of admin consoleTab
+					url.append(request.getContextPath()).append(ApplicationConstants.SLASH).append("admin-console/app-config/dynamic-rules.htm");
+				}
 			}else if("Home".equalsIgnoreCase(destination)){
 				url.append(request.getContextPath()).append(ApplicationConstants.SLASH).append("home/homePage.htm?tabId=").append(controllerName);
 			}else{

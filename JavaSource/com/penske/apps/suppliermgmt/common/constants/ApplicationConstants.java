@@ -91,6 +91,7 @@ public class ApplicationConstants {
 	
 	public static final String PENSKE_USER_URL = "admin-console/security/users.htm";
 	public static final String VENDOR_USER_URL = "admin-console/security/vendorUsers.htm";
+	public static final String VENDOR_TEMPLATE_URL = "admin-console/security/vendors-advanced-search-alert.htm?alertType=";
 	
 	
 	/**TAB Key constants**/

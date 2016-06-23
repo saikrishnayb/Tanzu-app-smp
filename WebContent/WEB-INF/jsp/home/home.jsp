@@ -81,6 +81,9 @@
 												<c:when test="${alert.alertKey eq 'ALRT_PROD_DELAY_COMM_REQ'}">
 													<a id="CountId-${TabKey}-${alert.templateKey }" onClick="redirectToTab('dateValidation');return false">${alert.count}</a>
 												</c:when>
+												<c:when test="${(alert.alertKey eq 'ALRT_OF_VEND_ANLYST_ASSG_REQ') || (alert.alertKey eq 'ALRT_OF_NEW_VEND_SETUP_REQ') || (alert.alertKey eq 'ALRT_OF_VEND_USER_SETUP_REQ')}">
+													<a id="CountId-${TabKey}-${alert.alertKey }" onClick="redirectToTemplate('${TabKey}','${alert.alertKey}');return false">${alert.count}</a>
+												</c:when>
 												<c:otherwise>
 													<a id="CountId-${TabKey}-${alert.templateKey }" onClick="redirectToTemplate('${TabKey}','${alert.templateKey}');return false">${alert.count}</a>
 												</c:otherwise>
