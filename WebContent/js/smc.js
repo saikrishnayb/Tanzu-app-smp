@@ -9,7 +9,7 @@ var popUpInterval=300;							//Time in seconds before which session timeout pop 
 var count=popUpInterval;									
 var sessionTimeout=240;							//Time in Minutes Session Timeout value
 var tabId="0";
-var upstreamLink=0;
+var homeLink=0;
 
 
 $(document).ready(function(){ 
@@ -233,6 +233,13 @@ function redirect(tabName,templateKey){
 	}else if(tabName=="dateValidation"){
 		path = "smcop";
 		controllerName="dateValidation";
+		
+		if(homeLink==1){
+			templateKey=1;	
+		}else{
+			templateKey=2;	
+		}
+		
 	}else if(tabName=="massUpload"){
 		path = "smcop";
 		controllerName="massUpload";
@@ -240,7 +247,7 @@ function redirect(tabName,templateKey){
 		path = "smcop";
 		controllerName="upStreamVendor";
 		
-		if(upstreamLink==1){
+		if(homeLink==1){
 			templateKey=1;	
 		}else{
 			templateKey=2;	
@@ -516,35 +523,29 @@ function refreshPage(){
 
 function changeCurrentTab(value){
 	if(value=="update"){
-		$("#updateDateLiId").show();
 		$("#massUploadLiId").hide();
-		selectCurrentNavigation("updateDateSubTab",'');
+		selectCurrentNavigation("dateValidation",'');
 	}
 	/*if(value=="dateValidation"){
 		selectCurrentNavigation("dateValidationSubTab",'');
 	}*/
 	if(value=="production"){
-		$("#updateDateLiId").hide();
 		$("#massUploadLiId").hide();
 		selectCurrentNavigation("productionStatus",'');
 	}
 	if(value=="upstreamVendor"){
-		$("#updateDateLiId").hide();
 		$("#massUploadLiId").hide();
 		selectCurrentNavigation("upStreamVendor",'');
 	}
 	if(value=="massUpload"){
-		$("#updateDateLiId").hide();
 		$("#massUploadLiId").show();
 		selectCurrentNavigation("massUploadSubTab",'');
 	}
 	if(value=="edi870"){
-		$("#updateDateLiId").hide();
 		$("#massUploadLiId").hide();
 		selectCurrentNavigation("edi870Error",'');
 	}
 	if(value=="dataconflict"){
-		$("#updateDateLiId").hide();
 		$("#massUploadLiId").hide();
 		selectCurrentNavigation("dataConflict",'');
 	}
@@ -558,9 +559,9 @@ function setTabId(tab) {
 
 function linkRequest(request){
 	if(request=='home'){
-		upstreamLink=2;
+		homeLink=2;
 	}	
 	if(request=='button'){
-		upstreamLink=1;	
+		homeLink=1;	
 	}
 }

@@ -39,8 +39,8 @@
 						     <li><a href="#" id="dataConflict" onmousedown="redirectToTab('dataConflict')">Data Conflicts</a></li>
 						     </tl:isAuthorized>
 						     <li><a href="#" id="upStreamVendor" onmousedown="linkRequest('button'); redirectToTab('upStreamVendor');">Upstream Vendor</a></li>
-						     <li style="display:none;" id="massUploadLiId"><a href="#" id="massUploadSubTab" style="pointer-events: none;">Mass Upload</a></li>
-						     <li style="display:none;" id="updateDateLiId"><a href="#" id="updateDateSubTab" style="pointer-events: none;">Update Date</a></li>
+						     <li><a href="#" id="dateValidation" onmousedown="linkRequest('button'); redirectToTab('dateValidation');">Update Date/Delay</a></li>
+						     <li style="display:none;" id="massUploadLiId"><a href="#" id="massUploadSubTab" style="pointer-events: none;">Mass Upload</a></li>   
 						</ul>
 						
 				</li>
