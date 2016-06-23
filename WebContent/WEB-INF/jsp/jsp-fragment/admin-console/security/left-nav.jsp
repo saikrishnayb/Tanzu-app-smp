@@ -1,7 +1,7 @@
 <%@ taglib uri="/WEB-INF/tld/taglib.tld" prefix="tl"%>
 <div class="leftNav">
 <tl:isAuthorized tabName="Admin Console" secFunction="USERS_MANAGEMENT">
-		<div class="leftNavGroup"><a href="#" id="left-nav-category-association">User Management</a></div>
+		<div class="leftNavGroup" style="color: #666666;font-weight: normal;">User Management</div>
 		<tl:isAuthorized tabName="Admin Console" secFunction="MANAGE_USERS">
 			<div><a href="${pageContext.request.contextPath}/admin-console/security/users.htm" id="left-nav-users" onclick="javascript:loadProcessImage();">Penske Users</a></div>
 		</tl:isAuthorized>

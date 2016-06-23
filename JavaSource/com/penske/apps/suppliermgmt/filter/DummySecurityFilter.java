@@ -29,7 +29,6 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
-import com.penske.apps.suppliermgmt.servlet.SMCLogOff;
 import com.penske.business.ldap.CPBLDAPSessionInfo;
 import com.penske.util.CPTBaseServlet;
 

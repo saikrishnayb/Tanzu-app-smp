@@ -2,7 +2,7 @@ package com.penske.apps.adminconsole.dao;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
-import com.penske.apps.adminconsole.annotation.PrimaryDatabase;
+
 import com.penske.apps.adminconsole.model.CorpCode;
 import com.penske.apps.adminconsole.model.Manufacture;
 import com.penske.apps.adminconsole.model.PoCategory;

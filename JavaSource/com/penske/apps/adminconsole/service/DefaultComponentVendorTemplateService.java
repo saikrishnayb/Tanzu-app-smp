@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +31,8 @@ public class DefaultComponentVendorTemplateService implements ComponentVendorTem
 	@Autowired
 	private  ComponentVendorTemplateDao templateDao;
 
+	private static Logger logger = Logger.getLogger(DefaultComponentVendorTemplateService.class);
+	
 	@Override
 	public List<VendorTemplate> getVendorTemplates() {
 		
@@ -59,14 +62,14 @@ public class DefaultComponentVendorTemplateService implements ComponentVendorTem
 		
 		try{
 		for (Manufacture manufacture : manufactures) {
-			System.out.println("manufacture>>>>>>>>"+manufacture);
+//			System.out.println("manufacture>>>>>>>>"+manufacture);
 			List<CorpCode> codes= templateDao.getCorpCodes(manufacture.getManufacture());
 			List<CorpCode> corpCodes =new ArrayList<CorpCode>();
 			
 			for (CorpCode corpCode : codes) {
-				System.out.println("corpCode>>>>>>>>"+corpCode);
+//				System.out.println("corpCode>>>>>>>>"+corpCode);
 				List<VendorLocation> locations= templateDao.getVendorLocation(manufacture.getManufacture(), corpCode.getCorpCode());
-				System.out.println("locations>>>>>>>>"+locations);
+//				System.out.println("locations>>>>>>>>"+locations);
 				corpCode.setVendorLocation(locations);
 				
 				if(manufacture.getManufacture().equals(corpCode.getManufacture())) {
@@ -77,7 +80,7 @@ public class DefaultComponentVendorTemplateService implements ComponentVendorTem
 			manufacture.setCorpCodes(corpCodes);
 		}
 		}catch(Exception e){
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		return manufactures;
 	}

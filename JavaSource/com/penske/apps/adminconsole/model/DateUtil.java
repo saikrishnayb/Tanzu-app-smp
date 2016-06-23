@@ -563,7 +563,7 @@ public final class DateUtil {
 				tempDate = parseDate(tempDateStr,dateFormat);
 				
 			}catch(Exception e){
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 			if(null != tempDate ){
 				returnDate = tempDate;
@@ -580,7 +580,6 @@ public final class DateUtil {
 			returnDate = formatDate(parseDate(dateToBeConverted,inputFormat),outputFormat);
 		}
 		}catch(Exception exp){
-			exp.printStackTrace();
 			logger.error(exp.getMessage()); 
 		} 
 		return returnDate;		
@@ -593,7 +592,6 @@ public final class DateUtil {
 			returnDate = parseDate(formatDate(parseDate(dateToBeConverted,inputFormat),outputFormat));
 		}
 		}catch(Exception exp){
-			exp.printStackTrace();
 			logger.error(exp.getMessage()); 
 		} 
 		return returnDate;		

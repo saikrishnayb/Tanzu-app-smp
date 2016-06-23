@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.penske.apps.adminconsole.model.Alert;
 import com.penske.apps.adminconsole.model.User;
 import com.penske.apps.adminconsole.model.Vendor;
 import com.penske.apps.adminconsole.model.VendorContact;
@@ -31,4 +32,6 @@ public interface VendorDao {
 	public void addVendorContact(VendorContact contact);
 	
 	public void removeVendorContact(@Param("contactType") String contactType, @Param("vendorId") int vendorId);
+	
+	public List<Alert> getAllAlerts();
 }

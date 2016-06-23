@@ -31,5 +31,6 @@ public class ApplicationConstants {
 	public static final String COMPONENTS = "MANAGE_CATEGORY_ASSOCIATION";
 	public static final String TAB = "Admin Console";
 	public static final String USER_MODEL = "userModel";
+	public static final String EXCEPTIONS_TYPES="EXCEPTIONS_TYPES";
 	
 }

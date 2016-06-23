@@ -11,7 +11,7 @@ $(document).ready(function() {
 	var $poCategoryTable =$('#po-category-table');
 	var $subCategoryTable = $('#sub-category-table');
 	var commonStaticUrl =$('#common-static-url').val();
-	var iDisplayLength = tableRowLengthCalc();
+	var iDisplayLength = 10;//tableRowLengthCalc();
 	
 	$categorytables.dataTable( { //All of the below are optional
 		"aaSorting": [[ 1, "desc" ]], //default sort column

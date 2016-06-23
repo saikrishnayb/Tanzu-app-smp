@@ -875,6 +875,12 @@
  				ROLE_ID AS roleId
  		FROM 	SMC.smc_user_roles 
  		WHERE 	STATUS = 'A'
+ 		AND  OEM IN 
+			(
+					SELECT   ORG_ID
+					FROM     SMC.SMC_ORG_MASTER START WITH ORG_ID =#{orgId}
+				    CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID
+			) 
  		<!-- AND ROLE_ID NOT IN(
  			SELECT 	ROLE_ID 
 	 		FROM 	SMC.smc_user_roles 

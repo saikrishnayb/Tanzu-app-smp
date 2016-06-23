@@ -2,7 +2,6 @@ package com.penske.apps.adminconsole.dao;
 
 import java.util.List;
 
-import com.penske.apps.adminconsole.annotation.PrimaryDatabase;
 import com.penske.apps.adminconsole.model.Alert;
 import com.penske.apps.adminconsole.model.AlertHeader;
 import com.penske.apps.adminconsole.model.Tab;

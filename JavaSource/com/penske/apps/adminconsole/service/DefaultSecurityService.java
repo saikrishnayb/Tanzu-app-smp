@@ -494,7 +494,7 @@ public class DefaultSecurityService implements SecurityService{
 				}
 			}
 		} else if(userSearchForm.getUserTypeId() == ApplicationConstants.SUPPLIER_USER){
-			roleList = securityDao.getVendorRoles(true,currentUser.getRoleId());
+			roleList = securityDao.getVendorRoles(true,currentUser.getRoleId(),currentUser.getOrgId());
 			Iterator<User> userIt = userList.iterator();
 			while(userIt.hasNext()){
 				User user = userIt.next();
@@ -762,7 +762,7 @@ public class DefaultSecurityService implements SecurityService{
 	public List<User> getVendorUserList(HeaderUser currentUser) {
 		List<User> userList=securityDao.getVendorUserList(currentUser);
 	//	if(currentUser.getUserTypeId()==ApplicationConstants.SUPPLIER_USER){
-			List<Role> roleList = securityDao.getVendorRoles(true,currentUser.getRoleId());
+			List<Role> roleList = securityDao.getVendorRoles(true,currentUser.getRoleId(),currentUser.getOrgId());
 			Iterator<User> userIt = userList.iterator();
 			while(userIt.hasNext()){
 				User user = userIt.next();
@@ -782,8 +782,8 @@ public class DefaultSecurityService implements SecurityService{
 	}
 
 	@Override
-	public List<Role> getVendorRoles(boolean isVendor, int roleId) {
-		return securityDao.getVendorRoles(isVendor,roleId);
+	public List<Role> getVendorRoles(boolean isVendor, int roleId, int orgId) {
+		return securityDao.getVendorRoles(isVendor,roleId,orgId);
 	}
 
 	@Override

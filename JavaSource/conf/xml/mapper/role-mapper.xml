@@ -254,7 +254,12 @@
 			
 			SELECT r.roleId , r.roleName,(select ROLE_NAME from
 				SMC.smc_user_roles where ROLE_ID=r.baseRoleId) as
-				baseRoleName,r.status as status,r.oem as oem,(SELECT NAME FROM SMC.SMC_ORG_MASTER as orgMst where r.oem=orgMst.ORG_ID) as orgName  FROM result r ORDER BY r.roleId
+				baseRoleName,r.status as status,r.oem as oem,(SELECT NAME FROM SMC.SMC_ORG_MASTER as orgMst where r.oem=orgMst.ORG_ID) as orgName  FROM result r 
+				WHERE  OEM IN (
+							SELECT   ORG_ID
+							FROM     SMC.SMC_ORG_MASTER START WITH ORG_ID =#{currOrgId} 
+						    CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID	)
+				ORDER BY r.roleId
 	</select>
 	
 	
@@ -284,7 +289,10 @@
 			SELECT r.roleId , r.roleName,(select ROLE_NAME from
 				SMC.smc_user_roles where ROLE_ID=r.baseRoleId) as
 				baseRoleName,r.roleDescription AS roleDescription,r.baseRoleId as baseRoleId,r.status as status,r.oem as oem,(SELECT NAME FROM SMC.SMC_ORG_MASTER as orgMst where r.oem=orgMst.ORG_ID) as orgName FROM result r 
-				WHERE 1=1
+				WHERE  OEM IN (
+							SELECT   ORG_ID
+							FROM     SMC.SMC_ORG_MASTER START WITH ORG_ID =#{currOrgId} 
+						    CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID	)
 				<if test="roleName != null">
 				AND r.roleName = #{roleName}
 				</if>
@@ -304,15 +312,45 @@
 			WHERE ROLE_NAME=#{roleName} AND BASE_ROLE_ID=#{baseRoleId} AND OEM=#{oem} AND STATUS='A' 
 	</select>
 	
-	<select id="getMyDescendRole" resultType="com.penske.apps.adminconsole.model.Role">
-		SELECT 	ROLE_ID AS roleId, BASE_ROLE_ID as baseRoleId,ROLE_NAME AS roleName
+	<select id="getMyDescendRoleWithParentOthOrg" resultType="com.penske.apps.adminconsole.model.Role">
+	 	SELECT 	ROLE_ID AS roleId, BASE_ROLE_ID as baseRoleId,ROLE_NAME AS roleName, OEM, 
+		(select ROLE_NAME from SMC.smc_user_roles where ROLE_ID=BASE_ROLE_ID) as baseRoleName,
+		(SELECT NAME FROM SMC.SMC_ORG_MASTER where ORG_ID=OEM) as orgName
+	 		FROM 	SMC.smc_user_roles 
+	 		WHERE	STATUS = 'A'  AND ROLE_ID = #{roleId}
+	 	UNION
+	
+	 	SELECT 	ROLE_ID AS roleId, BASE_ROLE_ID as baseRoleId,ROLE_NAME AS roleName, OEM, 
+		(select ROLE_NAME from SMC.smc_user_roles where ROLE_ID=BASE_ROLE_ID) as baseRoleName,
+		(SELECT NAME FROM SMC.SMC_ORG_MASTER where ORG_ID=OEM) as orgName
 	 		FROM 	SMC.smc_user_roles 
 	 		WHERE	STATUS = 'A'
+	      AND   OEM IN 
+			(
+					SELECT   ORG_ID
+					FROM     SMC.SMC_ORG_MASTER START WITH ORG_ID =#{orgId}
+				    CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID
+			) 
+	 		START 	WITH ROLE_ID = #{roleId}
+	 		CONNECT BY BASE_ROLE_ID = PRIOR ROLE_ID
+	 	ORDER BY roleId
+	</select> 
+	
+	
+	<select id="getMyDescendRoleByRoleIdOrgId" resultType="com.penske.apps.adminconsole.model.Role">
+		SELECT 	ROLE_ID AS roleId, BASE_ROLE_ID as baseRoleId,ROLE_NAME AS roleName, OEM
+	 		FROM 	SMC.smc_user_roles 
+	 		WHERE	STATUS = 'A'
+	      AND   OEM IN 
+			(
+					SELECT   ORG_ID
+					FROM     SMC.SMC_ORG_MASTER START WITH ORG_ID =#{orgId}
+				    CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID
+			) 
 	 		START 	WITH ROLE_ID = #{roleId}
 	 		CONNECT BY BASE_ROLE_ID = PRIOR ROLE_ID
 	 		ORDER BY ROLE_ID
 	</select>
-	
 	<select id="getMyDescendRoleByOrgId" resultType="String">
 		SELECT   ROLE_NAME AS roleName
 			FROM     SMC.SMC_USER_ROLES

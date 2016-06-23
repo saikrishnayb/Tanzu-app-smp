@@ -36,6 +36,15 @@
 								
 								<label class="floatLeft clear-left">MFR Code</label>
 								<input class="floatLeft" name="manufacturerCode" type="text" value="${searchedVendor.manufacturerCode}" autocomplete="off" maxlength="4" />
+								<c:if test="${isPenskeUser}">
+									<label class="floatLeft clear-left">Alerts</label>
+									<select class="floatLeft" name="alertType">
+										<option value="0">Select...</option>
+										<c:forEach var="alert" items="${alertTypeList}">
+										<option value="${alert.alertType}">${alert.alertName}</option>
+										</c:forEach>
+									</select>
+								</c:if>
 							</div>
 							
 							<div class="form-column floatLeft margin-bottom-10">

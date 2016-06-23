@@ -2,6 +2,8 @@ package com.penske.apps.adminconsole.model;
 
 import java.text.DateFormat;
 import java.util.Date;
+
+import org.apache.log4j.Logger;
 /**
  * This class will hold all necessary data
  * on a transport object.  This is to be used
@@ -10,6 +12,9 @@ import java.util.Date;
  *
  */
 public class Transport{
+	
+	private static final Logger logger = Logger.getLogger(Transport.class);
+	
 	public Transport(boolean pilot) {
 		super();
 		this.pilot = pilot;
@@ -287,7 +292,7 @@ public class Transport{
 		return requestedPickupDate;
 	}
 	public void setRequestedPickupDate(Date requestedPickupDate) {
-		if (requestedPickupDate == null || requestedPickupDate.equals("") || requestedPickupDate.equals(" "))
+		if (requestedPickupDate == null)
 			this.requestedPickupDate = new Date(-1899,0,1);
 		else
 			this.requestedPickupDate = requestedPickupDate;
@@ -296,7 +301,7 @@ public class Transport{
 		return transitDateDelivered;
 	}
 	public void setTransitDateDelivered(Date transitDateDelivered) {
-		if (transitDateDelivered == null || transitDateDelivered.equals("") || transitDateDelivered.equals(" "))
+		if (transitDateDelivered == null)
 			this.transitDateDelivered = new Date(-1899,0,1);
 		else
 			this.transitDateDelivered = transitDateDelivered;
@@ -306,7 +311,7 @@ public class Transport{
 	}
 	public void setActDelvry(Date actDelvry) {
 		try{
-			if (actDelvry == null || actDelvry.equals("") || actDelvry.equals(" ")){
+			if (actDelvry == null){
 				this.actDelvry = new Date(-1899,0,1);
 				setStrActDelvry(" ");
 			}else{
@@ -315,6 +320,7 @@ public class Transport{
 				setStrActDelvry(this.actDelvry);
 			}
 		}catch (Exception e){
+			logger.debug(e);
 			setStrActDelvry(" ");
 		}
 	}
@@ -345,7 +351,7 @@ public class Transport{
 		return holdNotificationDate;
 	}
 	public void setHoldNotificationDate(Date holdNotificationDate) {
-		if (holdNotificationDate == null || holdNotificationDate.equals("") || holdNotificationDate.equals(" "))
+		if (holdNotificationDate == null)
 			this.holdNotificationDate = new Date(-1899,0,1);
 		else
 			this.holdNotificationDate = holdNotificationDate;

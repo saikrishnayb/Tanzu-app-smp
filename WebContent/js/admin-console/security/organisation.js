@@ -110,6 +110,19 @@ $(document).ready(function() {
 		}
 	});
 	
+	if($("#search-content").is(":visible")){
+		if($("#advancedSearch").is(":visible")){
+			//Currently Expanded
+			$("#advancedSearch").text('Hide Search Criteria');
+		}
+	}
+	else{
+		if($("#advancedSearch").is(":hidden")){
+			//Currently Collapsed
+			$("#advancedSearch").text('Show Search Criteria');
+		}
+	}
+	
 	//deactivate modal
 	$orgTable.on("click", ".deactivate", function(){
 		
@@ -173,11 +186,13 @@ function toggleContent(contentId,spanId){
 		//Currently Expanded
 		$("#" + spanId).removeClass('expandedImage').addClass('collapsedImage');
 		$("#" + contentId).removeClass("displayBlock").addClass("displayNone");
+		$("#" + spanId).text('Show Search Criteria');
 	}
 	else{
 		//Currently Collapsed
 	   $("#" + spanId).removeClass('collapsedImage').addClass('expandedImage');
 	   $("#" + contentId).removeClass("displayNone").addClass("displayBlock");
+	   $("#" + spanId).text('Hide Search Criteria');
 	}
 }
 

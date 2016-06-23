@@ -12,6 +12,10 @@
 	</tl:isAuthorized>
 	
 	<tl:isAuthorized tabName="Admin Console" secFunction="MANAGE_TEMPLATE"> 
-	<div class="leftNavGroup"><a href="${pageContext.request.contextPath}/admin-console/components/template.htm" id="left-nav-template" onclick="javascript:loadProcessImage();">Template Management</a></div> 
- </tl:isAuthorized>
+		<div class="leftNavGroup"><a href="${pageContext.request.contextPath}/admin-console/components/template.htm" id="left-nav-template" onclick="javascript:loadProcessImage();">Template Management</a></div> 
+ 	</tl:isAuthorized>
+ 	
+ 	<tl:isAuthorized tabName="Admin Console" secFunction="MANAGE_COMPONENT_OVERRIDE"> 
+		<div class="leftNavGroup"><a href="${pageContext.request.contextPath}/admin-console/components/component-Visibility-Override.htm" id="left-nav-component-visibility-overrides" onclick="javascript:loadProcessImage();">Component&nbsp;Visibility Override</a></div>
+	</tl:isAuthorized> 
 </div>

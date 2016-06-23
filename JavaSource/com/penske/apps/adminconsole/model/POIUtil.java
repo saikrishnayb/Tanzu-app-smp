@@ -14,6 +14,7 @@ package com.penske.apps.adminconsole.model;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 
@@ -30,6 +31,7 @@ import org.apache.poi.hssf.usermodel.HSSFDateUtil;
  */
 public class POIUtil{
 
+	private static Logger logger = Logger.getLogger(POIUtil.class);
 	
 	    /**
 	     * Method to ge the Date as java.util.Date 
@@ -72,7 +74,7 @@ public class POIUtil{
 			    		}
 		    		}
 	    		}catch(Exception e){
-	    			e.printStackTrace();
+	    			logger.error(e.getMessage());
 	    		}
 	    		
 	    	} else {
@@ -165,7 +167,7 @@ public class POIUtil{
 		    		}
 	    		
 	    		}catch(Exception e){
-	    			e.printStackTrace();
+	    			logger.error(e.getMessage());
 	    		}
 	    		
 	    	}	
@@ -199,6 +201,7 @@ public class POIUtil{
 	          //parse the inDate parameter
 	        	dateFormat.format(new Date(inDate.trim()));
 	        } catch (Exception ex){
+	        	logger.debug(ex);
 	        	return false;
 	        }
 	        return true;

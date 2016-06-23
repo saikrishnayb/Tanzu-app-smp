@@ -106,7 +106,7 @@ public interface SecurityDao {
 	
 	//Vendor User Change - 03/02/16
 	public List<User> getVendorUserList(HeaderUser currentUser);
-	public List<Role> getVendorRoles(@Param("isVendor") boolean isVendor,@Param("roleId") int roleId);
+	public List<Role> getVendorRoles(@Param("isVendor") boolean isVendor,@Param("roleId") int roleId,@Param("orgId") int orgId);
 	public List<UserType> getVendorUserTypes();
 	public List<Org> getVendorOrg(@Param("isVendor") boolean isVendor,@Param("orgId") int orgId);
 	public List<Org> getAllVendorOrg(HeaderUser currentUser);

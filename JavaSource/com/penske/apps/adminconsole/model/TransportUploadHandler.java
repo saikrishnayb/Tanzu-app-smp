@@ -43,7 +43,7 @@ import com.penske.apps.adminconsole.util.VsportalConstants;
  */
 public class TransportUploadHandler extends ExcelUploadHandler{
 		
-		Logger logger = Logger.getLogger("TransportUploader");
+		private static Logger logger = Logger.getLogger(TransportUploadHandler.class);
 		public static String EOR = "Report Completed!";	
 		
 		/**
@@ -128,10 +128,10 @@ public class TransportUploadHandler extends ExcelUploadHandler{
 	            }
 				
 			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				logger.debug(e.getMessage());
 			} 
 			catch (Exception e) {
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			} 
 						
 			int extensionCheck = 3;
@@ -222,7 +222,7 @@ public class TransportUploadHandler extends ExcelUploadHandler{
 		    		try{
 			    		transport.setRequestedPickupDate(POIUtil.getDate(value, cell, DateUtil.MM_DD_YY));
 	    			}catch(Exception e){
-	    				logger.debug("Error Occured while Setting the Requested Pickup Date"); 
+	    				logger.debug("Error Occured while Setting the Requested Pickup Date", e); 
 	    				transport.setRequestedPickupDate(null);
 	    			}
 	    			break;
@@ -230,7 +230,7 @@ public class TransportUploadHandler extends ExcelUploadHandler{
 		    		try{
 			    		transport.setProductionDate(POIUtil.getDate(value, cell, DateUtil.MM_DD_YY));
 	    			}catch(Exception e){
-	    				logger.debug("Error Occured while Setting the Production Date"); 
+	    				logger.debug("Error Occured while Setting the Production Date", e); 
 	    				transport.setProductionDate(null);
 	    			}
 	    			break;	 
@@ -238,7 +238,7 @@ public class TransportUploadHandler extends ExcelUploadHandler{
 		    		try{
 			    		transport.setEstimatedDeliveryDate(POIUtil.getDate(value, cell, DateUtil.MM_DD_YY));
 	    			}catch(Exception e){
-	    				logger.debug("Error Occured while Setting the Estimated Delivery Date"); 
+	    				logger.debug("Error Occured while Setting the Estimated Delivery Date", e); 
 	    				transport.setEstimatedDeliveryDate(null);
 	    			}
 	    			break;	 	    			
@@ -246,7 +246,7 @@ public class TransportUploadHandler extends ExcelUploadHandler{
 		    		try{
 			    		transport.setHoldNotificationDate(POIUtil.getDate(value, cell, DateUtil.MM_DD_YY));
 	    			}catch(Exception e){
-	    				logger.debug("Error Occured while Setting the Hold Notification Date"); 
+	    				logger.debug("Error Occured while Setting the Hold Notification Date", e); 
 	    				transport.setHoldNotificationDate(null);
 	    			}
 	    			break;	
@@ -254,7 +254,7 @@ public class TransportUploadHandler extends ExcelUploadHandler{
 		    		try{
 			    		transport.setAdvanceNoticeCancelDate(POIUtil.getDate(value, cell, DateUtil.MM_DD_YY));
 	    			}catch(Exception e){
-	    				logger.debug("Error Occured while Setting the Cancel Date"); 
+	    				logger.debug("Error Occured while Setting the Cancel Date", e); 
 	    				transport.setAdvanceNoticeCancelDate(null);
 	    			}
 	    			break;
@@ -370,7 +370,7 @@ public class TransportUploadHandler extends ExcelUploadHandler{
 		    		try{
 			    		transport.setTransitPoDate(POIUtil.getDate(value, cell, DateUtil.MM_DD_YY));
 	    			}catch(Exception e){
-	    				logger.debug("Error Occured while Setting the Transit PO Date"); 
+	    				logger.debug("Error Occured while Setting the Transit PO Date", e); 
 	    				transport.setTransitPoDate(null);
 	    			}
 	    			break;
@@ -378,7 +378,7 @@ public class TransportUploadHandler extends ExcelUploadHandler{
 		    		try{
 			    		transport.setActDelvry(POIUtil.getDate(value, cell, DateUtil.MM_DD_YY));
 	    			}catch(Exception e){
-	    				logger.debug("Error Occured while Setting the Act Delivery Date"); 
+	    				logger.debug("Error Occured while Setting the Act Delivery Date", e); 
 	    				transport.setActDelvry(null);
 	    			}
 	    			break;	
@@ -386,7 +386,7 @@ public class TransportUploadHandler extends ExcelUploadHandler{
 		    		try{
 			    		transport.setActualDeliveryReported(POIUtil.getDate(value, cell, DateUtil.MM_DD_YY));
 	    			}catch(Exception e){
-	    				logger.debug("Error Occured while Setting the Delivery Date Reported"); 
+	    				logger.debug("Error Occured while Setting the Delivery Date Reported", e); 
 	    				transport.setActualDeliveryReported(null);
 	    			}
 	    			break;
@@ -418,7 +418,7 @@ public class TransportUploadHandler extends ExcelUploadHandler{
     				try {
     					transport.setTransporterAssignDate(POIUtil.getDate(value, cell, DateUtil.MM_DD_YY));
 					}catch(Exception e){
-						logger.debug("Error Occured while Setting the Last Changed Date"); 
+						logger.debug("Error Occured while Setting the Last Changed Date", e); 
 						transport.setLastChangedDate(null);
 					}
     				break;
@@ -426,7 +426,7 @@ public class TransportUploadHandler extends ExcelUploadHandler{
 		    		try{
 			    		transport.setLastChangedDate(POIUtil.getDate(value, cell, DateUtil.MM_DD_YY));
 	    			}catch(Exception e){
-	    				logger.debug("Error Occured while Setting the Last Changed Date"); 
+	    				logger.debug("Error Occured while Setting the Last Changed Date", e); 
 	    				transport.setLastChangedDate(null);
 	    			}
 	    			break; 
@@ -481,6 +481,7 @@ public class TransportUploadHandler extends ExcelUploadHandler{
 				Double.parseDouble(s);
 			}
 			catch (NumberFormatException nfe) {
+				logger.debug(nfe);
 				return false;
 			}
 			return true;

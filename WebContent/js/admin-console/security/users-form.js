@@ -815,7 +815,7 @@ $('#signature-add').on('click', function(){
 		}
 	});
 	
-	$('#email').on("blur", function(){
+	/*$('#email').on("blur", function(){
 		var $emailVal=$(this).val();
 		var isCreateOrEdit=$('#isCreateOrEdit').val();
 		if($.trim($emailVal).length>0 && isCreateOrEdit=='true'){
@@ -823,13 +823,13 @@ $('#signature-add').on('click', function(){
 			validateEmailOrUserId(isCreateOrEdit);
 		}
 	});
-	
+	*/
 	$('#sso-id').on("blur", function(){
 		var $ssoVal=$(this).val();
-		var $emailVal=$('#email').val();
+		//var $emailVal=$('#email').val();
 		var isCreateOrEdit=$('#isCreateOrEdit').val();
-		if($.trim($ssoVal).length>0 && isCreateOrEdit=='true'
-			&& $.trim($ssoVal) !==$.trim($emailVal)){
+		if($.trim($ssoVal).length>0 && isCreateOrEdit=='true'){
+		//	&& $.trim($ssoVal) !==$.trim($emailVal)){
 			validateEmailOrUserId(isCreateOrEdit);
 		}
 	});
@@ -1069,8 +1069,11 @@ function validateEmailOrUserId(isCreateOrEdit){
 				toggleButton("disable");
 		        break;
 		    case 1:
-		    	var errorTxt="<p>An Active user already exists with the user name " + ssoId + " in LDAP.</p>" +
+		    	/*var errorTxt="<p>An Active user already exists with the user name " + ssoId + " in LDAP.</p>" +
 		    			"<p>But user yet been configured for access to Supplier Management Center would they like to add now?</p>";
+		    	*/
+		    	var errorTxt="<p>User already exists in the Penske system but has not been added to Supplier Management Center.</p>"+
+		    				"<p> Would you like to add them now?</p>";
 				if(isCreateOrEdit ==='true'){
 					$ldapUserinfoModal.find("#infoText").html(errorTxt);
 
@@ -1082,9 +1085,10 @@ function validateEmailOrUserId(isCreateOrEdit){
 					$ldapUserinfoModal.find("#ssoM").val(data.ssoId);
 					openModal($ldapUserinfoModal);
 		    	}else{
-		    		var errorTxt="An Active user already exists with the user name " + ssoId + " in LDAP." +
-	    			"But user yet been configured for access to Supplier Management Center would they like to add now?";
-			
+		    		//var errorTxt="An Active user already exists with the user name " + ssoId + " in LDAP." +
+	    			//"But user yet been configured for access to Supplier Management Center would they like to add now?";
+		    		var errorTxt="<p>User already exists in the Penske system but has not been added to Supplier Management Center.</p>"+
+    				"<p> Would you like to add them now?</p>";
 		    		$errMsg.text(errorTxt);
 					$('.error-messages-container').removeClass('displayNone');
 		    	}

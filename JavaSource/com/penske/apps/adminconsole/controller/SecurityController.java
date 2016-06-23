@@ -13,6 +13,7 @@ import com.penske.apps.adminconsole.annotation.DefaultController;
 import com.penske.apps.adminconsole.model.HeaderUser;
 import com.penske.apps.adminconsole.model.Org;
 import com.penske.apps.adminconsole.model.Role;
+import com.penske.apps.adminconsole.model.User;
 import com.penske.apps.adminconsole.model.Vendor;
 import com.penske.apps.adminconsole.service.RoleService;
 import com.penske.apps.adminconsole.service.SecurityService;
@@ -78,7 +79,7 @@ public class SecurityController {
 		if(isSupplier || userSearchForm.isVendorSearch()){
 			userSearchForm.setUserTypeId(ApplicationConstants.SUPPLIER_USER);
 			mav = new ModelAndView("/admin-console/security/vendorUsers");
-			mav.addObject("roleList", securityService.getVendorRoles(false,currentUser.getRoleId()));
+			mav.addObject("roleList", securityService.getVendorRoles(false,currentUser.getRoleId(),currentUser.getOrgId()));
 			mav.addObject("accessVendor",CommonUtils.hasAccess(ApplicationConstants.VENDORUSER, session));
 		} else {
 			userSearchForm.setUserTypeId(ApplicationConstants.PENSKE_USER);
@@ -136,8 +137,8 @@ public class SecurityController {
 		HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
 		boolean isSupplier = currentUser.getUserTypeId() == ApplicationConstants.SUPPLIER_USER;
 		List<Role> myRoles=roleService.getMyRoleDescend(currentUser.getRoleId(),currentUser.getOrgId(),isSupplier);
-		//Removed current role and its child
-		List<Role> roles=roleService.removeCurrentRoleAndChild(roleId, myRoles);
+		//Removed current role and its child -- to prevent from choosing while modify
+		List<Role> roles=roleService.removeCurrentRoleAndChild(roleId, myRoles,currentUser.getOrgId());
 		mav.addObject("roles",roles);
 		mav.addObject("editRole", roleService.getRoleById(roleId));
 		mav.addObject("editOrCopy", editOrCopy);
@@ -164,25 +165,26 @@ public class SecurityController {
 		mav.addObject("vendors", vendorService.getAllVendors(currentUser.getOrgId()));
 		mav.addObject("analysts", vendorService.getAllPlanningAnalysts());
 		mav.addObject("specialists", vendorService.getAllSupplySpecialists());
-		
+		mav.addObject("alertTypeList", vendorService.getAllAlerts());
+		mav.addObject("isPenskeUser", currentUser.getUserTypeId() == ApplicationConstants.PENSKE_USER);
 		return mav;
 	}
 	
 	@RequestMapping("vendors-advanced-search")
 	public ModelAndView getVendorsAdvancedSearch(Vendor vendor,HttpSession session) {
-		ModelAndView mav = new ModelAndView("/admin-console/security/vendors");
-		HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
-		// For reloading the search parameters into the form.
-		mav.addObject("searchedVendor", vendor);
-		
-		// For populating the rest of the page
-		mav.addObject("vendors", vendorService.getVendorsBySearchConditions(currentUser.getOrgId() , vendor));
-		mav.addObject("analysts", vendorService.getAllPlanningAnalysts());
-		mav.addObject("specialists", vendorService.getAllSupplySpecialists());
-		
-		return mav;
+		return getVendorSearchDetails(session, vendor);
 	}
 	
+	
+	@RequestMapping("vendors-advanced-search-alert")
+	public ModelAndView getVendorsAdvancedSearchAlert(@RequestParam(value ="alertType", required = true) String alertType,HttpSession session) {
+		Vendor vendor=new Vendor();
+		User user=new User();
+		vendor.setPlanningAnalyst(user);
+		vendor.setSupplySpecialist(user);
+		vendor.setAlertType(alertType);
+		return getVendorSearchDetails(session, vendor);
+	}
 	
 	@RequestMapping(value ={"/org"})
 	public ModelAndView getOrgPage(HttpSession session) {
@@ -243,10 +245,24 @@ public class SecurityController {
 		mav.addObject("userList", securityService.getVendorUserList(currentUser));
 		// If the user is a supplier.
 		boolean isVendor = currentUser.getUserTypeId() == ApplicationConstants.SUPPLIER_USER;
-		mav.addObject("roleList", securityService.getVendorRoles(isVendor,currentUser.getRoleId()));
+		mav.addObject("roleList", securityService.getVendorRoles(isVendor,currentUser.getRoleId(),currentUser.getOrgId()));
 		mav.addObject("hasBeenSearched", false);
 		mav.addObject("userTypeList", securityService.getUserTypes());
 		mav.addObject("accessVendor",CommonUtils.hasAccess(ApplicationConstants.VENDORUSER, session));
+		return mav;
+	}
+	
+	private ModelAndView getVendorSearchDetails(HttpSession session,Vendor vendor){
+		HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
+		ModelAndView mav = new ModelAndView("/admin-console/security/vendors");
+		mav.addObject("searchedVendor", vendor);
+		
+		// For populating the rest of the page
+		mav.addObject("vendors", vendorService.getVendorsBySearchConditions(currentUser.getOrgId() , vendor));
+		mav.addObject("analysts", vendorService.getAllPlanningAnalysts());
+		mav.addObject("specialists", vendorService.getAllSupplySpecialists());
+		mav.addObject("alertTypeList", vendorService.getAllAlerts());
+		mav.addObject("isPenskeUser", currentUser.getUserTypeId() == ApplicationConstants.PENSKE_USER);
 		return mav;
 	}
 }

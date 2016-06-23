@@ -130,12 +130,14 @@ function toggleContent(contentId,spanId){
 		//Currently Expanded
 		$("#" + spanId).removeClass('expandedImage').addClass('collapsedImage');
 		$("#" + contentId).removeClass("displayBlock").addClass("displayNone");
+		$("#" + spanId).text('Show Search Criteria');
 	}
 	else{
 		//Currently Collapsed
 	   $("#" + spanId).removeClass('collapsedImage').addClass('expandedImage');
 	   $("#" + contentId).removeClass("displayNone").addClass("displayBlock");
 	   $('#advanced-search-form').find('[name="roleName"]').focus();
+	   $("#" + spanId).text('Hide Search Criteria');
 	}
 }
 

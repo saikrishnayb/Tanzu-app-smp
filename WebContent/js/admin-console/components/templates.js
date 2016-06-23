@@ -19,7 +19,7 @@ $(document).ready(function() {
                          {"bSortable": false, "aTargets": [ 0 ]} //stops first column from being sortable
                          ],
         "sPaginationType": "full_numbers", //Shows first/previous 1,2,3,4 next/last buttons
-        "iDisplayLength": 5 , //number of records per page for pagination
+        "iDisplayLength": 10 , //number of records per page for pagination
         "oLanguage": {"sEmptyTable": "&nbsp;"}, //Message displayed when no records are found
         "fnDrawCallback": function() { //This will hide the pagination menu if we only have 1 page.
 		 var paginateRow = $(this).parent().children('div.dataTables_paginate');

@@ -152,8 +152,7 @@ public class SessionValidationFilter implements Filter {
     	try{	        
 	        th.printStackTrace(printWriter);
         }catch(Exception e){
-        	
-        	e.printStackTrace();
+        	LOGGER.error(e);
         }finally{
         	printWriter.close();
         }

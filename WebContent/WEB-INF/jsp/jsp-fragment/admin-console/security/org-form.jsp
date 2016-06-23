@@ -67,7 +67,8 @@
 							<textarea rows="4" cols="50" id="orgDescription" name="orgDescription" maxlength="250" class="input alpha alpha-numeric"><c:if test="${isCreatePage eq false}">${editableOrg.orgDescription}</c:if></textarea> 
 						</div>
 				<div class="single-line-content"> 
-							<label for="associatedVendor">Associated  Vendor: &nbsp;(<a href="#" class="vendor-filter">filter</a>)<span class=requiredField>*</span></label> 
+							<label id="filterlbl" for="associatedVendor">Associated  Vendor: &nbsp;(<a href="#" class="vendor-filter">filter</a>)<span class=requiredField>*</span></label> 
+							<label id="resetlbl" style="display: none;" for="associatedVendor">Associated  Vendor: &nbsp;(<a href="#" class="vendor-filter-reset">reset</a>)<span class=requiredField>*</span></label>
 						</div>
 				<c:if test="${isCreatePage eq true}">
 				<div id="create-vendor-hierarchy-container" style="height:300px;overflow-y: auto;">

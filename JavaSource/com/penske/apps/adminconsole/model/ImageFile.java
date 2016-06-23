@@ -2,9 +2,12 @@ package com.penske.apps.adminconsole.model;
 
 import java.io.IOException;
 
+import org.apache.log4j.Logger;
 import org.springframework.web.multipart.MultipartFile;
 
 public class ImageFile {
+	private static Logger logger = Logger.getLogger(ImageFile.class);
+	
 	private int length;
 	private byte[] bytes;
 	private String name;
@@ -25,7 +28,7 @@ public class ImageFile {
 			setType(contentType);
 			setName(originalFilename);
 		} catch (IOException e){
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 	}
 	

@@ -7,6 +7,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -20,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.penske.apps.adminconsole.model.CategoryAssociation;
 import com.penske.apps.adminconsole.model.ComponentVisibility;
+import com.penske.apps.adminconsole.model.ComponentVisibilityOverride;
 import com.penske.apps.adminconsole.model.Components;
 import com.penske.apps.adminconsole.model.HeaderUser;
 import com.penske.apps.adminconsole.model.PoCategory;
@@ -47,6 +49,8 @@ import com.penske.apps.adminconsole.util.CommonUtils;
 @Controller
 @RequestMapping("/admin-console/components")
 public class ComponentsRestController {
+	
+	private static final Logger logger = Logger.getLogger(ComponentsRestController.class);
 
 	//////////////////////////////////////////////////////////////////////
 	// Service Members
@@ -453,6 +457,7 @@ public class ComponentsRestController {
 		try{
 			categoryManagementService.modifyAssStatus(assId,status,poCatId,subCatId);//1- Active, 0-Inactive
 		}catch (Exception e) {
+			logger.debug(e);
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -538,4 +543,82 @@ public class ComponentsRestController {
 		componentService.deleteTemplate(templateId);
 	}
 	
+	
+	
+	@RequestMapping(value ="/create-modify-comp-visiblity-override-page")
+	@ResponseBody
+	public ModelAndView getCreateModifyCompVisiblityOverridePage(@RequestParam("isCreatePage") Boolean isCreatePage,
+			@RequestParam("overrideId") int overrideId,HttpSession session) {
+		ModelAndView mav = new ModelAndView("/admin-console/components/create-edit-comp-visiblity-override");
+		mav.addObject("allPoAssocList", componentService.getAllPoAssociation());
+		mav.addObject("overrideTypes", componentService.getOverrideTypes());
+		if(isCreatePage){
+			mav.addObject("isCreatePage",true);
+		}else{
+			mav.addObject("editOverride",componentService.getComponentVisibilityOverridesById(overrideId));
+			mav.addObject("isCreatePage",false);
+		}
+		return mav;
+	}
+	
+	@RequestMapping("get-component-search-page")
+	@ResponseBody
+	public ModelAndView getComponentSearchPage(@RequestParam(value="val") int val) {
+		ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/components/component-search-page");
+		List<Components> comp=componentService.getAllComponent();
+		mav.addObject("allComponent",comp);
+		mav.addObject("val", val);
+		return mav;
+	}
+	
+	@RequestMapping(value ="/create-comp-visiblity-override", method = RequestMethod.POST)
+	@ResponseBody
+	public void addCompVisiblityOverride(ComponentVisibilityOverride overrideObj, HttpServletResponse response) throws Exception{
+		try{
+			if(componentService.checkComponentVisibilityOverrideExist(overrideObj, true)){
+				componentService.addComponentVisibilityOverrides(overrideObj);
+			}else{
+				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Component Visibility Override Already exists.");
+				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		        response.getWriter().write("Component Visibility Override Already exists.");
+		        response.flushBuffer();
+			}
+		}catch (Exception e) {
+			logger.error("Error while adding COMPONENT VISIBILITY OVERRIDES: "+e);
+			CommonUtils.getCommonErrorAjaxResponse(response,"Error Processing the Component Visibility Override");
+		}
+	}
+	
+	@RequestMapping(value ="/update-comp-visiblity-override", method = RequestMethod.POST)
+	@ResponseBody
+	public void updateCompVisiblityOverride(ComponentVisibilityOverride overrideObj, HttpServletResponse response) throws Exception{
+		try{
+			if(componentService.checkComponentVisibilityOverrideExist(overrideObj, false)){
+				componentService.updateComponentVisibilityOverrides(overrideObj);
+			}else{
+				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Component Visibility Override Already exists.");
+				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		        response.getWriter().write("Component Visibility Override Already exists.");
+		        response.flushBuffer();
+			}
+		}catch (Exception e) {
+			logger.error("Error while updating COMPONENT VISIBILITY OVERRIDES: "+e);
+			CommonUtils.getCommonErrorAjaxResponse(response,"Error Processing the Component Visibility Override");
+		}
+	}
+	
+	@RequestMapping("get-deactivate-visiblity-override-modal-content")
+	@ResponseBody
+	public ModelAndView getDeactivateVisiblityOverride(@RequestParam("overrideId") int overrideId) {
+		ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/components/deactivate-visibility-override-modal-content");
+		mav.addObject("overrideId", overrideId);
+		
+		return mav;
+	}
+	
+	@RequestMapping("delete-visiblity-override")
+	@ResponseBody
+	public void deleteComponentVisibilityOverrides(@RequestParam(value="overrideId") int overrideId, HttpSession session) {
+		componentService.deleteComponentVisibilityOverrides(overrideId);
+	}
 }

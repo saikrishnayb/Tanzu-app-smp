@@ -55,7 +55,7 @@ public interface SecurityService {
 	
 	//Vendor User Change - 03/02/16
 	public List<User> getVendorUserList(HeaderUser currentUser);
-	public List<Role> getVendorRoles(boolean isVendor, int roleId);
+	public List<Role> getVendorRoles(boolean isVendor, int roleId,int orgId);
 	public List<UserType> getVendorUserTypes();
 	public List<Org> getVendorOrg(boolean isVendor,int orgId);
 	public User doesUserExistVendor(String userName, int userId,boolean isVandorFlow,String isCreateOrEdit);

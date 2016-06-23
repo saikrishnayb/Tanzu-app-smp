@@ -117,11 +117,12 @@ public class DataUtil {
 		try{
 			intVal = Integer.parseInt(value);
 		}catch(NumberFormatException nfe){
+			logger.debug(nfe);
 			try{
 				doubleVal = Double.parseDouble(value);
 				intVal = (int)doubleVal;
 			}catch(Exception e){
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 		}
 		if (intVal == 0) {
@@ -146,11 +147,12 @@ public class DataUtil {
 		try{
 			longVal = Long.parseLong(value);
 		}catch(NumberFormatException nfe){
+			logger.debug(nfe);
 			try{
 				doubleVal = Double.parseDouble(value);
 				longVal = (int)doubleVal;
 			}catch(Exception e){
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 		}
 		if (longVal == 0) {
@@ -179,7 +181,7 @@ public class DataUtil {
 				doubleVal = Double.parseDouble(value);
 				
 			}catch(Exception e){
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 
 		if (doubleVal == 0.0) {
@@ -485,6 +487,7 @@ public class DataUtil {
 			Double.parseDouble(s);
 		}
 		catch (NumberFormatException nfe) {
+			logger.debug(nfe);
 			return false;
 		}
 		return true;
@@ -496,6 +499,7 @@ public class DataUtil {
 			value = Double.parseDouble(s);
 		}
 		catch (NumberFormatException nfe) {
+			logger.debug(nfe);
 			return value;
 		}
 		return value;
@@ -558,11 +562,12 @@ public class DataUtil {
 		try{
 			intVal = Integer.parseInt(value);
 		}catch(NumberFormatException nfe){
+			logger.debug(nfe);
 			try{
 				doubleVal = Double.parseDouble(value);
 				intVal = (int)doubleVal;
 			}catch(Exception e){
-				//e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 		}
 		if (intVal == -1){
@@ -583,11 +588,12 @@ public class DataUtil {
 		try{
 			longValue = Long.parseLong(value);
 		}catch(NumberFormatException nfe){
+			logger.debug(nfe);
 			try{
 				doubleVal = Double.parseDouble(value);
 				longValue = (long)doubleVal;
 			}catch(Exception e){
-				//e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 		}
 		if (longValue == -1){

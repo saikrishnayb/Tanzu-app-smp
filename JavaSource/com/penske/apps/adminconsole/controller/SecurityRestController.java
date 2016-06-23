@@ -94,7 +94,7 @@ public class SecurityRestController {
 		User editableUser = securityService.getEditInfo(userId, userType);
 		mav.addObject("isCreatePage", false);
 		mav.addObject("userTypes", securityService.getVendorUserTypes());
-		mav.addObject("userRoles", securityService.getVendorRoles(isVendor, currentUser.getRoleId()));
+		mav.addObject("userRoles", securityService.getVendorRoles(isVendor, currentUser.getRoleId(),currentUser.getOrgId()));
 		mav.addObject("orgList", securityService.getVendorOrg(isVendor, currentUser.getOrgId()));
 		mav.addObject("editableUser", editableUser);		
 		mav.addObject("tabPermissionsMap", securityService.getPermissions(roleId));
@@ -125,7 +125,7 @@ public class SecurityRestController {
 			HttpSession session,HttpServletResponse response) throws Exception {
 		try{
 			HeaderUser currentUser = (HeaderUser) session.getAttribute("currentUser");
-			boolean isVendor = currentUser.getUserTypeId() == ApplicationConstants.SUPPLIER_USER;
+			//boolean isVendor = currentUser.getUserTypeId() == ApplicationConstants.SUPPLIER_USER;
 			if(isVendorUserFlow){//going to vendor user deactivation flow
 				userCreationService.isEligibleToDeactivate(userId, isVendorUserFlow,currentUser.getSso());
 			}else{
@@ -376,7 +376,7 @@ public class SecurityRestController {
 		mav.addObject("currentUser", currentUser);
 		boolean isVendor = currentUser.getUserTypeId() == ApplicationConstants.SUPPLIER_USER;
 		mav.addObject("userTypes", securityService.getVendorUserTypes());
-		mav.addObject("userRoles", securityService.getVendorRoles(isVendor, currentUser.getRoleId()));
+		mav.addObject("userRoles", securityService.getVendorRoles(isVendor, currentUser.getRoleId(),currentUser.getOrgId()));
 		mav.addObject("orgList", securityService.getVendorOrg(isVendor, currentUser.getOrgId()));
 		// If the page is an error page.
 		mav.addObject("isCreatePage", true);
@@ -449,11 +449,11 @@ public class SecurityRestController {
 	/* ================== Roles ================== */
 	@RequestMapping("get-create-role-hierarchy")
 	@ResponseBody
-	public ModelAndView getCreateRoleHierarchy(@RequestParam("roleId") int roleId) {
+	public ModelAndView getCreateRoleHierarchy(@RequestParam("roleId") int roleId, HttpSession session) {
 		ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/security/role-hierarchy");
-		
+		HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
 		if (roleId != 0) {
-			mav.addObject("role", roleService.getCreateRoleHierarchy(roleId));
+			mav.addObject("role", roleService.getCreateRoleHierarchy(roleId,currentUser.getOrgId()));
 		}
 		
 		return mav;
@@ -461,10 +461,10 @@ public class SecurityRestController {
 	
 	@RequestMapping("get-edit-role-hierarchy")
 	@ResponseBody
-	public ModelAndView getEditRoleHierarchy(@RequestParam("roleId") int roleId, @RequestParam("flag") int flag) {
+	public ModelAndView getEditRoleHierarchy(@RequestParam("roleId") int roleId, @RequestParam("flag") int flag, HttpSession session) {
 		ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/security/role-hierarchy");
-		
-		mav.addObject("role", roleService.getEditRoleHierarchy(roleId,flag));
+		HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
+		mav.addObject("role", roleService.getEditRoleHierarchy(roleId,flag,currentUser.getOrgId()));
 		
 		return mav;
 	}
@@ -534,16 +534,16 @@ public class SecurityRestController {
 	
 	@RequestMapping("deactivate-role")
 	@ResponseBody
-	public ModelAndView deactivateRole(@RequestParam("roleId") int roleId) {
+	public ModelAndView deactivateRole(@RequestParam("roleId") int roleId, HttpSession session) {
 		ModelAndView mav = new ModelAndView();
-		
+		HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
 		// If any users are found with the role.
 		if (roleService.checkForUsers(roleId)) {
 			mav.setViewName("/jsp-fragment/admin-console/security/deactivate-role-error-modal");
 		}
 		else {
 			mav.setViewName("/jsp-fragment/admin-console/security/deactivate-role-modal");
-			List<Role> subRoles=roleService.getMyDescendRole(roleId);
+			List<Role> subRoles=roleService.getMyDescendRoleByRoleIdOrgId(roleId,currentUser.getOrgId());
 			if(subRoles !=null && !subRoles.isEmpty()){
 				Role baseRole=subRoles.get(0);
 				if(baseRole.getRoleId() == roleId){
@@ -630,16 +630,17 @@ public class SecurityRestController {
 			        response.getWriter().write(sme.getMessage());
 			        response.flushBuffer();
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 		}catch (Exception e) {
+			logger.debug(e);
 			try {
 				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while loading user data");
 				  response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			        response.getWriter().write("Error while loading user data");
 			        response.flushBuffer();
 			} catch (IOException ie) {
-				e.printStackTrace();
+				logger.error(ie.getMessage());
 			}
 		}
 		return	user;
@@ -706,16 +707,17 @@ public class SecurityRestController {
 			        response.getWriter().write(sme.getMessage());
 			        response.flushBuffer();
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 		}catch (Exception e) {
+			logger.debug(e);
 			try {
 				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while loading user data");
 				  response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			        response.getWriter().write("Error while loading user data");
 			        response.flushBuffer();
 			} catch (IOException ie) {
-				e.printStackTrace();
+				logger.error(ie.getMessage());
 			}
 		}
 	    user.setSsoUserUpdated( editableUser.validateUserWithSSOData(user));
@@ -749,7 +751,7 @@ public class SecurityRestController {
 			        response.getWriter().write(sme.getMessage());
 			        response.flushBuffer();
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 		}
 	    editableUser.setEmail(user.getEmail());

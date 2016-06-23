@@ -2,6 +2,7 @@ package com.penske.apps.adminconsole.service;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,8 @@ public class DefaultHomeService implements HomeService {
 	@Autowired
     private HomeDao homeDao;
 
+	private static Logger logger = Logger.getLogger(DefaultHomeService.class);
+	
 	@Override
 	public List<Tab> selectTabs() {
 		// Get the list of Dashboard Tabs from the database.
@@ -28,7 +31,7 @@ public class DefaultHomeService implements HomeService {
 		try{
 		 tabs = homeDao.selectTabs();
 		}catch(Exception e){
-			e.printStackTrace();
+			logger.error(e.getMessage());
 			}
 		
 		// Iterate through each tab and get the necessary Alert Headers and Alerts.

@@ -3,10 +3,12 @@ package com.penske.apps.adminconsole.service;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.penske.apps.adminconsole.dao.VendorDao;
+import com.penske.apps.adminconsole.model.Alert;
 import com.penske.apps.adminconsole.model.HeaderUser;
 import com.penske.apps.adminconsole.model.User;
 import com.penske.apps.adminconsole.model.Vendor;
@@ -15,6 +17,8 @@ import com.penske.apps.adminconsole.model.VendorContact;
 @Service
 public class DefaultVendorService implements VendorService {
 
+	private static Logger logger = Logger.getLogger(DefaultVendorService.class);
+	
 	@Autowired
 	private VendorDao vendorDao;
 	
@@ -192,6 +196,7 @@ public class DefaultVendorService implements VendorService {
 						Integer.parseInt(contact.getPhoneNumber());
 					}
 					catch (NumberFormatException nfe) {
+						logger.debug(nfe);
 						return false;
 					}
 				}
@@ -202,5 +207,9 @@ public class DefaultVendorService implements VendorService {
 		}
 		
 		return true;
+	}
+	
+	public List<Alert> getAllAlerts(){
+		return vendorDao.getAllAlerts();
 	}
 }

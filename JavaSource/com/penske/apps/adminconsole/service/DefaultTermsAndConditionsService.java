@@ -48,7 +48,7 @@ public class DefaultTermsAndConditionsService implements TermsAndConditionsServi
 		try {
 			Integer.parseInt(frequency);
 		} catch (NumberFormatException e) {
-			logger.error("Terms and Conditions frequency value was not an integer when attempting to update this value in the global settings.");
+			logger.error("Terms and Conditions frequency value was not an integer when attempting to update this value in the global settings.",e);
 			
 			return;
 		}

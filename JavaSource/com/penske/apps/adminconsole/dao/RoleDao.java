@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.ibatis.annotations.Param;
-import com.penske.apps.adminconsole.annotation.PrimaryDatabase;
+
 import com.penske.apps.adminconsole.model.Permission;
 import com.penske.apps.adminconsole.model.Role;
 import com.penske.apps.adminconsole.model.Tab;
@@ -49,11 +49,13 @@ public interface RoleDao {
 	
 	public Integer checkRoleExist(Role role);
 	
-	public List<Role> getMyDescendRole( @Param("roleId") int roleId);
+	public List<Role> getMyDescendRoleWithParentOthOrg( @Param("roleId") int roleId,@Param("orgId") int orgId);
 	
 	public void removeAllFunctionByRoleAndDescend(@Param("roleId") int roleId);
 	
 	public Set<String> getMyDescendRoleByOrgId( @Param("orgId") int orgId);
 	
 	public List<Role>  getAllVendorRoles(@Param("baseRoleId") int baseRoleId,@Param("roleName") String roleName);
+	
+	public List<Role>  getMyDescendRoleByRoleIdOrgId(@Param("roleId") int roleId,@Param("orgId") int orgId);
 }

@@ -122,6 +122,16 @@
 		<if test="vendor.supplySpecialist.userId &gt; 0">
 		AND		vend.SUPPLY_SPECIALIST = #{vendor.supplySpecialist.userId}
 		</if>
+		
+		<if test="vendor.alertType != null and vendor.alertType=='ALRT_OF_VEND_ANLYST_ASSG_REQ'">
+			AND  vend.PLANNING_ANALYST is null		 
+	   </if>
+		<if test="vendor.alertType != null and vendor.alertType=='ALRT_OF_NEW_VEND_SETUP_REQ'">
+			AND vend.VENDOR_ID not in(select VENDOR_ID from SMC_ORG_VENDOR_ASSOC where ORG_ID !=1)
+		</if>
+		<if test="vendor.alertType != null and vendor.alertType=='ALRT_OF_VEND_USER_SETUP_REQ'">
+			AND org.ORG_ID !=1 AND org.ORG_ID NOT IN (SELECT DISTINCT ORG_ID FROM SMC.SMC_USER_MASTER WHERE TYPE_ID=2)
+		</if>
 	</select>
 	
 	<select id="getEditVendorInformation" resultType="com.penske.apps.adminconsole.model.Vendor">
@@ -244,5 +254,8 @@
 		WHERE 	CONTACT_TYPE = #{contactType}
 		AND		VENDOR_ID = #{vendorId}
 	</delete>
-
+	
+	<select id="getAllAlerts" resultType="com.penske.apps.adminconsole.model.Alert">
+		Select ALERT_KEY as alertType,ALERT_NAME as alertName from smc.V_SMC_ALERTS WHERE HEADER_KEY='HDR_OF_VENDACTITEMS'
+	</select>
 </mapper>

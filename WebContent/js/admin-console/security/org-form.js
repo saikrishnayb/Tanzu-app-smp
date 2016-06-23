@@ -1,4 +1,5 @@
 var $errMsg = $('.edit-buttons').find('.error-messages-container').find('.errorMsg');
+var $vendorFilterModal;
 $(document).ready(function() { 
 	var $permissionsAccordion = $('.permission-tab-accordions');
 	var $templateAccordions = $('.templates-accordion');
@@ -23,7 +24,7 @@ $(document).ready(function() {
 	var $signFileHiddenInput = $(".sign-file-hidden-input");
 	var $initFileHiddenInput = $(".init-file-hidden-input");
 	var $ssoRefreshModal = $('#sso-updated-information'); 
-	var $vendorFilterModal = $('#vendor-filter-model'); 
+	$vendorFilterModal = $('#vendor-filter-model'); 
 	var $createvendorHierarchy = $('#vendor-hierarchy');
 	//SSO Refresh modal
 	$ssoRefreshModal.dialog({
@@ -611,6 +612,7 @@ $('#signature-add').on('click', function(){
 	$('.vendor-filter').on("click",function(e){
 	//	$('#corp').val('');
 	//	$('#vendor-name').val('');
+		$('#resetlbl').hide();
 		openModal($vendorFilterModal);
 	});	
 	$('#back-id').on("click",function(){
@@ -620,50 +622,18 @@ $('#signature-add').on('click', function(){
 		var vendor = $('#vendor-name').val();
 		var corp = $('#corp').val();
 		var parentOrg=$('#parent-org').val();
-		var currentTimeStamp = new Date().getTime();
 		//if (parentOrg.length == 0 || parentOrg ==0) {
 		//	parentOrg='';
 		//}
-		if (parentOrg.length > 0 && parentOrg >0) {
-			$('.filter-edit-buttons').find('.error-messages-container').addClass('displayNone');
-			var $editUserPromise = $.ajax({
-				url: 'filter-vendor-list.htm?_=' + currentTimeStamp,
-				data: {corp: corp,vendor:vendor,parentOrg:parentOrg},
-		        /*processData: false,
-		        contentType: false,*/
-		        type: 'POST'
-			});
-			
-			$editUserPromise.done(function(data){
-				var htmlDt='';
-				var $divId='vendor-hierarchy';
-				var $containerDiv=$("#create-vendor-hierarchy-container");
-				var noRecord=false; 
-				if(isCreatePage=='false'){
-					$divId='edit-vendor-hierarchy';
-					$containerDiv=$("#edit-vendor-hierarchy-container");
-				}
-				if(data.indexOf('No record found')>0){
-					 htmlDt=data;
-					 noRecord=true;
-				}else{
-					 htmlDt='<div id="'+$divId+'" class="floatLeft clear-left jstree">'+data+'</div>';
-				}
-				$containerDiv.html(htmlDt);
-				closeModal($vendorFilterModal);
-				if(isCreatePage=='false' && !noRecord){
-					populateEditVendorTree();
-				}else{
-					createVendorTree();
-				}
-				$('#corp').val('');
-				$('#vendor-name').val('');
-			});
-		}else{
-			var $errMsgs =  $('.filter-edit-buttons').find('.error-messages-container').find('.errorMsg');
-			$errMsgs.text('Please select prarent org before appling filter.');
-			$('.filter-edit-buttons').find('.error-messages-container').removeClass('displayNone');
-		}
+		filterVendor(corp, vendor, parentOrg,false);
+	});	
+	
+	$(".vendor-filter-reset").on("click",function(){
+		var parentOrg=$('#parent-org').val();
+		//if (parentOrg.length == 0 || parentOrg ==0) {
+		//	parentOrg='';
+		//}
+		filterVendor('', '', parentOrg,true);
 	});	
 //Call after edit is loaded
 	if(isCreatePage=='false'){
@@ -793,4 +763,55 @@ function validate($editForm,checked_ids){
 	}
 	
 	return flag;
+}
+
+function filterVendor(corp,vendor,parentOrg,isReset){
+	var currentTimeStamp = new Date().getTime();
+	if (parentOrg.length > 0 && parentOrg >0) {
+		$('.filter-edit-buttons').find('.error-messages-container').addClass('displayNone');
+		var $editUserPromise = $.ajax({
+			url: 'filter-vendor-list.htm?_=' + currentTimeStamp,
+			data: {corp: corp,vendor:vendor,parentOrg:parentOrg},
+	        /*processData: false,
+	        contentType: false,*/
+	        type: 'POST'
+		});
+		
+		$editUserPromise.done(function(data){
+			var htmlDt='';
+			var $divId='vendor-hierarchy';
+			var $containerDiv=$("#create-vendor-hierarchy-container");
+			var noRecord=false; 
+			if(isCreatePage=='false'){
+				$divId='edit-vendor-hierarchy';
+				$containerDiv=$("#edit-vendor-hierarchy-container");
+			}
+			if(data.indexOf('No record found')>0){
+				 htmlDt=data;
+				 noRecord=true;
+			}else{
+				 htmlDt='<div id="'+$divId+'" class="floatLeft clear-left jstree">'+data+'</div>';
+			}
+			$containerDiv.html(htmlDt);
+			closeModal($vendorFilterModal);
+			if(isCreatePage=='false' && !noRecord){
+				populateEditVendorTree();
+			}else{
+				createVendorTree();
+			}
+			$('#corp').val('');
+			$('#vendor-name').val('');
+			if(!isReset){
+				$('#resetlbl').show();
+				$('#filterlbl').hide();
+			}else{
+				$('#resetlbl').hide();
+				$('#filterlbl').show();
+			}
+		});
+	}else{
+		var $errMsgs =  $('.filter-edit-buttons').find('.error-messages-container').find('.errorMsg');
+		$errMsgs.text('Please select prarent org before appling filter.');
+		$('.filter-edit-buttons').find('.error-messages-container').removeClass('displayNone');
+	}
 }

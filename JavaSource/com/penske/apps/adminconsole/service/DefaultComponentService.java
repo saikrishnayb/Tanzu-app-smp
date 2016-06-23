@@ -7,9 +7,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.penske.apps.adminconsole.dao.ComponentDao;
+import com.penske.apps.adminconsole.model.ComponentVisibilityOverride;
 import com.penske.apps.adminconsole.model.Components;
 import com.penske.apps.adminconsole.model.Template;
 import com.penske.apps.adminconsole.model.TemplatePoAssociation;
+import com.penske.apps.adminconsole.util.ApplicationConstants;
+import com.penske.apps.suppliermgmt.common.util.LookupManager;
+import com.penske.apps.suppliermgmt.model.LookUp;
 
 /**
  * 
@@ -22,6 +26,9 @@ public class DefaultComponentService implements ComponentService {
 
 	@Autowired
 	private ComponentDao componentDao;
+	
+	@Autowired
+	private LookupManager lookupManager;
 	
 	//Template Page -- start
 	
@@ -143,6 +150,51 @@ public class DefaultComponentService implements ComponentService {
 	public List<Integer> findTemplateExist(Template template) {
 		return componentDao.findTemplateExist(template);
 	}
+	@Override
+	public List<LookUp> getOverrideTypes() {
+		return lookupManager.getLookUpListByName(ApplicationConstants.EXCEPTIONS_TYPES);
+	}
+	@Override
+	public List<ComponentVisibilityOverride> getAllComponentVisibilityOverrides() {
+		return componentDao.getAllComponentVisibilityOverrides();
+	}
+	@Override
+	public void addComponentVisibilityOverrides(
+			ComponentVisibilityOverride componentVisibilityOverride) {
+		componentDao.addComponentVisibilityOverrides(componentVisibilityOverride);		
+	}
+	@Override
+	public void updateComponentVisibilityOverrides(
+			ComponentVisibilityOverride componentVisibilityOverride) {
+		componentDao.updateComponentVisibilityOverrides(componentVisibilityOverride);
+		
+	}
+	@Override
+	public void deleteComponentVisibilityOverrides(int visiblityOverrideId) {
+		componentDao.deleteComponentVisibilityOverrides(visiblityOverrideId);
+	}
+	
+	@Override
+	public ComponentVisibilityOverride getComponentVisibilityOverridesById(int visiblityOverrideId){
+		return componentDao.getComponentVisibilityOverridesById(visiblityOverrideId);
+	}
+	@Override
+	public boolean checkComponentVisibilityOverrideExist(
+			ComponentVisibilityOverride componentVisibilityOverride,boolean isCreate) {
+		ComponentVisibilityOverride overrideObj=componentDao.checkComponentVisibilityOverrideExist(componentVisibilityOverride);
+		boolean returnFlg=true;
+		if(overrideObj !=null){
+			if(isCreate){
+				returnFlg= false;
+			}else{
+				if(overrideObj.getVisiblityOverrideId() !=componentVisibilityOverride.getVisiblityOverrideId()){
+					returnFlg= false;
+				}
+			}
+		}
+		return returnFlg;
+	}
+	
 	
 	//Template Page -- End
 }

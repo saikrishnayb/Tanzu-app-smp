@@ -142,10 +142,10 @@ public abstract class ExcelUploadHandler {
 		if (!fileToUpload.isEmpty()) //make sure there is something to upload 
 		{
 			InputStream is = null;
-			is = fileToUpload.getInputStream(); //get the file's input stream
 			try {
-				//To validate the uploaded file; returned message is an error
-				message = validateFile(fileName, is, objUploadService, pilot); 
+					is = fileToUpload.getInputStream(); //get the file's input stream
+					//To validate the uploaded file; returned message is an error
+					message = validateFile(fileName, is, objUploadService, pilot); 
 
 				if(DataUtil.isEmpty(message))
 				{
@@ -176,6 +176,7 @@ public abstract class ExcelUploadHandler {
 						}
 
 					} catch (Exception e) {
+						logger.debug(e);
 						message = "Error Occured while reading file " + fileName + " to upload";
 					} finally {
 						is.close();
@@ -184,6 +185,9 @@ public abstract class ExcelUploadHandler {
 			} catch (Exception e) {
 				logger.error("Exception in  ExcelUploadHandler for "+fileName +". Exception is "+e.getMessage());
 				message = FORWARD;
+			}
+			finally{
+				is.close();
 			}
 		}else {
 			message = "File has no data or does not exist:" + fileName;
@@ -401,6 +405,7 @@ public abstract class ExcelUploadHandler {
 		Iterator cells = row.cellIterator();
 		int cellNum = 0;
 		String value = "";
+		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 		while (cells.hasNext() && readRecords == true) {
 			HSSFCell cell = (HSSFCell) cells.next();
 			cellNum = cell.getColumnIndex();
@@ -409,10 +414,9 @@ public abstract class ExcelUploadHandler {
 				case HSSFCell.CELL_TYPE_NUMERIC:
 					 if(HSSFDateUtil.isCellDateFormatted(cell)) {
 						 try{
-							 SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 							 value = sdf.format(cell.getDateCellValue());
 						 } catch(Exception e) {
-							 logger.error("Something went wrong converting excel date. --- " + e.getMessage());
+							 logger.debug("Something went wrong converting excel date. --- " + e.getMessage());
 						 }
 					 } else {
 						 value = String.valueOf(cell.getNumericCellValue());						 

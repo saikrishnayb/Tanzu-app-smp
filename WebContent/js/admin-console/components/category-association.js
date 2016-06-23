@@ -5,7 +5,7 @@ $(document).ready(function() {
 	var $addAssociationModal =$('#add-association-modal');
 	var $addCategoryAssociation = $('.add-category-association');
 	var commonStaticUrl =$('#common-static-url').val();
-	var iDisplayLength = tableRowLengthCalc();
+	var iDisplayLength = 10;// tableRowLengthCalc();
 	
 	$categoryAssociationTable.dataTable( { //All of the below are optional
 		"aaSorting": [[ 1, "desc" ]], //default sort column

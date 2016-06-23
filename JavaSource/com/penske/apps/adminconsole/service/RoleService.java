@@ -17,9 +17,9 @@ public interface RoleService {
 	
 	public Role getRoleById(int roleId);
 
-	public Role getCreateRoleHierarchy(int roleId);
+	public Role getCreateRoleHierarchy(int roleId,int orgId);
 
-	public Role getEditRoleHierarchy(int roleId, int flag);
+	public Role getEditRoleHierarchy(int roleId, int flag,int orgId);
 	
 	public boolean checkForUsers(int roleId);
 	
@@ -37,9 +37,11 @@ public interface RoleService {
 	
 	public boolean checkRoleExist(Role role,boolean isCreat);
 	
-	public List<Role> getMyDescendRole(int roleId);
+	public List<Role> getMyDescendRoleByRoleIdOrgId(int roleId,int orgId);
 	
 	public Set<String> getMyDescendRoleByOrgId(int orgId);
 	
-	public List<Role>  removeCurrentRoleAndChild(int roleId,List<Role> roles);
+	public List<Role>  removeCurrentRoleAndChild(int roleId,List<Role> roles,int orgId);
+	
+	//public List<Role> getMyDescendRoleWithParentOthOrg(int roleId,int orgId);
 }

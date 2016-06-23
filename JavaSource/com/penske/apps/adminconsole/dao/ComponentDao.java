@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.penske.apps.adminconsole.model.ComponentVisibility;
+import com.penske.apps.adminconsole.model.ComponentVisibilityOverride;
 import com.penske.apps.adminconsole.model.Components;
 import com.penske.apps.adminconsole.model.PoCategory;
 import com.penske.apps.adminconsole.model.SubCategory;
@@ -73,4 +74,18 @@ public interface ComponentDao {
 	public List<Integer> findTemplateExist(Template template);
 		
 		//Template Page --- End
+	//COMPONENT VISIBILITY OVERRIDES -- start
+	
+	public List<ComponentVisibilityOverride> getAllComponentVisibilityOverrides();
+	
+	public void addComponentVisibilityOverrides(ComponentVisibilityOverride componentVisibilityOverride);
+	
+	public void updateComponentVisibilityOverrides(ComponentVisibilityOverride componentVisibilityOverride);
+	
+	public void deleteComponentVisibilityOverrides(@Param("visiblityOverrideId") int visiblityOverrideId);
+	
+	public ComponentVisibilityOverride getComponentVisibilityOverridesById(@Param("visiblityOverrideId") int visiblityOverrideId);
+	
+	public ComponentVisibilityOverride  checkComponentVisibilityOverrideExist(ComponentVisibilityOverride componentVisibilityOverride);
+	//COMPONENT VISIBILITY OVERRIDES -- End
 }

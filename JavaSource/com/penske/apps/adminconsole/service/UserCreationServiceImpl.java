@@ -268,9 +268,8 @@ public class UserCreationServiceImpl implements UserCreationService {
 			}else{
 				logger.info("lookupManager is null");
 			}
-			mailBody.append("<BR/>To begin you will need to activate your SSO account by changing your password and " +
-					"creating a challenge question. <a href='").append(signInURL).append("'>Click here").append("</a> " +
-					"to change your password and create a challenge question.");
+			mailBody.append("<BR/>To begin you will need to activate your SSO account by changing your password and creating a challenge question. <a href='")
+			.append(signInURL).append("'>Click here").append("</a> to change your password and create a challenge question.");
 			mailBody.append("<BR/>");
 			
 			String smcURL=null;
@@ -309,16 +308,14 @@ public class UserCreationServiceImpl implements UserCreationService {
 			mailBody.append("<BR/>");
 			mailBody.append("<BR/>This is an automated message; please do not reply to it.");
 			mailBody.append("<BR/>");
-			mailBody.append("<BR/>Note: The information will be used to authorize your access to this and other " +
-					"SSO-enabled sites and may be shared with other Penske affiliates to authorize your access " +
-					"to SSO-enabled sites (wherever located worldwide) that they may operate and that you choose to visit.");
+			mailBody.append("<BR/>Note: The information will be used to authorize your access to this and other SSO-enabled sites and may be shared with other Penske affiliates to authorize your access to SSO-enabled sites (wherever located worldwide) that they may operate and that you choose to visit.");
 			mailBody.append("<BR/>");
-			mailBody.append("<BR/><I>The information contained in this e-mail is intended only for the individual or " +
-					"entity to which it is addressed. Its contents (including any attachments) may contain " +
-					"confidential and/or privileged information. If you are not an intended recipient, you are " +
-					"prohibited from using, disclosing, disseminating, copying or printing its contents. If you " +
-					"received this e-mail in error, please immediately notify the sender by reply e-mail and " +
-					"delete and destroy the message.  Thank you.</I>");			
+			mailBody.append("<BR/><I>The information contained in this e-mail is intended only for the individual or ");
+			mailBody.append("entity to which it is addressed. Its contents (including any attachments) may contain "); 
+			mailBody.append("confidential and/or privileged information. If you are not an intended recipient, you are "); 
+			mailBody.append("prohibited from using, disclosing, disseminating, copying or printing its contents. If you "); 
+			mailBody.append("received this e-mail in error, please immediately notify the sender by reply e-mail and "); 
+			mailBody.append("delete and destroy the message.  Thank you.</I>");			
 			mailBody.append("</BODY></HTML>");
 		}catch(Exception e){
 			logger.error(e.getLocalizedMessage(), e);
@@ -375,16 +372,16 @@ public class UserCreationServiceImpl implements UserCreationService {
 			mailBody.append("<BR/>");
 			mailBody.append("<BR/>This is an automated message; please do not reply to it.");
 			mailBody.append("<BR/>");
-			mailBody.append("<BR/>Note: The information will be used to authorize your access to this and other " +
-					"SSO-enabled sites and may be shared with other Penske affiliates to authorize your access " +
-					"to SSO-enabled sites (wherever located worldwide) that they may operate and that you choose to visit.");
+			mailBody.append("<BR/>Note: The information will be used to authorize your access to this and other ");
+			mailBody.append("SSO-enabled sites and may be shared with other Penske affiliates to authorize your access ");
+			mailBody.append("to SSO-enabled sites (wherever located worldwide) that they may operate and that you choose to visit.");
 			mailBody.append("<BR/>");
-			mailBody.append("<BR/><I>The information contained in this e-mail is intended only for the individual or " +
-					"entity to which it is addressed. Its contents (including any attachments) may contain " +
-					"confidential and/or privileged information. If you are not an intended recipient, you are " +
-					"prohibited from using, disclosing, disseminating, copying or printing its contents. If you " +
-					"received this e-mail in error, please immediately notify the sender by reply e-mail and " +
-					"delete and destroy the message.  Thank you.</I>");				
+			mailBody.append("<BR/><I>The information contained in this e-mail is intended only for the individual or ");
+			mailBody.append("entity to which it is addressed. Its contents (including any attachments) may contain ");
+			mailBody.append("confidential and/or privileged information. If you are not an intended recipient, you are ");
+			mailBody.append("prohibited from using, disclosing, disseminating, copying or printing its contents. If you ");
+			mailBody.append("received this e-mail in error, please immediately notify the sender by reply e-mail and ");
+			mailBody.append("delete and destroy the message.  Thank you.</I>");				
 			mailBody.append("</BODY></HTML>");
 		}catch(Exception e){
 			logger.error(e.getLocalizedMessage(), e);

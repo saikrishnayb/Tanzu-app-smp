@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-import com.penske.apps.adminconsole.annotation.PrimaryDatabase;
 import com.penske.apps.adminconsole.model.Notification;
 import com.penske.apps.adminconsole.model.NotificationForm;
 import com.penske.apps.adminconsole.model.NotificationParty;

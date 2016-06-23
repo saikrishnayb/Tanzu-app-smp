@@ -32,7 +32,6 @@ public class SmcCustomNumberEditor extends CustomNumberEditor{
 			setValue(number);
 			
 		} catch (ParseException ex) {
-			ex.printStackTrace();
 			logger.error(ex);
 		}
 		

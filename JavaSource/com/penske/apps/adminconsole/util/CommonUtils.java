@@ -13,6 +13,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
+
 import com.penske.apps.adminconsole.model.Components;
 import com.penske.apps.adminconsole.model.DateType;
 import com.penske.apps.adminconsole.model.Role;
@@ -26,11 +28,20 @@ import com.penske.apps.suppliermgmt.model.UserContext;
  */
 public class CommonUtils {
 	
+	private static Logger logger = Logger.getLogger(CommonUtils.class);
+	
 	public static String getCompnentCheckSum(List<Components> compList){
 		if(compList !=null && !compList.isEmpty()){
 			List<String> componentNameList=new ArrayList<String>();
 			for (Components components : compList) {
-				componentNameList.add(components.getComponentName());
+				 StringBuffer key = new StringBuffer();
+				 key.append(components.getComponentId());
+				 key.append(components.isViewable());
+				 key.append(components.isEditable());
+				 key.append(components.isRequired());
+				 key.append(components.isDispOtherPO());
+				 key.append(components.isExcel());
+				componentNameList.add(key.toString());
 			}
 			Collections.sort(componentNameList);
 			MessageDigest md1;
@@ -51,10 +62,9 @@ public class CommonUtils {
 		        return  sb.toString();
 				
 			} catch (NoSuchAlgorithmException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 			
 		}

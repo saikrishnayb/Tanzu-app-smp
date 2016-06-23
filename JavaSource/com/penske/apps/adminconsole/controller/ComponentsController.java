@@ -141,6 +141,12 @@ public class ComponentsController {
 	}
 	
 	
+	@RequestMapping(value ={"/component-Visibility-Override"})
+	public ModelAndView getComponentVisibilityOverrides(HttpSession session) {
+		ModelAndView mav = new ModelAndView("/admin-console/components/component-Visibility-Override");
+		mav.addObject("overrideList", componentService.getAllComponentVisibilityOverrides());
+		return mav;
+	}
 
 	
 	

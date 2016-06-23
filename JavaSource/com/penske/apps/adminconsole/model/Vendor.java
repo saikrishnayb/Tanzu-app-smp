@@ -41,6 +41,8 @@ public class Vendor {
 	private String shippingZipCode;				// the shipping zip code
 
 	private List<VendorLocation> vendorLocations;	// list of vendor locations
+	
+	private String alertType;	
 
 	// Getters
 	public int getVendorId() {
@@ -307,5 +309,13 @@ public class Vendor {
 				+ shippingCity + ", shippingState=" + shippingState
 				+ ", shippingZipCode=" + shippingZipCode + ", vendorLocations="
 				+ vendorLocations + "]";
+	}
+
+	public String getAlertType() {
+		return alertType;
+	}
+
+	public void setAlertType(String alertType) {
+		this.alertType = alertType;
 	}
 }

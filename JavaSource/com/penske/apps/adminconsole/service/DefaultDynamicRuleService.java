@@ -59,7 +59,7 @@ public class DefaultDynamicRuleService implements DynamicRuleService {
 				}
 			}
 			if(reOrderRequired){
-				int rowsAff=dynamicRuleDao.reOrderPriority(rule.getPriority());
+				dynamicRuleDao.reOrderPriority(rule.getPriority());
 			}
 			dynamicRuleDao.addDynamicRule(rule);
 		}
@@ -109,7 +109,7 @@ public class DefaultDynamicRuleService implements DynamicRuleService {
 					
 				}
 				if(reOrderRequired){
-					int rowsAff=dynamicRuleDao.reOrderPriority(rule.getPriority());
+					dynamicRuleDao.reOrderPriority(rule.getPriority());
 				}
 	//		}
 			//if ("I".equalsIgnoreCase(rule.getStatus())){

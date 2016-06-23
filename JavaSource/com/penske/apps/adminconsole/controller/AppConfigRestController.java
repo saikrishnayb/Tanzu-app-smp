@@ -7,6 +7,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -81,6 +82,8 @@ public class AppConfigRestController {
 	@Autowired
 	private SubjectService subjectService;
 	
+	private static Logger logger = Logger.getLogger(AppConfigRestController.class);
+	
 	/* ================== Subject Management ================== */
 	@RequestMapping(value="/modify-subject")
 	@ResponseBody
@@ -129,7 +132,8 @@ public class AppConfigRestController {
 		}
 		
 		for (String email : userEmails) {
-			emails.append(email + ";");
+			emails.append(email);
+			emails.append(";");
 		}
 		
 		return emails.toString();
@@ -242,8 +246,7 @@ public class AppConfigRestController {
 			        response.flushBuffer();
 			       // throw dpe;
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 		}
 	}
@@ -263,8 +266,7 @@ public class AppConfigRestController {
 		        response.flushBuffer();
 		       // throw dpe;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 	}
 	}
@@ -765,7 +767,7 @@ public class AppConfigRestController {
 		} 
 		catch (Exception e) {
 			//Frequency was not a number, what to do here?
-			
+			logger.debug(e);
 			
 			return;
 		}

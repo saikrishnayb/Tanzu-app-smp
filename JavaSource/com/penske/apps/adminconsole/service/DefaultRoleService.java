@@ -122,7 +122,7 @@ public class DefaultRoleService implements RoleService {
 	}
 	
 	@Override
-	public Role getCreateRoleHierarchy(int roleId) {
+	public Role getCreateRoleHierarchy(int roleId,int orgId) {
 		/*Role rootRole = roleDao.getBaseRoleId(roleId);
 		
 		if (rootRole.getBaseRoleId() == 0) {
@@ -146,7 +146,8 @@ public class DefaultRoleService implements RoleService {
 			rootRole = tempRole;
 		}
 		*/
-		List<Role> roleList=roleDao.getMyDescendRole(roleId);
+		List<Role> roleList=roleDao.getMyDescendRoleWithParentOthOrg(roleId,orgId);
+		//List<Role> roleList=roleDao.getMyDescendRoleByRoleIdOrgId(roleId,orgId);
 		 Role topRole=null;
 		 Map<Integer, Role> roleMap=new HashMap<Integer, Role>();
 		if(roleList !=null && !roleList.isEmpty()){
@@ -163,7 +164,7 @@ public class DefaultRoleService implements RoleService {
 	
 	
 	@Override
-	public Role getEditRoleHierarchy(int roleId,int  flag) {
+	public Role getEditRoleHierarchy(int roleId,int  flag,int orgId) {
 		int baseRoleId=roleId;
 		if(flag==0){
 			Role rootRole = roleDao.getBaseRoleId(roleId);
@@ -183,7 +184,8 @@ public class DefaultRoleService implements RoleService {
 		
 		return rootRole;*/
 		
-		List<Role> roleList=roleDao.getMyDescendRole(baseRoleId);
+		List<Role> roleList=roleDao.getMyDescendRoleWithParentOthOrg(baseRoleId,orgId);
+		//List<Role> roleList=roleDao.getMyDescendRoleByRoleIdOrgId(roleId,orgId);
 		 Role topRole=null;
 		 Map<Integer, Role> roleMap=new HashMap<Integer, Role>();
 		if(roleList !=null && !roleList.isEmpty()){
@@ -243,7 +245,7 @@ public class DefaultRoleService implements RoleService {
 	@Override
 	@Transactional
 	public void modifyRole(Role role, int[] functionIds) {
-		Role prevRole = null;
+		//Role prevRole = null;
 		
 		// The role name cannot be null or blank.
 		if (StringUtils.isEmpty(role.getRoleName())) {
@@ -333,12 +335,19 @@ public class DefaultRoleService implements RoleService {
 
 	@Override
 	public List<Role> getMyRoleDescend(int roleId,int currOrgId,boolean isSupplier) {
-		List<Role> myRoles =  roleDao.getMyRoleDescend(roleId,currOrgId);
+	//	List<Role> myRoles =  roleDao.getMyRoleDescend(roleId,currOrgId);
+		List<Role> myRoles =  roleDao.getMyDescendRoleWithParentOthOrg(roleId, currOrgId);
 		/*if(!isSupplier){
 			myRoles.addAll(roleDao.getAllVendorRoles( 0,null));
 		}*/
 		return myRoles;
 	}
+	
+
+	//@Override
+	//public List<Role> getMyDescendRoleWithParentOthOrg(int roleId,int orgId) {
+	//	List<Role> roleList=roleDao.getMyDescendRoleWithParentOthOrg(baseRoleId,orgId);
+	//}
 	
 	@Override
 	public List<Role> getMyRoles(int currUserRoleId,int currOrgId, int baseRoleId,String roleName,boolean isSupplier){
@@ -368,8 +377,8 @@ public class DefaultRoleService implements RoleService {
 	}
 	
 	@Override
-	public List<Role> getMyDescendRole(int roleId){
-		return roleDao.getMyDescendRole(roleId);
+	public List<Role> getMyDescendRoleByRoleIdOrgId(int roleId,int orgId){
+		return roleDao.getMyDescendRoleByRoleIdOrgId(roleId,orgId);
 	}
 	
 	@Override
@@ -378,8 +387,8 @@ public class DefaultRoleService implements RoleService {
 	}
 
 	@Override
-	public List<Role> removeCurrentRoleAndChild(int roleId,List<Role> roles) {
-		List<Role> myRoles=roleDao.getMyDescendRole(roleId);
+	public List<Role> removeCurrentRoleAndChild(int roleId,List<Role> roles,int orgId) {
+		List<Role> myRoles=roleDao.getMyDescendRoleByRoleIdOrgId(roleId,orgId);
 		List<Integer> loopCnt=new ArrayList<Integer>();
 		for (Iterator<Role> iterator = roles.iterator();iterator.hasNext();) {
 			int tempRoleId=iterator.next().getRoleId();

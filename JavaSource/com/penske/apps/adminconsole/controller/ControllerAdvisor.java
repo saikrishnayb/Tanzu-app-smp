@@ -2,6 +2,7 @@ package com.penske.apps.adminconsole.controller;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 
 import javax.servlet.ServletContext;
@@ -32,14 +33,19 @@ public class ControllerAdvisor {
 		String realPath = servletContext.getRealPath("WEB-INF/jsp/jsp-fragment" + leftNavDirectory + "/left-nav.jsp");
 		
 		boolean sidebarExist = true;
-		
+		InputStream is = null;
 		try{
-			@SuppressWarnings({ "unused", "resource" })
-			InputStream is = new FileInputStream(realPath);
+			is = new FileInputStream(realPath);
 		} catch(FileNotFoundException e1){
+			logger.debug(e1);
 			sidebarExist = false;
+		} finally{
+			try {
+				is.close();
+			} catch (IOException e1) {
+				logger.error(e1.getMessage());
+			}
 		}
-		e.printStackTrace();
 		logger.error("exception in application>>>",e);
 		ModelAndView mav = new ModelAndView("/error/error");
 		mav.addObject("leftNavDirectory", leftNavDirectory);
