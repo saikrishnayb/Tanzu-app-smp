@@ -17,52 +17,56 @@
 			
 			<div class="leftNavAdjacentContainer">
 				<!-- Advanced Search -->
-				<span id="advanced-search" class="expandableContent handCursor collapsedImage floatRight margin-bottom-10"
+				<span id="advanced-search" class="expandableContent handCursor 
+				<c:if test="${hasBeenSearched eq false}">collapsedImage</c:if>
+				<c:if test="${hasBeenSearched eq true}">expandedImage</c:if>
+				 floatRight margin-bottom-10"
 				onclick="toggleContent('search-content','advanced-search');">Show Search Criteria</span>
 				
-				<div id="search-content" class="displayNone clear-both">
+				<div id="search-content" class="<c:if test="${hasBeenSearched eq false}">displayNone</c:if> 
+				<c:if test="${hasBeenSearched eq true}">displayBlock</c:if> clear-both">
 					<form id="advanced-search-form" method="get" action="./vendors-advanced-search.htm">
-						<fieldset>
+						<fieldset style="width: 765px;">
 							<legend>Advanced Search</legend>
 							<div class="form-column floatLeft margin-bottom-10">
-								<label class="floatLeft clear-left">Vendor Name</label>
+								<label class="floatLeft clear-left leftLbl">Vendor Name</label>
 								<input class="floatLeft" name="vendorName" type="text" value="${searchedVendor.vendorName}" autocomplete="off" maxlength="50" />
 								
-								<label class="floatLeft clear-left">Vendor Number</label>
-								<input class="floatLeft" name="vendorNumber" type="text" <c:if test="${searchedVendor.vendorNumber ne 0}">value="${searchedVendor.vendorNumber}"</c:if> autocomplete="off" />
+								<label class="floatLeft clear-left leftLbl">Vendor Number</label>
+								<input class="floatLeft" id="vendorNumber" name="vendorNumber" maxlength="9" type="text" <c:if test="${searchedVendor.vendorNumber ne 0}">value="${searchedVendor.vendorNumber}"</c:if> autocomplete="off" />
 								
-								<label class="floatLeft clear-left">Corp Code</label>
+								<label class="floatLeft clear-left leftLbl">Corp Code</label>
 								<input class="floatLeft" name="corpCode" type="text" value="${searchedVendor.corpCode}" autocomplete="off" maxlength="4" />
 								
-								<label class="floatLeft clear-left">MFR Code</label>
+								<label class="floatLeft clear-left leftLbl">MFR Code</label>
 								<input class="floatLeft" name="manufacturerCode" type="text" value="${searchedVendor.manufacturerCode}" autocomplete="off" maxlength="4" />
 								<c:if test="${isPenskeUser}">
-									<label class="floatLeft clear-left">Alerts</label>
+									<label class="floatLeft clear-left leftLbl" >Alerts</label>
 									<select class="floatLeft" name="alertType">
 										<option value="0">Select...</option>
 										<c:forEach var="alert" items="${alertTypeList}">
-										<option value="${alert.alertType}">${alert.alertName}</option>
+										<option value="${alert.alertType}" <c:if test="${searchedVendor.alertType eq alert.alertType}">selected</c:if>>${alert.alertName}</option>
 										</c:forEach>
 									</select>
 								</c:if>
 							</div>
 							
 							<div class="form-column floatLeft margin-bottom-10">
-								<label class="floatLeft clear-left">Notification Exception</label>
+								<label class="floatLeft clear-left rlbl">Notification Exception</label>
 								<select class="floatLeft" name="notificationException">
 									<option value="-1">Select...</option>
-									<option value="Y" <c:if test="${searchedVendor.notificationException eq 1}">selected</c:if>>Yes</option>
-									<option value="N" <c:if test="${searchedVendor.notificationException eq 0}">selected</c:if>>No</option>
+									<option value="Y" <c:if test="${searchedVendor.notificationException eq 'Y'}">selected</c:if>>Yes</option>
+									<option value="N" <c:if test="${searchedVendor.notificationException eq 'N'}">selected</c:if>>No</option>
 								</select>
 								
-								<label class="floatLeft clear-left">Annual Agreement</label>
+								<label class="floatLeft clear-left rlbl">Annual Agreement</label>
 								<select class="floatLeft" name="annualAgreement">
 									<option value="-1">Select...</option>
-									<option value="Y" <c:if test="${searchedVendor.annualAgreement eq 1}">selected</c:if>>Yes</option>
-									<option value="N" <c:if test="${searchedVendor.annualAgreement eq 0}">selected</c:if>>No</option>
+									<option value="Y" <c:if test="${searchedVendor.annualAgreement eq 'Y'}">selected</c:if>>Yes</option>
+									<option value="N" <c:if test="${searchedVendor.annualAgreement eq 'N'}">selected</c:if>>No</option>
 								</select>
 								
-								<label class="floatLeft clear-left">Planning Analyst</label>
+								<label class="floatLeft clear-left rlbl">Planning Analyst</label>
 								<select class="floatLeft" name="planningAnalyst.userId">
 									<option value="0">Select...</option>
 									<c:forEach var="analyst" items="${analysts}">
@@ -70,7 +74,7 @@
 									</c:forEach>
 								</select>
 								
-								<label class="floatLeft clear-left">Supply Specialist</label>
+								<label class="floatLeft clear-left rlbl">Supply Specialist</label>
 								<select class="floatLeft" name="supplySpecialist.userId">
 									<option value="0">Select...</option>
 									<c:forEach var="specialist" items="${specialists}">
@@ -81,7 +85,7 @@
 						</fieldset>
 						
 						<div class="floatRight button-div clear-both">
-							<a class="buttonSecondary floatRight search">Search</a>
+							<a class="buttonPrimary floatRight search">Search</a>
 							<a class="secondaryLink floatRight reset">Reset</a>
 							<div class="error floatRight hidden">
 								<img src="${commonStaticUrl}/images/warning.png">

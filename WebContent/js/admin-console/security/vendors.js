@@ -93,6 +93,19 @@ $(document).ready(function() {
 		}
 	});
 	
+	if($("#search-content").is(":visible")){
+		if($("#advanced-search").is(":visible")){
+			//Currently Expanded
+			$("#advanced-search").text('Hide Search Criteria');
+		}
+	}
+	else{
+		if($("#advanced-search").is(":hidden")){
+			//Currently Collapsed
+			$("#advanced-search").text('Show Search Criteria');
+		}
+	}
+	
 	$advancedForm.find('.reset').on('click', function() {
 		$advancedForm.find('input').val('');
 		$advancedForm.find('select').find('option:first').attr('selected', 'selected');
@@ -101,9 +114,16 @@ $(document).ready(function() {
 		$advancedForm.find('.error').hide();
 	});
 	
+	$("#vendorNumber").keypress(function (e) {
+	     //if the letter is not digit then display error and don't type anything
+	     if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+	     return false;
+	    }
+	   });
+	
 	// Allow the user to see their advanced search terms if they just performed a search.
-	if ($advancedForm.find('input:text[value!=""]').length > 0) {
-		$('#advanced-search').trigger('click');
+/*	if ($advancedForm.find('input:text[value!=""]').length > 0) {
+	//	$('#advanced-search').trigger('click');
 	}
 	else {
 		// The dropdowns have different default values (because for some, 0 = "No"), so they need to be checked individually.
@@ -113,10 +133,10 @@ $(document).ready(function() {
 		var $supplySpecialist = $advancedForm.find('[name="supplySpecialist.userId"]');
 
 		if ($notificationException.val() != -1 || $annualAgreement.val() != -1 || $planningAnalyst.val() > 0 || $supplySpecialist.val() > 0) {
-			$('#advanced-search').trigger('click');
+		//	$('#advanced-search').trigger('click');
 		}
 	}
-	
+*/	
 	/* ------------ Editing A Vendor ------------ */
 	$vendorTable.on('click', '.edit-vendor', function() {
 		var $row = $(this).closest('tr');

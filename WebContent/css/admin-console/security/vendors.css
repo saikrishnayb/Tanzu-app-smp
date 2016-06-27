@@ -18,10 +18,13 @@ form .form-column {
 	margin: auto;
 }
 
-#advanced-search-form label {
+#advanced-search-form .rlbl {
 	width: 130px;
 }
 
+#advanced-search-form .leftLbl {
+	width: 120px;
+}
 #advanced-search-form select {
 	width: 150px;
 	max-width: 150px;

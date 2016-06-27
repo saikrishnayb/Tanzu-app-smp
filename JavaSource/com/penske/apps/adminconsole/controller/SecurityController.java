@@ -167,11 +167,14 @@ public class SecurityController {
 		mav.addObject("specialists", vendorService.getAllSupplySpecialists());
 		mav.addObject("alertTypeList", vendorService.getAllAlerts());
 		mav.addObject("isPenskeUser", currentUser.getUserTypeId() == ApplicationConstants.PENSKE_USER);
+		mav.addObject("hasBeenSearched", false);
 		return mav;
 	}
 	
 	@RequestMapping("vendors-advanced-search")
 	public ModelAndView getVendorsAdvancedSearch(Vendor vendor,HttpSession session) {
+	//	ModelAndView mav =getVendorSearchDetails(session, vendor);
+	//	mav.addObject("hasBeenSearched", true);
 		return getVendorSearchDetails(session, vendor);
 	}
 	
@@ -182,6 +185,9 @@ public class SecurityController {
 		User user=new User();
 		vendor.setPlanningAnalyst(user);
 		vendor.setSupplySpecialist(user);
+		if(alertType !=null){
+			alertType=alertType.trim();
+		}
 		vendor.setAlertType(alertType);
 		return getVendorSearchDetails(session, vendor);
 	}
@@ -263,6 +269,7 @@ public class SecurityController {
 		mav.addObject("specialists", vendorService.getAllSupplySpecialists());
 		mav.addObject("alertTypeList", vendorService.getAllAlerts());
 		mav.addObject("isPenskeUser", currentUser.getUserTypeId() == ApplicationConstants.PENSKE_USER);
+		mav.addObject("hasBeenSearched", true);
 		return mav;
 	}
 }
