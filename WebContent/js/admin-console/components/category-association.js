@@ -178,19 +178,27 @@ $(document).ready(function() {
 		$addAssociationModal.on("change",'#po-category',function(){
 			var $this =$(this);
 			var poCategoryId = $this.val();
+			var poCategoryText = $(this).find("option:selected").text();
 			var $getPoSubCategoriesPromise =$.get("get-sub-categories-association.htm",{poCategoryId:poCategoryId});
-			
+			var $poSubCategoryDropDown = $('#sub-category');
 			$getPoSubCategoriesPromise.done(function(data){
 				
-				var $poSubCategoryDropDown = $('#sub-category');
+				$poSubCategoryDropDown.attr('disabled', false);
 				$poSubCategoryDropDown.empty().append("<option value="+''+">Select</option>");
 				var poSubCategoryList =data;
-				
-				$.each(poSubCategoryList,function(key,value){
-					var poSubCategory = value;
-					$poSubCategoryDropDown.append('<option value = "'+poSubCategory.subCategoryId+'">'+poSubCategory.subCategoryName +'</option>');
-					
-				});
+				if(poSubCategoryList !=null && poSubCategoryList.length>0){
+					 $('.error-messages-container').addClass('displayNone');
+					 $('.error-messages-container').find('.errorMsg').text('');
+					$.each(poSubCategoryList,function(key,value){
+						var poSubCategory = value;
+						$poSubCategoryDropDown.append('<option value = "'+poSubCategory.subCategoryId+'">'+poSubCategory.subCategoryName +'</option>');
+						
+					});
+				}else{
+					$poSubCategoryDropDown.attr('disabled', true);
+					 $('.error-messages-container').removeClass('displayNone');
+					$('.error-messages-container').find('.errorMsg').text("PO Category-'"+poCategoryText+"' associated to all Sub-Categories");
+				}
 		
 			});
 			

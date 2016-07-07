@@ -20,10 +20,12 @@
 										<option>Select</option>
 									</select>
 							 </div>
-							<div class="close-save" >
-								<a  class="secondaryLink cancel">Cancel</a>
-								<a  class="buttonPrimary save-association" >Add</a>
-								<div class="error-messages-container displayNone">
+							<div class="close-save" style="width:100%">
+								<div style="float: right">
+									<a  class="secondaryLink cancel">Cancel</a>
+									<a  class="buttonPrimary save-association" >Add</a>
+								</div>
+								<div class="error-messages-container displayNone" style="float: left;padding-left: 10px;">
 									<img src="${commonStaticUrl}/images/warning.png"></img>
 								<span class=errorMsg></span>
 				</div>

@@ -9,7 +9,7 @@
 			<div id="org-components" class="org-component">
 				<div class="single-line-content">
 					<label for="poCatAssID">Cat/Sub Cat<span class=requiredField>*</span></label> 
-					<select id="poCatAssID" name="poCatAssID" class="input numeric numeric-whole">
+					<select id="poCatAssID" name="poCatAssID" class="input numeric numeric-whole" <c:if test="${isCreatePage eq false}">disabled</c:if>>
 						<option value="">Select Cat/SubCat...</option>
 						<c:forEach items="${allPoAssocList}" var="poAssocList">
 						 <c:if test="${isCreatePage eq false}">
