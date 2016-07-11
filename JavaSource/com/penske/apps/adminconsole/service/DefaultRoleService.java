@@ -50,10 +50,10 @@ public class DefaultRoleService implements RoleService {
 		// Since the role hasn't been created yet, just get all permissions of the base role.
 		for (Tab currentTab : tabs) {
 			if (roleId != 0) {
-				currentTab.setPermissions(roleDao.getRolePermissions(roleId, currentTab.getTabId()));
+				currentTab.setPermissions(roleDao.getRolePermissions(roleId, currentTab.getTabKey()));
 			}
 			else {
-				currentTab.setPermissions(roleDao.getAllRolePermissions(currentTab.getTabId()));
+				currentTab.setPermissions(roleDao.getAllRolePermissions(currentTab.getTabKey()));
 			}
 		}
 			
@@ -68,8 +68,8 @@ public class DefaultRoleService implements RoleService {
 		// For each tab, get the security functions for the role based on the role's permissions.
 		for (Tab currentTab : tabs) {
 			if (role.getBaseRoleId() != 0) {
-				List<Permission> baseRolePermissions = roleDao.getRolePermissions(role.getBaseRoleId(), currentTab.getTabId());
-				List<Permission> rolePermissions = roleDao.getRolePermissions(role.getRoleId(), currentTab.getTabId());
+				List<Permission> baseRolePermissions = roleDao.getRolePermissions(role.getBaseRoleId(), currentTab.getTabKey());
+				List<Permission> rolePermissions = roleDao.getRolePermissions(role.getRoleId(), currentTab.getTabKey());
 				
 				// For each base role permission, if the current role also has that permission, then set available to 'true'.
 				// This is used to automatically check the security functions for a user editing a role.
@@ -85,8 +85,8 @@ public class DefaultRoleService implements RoleService {
 				currentTab.setPermissions(baseRolePermissions);
 			}
 			else {
-				List<Permission> baseRolePermissions = roleDao.getAllRolePermissions(currentTab.getTabId());
-				List<Permission> rolePermissions = roleDao.getRolePermissions(role.getRoleId(), currentTab.getTabId());
+				List<Permission> baseRolePermissions = roleDao.getAllRolePermissions(currentTab.getTabKey());
+				List<Permission> rolePermissions = roleDao.getRolePermissions(role.getRoleId(), currentTab.getTabKey());
 				
 				// For each base role permission, if the current role also has that permission, then set available to 'true'.
 				// This is used to automatically check the security functions for a user editing a role.

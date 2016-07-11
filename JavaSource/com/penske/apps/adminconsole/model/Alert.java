@@ -15,6 +15,7 @@ public class Alert {
 	private String helpText; 			// the alert help text
 	private int tabId;					// the tab ID
 	private String tabName;				// the tab name
+	private String tabKey;
 	private int headerId;				// the alert header ID
 	private String headerName;			// the alert header name
 	private int templateId;				// the associated template ID
@@ -153,5 +154,13 @@ public class Alert {
 	
 	public void setLink(String link) {
 		this.link = link;
+	}
+
+	public String getTabKey() {
+		return tabKey;
+	}
+
+	public void setTabKey(String tabKey) {
+		this.tabKey = tabKey;
 	}
 }

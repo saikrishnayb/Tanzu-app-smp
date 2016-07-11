@@ -2,6 +2,7 @@ package com.penske.apps.adminconsole.model;
 
 public class SearchTemplate {
 	private int templateId;				// the template ID
+	private int  templateKey;
 	private String templateName;		// the template name
 	private int displaySequence;
 	private String visibilityVendor;
@@ -84,5 +85,13 @@ public class SearchTemplate {
 	
 	public String toString() {
 		return "[templateId=" + this.templateId + ";templateName=" + this.templateName + ";Tab=" + this.tabName + "]";
+	}
+
+	public int getTemplateKey() {
+		return templateKey;
+	}
+
+	public void setTemplateKey(int templateKey) {
+		this.templateKey = templateKey;
 	}
 }

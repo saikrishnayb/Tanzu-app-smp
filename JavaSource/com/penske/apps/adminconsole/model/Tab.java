@@ -12,6 +12,7 @@ public class Tab {
 	private List<AlertHeader> alertHeaders;	  // the list of alert headers for the tab
 	private List<Permission> permissions;
 	private int defaultTemplateId;
+	private String tabKey;
 	
 	// Getters
 	public int getTabId() {
@@ -69,5 +70,13 @@ public class Tab {
 		return "Tab [tabId=" + tabId + ", tabName=" + tabName
 				+ ", imageUrl=" + imageUrl + ", alertHeaders=" + alertHeaders
 				+ "]";
+	}
+
+	public String getTabKey() {
+		return tabKey;
+	}
+
+	public void setTabKey(String tabKey) {
+		this.tabKey = tabKey;
 	}
 }

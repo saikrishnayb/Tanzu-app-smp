@@ -113,7 +113,7 @@
 				SMC.SMC_TAB_MASTER tab 
 				
 		WHERE 	sfn.TAB_KEY = tab.TAB_KEY
-		AND		tab.TAB_KEY = #{value}
+		AND		tab.TAB_KEY = #{tabKey}
 	</select>
 	
 	<select id="getRoleSecurityFunctions" resultType="Integer">

@@ -17,9 +17,9 @@ public interface RoleDao {
 	
 	public List<Tab> getSecurityFunctionTabs(int roleId);
 
-	public List<Permission> getRolePermissions(@Param("roleId") int roleId, @Param("tabId") int tabId);
+	public List<Permission> getRolePermissions(@Param("roleId") int roleId, @Param("tabKey") String tabKey);
 	
-	public List<Permission> getAllRolePermissions(int tabId);
+	public List<Permission> getAllRolePermissions(@Param("tabKey") String tabKey);
 
 	public List<Integer> getRoleSecurityFunctions(int roleId);
 	

@@ -37,7 +37,7 @@
 						a.ALERT_NAME AS alertName,
 						a.VISIBILITY_PENSKE AS visibilityPenske,
 						a.VISIBILITY_VENDOR AS visibilityVendor,
-						a.TEMPLATE_KEY AS templateKey,
+						a.TEMPLATE_ID AS templateKey,
 						st.TEMPLATE_NAME AS templateName,
 						a.HELP_TEXT AS helpText
 				

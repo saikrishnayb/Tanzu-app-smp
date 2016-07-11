@@ -48,7 +48,7 @@ $(document).ready(function() {
 		if (errorMsg.length == 0) {
 			$error.hide();
 			
-			$.post('./update-alert-header',
+			$.post('./update-alert-header.htm',
 				   $form.serialize(),
 				   function(data) {
 					   location.reload();
