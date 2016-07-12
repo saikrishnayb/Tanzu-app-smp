@@ -323,7 +323,7 @@ function resizeIframe(obj) {
 	obj.style.height=700+'px';
 	parentObj=obj;
 	var height =obj.contentWindow.document.body.scrollHeight;
-	obj.style.height=height+ 'px';
+	obj.style.height=height+8+ 'px';
 	//hideLoading();
 	//hideLoadingOnResize(); - commented for Jira Issue-246 - Deal Review page opening all schedules on page load
 	
