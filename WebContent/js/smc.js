@@ -516,8 +516,8 @@ function displayAlertModal(successMsg){
 
 function refreshPage(){
 	showLoadingForPage();
-	document.getElementById('mainFrame').contentWindow.location.href = document.getElementById('mainFrame').contentWindow.location.href;
-	//document.getElementById('mainFrame').contentWindow.location.reload(true);
+	//document.getElementById('mainFrame').contentWindow.location.href = document.getElementById('mainFrame').contentWindow.location.href;
+	document.getElementById('mainFrame').contentWindow.location.reload(true);
 }
 	
 
