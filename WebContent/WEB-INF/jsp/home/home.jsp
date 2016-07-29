@@ -22,12 +22,40 @@
 		<div> <h1 class="pageTitle" style="color: red;text-align:center;">Action Items</h1> </div>
 			<ul id="tab-display">
 				<c:forEach var="tab" items="${tabs}">
+					<c:set var="isValidTab" value="N"/>	
+					<c:choose>
+						<c:when test="${tab.tabKey eq 'TAB_OF'}">	
+							<tl:isAuthorized tabName="Order Fulfillment" secFunction="ORDER_FULFILLMENT_TAB">
+								<c:set var="isValidTab" value="Y"/>	
+							</tl:isAuthorized>	
+						</c:when>
+						<c:when test="${tab.tabKey eq 'TAB_OC'}">	
+							<tl:isAuthorized tabName="Order Confirmation" secFunction="ORDER_CONFIRMATION_TAB">
+								<c:set var="isValidTab" value="Y"/>	
+							</tl:isAuthorized>		
+						</c:when>
+						<c:when test="${tab.tabKey eq 'TAB_PROD'}">	
+							<tl:isAuthorized tabName="Production" secFunction="PRODUCTION_TAB">
+								<c:set var="isValidTab" value="Y"/>	
+							</tl:isAuthorized>		
+						</c:when>
+						<c:when test="${tab.tabKey eq 'TAB_COMM'}">		
+							<tl:isAuthorized tabName="Communications" secFunction="COMMUNICATIONS_TAB">
+								<c:set var="isValidTab" value="Y"/>	
+							</tl:isAuthorized>	
+						</c:when>
+						<c:otherwise>
+							<c:set var="isValidTab" value="Y"/>	
+						</c:otherwise>
+					</c:choose>
+					<c:if test="${isValidTab eq 'Y'}">
 					<li class="tab floatLeft handCursor" id="${tab.tabKey}">
 						<div class="tab-name-display">
 							<span class="tab-name">${tab.tabName}</span>
 						</div>
 						<div class="tab-image-display" id="link${tab.tabKey}"><img class="tab-image" src="${context}/${tab.imageUrl}" /></div>
 					</li>
+					</c:if>
 				</c:forEach>
 			</ul>
 			
