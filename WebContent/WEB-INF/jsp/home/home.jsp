@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+<%@ taglib uri="/WEB-INF/tld/taglib.tld" prefix="tl"%>
 <html>
 	<head> 
 	    <title>SMC Home</title>
@@ -60,6 +61,18 @@
 							</thead>
 							<tbody>
 							<c:forEach var="alert" items="${alertHeader.alerts}">
+								<c:choose>
+										<c:when test="${alert.alertKey eq 'ALRT_PROD_DATA_CONFLICT'}">		
+											<c:set var="isValidAlert" value="N"/>						
+											<tl:isAuthorized tabName="Production" secFunction="DATA_CONFLICT_MENU">
+												<c:set var="isValidAlert" value="Y"/>
+											</tl:isAuthorized>
+										</c:when>
+										<c:otherwise>
+											<c:set var="isValidAlert" value="Y"/>
+										</c:otherwise>
+								</c:choose>
+								<c:if test="${isValidAlert eq 'Y'}">
 								<tr>
 									<td>
 										<span>${alert.alertName}</span>
@@ -76,7 +89,9 @@
 													<a id="CountId-${TabKey}-${alert.templateKey }" onClick="redirectToTab('upStreamVendor');return false">${alert.count}</a>
 												</c:when>
 												<c:when test="${alert.alertKey eq 'ALRT_PROD_DATA_CONFLICT'}">
+													<tl:isAuthorized tabName="Production" secFunction="DATA_CONFLICT_MENU">
 													<a id="CountId-${TabKey}-${alert.templateKey }" onClick="redirectToTab('dataConflict');return false">${alert.count}</a>
+													</tl:isAuthorized>
 												</c:when>
 												<c:when test="${alert.alertKey eq 'ALRT_PROD_DELAY_COMM_REQ'}">
 													<a id="CountId-${TabKey}-${alert.templateKey }" onClick="redirectToTab('dateValidation');return false">${alert.count}</a>
@@ -99,6 +114,7 @@
 										</c:if>
 									</td>
 								</tr>
+								</c:if>
 								<!-- hiddenTemplateIds -->
 							<input class=templateKeys type="hidden" value="${alert.templateKey }">
 							</c:forEach>
