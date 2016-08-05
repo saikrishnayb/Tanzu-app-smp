@@ -96,6 +96,12 @@
 												<c:set var="isValidAlert" value="Y"/>
 											</tl:isAuthorized>
 										</c:when>
+										<c:when test="${alert.alertKey eq 'ALRT_PROD_DELAY_COMM_REQ'}">		
+											<c:set var="isValidAlert" value="N"/>						
+											<tl:isAuthorized tabName="Production" secFunction="UPDATE_DATES">
+												<c:set var="isValidAlert" value="Y"/>
+											</tl:isAuthorized>
+										</c:when>
 										<c:otherwise>
 											<c:set var="isValidAlert" value="Y"/>
 										</c:otherwise>
