@@ -71,6 +71,7 @@ public class HomeController extends BaseController{
 				modelandView.addObject("supportNum",lookUp.getLookUpValue());
 			}
 			
+			/* Help Info will be loaded from Database as HTML going forward
 			
 			if(userModel.getUserType()==ApplicationConstants.PENSKE_USER_TYPE){
 				helpLink=lookupManger.getLookUpListByValue(ApplicationConstants.HELP_LINK,ApplicationConstants.INT_ONE);
@@ -80,9 +81,9 @@ public class HomeController extends BaseController{
 				helpLink=lookupManger.getLookUpListByValue(ApplicationConstants.HELP_LINK,ApplicationConstants.INT_TWO);
 				LOGGER.debug("HELP_LINK :"+helpLink);
 			}
-			
-			
 			modelandView.addObject("helpLink",helpLink);
+			*/
+
 			modelandView.addObject("userDetails",userModel);
 		}catch(Exception e){
 			modelandView = handleException(e, request);

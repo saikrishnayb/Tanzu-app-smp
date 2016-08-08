@@ -31,8 +31,7 @@ public class UserController extends BaseController {
 
 	@Autowired
 	private UserService userService;
-	
-	
+
 	@RequestMapping(value = "/getUsersList", method = {RequestMethod.GET, RequestMethod.POST })
 	protected  ModelAndView validateUser(HttpServletRequest request) {
 		ModelAndView model=new ModelAndView();

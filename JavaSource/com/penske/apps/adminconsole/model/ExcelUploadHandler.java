@@ -186,9 +186,6 @@ public abstract class ExcelUploadHandler {
 				logger.error("Exception in  ExcelUploadHandler for "+fileName +". Exception is "+e.getMessage());
 				message = FORWARD;
 			}
-			finally{
-				is.close();
-			}
 		}else {
 			message = "File has no data or does not exist:" + fileName;
 		}		

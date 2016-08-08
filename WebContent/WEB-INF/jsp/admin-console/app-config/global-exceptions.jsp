@@ -30,7 +30,7 @@
 						<c:forEach items="${exceptions}" var="exception">
 						<tr>
 							<td class="editable centerAlign width">
-								<a class="rightMargin edit-exception">Edit</a>
+								<!--  <a class="rightMargin edit-exception">Edit</a> -->
 								<a><img src="${commonStaticUrl}/images/delete.png" class="centerImage rightMargin delete-exception"/></a>
 								<input type="hidden" class="global-exception-id" value="${exception.exceptionId}"/>
 							</td>

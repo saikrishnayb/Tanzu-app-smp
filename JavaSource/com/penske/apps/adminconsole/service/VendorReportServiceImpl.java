@@ -12,6 +12,7 @@ import java.util.TimeZone;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.penske.apps.adminconsole.dao.VendorReportDao;
 import com.penske.apps.adminconsole.model.MimeTypeModel;
@@ -78,6 +79,7 @@ public class VendorReportServiceImpl implements UploadService
 	/* (non-Javadoc)
 	 * @see com.penske.apps.vsportal.service.IUploadService#uploadExcelDataList(java.util.List)
 	 */
+	@Transactional
 	@Override
 	public String uploadExcelDataList(List vendorReportList) throws Exception 
 	{

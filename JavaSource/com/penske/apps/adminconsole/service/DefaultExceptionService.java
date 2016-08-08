@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.penske.apps.adminconsole.dao.ExceptionDao;
 import com.penske.apps.adminconsole.model.GlobalException;
@@ -67,10 +68,14 @@ public class DefaultExceptionService implements ExceptionService {
 		
 		exceptionDao.modifyGlobalException( exceptionId, provider, subProvider );
 	}
+	
 	@Override
+	@Transactional
 	public void deleteGlobalException(int exceptionId){
 		
+		exceptionDao.deleteGlobalExceptionPOCatGrp(exceptionId);
 		exceptionDao.deleteGlobalException(exceptionId);
+		
 	}
 
 	@Override
@@ -79,7 +84,7 @@ public class DefaultExceptionService implements ExceptionService {
 		// get the Exception through SQL, then check table name in PRIVATE checkTableName()
 		// to get the component name needed to populate exception.componentName
 		GlobalException exception = exceptionDao.getException(exceptionId);
-		exception = getComponentName(exception);
+		//exception = getComponentName(exception);
 		return exception;
 	}
 	
@@ -87,7 +92,8 @@ public class DefaultExceptionService implements ExceptionService {
 	public List<GlobalException> getGlobalExceptions(){
 		
 		List<GlobalException> exceptions = exceptionDao.getGlobalExceptions();
-		Iterator<GlobalException> iter = exceptions.iterator();
+	/*	
+	 	Iterator<GlobalException> iter = exceptions.iterator();
 		
 		List<GlobalException> completeExceptions = new ArrayList<GlobalException>();
 		while(iter.hasNext()){
@@ -97,7 +103,8 @@ public class DefaultExceptionService implements ExceptionService {
 			exc = getCreator(exc);
 			completeExceptions.add(exc);
 		}
-		return completeExceptions;
+	*/
+		return exceptions;
 	}
 	@Override
 	public List<String> getSubGroups(String primaryGroup){

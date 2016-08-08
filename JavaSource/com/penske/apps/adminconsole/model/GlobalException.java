@@ -17,6 +17,7 @@ public class GlobalException {
 	private int createdById;		// ID of user/group that created the exception
 	private String createdByName;	// name of user/group that created the exception
 	private String poGroup;			// PO Group
+	private String isNew;		
 	
 	// Getters
 	public int getExceptionId() {
@@ -100,5 +101,13 @@ public class GlobalException {
 				+ ", providerPoSub=" + providerPoSub + ", createdById="
 				+ createdById + ", createdByName=" + createdByName
 				+ ", poGroup=" + poGroup + "]";
+	}
+
+	public String getIsNew() {
+		return isNew;
+	}
+
+	public void setIsNew(String isNew) {
+		this.isNew = isNew;
 	}
 }

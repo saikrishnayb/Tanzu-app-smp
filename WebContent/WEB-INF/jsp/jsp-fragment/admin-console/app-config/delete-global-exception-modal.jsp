@@ -1,31 +1,27 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 	<div class="line">
-		<label class="wide-label">Component Name:</label>
-		<label>${exception.componentName}</label>
+		<label>Component Name:</label>${exception.componentName}
 	</div>
 	<div class="blank"></div>
 	<div class="line">
 		<div id="list-div">
-		<label class="wide-label">PO Group</label>
+		<label>PO Group:</label>
 		<ul id="po-group-items">
-			<c:forEach items="${poGroup}" var="poGroup">
 			<li>
-				<label>${poGroup}</label>
+				${exception.poGroup}
 			</li>
-			</c:forEach>
 		</ul>
 		</div>
 	</div>
 	<div class="blank"></div>
 	<div class="line">
-		<label class="wide-label">To be Provided By:</label>
-		<label>${exception.providerPo}</label>
+		<label>To be Provided By:</label>${exception.providerPo}
 	</div>
-	<div class="blank"></div>
+	<!-- <div class="blank"></div>
 	<div class="line">
 		<label class="wide-label">Provider Sub Group:</label>
 		<label>${exception.providerPoSub}</label>
-	</div>
+	</div> -->
 	<input type="hidden" id="exception-id-modal" value="${exception.exceptionId}"/>
 <div class="blank"></div>
 <div class="buttonLine">

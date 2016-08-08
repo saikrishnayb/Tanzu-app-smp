@@ -42,7 +42,9 @@ public interface ExceptionDao {
 	
 	public UnitException getUnitException(int id);
 	
-	public void deleteUnitException(int id);
+	public void deleteUnitException(@Param("id")int id);
+	
+	public void  deleteGlobalExceptionPOCatGrp(@Param("id")int id);
 	
 	public void modifyUnitException(@Param("id")int id, @Param("provider")String providerPo, @Param("subProvider")String subProviderPo);
 	

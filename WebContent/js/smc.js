@@ -320,7 +320,7 @@ function resizeAfterPaginationChange()
 
 function resizeIframe(obj) {
 	
-	obj.style.height=700+'px';
+	obj.style.height=0+'px';
 	parentObj=obj;
 	var height =obj.contentWindow.document.body.scrollHeight;
 	obj.style.height=height+8+ 'px';

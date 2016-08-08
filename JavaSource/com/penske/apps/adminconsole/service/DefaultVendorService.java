@@ -125,9 +125,9 @@ public class DefaultVendorService implements VendorService {
 			return;
 		}
 		// Supply Specialist user ID cannot be zero or negative.
-		else if (vendor.getSupplySpecialist().getUserId() <= 0) {
-			return;
-		}
+	//	else if (vendor.getSupplySpecialist().getUserId() <= 0) {
+	//		return;
+	//	}
 		
 		for (int i = 0; i < vendorIds.length; i++) {
 			vendor.setVendorId(vendorIds[i]);

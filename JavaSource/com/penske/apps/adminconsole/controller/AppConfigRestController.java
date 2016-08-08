@@ -187,8 +187,8 @@ public class AppConfigRestController {
 		ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/app-config/delete-global-exception-modal");
 		
 		GlobalException exception = exceptionService.getException(exceptionId);
-		List<String> poGroup = exceptionService.splitGroup( exception.getPoGroup() );
-		mav.addObject("poGroup", poGroup);
+		//List<String> poGroup = exceptionService.splitGroup( exception.getPoGroup() );
+		//mav.addObject("poGroup", poGroup);
 		mav.addObject("exception", exception);
 		return mav;
 	}

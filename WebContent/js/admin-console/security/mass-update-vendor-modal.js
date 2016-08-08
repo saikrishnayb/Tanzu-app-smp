@@ -56,7 +56,7 @@ $(document).ready(function() {
 function validateMassUpdateForm($form) {
 	var $notificationException = $form.find('[name="notificationException"]');
 	var $planningAnalyst = $form.find('[name="planningAnalyst.userId"]');
-	var $supplySpecialist = $form.find('[name="supplySpecialist.userId"]');
+	//var $supplySpecialist = $form.find('[name="supplySpecialist.userId"]');
 	
 	var errorMsg = '';
 	
@@ -78,7 +78,7 @@ function validateMassUpdateForm($form) {
 		$planningAnalyst.removeClass('errorMsgInput');
 	}
 	
-	if ($supplySpecialist.val().length == 0) {
+/*	if ($supplySpecialist.val().length == 0) {
 		$supplySpecialist.addClass('errorMsgInput');
 		
 		errorMsg = 'A required field is missing.';
@@ -86,7 +86,7 @@ function validateMassUpdateForm($form) {
 	else {
 		$supplySpecialist.removeClass('errorMsgInput');
 	}
-	
+*/	
 	return errorMsg;
 }
 

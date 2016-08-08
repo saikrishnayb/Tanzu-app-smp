@@ -98,7 +98,7 @@
 		</c:forEach>
 	</select>
 	
-	<label class="floatLeft width-250 clear-left">Assigned Vehicle Supply Specialist <span class="errorMsg">*</span></label>
+	<label class="floatLeft width-250 clear-left">Assigned Vehicle Supply Specialist</label>
 	<select class="floatLeft width-200" name="supplySpecialist.userId">
 		<option value="">Select...</option>
 		<c:forEach var="specialist" items="${specialists}">
