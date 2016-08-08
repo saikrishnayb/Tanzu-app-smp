@@ -111,7 +111,7 @@
 									<td>
 										<span>${alert.alertName}</span>
 										<c:if test="${not empty alert.helpText}">
-										<img rel="tooltip" src="${commonStaticUrl}/images/help_blue.png" class="centerImage help-text-image handCursor" title="${alert.helpText}"/>
+										<img rel="tooltip" src="${commonStaticUrl}/images/information.png" class="centerImage help-text-image handCursor" title="${alert.helpText}"/>
 										</c:if>
 									</td>
 
