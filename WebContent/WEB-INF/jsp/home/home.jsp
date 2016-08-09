@@ -79,7 +79,7 @@
 									<th>
 										<span>${alertHeader.headerName}</span>
 										<c:if test="${not empty alertHeader.helpText}">
-										<img rel="tooltip" src="${commonStaticUrl}/images/help_blue.png" class="centerImage help-text-image handCursor" title="${alertHeader.helpText}"/>
+										<img rel="tooltip" src="${commonStaticUrl}/images/information.png" class="centerImage help-text-image handCursor" title="${alertHeader.helpText}"/>
 										</c:if>
 									</th>
 
