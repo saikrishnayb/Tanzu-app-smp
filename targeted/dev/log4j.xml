@@ -22,7 +22,7 @@
        <param name="from" value="log4j@suppliermgmt.penske.com"/>
               <param name="subject" value=" Suppliermgmt DEV logging system"/>
 
-       <param name="to" value="deepak.babu@penske.com"/>
+       <param name="to" value=""/>
        <layout class="org.apache.log4j.PatternLayout">
               <param name="ConversionPattern" value="%m%n"/>
        </layout>

@@ -21,7 +21,7 @@
        <param name="SMTPHost" value="mail.penske.com" />
        <param name="from" value="log4j@suppliermgmt2.penske.com"/>
               <param name="subject" value=" Suppliermgmt QA2 logging system"/>
-       <param name="to" value="deepak.babu@penske.com,indhu.rajasekaran@penske.com,vani.gorlagunta@penske.com,subramanian.vennimalayan@penske.com"/>
+       <param name="to" value=""/>
        <layout class="org.apache.log4j.PatternLayout">
               <param name="ConversionPattern" value="%m%n"/>
        </layout>
