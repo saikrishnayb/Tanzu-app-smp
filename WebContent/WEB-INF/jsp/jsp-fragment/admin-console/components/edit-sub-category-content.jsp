@@ -9,14 +9,14 @@
 		
 		<div class="category">
 			<label>Category Name<span class="requiredField">*</span></label>
-			<input type="text" value="${category.subCategoryName}" class="category-name input alpha alpha-name" name="subCategoryName"/>
+			<input type="text" value="${category.subCategoryName}" class="category-name input alpha alpha-numeric" name="subCategoryName"/>
 		</div>
 		
 		<input type="hidden" value="${category.subCategoryId}" class="category-id" name="subCategoryId"/>
 		
 		<div class="category">
 			<label>Description<span class="requiredField">*</span></label>
-			<input type="text" value="${category.description}" class="category-description input alpha alpha-name" name="description"/>
+			<input type="text" value="${category.description}" class="category-description input alpha alpha-numeric" name="description"/>
 		</div>
 		
 		<div class="category">

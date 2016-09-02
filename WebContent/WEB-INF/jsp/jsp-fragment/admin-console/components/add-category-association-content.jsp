@@ -6,7 +6,7 @@
 							
 							
 							<div class="add-association">
-								<label  class="leftAlign">PO Category</label>
+								<label  class="leftAlign">PO Category<span class=requiredField>*</span></label>
 									<select id="po-category" > 
 										<option>Select</option>
 										<c:forEach items="${categoryList}" var= "PO">
@@ -15,7 +15,7 @@
 									</select>
 							 </div>
 							 <div class="add-association">
-								<label  class="leftAlign">Sub-Category</label>
+								<label  class="leftAlign">Sub-Category<span class=requiredField>*</span></label>
 									<select id="sub-category" >
 										<option>Select</option>
 									</select>

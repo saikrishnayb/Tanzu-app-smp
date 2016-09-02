@@ -94,7 +94,7 @@ $(document).ready(function() {
 					if(exceptionIdMatches){
 						
 						var $row = $this.closest("tr");
-						$exceptionTable.fnUpdate( provider, $row[0], 3 );
+						$exceptionTable.fnUpdate( provider, $row[0], 3 ,false);
 					}
 				});
 				$editExceptionModal.dialog('close').empty();
@@ -138,6 +138,7 @@ function initDataTable($exceptionTable){
 	$exceptionTable.dataTable({ //All of the below are optional
 		"aaSorting": [[ 4, "desc" ]], //default sort column
 		"bPaginate": true, //enable pagination
+		"bStateSave": true,
 		"bLengthChange": false, //enable change of records per page, not recommended
 		"bFilter": false, //Allows dynamic filtering of results, do not enable if using ajax for pagination
 		"bSort": false, //Allow sorting by column header

@@ -19,6 +19,7 @@ $(document).ready(function() {
 	$overrideTable.dataTable( { //All of the below are optional
 		"aaSorting": [[ 1, "desc" ]], //default sort column
         "bPaginate": true, //enable pagination
+        "bStateSave": true,
         "bLengthChange": false, //enable change of records per page, not recommended
         "bFilter": false, //Allows dynamic filtering of results, do not enable if using ajax for pagination
         "bSort": true, //Allow sorting by column header
@@ -192,6 +193,7 @@ function initSearchPage(){
 		"aaSorting": [[ 1, "asc" ]], //default sort column
 		"bPaginate": true, //enable pagination
 		"bAutoWidth": false, //cray cray
+	//	"bStateSave": true,
 		"bLengthChange": false, //enable change of records per page, not recommended
 		"bFilter": true, //Allows dynamic filtering of results, do not enable if using ajax for pagination
 		"bSort": true, //Allow sorting by column header
@@ -226,8 +228,10 @@ function initSearchPage(){
 	} );
 	
 	$('#select-component').on("click", function(){
-		var compCheckedId=$('input:radio[name=componentId]:checked').attr('id');
-		if(compCheckedId== null || compCheckedId==undefined){
+		/*//var compCheckedId=$('input:radio[name=componentId]:checked').attr('id');
+		//if(compCheckedId== null || compCheckedId==undefined){
+		var compCheckedId=isCompChecked();
+		if(compCheckedId==''){
 			$componentSearchModal.find('.error-messages-container').removeClass('displayNone');
 			//$errMsg.removeClass('displayNone');
 		}else{
@@ -243,12 +247,58 @@ function initSearchPage(){
 				$('#controllingComponentId').val(compId);
 			}
 			closeModal($componentSearchModal);
+		}*/
+		
+		var compId='';
+		var compName='';
+		var flag=false;
+		$($("#component-search-modal #search-Component-table").dataTable().fnGetNodes()).each(function(index) {
+			var locRadio=$(this).find("input[name='componentId'");
+			 if (locRadio.is(":checked") && !flag) {
+	        	flag =true;
+	        	compName=$(this).find(".component-val").text();
+	        	compId=locRadio.val();
+	         }
+	     });
+		if(compId==''){
+			$componentSearchModal.find('.error-messages-container').removeClass('displayNone');
+		}else{
+			$componentSearchModal.find('.error-messages-container').addClass('displayNone');
+			var val=$('#val').val();
+			if(val==0){
+				$('#dependentComponentName').val(compName);
+				$('#dependentComponentId').val(compId);
+			}else{
+				$('#controllingComponentName').val(compName);
+				$('#controllingComponentId').val(compId);
+			}
+			closeModal($componentSearchModal);
 		}
-		//console.log('[compId] '+compId+"[ compName ]"+compName);
+	});
+	
+	$searchComponenttable.on("click", " input[name='componentId'", function(){
+		$currRadio=$(this).val();
+		 $($("#component-search-modal #search-Component-table").dataTable().fnGetNodes()).each(function(index) {
+			var locRadio=$(this).find("input[name='componentId'");
+			 if (locRadio.is(":checked")) {
+				 if($currRadio != locRadio.val()){
+					 locRadio.attr('checked', false);
+				 }
+			 }
+		 });
 	});
 }
 
-
+function isCompChecked(){
+	var flag = "";
+	$($("#component-search-modal #search-Component-table").dataTable().fnGetNodes()).each(function(index) {
+		var locRadio=$(this).find("input[name='componentId'");
+		 if (locRadio.is(":checked") && !flag) {
+        	flag = locRadio.attr('id');
+         }
+     });
+	 return flag;
+}
 function validate($editForm){
 
 	var flag = true;

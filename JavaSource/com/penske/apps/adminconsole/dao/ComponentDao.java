@@ -72,7 +72,10 @@ public interface ComponentDao {
 	public List<Components> getTemplateComponentById(@Param("templateID")int templateID);
 	
 	public List<Integer> findTemplateExist(Template template);
-		
+	
+	public List<TemplatePoAssociation> getAllPoAssociationForAdd();
+	
+	public List<TemplatePoAssociation> getAllPoAssociationForEdit(@Param("assocId")int assocId);
 		//Template Page --- End
 	//COMPONENT VISIBILITY OVERRIDES -- start
 	

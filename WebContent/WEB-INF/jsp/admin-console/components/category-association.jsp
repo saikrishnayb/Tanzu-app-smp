@@ -46,7 +46,7 @@
 													<a><img src="${commonStaticUrl}/images/delete.png" class="leftMargin delete-association" /></a>
 												</c:when>
 												<c:otherwise>
-													<a class="margin-left:30px;"><img alt="activate" src="${commonStaticUrl}/images/add.png" class="leftMargin activat-association"/>activate</a>
+													<a class="activat-association margin-left:30px"><img alt="activate" src="${commonStaticUrl}/images/add.png" class="leftMargin"/>activate</a>
 												</c:otherwise>
 										</c:choose>
 										<!--<c:choose>

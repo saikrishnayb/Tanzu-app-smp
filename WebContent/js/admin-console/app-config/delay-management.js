@@ -106,7 +106,7 @@ $(document).ready(function() {
 				                         $('#date-type option').filter(":selected").text(), 
 				                         $('#po-category option').filter(":selected").text(), 
 				                         $('#delay-type option').filter(":selected").text(), 
-				                         $('#delay-reason option').filter(":selected").text() ]);
+				                         $('#delay-reason option').filter(":selected").text() ],false);
 				var nTr  = $delayTable.fnSettings().aoData[ addDataReturn[0] ].nTr;
 				//var $column = $($newRow).find('td:first').addClass("editable centerAlign width");
 				$('td', nTr)[0].setAttribute( 'class', 'editable centerAlign width' );
@@ -214,10 +214,10 @@ $(document).ready(function() {
 					if(delayReasonIdMatches){
 						
 						var $row = $this.closest("tr");
-						$delayTable.fnUpdate( dateType, $row[0], 1 );
-						$delayTable.fnUpdate( poCategory, $row[0], 2  );
-						$delayTable.fnUpdate( delayType, $row[0], 3 );
-						$delayTable.fnUpdate( delayReason, $row[0], 4 );
+						$delayTable.fnUpdate( dateType, $row[0], 1 , false);
+						$delayTable.fnUpdate( poCategory, $row[0], 2  , false);
+						$delayTable.fnUpdate( delayType, $row[0], 3 , false);
+						$delayTable.fnUpdate( delayReason, $row[0], 4 , false);
 					}
 				});
 				$editDelayModal.dialog('close').empty();
@@ -321,6 +321,7 @@ function initializeDelayTable($delayTable){
 		$delayTable.dataTable({ //All of the below are optional
 			"aaSorting": [[ 4, "desc" ]], //default sort column
 			"bPaginate": true, //enable pagination
+			"bStateSave": true,
 			"bLengthChange": false, //enable change of records per page, not recommended
 			"bFilter": false, //Allows dynamic filtering of results, do not enable if using ajax for pagination
 			"bSort": true, //Allow sorting by column header

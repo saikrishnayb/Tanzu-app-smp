@@ -22,14 +22,14 @@
 				<div class="row">
 					<div class="col-xs-6" >
 						<h1>Po Category</h1>
-						<span class="floatRight addRow">
+						<span class="floatRight addRow" style="display: none">
 							<a  class="add-category">Add PoCategory</a>
 							<img src="${commonStaticUrl}/images/add.png" class="centerImage handCursor" alt="Add Row"/>
 						</span>
 						<table class="category-table" id="po-category-table" >
 							<thead>
 								<tr>
-									<th></th>
+									<th style="display: none"></th>
 									<th>Category Name</th>
 									<th>Description</th>
 									<th>Status</th>
@@ -39,7 +39,7 @@
 							
 								<c:forEach items="${categoryList}" var="category" varStatus="count">
 								<tr class="category-row">
-									<td class="editable centerAlign po-cat-id">
+									<td class="editable centerAlign po-cat-id" style="display: none">
 									
 										<a class="rightMargin edit-category">Edit</a>
 										<a>
@@ -71,7 +71,7 @@
  				<div class="col-xs-6" >
 						<h1>Sub Category</h1>
 						
-						<span class="floatRight addRow">
+						<span class="floatRight addRow" style="display: none">
 							<a  class="add-sub-category">Add Sub-Category</a>
 							<img src="${commonStaticUrl}/images/add.png" class="centerImage handCursor" alt="Add Row"/>
 						</span>
@@ -79,7 +79,7 @@
 						<table class="category-table" id="sub-category-table" >
 							<thead>
 								<tr>
-									<th></th>
+									<th style="display: none"></th>
 									<th>Sub-Category Name</th>
 									<th>Description</th>
 									<th>Status</th>
@@ -89,7 +89,7 @@
 							
 								<c:forEach items="${subCategoryList}" var="subCategory" varStatus="count">
 								<tr class="sub-category-row">
-									<td class="editable centerAlign sub-cat-id">
+									<td class="editable centerAlign sub-cat-id" style="display: none">
 									
 										<a class="rightMargin edit-category">Edit</a>
 										<a>

@@ -47,5 +47,6 @@ public interface CategoryManagementService {
 	
 	public int getAssociationExist(int poCategoryId, int subCategoryId);
 	
-	
+	public boolean checkCategoryExist(PoCategory category,boolean isCreate);
+	public boolean checkSubCategoryExist(SubCategory subCategory,boolean isCreate);
 }

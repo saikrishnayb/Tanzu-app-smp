@@ -45,6 +45,7 @@ $(document).ready(function() {
 		"aaSorting": [[ 1, "asc" ]], //default sort column
 		"bPaginate": true, //enable pagination
 		"bAutoWidth": false, //cray cray
+		"bStateSave": true,
 		"bLengthChange": false, //enable change of records per page, not recommended
 		"bFilter": false, //Allows dynamic filtering of results, do not enable if using ajax for pagination
 		"bSort": true, //Allow sorting by column header

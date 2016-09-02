@@ -150,6 +150,17 @@ public class DefaultComponentService implements ComponentService {
 	public List<Integer> findTemplateExist(Template template) {
 		return componentDao.findTemplateExist(template);
 	}
+	
+	
+	@Override
+	public List<TemplatePoAssociation> getAllPoAssociationAddEdit(boolean isAdd,int catAssocId){
+		if(isAdd){
+			return componentDao.getAllPoAssociationForAdd();
+		}else{
+			return componentDao.getAllPoAssociationForEdit(catAssocId);
+		}
+	}
+	
 	@Override
 	public List<LookUp> getOverrideTypes() {
 		return lookupManager.getLookUpListByName(ApplicationConstants.EXCEPTIONS_TYPES);

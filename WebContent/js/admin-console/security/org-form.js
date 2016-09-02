@@ -96,6 +96,7 @@ $(document).ready(function() {
 	$('.po-cat-table').dataTable( { //All of the below are optional
 		"aaSorting": [[ 4, "desc" ]], //default sort column
 		"bPaginate": true, //enable pagination
+		"bStateSave": true,
 		"bLengthChange": false, //enable change of records per page, not recommended
 		"bFilter": false, //Allows dynamic filtering of results, do not enable if using ajax for pagination
 		"bSort": true, //Allow sorting by column header
@@ -597,12 +598,12 @@ $('#signature-add').on('click', function(){
 				var $userRow = $(this).closest('.user-row');
 				var nRow = $userRow[0];
 
-				$('#users-table').dataTable().fnUpdate(data.firstName, nRow, 1);
-				$('#users-table').dataTable().fnUpdate(data.lastName, nRow, 2);
-				$('#users-table').dataTable().fnUpdate(data.email, nRow, 3);
-				$('#users-table').dataTable().fnUpdate(data.phone, nRow, 4);
-				$('#users-table').dataTable().fnUpdate(data.userType.userType, nRow, 6);
-				$('#users-table').dataTable().fnUpdate(data.role.roleName + "<input class='role-id' type=hidden value='" + data.role.roleId + "'/>", nRow, 7);
+				$('#users-table').dataTable().fnUpdate(data.firstName, nRow, 1,false);
+				$('#users-table').dataTable().fnUpdate(data.lastName, nRow, 2,false);
+				$('#users-table').dataTable().fnUpdate(data.email, nRow, 3,false);
+				$('#users-table').dataTable().fnUpdate(data.phone, nRow, 4,false);
+				$('#users-table').dataTable().fnUpdate(data.userType.userType, nRow, 6,false);
+				$('#users-table').dataTable().fnUpdate(data.role.roleName + "<input class='role-id' type=hidden value='" + data.role.roleId + "'/>", nRow, 7,false);
 				closeModal($ssoRefreshModal);
 				closeModal($editModal);
 			});
@@ -638,6 +639,10 @@ $('#signature-add').on('click', function(){
 //Call after edit is loaded
 	if(isCreatePage=='false'){
 		populateEditVendorTree();
+		showSelected(jeditVendor.jstree(true), 'edit-vendor-hierarchy');
+		toggelStyle('hide', 'show',false);
+	}else{
+		 toggelStyle('show','hide',false);
 	}
 	
 	$('[id="parent-org"]').on('change', function() {
@@ -683,6 +688,23 @@ $('#signature-add').on('click', function(){
 			$containerDiv.html('<h3>Select Parent Org to display vendors.</h3>');
 			$("#loading").hide();
 		}
+	});
+	$('#hide').click( function() {
+		
+		if(isCreatePage=='false'){
+			showSelected(jeditVendor.jstree(true), 'edit-vendor-hierarchy');
+		}else{
+			showSelected(jroleHierarchy.jstree(true), 'vendor-hierarchy');
+		}
+		 toggelStyle('hide', 'show',false);
+	});
+	$('#show').click( function() {
+		if(isCreatePage=='false'){
+			showAll('edit-vendor-hierarchy');
+		}else{
+			showAll('vendor-hierarchy');
+		}
+		 toggelStyle('show','hide',false);
 	});
 });
 function msieversion() {
@@ -808,10 +830,73 @@ function filterVendor(corp,vendor,parentOrg,isReset){
 				$('#resetlbl').hide();
 				$('#filterlbl').show();
 			}
+			 toggelStyle('show','hide',true);
 		});
 	}else{
 		var $errMsgs =  $('.filter-edit-buttons').find('.error-messages-container').find('.errorMsg');
 		$errMsgs.text('Please select prarent org before appling filter.');
 		$('.filter-edit-buttons').find('.error-messages-container').removeClass('displayNone');
+	}
+}
+
+function showSelected($treeObj,treeId){
+	var undeterminedNode=[];
+	 $('#'+treeId).find('li[id^=role-hierarchy-trees').each( function(){
+		 var id=this.id;
+		//  if($(this).find('ul').find('li').find('div').hasClass('jstree-wholerow-clicked')){
+		 if($(this).find('ul > li > div').hasClass('jstree-wholerow-clicked')){
+			   undeterminedNode.push(id);
+		   }
+	});
+	 
+	 var $tree = $treeObj,
+	 nodesSelected = $tree.get_selected();
+	 undeterminedNode.forEach( function(node) {
+		 nodesSelected.push(node);
+	 });
+	  $('#'+treeId).find('li').each( function(){
+	     if ( nodesSelected.indexOf(this.id) === -1 ) {
+	         $(this).hide();
+	     }
+	 });
+	 
+
+/*	var $tree = $treeObj,
+	nodesSelected = $tree.get_selected(),
+    nodeIdsToStay = [];
+
+	nodesSelected.forEach( function(node) {
+	  var path = getPath(node, false, true);
+	  path.forEach(function(n) {
+	     if (nodeIdsToStay.indexOf(n)===-1) {
+	         nodeIdsToStay.push(n);
+	     }
+	  });
+	});
+	 $('#'+treeId).find('li').each( function(){
+	        if ( nodeIdsToStay.indexOf(this.id) === -1 ) {
+	            $(this).hide();
+	        }
+	    });
+	 */
+}
+
+function showAll(treeId){
+	$('#'+treeId).find('li').each( function(){
+	         $(this).show();
+	 });
+}
+
+function toggelStyle(curr,other,reset){
+	if(!reset){
+		 $('#'+curr).css("color", "blue");
+		 $('#'+curr).css("font-weight", "bold");
+		 $('#'+other).css("color", "");
+		 $('#'+other).css("font-weight", "normal");
+	}else{
+		 $('#'+curr).css("color", "");
+		 $('#'+curr).css("font-weight", "normal");
+		 $('#'+other).css("color", "");
+		 $('#'+other).css("font-weight", "normal");
 	}
 }

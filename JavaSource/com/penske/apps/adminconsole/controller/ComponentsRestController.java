@@ -350,20 +350,44 @@ public class ComponentsRestController {
 
 	@RequestMapping(value="update-po-category")
 	@ResponseBody
-	public ModelAndView updatePoCategory(PoCategory categoryData) {
-		
-		categoryManagementService.updatePoCategory(categoryData);
+	public ModelAndView updatePoCategory(PoCategory categoryData,HttpServletResponse response) throws Exception {
+		try{
+			if(categoryManagementService.checkCategoryExist(categoryData, false)){
+				categoryManagementService.updatePoCategory(categoryData);
+			}else{
+				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "PO Category Already exists.");
+				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		        response.getWriter().write("PO Category Already exists.");
+		        response.flushBuffer();
+			}
+		}catch (Exception e) {
+			logger.error("Error while Updating PO Category: "+e);
+			CommonUtils.getCommonErrorAjaxResponse(response,"Error Processing the Update PO Category");
+		}
 		return null;
 	}
 	
 	@RequestMapping(value="insert-po-category")
 	@ResponseBody
-	public PoCategory insertPoCategory(PoCategory categoryData,HttpSession session) {
-		HeaderUser currentUser = (HeaderUser) session.getAttribute("currentUser");
-		categoryData.setCreatedBy(currentUser.getSso());
-		categoryManagementService.insertPoCategory(categoryData);
-		PoCategory category =categoryManagementService.getMaxCategoryId();
-		return category;
+	public PoCategory insertPoCategory(PoCategory categoryData,HttpSession session,HttpServletResponse response) throws Exception {
+		try{
+			HeaderUser currentUser = (HeaderUser) session.getAttribute("currentUser");
+			categoryData.setCreatedBy(currentUser.getSso());
+			if(categoryManagementService.checkCategoryExist(categoryData, true)){
+				categoryManagementService.insertPoCategory(categoryData);
+				PoCategory category =categoryManagementService.getMaxCategoryId();
+				return category;
+			}else{
+				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "PO Category Already exists.");
+				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		        response.getWriter().write("PO Category Already exists.");
+		        response.flushBuffer();
+			}
+		}catch (Exception e) {
+			logger.error("Error while adding PO Category: "+e);
+			CommonUtils.getCommonErrorAjaxResponse(response,"Error Processing the Insert PO Category");
+		}
+		return null;
 	}
 	
 	
@@ -379,9 +403,20 @@ public class ComponentsRestController {
 	
 	@RequestMapping(value="update-sub-category")
 	@ResponseBody
-	public ModelAndView updatesubCategory(SubCategory categoryData) {
-		
-		categoryManagementService.updateSubCategory(categoryData);
+	public ModelAndView updatesubCategory(SubCategory categoryData,HttpServletResponse response) throws Exception {
+		try{
+			if(categoryManagementService.checkSubCategoryExist(categoryData, false)){
+				categoryManagementService.updateSubCategory(categoryData);
+			}else{
+				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Sub-Category Already exists.");
+				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		        response.getWriter().write("Sub-Category Category Already exists.");
+		        response.flushBuffer();
+			}
+		}catch (Exception e) {
+			logger.error("Error while updating Sub-Category: "+e);
+			CommonUtils.getCommonErrorAjaxResponse(response,"Error Processing the updating Sub-Category");
+		}
 		return null;
 	}
 	
@@ -396,13 +431,25 @@ public class ComponentsRestController {
 	
 	@RequestMapping(value="insert-sub-category")
 	@ResponseBody
-	public int insertSubCategory(SubCategory categoryData,HttpSession session) {
-		
-		HeaderUser currentUser = (HeaderUser) session.getAttribute("currentUser");
-		categoryData.setCreatedBy(currentUser.getSso());
-		categoryManagementService.insertSubCategory(categoryData);
-		int subCategoryId=categoryManagementService.getMaxSubCategoryId();
-		return subCategoryId;
+	public int insertSubCategory(SubCategory categoryData,HttpSession session,HttpServletResponse response) throws Exception {
+		try{
+			HeaderUser currentUser = (HeaderUser) session.getAttribute("currentUser");
+			categoryData.setCreatedBy(currentUser.getSso());
+			if(categoryManagementService.checkSubCategoryExist(categoryData, true)){
+				categoryManagementService.insertSubCategory(categoryData);
+				int subCategoryId=categoryManagementService.getMaxSubCategoryId();
+				return subCategoryId;
+			}else{
+					response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Sub-Category Already exists.");
+					response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			        response.getWriter().write("Sub-Category Already exists.");
+			        response.flushBuffer();
+				}
+		}catch (Exception e) {
+			logger.error("Error while adding Sub-Category: "+e);
+			CommonUtils.getCommonErrorAjaxResponse(response,"Error Processing the Insert Sub-Category");
+		}
+		return 0;
 	}
 	
 	@RequestMapping(value="delete-po-category")
@@ -468,12 +515,19 @@ public class ComponentsRestController {
 		ModelAndView mav = new ModelAndView("/admin-console/components/create-edit-template");
 		HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
 		mav.addObject("currentUser", currentUser);
-		mav.addObject("allPoAssocList", componentService.getAllPoAssociation());
+		//mav.addObject("allPoAssocList", componentService.getAllPoAssociation());
 		List<Components> comp=componentService.getAllComponent();
 		if(isCreatePage){
+			mav.addObject("allPoAssocList", componentService.getAllPoAssociationAddEdit(true, 0));
 			mav.addObject("isCreatePage",true);
 		}else{
-			mav.addObject("editableTemplate",componentService.getTemplatesById(templateId));
+			Template editableTemplate=componentService.getTemplatesById(templateId);
+			if(editableTemplate !=null){
+				mav.addObject("allPoAssocList", componentService
+						.getAllPoAssociationAddEdit(false, Integer
+								.parseInt(editableTemplate.getPoCatAssID())));
+			}
+			mav.addObject("editableTemplate",editableTemplate);
 			comp=componentService.getTemplateComponentById(comp,templateId);
 			mav.addObject("isCreatePage",false);
 		}

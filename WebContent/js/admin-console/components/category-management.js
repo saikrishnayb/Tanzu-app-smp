@@ -1,7 +1,8 @@
+var $errMsg = $('.edit-buttons').find('.error-messages-container').find('.errorMsg');
 $(document).ready(function() {
 	selectCurrentNavigation("tab-components", "left-nav-category-management");
 	
-	var $categorytables = $('.category-table');
+	//var $categorytables = $('.category-table');
 	var $editCategoryModal =$('#edit-category-modal');
 	var $addCategoryModal =$('#add-category-modal');
 	var $addCategory = $('.add-category');
@@ -13,9 +14,46 @@ $(document).ready(function() {
 	var commonStaticUrl =$('#common-static-url').val();
 	var iDisplayLength = 10;//tableRowLengthCalc();
 	
-	$categorytables.dataTable( { //All of the below are optional
+	$poCategoryTable.dataTable( { //All of the below are optional
 		"aaSorting": [[ 1, "desc" ]], //default sort column
         "bPaginate": true, //enable pagination
+        "bStateSave": true,
+        "bAutoWidth": false, //cray cray
+        "bLengthChange": false, //enable change of records per page, not recommended
+        "bFilter": false, //Allows dynamic filtering of results, do not enable if using ajax for pagination
+        "bSort": true, //Allow sorting by column header
+        "bInfo": true, //Showing 1 to 10 of 11 entries
+        "aoColumnDefs": [
+                         {"bSortable": false, "aTargets": [ 0 ]}, //stops first column from being sortable
+		                 { "sWidth": "100px", "aTargets": [ 0 ] }
+                         ],
+        "sPaginationType": "full_numbers", //Shows first/previous 1,2,3,4 next/last buttons
+        "iDisplayLength": iDisplayLength , //number of records per page for pagination
+        "oLanguage": {"sEmptyTable": "&nbsp;"}, //Message displayed when no records are found
+        "fnDrawCallback": function() { //This will hide the pagination menu if we only have 1 page.
+		 var paginateRow = $(this).parent().children('div.dataTables_paginate');
+		 var pageCount = Math.ceil((this.fnSettings().fnRecordsDisplay()) / this.fnSettings()._iDisplayLength);
+		 
+		 if (pageCount > 1)  {
+		        paginateRow.css("display", "block");
+		 } else {
+		        paginateRow.css("display", "none");
+		 }
+		 
+		 //This will hide "Showing 1 to 5 of 11 entries" if we have 0 rows.
+		 var infoRow = $(this).parent().children('div.dataTables_info');
+		 var rowCount = this.fnSettings().fnRecordsDisplay();
+		 if (rowCount > 0) {
+		        infoRow.css("display", "block");
+		 } else {
+		        infoRow.css("display", "none");
+		 }
+		        }
+		 } );
+	$subCategoryTable.dataTable( { //All of the below are optional
+		"aaSorting": [[ 1, "desc" ]], //default sort column
+        "bPaginate": true, //enable pagination
+        "bStateSave": true,
         "bAutoWidth": false, //cray cray
         "bLengthChange": false, //enable change of records per page, not recommended
         "bFilter": false, //Allows dynamic filtering of results, do not enable if using ajax for pagination
@@ -146,7 +184,7 @@ $(document).ready(function() {
 				if($(this).val() == poCatId){
 					var $catRow = $this.closest('.category-row');
 					var nRow = $catRow[0];
-					$poCategoryTable.dataTable().fnUpdate('Inactive', nRow, 3);
+					$poCategoryTable.dataTable().fnUpdate('Inactive', nRow, 3, false);
 					
 					//$poCategoryTable.dataTable().fnDeleteRow(nRow);
 				}
@@ -183,7 +221,7 @@ $(document).ready(function() {
 				if($(this).val() == subCatId){
 					var $catRow = $this.closest('.sub-category-row');
 					var nRow = $catRow[0];
-					$subCategoryTable.dataTable().fnUpdate('Inactive', nRow, 3);
+					$subCategoryTable.dataTable().fnUpdate('Inactive', nRow, 3, false);
 					//$subCategoryTable.dataTable().fnDeleteRow(nRow);
 				}
 			});
@@ -210,6 +248,7 @@ $(document).ready(function() {
 	$editCategoryModal.on("click",'.save-category-edited',function(){
 	
 		var $form = $('#editCategory');
+		$('#status').removeAttr('disabled');
 		var categoryData =$form.serialize();
 		var categoryName =$form.find('.category-name').val();
 		var description = $form.find('.category-description').val();
@@ -221,7 +260,14 @@ $(document).ready(function() {
 		var isValid =validate($form);
 		
 		if(isValid){
-			var $updatePoCategoryPromise =$.post("update-po-category.htm",categoryData);
+			$('.error-messages-container').addClass('displayNone');
+			//var $updatePoCategoryPromise =$.post("update-po-category.htm",categoryData);
+			var $updatePoCategoryPromise = $.ajax({
+				type: "POST",
+				url:'./update-po-category.htm',
+				global: false,
+				data: categoryData
+			});
 			
 			
 			$updatePoCategoryPromise.done(function(data){
@@ -235,15 +281,24 @@ $(document).ready(function() {
 						
 						var $categoryRow = $(this).closest('tr');
 						var nRow = $categoryRow[0];
-						$poCategoryTable.dataTable().fnUpdate( categoryName, nRow, 1);
-						$poCategoryTable.dataTable().fnUpdate( description, nRow, 2);
-						$poCategoryTable.dataTable().fnUpdate( statusText, nRow, 3);
+						$poCategoryTable.dataTable().fnUpdate( categoryName, nRow, 1, false);
+						$poCategoryTable.dataTable().fnUpdate( description, nRow, 2, false);
+						$poCategoryTable.dataTable().fnUpdate( statusText, nRow, 3, false);
 						
 					}
 				});
-				
+				closeModal($editCategoryModal);
 			});
-			closeModal($editCategoryModal);
+			$updatePoCategoryPromise.fail(function(xhr, ajaxOptions, thrownError) {
+				 if(xhr.responseText.indexOf('PO Category Already exists.')>0){
+					 $('.errorMsg').text("PO Category Already exists.");
+					 $('.error').show();
+				  }
+				 else  if(xhr.responseText.indexOf('Error Processing the Insert PO Category')>0){
+					  $('.errorMsg').text('Error Processing the Update PO Category.');
+						 $('.error').show();
+				  }
+			});
 	    }
 	});
 	
@@ -257,7 +312,7 @@ $(document).ready(function() {
 		
 	});
 	
-	$addCategoryModal.on("click",'.save-category',function(){
+	$addCategoryModal.on("click",'.save-category',function(e){
 		
 		$('#status').removeAttr('disabled');
 		var $form = $addCategoryModal.find('#editCategory');
@@ -274,19 +329,34 @@ $(document).ready(function() {
 		
 		if(isValid){
 			
-			var $insertPoCategoryPromise =$.post("insert-po-category.htm",categoryData);
+			var $insertPoCategoryPromise = $.ajax({
+				type: "POST",
+				url:'./insert-po-category.htm',
+				global: false,
+				data: categoryData
+			});
 			$insertPoCategoryPromise.done(function(data){
 				
 				var firstColoumn = "<a class='rightMargin edit-category'>Edit</a>"
 					+'<a><img src=' +commonStaticUrl+'/images/delete.png class="centerImage rightMargin delete-category" ></a>'
 					+ '<input type ="hidden" class="category-id" value="' +data.categoryId+'"/>';
 				
-				var rowIndex = $('#po-category-table').dataTable().fnAddData([firstColoumn,categoryName,description,statusText]);
+				var rowIndex = $('#po-category-table').dataTable().fnAddData([firstColoumn,categoryName,description,statusText],false);
 				var newRow = $('#po-category-table').dataTable().fnGetNodes(rowIndex[0]);
 				$(newRow).addClass("category-row");
 				$(newRow).find("td:first-child").addClass("editable centerAlign");
+				closeModal($addCategoryModal);
 			});
-			closeModal($addCategoryModal);
+			$insertPoCategoryPromise.fail(function(xhr, ajaxOptions, thrownError) {
+				 if(xhr.responseText.indexOf('PO Category Already exists.')>0){
+					 $('.errorMsg').text("PO Category Already exists.");
+					 $('.error').show();
+				  }
+				 else  if(xhr.responseText.indexOf('Error Processing the Insert PO Category')>0){
+					  $('.errorMsg').text('Error Processing the Insert PO Category.');
+						 $('.error').show();
+				  }
+			});
 		}
 		
 		
@@ -321,7 +391,13 @@ $(document).ready(function() {
 		
 		if(isValid){
 			
-				var $updateSubCategoryPromise =$.post("update-sub-category.htm",categoryData);
+				//var $updateSubCategoryPromise =$.post("update-sub-category.htm",categoryData);
+			var $updateSubCategoryPromise = $.ajax({
+				type: "POST",
+				url:'./update-sub-category.htm',
+				global: false,
+				data: categoryData
+			});
 				$updateSubCategoryPromise.done(function(data){
 					
 					$('#sub-category-table').find('.sub-category-id').each(function(){
@@ -332,15 +408,24 @@ $(document).ready(function() {
 							
 							var $categoryRow = $(this).closest('tr');
 							var nRow = $categoryRow[0];
-							$subCategoryTable.dataTable().fnUpdate( categoryName, nRow, 1);
-							$subCategoryTable.dataTable().fnUpdate( description, nRow, 2);
-							$subCategoryTable.dataTable().fnUpdate( statusText, nRow, 3);
+							$subCategoryTable.dataTable().fnUpdate( categoryName, nRow, 1, false);
+							$subCategoryTable.dataTable().fnUpdate( description, nRow, 2, false);
+							$subCategoryTable.dataTable().fnUpdate( statusText, nRow, 3, false);
 							
 						}
 					});
-					
+					closeModal($editSubCategoryModal);
 				});
-				closeModal($editSubCategoryModal);
+				$updateSubCategoryPromise.fail(function(xhr, ajaxOptions, thrownError) {
+					 if(xhr.responseText.indexOf('Sub-Category Already exists.')>0){
+						  $('.errorMsg').text("Sub-Category Already exists");
+							 $('.error').show();
+					  }
+					 else  if(xhr.responseText.indexOf('Error Processing the updating Sub-Category')>0){
+						  $('.errorMsg').text("Error Processing the updating Sub-Category.");
+							 $('.error').show();
+					  }
+				});
 		}
 		
 	});
@@ -369,7 +454,13 @@ $(document).ready(function() {
 		if(isValid){
 			
 	
-			var $insertSubCategoryPromise =$.post("insert-sub-category.htm",categoryData);
+			//var $insertSubCategoryPromise =$.post("insert-sub-category.htm",categoryData);
+			var $insertSubCategoryPromise = $.ajax({
+				type: "POST",
+				url:'./insert-sub-category.htm',
+				global: false,
+				data: categoryData
+			});
 			$insertSubCategoryPromise.done(function(data){
 				
 				var subCategoryId =data;
@@ -377,13 +468,22 @@ $(document).ready(function() {
 					+'<a><img src=' +commonStaticUrl+'/images/delete.png class="centerImage rightMargin delete-category" ></a>'
 					+ '<input type ="hidden" class="sub-category-id" value="' +subCategoryId+'"/>';
 				
-				var rowIndex = $('#sub-category-table').dataTable().fnAddData([firstColoumn,categoryName,description,statusText]);
+				var rowIndex = $('#sub-category-table').dataTable().fnAddData([firstColoumn,categoryName,description,statusText],false);
 				var newRow = $('#sub-category-table').dataTable().fnGetNodes(rowIndex[0]);
 				$(newRow).addClass("sub-category-row");
 				$(newRow).find("td:first-child").addClass("editable centerAlign");
-				
+				closeModal($addSubCategoryModal);
 			});
-			closeModal($addSubCategoryModal);
+		$insertSubCategoryPromise.fail(function(xhr, ajaxOptions, thrownError) {
+			 if(xhr.responseText.indexOf('Sub-Category Already exists.')>0){
+				  $('.errorMsg').text("Sub-Category Already exists.");
+					 $('.error').show();
+			  }
+			 else  if(xhr.responseText.indexOf('Error Processing the Insert Sub-Category')>0){
+				  $('.errorMsg').text("Error Processing the Insert Sub-Category.");
+					 $('.error').show();
+			  }
+		});
 		}
 		
 		

@@ -348,6 +348,16 @@ PO_SUBCATEGORY as subCategoryName
  	<select id="findTemplateExist"  resultType="int">
  		Select TEMPLATE_ID from SMC.SMC_TEMPLATE_MASTER WHERE PO_CATEGORY_ASSOC_ID=#{poCatAssID}
  	</select>
+ 	
+ 	<select id="getAllPoAssociationForAdd"  resultType="com.penske.apps.adminconsole.model.TemplatePoAssociation">
+		SELECT CATEGORY || '/' || SUBCATEGORY as poCatSubCatDesc, ASSOC_ID as poCatAssocID FROM SMC.V_SMC_PO_CATEGORY_COMBINATIONS
+		WHERE ASSOC_ID NOT IN (Select PO_CATEGORY_ASSOC_ID from SMC.SMC_TEMPLATE_MASTER where PO_CATEGORY_ASSOC_ID Is NOT NULL)
+ 	</select>
+ 	
+ 	<select id="getAllPoAssociationForEdit"  resultType="com.penske.apps.adminconsole.model.TemplatePoAssociation">
+		SELECT CATEGORY || '/' || SUBCATEGORY as poCatSubCatDesc, ASSOC_ID as poCatAssocID FROM SMC.V_SMC_PO_CATEGORY_COMBINATIONS
+		WHERE ASSOC_ID NOT IN (Select PO_CATEGORY_ASSOC_ID from SMC.SMC_TEMPLATE_MASTER where PO_CATEGORY_ASSOC_ID Is NOT NULL AND PO_CATEGORY_ASSOC_ID !=#{assocId})
+ 	</select>
 <!-- Template Page End -->	
 		
 <!--  Override changes starts -->

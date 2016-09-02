@@ -48,6 +48,7 @@ $(document).ready(function() {
 	$usersTable.dataTable( { //All of the below are optional
 		"aaSorting": [[ 1, "asc" ]], //default sort column
 		"bPaginate": true, //enable pagination
+		"bStateSave": true,
 		"bAutoWidth": false, //cray cray
 		"bLengthChange": false, //enable change of records per page, not recommended
 		"bFilter": false, //Allows dynamic filtering of results, do not enable if using ajax for pagination

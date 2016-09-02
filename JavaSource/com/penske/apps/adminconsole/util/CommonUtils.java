@@ -18,6 +18,8 @@ import org.apache.log4j.Logger;
 import com.penske.apps.adminconsole.model.Components;
 import com.penske.apps.adminconsole.model.DateType;
 import com.penske.apps.adminconsole.model.Role;
+import com.penske.apps.adminconsole.model.User;
+import com.penske.apps.adminconsole.model.UserDept;
 import com.penske.apps.suppliermgmt.model.UserContext;
 
 
@@ -144,5 +146,22 @@ public class CommonUtils {
 		        return lhs.getDateTypeDesc().compareTo(rhs.getDateTypeDesc());
 		    }
 		});
+	}
+	
+	public static void populateRoleDept(User user){
+		//int id=102;
+		Role role=user.getRole();
+		if(role !=null){
+			if(role.getRoleId()<1){
+				role.setRoleId(102);
+			}
+		}else{
+			role=new Role();
+			role.setRoleId(102);
+		}
+		user.setRole(role);
+		if(user.getOrgId()<1){
+			user.setOrgId(83);
+		}
 	}
 }

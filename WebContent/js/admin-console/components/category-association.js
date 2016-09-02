@@ -11,6 +11,7 @@ $(document).ready(function() {
 		"aaSorting": [[ 1, "desc" ]], //default sort column
         "bPaginate": true, //enable pagination
         "bAutoWidth": false, //cray cray
+        "bStateSave": true,
         "bLengthChange": false, //enable change of records per page, not recommended
         "bFilter": false, //Allows dynamic filtering of results, do not enable if using ajax for pagination
         "bSort": true, //Allow sorting by column header
@@ -210,33 +211,55 @@ $(document).ready(function() {
 			var poCategoryId= $selectedPoCategory.val();
 			var $selectedSubCategory = $('#sub-category').find('option:selected');
 			var subCategoryId= $selectedSubCategory.val();
-			var $addCategoryAssociationPromise =$.post("add-category-association.htm",{poCategoryId:poCategoryId,subCategoryId:subCategoryId});
-			$error.hide();
-			$addCategoryAssociationPromise.done(function(data){
+			 $('.error-messages-container').addClass('displayNone');
+			 $('.error-messages-container').find('.errorMsg').text('');
+			if(validate(poCategoryId,subCategoryId)){
+				var $addCategoryAssociationPromise =$.post("add-category-association.htm",{poCategoryId:poCategoryId,subCategoryId:subCategoryId});
+				$error.hide();
+				$addCategoryAssociationPromise.done(function(data){
+					
+				/*	var firstColoumn = '<a><img src="' + commonStaticUrl + '/images/delete.png" class="centerImage rightMargin delete-association" /></a>'
+					 + '<input type ="hidden" class="association-id" value="' +data.associationId+'"/>';
+					
+					var rowIndex = $categoryAssociationTable.fnAddData([firstColoumn,data.poCategoryName,data.subCategoryName,'Active']);
+					var newRow = $categoryAssociationTable.fnGetNodes(rowIndex[0]);
+					$(newRow).addClass("category-association-row");
+					closeModal($addAssociationModal);
+					*/
+					location.assign('./category-association.htm');
+				});
 				
-			/*	var firstColoumn = '<a><img src="' + commonStaticUrl + '/images/delete.png" class="centerImage rightMargin delete-association" /></a>'
-				 + '<input type ="hidden" class="association-id" value="' +data.associationId+'"/>';
-				
-				var rowIndex = $categoryAssociationTable.fnAddData([firstColoumn,data.poCategoryName,data.subCategoryName,'Active']);
-				var newRow = $categoryAssociationTable.fnGetNodes(rowIndex[0]);
-				$(newRow).addClass("category-association-row");
-				closeModal($addAssociationModal);
-				*/
-				location.assign('./category-association.htm');
-			});
-			
-			$addCategoryAssociationPromise.fail( function(xhr, textStatus, errorThrown) {
-				 if(xhr.responseText.indexOf('POCategory-SubCategory association already exist')>0){
-					 
-					  $error.find('.errorMsg').text('POCategory-SubCategory association already exist');
-					  $error.show();
-					  return view();
-				  }			
-		    });
+				$addCategoryAssociationPromise.fail( function(xhr, textStatus, errorThrown) {
+					 if(xhr.responseText.indexOf('POCategory-SubCategory association already exist')>0){
+						 
+						 // $error.find('.errorMsg').text('POCategory-SubCategory association already exist');
+						//  $error.show();
+						 $('.error-messages-container').removeClass('displayNone');
+						 $('.error-messages-container').find('.errorMsg').text("'POCategory-SubCategory association already exist'");
+						//  return view();
+					  }			
+			    });
+			}else{
+				 $('.error-messages-container').removeClass('displayNone');
+				 $('.error-messages-container').find('.errorMsg').text("A required field is missing.");
+				//  return view();
+			}
 			
 		});
 		
 });
 
+function validate(poCategoryId,subCategoryId){
+	var flag=true;
+	if(poCategoryId=='Select' ){
+		flag=false;
+	}
+	
+	if(subCategoryId=='Select' || subCategoryId==''){
+		flag=false;
+	}
+	
+	return flag;
+}
 
 

@@ -136,7 +136,7 @@ $(document).ready(function() {
 							
 							// if globalFlag is false, then just update the Unit Exception row with
 							// the new provider
-							$exceptionTable.fnUpdate( provider, $row[0], 3 );
+							$exceptionTable.fnUpdate( provider, $row[0], 3 ,false);
 						}
 					}
 				});
@@ -161,6 +161,7 @@ function initializeTable($exceptionTable){
 	$exceptionTable.dataTable({ //All of the below are optional
 		"aaSorting": [[ 4, "desc" ]], //default sort column
 		"bPaginate": true, //enable pagination
+		"bStateSave": true,
 		"bLengthChange": false, //enable change of records per page, not recommended
 		"bFilter": false, //Allows dynamic filtering of results, do not enable if using ajax for pagination
 		"bSort": false, //Allow sorting by column header

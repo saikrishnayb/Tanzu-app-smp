@@ -24,6 +24,7 @@ $(document).ready(function() {
 	$templateTable.dataTable( { //All of the below are optional
 		"aaSorting": [[ 1, "asc" ]], //default sort column
 		"bPaginate": true, //enable pagination
+		"bStateSave": true,
 		"bAutoWidth": false, //cray cray
 		"bLengthChange": false, //enable change of records per page, not recommended
 		"bFilter": true, //Allows dynamic filtering of results, do not enable if using ajax for pagination
@@ -67,6 +68,7 @@ $(document).ready(function() {
 		"aaSorting": [[ 1, "asc" ]], //default sort column
 		"bPaginate": true, //enable pagination
 		"bAutoWidth": false, //cray cray
+		//"bStateSave": true,
 		"bLengthChange": false, //enable change of records per page, not recommended
 		"bFilter": true, //Allows dynamic filtering of results, do not enable if using ajax for pagination
 		"bSort": true, //Allow sorting by column header
@@ -144,14 +146,14 @@ $(document).ready(function() {
 			$curViewObj.attr("disabled", true);
 			$includeClassId.html("1~~9");
 		}else{
-			$curEditObj.attr('checked', false);
+			//$curEditObj.attr('checked', false);
 			$curEditObj.attr("disabled", false);
-			$curDispOtherPOObj.attr("disabled", true);
-			$curExcelObj.attr("disabled", true);
-			$curDispOtherPOObj.attr('checked', false);
-			$curExcelObj.attr('checked', false);
-			$curViewObj.attr('checked', false);
-			$curViewObj.attr("disabled", false);
+			//$curDispOtherPOObj.attr("disabled", true);
+			//$curExcelObj.attr("disabled", true);
+			//$curDispOtherPOObj.attr('checked', false);
+			//$curExcelObj.attr('checked', false);
+			//$curViewObj.attr('checked', false);
+			//$curViewObj.attr("disabled", false);
 			$includeClassId.html("");
 		}
 	});
@@ -170,11 +172,11 @@ $(document).ready(function() {
 			//$includeClassId.addClass("include-filter-class");
 			$includeClassId.html("1~~9");
 		}else{
-			$curDispOtherPOObj.attr("disabled", true);
-			$curExcelObj.attr("disabled", true);
-			$curDispOtherPOObj.attr('checked', false);
-			$curExcelObj.attr('checked', false);
-			$curViewObj.attr('checked', false);
+			//$curDispOtherPOObj.attr("disabled", true);
+			//$curExcelObj.attr("disabled", true);
+			//$curDispOtherPOObj.attr('checked', false);
+			//$curExcelObj.attr('checked', false);
+			//$curViewObj.attr('checked', false);
 			$curViewObj.attr("disabled", false);
 			//$includeClassId.removeClass("include-filter-class");
 			$includeClassId.html("");

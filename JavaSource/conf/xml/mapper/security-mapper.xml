@@ -693,7 +693,7 @@
 		  	CORP=#{corp}
 		  </if>
 	  	 <if test="vendor != ''">
-	  	 	AND VENDOR_NAME=#{vendor}
+	  	 	AND UPPER(VENDOR_NAME) like #{vendor}
 	  	 </if>
 	  	 <if test="orgId != ''">
 			 AND asso.ORG_ID=#{orgId} 

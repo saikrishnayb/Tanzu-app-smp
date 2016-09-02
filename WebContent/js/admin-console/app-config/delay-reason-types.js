@@ -80,7 +80,7 @@ $(document).ready(function() {
 				var firstColumn = "<a class='rightMargin edit-button'>Edit</a>" +
 									"<a><img src='" + commonStaticUrl + "/images/delete.png' class='centerImage rightMargin delete-button'/></a>" +
 									"<input type='hidden' class='delay-type-id' value='" + typeId + "'/>";
-				var rowIndex = $delayTypeTable.fnAddData( [ firstColumn, typeName ]);
+				var rowIndex = $delayTypeTable.fnAddData( [ firstColumn, typeName ],false);
 			//	var $newRow = $( $delayTypeTable.fnGetNodes( rowIndex[0]) );
 			//	$newRow.find("td:first-child").addClass("editable centerAlign width");
 			//	$newRow.find("td:nth-child(1)").addClass("delay-type");
@@ -197,7 +197,7 @@ $(document).ready(function() {
 					if(delayTypeIdMatches){
 						
 						var $row = $this.closest("tr");
-						$delayTypeTable.fnUpdate( changedName, $row[0], 1 ); // 1 is the second column which stores the name
+						$delayTypeTable.fnUpdate( changedName, $row[0], 1 , false); // 1 is the second column which stores the name
 					}
 				});
 				$editDelayTypeModal.dialog('close').empty();
@@ -236,6 +236,7 @@ function initializeDelayTypeTable($delayTypeTable){
 	$delayTypeTable.dataTable({ //All of the below are optional
 		"aaSorting": [[ 1, "desc" ]], //default sort column
 		"bPaginate": true, //enable pagination
+		"bStateSave": true,
 		"bLengthChange": false, //enable change of records per page, not recommended
 		"bFilter": false, //Allows dynamic filtering of results, do not enable if using ajax for pagination
 		"bSort": true, //Allow sorting by column header

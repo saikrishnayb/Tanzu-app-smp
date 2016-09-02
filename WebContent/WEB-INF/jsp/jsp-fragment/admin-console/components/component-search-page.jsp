@@ -2,6 +2,10 @@
 <script>
 $(document).ready(function() {
 	initSearchPage();
+	$('.back').on('click', function(){
+		closeModal($('#component-search-modal'));
+		return false;
+	});
 });
 </script>
 <form id="search-component-form">

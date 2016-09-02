@@ -56,4 +56,8 @@ public interface CategoryManagementDao {
 	
 	public int getAnyOtherAssociationExist(@Param("poCatId")  int poCatId,@Param("subCatId") int subCatId,@Param("assId") int assId);
 	
+	public PoCategory getPoCategoryByName(PoCategory category);
+	
+	public SubCategory getSubCategoryByName(SubCategory subCategory);
+	
 }

@@ -464,12 +464,12 @@ $(document).ready(function() {
 							var $userRow = $(this).closest('.user-row');
 							var nRow = $userRow[0];
 			
-							$('#users-table').dataTable().fnUpdate(data.firstName, nRow, 1);
-							$('#users-table').dataTable().fnUpdate(data.lastName, nRow, 2);
-							$('#users-table').dataTable().fnUpdate(data.email, nRow, 3);
-							$('#users-table').dataTable().fnUpdate(data.phone, nRow, 4);
-							$('#users-table').dataTable().fnUpdate(data.userType.userType, nRow, 6);
-							$('#users-table').dataTable().fnUpdate(data.role.roleName + "<input class='role-id' type=hidden value='" + data.role.roleId + "'/>", nRow, 7);
+							$('#users-table').dataTable().fnUpdate(data.firstName, nRow, 1,false);
+							$('#users-table').dataTable().fnUpdate(data.lastName, nRow, 2,false);
+							$('#users-table').dataTable().fnUpdate(data.email, nRow, 3,false);
+							$('#users-table').dataTable().fnUpdate(data.phone, nRow, 4,false);
+							$('#users-table').dataTable().fnUpdate(data.userType.userType, nRow, 6,false);
+							$('#users-table').dataTable().fnUpdate(data.role.roleName + "<input class='role-id' type=hidden value='" + data.role.roleId + "'/>", nRow, 7,false);
 			
 							closeModal($editModal);
 						});
@@ -744,13 +744,13 @@ $('#signature-add').on('click', function(){
 				var $userRow = $(this).closest('.user-row');
 				var nRow = $userRow[0];
 
-				$('#users-table').dataTable().fnUpdate(data.firstName, nRow, 1);
-				$('#users-table').dataTable().fnUpdate(data.lastName, nRow, 2);
-				$('#users-table').dataTable().fnUpdate(data.email, nRow, 3);
+				$('#users-table').dataTable().fnUpdate(data.firstName, nRow, 1,false);
+				$('#users-table').dataTable().fnUpdate(data.lastName, nRow, 2,false);
+				$('#users-table').dataTable().fnUpdate(data.email, nRow, 3,false);
 				//var phone=formatPhone(data.phone);
-				$('#users-table').dataTable().fnUpdate(data.phone, nRow, 4);
-				$('#users-table').dataTable().fnUpdate(data.userType.userType, nRow, 6);
-				$('#users-table').dataTable().fnUpdate(data.role.roleName + "<input class='role-id' type=hidden value='" + data.role.roleId + "'/>", nRow, 7);
+				$('#users-table').dataTable().fnUpdate(data.phone, nRow, 4,false);
+				$('#users-table').dataTable().fnUpdate(data.userType.userType, nRow, 6,false);
+				$('#users-table').dataTable().fnUpdate(data.role.roleName + "<input class='role-id' type=hidden value='" + data.role.roleId + "'/>", nRow, 7,false);
 				closeModal($ssoRefreshModal);
 				closeModal($editModal);
 			});
@@ -885,12 +885,12 @@ $('#signature-add').on('click', function(){
 								var $userRow = $(this).closest('.user-row');
 								var nRow = $userRow[0];
 				
-								$('#users-table').dataTable().fnUpdate(data.firstName, nRow, 1);
-								$('#users-table').dataTable().fnUpdate(data.lastName, nRow, 2);
-								$('#users-table').dataTable().fnUpdate(data.email, nRow, 3);
-								$('#users-table').dataTable().fnUpdate(data.phone, nRow, 4);
-								$('#users-table').dataTable().fnUpdate(data.userType.userType, nRow, 6);
-								$('#users-table').dataTable().fnUpdate(data.role.roleName + "<input class='role-id' type=hidden value='" + data.role.roleId + "'/>", nRow, 7);
+								$('#users-table').dataTable().fnUpdate(data.firstName, nRow, 1,false);
+								$('#users-table').dataTable().fnUpdate(data.lastName, nRow, 2,false);
+								$('#users-table').dataTable().fnUpdate(data.email, nRow, 3,false);
+								$('#users-table').dataTable().fnUpdate(data.phone, nRow, 4,false);
+								$('#users-table').dataTable().fnUpdate(data.userType.userType, nRow, 6,false);
+								$('#users-table').dataTable().fnUpdate(data.role.roleName + "<input class='role-id' type=hidden value='" + data.role.roleId + "'/>", nRow, 7,false);
 				
 								closeModal($editModal);
 							});

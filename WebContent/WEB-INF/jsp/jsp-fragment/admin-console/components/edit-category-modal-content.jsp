@@ -9,13 +9,13 @@
 		</div>	
 		<div class="category">
 			<label class="leftAlign">Category Name<span class="requiredField">*</span></label>
-			<input type="text" value="${category.categoryName}" class="category-name input alpha alpha-name" name="categoryName"/>
+			<input type="text" value="${category.categoryName}" class="category-name input alpha alpha-numeric" name="categoryName"/>
 		</div>
 		
 			<input type="hidden" value="${category.categoryId}" class="po-category-id" name="categoryId"/>
 		<div class="category">
 			<label class="leftAlign">Description<span class="requiredField">*</span></label>
-			<input type="text" value="${category.description}" class="category-description input alpha alpha-name" name="description"/>
+			<input type="text" value="${category.description}" class="category-description input alpha alpha-numeric" name="description"/>
 		</div>
 		
 		<div class="category">

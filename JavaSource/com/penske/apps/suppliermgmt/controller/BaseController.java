@@ -48,20 +48,28 @@ public class BaseController {
 	 */
 	@ExceptionHandler(Exception.class)
 	public ModelAndView handleException(Exception ex, HttpServletRequest request) {
-		UserContext userContext = new UserContext();
-		//getting support num from lookup
-		LookupManager lookupManger=new LookupManager();
-		List<LookUp> suppNumlist=lookupManger.getLookUpListByName(ApplicationConstants.SUPP_NUM);
-		LookUp lookUp=null;
-		userContext = getUserContext(request);
-		LOGGER.error("Caught Exception  Reference Number is:"+getRandomNumber()+" And Logged in User is:"+userContext.getUserSSO()+" Exception is::"+ex.toString(),ex);
-		ErrorModel model = new ErrorModel();
-		model.setMessage("Application Error Occured. Reference Number is "+getRandomNumber()+".");
 		ModelAndView mv = new ModelAndView("error/GlobalErrorPage");
-		
-		if(suppNumlist!=null){
-			lookUp=suppNumlist.get(0);
-			mv.addObject("supportNum",lookUp.getLookUpValue());
+		ErrorModel model = new ErrorModel();
+		try{
+			UserContext userContext = new UserContext();
+			//getting support num from lookup
+			LookupManager lookupManger=new LookupManager();
+			List<LookUp> suppNumlist=lookupManger.getLookUpListByName(ApplicationConstants.SUPP_NUM);
+			LookUp lookUp=null;
+			userContext = getUserContext(request);
+			String randomNumber=getRandomNumber();
+			LOGGER.error("Caught Exception  Reference Number is:"+randomNumber+" And Logged in User is:"+userContext.getUserSSO()+" Exception is::"+ex.toString(),ex);
+			model.setMessage("Application Error Occured. Reference Number is "+randomNumber+".");
+			
+			if(suppNumlist!=null){
+				lookUp=suppNumlist.get(0);
+				mv.addObject("supportNum",lookUp.getLookUpValue());
+			}
+		}
+		catch(Exception e){
+			LOGGER.error("Exception occured in handleException method of BaseController"+e.toString(),e);
+			mv.addObject("supportNum","1-866-926-7240");
+			return mv;
 		}
 		mv.addObject(model);
 		mv.addObject("isNavigationExists",true);
@@ -102,19 +110,26 @@ public class BaseController {
 	 * @return
 	 */
 	@ExceptionHandler(RuntimeException.class)
-	public ModelAndView handleException(RuntimeException e, HttpServletRequest request) {
+	public ModelAndView handleException(RuntimeException ex, HttpServletRequest request) {
+		ModelAndView mv = new ModelAndView("error/GlobalErrorPage");
+		ErrorModel model = new ErrorModel();
+		try{
 		UserContext userContext = new UserContext();
 		userContext = getUserContext(request);
-		LOGGER.error("Caught Unhandled Exception.  Reference Number is :"+getRandomNumber()+" And Logged in User is:"+userContext.getUserSSO()+" and Exception is::"+e.toString(),e);
-		ErrorModel model = new ErrorModel();
-		model.setMessage("There was an unexcepted problem. Reference Number is "+getRandomNumber()+".");
+		String randomNumber=getRandomNumber();
+		LOGGER.error("Caught Unhandled Exception.  Reference Number is :"+randomNumber+" And Logged in User is:"+userContext.getUserSSO()+" and Exception is::"+ex.toString(),ex);
+		model.setMessage("There was an unexcepted problem. Reference Number is "+randomNumber+".");
 		//getting support num from lookup
 		LookupManager lookupManger=new LookupManager();
 		List<LookUp> suppNumlist=lookupManger.getLookUpListByName(ApplicationConstants.SUPP_NUM);
 		LookUp lookUp=suppNumlist.get(0);
-
-		ModelAndView mv = new ModelAndView("error/GlobalErrorPage");
 		mv.addObject("supportNum",lookUp.getLookUpValue());
+		}
+		catch(Exception e){
+			LOGGER.error("Exception occured in handleException method of BaseController"+e.toString(),e);
+			mv.addObject("supportNum","1-866-926-7240");
+			return mv;
+		}
 		mv.addObject(model);
 		mv.addObject("isNavigationExists",true);
 		return mv;

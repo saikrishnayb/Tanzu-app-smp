@@ -197,4 +197,30 @@ FROM SMC.SMC_PO_CATEGORY_ASSOC WHERE
 	 where (PO_CATEGORY_ID=#{poCatId} OR PO_SUBCATEGORY_ID=#{subCatId}) AND PO_CATEGORY_ASSOC_ID !=#{assId}
 </select >
 
+<select id="getPoCategoryByName" resultType="com.penske.apps.adminconsole.model.PoCategory">
+SELECT 
+	PO_CATEGORY as categoryName,
+	PO_CATEGORY_ID as categoryId,
+	DESCRIPTION as description,
+	STATUS as status
+FROM 
+	SMC.SMC_PO_CATEGORY
+WHERE
+	UPPER(PO_CATEGORY)=UPPER(#{categoryName})
+
+</select>
+
+<select id="getSubCategoryByName" resultType="com.penske.apps.adminconsole.model.SubCategory">
+SELECT 
+	PO_SUBCATEGORY as subCategoryName,
+	PO_SUBCATEGORY_ID as subCategoryId,
+	DESCRIPTION as description,
+	STATUS as status
+FROM 
+	SMC.SMC_PO_SUBCATEGORY
+WHERE
+	UPPER(PO_SUBCATEGORY)=UPPER(#{subCategoryName})
+
+</select>
+
 </mapper>

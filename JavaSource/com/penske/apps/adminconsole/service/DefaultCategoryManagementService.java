@@ -120,7 +120,7 @@ public class DefaultCategoryManagementService implements CategoryManagementServi
 
 	@Override
 	public void modifyAssStatus(int assId,String status,int poCatId, int subCatId) {
-		if(status !=null && status.equalsIgnoreCase("0")){ // Association Deactivate
+		/*if(status !=null && status.equalsIgnoreCase("0")){ // Association Deactivate
 			if(categoryDao.getAnyOtherAssociationExist(poCatId, subCatId, assId)==0){
 				categoryDao.modifyPoCatStatus(poCatId,"I");
 				categoryDao.modifySubCatStatus(subCatId,"I");
@@ -135,7 +135,8 @@ public class DefaultCategoryManagementService implements CategoryManagementServi
 			categoryDao.modifyAssociationStatus(assId,status);
 		}else{
 			categoryDao.modifyAssociationStatus(assId,status);
-		}
+		}*/
+		categoryDao.modifyAssociationStatus(assId,status);
 	}
 
 	@Override
@@ -143,4 +144,38 @@ public class DefaultCategoryManagementService implements CategoryManagementServi
 		return categoryDao.getAssociationExist(poCategoryId, subCategoryId);
 	}
 
+
+	@Override
+	public boolean checkCategoryExist(PoCategory category,boolean isCreate) {
+		PoCategory selCategory=categoryDao.getPoCategoryByName(category);
+		boolean returnFlg=true;
+		if(selCategory !=null){
+			if(isCreate){
+				returnFlg= false;
+			}else{
+				if(selCategory.getCategoryId() !=category.getCategoryId()){
+					returnFlg= false;
+				}
+			}
+		}
+		return returnFlg;
+	}
+
+	@Override
+	public boolean checkSubCategoryExist(SubCategory subCategory,
+			boolean isCreate) {
+		SubCategory selCategory=categoryDao.getSubCategoryByName(subCategory);
+		boolean returnFlg=true;
+		if(selCategory !=null){
+			if(isCreate){
+				returnFlg= false;
+			}else{
+				if(selCategory.getSubCategoryId() !=subCategory.getSubCategoryId()){
+					returnFlg= false;
+				}
+			}
+		}
+		return returnFlg;
+	}
+	
 }

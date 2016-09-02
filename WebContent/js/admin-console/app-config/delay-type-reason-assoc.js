@@ -118,7 +118,7 @@ $(document).ready(function() {
 							var firstColumn = "<a class='rightMargin edit-button'>Edit</a>" +
 									"<a><img src='" + commonStaticUrl + "/images/delete.png' class='centerImage rightMargin delete-button'/></a>" +
 											"<input type='hidden' class='association-id' value='" + delayAssocid + "'/>";
-							var rowIndex = $delayTypeReasonTable.fnAddData( [ firstColumn,typeText,reasonText ]);
+							var rowIndex = $delayTypeReasonTable.fnAddData( [ firstColumn,typeText,reasonText ],false);
 							var nTr  = $delayTypeReasonTable.fnSettings().aoData[ rowIndex[0] ].nTr;
 							$('td', nTr)[0].setAttribute( 'class', 'editable centerAlign width' );
 							$('td', nTr)[1].setAttribute( 'class', 'delay-type' );
@@ -198,8 +198,8 @@ $(document).ready(function() {
 								if(delayReasonIdMatches){
 									
 									var $row = $this.closest("tr");
-									$delayTypeReasonTable.fnUpdate( typeText, $row[0], 1 );
-									$delayTypeReasonTable.fnUpdate( reasonText, $row[0], 2 );
+									$delayTypeReasonTable.fnUpdate( typeText, $row[0], 1 , false);
+									$delayTypeReasonTable.fnUpdate( reasonText, $row[0], 2 , false);
 									$row.find("td:first-child").find(".association-id").val(assocId);
 								}
 							});
@@ -264,6 +264,7 @@ function initializeDataTable($delayTypeReasonTable){
 	$delayTypeReasonTable.dataTable({ //All of the below are optional
 		"aaSorting": [[ 1, "desc" ]], //default sort column
 		"bPaginate": true, //enable pagination
+		"bStateSave": true,
 		"bLengthChange": false, //enable change of records per page, not recommended
 		"bFilter": false, //Allows dynamic filtering of results, do not enable if using ajax for pagination
 		"bSort": true, //Allow sorting by column header

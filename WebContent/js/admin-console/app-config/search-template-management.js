@@ -12,6 +12,7 @@ $(document).ready(function() {
 		"bAutoWidth": false,
 		"aaSorting": [[ 1, "desc" ]], //default sort column
 		"bPaginate": true, //enable pagination
+		"bStateSave": true,
 		"bLengthChange": false, //enable change of records per page, not recommended
 		"bFilter": false, //Allows dynamic filtering of results, do not enable if using ajax for pagination
 		"bSort": false, //Allow sorting by column header

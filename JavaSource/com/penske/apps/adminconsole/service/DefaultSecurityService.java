@@ -734,6 +734,11 @@ public class DefaultSecurityService implements SecurityService{
 
 	@Override
 	public List<VendorTree> getVendorList(String corp,String vendor,int orgId){
+		if(vendor !=null && !vendor.isEmpty()){
+			StringBuilder builder=new StringBuilder();
+			builder.append("%").append(vendor.toUpperCase()).append("%");
+			vendor=builder.toString();
+		}
 		List<VendorTree> list=securityDao.getVendorList(corp,vendor,orgId);
 		return list;
 	}
