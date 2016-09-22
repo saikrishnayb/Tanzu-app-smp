@@ -17,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.penske.apps.suppliermgmt.common.constants.ApplicationConstants;
 import com.penske.apps.suppliermgmt.common.util.LookupManager;
+import com.penske.apps.suppliermgmt.model.AlertHeader;
 import com.penske.apps.suppliermgmt.model.LookUp;
 
 
@@ -104,6 +105,7 @@ public class HomeController extends BaseController{
 		ModelAndView modelandView = new ModelAndView("/home/home");
 		String defaultTab="";
 		List<String> tabIdList=new ArrayList<String>();
+		List<AlertHeader> alertHeaders=new ArrayList<AlertHeader>();
 		try{
 			UserContext userModel = getUserContext(request);
 			List<Tab> tabs = homeService.selectTabs(userModel);
@@ -114,12 +116,26 @@ public class HomeController extends BaseController{
 			if(tabIdList.contains(tabId)) {
 				defaultTab=tabId;	
 			}else{
-				defaultTab = tabs.get(0).getTabKey();
+				if(tabs!=null && !tabs.isEmpty()){
+					defaultTab = tabs.get(0).getTabKey();
+				}				
 			}
 			
+			if(!"".equalsIgnoreCase(defaultTab)){
+				alertHeaders = homeService.getAlerts(userModel.getUserSSO(), defaultTab,userModel.getUserType());
+			}
+			
+			LookupManager lookupManger=new LookupManager();
+			List<LookUp> suppNumlist=lookupManger.getLookUpListByName(ApplicationConstants.SUPP_NUM);
+			LookUp lookUp=null;
+			if(suppNumlist!=null){
+				lookUp=suppNumlist.get(0);
+				LOGGER.debug("Suport Num :"+lookUp.getLookUpValue());
+				modelandView.addObject("supportNum",lookUp.getLookUpValue());
+			}
 			modelandView.addObject("tabs",tabs);
 			modelandView.addObject("TabKey", defaultTab);
-			modelandView.addObject("alertHeaders", homeService.getAlerts(userModel.getUserSSO(), defaultTab,userModel.getUserType()));//To display alerts with count
+			modelandView.addObject("alertHeaders", alertHeaders);//To display alerts with count
 		}catch(Exception e){
 			modelandView = handleException(e, request);
 		}
