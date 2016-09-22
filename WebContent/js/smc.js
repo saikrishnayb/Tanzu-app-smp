@@ -201,10 +201,7 @@ function redirectToTab(tabName){
 }
 
 function redirect(tabName,templateKey){
-	if($('a[id="' + tabName + '"]').parent('li').hasClass('current')){
-		return false;
-		
-	}else{
+	
 	showLoadingForPage();
 	var path = "";
 	var controllerName="";
@@ -259,10 +256,11 @@ function redirect(tabName,templateKey){
 		controllerName=tabId;
 		}
 	if(path != ""){
-		
-		//$('nav ul li.current',parent.document).removeClass('current');
-		//$('a[id$="' + tabName + '"]',parent.document).parent('li').addClass('current');
-		selectCurrentNavigation(tabName);
+		 
+		$('nav ul li.current',parent.document).removeClass('current');
+		$('a[id$="' + tabName + '"]',parent.document).parent('li').addClass('current');
+		$('a[id="' + tabName + '"]').parent('li').addClass('current').closest('nav > ul > li').addClass('current');
+		//selectCurrentNavigation(tabName);
 		 $.ajax({
 			  type: 'POST',
 			  url:  getContextRoot()+'/navigation/navigate.htm',
@@ -274,7 +272,7 @@ function redirect(tabName,templateKey){
 			  }
 		 });
 	}
-	}
+	
 }
 /**
  * this method is used to call a selected template ID On click of the count in the Dash board
@@ -535,7 +533,7 @@ function changeCurrentTab(value){
 		selectCurrentNavigation("upStreamVendor",'');
 	}
 	if(value=="massUpload"){
-		selectCurrentNavigation("massUploadSubTab",'');
+		selectCurrentNavigation("massUpload",'');
 	}
 	if(value=="edi870"){
 		selectCurrentNavigation("edi870Error",'');
