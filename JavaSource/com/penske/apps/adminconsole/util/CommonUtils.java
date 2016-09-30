@@ -110,7 +110,7 @@ public class CommonUtils {
 	
 	public static boolean validUserID(String str) {
 
-		if ((str.length() < 3) || (str.length() > 30)) {
+		if ((str.length() < 3) || (str.length() > 100)) {
 			return false;	
 		} else if ((str.indexOf("\'") != -1) || (str.indexOf(",") != -1) || (str.indexOf("\"") != -1) 
 			|| (str.indexOf("\\") != -1) || (str.indexOf(" ") != -1)) {
