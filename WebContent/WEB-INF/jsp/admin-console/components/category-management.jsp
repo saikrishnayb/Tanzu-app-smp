@@ -71,7 +71,7 @@
  				<div class="col-xs-6" >
 						<h1>Sub Category</h1>
 						
-						<span class="floatRight addRow" style="display: none">
+						<span class="floatRight addRow">
 							<a  class="add-sub-category">Add Sub-Category</a>
 							<img src="${commonStaticUrl}/images/add.png" class="centerImage handCursor" alt="Add Row"/>
 						</span>
@@ -79,7 +79,7 @@
 						<table class="category-table" id="sub-category-table" >
 							<thead>
 								<tr>
-									<th style="display: none"></th>
+									<th></th>
 									<th>Sub-Category Name</th>
 									<th>Description</th>
 									<th>Status</th>
@@ -89,10 +89,10 @@
 							
 								<c:forEach items="${subCategoryList}" var="subCategory" varStatus="count">
 								<tr class="sub-category-row">
-									<td class="editable centerAlign sub-cat-id" style="display: none">
+									<td class="editable centerAlign sub-cat-id" >
 									
 										<a class="rightMargin edit-category">Edit</a>
-										<a>
+										<a style="display: none">
 											<img src="${commonStaticUrl}/images/delete.png" class="centerImage rightMargin delete-category" data-component-row='${count.index}'/>
 										</a>
 										 <input type ="hidden" class="sub-category-id" value="${subCategory.subCategoryId}" />

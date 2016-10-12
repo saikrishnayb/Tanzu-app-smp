@@ -465,7 +465,6 @@ $(document).ready(function() {
 				
 				var subCategoryId =data;
 				var firstColoumn = "<a class='rightMargin edit-category'>Edit</a>"
-					+'<a><img src=' +commonStaticUrl+'/images/delete.png class="centerImage rightMargin delete-category" ></a>'
 					+ '<input type ="hidden" class="sub-category-id" value="' +subCategoryId+'"/>';
 				
 				var rowIndex = $('#sub-category-table').dataTable().fnAddData([firstColoumn,categoryName,description,statusText],false);
