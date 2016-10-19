@@ -1,0 +1,63 @@
+<project name="replacer" default="prePackageHook">
+	<target name="prePackageHook">
+		<echo message=" to  dir '${build.webinf.classes}/conf/xml' from ${config.dir}" />
+		<if>
+			<equals arg1="${applnName}" arg2="suppliermgmt" />
+			<then>
+				<copy todir="${build.webinf.classes}/conf/xml" overwrite="true">
+					<fileset dir="${config.dir}">
+						<include name="log4j.xml" />
+					</fileset>
+				</copy>
+
+				<echo message=" to  dir '${build.webinf}' from ${config.dir}" />
+				<copy todir="${build.webinf}" overwrite="true">
+					<fileset dir="${config.dir}">
+						<include name="web.xml" />
+					</fileset>
+				</copy>
+			</then>
+			<else>
+				<echo message="${applnName}" />
+				<copy todir="${build.webinf.classes}/conf/xml" overwrite="true">
+					<fileset dir="${appln.src.dir}/${configfilelocation}/qa2">
+						<include name="log4j.xml" />
+					</fileset>
+				</copy>
+				<copy todir="${build.webinf}" overwrite="true">
+					<fileset dir="${appln.src.dir}/${configfilelocation}/qa2">
+						<include name="web.xml" />
+					</fileset>
+				</copy>
+			</else>
+		</if>
+
+		<echo>Resolving Schemas</echo>
+		<replace dir="${build.webinf.classes}/conf/xml/mapper" includes="*.xml">
+			<replacefilter token="NVOSTEST" value="${schema.CORP}" />
+			<replacefilter token="nvostest" value="${schema.CORP}" />
+		</replace>
+
+		<!-- Delete the files that are not needed in the war -->
+		<delete file="${build.webinf}/log4j.xml" />
+		<delete file="${build.webinf}/ibm-web-ext.xml.ant" />
+	</target>
+
+	<target name="preCompileHook">
+		<if>
+			<equals arg1="${applnName}" arg2="suppliermgmt" />
+			<then>
+				<echo> Copying targeted java files from ${config.dir} to ${source.code.dir}/com/penske/apps/${applnName}/controller</echo>
+				<copy todir="${source.code.dir}/com/penske/apps/${applnName}/controller" overwrite="true">
+					<fileset dir="${config.dir}" includes="*.java" />
+				</copy>
+			</then>
+			<else>
+				<echo> Copying targeted java files from ${appln.src.dir}/${configfilelocation}/qa2 to ${source.code.dir}/com/penske/apps/${applnName}/controller</echo>
+				<copy todir="${source.code.dir}/com/penske/apps/suppliermgmt/controller" overwrite="true">
+					<fileset dir="${appln.src.dir}/${configfilelocation}/qa2" includes="*.java" />
+				</copy>
+			</else>
+		</if>
+	</target>
+</project>
