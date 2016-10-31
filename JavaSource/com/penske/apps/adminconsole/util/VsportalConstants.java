@@ -141,7 +141,11 @@ public class VsportalConstants {
 	 public static final int    TRANSPORTER_PARENT_VENDOR 	= 	58	;
 	 public static final int    TRANSPORTER_PURCH_PO_NUM 	= 	59	;
 	 public static final int    TRANSPORTER_ADV_NOT_SEQ		= 	60	;
-	 public static final int    TRANSPORTER_REPORT_ID		= 	61	;
+	 public static final int    TRANSPORTER_LIFTGATE_MAKE	= 	61	;
+	 public static final int    TRANSPORTER_LIFTGATE_MODEL	= 	62	;
+	 public static final int    TRANSPORTER_REPORT_ID		= 	63	;
+	 
+	 
 		 
 	 public static final String EXCEL  = ".xls";
 	 

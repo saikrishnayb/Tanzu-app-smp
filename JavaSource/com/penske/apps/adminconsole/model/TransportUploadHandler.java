@@ -442,6 +442,12 @@ public class TransportUploadHandler extends ExcelUploadHandler{
 		    	case VsportalConstants.TRANSPORTER_ADV_NOT_SEQ:
     				transport.setAdvancedNoticeSequence(value);
     				break;
+		    	case VsportalConstants.TRANSPORTER_LIFTGATE_MAKE:
+    				transport.setLiftgateMake(value);
+    				break;
+		    	case VsportalConstants.TRANSPORTER_LIFTGATE_MODEL:
+    				transport.setLiftgateModel(value);
+    				break;    				
 		    	case VsportalConstants.TRANSPORTER_REPORT_ID:
     				transport.setReportId(value);
     				break;	      				    				

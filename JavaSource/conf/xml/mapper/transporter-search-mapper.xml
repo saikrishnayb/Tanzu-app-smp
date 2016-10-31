@@ -28,7 +28,7 @@
  			TRNST_PO,					TRNST_PO_DATE,		UNIT_DELIVERY_DATE,		ACT_DELV_REPORTED,			FLUID_AMOUNT,				BREAKDWN_AMOUNT,		 
  			TOLL_AMOUNT,				MISC_AMOUNT,		REVISED_AMOUNT,			SUBMIT_PAYMENT,				PENSKE_COMMENT,				TRANSPORTER_COMMENT,	 
  			ASSIGN_DATE,				LAST_CHANGE_DATE,	CORP,					PARENT_VENDOR,				PO_NO,						ADV_NOTICE_SEQ,		 
- 			REPORT_ID,					TREDEL					 
+ 			REPORT_ID,					LIFTGATE_MAKE,		LIFTGATE_MODEL,			TREDEL						 
  		)	
  		values  
  		( 
@@ -42,7 +42,7 @@
  			#{trnstPo},					#{transitPoDate},	#{actDelvry},			#{actualDeliveryReported},	#{fluids},					#{breakDown}, 
  			#{tolls},					#{misc},			#{revisedPOAmount},		#{isPOAmountAccepted},		#{penskeComment},			#{transporterComment}, 
  			#{transporterAssignDate},	#{lastChangedDate},	#{companyCode},			#{parentVendor},			#{purchasePoNum},			#{advancedNoticeSequence},
- 			#{reportId},				#{estimatedDeliveryDate}
+ 			#{reportId},				#{liftgateMake},	#{liftgateModel},		#{estimatedDeliveryDate}
  		)
  	</insert>
 

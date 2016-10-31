@@ -98,6 +98,8 @@ public class Transport{
 	private String 	parentVendor;
 	private String	purchasePoNum;
 	private String 	advancedNoticeSequence;
+	private String	liftgateMake;
+	private String	liftgateModel;
 	private String 	reportId;
 	
 	public String getUnitNo() {
@@ -553,6 +555,18 @@ public class Transport{
 	}
 	public void setPurchasePoNum(String purchasePoNum) {
 		this.purchasePoNum = purchasePoNum==null ? " " : purchasePoNum;
+	}
+	public String getLiftgateMake() {
+		return liftgateMake;
+	}
+	public void setLiftgateMake(String liftgateMake) {
+		this.liftgateMake = liftgateMake;
+	}
+	public String getLiftgateModel() {
+		return liftgateModel;
+	}
+	public void setLiftgateModel(String liftgateModel) {
+		this.liftgateModel = liftgateModel;
 	}
 
 }
