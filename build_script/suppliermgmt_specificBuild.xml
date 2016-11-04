@@ -34,8 +34,8 @@
 
 		<echo>Resolving Schemas</echo>
 		<replace dir="${build.webinf.classes}/conf/xml/mapper" includes="*.xml">
-			<replacefilter token="NVOSTEST" value="${schema.CORP}" />
-			<replacefilter token="nvostest" value="${schema.CORP}" />
+			<replacefilter token="NVOSTEST" value="${env.bamboo_schema_CORP}" />
+			<replacefilter token="nvostest" value="${env.bamboo_schema_CORP}" />
 		</replace>
 
 		<!-- Delete the files that are not needed in the war -->
