@@ -88,6 +88,7 @@
 							<th>Status</th>
 							<th>Type</th>
 							<th>Role</th>
+							<th>Org</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -108,6 +109,7 @@
 							</td>
 							<td class="user-type">${user.userType.userType}</td>
 							<td>${user.role.roleName} <input class="role-id" type=hidden value="${user.role.roleId}"/></td>
+							<td>${user.org}</td>
 						</tr>
 						</c:forEach>
 					</tbody>

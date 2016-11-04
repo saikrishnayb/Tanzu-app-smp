@@ -855,12 +855,15 @@
 				U.STATUS AS status,
 				T.USER_TYPE AS "userType.userType",
 				U.ROLE_ID AS "role.roleId",
-				ROLE_NAME AS "role.roleName"
+				ROLE_NAME AS "role.roleName",
+				O.NAME as "org"
 		FROM	SMC.SMC_USER_MASTER U, 
 				SMC.smc_user_roles R, 
-				SMC.SMC_USER_TYPES T
+				SMC.SMC_USER_TYPES T,
+				SMC.SMC_ORG_MASTER O
 		WHERE 	U.ROLE_ID = R.ROLE_ID AND 
 				U.TYPE_ID = T.TYPE_ID AND
+				U.ORG_ID = O.ORG_ID AND
 				T.USER_TYPE ='VENDOR' AND
 				U.STATUS = 'A' AND
 				R.STATUS = 'A'

@@ -33,6 +33,15 @@ public class User {
 	private int orgId;
 	private int returnFlg;
 	private String supportNumber;
+	private String org;
+
+	public String getOrg() {
+		return org;
+	}
+
+	public void setOrg(String org) {
+		this.org = org;
+	}
 
 	public int getOrgId() {
 		return orgId;
