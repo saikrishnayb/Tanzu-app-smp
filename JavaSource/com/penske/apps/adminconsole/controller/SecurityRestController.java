@@ -193,9 +193,9 @@ public class SecurityRestController {
 		
 		List<VendorLocation> vendorIdList = new ArrayList<VendorLocation>(vendorIds.length);
 		
-		for(int i = 0; i < vendorIds.length; i++) {
+		for (String vendorId : vendorIds) {
 			VendorLocation vendLoc = new VendorLocation();
-			vendLoc.setVendorId(Integer.parseInt(vendorIds[i]));
+			vendLoc.setVendorId(Integer.parseInt(vendorId));
 			
 			vendorIdList.add(vendLoc);
 		}
@@ -862,7 +862,7 @@ public class SecurityRestController {
 			myOrgList=securityService.getOrgList(currentUser);
 			//mav.addObject("orgList", securityService.getPenskeUserOrgList(currentUser));
 			//mav.addObject("orgList", securityService.getOrgList(currentUser));
-		}
+		} 
 		mav.addObject("orgList", securityService.removeCurrentOrgAndChild(orgId, myOrgList));
 		mav.addObject("vendorList", securityService.getVendorList("","",editableOrg.getParentOrgId()));
 		mav.addObject("editableOrg", editableOrg);		

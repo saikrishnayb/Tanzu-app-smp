@@ -9,9 +9,9 @@
 					<c:forEach items="${vendor.vendorNumberList}" var="vendorNum"  varStatus="status1">
 						<ul class="subgroups">
 							<li id="sub-role-hierarchy-trees-${vendorNum.vendorId}">
-								<a><span class="sub-role selected-roles" id="${vendorNum.vendorId}">${vendorNum.vendorNumber}</span></a>
+								<a><span class="sub-role selected-roles" id="${vendorNum.vendorId}">${vendorNum.vendorNumber}   ${vendorNum.corpCode} - ${vendorNum.city}, ${vendorNum.state} ${vendorNum.zipCode}</span></a>
 							</li>
-						</ul>
+						</ul> 
 					</c:forEach>
 			</li>
 		</ul>

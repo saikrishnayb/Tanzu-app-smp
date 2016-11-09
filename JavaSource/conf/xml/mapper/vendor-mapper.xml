@@ -10,6 +10,9 @@
 				vend.VENDOR_NUMBER AS vendorNumber,
 				vend.MFR AS manufacturerCode,
 				vend.ANNUAL_AGREEMENT AS annualAgreement,
+				pvscty as city, 
+				pvsst as state, 
+				pvszip as zipCode,
 				prim.FIRST_NAME AS "primaryContact.firstName",
 				prim.LAST_NAME AS "primaryContact.lastName",
 				prim.PHONE AS "primaryContact.phoneNumber",
@@ -29,6 +32,8 @@
 				ON	vend.PLANNING_ANALYST = panl.USER_ID
 				LEFT OUTER JOIN SMC.SMC_USER_MASTER supp
 				ON	vend.SUPPLY_SPECIALIST = supp.USER_ID
+				INNER JOIN corp.fpurvnd purv
+				on purv.pvcorp = vend.corp and purv.pvnbr = vend.vendor_number
 				WHERE org.ORG_ID=#{orgId}
 				<!--  IN(
 						SELECT ORG_ID FROM SMC.SMC_ORG_MASTER

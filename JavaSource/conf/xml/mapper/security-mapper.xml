@@ -5,12 +5,16 @@
 	<resultMap id="VendorTreeMap" type="com.penske.apps.adminconsole.model.VendorTree">
 		 <id property="vendorName" column="VENDOR_NAME" />
 		 <collection property="vendorNumberList" 
-		 column="VENDOR_NAME" ofType="com.penske.apps.adminconsole.model.Vendor" javaType="ArrayList" resultMap="vendorNumListId"> <!-- select="selectVendorNumber" /> -->
+		 	column="VENDOR_NAME" ofType="com.penske.apps.adminconsole.model.Vendor" javaType="ArrayList" resultMap="vendorNumListId">
 		 </collection>
 	 </resultMap>
 	  <resultMap id="vendorNumListId" type="com.penske.apps.adminconsole.model.Vendor">
 	 	<id property="vendorId" column="VENDOR_ID" />
 	 	<result property="vendorNumber" column="VENDOR_NUMBER" />
+		<result property="corpCode" column="corp" />
+	 	<result property="city" column="city" />
+	 	<result property="state" column="state" />
+	 	<result property="zipCode" column="zipCode" />
 	 </resultMap>
 	
  	<select id="getUserSearchList" resultType="com.penske.apps.adminconsole.model.User">
@@ -684,9 +688,12 @@
  	</select>-->
  	
  	<select id="getVendorList" resultMap="VendorTreeMap">
-	SELECT m.VENDOR_ID, m.VENDOR_NAME, m.VENDOR_NUMBER FROM
-	SMC.SMC_ORG_VENDOR_ASSOC as asso JOIN
-	SMC.SMC_VENDOR_MASTER m ON asso.VENDOR_ID=m.VENDOR_ID
+			SELECT m.VENDOR_ID, m.VENDOR_NUMBER, m.CORP, m.VENDOR_NAME, 
+			purv.pvscty as city, purv.pvsst as state, purv.pvszip as zipCode
+			FROM SMC.SMC_ORG_VENDOR_ASSOC as asso JOIN
+			SMC.SMC_VENDOR_MASTER m ON asso.VENDOR_ID=m.VENDOR_ID 
+			INNER JOIN corp.fpurvnd purv
+			on purv.pvcorp = m.corp and purv.pvnbr = m.vendor_number
 	<where>
 		
 		  <if test="corp != ''">
@@ -703,7 +710,7 @@
 			) -->
 		</if>
   	 </where>
-  	GROUP BY m.VENDOR_ID, m.VENDOR_NAME, m.VENDOR_NUMBER
+  	GROUP BY  m.VENDOR_ID, m.VENDOR_NAME, m.corp, m.VENDOR_NUMBER, purv.pvscty, purv.pvsst, purv.pvszip
 	order by VENDOR_NAME ,VENDOR_NUMBER 
  	</select>
  	
