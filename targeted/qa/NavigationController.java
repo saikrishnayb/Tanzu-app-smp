@@ -74,7 +74,7 @@ public class NavigationController extends BaseController {
 					url.append(request.getContextPath()).append(ApplicationConstants.SLASH).append(ApplicationConstants.VENDOR_TEMPLATE_URL).append(templateKey);
 				}else{
 					//Dircetly On click of admin consoleTab
-					url.append(request.getContextPath()).append(ApplicationConstants.SLASH).append("admin-console/app-config/dynamic-rules.htm");
+					url.append(request.getContextPath()).append(ApplicationConstants.SLASH).append(ApplicationConstants.PENSKE_USER_URL);
 				}
 			}else if("Home".equalsIgnoreCase(destination)){
 				url.append(request.getContextPath()).append(ApplicationConstants.SLASH).append("home/homePage.htm?tabId=").append(controllerName);
