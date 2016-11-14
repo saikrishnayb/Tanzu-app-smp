@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.penske.apps.suppliermgmt.common.constants.ApplicationConstants;
 import com.penske.apps.suppliermgmt.model.UserContext;
@@ -92,4 +93,28 @@ public class NavigationController extends BaseController {
 		LOGGER.debug("Tab Application URL ::"+ url.toString());
 		return url.toString();
 	}
+	
+	
+	@RequestMapping(value = "/getHelp")
+	protected  ModelAndView getHelp(HttpServletRequest request) {
+		ModelAndView model=new ModelAndView();
+		UserContext userContext = new UserContext();
+		
+		try
+		{		
+			userContext = getUserContext(request);
+			String help = helpService.getHelp(userContext.getUserType());
+			model.addObject("helpContent",help);
+			model.setViewName("home/help");
+				 
+		  }catch(Exception e){
+			  model=handleException(e, request);
+		  }
+		return model;
+	}	
+	
+	@RequestMapping(value = "/getHowTo")
+	protected  ModelAndView getHowTo(HttpServletRequest request) {
+		return new ModelAndView("home/howTo");
+	}			
 }
