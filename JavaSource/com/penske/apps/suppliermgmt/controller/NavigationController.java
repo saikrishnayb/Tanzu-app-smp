@@ -79,8 +79,6 @@ public class NavigationController extends BaseController {
 			}else if("Home".equalsIgnoreCase(destination)){
 				url.append(request.getContextPath()).append(ApplicationConstants.SLASH).append("home/homePage.htm?tabId=").append(controllerName);
 			}else{
-
-			
 				url.append(ApplicationConstants.SLASH).append(app).append(ApplicationConstants.DEV_ENTRY_SERVLET).append(userContext.getUserSSO());
 
 				if(controllerName!=null){

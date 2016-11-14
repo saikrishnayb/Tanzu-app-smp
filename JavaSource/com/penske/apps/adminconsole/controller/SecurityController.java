@@ -49,7 +49,7 @@ public class SecurityController {
 		boolean isSupplier = currentUser.getUserTypeId() == ApplicationConstants.SUPPLIER_USER;
 		// If the user is a supplier.
 		if (isSupplier) {
-			return getVendorPageData(session);
+			return getVendorMainContentPage(session);
 		}
 		else {
 			
@@ -65,8 +65,18 @@ public class SecurityController {
 	}
 	
 	@RequestMapping(value ={"/vendorUsers"})
-	public ModelAndView getVendorUsersPage(HttpSession session) {
-		return getVendorPageData(session);
+	public ModelAndView getVendorMainContentPage(HttpSession session){
+		if(CommonUtils.hasAccess(ApplicationConstants.VENDORUSER, session)){
+			return getVendorPageData(session);
+		}
+		if(CommonUtils.hasAccess(ApplicationConstants.ROLES_ACCESS, session)){
+			return getRolesPage(session);
+		}
+		if(CommonUtils.hasAccess(ApplicationConstants.ORG_ACCESS, session)){
+			return getOrgPage(session);
+		}
+		ModelAndView mav = new ModelAndView("/admin-console/security/noAccess");
+		return mav;
 	}
 	
 	@RequestMapping(value = "/users-search")
