@@ -3,7 +3,6 @@ package com.penske.apps.suppliermgmt.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -119,4 +118,9 @@ public class NavigationController extends BaseController {
 		  }
 		return model;
 	}	
+	
+	@RequestMapping(value = "/getHowTo")
+	protected  ModelAndView getHowTo(HttpServletRequest request) {
+		return new ModelAndView("home/howTo");
+	}		
 }

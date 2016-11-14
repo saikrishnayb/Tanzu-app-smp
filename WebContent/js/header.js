@@ -22,14 +22,46 @@ $(document).ready(function()
         position: ['center',75],
 		resizable		: false,
 		title			: 'Help',
-		closeOnEscape	: false
+		closeOnEscape	: false,
+		close			: function (event, ui) {
+			$("#helpPopup").empty();
+		}
 	});	
 	
-	$('#helpLink').on("click", function () {
-		openHelpPopup();
+	$('#helpSelector').dialog({
+		autoOpen		: false,
+		modal			: true,
+		dialogClass		: 'popupModal',
+		width			: 750,
+		maxHeight		: 420,
+        height  		: 'auto',
+        position: ['center',75],
+		resizable		: false,
+		title			: '',
+		closeOnEscape	: false
 	});
 	
+	$('#helpLink').on("click", function () {
+		openHelpSelector();
+	});
+	
+	$('#frequentlyAsked').on("click", function () {
+		openHelp();
+	});	
+
+	$('#howToVideos').on("click", function () {
+		openHowToVideo();
+	});			
+	
 });
+
+
+
+function openHelpSelector()
+{
+	$("#helpSelector").show();
+	$("#helpSelector").dialog('open'); 
+}
 
 function openBuddyPopup()
 {
@@ -58,8 +90,36 @@ function openBuddyPopup()
 	      });
 }
 
+function openHowToVideo()
+{
+	showLoading();
+	var url= getContextRoot()+"/navigation/getHowTo.htm";
 
-function openHelpPopup()
+	 $.ajax({
+	            url 			: url,
+	            cache			:false,  
+	            success : function(data) 
+	            {
+	            	
+	            	$("#helpPopup").show();
+	            	$("#helpPopup").html($.trim(data));
+	            	$("#helpPopup").dialog('open');
+	            	hideLoading();
+	            
+	            },
+	            error: function(jqXHR, textStatus, errorThrown) 
+	            {
+						alertModal("info","Error");
+	                  $(".commonException").show();
+	                  hideLoading();
+	                  return;
+	            }
+	      });
+
+}
+
+
+function openHelp()
 {
 	showLoading();
 	var url= getContextRoot()+"/navigation/getHelp.htm";

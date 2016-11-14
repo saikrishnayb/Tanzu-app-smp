@@ -61,7 +61,6 @@
 						<c:if test="${displayLink eq 'display' }">
 							<li><a href="#" onclick="openBuddyPopup();return false;">Buddy</a></li>
 						</c:if>
-						<!--  <li><a  href="${helpLink}" id="helpLink" target="_blank">Help</a></li> -->
 						<li><a  href="#" id="helpLink">Help</a></li>
 						<li><a class="exit" href="#" onclick="logOut();">Log off</a></li>
 					</ul>
@@ -70,8 +69,27 @@
 		 </div>
 		</div>
 		
-		<div id="helpPopup" style="display: none;"></div>
+		<div id="helpSelector" style="display: none;">
+		<div style="float:left">Where can we direct you?</br>
+			<a id="frequentlyAsked">Frequently Asked Questions</a><br/><br/>
+			<a id="howToVideos">How-To Instructional Videos</a><br/>		
+		</div>
+		<div style="float:right; padding-left: 15px; border-left:1px solid black">
+			<p>
+			For all other help topics, email or call our Supplier Management Support Specialists. 
+			</br>
+			</br>
+			E: SupplierManagementCenter@penske.com
+			</br>
+			</br>
+			P: ${supportNum}
+			</p>
+		</div>		
 
+			
+		</div>
+		<div id="helpPopup" style="display: none;"></div>
+		
 		<div id="buddyPopup" style="display: none;">
 			<jsp:include page="/WEB-INF/jsp/home/buddy.jsp" ></jsp:include>
 		</div>
