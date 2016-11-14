@@ -25,6 +25,9 @@ public class ApplicationConstants {
 	public static final String SUPPORT_NUM = "SUPPORT_NUM";
 	public static final String PENSKEUSER = "MANAGE_USERS";
 	public static final String VENDORUSER = "MANAGE_VENDOR_USERS";
+	public static final String ROLES_ACCESS = "MANAGE_ROLES";
+	public static final String VENDORS_ACCESS = "MANAGE_VENDORS";
+	public static final String ORG_ACCESS = "MANAGE_ORG";
 	public static final String DELAY_DATE_TYPE="DELAY_DATE_TYPE";
 	public static final String DYNAMICRULE = "DYNAMIC_RULES_MANAGEMENT";
 	public static final String UPLOAD_EXCEL = "UPLOAD_EXCEL";
