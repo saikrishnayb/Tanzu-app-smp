@@ -41,6 +41,9 @@ public class NavigationController extends BaseController {
 	 * @return the string
 	 */
 	
+	@Autowired
+	private HelpService helpService;
+	
 	/** The logger. */
 	private static Logger LOGGER = Logger.getLogger(NavigationController.class);
 	
