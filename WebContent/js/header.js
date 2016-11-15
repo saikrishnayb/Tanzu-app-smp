@@ -37,7 +37,7 @@ $(document).ready(function()
         height  		: 'auto',
         position: ['center',75],
 		resizable		: false,
-		title			: '',
+		title			: 'Help',
 		closeOnEscape	: false
 	});
 	

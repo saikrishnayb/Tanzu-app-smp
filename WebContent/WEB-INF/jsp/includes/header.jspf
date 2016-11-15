@@ -70,16 +70,14 @@
 		</div>
 		
 		<div id="helpSelector" style="display: none;">
-		<div style="float:left">Where can we direct you?</br>
+		<div style="text-align:center;">
 			<a id="frequentlyAsked">Frequently Asked Questions</a><br/><br/>
-			<a id="howToVideos">How-To Instructional Videos</a><br/>		
-		</div>
-		<div style="float:right; padding-left: 15px; border-left:1px solid black">
+			<a id="howToVideos">How-To Instructional Videos</a><br/><br/>		
 			<p>
 			For all other help topics, email or call our Supplier Management Support Specialists. 
 			</br>
-			</br>
-			E: SupplierManagementCenter@penske.com
+			</br>			
+			E: <a href="mailto:SupplierManagementCenter@penske.com?subject=Supplier Management Support">SupplierManagementCenter@penske.com</a>
 			</br>
 			</br>
 			P: ${supportNum}
