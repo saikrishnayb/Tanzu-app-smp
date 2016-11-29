@@ -627,7 +627,7 @@ public class SecurityRestController {
 			try {
 				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, sme.getErrorDetails().getMessage());
 				  response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			        response.getWriter().write(sme.getMessage());
+			        response.getWriter().write(sme.getErrorDetails().getMessage());
 			        response.flushBuffer();
 			} catch (IOException e) {
 				logger.error(e.getMessage());
@@ -704,7 +704,7 @@ public class SecurityRestController {
 			try {
 				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, sme.getErrorDetails().getMessage());
 				  response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			        response.getWriter().write(sme.getMessage());
+			        response.getWriter().write(sme.getErrorDetails().getMessage());
 			        response.flushBuffer();
 			} catch (IOException e) {
 				logger.error(e.getMessage());
@@ -748,7 +748,7 @@ public class SecurityRestController {
 			try {
 				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, sme.getErrorDetails().getMessage());
 				  response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			        response.getWriter().write(sme.getMessage());
+			        response.getWriter().write(sme.getErrorDetails().getMessage());
 			        response.flushBuffer();
 			} catch (IOException e) {
 				logger.error(e.getMessage());
