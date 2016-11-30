@@ -117,4 +117,9 @@ public class NavigationController extends BaseController {
 		  }
 		return model;
 	}	
+	
+	@RequestMapping(value = "/getHowTo")
+	protected  ModelAndView getHowTo(HttpServletRequest request) {
+		return new ModelAndView("home/howTo");
+	}			
 }
