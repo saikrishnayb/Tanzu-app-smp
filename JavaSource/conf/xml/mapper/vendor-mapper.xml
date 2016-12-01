@@ -111,7 +111,8 @@
 		    			START WITH ORG_ID=#{orgId} CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID ORDER BY ORG_ID 
 				)-->
 		<if test="vendor.vendorName != null">
-		AND		vend.VENDOR_NAME = #{vendor.vendorName}
+		<bind name="formattedVendorName" value="vendor.getVendorName() + '%'" />
+		AND		vend.VENDOR_NAME like #{formattedVendorName}
 		</if>
 		<if test="vendor.vendorNumber != 0">
 		AND		vend.VENDOR_NUMBER = #{vendor.vendorNumber}
