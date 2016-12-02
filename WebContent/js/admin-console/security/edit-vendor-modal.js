@@ -24,8 +24,8 @@ $(document).ready(function() {
 					vendor,
 					function(data) {
 						$editVendorModal.dialog('close');
-						//location.reload();
-						location.assign('./vendors.htm');
+						processingImageAndTextHandler('hidden');
+						updateRow(data);			
 					});
 		}
 		else {
@@ -49,6 +49,97 @@ $(document).ready(function() {
 		$editVendorModal.dialog('close');
 	});
 });
+
+function updateRow(data){
+	var tableRow = $("input[name=vendorId]").filter(function() {
+	    return $(this).val() == data.vendorId;
+	}).closest("tr");
+	var rowHtml = '<td class="editable centerAlign">'
+						+ '<input class="update-checkbox" type="checkbox" />'
+						+ '<a class="rightMargin edit-vendor">Edit</a>'
+						+ '<a class="rightMargin view-vendor">View</a>'
+						+ '<input type="hidden" name="vendorId"';
+	if(data.vendorId){
+		rowHtml = rowHtml + ' value= "' + data.vendorId + '" />';
+	}
+	else{
+		rowHtml = rowHtml + '/>';
+	}
+	rowHtml = rowHtml + '<input type="hidden" name="notificationException"';
+	if(data.notificationException){
+		rowHtml = rowHtml + ' value="'+ data.notificationException + '" />';
+	}
+	else{
+		rowHtml = rowHtml + '/>';
+	}
+	rowHtml = rowHtml + '<input type="hidden" name="supplySpecialist"';
+	if(data.supplySpecialist && data.supplySpecialist.userId){
+		rowHtml = rowHtml + ' value="' + data.supplySpecialist.userId + '" />';
+	}
+	else{
+		rowHtml = rowHtml + '/>';
+	}
+	rowHtml = rowHtml 
+					+'</td>'
+					+'<td class="corp-code">';
+	if(data.corpCode){
+		rowHtml = rowHtml + data.corpCode;
+	}
+	rowHtml = rowHtml + '</td>'
+					+'<td class="vendor-name">';
+	if(data.vendorName){
+		rowHtml = rowHtml + data.vendorName;
+	}
+	rowHtml = rowHtml + '</td>'
+					+'<td class="vendor-number">';
+	if(data.vendorNumber){
+		rowHtml = rowHtml + data.vendorNumber;
+	}
+	rowHtml = rowHtml + '</td>'
+					+'<td class="mfr-code">';
+	if(data.manufacturerCode){
+		rowHtml = rowHtml + data.manufacturerCode;
+	}
+	rowHtml = rowHtml + '</td>'
+					+'<td class="annual-agreement">';
+	if(data.annualAgreement){
+		if(data.annualAgreement == 'Y')
+			rowHtml = rowHtml + 'Yes';
+		else
+			rowHtml = rowHtml + 'No';
+	}
+	rowHtml = rowHtml					
+					+'</td>'
+					+'<td class="primary-contact">';
+	if(data.primaryContact && data.primaryContact.firstName){
+		rowHtml = rowHtml + data.primaryContact.firstName;
+	}
+	if(data.primaryContact && data.primaryContact.lastName){
+		rowHtml = rowHtml + data.primaryContact.lastName;
+	}
+	rowHtml = rowHtml + '</td>'
+					+'<td class="contact-phone">';
+	if(data.primaryContact && data.primaryContact.phoneNumber){
+		rowHtml = rowHtml + data.primaryContact.phoneNumber;
+	}				
+	rowHtml = rowHtml + '</td>'
+					+'<td class="planning-analyst">'
+						+'<input name="planningAnalyst" type="hidden"';
+	if(data.planningAnalyst && data.planningAnalyst.userId){
+		rowHtml = rowHtml + ' value="' + data.planningAnalyst.userId + '"';
+	}				
+	rowHtml = rowHtml + ' />'
+						+'<span>';
+	if(data.planningAnalyst && data.planningAnalyst.firstName){
+		rowHtml = rowHtml + data.planningAnalyst.firstName;
+	}
+	if(data.planningAnalyst && data.planningAnalyst.lastName){
+		rowHtml = rowHtml + ' ' +data.planningAnalyst.lastName;
+	}
+	rowHtml = rowHtml + '</span>'
+					+'</td>';
+	$(tableRow).html(rowHtml);	
+}
 
 function validateEditForm($form) {
 	var $notificationException = $form.find('[name="notificationException"]');

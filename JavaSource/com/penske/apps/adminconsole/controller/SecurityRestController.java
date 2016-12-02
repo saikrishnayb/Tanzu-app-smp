@@ -602,12 +602,16 @@ public class SecurityRestController {
 	
 	@RequestMapping("modify-vendor-info")
 	@ResponseBody
-	public ModelAndView modifyVendorInfo(Vendor vendor, HttpSession session) {
+	public Vendor modifyVendorInfo(Vendor vendor, HttpSession session) {
 		ModelAndView mav = new ModelAndView("/admin-console/security/vendors");
 		HeaderUser user = (HeaderUser)session.getAttribute("currentUser");
 		vendorService.modifyVendorInformation(vendor,user);
-		
-		return mav;
+		List<Vendor> updatedVendors = vendorService.getAllVendors( user.getOrgId() );
+		for(Vendor updatedVendor: updatedVendors){
+			if(updatedVendor.getVendorId() == vendor.getVendorId())
+				return updatedVendor;
+		}
+		return null;
 	}
 	
 	@RequestMapping("mass-update-vendors")
