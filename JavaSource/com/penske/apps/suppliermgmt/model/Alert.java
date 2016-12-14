@@ -1,5 +1,7 @@
 package com.penske.apps.suppliermgmt.model;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 /**
  * The Alert object is displayed on the dashboard screen below its respective
  * Alert Header. This categorizes the users alerts into categories that the user
@@ -143,7 +145,8 @@ public class Alert {
 	}
 
 	public void setHelpText(String helpText) {
-		this.helpText = helpText;
+		// Escape this user supplied text to prevent it from breaking home page HTML
+		this.helpText = StringEscapeUtils.escapeHtml4(helpText);
 	}
 	
 	public void setLink(String link) {
