@@ -21,7 +21,7 @@
 	<a class="secondaryLink cancelLdap" tabIndex="-1">No, Cancel</a> 
 	<a class="buttonPrimary goLDAP" tabIndex="-1">Yes, Continue</a>
 </div>
-</div>
+</div>   
 <fieldset id="user-fieldset" class="user-fieldset">
 				<div class="user-form-container">
 					<form id="user-form-vendor" <c:if test="${isCreatePage == true}"> action="${pageContext.request.contextPath}/admin-console/security/create-user.htm"  </c:if> 
@@ -33,7 +33,7 @@
 						<input type="hidden" id="returnFlg" name="returnFlg" value="${returnFlg}">
 						<div class="single-line-content email-container" <c:if test = "${isCreatePage == true && currentUser.userTypeId == 1}">class="displayNone"</c:if>  style="margin-top: 18px;">
 							<label for="email">Email <span class=requiredField>*</span></label> 
-							<input id="email" name="email" type="text" class='input alpha alpha-email <c:if test = "${isCreatePage == false}">borderless</c:if>' value="${editableUser.email}" <c:if test = "${isCreatePage == false}">readonly</c:if>/>
+							<input id="email" name="email" type="text" class='input alpha alpha-email' value="${editableUser.email}"/>
 						</div>
 						<div id="sso-id-div" class="single-line-content">
 								<label for="sso-id">User Name <span class=requiredField>*</span></label> 
