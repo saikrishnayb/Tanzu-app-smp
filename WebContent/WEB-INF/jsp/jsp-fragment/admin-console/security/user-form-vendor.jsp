@@ -37,7 +37,7 @@
 						</div>
 						<div id="sso-id-div" class="single-line-content">
 								<label for="sso-id">User Name <span class=requiredField>*</span></label> 
-								<input id="sso-id" name="ssoId"  class='input alpha alpha-numeric  <c:if test = "${isCreatePage == false}"> borderless</c:if>'  type="text" value="${editableUser.ssoId}"  <c:if test = "${isCreatePage == false}">readonly</c:if> />
+								<input id="sso-id" name="ssoId"  class='input alpha alpha-username  <c:if test = "${isCreatePage == false}"> borderless</c:if>'  type="text" value="${editableUser.ssoId}"  <c:if test = "${isCreatePage == false}">readonly</c:if> />
 								<input id="sso-old-id" type="hidden" value="${editableUser.ssoId}"/>
 								<c:if test = "${isCreatePage == false}">
 							 	<span id="refreshSSODetails" class="reloadImage"><a href="#" id="refreshSSO"></a></span>

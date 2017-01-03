@@ -10,7 +10,7 @@ var alphaNumericRegex = /([^\s])/;
 /*
 * Any letter, whitespace, period, and single quote at least once or more
 */
-var alphaNameRegex = /(^[\D\s'.]+$)/;
+var alphaNameRegex = /(^[\w'.]+$)/;
 
 /*
 * Any digit one or more times                                                                                                                                                                                
@@ -20,7 +20,9 @@ var numericWholeRegex = /^([\d]+)$/;
 /*
  * Email validation
  */
-var alphaEmailRegex = /([\w.%+-]+@[\w.-]+\.[a-zA-Z]{2,4})/;
+var alphaEmailRegex = /(^[\w.%+-]+@[\w.-]+\.[a-zA-Z]{2,4}$)/;
+
+var alphaUserNameRegex = /([^\S+$])/;
 
 var $ajaxErrorFlg=true;
 /*function loadProcessImage(pageName){
@@ -160,6 +162,7 @@ function validateFormTextFields($selector){
 			var isAlphaNumeric = $field.hasClass("alpha-numeric");
 			var isAlphaName = $field.hasClass("alpha-name");
 			var isAlphaEmail = $field.hasClass("alpha-email");
+			var isAlphaUsername = $field.hasClass("alpha-username");
 
 			if(isAlphaNumeric){
 				notValidAlphaNumeric = !alphaNumericRegex.test(fieldValue);
@@ -167,6 +170,8 @@ function validateFormTextFields($selector){
 				notValidAlphaNumeric = !alphaNameRegex.test(fieldValue);
 			} else if(isAlphaEmail){
 				notValidAlphaNumeric = !alphaEmailRegex.test(fieldValue);
+			} else if(isAlphaUsername) {
+				notValidAlphaNumeric = !alphaUserNameRegex.test(fieldValue);
 			}
 
 			/* Check to see if the value is blank*/
