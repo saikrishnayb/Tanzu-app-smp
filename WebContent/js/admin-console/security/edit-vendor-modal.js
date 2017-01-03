@@ -115,7 +115,7 @@ function updateRow(data){
 		rowHtml = rowHtml + data.primaryContact.firstName;
 	}
 	if(data.primaryContact && data.primaryContact.lastName){
-		rowHtml = rowHtml + data.primaryContact.lastName;
+		rowHtml = rowHtml + ' ' +data.primaryContact.lastName;
 	}
 	rowHtml = rowHtml + '</td>'
 					+'<td class="contact-phone">';
