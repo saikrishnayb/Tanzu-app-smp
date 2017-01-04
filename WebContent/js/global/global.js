@@ -10,7 +10,7 @@ var alphaNumericRegex = /([^\s])/;
 /*
 * Any letter, whitespace, period, and single quote at least once or more
 */
-var alphaNameRegex = /(^[\w'.]+$)/;
+var alphaNameRegex = /(^[\w\s'.]+$)/;
 
 /*
 * Any digit one or more times                                                                                                                                                                                
