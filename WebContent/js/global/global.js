@@ -22,7 +22,7 @@ var numericWholeRegex = /^([\d]+)$/;
  */
 var alphaEmailRegex = /(^[\w.%+-]+@[\w.-]+\.[a-zA-Z]{2,4}$)/;
 
-var alphaUserNameRegex = /([^\S+$])/;
+var alphaUserNameRegex = /(^[\S]+$)/;
 
 var $ajaxErrorFlg=true;
 /*function loadProcessImage(pageName){
