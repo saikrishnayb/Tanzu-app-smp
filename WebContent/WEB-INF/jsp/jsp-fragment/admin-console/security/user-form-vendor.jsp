@@ -100,6 +100,12 @@
 								</c:forEach>
 							</select>
 						</div>
+
+						<div class="daily-opt-in-container">
+							<input id="daily-email-opt-in" name="dailyOptIn" type="checkbox" <c:if test="${(editableUser.dailyOptIn) || (isCreatePage == true)}">checked=checked</c:if> />
+							<label for="daily-email-opt-in">Opt-in to Daily Summary Email</label> 
+						</div>
+						
 					</form>
 					<span class="errorMsg">* indicates a required field</span>
 				</div>

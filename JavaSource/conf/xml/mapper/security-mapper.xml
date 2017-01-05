@@ -154,29 +154,6 @@
  	</select> 
  	
  	<select id="getVendorUserInfo" resultType="com.penske.apps.adminconsole.model.User"> 
- 		<!-- SELECT  DISTINCT
- 				U.USER_ID AS userId,
- 				U.SSO AS userName, 
-				U.EMAIL AS email, 
-				U.FIRST_NAME AS firstName, 
-       			U.LAST_NAME AS lastName, 
-        		U.PHONE AS phone, 
-        		U.EXTENSION AS extension, 
-        		U.STATUS AS status, 
-        		U.SSO as ssoId,
-        		T.DESCRIPTION AS "userType.description", 
-        		R.ROLE_NAME AS "role.roleName",
-        		U.ROLE_ID AS "role.roleId",
-				U.OEM AS "vendor.vendorName"
-		FROM	SMC.SMC_USER_MASTER U
-        		INNER JOIN SMC.smc_user_roles R 
-        			ON U.ROLE_ID = R.ROLE_ID
-        		INNER JOIN SMC.SMC_USER_TYPES T
-        			ON U.TYPE_ID = T.TYPE_ID
-				
-        WHERE	U.STATUS = 'A'
-        		AND R.STATUS = 'A'
-        		AND U.USER_ID = #{value}   -->
 	 	SELECT   U.USER_ID AS userId,
 	         U.SSO AS userName,
 	         U.EMAIL AS email,
@@ -192,7 +169,8 @@
 	         U.ROLE_ID AS "role.roleId",
 	         R.ROLE_NAME AS "role.roleName",
 	         U.SSO AS ssoId,
-	         U.ORG_ID AS orgId
+	         U.ORG_ID AS orgId, 
+	         U.OPTDLYEML as dailyOptInFromChar
 		FROM     SMC.SMC_USER_MASTER U 
 		         INNER JOIN SMC.smc_user_roles R ON U.ROLE_ID=R.ROLE_ID 
 		         INNER JOIN SMC.SMC_USER_TYPES T ON U.TYPE_ID = T.TYPE_ID
@@ -523,7 +501,8 @@
 				DEPT_ID =#{userDept.userDeptId},
 				ORG_ID =#{orgId},
 				MODIFIED_BY =#{modifiedBy},
- 				MODIFIED_DATE = CURRENT TIMESTAMP
+ 				MODIFIED_DATE = CURRENT TIMESTAMP, 
+ 				OPTDLYEML = #{dailyOptInChar}
 				WHERE USER_ID = #{userId}
  	</update>
  	<update id="refreshUserWithSSOData" parameterType="com.penske.apps.adminconsole.model.User">
@@ -709,7 +688,9 @@
 				 START WITH ORG_ID=#{orgId} CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID ORDER BY ORG_ID
 			) -->
 		</if>
+		AND m.STATUS = 'A'
   	 </where>
+  	 
   	GROUP BY  m.VENDOR_ID, m.VENDOR_NAME, m.corp, m.VENDOR_NUMBER, purv.pvscty, purv.pvsst, purv.pvszip
 	order by VENDOR_NAME ,VENDOR_NUMBER 
  	</select>

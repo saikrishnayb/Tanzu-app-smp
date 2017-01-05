@@ -34,11 +34,7 @@
 				ON	vend.SUPPLY_SPECIALIST = supp.USER_ID
 				INNER JOIN corp.fpurvnd purv
 				on purv.pvcorp = vend.corp and purv.pvnbr = vend.vendor_number
-				WHERE org.ORG_ID=#{orgId}
-				<!--  IN(
-						SELECT ORG_ID FROM SMC.SMC_ORG_MASTER
-		    			START WITH ORG_ID=#{orgId} CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID ORDER BY ORG_ID 
-				)-->
+				WHERE org.ORG_ID=#{orgId} and vend.STATUS = 'A'
 	</select>
 	
 	<select id="getAllPlanningAnalysts" resultType="com.penske.apps.adminconsole.model.User">
@@ -142,6 +138,7 @@
 		<if test="vendor.alertType != null and vendor.alertType=='ALRT_OF_NEW_VEND_SETUP_REQ'">
 			AND vend.VENDOR_ID not in(select VENDOR_ID from SMC_ORG_VENDOR_ASSOC where ORG_ID !=1)
 		</if>
+		AND vend.STATUS = 'A'
 	</select>
 	
 	<select id="getEditVendorInformation" resultType="com.penske.apps.adminconsole.model.Vendor">

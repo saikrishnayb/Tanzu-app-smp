@@ -34,6 +34,7 @@ public class User {
 	private int returnFlg;
 	private String supportNumber;
 	private String org;
+	private boolean dailyOptIn;
 
 	public String getOrg() {
 		return org;
@@ -478,4 +479,21 @@ public class User {
 	public void setSupportNumber(String supportNumber) {
 		this.supportNumber = supportNumber;
 	}
+
+	public boolean isDailyOptIn() {
+		return dailyOptIn;
+	}
+
+	public void setDailyOptIn(boolean dailyOptIn) {
+		this.dailyOptIn = dailyOptIn;
+	}
+	
+	public void setDailyOptInFromChar(String dailyOptIn) {
+		this.dailyOptIn = "Y".equals(dailyOptIn) ? true : false;
+	}	
+	
+	public String getDailyOptInChar() {
+		return this.dailyOptIn ? "Y" : "N";
+	}		
+	
 }
