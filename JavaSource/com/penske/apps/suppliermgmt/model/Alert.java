@@ -2,6 +2,8 @@ package com.penske.apps.suppliermgmt.model;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
+import com.penske.apps.suppliermgmt.domain.AlertCount;
+
 /**
  * The Alert object is displayed on the dashboard screen below its respective
  * Alert Header. This categorizes the users alerts into categories that the user
@@ -30,6 +32,16 @@ public class Alert {
 	private int count;
 	private String flag;
 	private String alertKey;
+	
+	//Modified Accessors
+	public void updateAlertCount(AlertCount alertCount) {
+	    
+	    if(alertCount == null)
+	        throw new IllegalArgumentException("AlertCount must not be null");
+	    
+	    this.count = alertCount.getAlertCount();
+	    this.flag = alertCount.getNonCompliant();
+	}
 
 	// Getters
 	public int getAlertId() {

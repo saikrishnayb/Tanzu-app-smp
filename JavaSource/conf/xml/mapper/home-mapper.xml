@@ -172,4 +172,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-ma
 				
 		
 	</select> -->
+ 
+  <select id="getOrderConfirmationAlertCountsByAlertKey"  statementType="CALLABLE" resultType="com.penske.apps.suppliermgmt.domain.AlertCount">
+    {
+      CALL SMC.SMC_GENERATE_ALERTS_FOR_HOME_ORDER_CONFIRMATION(#{sso})   
+    }    
+   </select>
+   <select id="getOrderFullfillmentCountsByAlertKey"  statementType="CALLABLE" resultType="com.penske.apps.suppliermgmt.domain.AlertCount">
+    {
+      CALL SMC.SMC_GENERATE_ALERTS_FOR_HOME_ORDER_FULFILLMENT(#{sso})   
+    }    
+   </select>
+   <select id="getProductionAlertCountsByAlertKey"  statementType="CALLABLE" resultType="com.penske.apps.suppliermgmt.domain.AlertCount">
+    {
+      CALL SMC.SMC_GENERATE_ALERTS_FOR_HOME_PRODUCTION(#{sso})   
+    }    
+   </select>
 </mapper>

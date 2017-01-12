@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.penske.apps.suppliermgmt.common.constants.ApplicationConstants;
 import com.penske.apps.suppliermgmt.dao.HomeDashboardDao;
+import com.penske.apps.suppliermgmt.domain.AlertCount;
 import com.penske.apps.suppliermgmt.model.Alert;
 import com.penske.apps.suppliermgmt.model.AlertHeader;
 import com.penske.apps.suppliermgmt.model.Tab;
@@ -99,40 +100,51 @@ public class DefaultHomeDashboardService implements HomeDashboardService {
 	 * @return List<AlertHeader>
 	 */
 	
-	public List<AlertHeader> getAlerts(String sso,String tabKey,int userType){
+	public List<AlertHeader> getAlerts(String sso,String tabKey,int userType) {
+	    
 		LOGGER.debug("Inside getAlerts()");
 		List<AlertHeader> headers = homeDashboardDao.selectHeaders(tabKey);
-		Set<String> alertIdList = new HashSet<String>();
-		String[] countFlagArray;
-
-		Map<String,String[]> alertMap = getActionCount(sso,tabKey);
-		if(alertMap != null || alertMap.size() > 0 ){
-			alertIdList =  alertMap.keySet();
-		}
+		
+		Map<String, AlertCount> alertCounts = new HashMap<String, AlertCount>();
+		
+		switch(TabKeyVal.valueOf(tabKey)){
+            case TAB_OF : alertCounts = homeDashboardDao.getOrderFullfillmentCountsByAlertKey(sso);
+            break;
+            case TAB_OC: alertCounts = homeDashboardDao.getOrderConfirmationAlertCountsByAlertKey(sso);
+            break;
+            case TAB_PROD: alertCounts = homeDashboardDao.getProductionAlertCountsByAlertKey(sso);
+            break;
+            default : break;
+        }
+		
 		for (AlertHeader currentHeader : headers) {
+		    
 			currentHeader.setAlerts(homeDashboardDao.selectAlerts(currentHeader.getHeaderId(),userType));
+			
 			for(Alert alert : currentHeader.getAlerts()){
-				if(alertIdList != null || alertIdList.size() > 0){
-					for(String key : alertIdList){
-						if(alert.getAlertKey().equalsIgnoreCase(key)){
-							countFlagArray = alertMap.get(key);
-							alert.setCount(Integer.parseInt(countFlagArray[0]));
-								alert.setFlag(countFlagArray[1]);
-							}
-						if(alert.getActionable() == 1) {
-						switch(TabKeyVal.valueOf(tabKey)){
-							case TAB_OF : alert.setLink("./order-fulfillment?alertId=" + alert.getAlertId());
-							break;
-							case TAB_OC: alert.setLink("./order-confirmation?alertId=" + alert.getAlertId());
-							break;
-							case TAB_PROD: alert.setLink("./production?alertId=" + alert.getAlertId());
-							break;
-							case TAB_COMM: alert.setLink("./communication?alertId=" + alert.getAlertId());
-							break;
-							default : break;
-							}
-						}
-					}
+			    
+			    String alertKey = alert.getAlertKey();
+			    
+			    AlertCount alertCount = alertCounts.get(alertKey);
+			    
+			    boolean noAlertCount = alertCount == null;
+			    if(noAlertCount) continue;
+			    
+			    
+			    alert.updateAlertCount(alertCount);
+			    
+				if(alert.getActionable() == 1) {
+				switch(TabKeyVal.valueOf(tabKey)){
+					case TAB_OF : alert.setLink("./order-fulfillment?alertId=" + alert.getAlertId());
+					break;
+					case TAB_OC: alert.setLink("./order-confirmation?alertId=" + alert.getAlertId());
+					break;
+					case TAB_PROD: alert.setLink("./production?alertId=" + alert.getAlertId());
+					break;
+					case TAB_COMM: alert.setLink("./communication?alertId=" + alert.getAlertId());
+					break;
+					default : break;
+				}
 				}
 			}
 		}

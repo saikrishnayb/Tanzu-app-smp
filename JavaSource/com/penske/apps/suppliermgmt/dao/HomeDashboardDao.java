@@ -3,8 +3,10 @@ package com.penske.apps.suppliermgmt.dao;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Param;
 
+import com.penske.apps.suppliermgmt.domain.AlertCount;
 import com.penske.apps.suppliermgmt.model.Alert;
 import com.penske.apps.suppliermgmt.model.AlertHeader;
 import com.penske.apps.suppliermgmt.model.Tab;
@@ -42,5 +44,12 @@ public interface HomeDashboardDao {
 	public String getProductionActionItems(Map<String, Object> errorMap);
 	
 	public String getCommunicationActionItems(Map<String, Object> errorMap);
+	
+	@MapKey("alertKey")
+	public Map<String, AlertCount> getOrderConfirmationAlertCountsByAlertKey(@Param("sso") String sso);
+	@MapKey("alertKey")
+    public Map<String, AlertCount> getOrderFullfillmentCountsByAlertKey(@Param("sso") String sso);
+	@MapKey("alertKey")
+    public Map<String, AlertCount> getProductionAlertCountsByAlertKey(@Param("sso") String sso);
 		
 }
