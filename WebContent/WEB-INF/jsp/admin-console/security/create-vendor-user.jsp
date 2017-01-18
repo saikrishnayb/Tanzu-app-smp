@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html>  
+<html>
 <head>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
@@ -29,7 +29,7 @@
 				<a id="save-user-vendor-edit" class="buttonPrimary createVendorUser" tabIndex="-1">Add To SMC</a>
 				<div class="error-messages-container displayNone">
 					<img src="${commonStaticUrl}/images/warning.png"></img>
-					<span class=errorMsg></span>
+					<span class=errorMsg></span>  
 				</div>
 			</div>
 			<%@ include file="../../../jsp/jsp-fragment/admin-console/security/user-form-vendor.jsp"%>

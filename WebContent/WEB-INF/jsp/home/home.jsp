@@ -149,7 +149,7 @@
 										</c:choose>
 											</td>
 											<td>
-											<c:if test="${alert.flag == 'Y'}">
+												<c:if test="${alert.flag == 'Y' and TabKey ne 'TAB_PROD'}">
 												<input type="hidden" class = "flags" value="Y"/>
 												<img class="centerImage" src="${commonStaticUrl}/images/warning.png"/>
 											</c:if>
