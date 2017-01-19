@@ -1,0 +1,16 @@
+.modal-body {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.common-tree-container {
+  margin-bottom: 5px;
+}
+
+.common-tree-container .common-tree-content {
+  padding-left: 40px;
+}
+
+.common-tree-container .common-tree-content label {
+  display: block;
+}

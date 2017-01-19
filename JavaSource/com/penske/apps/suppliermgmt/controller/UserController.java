@@ -19,11 +19,11 @@ import com.penske.apps.suppliermgmt.common.constants.ApplicationConstants;
 import com.penske.apps.suppliermgmt.handler.UserHandler;
 import com.penske.apps.suppliermgmt.model.Buddies;
 import com.penske.apps.suppliermgmt.model.LabelValue;
+import com.penske.apps.suppliermgmt.model.OrgFilter;
 import com.penske.apps.suppliermgmt.model.User;
 import com.penske.apps.suppliermgmt.model.UserContext;
+import com.penske.apps.suppliermgmt.model.VendorFilter;
 import com.penske.apps.suppliermgmt.service.UserService;
-
-
 
 @Controller 
 @RequestMapping(value = "/userController")
@@ -63,8 +63,6 @@ public class UserController extends BaseController {
 		return model;
 	}
 	
-	
-
 
 	/**
 	 * Controller to add buddyList
@@ -175,4 +173,31 @@ public class UserController extends BaseController {
 		}
 		return terms;
 	}
+	
+	@RequestMapping(value = "/get-vendor-filter-modal-content")
+    @ResponseBody
+    public ModelAndView getVendorFilterModalContent() {
+        
+	    ModelAndView modelAndView = new ModelAndView("global/modal/vendor-filter-modal");
+	    
+	    List<OrgFilter> allOrgFilters = userService.getAllOrgFilters();
+	    
+	    modelAndView.addObject("allOrgFilters", allOrgFilters);
+	    
+	    return modelAndView;
+        
+    }
+	
+	@RequestMapping(value = "/get-organization-vendor-filters")
+    @ResponseBody
+    public List<VendorFilter> getOrganizationVendorFilters(@RequestParam("organizationId") int organizationId) {
+        return userService.getAllVendorFilters(organizationId);
+    }
+	
+	@RequestMapping(value = "/save-user-vendor-selections", method = {RequestMethod.POST })
+    @ResponseBody
+    public void saveUserVendorFilters(@RequestParam("vendorIds") List<Integer> vendorIds) {
+	    userService.saveUserVendorFilterSelections(vendorIds);
+    }
+	
 }

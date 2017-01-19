@@ -1,62 +1,86 @@
-$(document).ready(function() 
-{
-	$('#buddyPopup').dialog({
-	autoOpen		: false,
-	modal			: true,
-	dialogClass		: 'popupModal',
-	width			: 350,
-	minHeight		: 420,
-    position: ['center',75],
-	resizable		: false,
-	title			: 'Buddy System',
-	closeOnEscape	: false
-	});
-	 
-	$('#helpPopup').dialog({
-		autoOpen		: false,
-		modal			: true,
-		dialogClass		: 'popupModal',
-		width			: 750,
-		maxHeight		: 420,
-        height  		: 'auto',
+$(document).ready(function() {
+  
+  var $utlityModal = $('.modal-utility');
+  var $utilityList = $('#utility .utility-list');
+  
+  //Initialization ******************************************************
+  ModalUtil.initializeModal($utlityModal);
+  
+  $('#buddyPopup').dialog({
+    autoOpen    : false,
+    modal     : true,
+    dialogClass   : 'popupModal',
+    width     : 350,
+    minHeight   : 420,
+      position: ['center',75],
+    resizable   : false,
+    title     : 'Buddy System',
+    closeOnEscape : false
+  });
+   
+  $('#helpPopup').dialog({
+    autoOpen    : false,
+    modal     : true,
+    dialogClass   : 'popupModal',
+    width     : 750,
+    maxHeight   : 420,
+        height      : 'auto',
         position: ['center',75],
-		resizable		: false,
-		title			: 'Help',
-		closeOnEscape	: false,
-		close			: function (event, ui) {
-			$("#helpPopup").empty();
-		}
-	});	
-	
-	$('#helpSelector').dialog({
-		autoOpen		: false,
-		modal			: true,
-		dialogClass		: 'popupModal',
-		width			: 750,
-		maxHeight		: 420,
-        height  		: 'auto',
+    resizable   : false,
+    title     : 'Help',
+    closeOnEscape : false,
+    close     : function (event, ui) {
+      $("#helpPopup").empty();
+    }
+  }); 
+  
+  $('#helpSelector').dialog({
+    autoOpen    : false,
+    modal     : true,
+    dialogClass   : 'popupModal',
+    width     : 750,
+    maxHeight   : 420,
+        height      : 'auto',
         position: ['center',75],
-		resizable		: false,
-		title			: 'Help',
-		closeOnEscape	: false
-	});
-	
-	$('#helpLink').on("click", function () {
-		openHelpSelector();
-	});
-	
-	$('#frequentlyAsked').on("click", function () {
-		openHelp();
-	});	
+    resizable   : false,
+    title     : 'Help',
+    closeOnEscape : false
+  });
+  
+  //Listeners **********************************************************
+    
+  $('#helpLink').on("click", function () {
+    openHelpSelector();
+  });
+  
+  $('#frequentlyAsked').on("click", function () {
+    openHelp();
+  }); 
+  
+  $('#howToVideos').on("click", function () {
+    openHowToVideo();
+  });    
+  
+  $utilityList.on('click', '.vendor-filter', function() {
+    
+    showLoading();
+    
+    var $getOrgAssociationModalContentPromise = $.get(getContextRoot() + "/userController/get-vendor-filter-modal-content.htm");
+    
+    $getOrgAssociationModalContentPromise.done(function(modalContent) {
+      
+      $utlityModal.html(modalContent);
+      ModalUtil.openModal($utlityModal);
+      
+    }).always(function() {
+      hideLoading();
+    });
+    
+  });
 
-	$('#howToVideos').on("click", function () {
-		openHowToVideo();
-	});			
-	
 });
 
-
-
+// Functions ************************************************************
 function openHelpSelector()
 {
 	$("#helpSelector").show();
@@ -145,3 +169,6 @@ function openHelp()
 	            }
 	      });
 }
+
+ 
+ 

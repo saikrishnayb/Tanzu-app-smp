@@ -146,6 +146,31 @@ i{
 	width: 300px;
 }
 
+.caret {
+  color: #2D73CF;
+  display: inline-block;
+  width: 0;
+  height: 0;
+  margin-top: -3px;
+  margin-left: 2px;
+  margin-right: 2px;
+  vertical-align: middle;
+  border-top: 6px dashed;
+  border-top: 6px solid\9;
+  border-right: 6px solid transparent;
+  border-left: 6px solid transparent;
+}
+
+.flip-top {
+  transform: rotate(180deg);
+}
+.flip-right {
+  transform: rotate(-90deg);
+}
+.flip-left {
+  transform: rotate(90deg);
+}
+
 /** Bootstrap Inspired Columns ******************************/
 .row {
 	margin-right: -15px;
@@ -262,4 +287,23 @@ p.tandc-paragraph { padding-bottom: 10px; }
 
   	/* Good browsers */
   	opacity: 1 !important;
+}
+
+
+/** Main Page Styles ****************************************/
+.modal {
+  display: none;
+}
+.modal,
+.modal .modal-content,
+.modal .modal-footer {
+  position: relative;
+}
+.modal .modal-content {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.modal .modal-content .modal-footer {
+  text-align: right;
 }

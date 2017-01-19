@@ -18,18 +18,30 @@ package com.penske.apps.suppliermgmt.service.impl;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.penske.apps.adminconsole.model.Vendor;
 import com.penske.apps.suppliermgmt.common.constants.ApplicationConstants;
 import com.penske.apps.suppliermgmt.common.exception.SMCException;
 import com.penske.apps.suppliermgmt.dao.UserDAO;
+import com.penske.apps.suppliermgmt.domain.Organization;
+import com.penske.apps.suppliermgmt.domain.UserVendorFilterSelection;
 import com.penske.apps.suppliermgmt.model.Buddies;
 import com.penske.apps.suppliermgmt.model.LabelValue;
+import com.penske.apps.suppliermgmt.model.OrgFilter;
 import com.penske.apps.suppliermgmt.model.User;
+import com.penske.apps.suppliermgmt.model.UserContext;
+import com.penske.apps.suppliermgmt.model.VendorFilter;
 import com.penske.apps.suppliermgmt.service.UserService;
 
 
@@ -39,11 +51,11 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserDAO userDao;
+	@Autowired
+	private HttpSession httpSession;
 	
-		
-
 	@Override
-	public List<User> getUserDetails() throws SMCException{
+	public List<User> getUserDetails() throws SMCException {
 		try{
 			 List<User> userDetails = userDao.getUserList(ApplicationConstants.PENSKE_USER_TYPE);
 		     return userDetails;
@@ -59,23 +71,21 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void addBuddyList(List<Buddies> newBuddyList) throws SMCException {
 		try {
-		userDao.addBuddyList(newBuddyList);
-	} catch(SQLException ex){
-		throw new SMCException(ex.getErrorCode(),ex.getMessage(),ex);
-	}catch(Exception e){
-		throw new SMCException(0,e.getMessage(),e);
-	}
+    		userDao.addBuddyList(newBuddyList);
+    	} catch(SQLException ex){
+    		throw new SMCException(ex.getErrorCode(),ex.getMessage(),ex);
+    	}catch(Exception e){
+    		throw new SMCException(0,e.getMessage(),e);
+    	}
 	}
 	
 	@Override
 	public void addBuddyBasedOnselectionType(Buddies buddy) {
-	
 		userDao.addBuddyBasedOnselectionType(buddy);
 	}
 	
 	@Override
-	public void deleteBuddyList(String userSSO) throws SMCException 
-	{
+	public void deleteBuddyList(String userSSO) throws SMCException {
 		try
 		{
 			userDao.deleteBuddyList(userSSO);
@@ -90,8 +100,7 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public List<Buddies> getExistingBuddiesList(String userSSO){
-		
+	public List<Buddies> getExistingBuddiesList(String userSSO) {
 		
 		String  selectionType=getSelectionType(userSSO);
 		List<Buddies> existingBuddiesList=new ArrayList<Buddies>();
@@ -108,22 +117,15 @@ public class UserServiceImpl implements UserService {
 		return existingBuddiesList;
 	}
 	
-	
 	@Override
 	public String getSelectionType(String loggedInSso) {
-		
 		return userDao.getSelectionType(loggedInSso);
 	}
-
-	
-
 
 	@Override
 	public List<LabelValue> getDeptDetailList() {
 		return userDao.getDeptDetailList();
 	}
-
-
 
 	@Override
 	public String getTermsAndCondition(){
@@ -135,12 +137,74 @@ public class UserServiceImpl implements UserService {
 		return terms;
 	}
 
+    @Override
+    public List<OrgFilter> getAllOrgFilters() {
+        
+        UserContext userContext = (UserContext) httpSession.getAttribute(ApplicationConstants.USER_MODEL);
+        String userSSO = userContext.getUserSSO();
+        
+        List<OrgFilter> orgFilters = new ArrayList<OrgFilter>();
+        
+        List<Organization> allOrganizations = userDao.getAllOrganizations();
+        List<UserVendorFilterSelection> userVendorFilterSelections = userDao.getUserVendorFilterSelections(userSSO);
+        
+        //Lets create a quick map of all vendor ids the user selected by org id to make it easier to use later in this method
+        Map<Integer, List<Integer>> userVendorIdSelectionsByOrgId = new HashMap<Integer, List<Integer>>();
+        
+        for (UserVendorFilterSelection userVendorFilterSelection : userVendorFilterSelections) {
+            
+            int orgId = userVendorFilterSelection.getOrgId();
+            int vendorId = userVendorFilterSelection.getVendorId();
+            
+            boolean containsOrgId = userVendorIdSelectionsByOrgId.containsKey(orgId);
+            
+            if(containsOrgId)
+                userVendorIdSelectionsByOrgId.get(orgId).add(vendorId);
+            else
+                userVendorIdSelectionsByOrgId.put(orgId, new ArrayList<Integer>(Arrays.asList(vendorId)));
+        }
+        
+        for (Organization organization : allOrganizations) {
+            
+            int organizationId = organization.getOrganizationId();
+            
+            List<Integer> vendorIdSelections = userVendorIdSelectionsByOrgId.get(organizationId);
+            
+            orgFilters.add(new OrgFilter(organization, vendorIdSelections));
+            
+        }
+        
+        return orgFilters;
+    }
+    
+    @Override
+    public List<VendorFilter> getAllVendorFilters(int organizationId) {
+        
+        List<VendorFilter> vendorFilters = new ArrayList<VendorFilter>();
+        
+        Organization organization = userDao.getOrganizationWithOrgId(organizationId);
+        
+        for (Vendor vendor : organization.getVendors())
+            vendorFilters.add(new VendorFilter(vendor));
+        
+        return vendorFilters;
+    }
 
 
-	
 
+    @Override
+    public void saveUserVendorFilterSelections(Collection<Integer> vendorIds) {
 
-
-	
+        UserContext userContext = (UserContext) httpSession.getAttribute(ApplicationConstants.USER_MODEL);
+        String userSSO = userContext.getUserSSO();
+        
+        userDao.deletePreviousUserVendorFilters(userSSO);
+        
+        boolean noVendorIdSelections = vendorIds == null || vendorIds.size() == 0;
+        if(noVendorIdSelections) return;
+        
+        userDao.saveUserVendorFilterSelections(vendorIds, userSSO);
+        
+    }
 	
 }

@@ -19,20 +19,22 @@ package com.penske.apps.suppliermgmt.dao;
 
 import java.sql.Date;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.penske.apps.suppliermgmt.domain.Organization;
+import com.penske.apps.suppliermgmt.domain.UserVendorFilterSelection;
 import com.penske.apps.suppliermgmt.model.Buddies;
 import com.penske.apps.suppliermgmt.model.LabelValue;
 import com.penske.apps.suppliermgmt.model.User;
 
-
 public interface UserDAO {
 		
-	public  void deleteBuddyList(String userSSO) throws  SQLException;
+	public void deleteBuddyList(String userSSO) throws  SQLException;
 	
-	public  void addBuddyList(List<Buddies> newBuddyList)throws  SQLException; 
+	public void addBuddyList(List<Buddies> newBuddyList)throws  SQLException; 
 
 	public List<User> getUserList(@Param("userType")int userType)throws  SQLException;
 	
@@ -49,9 +51,11 @@ public interface UserDAO {
 
 	public String getTermsAndCondition(@Param("date")Date date,@Param("status")String status);
 
+	public List<UserVendorFilterSelection> getUserVendorFilterSelections(@Param("sso") String sso);
 	
+	public List<Organization> getAllOrganizations();
+	public Organization getOrganizationWithOrgId(@Param("orgId") int orgId);
+	public void deletePreviousUserVendorFilters(@Param("sso") String sso);
+	public void saveUserVendorFilterSelections(@Param("vendorIds") Collection<Integer> vendorIds, @Param("sso") String sso);
 	
-
-	
-	
-	}
+}

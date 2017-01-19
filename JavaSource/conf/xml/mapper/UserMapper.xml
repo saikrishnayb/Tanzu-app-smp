@@ -107,6 +107,67 @@
 		and START_DATE &lt;= #{date} 
 		and END_DATE &gt;= #{date}
 	</select>
+ 
+ 
+ 
+   
+  <resultMap id="organizationMap" type="com.penske.apps.suppliermgmt.domain.Organization">
+    <result property="organizationId" column="ORG_ID"/>
+    <result property="name" column="NAME"/>
+    <result property="description" column="DESCRIPTION"/>
+    <result property="parentOrganizationId" column="PARENT_ORG_ID"/>
+    
+    <collection property="vendors" column="{orgId = ORG_ID}" ofType="com.penske.apps.adminconsole.model.Vendor" 
+                                                             select="com.penske.apps.adminconsole.dao.VendorDao.getAllVendors"
+                                                             fetchType="lazy"/>
+    
+  </resultMap>
+  
+  <select id="getAllOrganizations" resultMap="organizationMap">
+    SELECT ORG_ID,
+           NAME,
+           DESCRIPTION,
+           PARENT_ORG_ID
+      FROM SMC_ORG_MASTER
+     WHERE ORG_ID != 1 --Dont show the base penske org -Dave Roth 1/18/2017
+  </select>
+  
+  <select id="getOrganizationWithOrgId" resultMap="organizationMap">
+    SELECT ORG_ID,
+           NAME,
+           DESCRIPTION,
+           PARENT_ORG_ID
+      FROM SMC_ORG_MASTER
+     WHERE ORG_ID = #{orgId}
+  </select>
+  
+  <select id="getUserVendorFilterSelections" resultType="com.penske.apps.suppliermgmt.domain.UserVendorFilterSelection">
+         SELECT orgMaster.ORG_ID,
+                vendorFilter.VENDOR_ID
+          FROM SMC_VENDOR_FILTER vendorFilter
+               INNER JOIN SMC_ORG_VENDOR_ASSOC vendorAssoc
+               ON vendorAssoc.VENDOR_ID = vendorFilter.VENDOR_ID
+               
+               INNER JOIN SMC_ORG_MASTER orgMaster
+               ON orgMaster.ORG_ID = vendorAssoc.ORG_ID
+    
+         WHERE vendorFilter.USER_ID = #{sso}
+  </select>
+  
+  <delete id="deletePreviousUserVendorFilters">
+    DELETE FROM SMC_VENDOR_FILTER
+          WHERE USER_ID = #{sso}
+  </delete>
+  
+  <insert id="saveUserVendorFilterSelections">
+    INSERT INTO SMC_VENDOR_FILTER (VENDOR_ID,USER_ID)
+         VALUES 
+               <foreach collection="vendorIds" item="vendorId" separator=",">
+                (#{vendorId}, #{sso})
+               </foreach>
+  
+  </insert>
+  
  		
 </mapper>
 

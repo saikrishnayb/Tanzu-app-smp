@@ -1,15 +1,14 @@
 package com.penske.apps.suppliermgmt.service;
 
+import java.util.Collection;
 import java.util.List;
-
-
-
-
 
 import com.penske.apps.suppliermgmt.common.exception.SMCException;
 import com.penske.apps.suppliermgmt.model.Buddies;
 import com.penske.apps.suppliermgmt.model.LabelValue;
+import com.penske.apps.suppliermgmt.model.OrgFilter;
 import com.penske.apps.suppliermgmt.model.User;
+import com.penske.apps.suppliermgmt.model.VendorFilter;
 
 public interface UserService {
 
@@ -27,6 +26,10 @@ public interface UserService {
 
 	public List<LabelValue> getDeptDetailList();
 
-	public String getTermsAndCondition(); 
+	public String getTermsAndCondition();
+	
+	public List<OrgFilter> getAllOrgFilters();
+	public List<VendorFilter> getAllVendorFilters(int organizationId);
+	public void saveUserVendorFilterSelections(Collection<Integer> vendorIds);
 
 }
