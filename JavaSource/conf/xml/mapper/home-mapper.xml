@@ -41,7 +41,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-ma
 				SA.ALERT_NAME AS alertName,
 				SA.ACTIONABLE AS actionable,
 				SA.HELP_TEXT AS helpText,
-				ST.TEMPLATE_KEY AS templateKey
+				ST.TEMPLATE_KEY AS templateKey,
+				SA.COMPLIANCE_TEXT AS complianceText
 		
 		FROM	SMC.SMC_ALERTS SA
 		LEFT JOIN  	SMC.SMC_SEARCH_TEMPLATES ST

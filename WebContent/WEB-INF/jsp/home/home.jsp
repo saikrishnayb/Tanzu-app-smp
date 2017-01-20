@@ -151,7 +151,7 @@
 											<td>
 												<c:if test="${alert.flag == 'Y' and TabKey ne 'TAB_PROD'}">
 												<input type="hidden" class = "flags" value="Y"/>
-												<img class="centerImage" src="${commonStaticUrl}/images/warning.png"/>
+												<img rel="tooltip" class="centerImage" src="${commonStaticUrl}/images/warning.png" title="${alert.complianceText}"/>
 											</c:if>
 										</td>
 									</tr>

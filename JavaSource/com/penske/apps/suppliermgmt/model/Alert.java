@@ -32,16 +32,17 @@ public class Alert {
 	private int count;
 	private String flag;
 	private String alertKey;
+	private String complianceText;
 	
 	//Modified Accessors
-	public void updateAlertCount(AlertCount alertCount) {
-	    
-	    if(alertCount == null)
-	        throw new IllegalArgumentException("AlertCount must not be null");
-	    
-	    this.count = alertCount.getAlertCount();
-	    this.flag = alertCount.getNonCompliant();
-	}
+		public void updateAlertCount(AlertCount alertCount) {
+		    
+		    if(alertCount == null)
+		        throw new IllegalArgumentException("AlertCount must not be null");
+		    
+		    this.count = alertCount.getAlertCount();
+		    this.flag = alertCount.getNonCompliant();
+		}
 
 	// Getters
 	public int getAlertId() {
@@ -103,6 +104,7 @@ public class Alert {
 		return link;
 	}
 
+	
 	// Setters
 	public void setAlertId(int alertId) {
 		this.alertId = alertId;
@@ -209,5 +211,9 @@ public class Alert {
 
 	public void setTemplateKey(String templateKey) {
 		this.templateKey = templateKey;
+	}
+
+	public String getComplianceText() {
+		return complianceText;
 	}
 }
