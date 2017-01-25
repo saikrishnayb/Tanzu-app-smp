@@ -46,6 +46,11 @@ public class DefaultVendorService implements VendorService {
 			return null;
 		}
 		
+		//Sets the vendorName search parameter to all upper case allowing for case insensitivity in the search
+		if(vendor.getVendorName() != null){
+			vendor.setVendorName(vendor.getVendorName().toUpperCase());
+		}
+		
 		return vendorDao.getVendorsBySearchConditions(orgId,vendor);
 	}
 	
