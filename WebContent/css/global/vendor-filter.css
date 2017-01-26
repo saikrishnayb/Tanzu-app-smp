@@ -7,6 +7,10 @@
   margin-bottom: 5px;
 }
 
+.common-tree-container .common-tree-header.closed + .common-tree-content {
+  display: none;
+}
+
 .common-tree-container .common-tree-content {
   padding-left: 40px;
 }

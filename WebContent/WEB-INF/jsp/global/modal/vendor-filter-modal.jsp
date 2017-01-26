@@ -11,7 +11,7 @@
       <c:set value="${empty orgFilter.vendorFilters}" var="noVendors"/>
   
       <div class="common-tree-container" data-organization-id="${orgFilter.orgId}">
-        <div class="common-tree-header">
+        <div class="common-tree-header <c:if test="${noVendors}">closed</c:if>">
           <span class="caret cursor-pointer <c:if test="${noVendors}">flip-right</c:if>"></span>
           
           <label>
