@@ -82,6 +82,12 @@ $('.btn-save-vendor-filter').on('click', function() {
   
 });
 
+$('.btn-clear-vendors').on('click', function() {
+  
+  $commonTreeContainer.find('.vendor-input, .org-input').prop('checked', false);
+  
+});
+
 
 // Helper Function ************************************************************/
 

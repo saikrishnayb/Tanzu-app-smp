@@ -41,6 +41,7 @@
   </div>
   
   <div class="modal-footer">
+    <a class="buttonSecondary btn btn-clear-vendors">Clear All</a>
     <a class="buttonPrimary btn btn-save-vendor-filter">Save</a>
   </div>
   
