@@ -19,13 +19,11 @@ import com.penske.apps.adminconsole.model.UnitException;
 public interface ExceptionDao {
 
 	// Global Exception Dao Methods
-	public GlobalException getException(int id);
-	
 	public String getComponent(int dataId);
 	
 	public String getVehicle(int dataId);
 	
-	public List<GlobalException> getGlobalExceptions();
+	public List<GlobalException> getGlobalExceptions(@Param("exceptionId") Integer exceptionId);
 	
 	public void deleteGlobalException(int id);
 	

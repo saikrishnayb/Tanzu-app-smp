@@ -2,44 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.2//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.penske.apps.adminconsole.dao.ExceptionDao">
 
-	<select id="getException" resultType="com.penske.apps.adminconsole.model.GlobalException">
-		<!-- SELECT	GLOBAL_EXCEPTION_ID as exceptionId,
-				DATA_ID as dataId,
-				DATA_TYPE as dataType,
-				TO_BE_PROVIDED_BY_PO as providerPo,
-				TO_BE_PROVIDED_BY_PO_SUB as providerPoSub,
-				CREATED_BY as createdByName,
-				PO_GROUP as poGroup
-				
-		FROM	SMC.SMC_GLOBAL_EXCEPTIONS
-		
-		WHERE	GLOBAL_EXCEPTION_ID = #{id}
-		 -->
-		 SELECT excp.GLOBAL_EXCEPTION_ID as exceptionId , NEW_EXCEPTION as isNew
-		,FULL_NAME as componentName,
-		POC.PO_CATEGORY ||'-'|| SUBC.PO_SUBCATEGORY as providerPo,
-		(SELECT SUBSTR(xmlserialize(xmlagg(xmltext(CONCAT( ', ',POC.PO_CATEGORY ||'-'|| SUBC.PO_SUBCATEGORY))) as VARCHAR(1024)), 3)
-		FROM SMC.SMC_GLOBAL_EXCEPTIONS_PO_CAT_GRP grp 
-		JOIN SMC.SMC_PO_CATEGORY_ASSOC asoc ON grp.PO_CATEGORY_ASSOC_ID = asoc.PO_CATEGORY_ASSOC_ID
-		LEFT JOIN 
-		SMC.SMC_PO_CATEGORY POC 
-		ON POC.PO_CATEGORY_ID = asoc.PO_CATEGORY_ID
-		LEFT JOIN SMC.SMC_PO_SUBCATEGORY SUBC
-		ON SUBC.PO_SUBCATEGORY_ID = asoc.PO_SUBCATEGORY_ID
-		WHERE grp.GLOBAL_EXCEPTION_ID=excp.GLOBAL_EXCEPTION_ID
-		) as POGROUP
-		
-		FROM SMC.SMC_GLOBAL_EXCEPTIONS excp 
-		JOIN SMC.V_SMC_AVAILABLE_COMPONENTS as comps ON comps.COMPONENT_ID= excp.COMPONENT_ID
-		JOIN SMC.SMC_PO_CATEGORY_ASSOC asoc ON excp.PROVIDER_PO_CATEGORY_ASSOC_ID = asoc.PO_CATEGORY_ASSOC_ID
-		LEFT JOIN 
-		SMC.SMC_PO_CATEGORY POC 
-		ON POC.PO_CATEGORY_ID = asoc.PO_CATEGORY_ID
-		LEFT JOIN SMC.SMC_PO_SUBCATEGORY SUBC
-		ON SUBC.PO_SUBCATEGORY_ID = asoc.PO_SUBCATEGORY_ID
-		WHERE	excp.GLOBAL_EXCEPTION_ID = #{id}
-	</select>
-	
 	<select id="getComponent" resultType="String">
 		SELECT	COMPONENT_NAME
 		
@@ -83,8 +45,41 @@
 		AND		poa.PO_CATEGORY_ID = poc.PO_CATEGORY_ID
 		AND		sub.PO_SUBCATEGORY_ID = poa.PO_SUBCATEGORY_ID
 	</select>
+ 
+   <resultMap type="com.penske.apps.adminconsole.model.GlobalExceptionCategoryGroup" id="globalExceptionCategoryGroupMap">
+      <result property="poCategorySubcategory"   column="poCategorySubcategory"/>
+      <association property="vendor" javaType="com.penske.apps.adminconsole.model.Vendor" column="VENDOR_ID" select="com.penske.apps.adminconsole.dao.VendorDao.getViewVendorInformation" />
+   </resultMap>
+ 
+    <resultMap type="com.penske.apps.adminconsole.model.GlobalException" id="globalExceptionMap">
+    
+      <result property="exceptionId"   column="exceptionId"/>
+      <result property="isNew"         column="isNew"/>
+      <result property="componentName" column="componentName"/>
+      <result property="poGroup"       column="POGROUP"/>
+      <result property="exceptionId"   column="exceptionId"/>
+      
+      <association property="providerVendor" javaType="com.penske.apps.adminconsole.model.Vendor" column="PROVIDER_VENDOR_ID" select="com.penske.apps.adminconsole.dao.VendorDao.getViewVendorInformation" />
+      <collection property="poCategoryGroups" column="exceptionId" select="getGlobalExceptionCategoryGroups" />
+    
+    </resultMap>
+    
+    <select id="getGlobalExceptionCategoryGroups" resultMap="globalExceptionCategoryGroupMap">
+         SELECT POC.PO_CATEGORY ||'-'|| SUBC.PO_SUBCATEGORY AS poCategorySubcategory,
+                grp.VENDOR_ID
+         
+           FROM SMC.SMC_GLOBAL_EXCEPTIONS_PO_CAT_GRP grp 
+           JOIN SMC.SMC_PO_CATEGORY_ASSOC asoc 
+                ON grp.PO_CATEGORY_ASSOC_ID = asoc.PO_CATEGORY_ASSOC_ID
+      LEFT JOIN SMC.SMC_PO_CATEGORY POC 
+                ON POC.PO_CATEGORY_ID = asoc.PO_CATEGORY_ID
+      LEFT JOIN SMC.SMC_PO_SUBCATEGORY SUBC
+                ON SUBC.PO_SUBCATEGORY_ID = asoc.PO_SUBCATEGORY_ID
+          WHERE grp.GLOBAL_EXCEPTION_ID = #{id}
+    
+    </select>
 	
-	<select id="getGlobalExceptions" resultType="com.penske.apps.adminconsole.model.GlobalException">
+	<select id="getGlobalExceptions" resultMap="globalExceptionMap">
 		<!-- 	SELECT	GLOBAL_EXCEPTION_ID as exceptionId,
 				DATA_ID as dataId,
 				DATA_TYPE as dataType,
@@ -94,29 +89,36 @@
 				PO_GROUP as poGroup
 				
 		FROM	SMC.SMC_GLOBAL_EXCEPTIONS -->
-		SELECT excp.GLOBAL_EXCEPTION_ID as exceptionId , NEW_EXCEPTION as isNew
-		,FULL_NAME as componentName,
-		POC.PO_CATEGORY ||'-'|| SUBC.PO_SUBCATEGORY as providerPo,
-		(SELECT SUBSTR(xmlserialize(xmlagg(xmltext(CONCAT( ', ',POC.PO_CATEGORY ||'-'|| SUBC.PO_SUBCATEGORY))) as VARCHAR(1024)), 3)
-		FROM SMC.SMC_GLOBAL_EXCEPTIONS_PO_CAT_GRP grp 
-		JOIN SMC.SMC_PO_CATEGORY_ASSOC asoc ON grp.PO_CATEGORY_ASSOC_ID = asoc.PO_CATEGORY_ASSOC_ID
-		LEFT JOIN 
-		SMC.SMC_PO_CATEGORY POC 
-		ON POC.PO_CATEGORY_ID = asoc.PO_CATEGORY_ID
-		LEFT JOIN SMC.SMC_PO_SUBCATEGORY SUBC
-		ON SUBC.PO_SUBCATEGORY_ID = asoc.PO_SUBCATEGORY_ID
-		WHERE grp.GLOBAL_EXCEPTION_ID=excp.GLOBAL_EXCEPTION_ID
-		) as POGROUP
+		SELECT excp.GLOBAL_EXCEPTION_ID as exceptionId, 
+               excp.NEW_EXCEPTION as isNew,
+               comps.FULL_NAME as componentName,
+		       POC.PO_CATEGORY ||'-'|| SUBC.PO_SUBCATEGORY as providerPo,
+         	   (SELECT SUBSTR(xmlserialize(xmlagg(xmltext(CONCAT( ', ',POC.PO_CATEGORY ||'-'|| SUBC.PO_SUBCATEGORY))) as VARCHAR(1024)), 3)
+         		FROM SMC.SMC_GLOBAL_EXCEPTIONS_PO_CAT_GRP grp 
+         		JOIN SMC.SMC_PO_CATEGORY_ASSOC asoc ON grp.PO_CATEGORY_ASSOC_ID = asoc.PO_CATEGORY_ASSOC_ID
+         		LEFT JOIN 
+         		SMC.SMC_PO_CATEGORY POC 
+         		ON POC.PO_CATEGORY_ID = asoc.PO_CATEGORY_ID
+         		LEFT JOIN SMC.SMC_PO_SUBCATEGORY SUBC
+         		ON SUBC.PO_SUBCATEGORY_ID = asoc.PO_SUBCATEGORY_ID
+         		WHERE grp.GLOBAL_EXCEPTION_ID=excp.GLOBAL_EXCEPTION_ID
+         	   ) as POGROUP,
+              excp.PROVIDER_VENDOR_ID
+             
 		
-		FROM SMC.SMC_GLOBAL_EXCEPTIONS excp 
-		JOIN SMC.V_SMC_AVAILABLE_COMPONENTS as comps ON comps.COMPONENT_ID= excp.COMPONENT_ID
-		JOIN SMC.SMC_PO_CATEGORY_ASSOC asoc ON excp.PROVIDER_PO_CATEGORY_ASSOC_ID = asoc.PO_CATEGORY_ASSOC_ID
-		LEFT JOIN 
-		SMC.SMC_PO_CATEGORY POC 
-		ON POC.PO_CATEGORY_ID = asoc.PO_CATEGORY_ID
-		LEFT JOIN SMC.SMC_PO_SUBCATEGORY SUBC
-		ON SUBC.PO_SUBCATEGORY_ID = asoc.PO_SUBCATEGORY_ID
-
+		  FROM SMC.SMC_GLOBAL_EXCEPTIONS excp 
+		  JOIN SMC.V_SMC_AVAILABLE_COMPONENTS as comps 
+               ON comps.COMPONENT_ID= excp.COMPONENT_ID
+		  JOIN SMC.SMC_PO_CATEGORY_ASSOC asoc 
+               ON excp.PROVIDER_PO_CATEGORY_ASSOC_ID = asoc.PO_CATEGORY_ASSOC_ID
+     LEFT JOIN SMC.SMC_PO_CATEGORY POC 
+		       ON POC.PO_CATEGORY_ID = asoc.PO_CATEGORY_ID
+     LEFT JOIN SMC.SMC_PO_SUBCATEGORY SUBC
+		       ON SUBC.PO_SUBCATEGORY_ID = asoc.PO_SUBCATEGORY_ID
+         
+         <if test="exceptionId != null">
+           WHERE excp.GLOBAL_EXCEPTION_ID = #{exceptionId}
+         </if>
 	</select>
 	
 	<delete id="deleteGlobalException">

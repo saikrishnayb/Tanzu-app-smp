@@ -5,17 +5,26 @@
 	<div class="blank"></div>
 	<div class="line">
 		<div id="list-div">
-		<label>PO Group:</label>
+		<label>PO &#38; Vendor Associations:</label>
+    
 		<ul id="po-group-items">
-			<li>
-				${exception.poGroup}
-			</li>
+    
+           <c:forEach items="${exception.poCategoryGroups}" var="poCategoryGroup">
+             <li>
+              <label>${poCategoryGroup.poCategorySubcategory} -</label>
+              <span>${poCategoryGroup.vendor.vendorName}</span>
+              <span>${poCategoryGroup.vendor.city},</span>
+              <span>${poCategoryGroup.vendor.state}</span>
+              <span>${poCategoryGroup.vendor.zipCode}</span>
+              </li>
+            </c:forEach>
+			
 		</ul>
 		</div>
 	</div>
 	<div class="blank"></div>
 	<div class="line">
-		<label>To be Provided By:</label>${exception.providerPo}
+		<label>To be Provided By:</label>${exception.providerVendor.vendorName}
 	</div>
 	<!-- <div class="blank"></div>
 	<div class="line">

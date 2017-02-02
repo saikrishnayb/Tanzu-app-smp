@@ -35,8 +35,8 @@
 #po-group-items{
 	
 	list-style:none;
-	display:inline-block;
-	margin-left:0px;
+	display:block;
+	margin-left: 25px;
 }
 #list-div{
 	

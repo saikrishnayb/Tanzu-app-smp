@@ -1,5 +1,7 @@
 package com.penske.apps.adminconsole.model;
 
+import java.util.List;
+
 /**
  * This is the basic model object for a Global Exception, which is
  * displayed in the datatable on the Global Exceptions page.
@@ -17,97 +19,82 @@ public class GlobalException {
 	private int createdById;		// ID of user/group that created the exception
 	private String createdByName;	// name of user/group that created the exception
 	private String poGroup;			// PO Group
-	private String isNew;		
+	private String isNew;
 	
-	// Getters
-	public int getExceptionId() {
-		return exceptionId;
-	}
-
-	public int getDataId() {
-		return dataId;
-	}
+	private Vendor providerVendor;
+	private List<GlobalExceptionCategoryGroup> poCategoryGroups;
+    
+    public int getExceptionId() {
+        return exceptionId;
+    }
+    public void setExceptionId(int exceptionId) {
+        this.exceptionId = exceptionId;
+    }
+    public int getDataId() {
+        return dataId;
+    }
+    public void setDataId(int dataId) {
+        this.dataId = dataId;
+    }
+    public String getDataType() {
+        return dataType;
+    }
+    public void setDataType(String dataType) {
+        this.dataType = dataType;
+    }
+    public String getComponentName() {
+        return componentName;
+    }
+    public void setComponentName(String componentName) {
+        this.componentName = componentName;
+    }
+    public String getProviderPo() {
+        return providerPo;
+    }
+    public void setProviderPo(String providerPo) {
+        this.providerPo = providerPo;
+    }
+    public String getProviderPoSub() {
+        return providerPoSub;
+    }
+    public void setProviderPoSub(String providerPoSub) {
+        this.providerPoSub = providerPoSub;
+    }
+    public int getCreatedById() {
+        return createdById;
+    }
+    public void setCreatedById(int createdById) {
+        this.createdById = createdById;
+    }
+    public String getCreatedByName() {
+        return createdByName;
+    }
+    public void setCreatedByName(String createdByName) {
+        this.createdByName = createdByName;
+    }
+    public String getPoGroup() {
+        return poGroup;
+    }
+    public void setPoGroup(String poGroup) {
+        this.poGroup = poGroup;
+    }
+    public String getIsNew() {
+        return isNew;
+    }
+    public void setIsNew(String isNew) {
+        this.isNew = isNew;
+    }
+    public Vendor getProviderVendor() {
+        return providerVendor;
+    }
+    public void setProviderVendor(Vendor providerVendor) {
+        this.providerVendor = providerVendor;
+    }
+    public List<GlobalExceptionCategoryGroup> getPoCategoryGroups() {
+        return poCategoryGroups;
+    }
+    public void setPoCategoryGroups(List<GlobalExceptionCategoryGroup> poCategoryGroups) {
+        this.poCategoryGroups = poCategoryGroups;
+    } 
 	
-	public String getDataType() {
-		return dataType;
-	}
-	
-	public String getComponentName() {
-		return componentName;
-	}
-	
-	public String getProviderPo() {
-		return providerPo;
-	}
-
-	public String getProviderPoSub() {
-		return providerPoSub;
-	}
-
-	public int getCreatedById() {
-		return createdById;
-	}
-
-	public String getCreatedByName() {
-		return createdByName;
-	}
-
-	public String getPoGroup() {
-		return poGroup;
-	}
-
-	// Setters
-	public void setExceptionId(int exceptionId) {
-		this.exceptionId = exceptionId;
-	}
-
-	public void setDataId(int dataId) {
-		this.dataId = dataId;
-	}
-
-	public void setDataType(String dataType) {
-		this.dataType = dataType;
-	}
-
-	public void setComponentName(String componentName) {
-		this.componentName = componentName;
-	}
-
-	public void setProviderPo(String providerPo) {
-		this.providerPo = providerPo;
-	}
-
-	public void setProviderPoSub(String providerPoSub) {
-		this.providerPoSub = providerPoSub;
-	}
-
-	public void setCreatedById(int createdById) {
-		this.createdById = createdById;
-	}
-
-	public void setCreatedByName(String createdByName) {
-		this.createdByName = createdByName;
-	}
-
-	public void setPoGroup(String poGroup) {
-		this.poGroup = poGroup;
-	}
-
-	@Override
-	public String toString() {
-		return "GlobalException [exceptionId=" + exceptionId + ", dataId="
-				+ dataId + ", dataType=" + dataType + ", componentName="
-				+ componentName + ", providerPo=" + providerPo
-				+ ", providerPoSub=" + providerPoSub + ", createdById="
-				+ createdById + ", createdByName=" + createdByName
-				+ ", poGroup=" + poGroup + "]";
-	}
-
-	public String getIsNew() {
-		return isNew;
-	}
-
-	public void setIsNew(String isNew) {
-		this.isNew = isNew;
-	}
 }

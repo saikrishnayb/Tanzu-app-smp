@@ -23,7 +23,7 @@ $(document).ready(function() {
 		autoOpen: false,
 		modal: true,
 		dialogClass: 'popupModal',
-		width: 350,
+		width: 600,
 		minHeight: 235,
 		resizable: false,
 		title: 'Delete Global Exception',

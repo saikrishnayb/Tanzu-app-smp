@@ -83,15 +83,17 @@ public class DefaultExceptionService implements ExceptionService {
 
 		// get the Exception through SQL, then check table name in PRIVATE checkTableName()
 		// to get the component name needed to populate exception.componentName
-		GlobalException exception = exceptionDao.getException(exceptionId);
+	    
+	    List<GlobalException> exceptions = exceptionDao.getGlobalExceptions(null);
+	    
 		//exception = getComponentName(exception);
-		return exception;
+		return exceptions.size() > 0? exceptions.get(0): null;
 	}
 	
 	@Override
 	public List<GlobalException> getGlobalExceptions(){
 		
-		List<GlobalException> exceptions = exceptionDao.getGlobalExceptions();
+		List<GlobalException> exceptions = exceptionDao.getGlobalExceptions(null);
 	/*	
 	 	Iterator<GlobalException> iter = exceptions.iterator();
 		

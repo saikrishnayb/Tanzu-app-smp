@@ -17,9 +17,9 @@
 	<tl:isAuthorized tabName="Admin Console" secFunction="GLOBAL_EXCEPTIONS_MANAGEMENT">
 		<div class="leftNavGroup"><a href="${pageContext.request.contextPath}/admin-console/app-config/global-exceptions.htm" id="left-nav-global-exceptions" onclick="javascript:loadProcessImage();">Global Exceptions</a></div>
 	</tl:isAuthorized>
-	<tl:isAuthorized tabName="Admin Console" secFunction="UNIT_EXCEPTIONS_MANAGEMENT">
-		<div class="leftNavGroup"><a href="${pageContext.request.contextPath}/admin-console/app-config/unit-exceptions.htm" id="left-nav-unit-exceptions" onclick="javascript:loadProcessImage();">Unit Exceptions</a></div>
-	</tl:isAuthorized>
+<%-- 	<tl:isAuthorized tabName="Admin Console" secFunction="UNIT_EXCEPTIONS_MANAGEMENT"> --%>
+<%-- 		<div class="leftNavGroup"><a href="${pageContext.request.contextPath}/admin-console/app-config/unit-exceptions.htm" id="left-nav-unit-exceptions" onclick="javascript:loadProcessImage();">Unit Exceptions</a></div> --%>
+<%-- 	</tl:isAuthorized> --%>
 	<tl:isAuthorized tabName="Admin Console" secFunction="MANAGE_DELAY">
 		<div class="leftNavGroup"><a href="${pageContext.request.contextPath}/admin-console/app-config/delay-management.htm" id="left-nav-delay-management" onclick="javascript:loadProcessImage();">Delay Management</a></div>
 	</tl:isAuthorized>

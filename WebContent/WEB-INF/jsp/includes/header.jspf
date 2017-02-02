@@ -1,5 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="/WEB-INF/tld/taglib.tld" prefix="tl"%>
 <%--
 *******************************************************************************
 *
@@ -62,9 +63,12 @@
 						<c:if test="${displayLink eq 'display' }">
 							<li><a href="#" onclick="openBuddyPopup();return false;">Buddy</a></li>
               
-                          <li>
-                            <a class="vendor-filter">Vendor Filter</a>
-                          </li>
+                              <tl:isAuthorized tabName="Admin Console" secFunction="VENDOR_FILTER"> 
+                                <li>
+                                  <a class="vendor-filter">Vendor Filter</a>
+                                </li>
+                               </tl:isAuthorized> 
+                          
 						</c:if>
 						<li><a  href="#" id="helpLink">Help</a></li>
 						<li><a class="exit" href="#" onclick="logOut();">Log off</a></li>

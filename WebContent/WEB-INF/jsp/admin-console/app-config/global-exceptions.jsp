@@ -22,7 +22,7 @@
 						<tr>
 							<th class="viewCol"></th>
 							<th>Component Name</th>
-							<th>PO Group</th>
+							<th>PO &#38; Vendor Association</th>
 							<th>To be Provided By</th>
 						</tr>
 					</thead>
@@ -35,9 +35,18 @@
 								<input type="hidden" class="global-exception-id" value="${exception.exceptionId}"/>
 							</td>
 							<td class="component-name">${exception.componentName}</td>
-							<td class="po-group">${exception.poGroup}</td>
+							<td class="po-group">
+                              <c:forEach items="${exception.poCategoryGroups}" var="poCategoryGroup">
+                                <label>${poCategoryGroup.poCategorySubcategory} -</label>
+                                <span>${poCategoryGroup.vendor.vendorName}</span>
+                                <span>${poCategoryGroup.vendor.city},</span>
+                                <span>${poCategoryGroup.vendor.state}</span>
+                                <span>${poCategoryGroup.vendor.zipCode}</span>
+                                <br>
+                              </c:forEach>
+                            </td>
 							<td class="provided-by">
-							${exception.providerPo}
+							${exception.providerVendor.vendorName}
 							<input type="hidden" class="provided-by-po-sub" value="${exception.providerPoSub}"/>
 							</td>
 						</tr>

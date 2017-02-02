@@ -219,6 +219,7 @@ public class AppConfigController {
 	
 	/* ================== Unit Exceptions ================== */
 	@RequestMapping("/unit-exceptions")
+	@Deprecated
 	public ModelAndView getUnitExcpetionsPage(){
 		ModelAndView mav = new ModelAndView("/admin-console/app-config/unit-exceptions");
 		List<UnitException> exceptions = exceptionService.getUnitExceptions();
