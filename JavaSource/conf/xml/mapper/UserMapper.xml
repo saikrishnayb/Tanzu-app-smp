@@ -152,6 +152,7 @@
                ON orgMaster.ORG_ID = vendorAssoc.ORG_ID
     
          WHERE vendorFilter.USER_ID = #{sso}
+           AND orgMaster.PARENT_ORG_ID = 1 -- only loads orgs which have a parent equal to 1 (Penske) -- Dave Roth
   </select>
   
   <delete id="deletePreviousUserVendorFilters">
