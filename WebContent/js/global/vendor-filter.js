@@ -76,10 +76,11 @@ $('.btn-save-vendor-filter').on('click', function() {
   var $saveUserVendorSelectionsPromise = $.post(getContextRoot() + "/userController/save-user-vendor-selections.htm", {vendorIds: selectedVendorIds.join()});
   
   $saveUserVendorSelectionsPromise.done(function() {
-    hideLoading();
-    ModalUtil.closeModal($('.modal-utility'))
+	  //commented out so that the loading spinner stays visible until page refresh
+	  //hideLoading();
+    ModalUtil.closeModal($('.modal-utility'));
+    refreshPage();
   });
-  
 });
 
 $('.btn-clear-vendors').on('click', function() {
