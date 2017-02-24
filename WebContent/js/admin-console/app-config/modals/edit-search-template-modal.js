@@ -85,9 +85,9 @@ $(document).ready(function() {
 			$saveTemplatePromise.done(function(data) {
 				var visibility = '';
 				
-				if (data.visibilityVendor == 1 && data.visibilityPenske == 1)
+				if (data.visibilityVendor == 'Y' && data.visibilityPenske == 'Y')
 					visibility = 'BOTH';
-				else if (data.visibilityVendor == 1 && data.visibilityPenske == 0)
+				else if (data.visibilityVendor == 'Y' && data.visibilityPenske == 'N')
 					visibility = 'VENDOR';
 				else
 					visibility = 'PENSKE';

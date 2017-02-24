@@ -47,7 +47,7 @@
 			<div id="title" style="width:490px;">
 				<h1>Supplier Management Center</h1>
 				<div style="display:inline-block;">
-					<a href="#" onclick="refreshPage();return false;">Refresh</a>
+					<a href="#" onclick="refreshFrameWithoutWarnings();return false;">Refresh</a>
 				</div>
 			</div>
  			<!-- Code for disabling the Buddy link -->

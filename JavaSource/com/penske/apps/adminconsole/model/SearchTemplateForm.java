@@ -1,13 +1,15 @@
 package com.penske.apps.adminconsole.model;
 
+import sun.util.logging.resources.logging;
+
 public class SearchTemplateForm {
 	private int templateId;
 	private String templateName;
 	private int displaySequence;
 	private String visibility;
 	private int tabId; 
-	private int visibilityPenske;
-	private int visibilityVendor;
+	private String visibilityPenske;
+	private String visibilityVendor;
 	private String defaultForTab;
 	
 	//Set and get for template Id
@@ -40,16 +42,18 @@ public class SearchTemplateForm {
 	//Set and get for visibility
 	public void setVisibility(String newVisibility) {
 		this.visibility = newVisibility;
-		
 		if (this.visibility.equals("BOTH")) {
-			this.setVisibilityPenske(1);
-			this.setVisibilityVendor(1);
+			this.setVisibilityPenske("Y");
+			this.setVisibilityVendor("Y");
 		} else if (this.visibility.equals("PENSKE")) {
-			this.setVisibilityPenske(1);
-			this.setVisibilityVendor(0);
-		} else {
-			this.setVisibilityPenske(0);
-			this.setVisibilityVendor(1);
+			this.setVisibilityPenske("Y");
+			this.setVisibilityVendor("N");
+		} else if(this.visibility.equals("VENDOR")){
+			this.setVisibilityPenske("N");
+			this.setVisibilityVendor("Y");
+		} else{
+			this.setVisibilityPenske("N");
+			this.setVisibilityVendor("N");
 		}
 	}
 	
@@ -67,20 +71,20 @@ public class SearchTemplateForm {
 	}
 	
 	//Set and get for visibility Penske
-	public void setVisibilityPenske(int newVisibilityPenske) {
+	public void setVisibilityPenske(String newVisibilityPenske) {
 		this.visibilityPenske = newVisibilityPenske;
 	}
 	
-	public int getVisibilityPenske() {
+	public String getVisibilityPenske() {
 		return this.visibilityPenske;
 	}
 	
 	//Set and get for visibility vendor
-	public void setVisibilityVendor(int newVisibilityVendor) {
+	public void setVisibilityVendor(String newVisibilityVendor) {
 		this.visibilityVendor = newVisibilityVendor;
 	}
 	
-	public int getVisibilityVendor() {
+	public String getVisibilityVendor() {
 		return this.visibilityVendor;
 	}
 	

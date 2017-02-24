@@ -81,6 +81,11 @@ $(document).ready(function() {
 });
 
 // Functions ************************************************************
+
+function refreshFrameWithoutWarnings(){
+	showLoading();
+    document.querySelector('#mainFrame').contentWindow.location.href = document.querySelector('#mainFrame').contentWindow.location.href 
+}
 function openHelpSelector()
 {
 	$("#helpSelector").show();

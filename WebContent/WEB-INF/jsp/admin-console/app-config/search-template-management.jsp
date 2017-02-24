@@ -41,9 +41,9 @@
 							<td>${searchTemplate.templateName}</td>
 							<td>${searchTemplate.displaySequence}</td>
 							<td>
-								<c:if test="${searchTemplate.visibilityPenske == 1 and searchTemplate.visibilityVendor == 0}">PENSKE</c:if>
-								<c:if test="${searchTemplate.visibilityPenske == 0 and searchTemplate.visibilityVendor == 1}">VENDOR</c:if>
-								<c:if test="${searchTemplate.visibilityPenske == 1 and searchTemplate.visibilityVendor == 1}">BOTH</c:if>
+								<c:if test="${searchTemplate.visibilityPenske == 'Y' and searchTemplate.visibilityVendor == 'N'}">PENSKE</c:if>
+								<c:if test="${searchTemplate.visibilityPenske == 'N' and searchTemplate.visibilityVendor == 'Y'}">VENDOR</c:if>
+								<c:if test="${searchTemplate.visibilityPenske == 'Y' and searchTemplate.visibilityVendor == 'Y'}">BOTH</c:if>
 							</td>
 							<td>
 								<c:if test="${searchTemplate.defaultForTab == 1}">YES</c:if>
