@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.penske.apps.adminconsole.dao.VendorReportDao;
+import com.penske.apps.adminconsole.dao.batch.VendorReportDao;
 import com.penske.apps.adminconsole.model.MimeTypeModel;
 import com.penske.apps.adminconsole.model.VendorReport;
 import com.penske.apps.adminconsole.model.VendorReportResults;

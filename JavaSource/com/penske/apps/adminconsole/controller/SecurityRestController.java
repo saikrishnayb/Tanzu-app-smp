@@ -324,7 +324,6 @@ public class SecurityRestController {
 			} catch (IOException e) {
 				throw e;
 			}
-			 
 		}else{
 			logger.info("No issue>>>>>>>>>>>>>>>");
 		}

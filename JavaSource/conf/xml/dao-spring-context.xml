@@ -30,11 +30,26 @@
 	</bean>
 
 
+	<bean id="sqlSessionBatch" class="org.mybatis.spring.SqlSessionTemplate">
+	  <constructor-arg index="0" ref="suppliermgmtSqlSessionFactoryBatch" />
+	  <constructor-arg index="1" value="BATCH" />
+	</bean>
+
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+	  <constructor-arg index="0" ref="suppliermgmtSqlSessionFactory" />
+	</bean>
+
 	<!-- SQL Session factories -->
 	<bean id="suppliermgmtSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property ref="suppliermgmtDataSource" name="dataSource" />
 		<property name="configLocation" value="classpath:/conf/xml/mybatis-config.xml" />
 		<property name="mapperLocations" value="classpath:/conf/xml/mapper/*.xml" />
+	</bean>
+
+	<bean id="suppliermgmtSqlSessionFactoryBatch" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property ref="suppliermgmtDataSource" name="dataSource" />
+		<property name="configLocation" value="classpath:/conf/xml/mybatis-config.xml" />
+		<property name="mapperLocations" value="classpath:/conf/xml/mapper/batch/*.xml" />
 	</bean>
 
 	<!-- Spring Transaction Manager -->
@@ -43,13 +58,20 @@
 		<property ref="suppliermgmtDataSource" name="dataSource" />
 	</bean>
 
+	<bean id="mapperScannerBatch" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.penske.apps.adminconsole.dao.batch" />
+		<property name="sqlSessionTemplateBeanName" value="sqlSessionBatch" />
+	</bean>
+
 	<bean id="mapperScanner" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
 		<property name="basePackage" value="com.penske.apps.suppliermgmt.dao" />
+		<property name="sqlSessionTemplateBeanName" value="sqlSession" />
 	</bean>
+	
 	<bean id="mapperScannerAdmin" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
 		<property name="basePackage"
 			value="com.penske.apps.suppliermgmt.dao,com.penske.apps.adminconsole.dao" />
-
+		<property name="sqlSessionTemplateBeanName" value="sqlSession" />
 	</bean>
 
 	<!-- Implementing Aspect -->

@@ -1,4 +1,4 @@
-package com.penske.apps.adminconsole.dao;
+package com.penske.apps.adminconsole.dao.batch;
 
 import java.util.List;
 

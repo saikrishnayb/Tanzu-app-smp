@@ -8,7 +8,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.penske.apps.adminconsole.dao.TransporterDao;
+import com.penske.apps.adminconsole.dao.batch.TransporterDao;
 import com.penske.apps.adminconsole.model.MimeTypeModel;
 import com.penske.apps.adminconsole.model.Transport;
 import com.penske.apps.adminconsole.model.VendorReportResults;
