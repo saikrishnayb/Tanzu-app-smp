@@ -1,12 +1,17 @@
 package com.penske.apps.suppliermgmt.model;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.penske.apps.adminconsole.model.Vendor;
 import com.penske.apps.suppliermgmt.domain.Organization;
 
 public class OrgFilter {
+    
+    public static final Comparator<OrgFilter> ORG_NAME = new OrgFilterOrgNamenComparator();
 
     private int orgId;
     private String orgName;
@@ -75,6 +80,18 @@ public class OrgFilter {
         return "OrgFilter [orgId=" + orgId + ", orgName=" + orgName + ", orgDescription=" + orgDescription
                 + ", vendorFilters=" + vendorFilters + ", orgSelected=" + orgSelected + ", noSelectedVendors="
                 + noSelectedVendors + "]";
+    }
+    
+    private static class OrgFilterOrgNamenComparator implements Comparator<OrgFilter> {
+        @Override
+        public int compare(OrgFilter orgFilter, OrgFilter otherORgFilter) {
+            
+            String orgName = StringUtils.defaultString(orgFilter.getOrgName());
+            String otherOrgName = StringUtils.defaultString(otherORgFilter.getOrgName());
+            
+            return orgName.compareTo(otherOrgName);
+            
+        }
     }
     
 }

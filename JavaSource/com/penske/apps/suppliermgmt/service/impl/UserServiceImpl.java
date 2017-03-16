@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -173,6 +174,8 @@ public class UserServiceImpl implements UserService {
             orgFilters.add(new OrgFilter(organization, vendorIdSelections));
             
         }
+        
+        Collections.sort(orgFilters, OrgFilter.ORG_NAME);
         
         return orgFilters;
     }
