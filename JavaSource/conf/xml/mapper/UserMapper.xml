@@ -151,20 +151,20 @@
                INNER JOIN SMC_ORG_MASTER orgMaster
                ON orgMaster.ORG_ID = vendorAssoc.ORG_ID
     
-         WHERE vendorFilter.USER_ID = #{sso}
+         WHERE vendorFilter.USER_ID = #{userId}
            AND orgMaster.PARENT_ORG_ID = 1 -- only loads orgs which have a parent equal to 1 (Penske) -- Dave Roth
   </select>
   
   <delete id="deletePreviousUserVendorFilters">
     DELETE FROM SMC_VENDOR_FILTER
-          WHERE USER_ID = #{sso}
+          WHERE USER_ID = #{userId}
   </delete>
   
   <insert id="saveUserVendorFilterSelections">
     INSERT INTO SMC_VENDOR_FILTER (VENDOR_ID,USER_ID)
          VALUES 
                <foreach collection="vendorIds" item="vendorId" separator=",">
-                (#{vendorId}, #{sso})
+                (#{vendorId}, #{userId})
                </foreach>
   
   </insert>

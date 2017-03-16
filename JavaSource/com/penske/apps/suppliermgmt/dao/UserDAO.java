@@ -51,11 +51,11 @@ public interface UserDAO {
 
 	public String getTermsAndCondition(@Param("date")Date date,@Param("status")String status);
 
-	public List<UserVendorFilterSelection> getUserVendorFilterSelections(@Param("sso") String sso);
+	public List<UserVendorFilterSelection> getUserVendorFilterSelections(@Param("userId") int userId);
 	
 	public List<Organization> getAllOrganizations();
 	public Organization getOrganizationWithOrgId(@Param("orgId") int orgId);
-	public void deletePreviousUserVendorFilters(@Param("sso") String sso);
-	public void saveUserVendorFilterSelections(@Param("vendorIds") Collection<Integer> vendorIds, @Param("sso") String sso);
+	public void deletePreviousUserVendorFilters(@Param("userId") int userId);
+	public void saveUserVendorFilterSelections(@Param("vendorIds") Collection<Integer> vendorIds, @Param("userId") int userId);
 	
 }

@@ -141,12 +141,12 @@ public class UserServiceImpl implements UserService {
     public List<OrgFilter> getAllOrgFilters() {
         
         UserContext userContext = (UserContext) httpSession.getAttribute(ApplicationConstants.USER_MODEL);
-        String userSSO = userContext.getUserSSO();
+        Integer userId = userContext.getUserId();
         
         List<OrgFilter> orgFilters = new ArrayList<OrgFilter>();
         
         List<Organization> allOrganizations = userDao.getAllOrganizations();
-        List<UserVendorFilterSelection> userVendorFilterSelections = userDao.getUserVendorFilterSelections(userSSO);
+        List<UserVendorFilterSelection> userVendorFilterSelections = userDao.getUserVendorFilterSelections(userId);
         
         //Lets create a quick map of all vendor ids the user selected by org id to make it easier to use later in this method
         Map<Integer, List<Integer>> userVendorIdSelectionsByOrgId = new HashMap<Integer, List<Integer>>();
@@ -196,14 +196,14 @@ public class UserServiceImpl implements UserService {
     public void saveUserVendorFilterSelections(Collection<Integer> vendorIds) {
 
         UserContext userContext = (UserContext) httpSession.getAttribute(ApplicationConstants.USER_MODEL);
-        String userSSO = userContext.getUserSSO();
+        Integer userId = userContext.getUserId();
         
-        userDao.deletePreviousUserVendorFilters(userSSO);
+        userDao.deletePreviousUserVendorFilters(userId);
         
         boolean noVendorIdSelections = vendorIds == null || vendorIds.size() == 0;
         if(noVendorIdSelections) return;
         
-        userDao.saveUserVendorFilterSelections(vendorIds, userSSO);
+        userDao.saveUserVendorFilterSelections(vendorIds, userId);
         
     }
 	
