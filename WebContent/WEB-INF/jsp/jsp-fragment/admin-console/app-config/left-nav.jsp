@@ -20,9 +20,13 @@
 <%-- 	<tl:isAuthorized tabName="Admin Console" secFunction="UNIT_EXCEPTIONS_MANAGEMENT"> --%>
 <%-- 		<div class="leftNavGroup"><a href="${pageContext.request.contextPath}/admin-console/app-config/unit-exceptions.htm" id="left-nav-unit-exceptions" onclick="javascript:loadProcessImage();">Unit Exceptions</a></div> --%>
 <%-- 	</tl:isAuthorized> --%>
+
+<%--
 	<tl:isAuthorized tabName="Admin Console" secFunction="MANAGE_DELAY">
 		<div class="leftNavGroup"><a href="${pageContext.request.contextPath}/admin-console/app-config/delay-management.htm" id="left-nav-delay-management" onclick="javascript:loadProcessImage();">Delay Management</a></div>
 	</tl:isAuthorized>
+
+	
 	<tl:isAuthorized tabName="Admin Console" secFunction="DELAY_ASSOCIATION">
 		<div class="leftNavGroup"><a href="${pageContext.request.contextPath}/admin-console/app-config/delay-type-reason-assoc.htm" id="left-nav-delay-association" onclick="javascript:loadProcessImage();">Delay Association</a></div>
 		<tl:isAuthorized tabName="Admin Console" secFunction="MANAGE_DELAY_TYPE">
@@ -32,6 +36,11 @@
 			<div><a href="${pageContext.request.contextPath}/admin-console/app-config/delay-reason-codes.htm" id="left-nav-reason-codes" onclick="javascript:loadProcessImage();">Delay Reason Codes</a></div>
 		</tl:isAuthorized>
 	</tl:isAuthorized>
+--%>	
+		<tl:isAuthorized tabName="Admin Console" secFunction="MANAGE_DELAY_REASONS">
+			<div class="leftNavGroup"><a href="${pageContext.request.contextPath}/admin-console/app-config/delay-reason-codes.htm" id="left-nav-reason-codes" onclick="javascript:loadProcessImage();">Delay Reason Codes</a></div>
+		</tl:isAuthorized>
+
 	<tl:isAuthorized tabName="Admin Console" secFunction="MANAGE_TC">
 		<div class="leftNavGroup"><a href="${pageContext.request.contextPath}/admin-console/app-config/terms-and-conditions.htm" id="left-nav-terms-and-conditions" onclick="javascript:loadProcessImage();">T &#38; C Management</a></div>
 	</tl:isAuthorized> 
