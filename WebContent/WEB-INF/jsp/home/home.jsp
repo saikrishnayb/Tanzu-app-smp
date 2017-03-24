@@ -103,12 +103,6 @@
 													<c:set var="isValidAlert" value="Y"/>
 												</tl:isAuthorized>
 											</c:when>
-											<c:when test="${alert.alertKey eq 'ALRT_PROD_DELAY_COMM_REQ'}">		
-												<c:set var="isValidAlert" value="N"/>						
-												<tl:isAuthorized tabName="Production" secFunction="UPDATE_DATES">
-													<c:set var="isValidAlert" value="Y"/>
-												</tl:isAuthorized>
-											</c:when>
 											<c:otherwise>
 												<c:set var="isValidAlert" value="Y"/>
 											</c:otherwise>
@@ -133,9 +127,6 @@
 														<tl:isAuthorized tabName="Production" secFunction="DATA_CONFLICT_MENU">
 														<a id="CountId-${TabKey}-${alert.templateKey }" onClick="redirectToTab('dataConflict');return false">${alert.count}</a>
 														</tl:isAuthorized>
-													</c:when>
-													<c:when test="${alert.alertKey eq 'ALRT_PROD_DELAY_COMM_REQ'}">
-														<a id="CountId-${TabKey}-${alert.templateKey }" onClick="redirectToTab('dateValidation');return false">${alert.count}</a>
 													</c:when>
 													<c:when test="${(alert.alertKey eq 'ALRT_OF_VEND_ANLYST_ASSG_REQ') || (alert.alertKey eq 'ALRT_OF_NEW_VEND_SETUP_REQ') || (alert.alertKey eq 'ALRT_OF_VEND_USER_SETUP_REQ')}">
 														<a id="CountId-${TabKey}-${alert.alertKey }" onClick="redirectToTemplate('${TabKey}','${alert.alertKey}');return false">${alert.count}</a>
