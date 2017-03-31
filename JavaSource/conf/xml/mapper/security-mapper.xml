@@ -872,19 +872,15 @@
 					FROM     SMC.SMC_ORG_MASTER START WITH ORG_ID =#{orgId}
 				    CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID
 			) 
- 		<!-- AND ROLE_ID NOT IN(
- 			SELECT 	ROLE_ID 
-	 		FROM 	SMC.smc_user_roles 
-	 		WHERE	STATUS = 'A'
-	 		START 	WITH ROLE_ID = 1
-	 		
-	 		
-	 		CONNECT BY BASE_ROLE_ID = PRIOR ROLE_ID
- 		)
- 		<if test="isVendor==true"> -->
  		START 	WITH ROLE_ID = #{roleId}
 	 	CONNECT BY BASE_ROLE_ID = PRIOR ROLE_ID
-	 	<!--  </if> -->
+	 	UNION ALL 
+	 	 		SELECT 	ROLE_NAME AS roleName,
+ 				ROLE_ID AS roleId
+ 		FROM 	SMC.smc_user_roles
+ 		WHERE 	STATUS = 'A' and
+ 		ROLE_ID = #{roleId}
+
  	</select>
  	<select id="getVendorUserTypes" resultType="com.penske.apps.adminconsole.model.UserType">
  		SELECT 	DESCRIPTION AS description,
