@@ -47,7 +47,7 @@ public class ComponentsController {
 	@Autowired
 	private ComponentService componentService;
 	
-	
+	@Deprecated
 	@RequestMapping(value={"/visibility-by-category"})
 	public ModelAndView getVisisbilityByCategoryPage(){
 		
@@ -57,6 +57,14 @@ public class ComponentsController {
 		return modelAndView;
 		
 	}	
+	
+	@RequestMapping(value={"/component-management"})
+	public ModelAndView getComponentManagementPage(){
+
+		ModelAndView mav = new ModelAndView("/admin-console/components/component-management");
+		mav.addObject("componentList", componentService.loadAllAvailableComponents());
+		return mav;	
+	}
 	
 	@RequestMapping("/templates")
 	public ModelAndView getTemplatesPage(){

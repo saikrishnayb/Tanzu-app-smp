@@ -415,4 +415,13 @@ AND OVR_TYPE=#{overrideType} AND CONTROLLING_COMPONENT_ID=#{controllingComponent
 <!-- Override change ends -->
 	
 	
+ 	<select id="loadAllAvailableComponents"  resultType="com.penske.apps.adminconsole.model.Component">
+ 		select sgf.component_group, sgf.sub_group, sgf.sub_component_name, sgf.component_id, 
+ 			sgf.component_group_id, sgf.component_type, sgf.display_sequence, CASE WHEN cid.component_id IS NULL THEN 'False' ELSE 'True' END AS Visible from corp.vehcmpsgf sgf
+			left join smc.smc_component_info_details cid
+			on sgf.component_id = cid.component_id
+ 	</select>	
+	
+	
+	
 </mapper>

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.penske.apps.adminconsole.dao.ComponentDao;
+import com.penske.apps.adminconsole.model.Component;
 import com.penske.apps.adminconsole.model.ComponentVisibilityOverride;
 import com.penske.apps.adminconsole.model.Components;
 import com.penske.apps.adminconsole.model.Template;
@@ -206,6 +207,9 @@ public class DefaultComponentService implements ComponentService {
 		return returnFlg;
 	}
 	
-	
+	@Override
+	public List<Component> loadAllAvailableComponents() {
+		return componentDao.loadAllAvailableComponents();
+	}
 	//Template Page -- End
 }

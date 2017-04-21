@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.penske.apps.adminconsole.model.Component;
 import com.penske.apps.adminconsole.model.ComponentVisibility;
 import com.penske.apps.adminconsole.model.ComponentVisibilityOverride;
 import com.penske.apps.adminconsole.model.Components;
@@ -91,4 +92,6 @@ public interface ComponentDao {
 	
 	public ComponentVisibilityOverride  checkComponentVisibilityOverrideExist(ComponentVisibilityOverride componentVisibilityOverride);
 	//COMPONENT VISIBILITY OVERRIDES -- End
+
+	public List<Component> loadAllAvailableComponents();
 }

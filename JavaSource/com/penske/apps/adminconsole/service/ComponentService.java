@@ -2,6 +2,7 @@ package com.penske.apps.adminconsole.service;
 
 import java.util.List;
 
+import com.penske.apps.adminconsole.model.Component;
 import com.penske.apps.adminconsole.model.ComponentVisibilityOverride;
 import com.penske.apps.adminconsole.model.Components;
 import com.penske.apps.adminconsole.model.Template;
@@ -51,6 +52,8 @@ public interface ComponentService {
 	public ComponentVisibilityOverride getComponentVisibilityOverridesById(int visiblityOverrideId);
 	
 	public boolean  checkComponentVisibilityOverrideExist(ComponentVisibilityOverride componentVisibilityOverride,boolean isCreate);
+	
+	public List<Component> loadAllAvailableComponents();
 //COMPONENT VISIBILITY OVERRIDES -- End
 		
 }

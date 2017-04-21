@@ -1,52 +1,68 @@
 package com.penske.apps.adminconsole.model;
 
-import java.util.List;
-
 public class Component {
-	private String componentName;
-	private String componentId;
-
-	private String visibility;
-	
-	private List<PoCategory> category;
-	private List<SubCategory> subCategory;
-	
-	
-	
-	public String getComponentName() {
-		return componentName;
+	private String componentGroup;
+	private String subGroup;
+	private String subComponentGroup;
+	 
+	private Integer componentId;
+	private String componentGroupId;
+	private String componentType;
+	private Integer displaySequence;
+	private boolean visible;
+	 
+	public String getComponentGroup() {
+		return componentGroup;
 	}
-	public void setComponentName(String componentName) {
-		this.componentName = componentName;
+	public void setComponentGroup(String componentGroup) {
+		this.componentGroup = componentGroup;
 	}
-	public String getComponentId() {
+	public String getSubGroup() {
+		return subGroup;
+	}
+	public void setSubGroup(String subGroup) {
+		this.subGroup = subGroup;
+	}
+	public String getSubComponentGroup() {
+		return subComponentGroup;
+	}
+	public void setSubComponentGroup(String subComponentGroup) {
+		this.subComponentGroup = subComponentGroup;
+	}
+	public Integer getComponentId() {
 		return componentId;
 	}
-	public void setComponentId(String componentId) {
+	public void setComponentId(Integer componentId) {
 		this.componentId = componentId;
 	}
-
-	public String getVisibility() {
-		return visibility;
+	public String getComponentGroupId() {
+		return componentGroupId;
+	}
+	public void setComponentGroupId(String componentGroupId) {
+		this.componentGroupId = componentGroupId;
+	}
+	public String getComponentType() {
+		return componentType;
+	}
+	public void setComponentType(String componentType) {
+		this.componentType = componentType;
+	}
+	public Integer getDisplaySequence() {
+		return displaySequence;
+	}
+	public void setDisplaySequence(Integer displaySequence) {
+		this.displaySequence = displaySequence;
+	}
+	public boolean isVisible() {
+		return visible;
+	}
+	public void setVisible(boolean visible) {
+		this.visible = visible;
+	}
+	@Override
+	public String toString() {
+		return "Component [componentGroup=" + componentGroup + ", subGroup=" + subGroup + ", subComponentGroup=" + subComponentGroup + ", componentId=" + componentId + ", componentGroupId=" + componentGroupId + ", componentType=" + componentType + ", displaySequence=" + displaySequence + ", visible=" + visible + "]";
 	}
 	
-	public void setVisibility(String visibility) {
-		this.visibility = visibility;
-	}
-	public List<PoCategory> getCategory() {
-		return category;
-	}
-	public void setCategory(List<PoCategory> category) {
-		this.category = category;
-	}
-	public List<SubCategory> getSubCategory() {
-		return subCategory;
-	}
-	public void setSubCategory(List<SubCategory> subCategory) {
-		this.subCategory = subCategory;
-	}
 	
-	
-	
-
 }
