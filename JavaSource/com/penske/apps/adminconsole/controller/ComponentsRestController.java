@@ -509,6 +509,13 @@ public class ComponentsRestController {
 		}
 	}
 	
+    @RequestMapping(value = "copy-corp-component")
+    @ResponseBody
+    public void copyCorpComponent(@RequestParam("componentId") int componentId, @RequestParam("componentGroupId") int componentGroupId) {
+
+        componentService.copyCorpComponentRow(componentId, componentGroupId);
+    }
+
 	@RequestMapping(value ="/create-modify-template-page")
 	@ResponseBody
 	public ModelAndView getCreateModifyTemplatePage(@RequestParam("isCreatePage") Boolean isCreatePage,@RequestParam(value="templateId") int templateId, HttpSession session) {

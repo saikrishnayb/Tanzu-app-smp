@@ -29,14 +29,14 @@
               </tr>
             </thead>
             <tbody>
-              <c:forEach items="${componentList}" var="componentItem" varStatus="count">
-                <tr class="component-row">
+              <c:forEach items="${componentList}" var="component">
+                <tr class="component-row" data-component-id="${component.componentId}" data-component-group-id="${component.componentGroupId}">
                   <td></td>
-                  <td>${componentItem.componentGroup}</td>
-                  <td>${componentItem.subGroup}</td>
-                  <td>${componentItem.subComponentGroup}</td>
+                  <td>${component.componentGroup}</td>
+                  <td>${component.subGroup}</td>
+                  <td>${component.subComponentGroup}</td>
                   <td>
-                    <input type="checkbox" <c:if test="${componentItem.visible}">checked disabled</c:if>>
+                    <input type="checkbox" class="visible-component-check" <c:if test="${component.visible}">checked disabled</c:if>>
                   </td>
                 </tr>
               </c:forEach>

@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.penske.apps.adminconsole.domain.ComponentGroup;
+import com.penske.apps.adminconsole.domain.ComponentInfoDetail;
 import com.penske.apps.adminconsole.model.Component;
 import com.penske.apps.adminconsole.model.ComponentVisibility;
 import com.penske.apps.adminconsole.model.ComponentVisibilityOverride;
@@ -94,4 +96,10 @@ public interface ComponentDao {
 	//COMPONENT VISIBILITY OVERRIDES -- End
 
 	public List<Component> loadAllAvailableComponents();
+
+    public ComponentInfoDetail getComponentInfoDetail(@Param("componentId") int componentId);
+    public ComponentGroup getComponentGroup(@Param("groupId") int groupId);
+
+    public void copyCorpComponentGroupRow(@Param("groupId") int groupId);
+    public void copyCorpComponentRow(@Param("componentId") int componentId);
 }

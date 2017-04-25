@@ -54,6 +54,9 @@ public interface ComponentService {
 	public boolean  checkComponentVisibilityOverrideExist(ComponentVisibilityOverride componentVisibilityOverride,boolean isCreate);
 	
 	public List<Component> loadAllAvailableComponents();
+
+    public void copyCorpComponentRow(int componentId, int componentGroupId);
+
 //COMPONENT VISIBILITY OVERRIDES -- End
 		
 }

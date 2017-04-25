@@ -415,13 +415,84 @@ AND OVR_TYPE=#{overrideType} AND CONTROLLING_COMPONENT_ID=#{controllingComponent
 <!-- Override change ends -->
 	
 	
- 	<select id="loadAllAvailableComponents"  resultType="com.penske.apps.adminconsole.model.Component">
- 		select sgf.component_group, sgf.sub_group, sgf.sub_component_name, sgf.component_id, 
- 			sgf.component_group_id, sgf.component_type, sgf.display_sequence, CASE WHEN cid.component_id IS NULL THEN 'False' ELSE 'True' END AS Visible from corp.vehcmpsgf sgf
-			left join smc.smc_component_info_details cid
-			on sgf.component_id = cid.component_id
- 	</select>	
+  
+  
+  <!-- Component Management *****************************************************************************************-->
+  <select id="loadAllAvailableComponents"  resultType="com.penske.apps.adminconsole.model.Component">
+  	SELECT SGF.COMPONENT_GROUP, 
+               SGF.SUB_GROUP, 
+               SGF.SUB_COMPONENT_NAME, 
+               SGF.COMPONENT_ID, 
+  		   SGF.COMPONENT_GROUP_ID,
+               SGF.COMPONENT_TYPE, 
+               SGF.DISPLAY_SEQUENCE, 
+               CASE WHEN CID.COMPONENT_ID IS NULL THEN 'FALSE' ELSE 'TRUE' END AS VISIBLE 
+          FROM CORP.VEHCMPSGF SGF
+     LEFT JOIN SMC.SMC_COMPONENT_INFO_DETAILS CID
+  		   ON SGF.COMPONENT_ID = CID.COMPONENT_ID
+  </select>	
+  
+  <select id="getComponentInfoDetail" resultType="com.penske.apps.adminconsole.domain.ComponentInfoDetail">
+    SELECT  COMPONENT_ID,
+            DISPLAY_NAME,
+            COMP_GROUP_ID,
+            COMPONENT_TYPE,
+            IS_VEHICLE_COMP AS vehicleComp,
+            VISIBILITY,
+            COMPONENT_SEQUENCE
+       FROM SMC.SMC_COMPONENT_INFO_DETAILS 
+      WHERE COMPONENT_ID = #{componentId}
+  </select>
+  
+   <select id="getComponentGroup" resultType="com.penske.apps.adminconsole.domain.ComponentGroup">
+    SELECT  COMP_GROUP_ID AS groupId,
+            GROUP_NAME,
+            GROUP_SEQUENCE,
+            COMP_GRP_NUMBER AS groupNumber,
+            COMP_SECTION_ID AS sectionId
+       FROM SMC.SMC_COMPONENT_GROUPS
+      WHERE COMP_GROUP_ID = #{groupId}
+  </select>
 	
+  <insert id="copyCorpComponentRow">
+    INSERT INTO SMC.SMC_COMPONENT_INFO_DETAILS 
+                (
+                  COMPONENT_ID,
+                  DISPLAY_NAME,
+                  COMP_GROUP_ID,
+                  COMPONENT_TYPE,
+                  IS_VEHICLE_COMP,
+                  VISIBILITY,
+                  COMPONENT_SEQUENCE,
+                  GEN_MISSING_COUNT
+                )
+         SELECT COMPONENT_ID,
+                RTRIM(SUB_GROUP) || ' - ' || RTRIM(SUB_COMPONENT_NAME),
+                COMPONENT_GROUP_ID,
+                COMPONENT_TYPE,
+                'N' AS IS_VEHICLE_COMP,
+                'Y' AS VISIBILITY,
+                DISPLAY_SEQUENCE, 
+                'Y' AS GEN_MISSING_COUNT
+           FROM CORP.VEHCMPSGF
+          WHERE COMPONENT_ID = #{componentId}
+  </insert>
+  
+  <insert id="copyCorpComponentGroupRow">
+    INSERT INTO SMC.SMC_COMPONENT_GROUPS
+                (
+                  GROUP_NAME,
+                  GROUP_SEQUENCE,
+                  COMP_GRP_NUMBER,
+                  COMP_SECTION_ID
+                )
+         SELECT COMPONENT_GROUP,
+                (SELECT MAX(COMP_GROUP_ID) FROM SMC.SMC_COMPONENT_GROUPS) AS GROUP_SEQUENCE,
+                COMPONENT_GROUP_ID,
+                3 AS COMP_SECTION_ID
+           FROM CORP.VEHCMPGRF
+          WHERE COMPONENT_GROUP_ID = #{groupId}
+  </insert>
 	
 	
 </mapper>
