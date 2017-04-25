@@ -37,12 +37,13 @@ public interface HomeDashboardDao {
 	
 	public List<Alert> selectAlerts(@Param("headerId")int headerId,@Param("userType")int userType);
 	
+	@Deprecated
 	public String getOrderFullfillmentActionItems(Map<String, Object> errorMap);
-	
+	@Deprecated
 	public String getOrderConfirmationActionItems(Map<String, Object> errorMap);
-	
+	@Deprecated
 	public String getProductionActionItems(Map<String, Object> errorMap);
-	
+	@Deprecated
 	public String getCommunicationActionItems(Map<String, Object> errorMap);
 	
 	@MapKey("alertKey")
