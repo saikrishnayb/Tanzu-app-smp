@@ -23,7 +23,7 @@ $componentManagementTable.on('click', '.visible-component-check', function() {
 selectCurrentNavigation("tab-components", "left-nav-component-management");
 
 $componentManagementTable.dataTable({
-  "aaSorting" : [[1, "asc" ]],
+  "aaSorting" : [[0, "asc" ]],
   "bPaginate" : true,
   "bLengthChange" : false,
   "bFilter" : true,
