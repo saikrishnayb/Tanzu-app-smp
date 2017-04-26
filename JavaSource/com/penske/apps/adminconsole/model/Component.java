@@ -3,7 +3,7 @@ package com.penske.apps.adminconsole.model;
 public class Component {
 	private String componentGroup;
 	private String subGroup;
-	private String subComponentGroup;
+    private String subComponentName;
 	 
 	private Integer componentId;
 	private String componentGroupId;
@@ -23,11 +23,12 @@ public class Component {
 	public void setSubGroup(String subGroup) {
 		this.subGroup = subGroup;
 	}
-	public String getSubComponentGroup() {
-		return subComponentGroup;
+    public String getSubComponentName() {
+        return subComponentName;
 	}
-	public void setSubComponentGroup(String subComponentGroup) {
-		this.subComponentGroup = subComponentGroup;
+    public void setSubComponentName(String subComponentName) {
+
+        this.subComponentName = subComponentName;
 	}
 	public Integer getComponentId() {
 		return componentId;
@@ -61,7 +62,8 @@ public class Component {
 	}
 	@Override
 	public String toString() {
-		return "Component [componentGroup=" + componentGroup + ", subGroup=" + subGroup + ", subComponentGroup=" + subComponentGroup + ", componentId=" + componentId + ", componentGroupId=" + componentGroupId + ", componentType=" + componentType + ", displaySequence=" + displaySequence + ", visible=" + visible + "]";
+
+        return "Component [componentGroup=" + componentGroup + ", subGroup=" + subGroup + ", subComponentName=" + subComponentName + ", componentId=" + componentId + ", componentGroupId=" + componentGroupId + ", componentType=" + componentType + ", displaySequence=" + displaySequence + ", visible=" + visible + "]";
 	}
 	
 	

@@ -21,7 +21,6 @@
           <table id="component-management-table">
             <thead>
               <tr>
-                <th></th>
                 <th>Group</th>
                 <th>Sub-Group</th>
                 <th>Sub Component</th>
@@ -31,10 +30,9 @@
             <tbody>
               <c:forEach items="${componentList}" var="component">
                 <tr class="component-row" data-component-id="${component.componentId}" data-component-group-id="${component.componentGroupId}">
-                  <td></td>
                   <td>${component.componentGroup}</td>
                   <td>${component.subGroup}</td>
-                  <td>${component.subComponentGroup}</td>
+                  <td>${component.subComponentName}</td>
                   <td>
                     <input type="checkbox" class="visible-component-check" <c:if test="${component.visible}">checked disabled</c:if>>
                   </td>
