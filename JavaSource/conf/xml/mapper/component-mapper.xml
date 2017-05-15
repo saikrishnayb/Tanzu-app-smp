@@ -467,7 +467,7 @@ AND OVR_TYPE=#{overrideType} AND CONTROLLING_COMPONENT_ID=#{controllingComponent
                   GEN_MISSING_COUNT
                 )
          SELECT COMPONENT_ID,
-                RTRIM(SUB_GROUP) || ' - ' || RTRIM(SUB_COMPONENT_NAME),
+                trim(COMPONENt_GROUP) || (case when sub_group != ' ' THEN ' '||trim(sub_group) else '' end) ||' '||trim( SUB_COMPONENT_NAME),
                 COMPONENT_GROUP_ID,
                 COMPONENT_TYPE,
                 'N' AS IS_VEHICLE_COMP,
