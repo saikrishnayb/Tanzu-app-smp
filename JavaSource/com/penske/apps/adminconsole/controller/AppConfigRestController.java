@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.penske.apps.adminconsole.exceptions.DynamicRulePriorityException;
 import com.penske.apps.adminconsole.exceptions.TemplateNameAlreadyExistsException;
 import com.penske.apps.adminconsole.model.Alert;
+import com.penske.apps.adminconsole.model.ComponentRuleAssociation;
 import com.penske.apps.adminconsole.model.DateType;
 import com.penske.apps.adminconsole.model.DelayModel;
 import com.penske.apps.adminconsole.model.DelayPoModel;
@@ -38,6 +40,7 @@ import com.penske.apps.adminconsole.service.AlertService;
 import com.penske.apps.adminconsole.service.DelayService;
 import com.penske.apps.adminconsole.service.DynamicRuleService;
 import com.penske.apps.adminconsole.service.ExceptionService;
+import com.penske.apps.adminconsole.service.LoadSheetManagementService;
 import com.penske.apps.adminconsole.service.NotificationService;
 import com.penske.apps.adminconsole.service.SearchTemplateService;
 import com.penske.apps.adminconsole.service.SubjectService;
@@ -81,6 +84,9 @@ public class AppConfigRestController {
 	
 	@Autowired
 	private SubjectService subjectService;
+	
+	@Autowired
+	private LoadSheetManagementService loadsheetManagementService;
 	
 	private static Logger logger = Logger.getLogger(AppConfigRestController.class);
 	
@@ -780,4 +786,52 @@ public class AppConfigRestController {
 	public String viewTermsAndConditions(@RequestParam(value="versionNumber") int versionNumber) {
 		return termsAndConditionsService.getTermsAndConditionsText(versionNumber);
 	}
+
+	/* ================== loadsheet components ================== */
+	@RequestMapping(value={"/get-loadsheet-components"})
+	public ModelAndView getLoadsheetComponents(@RequestParam("categoryId") String categoryId,@RequestParam("category") String category,@RequestParam(value="type") String type,@RequestParam(value="viewMode") String viewMode) {
+		ModelAndView mav = new ModelAndView("/admin-console/app-config/loadsheet-components");
+		
+		mav.addObject("components", loadsheetManagementService.getLoadsheetComponents(categoryId));
+		mav.addObject("category", category);
+		mav.addObject("type", type);
+		mav.addObject("viewMode", viewMode);
+		
+		return mav;
+	}
+	
+	/* ================== loadsheet sequence ================== */
+	@RequestMapping(value={"/get-loadsheet-sequence"})
+	public ModelAndView getLoadsheetSequencePage(@RequestParam("categoryId") String categoryId,@RequestParam("category") String category,@RequestParam(value="type") String type,@RequestParam(value="viewMode") String viewMode) {
+		ModelAndView mav = new ModelAndView("/admin-console/app-config/loadsheet-sequence");
+		mav.addObject("sequences", loadsheetManagementService.getLoadsheetSequences(category,type));
+		return mav;
+	}
+	
+	/* ================== Get Rule Association model ================== */
+	@RequestMapping(value="/get-rule-association-modal-data", method=  RequestMethod.POST)
+	@ResponseBody
+	public ModelAndView getRuleAssociationModalData(@ModelAttribute("componentRule") ComponentRuleAssociation componentRule,@RequestParam("componentId") int componentId,@RequestParam("componentVisibleId") int componentVisibleId,@RequestParam(value="viewMode") String viewMode) {
+		ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/app-config/add-rule-association-modal");
+		componentRule.setRule(loadsheetManagementService.getComponentVisibilityRules(componentVisibleId));
+		componentRule.setComponentVisibilityId(componentVisibleId);
+		mav.addObject("rules", loadsheetManagementService.getComponentRules(componentId));
+		mav.addObject("componentRule", componentRule);
+		mav.addObject("viewMode", viewMode);
+		return mav;
+	}
+	
+	/* ================== Save Rule Association ================== */
+	@RequestMapping(value="/save-rule-association-modal-data", method=  RequestMethod.POST)
+	@ResponseBody
+	public void saveRuleAssociationModalData(@ModelAttribute("componentRule") ComponentRuleAssociation componentRule,HttpSession session,HttpServletResponse response) throws Exception {
+		HeaderUser currentUser = (HeaderUser) session.getAttribute("currentUser");
+		componentRule.setCreatedBy(currentUser.getSso());
+		try{
+		loadsheetManagementService.saveComponentRules(componentRule);
+		}catch(Exception e){
+			CommonUtils.getCommonErrorAjaxResponse(response,"Error ocuured while adding the rules, please contact system admin.");
+		}
+	}
+	
 }

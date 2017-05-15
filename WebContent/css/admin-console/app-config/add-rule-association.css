@@ -1,0 +1,6 @@
+.column-left{ float: left; width: 17%; }
+.column-right{ float: right; width: 36%; }
+.column-center{ display: inline-block; width: 47%; }
+.column-data-left{ float: left; width: 17%; }
+.column-data-right{ float: right; width: 36%; }
+.column-data-center{ display: inline-block; width: 47%; }

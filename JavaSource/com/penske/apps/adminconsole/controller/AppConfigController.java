@@ -1,5 +1,6 @@
 package com.penske.apps.adminconsole.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -15,6 +16,8 @@ import com.penske.apps.adminconsole.annotation.DefaultController;
 import com.penske.apps.adminconsole.model.ExcelUploadHandler;
 import com.penske.apps.adminconsole.model.GlobalException;
 import com.penske.apps.adminconsole.model.Notification;
+import com.penske.apps.adminconsole.model.RuleDefinitions;
+import com.penske.apps.adminconsole.model.RuleMaster;
 import com.penske.apps.adminconsole.model.TransportUploadHandler;
 import com.penske.apps.adminconsole.model.UnitException;
 import com.penske.apps.adminconsole.model.VendorUploadHandler;
@@ -23,6 +26,7 @@ import com.penske.apps.adminconsole.service.DefaultSubjectService;
 import com.penske.apps.adminconsole.service.DelayService;
 import com.penske.apps.adminconsole.service.DynamicRuleService;
 import com.penske.apps.adminconsole.service.ExceptionService;
+import com.penske.apps.adminconsole.service.LoadSheetManagementService;
 import com.penske.apps.adminconsole.service.NotificationService;
 import com.penske.apps.adminconsole.service.SearchTemplateService;
 import com.penske.apps.adminconsole.service.TermsAndConditionsService;
@@ -73,6 +77,9 @@ public class AppConfigController {
 	
 	@Autowired
 	private VendorReportServiceImpl objVendorService;
+	
+	@Autowired
+	private LoadSheetManagementService loadsheetManagementService;
 
 	/* ================== Subject Management ================== */
 	@RequestMapping(value={"/subject-management"})
@@ -280,4 +287,69 @@ public class AppConfigController {
 		
 		return mav;
 	}
+	
+	@RequestMapping("/loadsheet-management")
+	public ModelAndView getLoadsheetManagementDetails(){
+		ModelAndView mav = new ModelAndView("/admin-console/app-config/loadsheet-management");
+		
+		mav.addObject("loadsheets", loadsheetManagementService.getLoadsheetManagementDetails());
+
+		return mav;
+	}
+	
+	@RequestMapping("/loadsheet-rule")
+	public ModelAndView getLoadsheetRuleDetails(){
+		ModelAndView mav = new ModelAndView("/admin-console/app-config/loadsheet-rule");
+		
+		mav.addObject("loadsheetRules", loadsheetManagementService.getLoadsheetRuleDetails());
+
+		return mav;
+	}
+	
+	
+	/*==============Create Rule===================*/
+	@RequestMapping("/load-create-rule")
+	public ModelAndView getComponents(){
+		ModelAndView mav = new ModelAndView("/admin-console/app-config/create-rule");
+		
+		RuleMaster ruleMaster=new RuleMaster();
+		List<RuleDefinitions> ruleDefLst=new ArrayList<RuleDefinitions>();
+		RuleDefinitions ruleDef=new RuleDefinitions();
+		ruleDef.setCriteriaGroup(1);
+		ruleDef.setIsGroupHeader(true);
+		ruleDefLst.add(ruleDef);	//Creating one empty row in create rule page
+		ruleMaster.setRuleDefinitionsList(ruleDefLst);
+		
+		mav.addObject("componentsList", loadsheetManagementService.getComponents());
+		mav.addObject("ruleMaster",ruleMaster);
+		return mav;
+	}
+	
+
+	/* =============== Create New Rule ==================*/
+	@RequestMapping(value={"/create-rule"})
+	public ModelAndView insertRuleDetails(RuleMaster ruleMaster) {
+		
+		loadsheetManagementService.createNewRule(ruleMaster);
+		
+		return getLoadsheetRuleDetails();
+		
+	}
+	
+	/* ================Edit Rule =======================*/
+	@RequestMapping(value={"/edit-rule"})
+	public ModelAndView getRuleDefinitions(String ruleId) {
+		
+		ModelAndView mav = new ModelAndView("/admin-console/app-config/create-rule");
+		
+		RuleMaster ruleMaster=loadsheetManagementService.getRuleDetails(ruleId);
+		
+		mav.addObject("componentsList", loadsheetManagementService.getComponents());
+		mav.addObject("ruleMaster",ruleMaster);
+		return mav;
+		
+	}
+	
+	
+	
 }

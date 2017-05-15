@@ -30,7 +30,7 @@ $(document).ready(function() {
 	$('a').click(function() {
 		$this=$(this);
 		var $aName=$this.text();
-		if($aName=='Edit' || $aName=='copy' || $aName=='Search' || $aName.indexOf('Create')>-1 ){
+		if($aName=='Edit' || $aName=='copy' || $aName=='Search' || $aName.indexOf('Create')>-1 ||$aName.indexOf('View')>-1 || $aName.indexOf('Configure')>-1 ||$aName.indexOf('Set')>-1 ){
 			if(isInHideList($this)){
 				if(displayFlag){
 					processingImageAndTextHandler('visible','Loading data...');

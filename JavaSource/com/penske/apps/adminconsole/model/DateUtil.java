@@ -47,7 +47,9 @@ public final class DateUtil {
 	public static final String  MM_DD_YYYY 			= 	"MM/dd/yyyy";
 	public static final String	month_yy 			=	"month-yy";
 	public static final String	MM_dd_yy_HH_mm 		=	"MM/dd/yy HH:mm";
+	public static final String	MM_dd_yy_HH_mm_a 	=	"MM/dd/yy HH:mm a";
 	public static final String  MM_DD_YYYY_HH_MM_SS = 	"MM/dd/yyyy HH:mm:ss";
+	
 		
 	public static final String	dd_MM		= 	"dd-MM";
 	public static final String	dd_MMM 		=	"dd-MMM";

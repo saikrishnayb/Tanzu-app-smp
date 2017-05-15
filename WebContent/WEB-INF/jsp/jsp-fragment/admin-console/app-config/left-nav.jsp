@@ -4,6 +4,9 @@
 	<tl:isAuthorized tabName="Admin Console" secFunction="MANAGE_SUBJECTS">
 	 <div class="leftNavGroup"><a href="${pageContext.request.contextPath}/admin-console/app-config/subject-management.htm" id="left-nav-subject-management" onclick="javascript:loadProcessImage();">Subject Management</a></div>
 	</tl:isAuthorized>
+	<div class="leftNavGroup"><a href="${pageContext.request.contextPath}/admin-console/app-config/loadsheet-management.htm" id="left-nav-loadsheet-management" onclick="javascript:loadProcessImage();">Loadsheet Management</a></div>
+	 <!-- This link will be removed once load sheet mangement page is ready -->
+	 <div ><a href="${pageContext.request.contextPath}/admin-console/app-config/loadsheet-rule.htm" id="left-nav-loadsheet-rules" onclick="javascript:loadProcessImage();">Loadsheet Rules</a></div>
 	<!-- <div><a href="${pageContext.request.contextPath}/admin-console/app-config/notifications.htm" id="left-nav-notifications">Notifications</a></div> -->
 	<tl:isAuthorized tabName="Admin Console" secFunction="DYNAMIC_RULES_MANAGEMENT">
 		<div class="leftNavGroup"><a href="${pageContext.request.contextPath}/admin-console/app-config/dynamic-rules.htm" id="left-nav-dynamic-rules" onclick="javascript:loadProcessImage();">Dynamic Rules</a></div>
@@ -46,5 +49,6 @@
 	</tl:isAuthorized> 
 	<tl:isAuthorized tabName="Admin Console" secFunction="UPLOAD_EXCEL">
 		<div class="leftNavGroup"><a href="${pageContext.request.contextPath}/admin-console/app-config/excelUploads.htm" id="left-nav-excel-uploads" onclick="javascript:loadProcessImage();">Excel Uploads</a></div>
-	</tl:isAuthorized> 
+	</tl:isAuthorized>	
+	
 </div>

@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.2//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.penske.apps.adminconsole.dao.LoadsheetManagementDao">
+
+
+    <!-- To get Component rules in loadsheet management page -->
+  	<select id="getLoadsheetComponents" resultType="com.penske.apps.adminconsole.model.ComponentVisibilityModel"> 
+		SELECT 	SCV.CMP_VISIBLE_ID AS componentVisibilityId,
+		SCV.CAT_TYPE_ID AS categoryId,
+		SCV.COMPONENT_ID AS componentId,
+		VCS.COMPONENT_GROUP AS group,
+		VCS.SUB_GROUP AS subGroup,
+		VCS.SUB_COMPONENT_NAME AS componentName,
+		SCV.V2B_VISIBILITY AS screen2b,
+		SCV.LOADSHEET_VISIBILITY AS lsOverride,
+		(SELECT COUNT(SCRO.RULE_ID) FROM SMC_COMPONENT_RULE_OVERRIDES SCRO WHERE SCRO.CMP_VISIBLE_ID = SCV.CMP_VISIBLE_ID) AS ruleCount
+		FROM SMC_COMPONENT_VISIBILITY SCV
+		JOIN corp.VEHCMPSGF VCS on SCV.COMPONENT_ID=VCS.COMPONENT_ID WHERE SCV.CAT_TYPE_ID=#{categoryId}  
+ 		
+ 	</select>
+ 	
+ 	<!-- To Load the Details in Load Sheet Management Page-->
+	<select  id="getLoadsheetManagementDetails" resultType="com.penske.apps.adminconsole.model.LoadsheetManagement">
+		SELECT 	CAT_TYPE_ID						AS  catTypeId,
+				PO_CATEGORY 					AS 	category,
+				TYPE       						AS	type,
+				USES_DEFAULT  					AS	usesDefault,
+				FIRST_NAME||' '||LAST_NAME		AS 	editedBy,
+				CTM.MODIFIED_DATE				AS	editedDate
+		FROM
+				SMC_CAT_TYPE_MASTER CTM
+		LEFT JOIN 
+				SMC_USER_MASTER SUM 
+		ON 		SUM.SSO=CTM.MODIFIED_BY
+	</select>
+	
+	<!-- To Load the Details in Load Sheet Management Page-->
+	<!-- TO-DO Get timesUsed value in below query-->
+	<select  id="getLoadsheetRules" resultType="com.penske.apps.adminconsole.model.RuleMaster">
+		SELECT 	RULE_ID 								AS 	ruleId,
+				NAME       								AS	ruleName,
+				DESCRIPTION  							AS	description,
+				SUMC.FIRST_NAME||' '||SUMC.LAST_NAME	AS 	createdBy,
+				CVRM.CREATED_DATE						AS	createdDate,
+				SUME.FIRST_NAME||' '||SUME.LAST_NAME	AS 	editBy,
+				CVRM.MODIFIED_DATE						AS	editDate
+		FROM
+				SMC_CMP_VISIBILITY_RULES_MASTER CVRM
+		LEFT JOIN 
+				SMC_USER_MASTER SUMC
+		ON 		SUMC.SSO=CVRM.CREATED_BY 	 
+		LEFT JOIN 
+				SMC_USER_MASTER SUME
+		ON		SUME.SSO=CVRM.MODIFIED_BY
+	</select>
+	
+	<!-- To Insert the Rule master Details -->
+ 	<insert id="insertRuleMasterDetails" useGeneratedKeys="true" keyProperty="rule.ruleId" keyColumn="RULE_ID" >
+ 		INSERT INTO 
+ 					SMC_CMP_VISIBILITY_RULES_MASTER 
+ 					(NAME,			DESCRIPTION,			CREATED_BY,			MODIFIED_BY)
+ 		VALUES 		(#{rule.ruleName},	#{rule.description},	#{user.userSSO},	#{user.userSSO})
+ 	</insert>
+ 	
+ 	<!-- To insert the rule definition -->
+ 	<insert id="insertRuleDefinitions">
+ 		INSERT INTO 
+ 					SMC_CMP_VISIBILITY_RULES_DEFINITION
+ 					(RULE_ID,			CRITERIA_GROUP,				COMPONENT_ID,			COMPONENT_TYPE,
+ 					 OPERAND,			COMPONENT_VALUE,			CREATED_BY,				MODIFIED_BY)
+ 		VALUES		
+ 			 <foreach item="ruleDef" collection="ruleDefList" separator=",">
+			 		(#{ruleDef.ruleId},	#{ruleDef.criteriaGroup},	#{ruleDef.componentId},	#{ruleDef.componentType},
+ 					 #{ruleDef.operand},#{ruleDef.value},			#{user.userSSO},	#{user.userSSO})
+ 			 </foreach>
+ 	</insert>
+ 	
+ 	
+ 	<!-- Query to fetch the rule definition details based on ruleID -->
+ 	<select id="getRuleDetails" resultMap="ruleDetailsMap" >
+ 		SELECT 
+ 				RULE_ID,
+ 				NAME, 
+ 				DESCRIPTION 
+ 		FROM 
+ 		 		SMC_CMP_VISIBILITY_RULES_MASTER 
+ 		 WHERE 	
+ 		 		RULE_ID=#{ruleId}
+ 	</select>
+ 	
+ 	
+ 	<resultMap id="ruleDetailsMap" type="com.penske.apps.adminconsole.model.RuleMaster">
+		 <id property="ruleId" column="RULE_ID" />
+		 <result property="ruleName" column="NAME" />
+		 <result property="description" column="DESCRIPTION" />
+		 <collection property="ruleDefinitionsList" column="RULE_ID" ofType="com.penske.apps.adminconsole.model.RuleDefinitions" javaType="ArrayList" select="getRuleDefDetails"/> 
+	 </resultMap>
+	 
+	 <select id="getRuleDefDetails" parameterType="int" resultMap="ruleDefMap">
+	
+		SELECT  
+				CRITERIA_GROUP,
+				COMPONENT_TYPE,
+				COMPONENT_ID,
+				OPERAND,
+				COMPONENT_VALUE
+		FROM
+				SMC_CMP_VISIBILITY_RULES_DEFINITION
+		WHERE 
+				RULE_ID=#{ruleId}
+	</select>
+	 
+	  <resultMap id="ruleDefMap" type="com.penske.apps.adminconsole.model.RuleDefinitions">
+	 	<id property="ruleId" column="RULE_ID" />
+	 	<result property="criteriaGroup" column="CRITERIA_GROUP" />
+	 	<result property="componentType" column="COMPONENT_TYPE" />
+	 	<result property="componentId" column="COMPONENT_ID" />
+	 	<result property="operand" column="OPERAND" />
+	 	<result property="value" column="COMPONENT_VALUE" />
+	 </resultMap>
+	
+	
+	<!-- To get load sheet sequences -->
+  	<select id="getLoadsheetSequences" resultType="com.penske.apps.adminconsole.model.LoadsheetSequence"> 
+		SELECT
+			SEQ_MASTER_ID AS id,
+			NAME AS name,
+			DESCRIPTION AS description,
+			PO_CATEGORY AS category,
+			TYPE AS type,
+			LSM.OEM AS oem,
+			FIRST_NAME||' '||LAST_NAME AS editedBy,
+			LSM.MODIFIED_DATE AS editedDate
+		FROM SMC_LOADSHEET_SEQ_MASTER LSM
+		JOIN SMC_USER_MASTER SUM ON LSM.MODIFIED_BY=SUM.SSO 
+		WHERE LSM.PO_CATEGORY=#{category} AND LSM.TYPE=#{type}
+ 	</select> 
+ 	
+	<!-- TO get component rules-->
+	<select  id="getComponentRules" resultType="com.penske.apps.adminconsole.model.RuleMaster">
+		SELECT 	CVRM.RULE_ID AS 	ruleId,
+		        CVRM.NAME   AS	ruleName
+		FROM SMC_CMP_VISIBILITY_RULES_MASTER CVRM
+		JOIN SMC_CMP_VISIBILITY_RULES_DEFINITION CVRD ON CVRM.RULE_ID=CVRD.RULE_ID
+		WHERE CVRD.COMPONENT_ID=#{componetId}
+	</select>
+	
+	<!-- TO get component visibility rules-->
+	<select  id="getComponentVisibilityRules" resultType="com.penske.apps.adminconsole.model.ConfigureRule">
+		SELECT 	RULE_ID AS 	ruleId,
+				PRIORITY  AS priority,          
+                VISIBILITY_OVERRIDE AS lsOverride
+		FROM SMC_COMPONENT_RULE_OVERRIDES
+		WHERE CMP_VISIBLE_ID=#{componentVisibleId} ORDER BY PRIORITY
+	</select>
+	
+	<!-- To delete the rules associated to the component -->
+    <delete  id="deleteComponentVisibilityRules">
+ 		DELETE FROM SMC_COMPONENT_RULE_OVERRIDES WHERE CMP_VISIBLE_ID=#{componentVisibilityId}
+ 	</delete>
+ 	
+ 	<!-- To associate list of rules to the component -->
+ 	<insert id="saveComponentVisibilityRules">
+		INSERT INTO SMC_COMPONENT_RULE_OVERRIDES (CMP_VISIBLE_ID,RULE_ID, PRIORITY,VISIBILITY_OVERRIDE,CREATED_BY,
+		CREATED_DATE, MODIFIED_BY, MODIFIED_DATE) VALUES
+		<foreach collection="rule" item="item" separator=",">
+		(#{componentVisibilityId},#{item.ruleId},#{item.priority},#{item.lsOverride},#{createdBy},current timestamp,#{createdBy},current timestamp)
+		 </foreach>
+    </insert>
+    
+ 	<!-- To get the list of components for dropwdown in create rules -->
+	<select id="getComponents" resultType="com.penske.apps.adminconsole.model.LoadSheetComponentDetails">
+		SELECT  COMPONENT_GROUP as componentGroup,
+				SUB_GROUP as subGroup,
+				COMPONENT_ID as componentId,
+				COMPONENT_TYPE  as componentType
+		FROM 	
+				CORP.VEHCMPSGF
+ 	</select>
+</mapper>
