@@ -236,3 +236,21 @@ color:inherit}
 .grayRow{
 	background-color: #EBEBEB !important;
 }
+
+table#createRule-Table tbody tr {
+	height:30px !important;
+}
+
+table#createRule-Table tbody td {
+	height:30px !important;
+	padding: 0px 10px !important;
+}
+
+input[type="text"], select {
+    margin-bottom: 0px !important;
+}
+
+/* to overide the readonly of common.css */
+textarea[readonly="readonly"], textarea[readonly], input[readonly], [readonly], [readonly=readonly], [disabled], [disabled=disabled] {
+background: lightgray !important;
+}

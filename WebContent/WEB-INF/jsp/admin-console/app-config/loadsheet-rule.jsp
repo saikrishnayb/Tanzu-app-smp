@@ -36,7 +36,8 @@
 						<tr>
 							<td class="editable centerAlign width">
 							<a class="rightMargin edit-button" href="edit-rule.htm?ruleId=${loadsheetRule.ruleId}">Edit</a>
-							<a><img src="${commonStaticUrl}/images/delete.png" class="centerImage rightMargin delete-button"/></a>
+							<a href="javascript:void(0)" ><img src="${commonStaticUrl}/images/delete.png" id="deleteRule" class="centerImage rightMargin delete-button"/></a>
+							<input type="hidden" id="ruleId" value="${loadsheetRule.ruleId}"/>
 							</td>
 							<td>${loadsheetRule.ruleName}</td>
 							<td>${loadsheetRule.description}</td>
@@ -50,8 +51,8 @@
 					</tbody>
 				</table>
 			</div>
-			<div class="floatRight">
-				<a class="buttonPrimary" href="load-create-rule.htm" >Create Rule</a>
+			<div class="floatRight" style="margin-top:20px;">
+				<a class="buttonPrimary " href="load-create-rule.htm" >Create Rule</a>
 			</div>		
 		</div> 
 		<input type="hidden" id="common-url" value="${commonStaticUrl}"/>

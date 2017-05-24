@@ -35,11 +35,11 @@
 	</select>
 	
 	<!-- To Load the Details in Load Sheet Management Page-->
-	<!-- TO-DO Get timesUsed value in below query-->
 	<select  id="getLoadsheetRules" resultType="com.penske.apps.adminconsole.model.RuleMaster">
-		SELECT 	RULE_ID 								AS 	ruleId,
+		SELECT 	CVRM.RULE_ID							AS 	ruleId,
 				NAME       								AS	ruleName,
-				DESCRIPTION  							AS	description,
+				DESCRIPTION								AS	description,
+				COUNT(CRO.RULE_ID)						AS	timesUsed,
 				SUMC.FIRST_NAME||' '||SUMC.LAST_NAME	AS 	createdBy,
 				CVRM.CREATED_DATE						AS	createdDate,
 				SUME.FIRST_NAME||' '||SUME.LAST_NAME	AS 	editBy,
@@ -52,6 +52,11 @@
 		LEFT JOIN 
 				SMC_USER_MASTER SUME
 		ON		SUME.SSO=CVRM.MODIFIED_BY
+		LEFT JOIN
+				SMC_COMPONENT_RULE_OVERRIDES CRO
+		ON		CVRM.RULE_ID = CRO.RULE_ID
+		GROUP BY
+				CVRM.RULE_ID,NAME,DESCRIPTION,SUMC.FIRST_NAME||' '||SUMC.LAST_NAME,CVRM.CREATED_DATE,SUME.FIRST_NAME||' '||SUME.LAST_NAME,CVRM.MODIFIED_DATE
 	</select>
 	
 	<!-- To Insert the Rule master Details -->
@@ -75,12 +80,77 @@
  			 </foreach>
  	</insert>
  	
+ 	<!-- To Update the rule master details -->
+ 	<update id="updateRuleMasterDetails">
+ 		UPDATE
+ 				SMC_CMP_VISIBILITY_RULES_MASTER
+ 		<set>		
+ 				NAME			=	#{rule.ruleName},
+ 				DESCRIPTION		=	#{rule.description},
+ 				MODIFIED_BY		=	#{user.userSSO},
+ 				MODIFIED_DATE	=	CURRENT_TIMESTAMP
+ 		</set>
+ 		WHERE
+ 				RULE_ID		=	#{rule.ruleId}
+ 				
+ 	</update>
+ 	<!-- To update rule definition details -->
+ 	<update id="updateRuleDefinitions">
+ 		
+		 	UPDATE
+		 			SMC_CMP_VISIBILITY_RULES_DEFINITION
+		 	<set>		
+		 			CRITERIA_GROUP	=	#{ruleDef.criteriaGroup},
+		 			COMPONENT_ID	=	#{ruleDef.componentId},
+		 			COMPONENT_TYPE	=	#{ruleDef.componentType},
+		 			OPERAND			=	#{ruleDef.operand},
+		 			COMPONENT_VALUE	=	#{ruleDef.value},
+		 			MODIFIED_BY		=	#{user.userSSO},
+		 			MODIFIED_DATE	=	CURRENT_TIMESTAMP
+		 	</set>
+		 	WHERE	
+		 			RULE_DEF_ID		=	#{ruleDef.ruleDefId}
+		 	AND 	
+		 			RULE_ID			=	#{ruleDef.ruleId}
+	 	
+ 	</update>
+ 	
+ 	<!-- Delete Rule Definition details -->
+ 	<delete id="deleteRuleDefinitions">
+ 		DELETE
+ 		FROM
+ 				SMC_CMP_VISIBILITY_RULES_DEFINITION
+ 		WHERE
+ 				RULE_DEF_ID IN 
+ 				<foreach item="ruleDefId"  collection="ruleDefIdList" open="(" separator="," close=")">
+ 					#{ruleDefId}
+ 				</foreach>
+ 				
+ 	</delete>
+ 	
+ 	<!-- Delete Rule details in rule master -->
+ 	<delete id="deleteRuleMasterDetails">
+ 		DELETE
+ 		FROM
+ 				SMC_CMP_VISIBILITY_RULES_MASTER
+ 		WHERE
+ 				RULE_ID =	#{ruleId} 
+ 	</delete>
+ 	<!-- Delete rule def details asscoiated to deleted ruleid -->
+ 	<delete id="deleteRuleDefDetails">
+ 		DELETE
+ 		FROM
+ 				SMC_CMP_VISIBILITY_RULES_DEFINITION
+ 		WHERE
+ 				RULE_ID =	#{ruleId} 
+ 	</delete>
+ 	
  	
  	<!-- Query to fetch the rule definition details based on ruleID -->
  	<select id="getRuleDetails" resultMap="ruleDetailsMap" >
  		SELECT 
- 				RULE_ID,
- 				NAME, 
+ 				TRIM(RULE_ID) AS RULE_ID,
+ 				TRIM(NAME) AS NAME, 
  				DESCRIPTION 
  		FROM 
  		 		SMC_CMP_VISIBILITY_RULES_MASTER 
@@ -99,6 +169,7 @@
 	 <select id="getRuleDefDetails" parameterType="int" resultMap="ruleDefMap">
 	
 		SELECT  
+				RULE_DEF_ID,
 				CRITERIA_GROUP,
 				COMPONENT_TYPE,
 				COMPONENT_ID,
@@ -112,6 +183,7 @@
 	 
 	  <resultMap id="ruleDefMap" type="com.penske.apps.adminconsole.model.RuleDefinitions">
 	 	<id property="ruleId" column="RULE_ID" />
+	 	<result property="ruleDefId" column="RULE_DEF_ID" />
 	 	<result property="criteriaGroup" column="CRITERIA_GROUP" />
 	 	<result property="componentType" column="COMPONENT_TYPE" />
 	 	<result property="componentId" column="COMPONENT_ID" />
@@ -138,7 +210,7 @@
  	
 	<!-- TO get component rules-->
 	<select  id="getComponentRules" resultType="com.penske.apps.adminconsole.model.RuleMaster">
-		SELECT 	CVRM.RULE_ID AS 	ruleId,
+		SELECT 	DISTINCT CVRM.RULE_ID AS 	ruleId,
 		        CVRM.NAME   AS	ruleName
 		FROM SMC_CMP_VISIBILITY_RULES_MASTER CVRM
 		JOIN SMC_CMP_VISIBILITY_RULES_DEFINITION CVRD ON CVRM.RULE_ID=CVRD.RULE_ID
@@ -176,5 +248,33 @@
 				COMPONENT_TYPE  as componentType
 		FROM 	
 				CORP.VEHCMPSGF
+ 	</select>
+ 	
+ 	<!-- To get Loadsheet Category Assigned for the rule -->
+ 	<select id="getAssignedLoadsheetCategories" resultType="com.penske.apps.adminconsole.model.LoadsheetManagement" >
+ 		SELECT
+				CTM.PO_CATEGORY			AS 	category,
+				CTM.TYPE				AS 	type,
+				VCS.COMPONENT_GROUP		AS 	componentGroup,
+				VCS.SUB_GROUP			AS	subGroup,
+				VCS.SUB_COMPONENT_NAME	AS 	component
+		FROM 
+				SMC_COMPONENT_VISIBILITY SCV
+		JOIN 	
+				SMC_COMPONENT_RULE_OVERRIDES CRO
+		ON	
+				CRO.CMP_VISIBLE_ID = SCV.CMP_VISIBLE_ID
+		JOIN 	
+				CORP.VEHCMPSGF VCS 
+		ON 
+				SCV.COMPONENT_ID=VCS.COMPONENT_ID 
+		JOIN 
+				SMC.SMC_CAT_TYPE_MASTER CTM 
+		ON 
+				CTM.CAT_TYPE_ID = SCV.CAT_TYPE_ID
+		
+		WHERE 
+				RULE_ID=#{ruleId}
+ 		
  	</select>
 </mapper>

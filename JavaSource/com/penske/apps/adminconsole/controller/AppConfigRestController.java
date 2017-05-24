@@ -834,4 +834,16 @@ public class AppConfigRestController {
 		}
 	}
 	
+	/* =========================DELETE Rule ========================*/
+	@RequestMapping(value="/delete-rule",method= RequestMethod.POST)
+	@ResponseBody
+	public void deleteTheRuleDetails(@RequestParam("ruleId") int ruleId,HttpServletResponse response) throws Exception{
+		
+		try{
+			loadsheetManagementService.DeleteRuleDetails(ruleId);
+		}catch(Exception e){
+			CommonUtils.getCommonErrorAjaxResponse(response,"");
+		}
+	}
+	
 }

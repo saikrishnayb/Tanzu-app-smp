@@ -11,8 +11,9 @@ $(document).ready(function() {
 function initializeloadSheetTable($loadsheetTable){
 	
 	$loadsheetTable.dataTable({ //All of the below are optional
-		"aaSorting": [[ 2, "desc" ]], //default sort column
+		"aaSorting": [[ 1, "asc" ]], //default sort column
 		"bPaginate": true, //enable pagination
+		"aoColumnDefs"		: [{ 'bSortable': false, 'aTargets': [0] } ],//disable sorting for specific column indexes
 		"bLengthChange": false, //enable change of records per page, not recommended
 		"bFilter": true, //Allows dynamic filtering of results, do not enable if using ajax for pagination
 		"bSort": true, //Allow sorting by column header

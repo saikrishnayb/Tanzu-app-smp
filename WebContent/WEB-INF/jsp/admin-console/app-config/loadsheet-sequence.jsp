@@ -34,8 +34,8 @@
 							<th>Category</th>
 							<th>Type</th>
 							<th>OEM</th>
-							<th>Edited By</th>
-							<th>Edited Date</th>
+							<th>Edit By</th>
+							<th>Edit Date</th>
 							
 						</tr>
 					</thead>

@@ -7,6 +7,7 @@ $(document).ready(function() {
 	$templateTable.dataTable( { //All of the below are optional
 		"aaSorting": [[ 1, "asc" ]], //default sort column
 		"bPaginate": true, //enable pagination
+		"aoColumnDefs"		: [{ 'bSortable': false, 'aTargets': [0] } ],//disable sorting for specific column indexes
 		"bAutoWidth": false, //cray cray
 		"bLengthChange": false, //enable change of records per page, not recommended
 		"bFilter": true, //Allows dynamic filtering of results, do not enable if using ajax for pagination
@@ -41,11 +42,11 @@ $(document).ready(function() {
 		}
 	} );
 	
-	var strHTML='<span style="padding-left:64%" class="floatLeft addRow">'+
+	var strHTML='<span style="margin-right: 10px;" class="floatLeft addRow">'+
 	'<a href="${pageContext.request.contextPath}/admin-console/app-config/add-loadsheet.htm">Add Loadsheet Sequence </a>'+
 	'<img src='+commonStaticUrl+'/images/add.png class="centerImage handCursor" alt="Add Row"/>'+
 '</span>';
-$("#sequence-table_wrapper").prepend(strHTML);
+$("#sequence-table_filter").prepend(strHTML);
 
 });
 

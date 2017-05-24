@@ -85,6 +85,9 @@ $(document).ready(function() {
  */
 function addRule() {
 	
+	var divCount =$("#rules > div").length;	
+	   if(divCount<10){
+	
 	var newDiv='<div id="rule'+rowCount+'" style="width:100%;padding-top: 1%">'
 	+'<div class="column-data-left"><input name="rule['+rowCount+'].priority" maxlength="2" required="required" class="priority" id="ruleProirity'+rowCount+'" style="width:74%"/></div>' 
 	+'<div class="column-data-center"><select  name="rule['+rowCount+'].ruleId" style="width:92%" class="rule" style="width:53%" id="ruleId'+rowCount+'">'
@@ -104,6 +107,10 @@ function addRule() {
 	$('#rulelsOverride'+rowCount).val('');
    rowCount++;
    $error.hide();
+   }else {
+		$error.find('.errorMsg').text("Maximum number of rules allowed 10.");
+		$error.show();
+	}
 }
 
 
@@ -130,11 +137,11 @@ function validateAddRuleAssociationForm() {
 	   if($(this).val().trim() === ""){
 		var val = $(this).attr('id');
 		if (val.indexOf("Proirity") >= 0){
-			errorMsg = 'Please enter Priority. ';
+			errorMsg = 'A required field is missing.';
 		}else if(val.indexOf("Override") >= 0){
-			errorMsg = 'Please select LS Override. ';
+			errorMsg = 'A required field is missing.';
 		}else{
-			errorMsg = 'Please select Rule. ';
+			errorMsg = 'A required field is missing.';
 		}
 		$(this).addClass('errorMsgInput');
 	   }

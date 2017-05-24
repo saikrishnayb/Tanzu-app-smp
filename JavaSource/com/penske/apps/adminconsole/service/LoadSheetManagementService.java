@@ -5,6 +5,8 @@ import java.util.List;
 
 
 
+
+
 import com.penske.apps.adminconsole.model.ComponentRuleAssociation;
 import com.penske.apps.adminconsole.model.ComponentVisibilityModel;
 import com.penske.apps.adminconsole.model.ConfigureRule;
@@ -24,6 +26,9 @@ public interface LoadSheetManagementService {
 	public void saveComponentRules(ComponentRuleAssociation componentRule);
 	public List<LoadSheetComponentDetails> getComponents();
 	public void createNewRule(RuleMaster rule);
-	public RuleMaster getRuleDetails(String ruleId);
+	public void updateRuleDetails(RuleMaster rule);
+	public RuleMaster getRuleDetails(int ruleId);
+	public void DeleteRuleDetails(int ruleId);
+	public List<LoadsheetManagement> getAssignedLoadsheetCategories(int ruleId);
 	
 }

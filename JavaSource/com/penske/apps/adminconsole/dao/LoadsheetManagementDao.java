@@ -27,5 +27,11 @@ public interface LoadsheetManagementDao {
 	public List<LoadSheetComponentDetails> getComponents();
 	public void insertRuleMasterDetails(@Param("rule") RuleMaster rule,@Param("user") UserContext user);
 	public void insertRuleDefinitions(@Param("ruleDefList") List<RuleDefinitions> ruleDefList,@Param("user") UserContext user);
-	public RuleMaster getRuleDetails(@Param("ruleId") String ruleId);
+	public void updateRuleMasterDetails(@Param("rule") RuleMaster rule,@Param("user") UserContext user);
+	public void updateRuleDefinitions(@Param("ruleDef") RuleDefinitions ruleDef,@Param("user") UserContext user);
+	public RuleMaster getRuleDetails(@Param("ruleId") int ruleId);
+	public void deleteRuleDefinitions(@Param("ruleDefIdList") List<Integer> ruleDefIdList);
+	public void deleteRuleMasterDetails(@Param("ruleId") int ruleId);
+	public void deleteRuleDefDetails(@Param("ruleId") int ruleId);
+	public List<LoadsheetManagement> getAssignedLoadsheetCategories(@Param("ruleId") int ruleId);
 }

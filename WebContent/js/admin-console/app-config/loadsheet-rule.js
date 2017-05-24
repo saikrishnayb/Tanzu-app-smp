@@ -6,16 +6,42 @@ $(document).ready(function() {
 	selectCurrentNavigation("tab-app-config", "left-nav-loadsheet-rules");
 	var $loadsheetRuleTable = $('#loadsheet-rule-table');
 	initializeRuleTable($loadsheetRuleTable);
+	
+	$('#loadsheet-rule-table tbody tr').on( 'click', '#deleteRule', function () {
+		
+		
+		var $this = $(this);
+		var ruleId=$this.closest('tr').find('#ruleId').val();
+		
+		
+		$.ajax({
+			  type: "POST",
+			  url: "./delete-rule.htm",
+			  data: {ruleId : ruleId},
+			  success: function(data){
+				  
+				 var $row = $this.closest("tr");
+				$loadsheetRuleTable.dataTable().fnDeleteRow($row[0]);
+			  }
+			});
+		
+		
+		
+		
+		
+	});
+	
 });
 
 function initializeRuleTable($loadsheetRuleTable){
 	
 	$loadsheetRuleTable.dataTable({ //All of the below are optional
-		"aaSorting": [[ 2, "desc" ]], //default sort column
+		"aaSorting": [[ 3, "desc" ]], //default sort column
 		"bPaginate": true, //enable pagination
 		"bLengthChange": false, //enable change of records per page, not recommended
 		"bFilter": true, //Allows dynamic filtering of results, do not enable if using ajax for pagination
 		"bSort": true, //Allow sorting by column header
+		"aoColumnDefs"		: [{ 'bSortable': false, 'aTargets': [0] } ],//disable sorting for specific column indexes
 		"bInfo": true, //Showing 1 to 10 of 11 entries
 		"sPaginationType": "full_numbers", //Shows first/previous 1,2,3,4 next/last buttons
 		"iDisplayLength": 10 , //number of records per page for pagination
@@ -49,4 +75,5 @@ function initializeRuleTable($loadsheetRuleTable){
 		}
 });
 }
+
 

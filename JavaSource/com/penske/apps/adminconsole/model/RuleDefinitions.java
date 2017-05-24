@@ -1,6 +1,7 @@
 package com.penske.apps.adminconsole.model;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * This class will store the rule definition details
@@ -11,6 +12,7 @@ import java.util.Date;
 
 public class RuleDefinitions {
 	
+	private int ruleDefId;
 	private int ruleId;
 	private int criteriaGroup;
 	private String componentId;
@@ -22,6 +24,7 @@ public class RuleDefinitions {
 	private String editBy;
 	private Date editDate;
 	private Boolean isGroupHeader;
+	private List<String> operandsList;
 	
 	public int getCriteriaGroup() {
 		return criteriaGroup;
@@ -89,6 +92,18 @@ public class RuleDefinitions {
 	}
 	public void setIsGroupHeader(Boolean isGroupHeader) {
 		this.isGroupHeader = isGroupHeader;
+	}
+	public int getRuleDefId() {
+		return ruleDefId;
+	}
+	public void setRuleDefId(int ruleDefId) {
+		this.ruleDefId = ruleDefId;
+	}
+	public List<String> getOperandsList() {
+		return operandsList;
+	}
+	public void setOperandsList(List<String> operandsList) {
+		this.operandsList = operandsList;
 	}
 	
 	

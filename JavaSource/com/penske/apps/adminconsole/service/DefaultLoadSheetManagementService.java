@@ -97,12 +97,55 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 	public void createNewRule(RuleMaster rule) {
 		
 		UserContext user = (UserContext) httpSession.getAttribute(ApplicationConstants.USER_MODEL);
+		
+		
+		loadsheetManagementDao.insertRuleMasterDetails(rule, user);
+		
+		populateRuleMaster(rule);
+		
+		loadsheetManagementDao.insertRuleDefinitions(rule.getRuleDefinitionsList(), user);
+		
+	}
+	//to Update the rule master and rule definitions
+	@Override
+	@Transactional
+	public void updateRuleDetails(RuleMaster rule) {
+		UserContext user = (UserContext) httpSession.getAttribute(ApplicationConstants.USER_MODEL);
+		List<RuleDefinitions> newRuleDefList=new ArrayList<RuleDefinitions> ();
+		loadsheetManagementDao.updateRuleMasterDetails(rule, user);
+		
+		populateRuleMaster(rule);
+		for(RuleDefinitions ruleDef:rule.getRuleDefinitionsList()){
+			if(ruleDef.getRuleDefId() != 0){
+				loadsheetManagementDao.updateRuleDefinitions(ruleDef, user);
+			}else{
+				//New Rules Definitions 
+				newRuleDefList.add(ruleDef);
+			}
+		}
+		//Insert the new RuleDefinitions
+		if(newRuleDefList.size()>0){
+			loadsheetManagementDao.insertRuleDefinitions(newRuleDefList, user);
+		}
+		//Delete the deleted rule definitions
+		if(rule.getDeletedRuleDefIds().size()>0){
+			loadsheetManagementDao.deleteRuleDefinitions(rule.getDeletedRuleDefIds());
+		}
+		
+		formTheComponentDropdownValue(rule);
+	}
+	
+	/**
+	 * Method to form the RuleMaster Object for insert/update actions
+	 * @param rule
+	 * @return rule
+	 */
+	private RuleMaster populateRuleMaster(RuleMaster rule){
+		
 		String[] componentValue;
 		Set<Integer> criteraiGrpValues=new HashSet<Integer>();
 		RuleDefinitions ruleDef;
 		int criteriaGrpCount=0;
-		
-		loadsheetManagementDao.insertRuleMasterDetails(rule, user);
 		
 		List<RuleDefinitions> rulDefList=rule.getRuleDefinitionsList();
 		//sort list based on criteria group count
@@ -133,23 +176,50 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 				}else{//same old group
 					ruleDef.setCriteriaGroup(criteriaGrpCount);
 				}
+				
 			}else{
 				ruleDefIt.remove();	//remove empty values
 			}
 			
 		}
 		
-		loadsheetManagementDao.insertRuleDefinitions(rule.getRuleDefinitionsList(), user);
+		rule=getOperandsDropdownValues(rule);
 		
+		return rule;
 	}
 
+	/**
+	 * Method to get the rule details On click of Edit
+	 */
 	@Override
-	public RuleMaster getRuleDetails(String ruleId) {
-		
-		Set<Integer> criteraiGrpValues=new HashSet<Integer>();
+	public RuleMaster getRuleDetails(int ruleId) {
 		
 		RuleMaster ruleMaster=loadsheetManagementDao.getRuleDetails(ruleId);
 		
+		ruleMaster=formTheComponentDropdownValue(ruleMaster);
+		ruleMaster=getOperandsDropdownValues(ruleMaster);
+		return ruleMaster;
+	}
+	
+	/**
+	 * Method to form the component drop down values in create rule page
+	 * @param rule
+	 * @return
+	 */
+	private RuleMaster formTheComponentDropdownValue(RuleMaster ruleMaster){
+		
+		//sort list based on criteria group count
+		if (ruleMaster.getRuleDefinitionsList().size() > 0) {
+			  Collections.sort(ruleMaster.getRuleDefinitionsList(), new Comparator<RuleDefinitions>() {
+			      @Override
+			      public int compare(final RuleDefinitions rd1, final RuleDefinitions rd2) {
+			    	  return rd1.getCriteriaGroup()>rd2.getCriteriaGroup()?+1
+			    			 :rd1.getCriteriaGroup()<rd2.getCriteriaGroup()?-1:0;
+			      }
+			  });
+			}
+		
+		Set<Integer> criteraiGrpValues=new HashSet<Integer>();
 		//forming the value for component dropdown & setting the isGroupHeader Value
 		for(RuleDefinitions ruleDef:ruleMaster.getRuleDefinitionsList()){
 			ruleDef.setComponentId(ruleDef.getComponentId()+"-"+ruleDef.getComponentType());
@@ -158,14 +228,59 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 			}else{
 				ruleDef.setIsGroupHeader(false);
 			}
+			
 		}
 		
+		return ruleMaster;
 		
+	}
+	
+	/**
+	 * method to populate operands dropdown during Edit functionality
+	 * @param ruleMaster
+	 * @return
+	 */
+	private RuleMaster getOperandsDropdownValues(RuleMaster ruleMaster){
+		List<String> operandsList;
 		
+		for(RuleDefinitions ruleDef:ruleMaster.getRuleDefinitionsList()){
+			
+			//populate operands list for the particular ruledef
+			operandsList=new ArrayList<String>();
+			if(!ruleDef.getComponentType().equals("T")){
+				operandsList.add("<");
+				operandsList.add("<=");
+				operandsList.add("=");
+				operandsList.add(">");
+				operandsList.add(">=");
+			}else{
+				operandsList.add("=");
+			}
+			ruleDef.setOperandsList(operandsList);
+		}
+				
 		return ruleMaster;
 	}
-
 	
+	/**
+	 * Method to Delete the rule details based on rule Id
+	 */
+	@Override
+	@Transactional
+	public void DeleteRuleDetails(int ruleId) {
+		
+		loadsheetManagementDao.deleteRuleMasterDetails(ruleId);
+		loadsheetManagementDao.deleteRuleDefDetails(ruleId);
+	}
+	/**
+	 * Method to get Assigned categories for the given rule
+	 */
+	@Override
+	public List<LoadsheetManagement> getAssignedLoadsheetCategories(int ruleId) {
+
+		return loadsheetManagementDao.getAssignedLoadsheetCategories(ruleId);
+	}
+
 
 
 }

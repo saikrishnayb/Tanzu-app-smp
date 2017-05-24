@@ -19,6 +19,7 @@ public class RuleMaster {
 	private String editBy;
 	private Date editDate;
 	private List<RuleDefinitions> ruleDefinitionsList;
+	private List<Integer> deletedRuleDefIds;	//to store the deleted rule definition id's
 
 	public int getRuleId() {
 		return ruleId;
@@ -72,13 +73,19 @@ public class RuleMaster {
 		this.createdDate = createdDate;
 	}
 	public String getFmtCreatedDate() {
-		return DateUtil.formatDate(this.editDate,DateUtil.MM_dd_yy_HH_mm_a);
+		return DateUtil.formatDate(this.createdDate,DateUtil.MM_dd_yy_HH_mm_a);
 	}
 	public List<RuleDefinitions> getRuleDefinitionsList() {
 		return ruleDefinitionsList;
 	}
 	public void setRuleDefinitionsList(List<RuleDefinitions> ruleDefinitionsList) {
 		this.ruleDefinitionsList = ruleDefinitionsList;
+	}
+	public List<Integer> getDeletedRuleDefIds() {
+		return deletedRuleDefIds;
+	}
+	public void setDeletedRuleDefIds(List<Integer> deletedRuleDefIds) {
+		this.deletedRuleDefIds = deletedRuleDefIds;
 	}
 	
 

@@ -5,9 +5,9 @@ $(document).ready(function() {
 	var iDisplayLength = 10;//tableRowLengthCalc();
 	//component table
 	$templateTable.dataTable( { //All of the below are optional
-		"aaSorting": [[ 1, "asc" ]], //default sort column
+		"aaSorting": [[ 0, "asc" ]], //default sort column
 		"bPaginate": false, //enable pagination
-		"sScrollY": "200px",
+		"sScrollY": "400px",
 		"sScrollX": "100%",
 		"bInfo" : false,
 		"bScrollCollapse": true,
@@ -23,7 +23,7 @@ $(document).ready(function() {
 		
 	} );
 	
-	var strHTML='<div id="org-desc-div" style="float: right; text-align: right;">'+
+	var strHTML='<div id="org-desc-div" style="float: right; text-align: right;margin-right: 2%;">'+
 	'<a class="buttonSecondary floatLeft clear-left back" href="loadsheet-management.htm">Back</a>'+
 '</div>';
 $("#component-table_wrapper").prepend(strHTML);

@@ -45,7 +45,7 @@
 							<td>${temp.group}</td>
 							<td>${temp.subGroup}</td>
 							<td class="editable">${temp.componentName}</td>
-							<td>${temp.loadSheet}</td>
+							<td>${temp.lsOverride}</td>
 							<td>${temp.screen2b}</td>
 							<td>
 							<!-- <a class="add-rule">Add Rule</a> -->
