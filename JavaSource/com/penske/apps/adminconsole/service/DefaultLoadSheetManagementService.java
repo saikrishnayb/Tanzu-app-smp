@@ -44,6 +44,10 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 	public List<LoadsheetSequence> getLoadsheetSequences(String category,String type) {
 		return loadsheetManagementDao.getLoadsheetSequences(category,type);
 	}
+	@Override
+	public List<LoadsheetSequence> getLoadsheetSequences() {
+		return loadsheetManagementDao.getLoadsheetSequence();
+	}
 	
 	@Override
 	public List<LoadsheetManagement> getLoadsheetManagementDetails(){

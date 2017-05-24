@@ -208,6 +208,21 @@
 		WHERE LSM.PO_CATEGORY=#{category} AND LSM.TYPE=#{type}
  	</select> 
  	
+ 	<!-- To get load sheet sequences from navigation link -->
+  	<select id="getLoadsheetSequence" resultType="com.penske.apps.adminconsole.model.LoadsheetSequence"> 
+		SELECT
+			SEQ_MASTER_ID AS id,
+			NAME AS name,
+			DESCRIPTION AS description,
+			PO_CATEGORY AS category,
+			TYPE AS type,
+			LSM.OEM AS oem,
+			FIRST_NAME||' '||LAST_NAME AS editedBy,
+			LSM.MODIFIED_DATE AS editedDate
+		FROM SMC_LOADSHEET_SEQ_MASTER LSM
+		JOIN SMC_USER_MASTER SUM ON LSM.MODIFIED_BY=SUM.SSO 
+ 	</select> 
+ 	
 	<!-- TO get component rules-->
 	<select  id="getComponentRules" resultType="com.penske.apps.adminconsole.model.RuleMaster">
 		SELECT 	DISTINCT CVRM.RULE_ID AS 	ruleId,

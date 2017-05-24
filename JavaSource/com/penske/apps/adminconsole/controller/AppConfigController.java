@@ -305,6 +305,12 @@ public class AppConfigController {
 
 		return mav;
 	}
+	@RequestMapping("/loadsheet-sequence")
+	public ModelAndView getLoadsheetSequences(){
+		ModelAndView mav = new ModelAndView("/admin-console/app-config/loadsheet-sequence");
+		mav.addObject("sequences", loadsheetManagementService.getLoadsheetSequences());
+		return mav;
+	}
 	
 	
 	/*==============Create Rule===================*/

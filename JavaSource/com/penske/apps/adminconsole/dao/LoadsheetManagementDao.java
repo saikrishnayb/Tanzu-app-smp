@@ -18,6 +18,7 @@ public interface LoadsheetManagementDao {
 	
 	public List<ComponentVisibilityModel> getLoadsheetComponents(@Param("categoryId") String categoryId);
 	public List<LoadsheetSequence> getLoadsheetSequences(@Param("category") String category,@Param("type") String type);
+	public List<LoadsheetSequence> getLoadsheetSequence();
 	public List<LoadsheetManagement> getLoadsheetManagementDetails();
 	public List<RuleMaster> getLoadsheetRules();
 	public List<RuleMaster> getComponentRules(@Param("componetId")int componetId);

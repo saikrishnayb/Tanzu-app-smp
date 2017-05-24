@@ -7,6 +7,7 @@
 	<div class="leftNavGroup"><a href="${pageContext.request.contextPath}/admin-console/app-config/loadsheet-management.htm" id="left-nav-loadsheet-management" onclick="javascript:loadProcessImage();">Loadsheet Management</a></div>
 	 <!-- This link will be removed once load sheet mangement page is ready -->
 	 <div ><a href="${pageContext.request.contextPath}/admin-console/app-config/loadsheet-rule.htm" id="left-nav-loadsheet-rules" onclick="javascript:loadProcessImage();">Loadsheet Rules</a></div>
+	<div ><a href="${pageContext.request.contextPath}/admin-console/app-config/loadsheet-sequence.htm" id="left-nav-loadsheet-sequence" onclick="javascript:loadProcessImage();">Loadsheet Sequences</a></div>
 	<!-- <div><a href="${pageContext.request.contextPath}/admin-console/app-config/notifications.htm" id="left-nav-notifications">Notifications</a></div> -->
 	<tl:isAuthorized tabName="Admin Console" secFunction="DYNAMIC_RULES_MANAGEMENT">
 		<div class="leftNavGroup"><a href="${pageContext.request.contextPath}/admin-console/app-config/dynamic-rules.htm" id="left-nav-dynamic-rules" onclick="javascript:loadProcessImage();">Dynamic Rules</a></div>
