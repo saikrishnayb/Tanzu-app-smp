@@ -237,14 +237,17 @@ color:inherit}
 	background-color: #EBEBEB !important;
 }
 
-table#createRule-Table tbody tr {
-	height:30px !important;
+table#createRule-Table tbody tr.groupHeader td{
+	padding-top: 10px !important;
 }
 
-table#createRule-Table tbody td {
-	height:30px !important;
-	padding: 0px 10px !important;
+ table#createRule-Table tbody tr {
+	height:20px !important;
 }
+
+table#createRule-Table tbody tr td {
+	height:20px !important;
+} 
 
 input[type="text"], select {
     margin-bottom: 0px !important;

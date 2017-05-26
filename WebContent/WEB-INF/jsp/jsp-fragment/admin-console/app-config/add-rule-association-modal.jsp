@@ -7,12 +7,31 @@
 <form:form id="add-rule-association-form" name="add-rule-association-form" modelAttribute="componentRule" method="POST">
 		
 	<form:hidden path="componentVisibilityId" id="componentVisibilityId"></form:hidden>
-	<input id="ruleCount" type="hidden" name="modelYear"  value="${fn:length(componentRule.rule)}"/>
+	<input id="ruleCount" type="hidden" name="ruleCount"  value="${fn:length(componentRule.rule)}"/>
 	<input type="hidden" id="common-static-url" value="${commonStaticUrl}"/>
+	<!-- hidden fields to populate option values for added select boxes -->
+	<select   id="ruleId" style="display: none">
+	         <option value=" "></option>
+			<c:forEach var="temp" items="${rules}">
+			<option value="${temp.ruleId}">${temp.ruleName}</option>
+			</c:forEach>
+	</select>
+	<select   id="rulelsOverride" style="display: none">
+			<option value=" "></option>
+			<option value="R">R</option>
+			<option value="A">A</option>
+			<option value="N">N</option>
+	</select>
 	<div id="label" style="width:100%">
 	<div class="column-left"><label>Priority <span class="errorMsg">*</span></label></div>
 	<div class="column-center"><label>Rule <span class="errorMsg">*</span></label></div>
 	<div class="column-right"><label>LS Override <span class="errorMsg">*</span></label></div>
+	<div class="column-right-most">
+	<c:if test="${viewMode ne 'Y'}">
+	<a style="padding-left: 20%;" id="addRule" href="#"onclick="addRule();"><img class="addRow"
+			 src="<c:out value='${commonStaticUrl}'/>/images/add.png"/></a>
+	</c:if>
+	</div>
 	</div>
 	<div id="rules" style="width:100%">
 	<c:choose>
@@ -45,14 +64,8 @@
 										<form:option value="N">N</form:option>
 					    </form:select>
 					     <c:if test="${viewMode ne 'Y'}">
-					    <c:choose>
-							<c:when test="${indexCount.index eq 0}"> <a style="text-decoration:none;padding-left: 20%;" id="addRule" href="#"onclick="addRule();"><img class="addRow"
-						           src="<c:out value='${commonStaticUrl}'/>/images/add.png"/></a>
-						    </c:when>
-							<c:otherwise> <a style="text-decoration:none;padding-left: 20%;" id="deleteRule" href="#"onclick="deleteRule(${indexCount.index});"><img class="addRow"
+					     <a style="text-decoration:none;padding-left: 20%;" id="deleteRule" href="#"onclick="deleteRule(${indexCount.index});"><img class="addRow"
 						           src="<c:out value='${commonStaticUrl}'/>/images/delete.png"/></a>
-						    </c:otherwise>
-						</c:choose>
 						</c:if>
 						</div>
 					</div>
@@ -77,8 +90,8 @@
 										<form:option value="A">A</form:option>
 										<form:option value="N">N</form:option>
 					    </form:select>
-					   <a style="text-decoration:none;padding-left: 20%;" id="addRule" href="#"onclick="addRule();"><img class="addRow"
-						           src="<c:out value='${commonStaticUrl}'/>/images/add.png"/></a>
+					  <a style="text-decoration:none;padding-left: 20%;" id="deleteRule" href="#"onclick="deleteRule(0);"><img class="addRow"
+						           src="<c:out value='${commonStaticUrl}'/>/images/delete.png"/></a>
 				</div>
 				</div>
 			   </c:if>
@@ -91,14 +104,15 @@
 	</div>
 	<%-- <input class="floatLeft width-100" type="text" name="priority" value="${maxPriority}" autocomplete="off" /> --%>
 	 <c:if test="${viewMode ne 'Y'}">
-	<div style="padding-left: 42%;">
-	<a class="buttonPrimary floatRight clear-left save">Save</a>
-	</div>
+		<div style="width: 100%;display: inline-block;">
+		     <a id="saveRuleAssociation" class="buttonPrimary floatRight  save">Save</a>
+		     <div class="error floatRight hidden margin-upper-right">
+			   <img src="${commonStaticUrl}/images/warning.png">
+			   <span class="errorMsg"></span>
+		     </div>
+		</div>
 	 </c:if>
-	<div class="error floatRight hidden margin-upper-right">
-		<img src="${commonStaticUrl}/images/warning.png">
-		<span class="errorMsg"></span>
-	</div>
+	
 </form:form>
 
 <script src="${context}/js/admin-console/app-config/modals/add-rule-association-modal.js" type="text/javascript"></script>

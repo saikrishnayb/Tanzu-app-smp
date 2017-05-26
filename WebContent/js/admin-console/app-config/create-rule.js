@@ -13,7 +13,18 @@ $(document).ready(function() {
 	commonStaticUrl =$('#common-static-url').val();
 	var $loadsheetRuleTable = $('#createRule-Table');
 	var $assigendTable=$('#Assigned-Table');
-	initializeRuleTable($loadsheetRuleTable);
+	
+	//Customized search for Create Rule Table
+	$.fn.dataTableExt.ofnSearch['html-input'] = function(value) {
+		return $(value).val();
+	};
+	$.fn.dataTableExt.ofnSearch['html-select'] = function(value) {
+		var $id=$(value).attr('id');
+		return $("#"+$id+' option:selected').text();
+	};
+	
+	$createRuleTable=initializeRuleTable($loadsheetRuleTable);
+	dataTableCustomSearch();
 	initializeAssignedTable($assigendTable);
 	//Appending AddCriteriaGroup in data table
 	var $addCriteriaGrp=$("#AddCriteriaGroup").html();
@@ -50,23 +61,43 @@ $(document).ready(function() {
 	 
 });
 
+/**
+ * Method to Custom filter create rule data table based on input and select elements
+ */
+function dataTableCustomSearch(){
+	
+	$(document).on('change','#createRule-Table td input', function(e) {
+		var $td = $(this).parent();
+	    $td.find('input').attr('value', this.value);
+	    $createRuleTable.cell($td).invalidate('dom').draw();
+	});
+	$(document).on('change','#createRule-Table td select', function() {
+	    var $td = $(this).parent();
+	    var value = this.value;
+	    $td.find('option').each(function(i, o) {
+	      $(o).removeAttr('selected');
+	      if ($(o).val() == value) $(o).attr('selected', true);
+	    });
+	    $createRuleTable.cell($td).invalidate('dom').draw();
+	}); 
+	
+}
+
 function initializeRuleTable($loadsheetRuleTable){
 	
-	$createRuleTable=$loadsheetRuleTable.DataTable({ //All of the below are optional
+	var $createRuleTable=$loadsheetRuleTable.DataTable({ //All of the below are optional
 		"bPaginate": false, //enable pagination
 		//"scrollY": "500px",
 		"scrollCollapse": true,
-		"stateSave": true,
 		"bLengthChange": false, //enable change of records per page, not recommended
 		"bFilter": true, //Allows dynamic filtering of results, do not enable if using ajax for pagination
 		"bSort": false, //Allow sorting by column header
 		"bInfo": true, //Showing 1 to 10 of 11 entries
 		"oLanguage": {"sEmptyTable": "&nbsp;"}, //Message displayed when no records are found
-		"search": {
-			type: "text",
-			bRegex: true,
-			bSmart: true
-			 },
+		"columnDefs": [
+		               	{ "type": "html-input", "targets": [3] },
+		               	{ "type": "html-select", "targets": [1,2] }
+		               	] ,
 		"fnDrawCallback": function() { //This will hide the pagination menu if we only have 1 page.
 			
 	var paginateRow = $(this).parent().children('div.dataTables_paginate');
@@ -90,6 +121,8 @@ function initializeRuleTable($loadsheetRuleTable){
 			}
 		}
 });
+	
+	return $createRuleTable;
 }
 
 function initializeAssignedTable($assigendTable){
@@ -307,8 +340,7 @@ function addNewGroup(){
 
 function createGroupHeader(grpIndex){
 	
-	var table = $("#createRule-Table").DataTable();
-	var rowNode=table.row.add( [
+	var rowNode=$createRuleTable.row.add( [
 	                                       '<a href="#" class="rightMargin" onClick="copyGroup('+grpIndex+')">Copy</a><a href="#" onClick="deleteGroup('+grpIndex+');"><img src="'+commonStaticUrl+'/images/delete.png" class="centerImage rightMargin delete-button"/></a>',
 	                	               	   '<select id="componentsDropDown-G_'+grpIndex+'-R_1" name="ruleDefinitionsList['+frmAryIdx+'].componentId" onChange="loadOperands('+grpIndex+',1)" style="width:100%"><option></option></select>',
 	                	            	   '<select id="operandsID-G_'+grpIndex+'-R_1" name="ruleDefinitionsList['+frmAryIdx+'].operand" disabled></select>',
@@ -327,7 +359,6 @@ function createGroupHeader(grpIndex){
 
 function deleteGroup(grpIndex){
 	
-	var table = $("#createRule-Table").DataTable();
 	
 	//get the rowDefID's before delete
 	$('#createRule-Table tbody .group'+grpIndex).each(function () {
@@ -336,7 +367,7 @@ function deleteGroup(grpIndex){
 			 deletedRowIdArray.push(ruleDefId);
 		 }
 	});
-	var rows = table.rows( '.group'+grpIndex).remove().draw();
+	var rows = $createRuleTable.rows( '.group'+grpIndex).remove().draw();
 	applyOddEvenRule();
 	clearErrorMessage();
 	//resize Iframe while adding the rows or groups
@@ -347,12 +378,11 @@ function deleteGroup(grpIndex){
 /*Method to apply different background colors for alternative groups*/
 function applyOddEvenRule(){
 	
-	var table = $("#createRule-Table").DataTable();
 	var gCountsArray = new Array();
 	var curNode=null;
 	
-	table.rows().every( function ( index ) {
-	    curNode = table.row( index ).draw().node();
+	$createRuleTable.rows().every( function ( index ) {
+	    curNode = $createRuleTable.row( index ).draw().node();
 	    var nodeId=$(curNode).attr("id");
 	    var gCount=nodeId.substring(nodeId.indexOf("_")+1,nodeId.lastIndexOf("-"));
 	    gCountsArray.push(gCount);
@@ -369,11 +399,10 @@ function applyOddEvenRule(){
 }
 
 function applyBGColors(gCountsArray){
-var table = $("#createRule-Table").DataTable();
 
 $.each(gCountsArray,function(index,gValue){
-	table.rows().every( function ( i ) {
-		curNode = table.row( i ).draw().node();
+	$createRuleTable.rows().every( function ( i ) {
+		curNode = $createRuleTable.row( i ).draw().node();
 		var nodeId=$(curNode).attr("id");
 	    var gCount=nodeId.substring(nodeId.indexOf("_")+1,nodeId.lastIndexOf("-"));
 	    if(gCount==gValue){
@@ -398,7 +427,6 @@ function copyGroup(srcGrpIndex){
 	
 	
 	
-	var table = $("#createRule-Table").DataTable();
 	var childRowNode=null;
 	
 	//getTheCount of current group Rows 
@@ -422,7 +450,7 @@ function copyGroup(srcGrpIndex){
 		for(var rIndex=2;rIndex<=rowCount;rIndex++){
 			frmAryIdx=frmAryIdx+1;	//increasing the form array Index count for every row
 			var rowData=getRowData(grpIndex,rIndex);
-			childRowNode=table.row.add(rowData).draw().node();
+			childRowNode=$createRuleTable.row.add(rowData).draw().node();
 			
 			if($('#createRule-Table tbody .group'+grpIndex+':last').hasClass( "grayRow" )){
 				$(childRowNode).addClass("grayRow group"+grpIndex);
@@ -471,12 +499,15 @@ function copyDatatoDestGroup(srcGrp,destGrp){
 		var drIndex=destDivId.substr(dlstIndx+1,dlstIndx.length);
 		
 		
-		$("#valueID-G_"+dgrpIndex+'-R_'+drIndex).val($("#valueID-G_"+sgrpIndex+'-R_'+srIndex).val());
+		$("#valueID-G_"+dgrpIndex+'-R_'+drIndex).attr("value",$("#valueID-G_"+sgrpIndex+'-R_'+srIndex).val());
 		$("#componentsDropDown-G_"+dgrpIndex+'-R_'+drIndex).val($("#componentsDropDown-G_"+sgrpIndex+'-R_'+srIndex).val());
 	     
 		loadOperandDuringSwap(destDivId);
 	    $("#operandsID-G_"+dgrpIndex+'-R_'+drIndex).val($("#operandsID-G_"+sgrpIndex+'-R_'+srIndex).val());
-		
+	    
+	    //Invalidate row and load data from DOM for search functionality
+	    var $tr=$("#valueID-G_"+dgrpIndex+'-R_'+drIndex).parent().parent();
+	    $createRuleTable.row($tr).invalidate('dom').draw();
 	}
 		
 	
@@ -533,7 +564,6 @@ function submitCreateRuleForm(){
 //Method to validate the fileds
 function validateFields(){
 	
-	var table = $("#createRule-Table").DataTable();
 	var rtrnFlag=true;
 	if(($("#ruleName").val()=="") || $("#description").val()=="") {
 		$("#ErrorMsg span").text("Please Enter Rule Name And Description");
@@ -547,18 +577,18 @@ function validateFields(){
 		$("#ruleName").removeClass("errorMsgInput");
 		$("#description").removeClass("errorMsgInput");
 		//If table is empty
-		if ( ! table.data().count() ) {
-			$("#ErrorMsg span").text("Please add atleast on criteria group");
+		if ( ! $createRuleTable.data().count() ) {
+			$("#ErrorMsg span").text("Please add atleast one criteria group");
 			$("#ErrorMsg").show();
 			parent.resizeAfterPaginationChange();
 			return false;
 		}else{
 			
 			//validate the rule definitions
-			table.rows().every( function ( index ) {
+			$createRuleTable.rows().every( function ( index ) {
 				if(rtrnFlag){
 					
-					var curRow = table.row( index ).data();
+					var curRow = $createRuleTable.row( index ).data();
 				    var $comId=curRow[1].split('"')[1];
 				    var ruleValId=curRow[3].split('"')[1];
 				    var compVal=$("#"+$comId).val();

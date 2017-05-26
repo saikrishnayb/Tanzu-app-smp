@@ -37,7 +37,11 @@ $('#rule-association-modal').dialog({
 	minHeight: 300,
 	resizable: false,
 	title: 'Rule Association',
-	closeOnEscape: false
+	closeOnEscape: false,
+	close: function(event, ui)
+    {
+		location.reload();
+    }
 });
 
 /* ------------- Adding A Rule -------------- */

@@ -257,13 +257,14 @@
     
  	<!-- To get the list of components for dropwdown in create rules -->
 	<select id="getComponents" resultType="com.penske.apps.adminconsole.model.LoadSheetComponentDetails">
-		SELECT  COMPONENT_GROUP as componentGroup,
-				SUB_GROUP as subGroup,
-				COMPONENT_ID as componentId,
-				COMPONENT_TYPE  as componentType
-		FROM 	
-				CORP.VEHCMPSGF
- 	</select>
+		SELECT 	COMPONENT_ID 				AS componentId,
+				COMPONENT_TYPE				AS componentType,
+				TRIM(COMPONENt_GROUP)		AS componentGroup,
+				TRIM(SUB_GROUP)				AS subGroup,
+				TRIM(SUB_COMPONENT_NAME) 	AS componentName
+		FROM
+				CORP.VEHCMPSGF 
+	</select>
  	
  	<!-- To get Loadsheet Category Assigned for the rule -->
  	<select id="getAssignedLoadsheetCategories" resultType="com.penske.apps.adminconsole.model.LoadsheetManagement" >

@@ -77,14 +77,18 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 	public void saveComponentRules(ComponentRuleAssociation componentRule) {
 		loadsheetManagementDao.deleteComponentVisibilityRules(componentRule.getComponentVisibilityId());
 		List<ConfigureRule> configureRules= new ArrayList<ConfigureRule>();
+		if(componentRule.getRule()!=null && componentRule.getRule().size()>0){
 		// to remove the null rules which are deleted from the UI using delete icon.
-		for(ConfigureRule rule:componentRule.getRule()){
-			if(rule.getRuleId()!=0 && rule.getPriority()!=null){
+		  for(ConfigureRule rule:componentRule.getRule()){
+			if(rule.getRuleId()!=0 && rule.getPriority()!=null && rule.getLsOverride()!=null){
 				configureRules.add(rule);
 			}
+		  }
 		}
+		if(configureRules.size()>0){
 		componentRule.setRule(configureRules);
 		loadsheetManagementDao.saveComponentVisibilityRules(componentRule);
+		}
 		
 	}
 	@Override

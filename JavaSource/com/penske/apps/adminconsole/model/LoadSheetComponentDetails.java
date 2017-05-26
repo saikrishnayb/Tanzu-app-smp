@@ -7,6 +7,7 @@ public class LoadSheetComponentDetails {
 	private String subGroup;
 	private String componentId;
 	private String componentType;
+	private String componentName;
 	public String getComponentGroup() {
 		return componentGroup;
 	}
@@ -30,6 +31,12 @@ public class LoadSheetComponentDetails {
 	}
 	public void setComponentType(String componentType) {
 		this.componentType = componentType;
+	}
+	public String getComponentName() {
+		return componentName;
+	}
+	public void setComponentName(String componentName) {
+		this.componentName = componentName;
 	}
 	
 	

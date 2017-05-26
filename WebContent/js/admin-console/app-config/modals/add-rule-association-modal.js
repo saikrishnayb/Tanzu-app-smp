@@ -11,9 +11,12 @@ $(document).ready(function() {
 	}
 	//$addRuleAssociationModal.unbind();
 	$addRuleAssociationModal.on('click', '.save', function() {
-		var errorMsg = '';
-		// Validate the form.
-		errorMsg = validateAddRuleAssociationForm();
+	     //submit the form only if the button is not disabled.
+		 if (!$("#saveRuleAssociation").hasClass("buttonDisabled")) {
+		 var errorMsg = '';
+		 // Validate the form except the scenario where all the rows are deleted while edit.
+		 if(!($("#ruleCount").val()!=0 && $("#rules > div").length==0))
+		 errorMsg = validateAddRuleAssociationForm();
 		
 		// If no error message was returned, hide any errors and submit the form data.
 		if (errorMsg.length == 0) {
@@ -38,7 +41,7 @@ $(document).ready(function() {
 			$error.find('.errorMsg').text(errorMsg);
 			$error.show();
 		}
-		
+	  }	
 		
 	});
 	
@@ -98,11 +101,11 @@ function addRule() {
 	+'<img src='+commonStaticUrl+'/images/delete.png class="centerImage handCursor" alt="delete Row"/></a></div>'
 	+'</div>';
 	$('#rule-association-modal #rules').append(newDiv);
-	var $options = $("#ruleId0 > option").clone();
+	var $options = $("#ruleId > option").clone();
 	$('#ruleId'+rowCount).append($options);
 	$('#ruleId'+rowCount).val('');
 	
-	$options = $("#rulelsOverride0 > option").clone();
+	$options = $("#rulelsOverride > option").clone();
 	$('#rulelsOverride'+rowCount).append($options);
 	$('#rulelsOverride'+rowCount).val('');
    rowCount++;
@@ -111,6 +114,10 @@ function addRule() {
 		$error.find('.errorMsg').text("Maximum number of rules allowed 10.");
 		$error.show();
 	}
+    // to enable the save button if it is disabled.
+   if ($("#saveRuleAssociation").hasClass("buttonDisabled")) {
+	   $("#saveRuleAssociation").removeClass("buttonDisabled").addClass("buttonPrimary"); 
+   }
 }
 
 
@@ -122,6 +129,10 @@ function addRule() {
 function deleteRule(count) {
 	$('#rule'+count).remove();
 	 $error.hide();
+	 // to disable the save button when there are no rows.
+	 if(($("#ruleCount").val()==0 && $("#rules > div").length==0)){
+		 $("#saveRuleAssociation").removeClass("buttonPrimary").addClass("buttonDisabled");
+	 }
 }
 
 

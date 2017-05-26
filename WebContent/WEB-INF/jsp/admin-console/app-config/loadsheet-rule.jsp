@@ -35,7 +35,7 @@
 					<c:forEach items="${loadsheetRules}" var="loadsheetRule">
 						<tr>
 							<td class="editable centerAlign width">
-							<a class="rightMargin edit-button" href="edit-rule.htm?ruleId=${loadsheetRule.ruleId}">Edit</a>
+							<a class="rightMargin edit-button" onCLick="processingImageAndTextHandler('visible','Loading data...');" href="edit-rule.htm?ruleId=${loadsheetRule.ruleId}">Edit</a>
 							<a href="javascript:void(0)" ><img src="${commonStaticUrl}/images/delete.png" id="deleteRule" class="centerImage rightMargin delete-button"/></a>
 							<input type="hidden" id="ruleId" value="${loadsheetRule.ruleId}"/>
 							</td>

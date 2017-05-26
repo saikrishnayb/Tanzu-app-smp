@@ -20,7 +20,7 @@
 			<form:form method="post"  modelAttribute="ruleMaster" id="create-rule-form">	
 				<div>
 				<div class="floatLeft"><h1>Loadsheet Rules</h1></div>
-				<div class="floatLeft marginLeft" style="margin-top:4px">
+				<div class="floatLeft marginLeft" style="margin-top:4px;margin-right:5%;">
 					<form:label path="ruleName" for="ruleName">Enter Rule Name</form:label>
 					<form:input path="ruleName" id="ruleName" maxlength="50"  type="text"/>
 					<form:input path="ruleId"  type="hidden" value="${ruleMaster.ruleId }"/>
@@ -43,7 +43,7 @@
 					<legend>Rules</legend>
 					<div class="displayNone" id="AddCriteriaGroup">
 					<div class="floatLeft rightMargin">
-						<a href="#" onClick="addNewGroup();">Add Criteria Group<img src="${commonStaticUrl}/images/add.png"id="addRow" class="leftPad centerImage handCursor adder" alt="Add Criteria Group"/></a>
+						<a href="#" onClick="addNewGroup();">Add Criteria Group<img src="${commonStaticUrl}/images/add.png"id="addRow" class="leftPad centerImage handCursor adder rightMargin" alt="Add Criteria Group"/></a>
 					</div>
 					<div class="floatRight leftMargin">
 						<a class="buttonPrimary" onClick="submitCreateRuleForm();" id="save" href="javascript:void(0)">Save</a>
@@ -72,18 +72,18 @@
 								<form:select id="componentsDropDown-G_${ruleDefinitionsList.criteriaGroup}-R_${rowCount}" path="ruleDefinitionsList[${loopIndex.count -1}].componentId"  onChange="loadOperands(${ruleDefinitionsList.criteriaGroup},${rowCount})" style="width:100%">
 									<form:option value=""></form:option>
 									<c:forEach items="${componentsList}" var="component">
-				                   		<form:option value="${component.componentId}-${component.componentType}">${component.componentGroup}-${component.subGroup} (ID: ${component.componentId})</form:option>
+				                   		<form:option value="${component.componentId}-${component.componentType}">${component.componentGroup}<c:if test="${not empty  component.subGroup}"> ${component.subGroup}</c:if> - ${component.componentName} (ID: ${component.componentId})</form:option>
 				                   	</c:forEach>
 								</form:select>
 								</td>
 								<td>
-								<c:if test="${fn:length(ruleDefinitionsList.operandsList) eq 0}"><c:set var="disabledFlag" value="disabled" scope="page"></c:set></c:if>
-								<form:select path="ruleDefinitionsList[${loopIndex.count -1}].operand"  id="operandsID-G_${ruleDefinitionsList.criteriaGroup}-R_${rowCount}"  ${disabledFlag}>
+								<c:if test="${fn:length(ruleDefinitionsList.operandsList) eq 0}"><c:set var="disabledFlag" value="true" scope="page"></c:set></c:if>
+								<form:select path="ruleDefinitionsList[${loopIndex.count -1}].operand"  id="operandsID-G_${ruleDefinitionsList.criteriaGroup}-R_${rowCount}"  disabled="${disabledFlag}">
 								<c:forEach items="${ruleDefinitionsList.operandsList}" var="operands">
 				                   		<form:option value="${operands}">${operands}</form:option>
 				                 </c:forEach>
-								</form:select>
-								</td>
+				                </form:select>
+				                </td>
 								<td><form:input path="ruleDefinitionsList[${loopIndex.count -1}].value"  id="valueID-G_${ruleDefinitionsList.criteriaGroup}-R_${rowCount}" maxlength="30" type="text"/>
 								<form:input type="hidden" id="ruleDefId" path="ruleDefinitionsList[${loopIndex.count -1}].ruleDefId" value="${ruleDefinitionsList.ruleDefId}"/><!-- Hidden field for ruleDefId -->
 								<form:input type="hidden" class="criteriaGroupVal" path="ruleDefinitionsList[${loopIndex.count -1}].criteriaGroup" value="${ruleDefinitionsList.criteriaGroup}"/><!-- Hidden field for criteria group -->
@@ -101,7 +101,7 @@
 								<form:select id="componentsDropDown-G_${ruleDefinitionsList.criteriaGroup}-R_${rowCount}" path="ruleDefinitionsList[${loopIndex.count -1}].componentId"  onChange="loadOperands(${ruleDefinitionsList.criteriaGroup},${rowCount})" style="width:100%">
 									<form:option value=""></form:option>
 									<c:forEach items="${componentsList}" var="component">
-				                   		<form:option value="${component.componentId}-${component.componentType}">${component.componentGroup}-${component.subGroup} (ID: ${component.componentId})</form:option>
+				                   		<form:option value="${component.componentId}-${component.componentType}">${component.componentGroup}<c:if test="${not empty  component.subGroup}"> ${component.subGroup}</c:if> - ${component.componentName} (ID: ${component.componentId})</form:option>
 				                   	</c:forEach>
 								</form:select>
 								</td>
@@ -168,7 +168,7 @@
 		<input type="hidden" id="numberOfRows" value="${fn:length(ruleMaster.ruleDefinitionsList)}"/>
 		<select class="displayNone" id="componentsDropDown">
 							<c:forEach items="${componentsList}" var="component">
-		                   		<option value="${component.componentId}-${component.componentType}">${component.componentGroup}-${component.subGroup} (ID: ${component.componentId})</option>
+		                   		<option value="${component.componentId}-${component.componentType}">${component.componentGroup}<c:if test="${not empty  component.subGroup}"> ${component.subGroup}</c:if> - ${component.componentName} (ID: ${component.componentId})</option>
 		                   	</c:forEach>
 		</select>
 		<input type="hidden" id="common-static-url" value="${commonStaticUrl}"/>
