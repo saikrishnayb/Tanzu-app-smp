@@ -281,12 +281,18 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 		loadsheetManagementDao.deleteRuleDefDetails(ruleId);
 	}
 	/**
-	 * Method to get Assigned categories for the given rule
+	 * Method to get loadsheet categories list in loadsheet sequence screen.
 	 */
 	@Override
-	public List<LoadsheetManagement> getAssignedLoadsheetCategories(int ruleId) {
-
-		return loadsheetManagementDao.getAssignedLoadsheetCategories(ruleId);
+	public List<String> getCategoryList() {
+		return loadsheetManagementDao.getCategoryList();
+	}
+	/**
+	 * Method to get loadsheet types list in loadsheet sequence screen.
+	 */
+	@Override
+	public List<String> getTypeList() {
+		return loadsheetManagementDao.getTypeList();
 	}
 
 

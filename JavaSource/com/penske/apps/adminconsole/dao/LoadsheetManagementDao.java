@@ -34,5 +34,6 @@ public interface LoadsheetManagementDao {
 	public void deleteRuleDefinitions(@Param("ruleDefIdList") List<Integer> ruleDefIdList);
 	public void deleteRuleMasterDetails(@Param("ruleId") int ruleId);
 	public void deleteRuleDefDetails(@Param("ruleId") int ruleId);
-	public List<LoadsheetManagement> getAssignedLoadsheetCategories(@Param("ruleId") int ruleId);
+	public List<String> getCategoryList();
+	public List<String> getTypeList();
 }

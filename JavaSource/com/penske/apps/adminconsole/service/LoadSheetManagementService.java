@@ -30,6 +30,7 @@ public interface LoadSheetManagementService {
 	public void updateRuleDetails(RuleMaster rule);
 	public RuleMaster getRuleDetails(int ruleId);
 	public void DeleteRuleDetails(int ruleId);
-	public List<LoadsheetManagement> getAssignedLoadsheetCategories(int ruleId);
+	public List<String> getCategoryList();
+	public List<String> getTypeList();
 	
 }

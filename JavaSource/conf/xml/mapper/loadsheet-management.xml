@@ -192,7 +192,7 @@
 	 </resultMap>
 	
 	
-	<!-- To get load sheet sequences -->
+	<!-- To get load sheet sequences for selected category and type -->
   	<select id="getLoadsheetSequences" resultType="com.penske.apps.adminconsole.model.LoadsheetSequence"> 
 		SELECT
 			SEQ_MASTER_ID AS id,
@@ -205,7 +205,15 @@
 			LSM.MODIFIED_DATE AS editedDate
 		FROM SMC_LOADSHEET_SEQ_MASTER LSM
 		JOIN SMC_USER_MASTER SUM ON LSM.MODIFIED_BY=SUM.SSO 
-		WHERE LSM.PO_CATEGORY=#{category} AND LSM.TYPE=#{type}
+        <where>
+          <if test="category !=null and category !=''">
+			LSM.PO_CATEGORY=#{category}
+          </if>
+          <if test="type !=null and type !=''">
+			AND LSM.TYPE=#{type}
+          </if>
+		</where>
+		
  	</select> 
  	
  	<!-- To get load sheet sequences from navigation link -->
@@ -222,6 +230,20 @@
 		FROM SMC_LOADSHEET_SEQ_MASTER LSM
 		JOIN SMC_USER_MASTER SUM ON LSM.MODIFIED_BY=SUM.SSO 
  	</select> 
+ 	
+ 	<!-- To get Load sheet category list in Load Sheet Sequencing Page-->
+	<select  id="getCategoryList" resultType="String">
+		SELECT 	DISTINCT TRIM(PO_CATEGORY) AS PO_CATEGORY
+		FROM
+		SMC_CAT_TYPE_MASTER ORDER BY PO_CATEGORY
+		
+	</select>
+	<!-- To get Load sheet type list in Load Sheet Sequencing Page-->
+	<select  id="getTypeList" resultType="String">
+		SELECT DISTINCT TRIM(TYPE) AS TYPE
+		FROM
+		SMC_CAT_TYPE_MASTER ORDER BY TYPE
+	</select>
  	
 	<!-- TO get component rules-->
 	<select  id="getComponentRules" resultType="com.penske.apps.adminconsole.model.RuleMaster">
@@ -265,32 +287,4 @@
 		FROM
 				CORP.VEHCMPSGF 
 	</select>
- 	
- 	<!-- To get Loadsheet Category Assigned for the rule -->
- 	<select id="getAssignedLoadsheetCategories" resultType="com.penske.apps.adminconsole.model.LoadsheetManagement" >
- 		SELECT
-				CTM.PO_CATEGORY			AS 	category,
-				CTM.TYPE				AS 	type,
-				VCS.COMPONENT_GROUP		AS 	componentGroup,
-				VCS.SUB_GROUP			AS	subGroup,
-				VCS.SUB_COMPONENT_NAME	AS 	component
-		FROM 
-				SMC_COMPONENT_VISIBILITY SCV
-		JOIN 	
-				SMC_COMPONENT_RULE_OVERRIDES CRO
-		ON	
-				CRO.CMP_VISIBLE_ID = SCV.CMP_VISIBLE_ID
-		JOIN 	
-				CORP.VEHCMPSGF VCS 
-		ON 
-				SCV.COMPONENT_ID=VCS.COMPONENT_ID 
-		JOIN 
-				SMC.SMC_CAT_TYPE_MASTER CTM 
-		ON 
-				CTM.CAT_TYPE_ID = SCV.CAT_TYPE_ID
-		
-		WHERE 
-				RULE_ID=#{ruleId}
- 		
- 	</select>
 </mapper>

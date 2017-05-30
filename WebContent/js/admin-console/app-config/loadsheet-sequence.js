@@ -42,15 +42,45 @@ $(document).ready(function() {
 		}
 	} );
 	
+	// category and type drop downs
+	var dropdowns='<div id="org-desc-div" style="float: left; text-align: right;">'+
+	'<label>Category :</label>'+ 
+	'<select  id="category"  onChange="getLoadsheetSequences()" ></select>'+
+	'<label style="margin-left: 5px;">  Type :</label>'+ 
+	'<select  id="type"  onChange="getLoadsheetSequences()" ></select>'+
+    '</div>';
+	
+	//Add loadsheet sequence link
 	var strHTML='<span style="margin-right: 10px;" class="floatLeft addRow">'+
 	'<a href="${pageContext.request.contextPath}/admin-console/app-config/add-loadsheet.htm">Add Loadsheet Sequence </a>'+
 	'<img src='+commonStaticUrl+'/images/add.png class="centerImage handCursor" alt="Add Row"/>'+
-'</span>';
-$("#sequence-table_filter").prepend(strHTML);
+    '</span>';
 
-});
-
-
+	// show Add loadsheet sequence link except for view mode.
+	if($('#viewMode').val()!='Y'){
+	$("#sequence-table_filter").prepend(strHTML);
+	}
+	$("#sequence-table_wrapper").prepend(dropdowns);
+	
+	//populate category and type dropdown values..
+	$categoryOptions = $("#categoryHideen > option").clone();
+	$('#category').append($categoryOptions);
+	$('#category').val($('#selectedCategory').val());
+	
+	$typeOptions = $("#typeHidden > option").clone();
+	$('#type').append($typeOptions);
+	$('#type').val($('#selectedType').val());
+	
+	});
+	/* function to load the loadsheet sequences based on selected category and type*/
+	function getLoadsheetSequences(){
+		var category = $('#category').val();
+		var type = $('#type').val();
+		var viewMode = $('#viewMode').val();
+		var path= 'get-loadsheet-sequence.htm?categoryId=&category='+category+'&type='+type+'&viewMode='+viewMode;
+		window.location.href = path;
+		processingImageAndTextHandler('visible','Loading data...');
+	}
 
 
 

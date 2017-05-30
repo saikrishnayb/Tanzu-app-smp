@@ -24,6 +24,22 @@
 		<input type="hidden" id="common-static-url" value="${commonStaticUrl}"/>
 			<div class="full-width">
 			<h1 style="display: inline-block;">Loadsheet Sequencing</h1>
+			
+			<input id="selectedCategory" type="hidden" name="ruleCount"  value="${selectedCategory}"/>
+	        <input type="hidden" id="selectedType" value="${selectedType}"/>
+	        <input type="hidden" id="viewMode" value="${viewMode}"/>
+			<select  id="categoryHideen"  onChange="getLoadsheetSequences()" style="display: none">
+			        <option value=""></option>
+					<c:forEach items="${categories}" var="category">
+                   		<option value="${category}">${category}</option>
+                   	</c:forEach>
+			</select>
+			<select id="typeHidden" onChange="getLoadsheetSequences()" style="display: none">
+					<option value=""></option>
+					<c:forEach items="${types}" var="type">
+                   		<option value="${type}">${type}</option>
+                   	</c:forEach>
+			</select>
 				
 				<table id="sequence-table" >
 					<thead>
@@ -43,10 +59,12 @@
 						<c:forEach items="${sequences}" var="temp">
 						<tr class="sequence-row">
 							<td class="editable centerAlign">
+							    <c:if test="${viewMode ne 'Y' }">
 								<a class="rightMargin edit-sequence">Edit</a>
 								<a class="rightMargin copy-sequence">Copy</a>
 								<img src="${commonStaticUrl}/images/delete.png" class="centerImage rightMargin deactivate"/>
 								<input  class="template-id" type=hidden value="${temp.id}"/>
+								</c:if>
 							</td>
 							<td>${temp.name}</td>
 							<td>${temp.description}</td>

@@ -49,7 +49,7 @@
 			    <!-- if the component already has associated rules -->
 				<c:forEach items="${componentRule.rule}" varStatus="indexCount">
 					<div id="rule${indexCount.index }" style="width:100%;padding-top: 1%">
-						<div class="column-data-left"><form:input maxlength="2" readonly="${disableInput}"  path="rule[${indexCount.index }].priority" class="priority" id="ruleProirity${indexCount.index }" style="width:74%"/></div> 
+						<div class="column-data-left"><form:input maxlength="2" readonly="${disableInput}"  path="rule[${indexCount.index }].priority" class="priority" id="ruleProirity${indexCount.index }" style="width:74%;text-align:right;"/></div> 
 						
 						<div class="column-data-center"><form:select  disabled="${disableSelecte}" class="rule" path="rule[${indexCount.index }].ruleId" style="width:92%" id="ruleId${indexCount.index }">
 									<form:option value=" "></form:option>
@@ -76,7 +76,7 @@
 			 <!-- if the component doesn't have any associated rules -->
 			 <c:if test="${viewMode ne 'Y'}">
 			    <div id="rule0" style="width:100%;padding-top: 1%">
-						<div class="column-data-left"><form:input maxlength="2" path="rule[0].priority" required="required" class="priority" id="ruleProirity${indexCount.index }" style="width:74%"/></div> 
+						<div class="column-data-left"><form:input maxlength="2" path="rule[0].priority" required="required" class="priority" value="1" id="ruleProirity${indexCount.index }" style="width:74%;text-align:right;"/></div> 
 						
 						<div class="column-data-center"><form:select  path="rule[0].ruleId" class="rule" style="width:92%" id="ruleId0">
 						<form:option value=" "></form:option>

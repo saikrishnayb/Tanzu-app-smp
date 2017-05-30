@@ -47,7 +47,21 @@ $(document).ready(function() {
 	
 	//To Validate the priority fields with numeric data.
 	$addRuleAssociationModal.on('keypress', '.priority' , function(e){
-	    //if the letter is not digit don't type anything
+		
+		//to check duplicate priority values.
+		 var inputArr = $("input[class='priority']").map(function(){return $(this).val();}).get();
+		 var priorityArray = inputArr.filter(function(v){return v!==" ";});
+		 var keynum='';
+		 if(window.event) { // IE                    
+		      keynum = e.keyCode;
+		 } else if(e.which){ // Netscape/Firefox/Opera                   
+		      keynum = e.which;
+		 }
+		 var inputNumber = String.fromCharCode(keynum);
+		 if($.inArray(inputNumber,priorityArray)>-1)
+		 return false;
+	    
+		//if the letter is not digit don't type anything
 	    if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
 	       //display error message
 	       return false;
@@ -68,6 +82,7 @@ $(document).ready(function() {
 			$(this).removeClass('errorMsgInput');
 			 $error.hide();
 		}
+		disableOptions();
 	});
 	
 	$addRuleAssociationModal.on('keypress', function(e) {
@@ -92,7 +107,7 @@ function addRule() {
 	   if(divCount<10){
 	
 	var newDiv='<div id="rule'+rowCount+'" style="width:100%;padding-top: 1%">'
-	+'<div class="column-data-left"><input name="rule['+rowCount+'].priority" maxlength="2" required="required" class="priority" id="ruleProirity'+rowCount+'" style="width:74%"/></div>' 
+	+'<div class="column-data-left"><input name="rule['+rowCount+'].priority"  maxlength="2" required="required" class="priority" id="ruleProirity'+rowCount+'" style="width:74%;text-align:right;"/></div>' 
 	+'<div class="column-data-center"><select  name="rule['+rowCount+'].ruleId" style="width:92%" class="rule" style="width:53%" id="ruleId'+rowCount+'">'
 	+'</select></div>'
 	+'<div class="column-data-right"><select  name="rule['+rowCount+'].lsOverride" class="lsOverRide" id="rulelsOverride'+rowCount+'" style="width:60%">'
@@ -118,6 +133,7 @@ function addRule() {
    if ($("#saveRuleAssociation").hasClass("buttonDisabled")) {
 	   $("#saveRuleAssociation").removeClass("buttonDisabled").addClass("buttonPrimary"); 
    }
+   disableOptions();//function to disable options in rule drop down based on the selection.
 }
 
 
@@ -133,6 +149,7 @@ function deleteRule(count) {
 	 if(($("#ruleCount").val()==0 && $("#rules > div").length==0)){
 		 $("#saveRuleAssociation").removeClass("buttonPrimary").addClass("buttonDisabled");
 	 }
+	 disableOptions();//function to disable options in rule drop down based on the selection.
 }
 
 
@@ -161,5 +178,20 @@ function validateAddRuleAssociationForm() {
 	
 	return errorMsg;
 }
-
+/* function to disable options in rule drop down based on the selection. */
+function disableOptions()
+{
+    $('.rule option').attr("disabled",false); //enable everything
+	//collect the values from selected;
+	 var  arr = $.map($('.rule option:selected'), function(n){
+	          return n.value;
+	     });
+	 var newArray = arr.filter(function(v){return v!==" ";});
+	//disable elements
+	$('.rule option').filter(function()
+	{
+	    return $.inArray($(this).val(),newArray)>-1; //if value is in the array of selected values
+	 }).attr("disabled",true);   
+	
+}
 //# sourceURL=add-rule-association-modal.js

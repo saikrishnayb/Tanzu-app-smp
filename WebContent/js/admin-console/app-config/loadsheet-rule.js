@@ -7,7 +7,7 @@ $(document).ready(function() {
 	var $loadsheetRuleTable = $('#loadsheet-rule-table');
 	initializeRuleTable($loadsheetRuleTable);
 	
-	$('#loadsheet-rule-table tbody tr').on( 'click', '#deleteRule', function () {
+	$('#loadsheet-rule-table').on( 'click', '#deleteRule', function () {
 		
 		
 		var $this = $(this);

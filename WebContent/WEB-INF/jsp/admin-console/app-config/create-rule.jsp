@@ -125,40 +125,6 @@
 					</tbody>
 				</table>
 				</fieldset>
-				<c:if test="${ fn:length(loadSheetManagementList) gt 0 }">
-				<fieldset style="width:100%;margin-top:10px;">
-					<legend>Loadsheet Category Assigned</legend>
-					<div class="displayNone" id="AssignedCount">
-					<div class="floatLeft">
-						<p>Assigned #: ${ fn:length(loadSheetManagementList)} </p>
-					</div>
-					</div>
-					<table id="Assigned-Table" style="width:100%;">
-						<thead>
-							<tr>
-								<th></th> 
-								<th>Category</th>
-								<th>Sub Category</th>
-								<th>Component Group</th>
-								<th>Sub-Group</th>
-								<th>Component</th>
-							</tr>
-						</thead>
-						<tbody>
-							<c:forEach items="${loadSheetManagementList }" var="loadSheetDetails">
-							<tr>
-								<td class="editable centerAlign"><a href="#">Go To</a></td>
-								<td>${loadSheetDetails.category }</td>
-								<td>${loadSheetDetails.type }</td>
-								<td>${loadSheetDetails.componentGroup }</td>
-								<td>${loadSheetDetails.subGroup }</td>
-								<td>${loadSheetDetails.component }</td>
-							</tr>
-							</c:forEach>	
-						</tbody>
-					</table>
-				</fieldset>
-				</c:if>
 			</div>
 			</form:form>
 			</div>	

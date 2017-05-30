@@ -7,6 +7,7 @@ $(document).ready(function() {
 	$templateTable.dataTable( { //All of the below are optional
 		"aaSorting": [[ 0, "asc" ]], //default sort column
 		"bPaginate": false, //enable pagination
+		"aoColumnDefs"		: [{ 'bSortable': false, 'aTargets': [5] } ],//disable sorting for specific column indexes
 		"sScrollY": "400px",
 		"sScrollX": "100%",
 		"bInfo" : false,
@@ -41,6 +42,7 @@ $('#rule-association-modal').dialog({
 	close: function(event, ui)
     {
 		location.reload();
+		processingImageAndTextHandler('visible','Loading data...');
     }
 });
 
@@ -58,6 +60,9 @@ $('.add-rule-association').on('click', function() {
 				//$('.errorMsgInput').removeClass('errorMsgInput');
 				
 				$('#rule-association-modal').dialog('open');
+				if(values[2]!='Y'){
+					$(".ui-dialog-titlebar").prepend('<a class="buttonPrimary" style="margin-left: 37%;" href="load-create-rule.htm" >Create Rule</a>');
+				}
 			});
 });
 

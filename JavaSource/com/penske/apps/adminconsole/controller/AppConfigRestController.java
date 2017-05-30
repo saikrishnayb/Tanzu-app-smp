@@ -805,6 +805,11 @@ public class AppConfigRestController {
 	public ModelAndView getLoadsheetSequencePage(@RequestParam("categoryId") String categoryId,@RequestParam("category") String category,@RequestParam(value="type") String type,@RequestParam(value="viewMode") String viewMode) {
 		ModelAndView mav = new ModelAndView("/admin-console/app-config/loadsheet-sequence");
 		mav.addObject("sequences", loadsheetManagementService.getLoadsheetSequences(category,type));
+		mav.addObject("selectedCategory", category.trim());
+		mav.addObject("selectedType", type.trim());
+		mav.addObject("viewMode", viewMode);
+		mav.addObject("categories", loadsheetManagementService.getCategoryList());
+		mav.addObject("types", loadsheetManagementService.getTypeList());
 		return mav;
 	}
 	
