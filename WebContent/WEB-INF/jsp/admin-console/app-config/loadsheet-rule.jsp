@@ -38,6 +38,8 @@
 							<a class="rightMargin edit-button" onCLick="processingImageAndTextHandler('visible','Loading data...');" href="edit-rule.htm?ruleId=${loadsheetRule.ruleId}">Edit</a>
 							<a href="javascript:void(0)" ><img src="${commonStaticUrl}/images/delete.png" id="deleteRule" class="centerImage rightMargin delete-button"/></a>
 							<input type="hidden" id="ruleId" value="${loadsheetRule.ruleId}"/>
+							<input type="hidden" id="ruleName" value="${loadsheetRule.ruleName}"/>
+							<input type="hidden" id="timesUsed" value="${loadsheetRule.timesUsed}"/>
 							</td>
 							<td>${loadsheetRule.ruleName}</td>
 							<td>${loadsheetRule.description}</td>
@@ -56,5 +58,14 @@
 			</div>		
 		</div> 
 		<input type="hidden" id="common-url" value="${commonStaticUrl}"/>
-	</body>
+		<!-- Delete Rule Confirmation Popup -->
+		<div id="confirmDeleteModal">
+			<p id="deleteMessage"></p>
+	
+			<div style="position:absolute;bottom:3px;right:5px;">
+				<a href="javascript:void(0)" class="secondaryLink" onclick="closeConfirmDialog();"tabIndex="-1">No</a> 
+				<a href="javascript:void(0)" class="buttonPrimary" onclick="confirmDeleteRule()" tabIndex="-1">Yes</a>
+			</div>
+		</div>
+</body>
 </html>

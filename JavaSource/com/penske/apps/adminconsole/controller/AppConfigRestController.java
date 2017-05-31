@@ -820,7 +820,7 @@ public class AppConfigRestController {
 		ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/app-config/add-rule-association-modal");
 		componentRule.setRule(loadsheetManagementService.getComponentVisibilityRules(componentVisibleId));
 		componentRule.setComponentVisibilityId(componentVisibleId);
-		mav.addObject("rules", loadsheetManagementService.getComponentRules(componentId));
+		mav.addObject("rules", loadsheetManagementService.getComponentRules());
 		mav.addObject("componentRule", componentRule);
 		mav.addObject("viewMode", viewMode);
 		return mav;

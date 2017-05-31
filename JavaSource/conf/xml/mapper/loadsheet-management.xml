@@ -128,6 +128,15 @@
  				
  	</delete>
  	
+ 	<!-- To delete Rule Association before deleting rule -->
+ 	<delete id="deleteRuleAssociation">
+ 		DELETE
+ 		FROM
+ 				SMC_COMPONENT_RULE_OVERRIDES
+ 		WHERE
+ 				RULE_ID=	#{ruleId}
+ 	</delete>
+ 	
  	<!-- Delete Rule details in rule master -->
  	<delete id="deleteRuleMasterDetails">
  		DELETE
@@ -249,9 +258,7 @@
 	<select  id="getComponentRules" resultType="com.penske.apps.adminconsole.model.RuleMaster">
 		SELECT 	DISTINCT CVRM.RULE_ID AS 	ruleId,
 		        CVRM.NAME   AS	ruleName
-		FROM SMC_CMP_VISIBILITY_RULES_MASTER CVRM
-		JOIN SMC_CMP_VISIBILITY_RULES_DEFINITION CVRD ON CVRM.RULE_ID=CVRD.RULE_ID
-		WHERE CVRD.COMPONENT_ID=#{componetId}
+		FROM SMC_CMP_VISIBILITY_RULES_MASTER CVRM ORDER BY ruleName
 	</select>
 	
 	<!-- TO get component visibility rules-->

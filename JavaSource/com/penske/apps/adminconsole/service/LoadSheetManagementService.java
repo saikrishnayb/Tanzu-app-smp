@@ -20,7 +20,7 @@ public interface LoadSheetManagementService {
 	public List<ComponentVisibilityModel> getLoadsheetComponents(String categoryId);
 	public List<LoadsheetSequence> getLoadsheetSequences(String category,String type);
 	public List<LoadsheetSequence> getLoadsheetSequences();
-	public List<RuleMaster> getComponentRules(int componentId);
+	public List<RuleMaster> getComponentRules();
 	public List<ConfigureRule> getComponentVisibilityRules(int componentVisibleId);
 	public List<LoadsheetManagement> getLoadsheetManagementDetails();
 	public List<RuleMaster> getLoadsheetRuleDetails();

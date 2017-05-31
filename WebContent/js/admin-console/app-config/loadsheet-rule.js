@@ -1,33 +1,32 @@
 /**
  * 
  */
-
+var $selectedRow;
+var $loadsheetRuleTable;
 $(document).ready(function() {
 	selectCurrentNavigation("tab-app-config", "left-nav-loadsheet-rules");
-	var $loadsheetRuleTable = $('#loadsheet-rule-table');
+	$loadsheetRuleTable = $('#loadsheet-rule-table');
 	initializeRuleTable($loadsheetRuleTable);
+	
+	$('#confirmDeleteModal').dialog({
+		autoOpen: false,
+		modal: true,
+		dialogClass: 'popupModal',
+		width: 370,
+		minHeight: 150,
+		resizable: false,
+		title: 'Confirm',
+		closeOnEscape: false,
+		open: function(event, ui) {$(this).closest('.ui-dialog').find('.ui-dialog-titlebar-close').hide();}
+	});
+	
 	
 	$('#loadsheet-rule-table').on( 'click', '#deleteRule', function () {
 		
-		
-		var $this = $(this);
-		var ruleId=$this.closest('tr').find('#ruleId').val();
-		
-		
-		$.ajax({
-			  type: "POST",
-			  url: "./delete-rule.htm",
-			  data: {ruleId : ruleId},
-			  success: function(data){
-				  
-				 var $row = $this.closest("tr");
-				$loadsheetRuleTable.dataTable().fnDeleteRow($row[0]);
-			  }
-			});
-		
-		
-		
-		
+		$selectedRow = $(this);
+		var ruleName=$selectedRow.closest('tr').find('#ruleName').val();
+		var timesUsed=$selectedRow.closest('tr').find('#timesUsed').val();
+		openConfirmModal(ruleName,timesUsed);
 		
 	});
 	
@@ -74,6 +73,40 @@ function initializeRuleTable($loadsheetRuleTable){
 			}
 		}
 });
+}
+
+function openConfirmModal(ruleName,timesUsed){
+	$('#confirmDeleteModal').dialog('open');
+	if(timesUsed > 0){
+		$('#deleteMessage').text("'"+ruleName+"' is used "+timesUsed+" time(s), Do you really want to delete ?");
+	}else{
+		$('#deleteMessage').text("Do you really want to delete the Rule: "+ruleName +" ?");
+	}
+}
+
+function confirmDeleteRule(){
+	
+	
+	var ruleId=$selectedRow.closest('tr').find('#ruleId').val();
+	
+	$.ajax({
+		  type: "POST",
+		  url: "./delete-rule.htm",
+		  data: {ruleId : ruleId},
+		  success: function(data){
+			  
+			 var $row = $selectedRow.closest("tr");
+			$loadsheetRuleTable.dataTable().fnDeleteRow($row[0]);
+			closeConfirmDialog();
+		  }
+		});
+	
+}
+
+
+function closeConfirmDialog(){
+	$('#selectedRow').remove();
+	$('#confirmDeleteModal').dialog('close');
 }
 
 

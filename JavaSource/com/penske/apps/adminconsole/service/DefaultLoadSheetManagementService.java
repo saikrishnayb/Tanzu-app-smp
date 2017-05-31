@@ -63,8 +63,8 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 		
 	}
 	@Override
-	public List<RuleMaster> getComponentRules(int componentId) {
-		return loadsheetManagementDao.getComponentRules(componentId);
+	public List<RuleMaster> getComponentRules() {
+		return loadsheetManagementDao.getComponentRules();
 	}
 
 	@Override
@@ -277,6 +277,7 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 	@Transactional
 	public void DeleteRuleDetails(int ruleId) {
 		
+		loadsheetManagementDao.deleteRuleAssociation(ruleId);
 		loadsheetManagementDao.deleteRuleMasterDetails(ruleId);
 		loadsheetManagementDao.deleteRuleDefDetails(ruleId);
 	}

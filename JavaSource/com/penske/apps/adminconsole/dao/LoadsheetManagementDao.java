@@ -21,7 +21,7 @@ public interface LoadsheetManagementDao {
 	public List<LoadsheetSequence> getLoadsheetSequence();
 	public List<LoadsheetManagement> getLoadsheetManagementDetails();
 	public List<RuleMaster> getLoadsheetRules();
-	public List<RuleMaster> getComponentRules(@Param("componetId")int componetId);
+	public List<RuleMaster> getComponentRules();
 	public List<ConfigureRule> getComponentVisibilityRules(@Param("componentVisibleId")int componentVisibleId);
 	public void deleteComponentVisibilityRules(@Param("componentVisibilityId")int componentVisibilityId);
 	public void saveComponentVisibilityRules(ComponentRuleAssociation componentRule);
@@ -33,6 +33,7 @@ public interface LoadsheetManagementDao {
 	public RuleMaster getRuleDetails(@Param("ruleId") int ruleId);
 	public void deleteRuleDefinitions(@Param("ruleDefIdList") List<Integer> ruleDefIdList);
 	public void deleteRuleMasterDetails(@Param("ruleId") int ruleId);
+	public void deleteRuleAssociation(@Param("ruleId") int ruleId);
 	public void deleteRuleDefDetails(@Param("ruleId") int ruleId);
 	public List<String> getCategoryList();
 	public List<String> getTypeList();

@@ -24,7 +24,8 @@
 		<input type="hidden" id="common-static-url" value="${commonStaticUrl}"/>
 			<div class="full-width">
 			<h1 style="display: inline-block;">Loadsheet Sequencing</h1>
-			
+			<!-- show back button only if the page is opened from load sheet management View/Set Load sheet links. -->
+			<c:if test="${viewMode ne null}"><a class="buttonSecondary floatRight clear-left back" href="loadsheet-management.htm">Back</a></c:if>
 			<input id="selectedCategory" type="hidden" name="ruleCount"  value="${selectedCategory}"/>
 	        <input type="hidden" id="selectedType" value="${selectedType}"/>
 	        <input type="hidden" id="viewMode" value="${viewMode}"/>
