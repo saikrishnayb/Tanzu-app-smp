@@ -27,7 +27,15 @@ $(document).ready(function() {
 				  data: $('#add-rule-association-form').serialize(),
 				  success: function(data){
 					 // $('#rule-association-modal').dialog('close');
-					  location.reload();
+					  var url=window.location.href;
+						if (url.indexOf("requestedFrom") >= 0){	// if request came from Back button in create rule
+							window.location.href = url.split('?')[0];
+						}else if(url.indexOf("create-rule.htm") >= 0){//if request came from Save button in create rule
+							window.location.href=url.replace("create-rule.htm","goBack-createRule.htm");
+						}else{
+							location.reload();	
+						}
+						processingImageAndTextHandler('visible','Loading data...');
 				  },
 				  error: function(XMLHttpRequest, textStatus, errorThrown) {
 					  $error.find('.errorMsg').text(XMLHttpRequest.responseText);

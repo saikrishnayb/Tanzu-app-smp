@@ -3,6 +3,7 @@ package com.penske.apps.adminconsole.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.penske.apps.adminconsole.annotation.DefaultController;
 import com.penske.apps.adminconsole.model.ExcelUploadHandler;
 import com.penske.apps.adminconsole.model.GlobalException;
+import com.penske.apps.adminconsole.model.LoadSheetCategoryDetails;
 import com.penske.apps.adminconsole.model.Notification;
 import com.penske.apps.adminconsole.model.RuleDefinitions;
 import com.penske.apps.adminconsole.model.RuleMaster;
@@ -316,7 +318,7 @@ public class AppConfigController {
 	
 	/*==============Create Rule===================*/
 	@RequestMapping("/load-create-rule")
-	public ModelAndView getComponents(){
+	public ModelAndView getComponents(@RequestParam("requestedFrom") String requestedFrom){
 		ModelAndView mav = new ModelAndView("/admin-console/app-config/create-rule");
 		
 		RuleMaster ruleMaster=new RuleMaster();
@@ -330,31 +332,72 @@ public class AppConfigController {
 		mav.addObject("componentsList", loadsheetManagementService.getComponents());
 		mav.addObject("ruleMaster",ruleMaster);
 		mav.addObject("pageAction","CREATE");
+		mav.addObject("requestedFrom",requestedFrom);
 		return mav;
 	}
 	
-
+	/*=========Go back From Create Rule screen to Rules screen or configure rule screen*=======*/ 
+	@RequestMapping("/goBack-createRule")
+	public ModelAndView goBackFromCreateRule(HttpServletRequest request,@RequestParam(value="requestedFrom",required=false) String requestedFrom){
+		
+		return redirectFromCreateRule(request, requestedFrom);
+	}
 	/* =============== Create New Rule ==================*/
 	@RequestMapping(value={"/create-rule"})
-	public ModelAndView insertRuleDetails(RuleMaster ruleMaster) {
+	public ModelAndView insertRuleDetails(HttpServletRequest request,RuleMaster ruleMaster) {
 		
 		loadsheetManagementService.createNewRule(ruleMaster);
 		
-		return getLoadsheetRuleDetails();
+		return redirectFromCreateRule(request, ruleMaster.getRequestedFrom());
 		
+	}
+	
+	/**
+	 * Method to redirect the page after save or back in create rule page
+	 * @param request
+	 * @param requestedFrom
+	 * @return
+	 */
+	private ModelAndView redirectFromCreateRule(HttpServletRequest request,String requestedFrom){
+		
+		HttpSession session = request.getSession(false);
+		ModelAndView mav=null;
+		LoadSheetCategoryDetails catDetails=null;
+		//Get component Details from session
+		if(session != null){
+			catDetails=(LoadSheetCategoryDetails)session.getAttribute("CATEGORY_DETAILS");
+		}
+		if(requestedFrom !=null){
+			if(requestedFrom.equalsIgnoreCase("CREATE_RULE")){
+				mav=getLoadsheetRuleDetails();
+			}else{
+				if(catDetails!=null){
+					mav=getLoadsheetComponents(request, catDetails.getCategoryId(), catDetails.getCategory(), catDetails.getType(), catDetails.getViewMode());
+					//details for opening the Add rule popup
+					mav.addObject("componentId",catDetails.getComponentId());
+					mav.addObject("visibilityId",catDetails.getVisibilityId());
+					mav.addObject("viewMode",catDetails.getViewMode());
+				}
+			}
+		}else{//If page reloads in Add rule page
+			mav=getLoadsheetComponents(request, catDetails.getCategoryId(), catDetails.getCategory(), catDetails.getType(), catDetails.getViewMode());
+		}
+		
+		return mav;
 	}
 	
 	/* ================Edit Rule =======================*/
 	@RequestMapping(value={"/edit-rule"})
-	public ModelAndView getRuleDefinitions(int ruleId) {
+	public ModelAndView getRuleDefinitions(int ruleId,@RequestParam("requestedFrom") String requestedFrom) {
 		
 		ModelAndView mav = new ModelAndView("/admin-console/app-config/create-rule");
 		RuleMaster ruleMaster=loadsheetManagementService.getRuleDetails(ruleId);
 		
-		
+		ruleMaster.setRequestedFrom(requestedFrom);
 		mav.addObject("componentsList", loadsheetManagementService.getComponents());
 		mav.addObject("pageAction","UPDATE");
 		mav.addObject("ruleMaster",ruleMaster);
+		mav.addObject("requestedFrom",ruleMaster.getRequestedFrom());
 		return mav;
 	
 	}
@@ -369,11 +412,55 @@ public class AppConfigController {
 		mav.addObject("componentsList", loadsheetManagementService.getComponents());
 		mav.addObject("pageAction","UPDATE");
 		mav.addObject("ruleMaster",ruleMaster);
+		mav.addObject("requestedFrom",ruleMaster.getRequestedFrom());
 		return mav;
 		
 	}
 	
+	/* ================== loadsheet components ================== */
+	@RequestMapping(value={"/get-loadsheet-components"})
+	public ModelAndView getLoadsheetComponents(HttpServletRequest request,@RequestParam("categoryId") String categoryId,@RequestParam("category") String category,@RequestParam(value="type") String type,@RequestParam(value="viewMode") String viewMode) {
+		ModelAndView mav = new ModelAndView("/admin-console/app-config/loadsheet-components");
+		String defaultType=type;
+		if(viewMode.equals("Y")){// if uses default value is 'Y' we need to pass type as DEFAULT to load load sheet sequences.
+			defaultType=ApplicationConstants.DEFAULT_TYPE;
+		}
+		mav.addObject("components", loadsheetManagementService.getLoadsheetComponents(category,defaultType));
+		mav.addObject("category", category);
+		mav.addObject("type", type);
+		mav.addObject("viewMode", viewMode);
+		
+		//Adding details to session for create rule back button
+		LoadSheetCategoryDetails catDetails=new LoadSheetCategoryDetails();
+		catDetails.setCategory(category);
+		catDetails.setCategoryId(categoryId);
+		catDetails.setType(type);
+		catDetails.setViewMode(viewMode);
+		
+		HttpSession session = request.getSession(false); 
+		if(session != null){
+			 session.setAttribute("CATEGORY_DETAILS", catDetails);
+		}
+		
+		return mav;
+	}
 	
+	/* ================== load sheet sequence ================== */
+	@RequestMapping(value={"/get-loadsheet-sequence"})
+	public ModelAndView getLoadsheetSequencePage(@RequestParam("categoryId") String categoryId,@RequestParam("category") String category,@RequestParam(value="type") String type,@RequestParam(value="viewMode") String viewMode) {
+		ModelAndView mav = new ModelAndView("/admin-console/app-config/loadsheet-sequence");
+		String defaultType=type;
+		if(viewMode.equals("Y")){// if uses default value is 'Y' we need to pass type as DEFAULT to load load sheet sequences.
+			defaultType=ApplicationConstants.DEFAULT_TYPE;
+		}
+		mav.addObject("sequences", loadsheetManagementService.getLoadsheetSequences(category,defaultType));
+		mav.addObject("selectedCategory", category.trim());
+		mav.addObject("selectedType", type.trim());
+		mav.addObject("viewMode", viewMode);
+		mav.addObject("categories", loadsheetManagementService.getCategoryList());
+		mav.addObject("types", loadsheetManagementService.getTypeList());
+		return mav;
+	}
 	
 	
 }

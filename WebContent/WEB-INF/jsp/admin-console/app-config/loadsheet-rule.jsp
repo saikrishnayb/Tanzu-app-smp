@@ -35,7 +35,7 @@
 					<c:forEach items="${loadsheetRules}" var="loadsheetRule">
 						<tr>
 							<td class="editable centerAlign width">
-							<a class="rightMargin edit-button" onCLick="processingImageAndTextHandler('visible','Loading data...');" href="edit-rule.htm?ruleId=${loadsheetRule.ruleId}">Edit</a>
+							<a class="rightMargin edit-button" onCLick="processingImageAndTextHandler('visible','Loading data...');" href="edit-rule.htm?ruleId=${loadsheetRule.ruleId}&requestedFrom=CREATE_RULE">Edit</a>
 							<a href="javascript:void(0)" ><img src="${commonStaticUrl}/images/delete.png" id="deleteRule" class="centerImage rightMargin delete-button"/></a>
 							<input type="hidden" id="ruleId" value="${loadsheetRule.ruleId}"/>
 							<input type="hidden" id="ruleName" value="${loadsheetRule.ruleName}"/>
@@ -54,7 +54,7 @@
 				</table>
 			</div>
 			<div class="floatRight" style="margin-top:20px;">
-				<a class="buttonPrimary " href="load-create-rule.htm" >Create Rule</a>
+				<a class="buttonPrimary " href="load-create-rule.htm?requestedFrom=CREATE_RULE" >Create Rule</a>
 			</div>		
 		</div> 
 		<input type="hidden" id="common-url" value="${commonStaticUrl}"/>

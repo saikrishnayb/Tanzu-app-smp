@@ -35,8 +35,8 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
     private HttpSession httpSession;
 
 	@Override
-	public List<ComponentVisibilityModel> getLoadsheetComponents(String categoryId) {
-		return loadsheetManagementDao.getLoadsheetComponents(categoryId);
+	public List<ComponentVisibilityModel> getLoadsheetComponents(String category,String type) {
+		return loadsheetManagementDao.getLoadsheetComponents(category,type);
 		
 	}
 	

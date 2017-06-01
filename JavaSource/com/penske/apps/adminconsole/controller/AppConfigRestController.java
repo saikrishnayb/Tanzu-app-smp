@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -30,6 +31,7 @@ import com.penske.apps.adminconsole.model.DelayTypeReason;
 import com.penske.apps.adminconsole.model.DynamicRule;
 import com.penske.apps.adminconsole.model.GlobalException;
 import com.penske.apps.adminconsole.model.HeaderUser;
+import com.penske.apps.adminconsole.model.LoadSheetCategoryDetails;
 import com.penske.apps.adminconsole.model.Notification;
 import com.penske.apps.adminconsole.model.NotificationForm;
 import com.penske.apps.adminconsole.model.SearchTemplate;
@@ -786,43 +788,28 @@ public class AppConfigRestController {
 	public String viewTermsAndConditions(@RequestParam(value="versionNumber") int versionNumber) {
 		return termsAndConditionsService.getTermsAndConditionsText(versionNumber);
 	}
-
-	/* ================== loadsheet components ================== */
-	@RequestMapping(value={"/get-loadsheet-components"})
-	public ModelAndView getLoadsheetComponents(@RequestParam("categoryId") String categoryId,@RequestParam("category") String category,@RequestParam(value="type") String type,@RequestParam(value="viewMode") String viewMode) {
-		ModelAndView mav = new ModelAndView("/admin-console/app-config/loadsheet-components");
-		
-		mav.addObject("components", loadsheetManagementService.getLoadsheetComponents(categoryId));
-		mav.addObject("category", category);
-		mav.addObject("type", type);
-		mav.addObject("viewMode", viewMode);
-		
-		return mav;
-	}
-	
-	/* ================== loadsheet sequence ================== */
-	@RequestMapping(value={"/get-loadsheet-sequence"})
-	public ModelAndView getLoadsheetSequencePage(@RequestParam("categoryId") String categoryId,@RequestParam("category") String category,@RequestParam(value="type") String type,@RequestParam(value="viewMode") String viewMode) {
-		ModelAndView mav = new ModelAndView("/admin-console/app-config/loadsheet-sequence");
-		mav.addObject("sequences", loadsheetManagementService.getLoadsheetSequences(category,type));
-		mav.addObject("selectedCategory", category.trim());
-		mav.addObject("selectedType", type.trim());
-		mav.addObject("viewMode", viewMode);
-		mav.addObject("categories", loadsheetManagementService.getCategoryList());
-		mav.addObject("types", loadsheetManagementService.getTypeList());
-		return mav;
-	}
 	
 	/* ================== Get Rule Association model ================== */
 	@RequestMapping(value="/get-rule-association-modal-data", method=  RequestMethod.POST)
 	@ResponseBody
-	public ModelAndView getRuleAssociationModalData(@ModelAttribute("componentRule") ComponentRuleAssociation componentRule,@RequestParam("componentId") int componentId,@RequestParam("componentVisibleId") int componentVisibleId,@RequestParam(value="viewMode") String viewMode) {
+	public ModelAndView getRuleAssociationModalData(HttpServletRequest request,@ModelAttribute("componentRule") ComponentRuleAssociation componentRule,@RequestParam("componentId") int componentId,@RequestParam("componentVisibleId") int componentVisibleId,@RequestParam(value="viewMode") String viewMode) {
 		ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/app-config/add-rule-association-modal");
 		componentRule.setRule(loadsheetManagementService.getComponentVisibilityRules(componentVisibleId));
 		componentRule.setComponentVisibilityId(componentVisibleId);
 		mav.addObject("rules", loadsheetManagementService.getComponentRules());
 		mav.addObject("componentRule", componentRule);
 		mav.addObject("viewMode", viewMode);
+		
+		//Adding details to session for create rule back button
+		HttpSession session = request.getSession(false); 
+		if(session != null){
+			//Adding component ID and Visibility ID to session category object
+			LoadSheetCategoryDetails catDetails=(LoadSheetCategoryDetails)session.getAttribute("CATEGORY_DETAILS");
+			catDetails.setComponentId(componentId);
+			catDetails.setVisibilityId(componentVisibleId);
+			session.setAttribute("CATEGORY_DETAILS", catDetails);
+		}
+		
 		return mav;
 	}
 	

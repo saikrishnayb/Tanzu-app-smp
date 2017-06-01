@@ -16,7 +16,7 @@ import com.penske.apps.suppliermgmt.model.UserContext;
 
 public interface LoadsheetManagementDao {
 	
-	public List<ComponentVisibilityModel> getLoadsheetComponents(@Param("categoryId") String categoryId);
+	public List<ComponentVisibilityModel> getLoadsheetComponents(@Param("category") String category,@Param("type") String type);
 	public List<LoadsheetSequence> getLoadsheetSequences(@Param("category") String category,@Param("type") String type);
 	public List<LoadsheetSequence> getLoadsheetSequence();
 	public List<LoadsheetManagement> getLoadsheetManagementDetails();

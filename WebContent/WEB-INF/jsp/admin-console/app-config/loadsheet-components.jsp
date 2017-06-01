@@ -49,7 +49,7 @@
 							<td>${temp.screen2b}</td>
 							<td>
 							<!-- <a class="add-rule">Add Rule</a> -->
-							<a class="add-rule-association" id="${temp.componentId},${temp.componentVisibilityId},${viewMode}"><c:choose>
+							<a class="add-rule-association" id="${temp.componentId}-${temp.componentVisibilityId}-${viewMode}"><c:choose>
 							        <c:when test="${viewMode eq 'Y' }">
 							         <c:if test="${temp.ruleCount gt 0 }">
 							         View Rule(${temp.ruleCount})
@@ -72,8 +72,11 @@
 		</div>
 		
 <!-- popup for Rule Association -->
-		
 <div id="rule-association-modal" class="modal"></div>
-	</div>
+</div>
+<!-- Hidden fields to auto open the rule Association popup -->
+<input type="hidden" id="componentId" value="${componentId }"/>
+<input type="hidden" id="visibilityId" value="${visibilityId}"/>
+<input type="hidden" id="viewMode" value="${viewMode}"/>
 </body>
 </html>

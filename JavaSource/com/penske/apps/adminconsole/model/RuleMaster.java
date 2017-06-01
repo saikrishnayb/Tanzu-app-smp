@@ -18,6 +18,7 @@ public class RuleMaster {
 	private Date createdDate;
 	private String editBy;
 	private Date editDate;
+	private String requestedFrom; //To identify from where the create rule request came
 	private List<RuleDefinitions> ruleDefinitionsList;
 	private List<Integer> deletedRuleDefIds;	//to store the deleted rule definition id's
 
@@ -86,6 +87,12 @@ public class RuleMaster {
 	}
 	public void setDeletedRuleDefIds(List<Integer> deletedRuleDefIds) {
 		this.deletedRuleDefIds = deletedRuleDefIds;
+	}
+	public String getRequestedFrom() {
+		return requestedFrom;
+	}
+	public void setRequestedFrom(String requestedFrom) {
+		this.requestedFrom = requestedFrom;
 	}
 	
 

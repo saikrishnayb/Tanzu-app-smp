@@ -37,4 +37,7 @@ public class ApplicationConstants {
 	public static final String EXCEPTIONS_TYPES="EXCEPTIONS_TYPES";
 	public static final String PENSKE_SPECING_SYSTEM_URL ="PENSKE_SPECING_SYSTEM_URL";
 	
+	/*load sheet management constants */
+	public static final String DEFAULT_TYPE="DEFAULT";
+	
 }

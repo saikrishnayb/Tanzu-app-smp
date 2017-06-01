@@ -30,7 +30,7 @@
 					<form:input path="description" id="description" maxlength="100"  type="text"/>
 				</div>
 				<div class="floatRight">
-					<a class="buttonSecondary" href="loadsheet-rule.htm" onclick="javascript:loadProcessImage();" >Back</a>
+					<a class="buttonSecondary" href="goBack-createRule.htm?requestedFrom=${requestedFrom}" onclick="javascript:loadProcessImage();" >Back</a>
 				</div>
 				</div>
 				<div id="ErrorMsg" style="clear:both" class="floatLeft error-messages-container displayNone">
@@ -126,6 +126,7 @@
 				</table>
 				</fieldset>
 			</div>
+			<input type="hidden" name="requestedFrom" value="${requestedFrom}"/>
 			</form:form>
 			</div>	
 		</div> 

@@ -2,7 +2,6 @@ var $addRuleAssociationModal = $('#rule-association-modal');
 $(document).ready(function() {
 	selectCurrentNavigation("tab-app-config", "left-nav-loadsheet-management");
 	$templateTable=$("#component-table");
-	var iDisplayLength = 10;//tableRowLengthCalc();
 	//component table
 	$templateTable.dataTable( { //All of the below are optional
 		"aaSorting": [[ 0, "asc" ]], //default sort column
@@ -41,7 +40,15 @@ $('#rule-association-modal').dialog({
 	closeOnEscape: false,
 	close: function(event, ui)
     {
-		location.reload();
+    
+		var url=window.location.href;
+		if (url.indexOf("requestedFrom") >= 0){	// if request came from Back button in create rule
+			window.location.href = url.split('?')[0];
+		}else if(url.indexOf("create-rule.htm") >= 0){//if request came from Save button in create rule
+			window.location.href=url.replace("create-rule.htm","goBack-createRule.htm");
+		}else{
+			location.reload();	
+		}
 		processingImageAndTextHandler('visible','Loading data...');
     }
 });
@@ -49,25 +56,31 @@ $('#rule-association-modal').dialog({
 /* ------------- Adding A Rule -------------- */
 $('.add-rule-association').on('click', function() {
 	var val = $(this).attr('id');
-	var values=val.split(',');
+	var values=val.split('-');
 	$.post('./get-rule-association-modal-data.htm',
 			{'componentId':values[0],'componentVisibleId':values[1],'viewMode':values[2]},
 			function(data) {
-				//alert(data);
 				$('#rule-association-modal').html(data);
-				
-				//$addRuleAssociationModal.find('.error').hide();
-				//$('.errorMsgInput').removeClass('errorMsgInput');
-				
 				$('#rule-association-modal').dialog('open');
 				if(values[2]!='Y'){
-					$(".ui-dialog-titlebar").prepend('<a class="buttonPrimary" style="margin-left: 37%;" href="load-create-rule.htm" >Create Rule</a>');
+					$(".ui-dialog-titlebar").prepend('<a class="buttonPrimary" style="margin-left: 37%;" onclick="processingImageAndTextHandler(\'visible\',\'Loading data...\');" href="load-create-rule.htm?requestedFrom=ADD_RULE" >Create Rule</a>');
 				}
 			});
 });
 
+//To Auto open the Rule Association popup
+var componentId=$("#componentId").val();
+var visibilityId=$("#visibilityId").val();
+var viewMode=$("#viewMode").val();
+if(componentId!=''&&visibilityId!=''&viewMode!=''){
+	var $divId=componentId+"-"+visibilityId+"-"+viewMode;
+	$('#'+$divId)[0].click();
+	
+}
 
 });
+
+
 
 
 

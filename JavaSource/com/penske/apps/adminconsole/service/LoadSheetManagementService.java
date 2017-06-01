@@ -17,7 +17,7 @@ import com.penske.apps.adminconsole.model.RuleMaster;
 
 public interface LoadSheetManagementService {
 	
-	public List<ComponentVisibilityModel> getLoadsheetComponents(String categoryId);
+	public List<ComponentVisibilityModel> getLoadsheetComponents(String category,String type);
 	public List<LoadsheetSequence> getLoadsheetSequences(String category,String type);
 	public List<LoadsheetSequence> getLoadsheetSequences();
 	public List<RuleMaster> getComponentRules();
