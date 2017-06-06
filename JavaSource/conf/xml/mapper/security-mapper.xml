@@ -865,7 +865,7 @@
  		SELECT 	ROLE_NAME AS roleName,
  				ROLE_ID AS roleId
  		FROM 	SMC.smc_user_roles 
- 		WHERE 	STATUS = 'A'
+ 		WHERE 	STATUS = 'A' and ROLE_ID >= 16
  		AND  OEM IN 
 			(
 					SELECT   ORG_ID
@@ -873,8 +873,8 @@
 				    CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID
 			) 
  		START 	WITH ROLE_ID = #{roleId}
-	 	CONNECT BY BASE_ROLE_ID = PRIOR ROLE_ID
-	 	UNION ALL 
+	 	CONNECT BY BASE_ROLE_ID = PRIOR ROLE_ID 
+	 	UNION 
 	 	 		SELECT 	ROLE_NAME AS roleName,
  				ROLE_ID AS roleId
  		FROM 	SMC.smc_user_roles
