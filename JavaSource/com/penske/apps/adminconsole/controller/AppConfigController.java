@@ -462,5 +462,17 @@ public class AppConfigController {
 		return mav;
 	}
 	
+	/* ================ Create New Loadsheet Sequence ===============*/
+	@RequestMapping(value={"/create-loadsheet"})
+	public ModelAndView loadCreateLoadSheetSequence(){
+		ModelAndView mav=new ModelAndView("/admin-console/app-config/create-loadsheet-sequence");
+		
+		mav.addObject("componentDetailsList",loadsheetManagementService.getUnAssignedComponents(null, null));
+		mav.addObject("categoriesList", loadsheetManagementService.getCategoryList());
+		mav.addObject("typesList", loadsheetManagementService.getTypeList());
+		mav.addObject("mfrList", loadsheetManagementService.getMfrList());
+		return mav;
+	}
+	
 	
 }

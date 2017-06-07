@@ -40,22 +40,21 @@
 						</tr>
 					</thead>
 					<tbody>
-						<c:forEach items="${components}" var="temp">
+						<c:forEach items="${components}" var="component">
 						<tr class="component-row">
-							<td>${temp.group}</td>
-							<td>${temp.subGroup}</td>
-							<td class="editable">${temp.componentName}</td>
-							<td>${temp.lsOverride}</td>
-							<td>${temp.screen2b}</td>
+							<td>${component.group}</td>
+							<td>${component.subGroup}</td>
+							<td class="editable">${component.componentName}</td>
+							<td>${component.lsOverride}</td>
+							<td>${component.screen2b}</td>
 							<td>
-							<!-- <a class="add-rule">Add Rule</a> -->
-							<a class="add-rule-association" id="${temp.componentId}-${temp.componentVisibilityId}-${viewMode}"><c:choose>
+							<a class="add-rule-association" id="${component.componentId}-${component.componentVisibilityId}-${viewMode}"><c:choose>
 							        <c:when test="${viewMode eq 'Y' }">
-							         <c:if test="${temp.ruleCount gt 0 }">
-							         View Rule(${temp.ruleCount})
+							         <c:if test="${component.ruleCount gt 0 }">
+							         View Rule(${component.ruleCount})
 							        </c:if>
 							        </c:when>
-								    <c:when test="${temp.ruleCount gt 0 }">Add / Modify Existing Rules(${temp.ruleCount})</c:when>
+								    <c:when test="${component.ruleCount gt 0 }">Add / Modify Existing Rules(${component.ruleCount})</c:when>
 									<c:otherwise>Add Rule</c:otherwise>
 								</c:choose></a>
 							</td>

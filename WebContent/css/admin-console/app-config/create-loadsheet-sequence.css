@@ -1,0 +1,971 @@
+/* We are using using the Bootstrap framework for the grid system along with other Misc tools. For more information look at the bootstrap.min.css file */
+
+/* jQuery Modal Styles *********************************/
+.ui-dialog {
+  margin-right: auto;
+  margin-left: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+  margin-top: auto;
+}
+
+.ui-dialog.no-title-bar .ui-dialog-titlebar{
+  display: none;
+}
+
+.modal {
+  display: none;
+}
+.modal,
+.modal .modal-content,
+.modal .modal-footer {
+  position: relative;
+}
+.modal .modal-content {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.modal .modal-content .modal-footer {
+  text-align: right;
+}
+
+/* Common Overwrites ***********************************/
+#mainContent {
+  overflow-y: auto;
+}
+label {
+  margin-right: 0;
+}
+.form-group input[type="text"],
+.form-group select {
+	margin-bottom: 0;
+}
+input[type="checkbox"] {
+  margin: 4px 0 0;
+}
+
+input[disabled],
+select[disabled],
+textarea[disabled] {
+  cursor: not-allowed !important;
+  background-color: #CECECE !important;
+}
+
+a.disabled {
+  color: #CECECE;
+  cursor: not-allowed !important;
+}
+
+.panel-heading h3 {
+  margin: 0 !important;
+}
+
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
+#assignedComponentsTable {
+  float: left;
+  width:100%;
+}
+
+#unAssignedComponentsTable {
+  float: right;
+  width:100%;
+}
+
+#assignedDiv{
+	float:left;
+	width:49%;
+}
+#unAssignedDiv{
+	float:right;
+	width:49%;
+}
+
+
+table input[type="text"],
+table select {
+  margin-bottom: 0;
+}
+table input[type="radio"] {
+  margin-right: 0;
+}
+
+table input[type="checkbox"] {
+  margin: 0;
+}
+
+table .edit {
+  margin-left: 5px;
+  vertical-align: middle;
+}
+
+table .td-row-options {
+  position: relative;
+}
+
+table .td-row-options .row-options-container {
+  text-align: center;
+  vertical-align: middle;
+  float: left;
+}
+
+table .td-row-options .row-options-container .link-container {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+table .td-row-options .row-options-container .link-container a {
+  display: block;
+}
+table .td-row-options .row-options-container .link-container a:not(:first-child) {
+  margin-top: 3px;
+}
+
+
+table .td-row-options:first-child:before {
+  float: left;
+}
+
+table.collapsed {
+  background-image: inherit;
+  background-repeat: inherit;
+  background-position: 0;
+  cursor: inherit;
+  padding-right: 0 !important;
+}
+
+.evenRow td,
+.oddRow td,
+.even td,
+.odd td {
+  height: auto;
+  min-height: 35px;
+}
+
+table.dataTable td {
+  padding: 8px 10px !important;
+}
+
+.row fieldset {
+  padding: 0;
+}
+
+strong {
+  font-weight: bold;
+}
+
+em {
+  font-style: italic;
+}
+
+.alert ul {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.ui-state-default a {
+  color: #ffffff;
+}
+
+/* Experimental has to change */
+.form-group .common-form-control .hasDatepicker {
+  float: left;
+}
+.form-group .ui-datepicker-trigger {
+  float: left;
+  margin-left: 85%;
+  position: absolute;
+  top: 0;
+  height: initial;
+  width: initial;
+  margin-top: -3px;
+}
+
+small,
+.small {
+  font-size: 85% !important;
+}
+
+h1 small,
+h1 .small {
+  font-size: 65% !important;
+}
+
+select{
+  height: 20px;
+}
+
+/* DataTables ui Overwrites ********************************/
+table.dataTable.dtr-inline.collapsed>tbody>tr>td:first-child:before,
+table.dataTable.dtr-inline.collapsed>tbody>tr>th:first-child:before {
+	top: 0;
+	left: 0;
+	position: relative;
+	display: inline-block;
+	margin-left: -20px;
+    vertical-align: middle;
+}
+
+table.dataTable.display tbody tr > .sorting_1,
+table.dataTable.order-column.stripe tbody tr > .sorting_1 {
+  background-color: inherit !important;
+}
+
+
+tr.group,
+tr.group:hover {
+    background-color: #2D73CF !important;
+    color: #ffffff !important;
+}
+
+
+.icon-bar {
+  background-color: #000000;
+  display: block;
+  width: 22px;
+  height: 2px;
+  border-radius: 1px;
+  margin-top: 3px;
+}
+
+.ui-sortable-helper {
+  width: 100%;
+  padding-right: 7px;
+}
+
+.ui-sortable-helper .group td:last-child{
+  width: 100%;
+  padding-right: 7px;
+}
+
+.pointer-column {
+  padding: 0 !important;
+}
+tr.ui-state-highlight td,
+.ui-state-highlight tr td {
+  background-color: cornsilk !important;
+}
+
+tr,
+.pointer {
+  cursor: pointer;
+  padding-left: 15px;
+  width: 20px;
+  padding-right: 10px;
+}
+
+tbody tr:nth-child(odd) {
+  background-color: #EBEBEB;
+  height: 35px;
+}
+
+tbody tr:nth-child(even) {
+  height: 35px;
+  background-color: #ffffff;
+}
+
+.yellow {
+  background-color: yellow;
+}
+
+/* jQuery ui Overwrites ********************************/
+.ui-dialog .ui-dialog-titlebar-close {
+  margin-right: -5px;
+}
+.ui-dialog .ui-dialog-titlebar {
+  padding: 0;
+  padding-top: .4em;
+  padding-bottom: .4em;
+}
+.ui-dialog .ui-dialog-content {
+  padding: 0;
+}
+.dataTables_wrapper {
+  width: 100%;
+  max-width: 100%;
+}
+.dataTables_wrapper .dataTables_filter label {
+  margin-right: 0;
+}
+
+.dataTables_wrapper .dataTables_filter input {
+  margin-bottom: 0;
+}
+
+table {
+  margin: 0 !important;
+}
+
+/* Global Page Styles **********************************/
+input[type="text"]::-ms-clear { /* Remove the x IE adds to inputs since it does not trigger and change event for some reason*/
+    display: none;
+}
+
+#modal-stack-trace .alert {
+  overflow-x: auto;
+  overflow-y: auto;
+  height: 600px;
+  white-space: nowrap;
+  z-index: 100;
+}
+
+.row-header {
+  margin-bottom: 15px;
+}
+.row-header > .col-info .editing-template-header {
+  text-align: center;
+  font-size: 28px;
+  padding-top: 38px;
+}
+.row-header > .col-info .well {
+  margin-bottom: 0;
+}
+.row-header.template-deal > .col-info .well {
+  visibility: hidden;
+}
+.row-header > .col-info .well .row {
+  position: relative;
+}
+.row-header > .col-info .well label {
+  margin-right: 0;
+}
+.row-header > .col-info .well .col-label {
+  text-align: right;
+}
+.row-header > .col-info .well .col-data {
+  text-align: left;
+  min-height: 16px;
+}
+.row-header > .col-info .well .col-label,
+.row-header > .col-info .well .col-data {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.row-header > .col-navigation {
+  text-align: center;
+  margin-top: 15px;
+
+}
+
+.row-header > .col-navigation .back-dat-up-links {
+  display: inline-block;
+  vertical-align: middle;
+  text-align: right;
+}
+.row-header > .col-navigation .back-dat-up-links a {
+  display: block;
+}
+.row-header > .col-navigation .back-dat-up-links a:last-child {
+  margin-top: 3px;
+}
+
+.row-header > .col-navigation .navigation-circle {
+  border-radius: 50%;
+  display: inline-block;
+
+  width: 83px;
+  height: 83px;
+  padding: 0px;
+
+  background: #ffffff;
+  border: 2px solid #2d73cf;
+  text-decoration: none;
+  vertical-align: middle;
+}
+
+.row-header > .col-navigation .navigation-circle.disabled,
+.row-header > .col-navigation .navigation-circle.disabled:hover {
+  border: 2px solid #CECECE;
+  cursor: not-allowed;
+}
+
+.row-header > .col-navigation .navigation-circle.disabled span{
+  color: #CECECE;
+}
+
+.row-header > .col-navigation .navigation-circle.disabled:hover {
+  border: 2px solid #CECECE;
+}
+
+.row-header > .col-navigation .navigation-circle.disabled:hover span {
+  color: #CECECE;
+}
+.row-header > .col-navigation .navigation-circle.disabled span {
+  color: #CECECE;
+}
+
+.row-header > .col-navigation .navigation-circle.active,
+.row-header > .col-navigation .navigation-circle.active:hover {
+  border: 3px solid #69BC28;
+}
+
+.row-header > .col-navigation .navigation-circle.active span{
+  color: #69BC28;
+}
+
+.row-header > .col-navigation .navigation-circle:hover {
+  border: 2px solid #69BC28;
+}
+
+.row-header > .col-navigation .navigation-circle:hover span {
+  color: #69BC28;
+}
+.row-header > .col-navigation .navigation-circle span {
+  font: 13px Arial,Verdana, sans-serif;
+  font-weight: bold;
+  padding-top: 26px;
+  text-align: center;
+  display: block;
+  color: #2D73CF;
+
+}
+
+.row-loadsheet-warning {
+  text-align: center;
+}
+
+.row-loadsheet-warning .loadsheet-warning-text {
+  color: #FF6319;
+  font-weight: bold;
+}
+
+.modal > .modal-content > .modal-footer {
+  margin-top: 10px;
+}
+
+.common-form-control {
+  display: block;
+  width: 100%;
+  padding-left: 6px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+  -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+  -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+  transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+
+.common-form-control[readonly] {
+  background-color: #eee;
+  opacity: 1;
+}
+
+
+.form-group .control-label-with-checkbox input[type="checkbox"]{
+  margin-left: 10px;
+}
+
+table > tbody > tr.first-level-group {
+  background-color: #616161;
+  color: white;
+  font-weight: bold;
+  height: 30px;
+  font-size: initial;
+}
+table > tbody > tr.first-level-group > td a {
+  color: white;
+}
+table > tbody > tr.second-level-group {
+  background-color: #2D73CF;
+  color: white;
+  font-weight: bold;
+}
+
+table > tbody > tr.second-level-group td {
+  padding: 1px 10px;
+}
+
+table > tbody > tr.second-level-group a {
+  color: white;
+}
+
+/* Custom accordion */
+.accordion-container .accordion-header:first-child {
+  margin-top: 0;
+}
+.accordion-header {
+  padding: 8px;
+  min-height: 31px;
+  background-color: #2D73CF;
+  cursor: pointer;
+}
+.accordion-header > * {
+  vertical-align: middle;
+  color: #FFFFFF;
+}
+.accordion-header a {
+  color: #FFFFFF;
+}
+.accordion-header.accordion-collapsed .caret {
+  transform: rotate(-90deg);
+}
+.accordion-header.accordion-collapsed + .accordion-content,
+.accordion-header.accordion-collapsed + .dataTables_wrapper {
+  display: none;
+}
+
+.accordion-content {
+  padding: 15px; /*Bootstrap baby */
+  border-right: 1px solid #aaaaaa;
+  border-bottom: 1px solid #aaaaaa;
+  border-left: 1px solid #aaaaaa;
+}
+
+/* Loadsheets to order global modal */
+.th-schedule-a {
+	text-align: left;
+    font-size: 13px;
+    font-weight: bold;
+    height: 30px;
+    background-color: #CDCDCD;
+    vertical-align: bottom;
+    padding: 7px 18px;
+    display: inline-block;
+    width: 100%;
+    clear: both;
+}
+.th-schedule-a .td-schedule-a:first-child{
+  margin-left: 30px;
+}
+.tr-schedule-a .td-schedule-a {
+  padding-top: 5px;
+}
+.td-schedule-a {
+  display: inline-block;
+  padding: 1px 10px;
+  vertical-align: middle;
+}
+.td-schedule-a.td-schedule-a-number {
+  width: 150px;
+}
+.td-schedule-a.td-unit-range {
+  width: 275px;
+}
+.schedule-a-loadsheet-group .dataTables_wrapper {
+  border-left: 1px solid  #2d73cf;
+  border-right: 1px solid  #2d73cf;
+}
+
+.schedule-a-loadsheet-group:last-child .dataTables_wrapper {
+  border-bottom: 1px solid  #2d73cf;
+}
+
+/* Loading Divs **/
+#loadsheet-validation-overlay {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  z-index: 1000;
+  text-align: center;
+}
+
+#loadsheet-validation-overlay .fake-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -150px;
+  margin-top: -75px;
+
+  height: 150px;
+  width: 350px;
+
+  background-color: #FFFFFF;
+}
+
+#loadsheet-validation-overlay .fake-modal .fake-modal-container {
+  margin-top: 25px;
+}
+
+#loadsheet-validation-overlay .fake-modal .fake-modal-container .spinner-div {
+  height: 60px;
+}
+#loadsheet-validation-overlay .fake-modal .fake-modal-container label {
+  font-size: 18px;
+}
+#loadsheet-validation-overlay .fake-modal .fake-modal-container .ellipsis-container {
+  width: 0px;
+  display: inline-block;
+}
+
+/* Hacks and Tools *****************************************************************************/
+.controless-label {
+  float: left;
+  padding-top: 2px;
+}
+textarea.textarea-vertical-resize-only,
+textarea.common-form-control {
+  resize: vertical;
+}
+.content-money::before {
+  content:"$ ";
+  margin-left: -11px;
+  position: absolute;
+  padding-top: 2px;
+}
+.badge.content-money::before {
+  margin-left: 0;
+}
+.content-percent::after {
+  content: "  %";
+  display: inline-block;
+  padding-left: 2px;
+  padding-top: 2px;
+}
+
+tr.has-filter-result {
+  background-color: #FECB00 !important;
+}
+
+tr.has-filter-result.current {
+  background-color: #00b2fe !important;
+}
+
+tr.has-filter-result.current a,
+tr.has-filter-result.current td {
+  color: #ffffff !important;
+}
+
+.relative {
+  position: relative;
+}
+.flip-top {
+  transform: rotate(180deg);
+}
+.flip-right {
+  transform: rotate(-90deg);
+}
+.flip-left {
+  transform: rotate(90deg);
+}
+.invert {
+  -moz-transform: scaleX(-1);    /* Gecko */
+  -o-transform: scaleX(-1);      /* Opera */
+  -webkit-transform: scaleX(-1); /* Webkit */
+  transform: scaleX(-1);         /* Standard */
+}
+.absolute-vertical-center {
+  position: absolute;
+  top: 50%;
+  transform: translate(0, -50%);
+}
+.visibilty-hidden {
+  visibility: hidden;
+}
+
+
+/* Absolute Center CSS Spinner ****************************/
+.loading,
+.ajax-loading {
+  position: fixed;
+  z-index: 999;
+  height: 2em;
+  width: 2em;
+  margin: auto;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+.modal-loading-overlay.ajax-loading {
+  position: absolute; /* We can prob make the main .ajax-loading have a position absolute, but im not sure if we are guaranteed a position relative somewhere */
+  bottom: initial;
+}
+
+.loading::before,
+.ajax-loading::before {
+  content: '';
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #ffffff;
+}
+
+.ajax-loading::before {
+	background-color: rgba(0,0,0,0.3);
+}
+
+.modal-loading-overlay.ajax-loading::before {
+  content: none;
+}
+
+.loading::after,
+.ajax-loading::after {
+  content: '';
+  display: block;
+  font-size: 10px;
+  width: 1em;
+  height: 1em;
+  margin-top: -0.5em;
+  -webkit-animation: spinner 1500ms infinite linear;
+  -moz-animation: spinner 1500ms infinite linear;
+  -ms-animation: spinner 1500ms infinite linear;
+  -o-animation: spinner 1500ms infinite linear;
+  animation: spinner 1500ms infinite linear;
+  border-radius: 0.5em;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.75) 1.5em 0 0 0, rgba(0, 0, 0, 0.75) 1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) 0 1.5em 0 0, rgba(0, 0, 0, 0.75) -1.1em 1.1em 0 0, rgba(0, 0, 0, 0.5) -1.5em 0 0 0, rgba(0, 0, 0, 0.5) -1.1em -1.1em 0 0, rgba(0, 0, 0, 0.75) 0 -1.5em 0 0, rgba(0, 0, 0, 0.75) 1.1em -1.1em 0 0;
+  box-shadow: rgba(0, 0, 0, 0.75) 1.5em 0 0 0, rgba(0, 0, 0, 0.75) 1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) 0 1.5em 0 0, rgba(0, 0, 0, 0.75) -1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) -1.5em 0 0 0, rgba(0, 0, 0, 0.75) -1.1em -1.1em 0 0, rgba(0, 0, 0, 0.75) 0 -1.5em 0 0, rgba(0, 0, 0, 0.75) 1.1em -1.1em 0 0;
+}
+
+
+/* For use of showing loading progress on a section of a page*/
+.content-loading {
+  position: relative;
+  background-color: #ffffff;
+}
+.content-loading > * {
+  visibility: hidden;
+}
+.content-loading::after {
+  position: absolute;
+  margin: auto;
+  left: 0;
+  right: 0;
+  top: 50%;
+  z-index: 999;
+
+  display: block;
+  width: 1em;
+  height: 1em;
+
+  font-size: 10px;
+
+  content: '';
+  transform: translateY(-50%);
+  -webkit-animation: spinner 1500ms infinite linear;
+  -moz-animation: spinner 1500ms infinite linear;
+  -ms-animation: spinner 1500ms infinite linear;
+  -o-animation: spinner 1500ms infinite linear;
+  animation: spinner 1500ms infinite linear;
+  border-radius: 0.5em;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.75) 1.5em 0 0 0, rgba(0, 0, 0, 0.75) 1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) 0 1.5em 0 0, rgba(0, 0, 0, 0.75) -1.1em 1.1em 0 0, rgba(0, 0, 0, 0.5) -1.5em 0 0 0, rgba(0, 0, 0, 0.5) -1.1em -1.1em 0 0, rgba(0, 0, 0, 0.75) 0 -1.5em 0 0, rgba(0, 0, 0, 0.75) 1.1em -1.1em 0 0;
+  box-shadow: rgba(0, 0, 0, 0.75) 1.5em 0 0 0, rgba(0, 0, 0, 0.75) 1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) 0 1.5em 0 0, rgba(0, 0, 0, 0.75) -1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) -1.5em 0 0 0, rgba(0, 0, 0, 0.75) -1.1em -1.1em 0 0, rgba(0, 0, 0, 0.75) 0 -1.5em 0 0, rgba(0, 0, 0, 0.75) 1.1em -1.1em 0 0;
+}
+
+/* Spinner Animation */
+@-webkit-keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@-moz-keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@-o-keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+/** Ellipsis loading animation **/
+.ellipsis-loading {
+  font-size: 30px;
+}
+
+.ellipsis-loading:after {
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: bottom;
+  -webkit-animation: ellipsis steps(4,end) 900ms infinite;
+  animation: ellipsis steps(4,end) 900ms infinite;
+  content: "\2026"; /* ascii code for the ellipsis character */
+  width: 0px;
+}
+
+@keyframes ellipsis {
+  to {
+    width: 1.25em;
+  }
+}
+
+@-webkit-keyframes ellipsis {
+  to {
+    width: 1.25em;
+  }
+}
+
+/* Fade in Animation, include the fade-out as default to start out with  */
+.fade-in {
+  opacity: 1;
+  transition: visibility 0s, opacity 2s linear;
+}
+.fade-out {
+  opacity: 0;
+  transition: visibility 0s, opacity 1s linear;
+}
+
+
+/* Icons */
+.icon {
+  display: inline-block;
+  cursor: pointer;
+}
+.icon.icon-status-red,
+.icon.icon-status-yellow {
+  cursor: auto;
+}
+td .icon {
+  vertical-align: middle;
+  margin-left: 3px;
+}
+.icon.icon-new-window::before {
+  content: url("../../images/new_window.png");
+}
+.icon.icon-collapsed::before {
+  content: url("../../images/collapsed.png");
+}
+.icon.icon-expanded::before {
+  content: url("../../images/expanded.png");
+}
+.icon.icon-search::before {
+  content: url("../../images/search.png");
+}
+.icon.icon-delete::before {
+  content: url("../../images/delete.png");
+}
+.icon.icon-information::before {
+  content: url("../../images/information.png");
+}
+.icon.icon-status-red::before {
+  content: url("../../images/status_red.png");
+}
+.icon.icon-status-yellow::before {
+  content: url("../../images/status_yellow.png");
+}
+
+
+.icon.icon-html-back {
+  transform: scale(3);
+  color: #2D73CF;
+  font-weight: bold;
+  margin-left: 12px;
+  margin-top: 4px;
+}
+
+/* Error Handling */
+#page-error-container ul {
+  margin: 0;
+  margin-left: 50px;
+  margin-top: 10px;
+}
+
+#page-error-container ul .error-label,
+#page-error-container ul .warning-label {
+  text-align: left;
+  display: list-item;
+}
+
+.error-label {
+  color: #CC0000;
+  font-weight: normal;
+  text-align: center;
+  display: inline-block;
+  width: 100%;
+}
+
+.warning-label {
+  color: #FF6319;
+  font-weight: normal;
+  text-align: center;
+  display: inline-block;
+  width: 100%;
+}
+.col-modal-error-container .alert {
+  margin-bottom: 0;
+}
+.col-modal-error-container ul {
+  margin-top: 5px;
+}
+.col-modal-error-container .warning-label,
+.col-modal-error-container .error-label {
+  text-align: initial;
+  display: list-item;
+}
+
+
+
+
+/* create loadsheet style */
+
+.rowClass{
+	display: inline-block;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    margin-top:4px;
+	width : 100%;
+	height:15px;
+}
+.inputWidth{
+	float: left;
+	width :31%;
+}
+.inputClass{
+	width : 67%;
+	float: right;
+}
+.labelClass{
+	float: left;
+	width : 33%;
+}
+.inputsDiv{
+	display:inline-block;
+	width:100%;
+}
+

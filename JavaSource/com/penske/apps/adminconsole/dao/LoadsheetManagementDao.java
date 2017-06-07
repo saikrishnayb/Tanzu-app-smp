@@ -37,4 +37,6 @@ public interface LoadsheetManagementDao {
 	public void deleteRuleDefDetails(@Param("ruleId") int ruleId);
 	public List<String> getCategoryList();
 	public List<String> getTypeList();
+	public List<String>  getMfrList();
+	public List<LoadSheetComponentDetails> getUnAssignedComponents(@Param("category") String category,@Param("type") String type);
 }

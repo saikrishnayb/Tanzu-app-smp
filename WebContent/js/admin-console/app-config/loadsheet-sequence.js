@@ -52,8 +52,8 @@ $(document).ready(function() {
 	
 	//Add loadsheet sequence link
 	var strHTML='<span style="margin-right: 10px;" class="floatLeft addRow">'+
-	'<a href="${pageContext.request.contextPath}/admin-console/app-config/add-loadsheet.htm">Add Loadsheet Sequence </a>'+
-	'<img src='+commonStaticUrl+'/images/add.png class="centerImage handCursor" alt="Add Row"/>'+
+	'<a href="create-loadsheet.htm" onclick="javascript:loadProcessImage();">Add Loadsheet Sequence </a>'+
+	'<img src='+commonStaticUrl+'/images/add.png class="centerImage handCursor" alt="Add Load sheet Sequence"/>'+
     '</span>';
 
 	// show Add loadsheet sequence link except for view mode.
@@ -71,6 +71,32 @@ $(document).ready(function() {
 	$('#type').append($typeOptions);
 	$('#type').val($('#selectedType').val());
 	
+	
+	$('#sequence-table tbody tr').on( 'click', '#deleteRule', function () {
+		
+		
+		var $this = $(this);
+		var ruleId=$this.closest('tr').find('#ruleId').val();
+		
+		
+		$.ajax({
+			  type: "POST",
+			  url: "./delete-sequence.htm",
+			  data: {ruleId : ruleId},
+			  success: function(data){
+				  
+				 var $row = $this.closest("tr");
+				$loadsheetRuleTable.dataTable().fnDeleteRow($row[0]);
+			  }
+			});
+		
+		
+		
+		
+		
+	});
+	
+	
 	});
 	/* function to load the loadsheet sequences based on selected category and type*/
 	function getLoadsheetSequences(){
@@ -82,7 +108,7 @@ $(document).ready(function() {
 		processingImageAndTextHandler('visible','Loading data...');
 	}
 
-
+	
 
 
 

@@ -295,6 +295,24 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 	public List<String> getTypeList() {
 		return loadsheetManagementDao.getTypeList();
 	}
+	
+	/**
+	 * Method to get MFR list in loadsheet sequence screen.
+	 */
+	@Override
+	public List<String>  getMfrList(){
+		return loadsheetManagementDao.getMfrList();
+	}
+
+	/**
+	 * Method to get Unassigned components for Loadsheet sequencing based on category and Type
+	 */
+	@Override
+	public List<LoadSheetComponentDetails> getUnAssignedComponents(
+			String category, String type) {
+
+		return loadsheetManagementDao.getUnAssignedComponents(category, type);
+	}
 
 
 

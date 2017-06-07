@@ -7,6 +7,9 @@ import java.util.List;
 
 
 
+
+
+
 import com.penske.apps.adminconsole.model.ComponentRuleAssociation;
 import com.penske.apps.adminconsole.model.ComponentVisibilityModel;
 import com.penske.apps.adminconsole.model.ConfigureRule;
@@ -32,5 +35,7 @@ public interface LoadSheetManagementService {
 	public void DeleteRuleDetails(int ruleId);
 	public List<String> getCategoryList();
 	public List<String> getTypeList();
+	public List<String>  getMfrList();
+	public List<LoadSheetComponentDetails> getUnAssignedComponents(String category,String type);
 	
 }

@@ -172,7 +172,6 @@ function addNewRow(gIndex){
 			rowCount =rowCount + $('.group'+i).length;
 		}
 	
-	//var rIndex=$('.group'+gIndex).length+1;
 	//getting rowindex based  on last divid in a group
 	var lastDivID=$('#createRule-Table tbody .group'+gIndex+':last').attr('id');
 	var lstIndx=lastDivID.lastIndexOf("_");
@@ -205,12 +204,9 @@ function addNewRow(gIndex){
 	        tempRow = this.row(i-1).data();
 	        
 	        //preserving the textbox value while swapping the rows
-	        var textId=tempRow[3];
-	        var compId=tempRow[1];
-	        var opId=tempRow[2];
-	        textId=textId.split('"');
-	        compId=compId.split('"');
-	        opId=opId.split('"');
+	        var textId=tempRow[3].split('"');
+	        var compId=tempRow[1].split('"');
+	        var opId=tempRow[2].split('"');
 	        
 	        var textOldVal=$("#"+textId[1]).val();
 	        var compOldVal=$("#"+compId[1]).val();
@@ -340,19 +336,19 @@ function applyOddEvenRule(){
 	} );
 	
 	//Getting the unique values from array
-	var gCountsUniqueArray = gCountsArray.filter(function(itm, i, a) {
-	    return i == a.indexOf(itm);
+	var gCountsUniqueArray = gCountsArray.filter(function(value, index, gCountsArray) {
+	    return index == gCountsArray.indexOf(value);
 	});
 
-	applyBGColors(gCountsUniqueArray.sort(function(a, b){return a-b;}));
+	applyBGColors(gCountsUniqueArray.sort(function(gCount1, gCount2){return gCount1-gCount2;}));
 	
 }
 
 function applyBGColors(gCountsArray){
 
 $.each(gCountsArray,function(index,gValue){
-	$createRuleTable.rows().every( function ( i ) {
-		curNode = $createRuleTable.row( i ).draw().node();
+	$createRuleTable.rows().every( function ( rowIndex ) {
+		curNode = $createRuleTable.row( rowIndex ).draw().node();
 		var nodeId=$(curNode).attr("id");
 	    var gCount=nodeId.substring(nodeId.indexOf("_")+1,nodeId.lastIndexOf("-"));
 	    if(gCount==gValue){
@@ -440,23 +436,23 @@ function copyDatatoDestGroup(srcGrp,destGrp){
 		var destDivId=destDivIdArray[indx];
 		
 		//Getting source group indexes
-		var sgrpIndex=srcDivId.substring(srcDivId.indexOf("_")+1,srcDivId.lastIndexOf("-"));
-		var slstIndx=srcDivId.lastIndexOf("_");
-		var srIndex=srcDivId.substr(slstIndx+1,slstIndx.length);
+		var srcGrpIndex=srcDivId.substring(srcDivId.indexOf("_")+1,srcDivId.lastIndexOf("-"));
+		var srcLstIndx=srcDivId.lastIndexOf("_");
+		var srcIndex=srcDivId.substr(srcLstIndx+1,srcLstIndx.length);
 		//getting destination group indexes
-		var dgrpIndex=destDivId.substring(destDivId.indexOf("_")+1,destDivId.lastIndexOf("-"));
-		var dlstIndx=destDivId.lastIndexOf("_");
-		var drIndex=destDivId.substr(dlstIndx+1,dlstIndx.length);
+		var destGrpIndex=destDivId.substring(destDivId.indexOf("_")+1,destDivId.lastIndexOf("-"));
+		var destLstIndx=destDivId.lastIndexOf("_");
+		var destIndex=destDivId.substr(destLstIndx+1,destLstIndx.length);
 		
 		
-		$("#valueID-G_"+dgrpIndex+'-R_'+drIndex).attr("value",$("#valueID-G_"+sgrpIndex+'-R_'+srIndex).val());
-		$("#componentsDropDown-G_"+dgrpIndex+'-R_'+drIndex).val($("#componentsDropDown-G_"+sgrpIndex+'-R_'+srIndex).val());
+		$("#valueID-G_"+destGrpIndex+'-R_'+destIndex).attr("value",$("#valueID-G_"+srcGrpIndex+'-R_'+srcIndex).val());
+		$("#componentsDropDown-G_"+destGrpIndex+'-R_'+destIndex).val($("#componentsDropDown-G_"+srcGrpIndex+'-R_'+srcIndex).val());
 	     
 		loadOperandDuringSwap(destDivId);
-	    $("#operandsID-G_"+dgrpIndex+'-R_'+drIndex).val($("#operandsID-G_"+sgrpIndex+'-R_'+srIndex).val());
+	    $("#operandsID-G_"+destGrpIndex+'-R_'+destIndex).val($("#operandsID-G_"+srcGrpIndex+'-R_'+srcIndex).val());
 	    
 	    //Invalidate row and load data from DOM for search functionality
-	    var $tr=$("#valueID-G_"+dgrpIndex+'-R_'+drIndex).parent().parent();
+	    var $tr=$("#valueID-G_"+destGrpIndex+'-R_'+destIndex).parent().parent();
 	    $createRuleTable.row($tr).invalidate('dom').draw();
 	}
 		

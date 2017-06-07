@@ -255,12 +255,22 @@
 		FROM
 		SMC_CAT_TYPE_MASTER ORDER BY TYPE
 	</select>
+	
+	<select  id="getMfrList" resultType="String">
+		SELECT
+				MFCODE ||' - '|| MFNAME as MFR 
+		FROM	
+				CORP.FVEHMFR 
+		ORDER BY  
+				MFR
+	</select>
  	
 	<!-- TO get component rules-->
 	<select  id="getComponentRules" resultType="com.penske.apps.adminconsole.model.RuleMaster">
-		SELECT 	DISTINCT CVRM.RULE_ID AS 	ruleId,
-		        CVRM.NAME   AS	ruleName
-		FROM SMC_CMP_VISIBILITY_RULES_MASTER CVRM ORDER BY ruleName
+		SELECT 	DISTINCT RULE_ID AS 	ruleId,
+                NAME  AS	ruleName,
+		        LOWER(NAME) as Name
+		FROM SMC_CMP_VISIBILITY_RULES_MASTER ORDER BY Name
 	</select>
 	
 	<!-- TO get component visibility rules-->
@@ -295,5 +305,44 @@
 				TRIM(SUB_COMPONENT_NAME) 	AS componentName
 		FROM
 				CORP.VEHCMPSGF 
+		ORDER BY
+				COMPONENt_GROUP,SUB_GROUP,SUB_COMPONENT_NAME
+				
 	</select>
+	
+	
+	<!-- TO get Unassigned Components For create loadsheet seq -->
+	<select id="getUnAssignedComponents" resultType="com.penske.apps.adminconsole.model.LoadSheetComponentDetails">
+		SELECT 	
+  				VCS.COMPONENT_ID				AS componentId,
+  				TRIM(VCS.COMPONENT_GROUP)		AS componentGroup,
+  				TRIM(VCS.SUB_GROUP)				AS subGroup,
+  				TRIM(VCS.SUB_COMPONENT_NAME)	AS componentName
+		FROM 
+				SMC_COMPONENT_VISIBILITY SCV
+		JOIN 
+				CORP.VEHCMPSGF VCS 
+		ON   
+				SCV.COMPONENT_ID=VCS.COMPONENT_ID
+		JOIN 
+				SMC_CAT_TYPE_MASTER SCM 
+		ON 	
+				SCV.CAT_TYPE_ID=SCM.CAT_TYPE_ID
+				
+		<if test="category != null and type != null">
+		<where>
+        	<if test="category != null">
+				SCM.PO_CATEGORY = #{category}
+       		</if>
+			<if test="type != null ">
+				AND SCM.TYPE = #{type}
+			</if>
+		</where>
+		</if>
+		<!--  added for testing purpose -->
+		FETCH FIRST 15 ROWS ONLY
+	</select>
+	
+	
+	
 </mapper>
