@@ -879,7 +879,7 @@
  				ROLE_ID AS roleId
  		FROM 	SMC.smc_user_roles
  		WHERE 	STATUS = 'A' and
- 		ROLE_ID = #{roleId}
+ 		ROLE_ID = #{roleId} and ROLE_ID >= 16
 
  	</select>
  	<select id="getVendorUserTypes" resultType="com.penske.apps.adminconsole.model.UserType">
