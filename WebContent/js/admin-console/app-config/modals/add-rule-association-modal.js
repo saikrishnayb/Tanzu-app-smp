@@ -56,23 +56,44 @@ $(document).ready(function() {
 	//To Validate the priority fields with numeric data.
 	$addRuleAssociationModal.on('keypress', '.priority' , function(e){
 		
-		//to check duplicate priority values.
-		 var inputArr = $("input[class='priority']").map(function(){return $(this).val();}).get();
-		 var priorityArray = inputArr.filter(function(v){return v!==" ";});
-		 var keynum='';
-		 if(window.event) { // IE                    
-		      keynum = e.keyCode;
-		 } else if(e.which){ // Netscape/Firefox/Opera                   
-		      keynum = e.which;
-		 }
-		 var inputNumber = String.fromCharCode(keynum);
-		 if($.inArray(inputNumber,priorityArray)>-1)
-		 return false;
-	    
+		
 		//if the letter is not digit don't type anything
 	    if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
 	       //display error message
 	       return false;
+	   }else{
+		     //to check duplicate priority values.
+			 var inputArr = $("input[class='priority']").map(function(){return $(this).val();}).get();
+			 var priorityArray = inputArr.filter(function(v){return v!==" ";});
+			 var keynum='';
+			 if(window.event) { // IE                    
+			      keynum = e.keyCode;
+			 } else if(e.which){ // Netscape/Firefox/Opera                   
+			      keynum = e.which;
+			 }
+			 //keyed input number
+			 var inputNumber = String.fromCharCode(keynum);
+			 
+			 // to get priority text box value.
+			 var inputValue=$(this).val();
+			 inputValue=+inputValue+inputNumber;
+			 
+			 //if the priority value is '0' don't type anything
+			 if(inputValue==0){
+			     return false;
+			 }
+			//if the priority digit is already entered don't type anything
+			 if($.inArray(inputNumber,priorityArray)>-1){
+			     return false;
+			 }
+			//if the priority value is already entered don't type anything
+			 if($.inArray(inputValue,priorityArray)>-1){
+				 return false;
+			 }
+			//if the priority value is greater than '10' don't type anything
+			 if(inputValue>10){
+				 return false; 
+			 }
 	   }
 	    $(this).removeClass('errorMsgInput');
 	    $error.hide();
@@ -131,6 +152,11 @@ function addRule() {
 	$options = $("#rulelsOverride > option").clone();
 	$('#rulelsOverride'+rowCount).append($options);
 	$('#rulelsOverride'+rowCount).val('');
+	var prorityArray = $("input[class='priority']").map(function(){return $(this).val();}).get();
+	var maxPriority = Math.max.apply(Math, prorityArray);
+	var nextPriority=maxPriority+1;
+	if(nextPriority<11)
+	$('#ruleProirity'+rowCount).val(nextPriority);
    rowCount++;
    $error.hide();
    }else {

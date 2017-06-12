@@ -8,8 +8,10 @@ import com.penske.apps.adminconsole.model.ComponentRuleAssociation;
 import com.penske.apps.adminconsole.model.ComponentVisibilityModel;
 import com.penske.apps.adminconsole.model.ConfigureRule;
 import com.penske.apps.adminconsole.model.LoadSheetComponentDetails;
+import com.penske.apps.adminconsole.model.LoadsheetCompGrpSeq;
 import com.penske.apps.adminconsole.model.LoadsheetManagement;
-import com.penske.apps.adminconsole.model.LoadsheetSequence;
+import com.penske.apps.adminconsole.model.LoadsheetSequenceGroupMaster;
+import com.penske.apps.adminconsole.model.LoadsheetSequenceMaster;
 import com.penske.apps.adminconsole.model.RuleDefinitions;
 import com.penske.apps.adminconsole.model.RuleMaster;
 import com.penske.apps.suppliermgmt.model.UserContext;
@@ -17,8 +19,8 @@ import com.penske.apps.suppliermgmt.model.UserContext;
 public interface LoadsheetManagementDao {
 	
 	public List<ComponentVisibilityModel> getLoadsheetComponents(@Param("category") String category,@Param("type") String type);
-	public List<LoadsheetSequence> getLoadsheetSequences(@Param("category") String category,@Param("type") String type);
-	public List<LoadsheetSequence> getLoadsheetSequence();
+	public List<LoadsheetSequenceMaster> getLoadsheetSequences(@Param("category") String category,@Param("type") String type);
+	public List<LoadsheetSequenceMaster> getLoadsheetSequence();
 	public List<LoadsheetManagement> getLoadsheetManagementDetails();
 	public List<RuleMaster> getLoadsheetRules();
 	public List<RuleMaster> getComponentRules();
@@ -39,4 +41,14 @@ public interface LoadsheetManagementDao {
 	public List<String> getTypeList();
 	public List<String>  getMfrList();
 	public List<LoadSheetComponentDetails> getUnAssignedComponents(@Param("category") String category,@Param("type") String type);
+	public void insertSeqMasterDetails(@Param("seqMaster") LoadsheetSequenceMaster seqMaster,@Param("user") UserContext user);
+	public void insertGrpMasterDetails(@Param("grpMaster") LoadsheetSequenceGroupMaster grpMaster,@Param("user") UserContext user);
+	public void insertCmpGrpSeqDetails(@Param("cmpGrpSeqList") List<LoadsheetCompGrpSeq> cmpGrpSeqList,@Param("user") UserContext user);
+	public LoadsheetSequenceMaster getSequenceMasterDetails(@Param("seqMasterId") int seqMasterId);
+	public void updateSeqMasterDetails(@Param("seqMaster") LoadsheetSequenceMaster seqMaster,@Param("user") UserContext user);
+	public void updateGrpMasterDetails(@Param("grpMaster") LoadsheetSequenceGroupMaster grpMaster,@Param("user") UserContext user);
+	public void deleteGrpMasterDetails(@Param("groupMasterIdList") List<Integer> groupMasterIdList,@Param("seqMasterId") int seqMasterId);
+	public void updateCmpGrpSeqDeatils(@Param("cmpGrpSeq") LoadsheetCompGrpSeq cmpGrpSeq,@Param("user") UserContext user);
+	public void deleteCmpGrpSeqDetailsUsingGrpId(@Param("groupMasterIdList") List<Integer> groupMasterIdList);
+	public void deleteCmpGrpSeqDetails(@Param("compGrpSeqIdList") List<Integer> compGrpSeqIdList,@Param("grpMasterId") int grpMasterId);
 }

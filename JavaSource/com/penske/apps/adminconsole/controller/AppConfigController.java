@@ -17,6 +17,8 @@ import com.penske.apps.adminconsole.annotation.DefaultController;
 import com.penske.apps.adminconsole.model.ExcelUploadHandler;
 import com.penske.apps.adminconsole.model.GlobalException;
 import com.penske.apps.adminconsole.model.LoadSheetCategoryDetails;
+import com.penske.apps.adminconsole.model.LoadsheetSequenceGroupMaster;
+import com.penske.apps.adminconsole.model.LoadsheetSequenceMaster;
 import com.penske.apps.adminconsole.model.Notification;
 import com.penske.apps.adminconsole.model.RuleDefinitions;
 import com.penske.apps.adminconsole.model.RuleMaster;
@@ -463,15 +465,64 @@ public class AppConfigController {
 	}
 	
 	/* ================ Create New Loadsheet Sequence ===============*/
-	@RequestMapping(value={"/create-loadsheet"})
-	public ModelAndView loadCreateLoadSheetSequence(){
+	@RequestMapping(value={"/open-create-sequence"})
+	public ModelAndView loadCreateLoadSheetSequence(@RequestParam(value="category",required=false) String category,@RequestParam(value="type",required=false) String type){
 		ModelAndView mav=new ModelAndView("/admin-console/app-config/create-loadsheet-sequence");
 		
-		mav.addObject("componentDetailsList",loadsheetManagementService.getUnAssignedComponents(null, null));
+		LoadsheetSequenceMaster seqMaster=new LoadsheetSequenceMaster();
+		
+		List<LoadsheetSequenceGroupMaster> grpMasterList=new ArrayList<LoadsheetSequenceGroupMaster>();
+		
+		//Adding one empty Group onload
+		LoadsheetSequenceGroupMaster grpMaster=new LoadsheetSequenceGroupMaster();
+		grpMaster.setDisplaySeq(1);
+		grpMaster.setName("GROUP NAME");
+		
+		grpMasterList.add(grpMaster);
+		seqMaster.setGroupMasterList(grpMasterList);
+		seqMaster.setCategory(category);
+		seqMaster.setType(type);
+		
+		mav.addObject("unassignedComponents",loadsheetManagementService.getUnAssignedComponents(seqMaster));
 		mav.addObject("categoriesList", loadsheetManagementService.getCategoryList());
 		mav.addObject("typesList", loadsheetManagementService.getTypeList());
 		mav.addObject("mfrList", loadsheetManagementService.getMfrList());
+		
+		mav.addObject("seqMaster",seqMaster);
+		
 		return mav;
+	}
+	
+	/* ================= Save Loadsheet Sequence ==================*/
+	@RequestMapping(value={"/create-sequence"})
+	public ModelAndView saveLoadSheetSequence(LoadsheetSequenceMaster seqMaster){
+		
+		loadsheetManagementService.createLoadSheetSequencing(seqMaster);
+		return getLoadsheetSequences();
+	}
+	
+	/* ==================== to open the Edit loadsheet sequence page==================*/
+	@RequestMapping(value={"/open-edit-sequence"})
+	public ModelAndView editLoadSheetSequence(@RequestParam(value="seqMasterId") int seqMasterId){
+		ModelAndView mav=new ModelAndView("/admin-console/app-config/create-loadsheet-sequence");
+		
+		LoadsheetSequenceMaster seqMaster=loadsheetManagementService.getSequenceMasterDetails(seqMasterId);
+		
+		mav.addObject("unassignedComponents",loadsheetManagementService.getUnAssignedComponents(seqMaster));
+		mav.addObject("categoriesList", loadsheetManagementService.getCategoryList());
+		mav.addObject("typesList", loadsheetManagementService.getTypeList());
+		mav.addObject("mfrList", loadsheetManagementService.getMfrList());
+		mav.addObject("seqMaster",seqMaster);
+		return mav;
+	}
+	
+	/* ================= Update the loadsheet seqeuncing details =================*/
+	@RequestMapping(value={"/update-sequence"})
+	public ModelAndView updateLoadsheetSequencingDetails(LoadsheetSequenceMaster seqMaster){
+		
+		loadsheetManagementService.updateLoadsheetSequencingDetails(seqMaster);
+		
+		return editLoadSheetSequence(seqMaster.getId());
 	}
 	
 	

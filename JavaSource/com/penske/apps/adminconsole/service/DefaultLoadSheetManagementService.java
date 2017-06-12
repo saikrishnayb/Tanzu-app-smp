@@ -19,8 +19,10 @@ import com.penske.apps.adminconsole.model.ComponentRuleAssociation;
 import com.penske.apps.adminconsole.model.ComponentVisibilityModel;
 import com.penske.apps.adminconsole.model.ConfigureRule;
 import com.penske.apps.adminconsole.model.LoadSheetComponentDetails;
+import com.penske.apps.adminconsole.model.LoadsheetCompGrpSeq;
 import com.penske.apps.adminconsole.model.LoadsheetManagement;
-import com.penske.apps.adminconsole.model.LoadsheetSequence;
+import com.penske.apps.adminconsole.model.LoadsheetSequenceGroupMaster;
+import com.penske.apps.adminconsole.model.LoadsheetSequenceMaster;
 import com.penske.apps.adminconsole.model.RuleDefinitions;
 import com.penske.apps.adminconsole.model.RuleMaster;
 import com.penske.apps.suppliermgmt.common.constants.ApplicationConstants;
@@ -41,11 +43,11 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 	}
 	
 	@Override
-	public List<LoadsheetSequence> getLoadsheetSequences(String category,String type) {
+	public List<LoadsheetSequenceMaster> getLoadsheetSequences(String category,String type) {
 		return loadsheetManagementDao.getLoadsheetSequences(category,type);
 	}
 	@Override
-	public List<LoadsheetSequence> getLoadsheetSequences() {
+	public List<LoadsheetSequenceMaster> getLoadsheetSequences() {
 		return loadsheetManagementDao.getLoadsheetSequence();
 	}
 	
@@ -308,10 +310,152 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 	 * Method to get Unassigned components for Loadsheet sequencing based on category and Type
 	 */
 	@Override
-	public List<LoadSheetComponentDetails> getUnAssignedComponents(
-			String category, String type) {
+	public List<LoadSheetComponentDetails> getUnAssignedComponents(LoadsheetSequenceMaster seqMaster) {
+		
+		//Remove the Assigned components from un assigned components
+		List<LoadSheetComponentDetails> allComponents=loadsheetManagementDao.getUnAssignedComponents(seqMaster.getCategory(), seqMaster.getType());
+		
+		if(seqMaster.getId() != 0){
+			for(LoadsheetSequenceGroupMaster grpMaster:seqMaster.getGroupMasterList()){
+				allComponents.removeAll(grpMaster.getCompGrpSeqList());
+			}
+		}
 
-		return loadsheetManagementDao.getUnAssignedComponents(category, type);
+		return allComponents;
+	}
+	
+	/**
+	 * Method to insert loadsheet sequencing details 
+	 */
+	@Override
+	@Transactional
+	public void createLoadSheetSequencing(LoadsheetSequenceMaster seqMaster) {
+			
+		UserContext user = (UserContext) httpSession.getAttribute(ApplicationConstants.USER_MODEL);
+		List<LoadsheetCompGrpSeq> cmpGrpSeqList=null;
+		LoadsheetCompGrpSeq cmpGrpSeq;
+		
+		loadsheetManagementDao.insertSeqMasterDetails(seqMaster,user);
+		for(LoadsheetSequenceGroupMaster grpMaster:seqMaster.getGroupMasterList()){
+			grpMaster.setSeqMasterId(seqMaster.getId());
+				if(grpMaster.getDisplaySeq()!=0){
+					loadsheetManagementDao.insertGrpMasterDetails(grpMaster,user);
+					
+					
+					cmpGrpSeqList=grpMaster.getCompGrpSeqList();
+					
+					//removing the empty lists from cmpGrpSeqList
+					Iterator<LoadsheetCompGrpSeq> cmpGrpSeqIt = cmpGrpSeqList.iterator();
+					
+					while (cmpGrpSeqIt.hasNext()) {
+						
+						cmpGrpSeq=cmpGrpSeqIt.next();
+						if(cmpGrpSeq.getDisplaySeq()!=0){
+							cmpGrpSeq.setGrpMasterId(grpMaster.getGrpMasterId());
+						}else{
+							cmpGrpSeqIt.remove();	//remove empty values
+						}
+						
+					}
+					
+					loadsheetManagementDao.insertCmpGrpSeqDetails(cmpGrpSeqList,user);
+				}
+		}
+		
+	}
+
+	/**
+	 * Method get the laodsheet sequencing details based on sequence id
+	 */
+	@Override
+	public LoadsheetSequenceMaster getSequenceMasterDetails(int seqMasterId) {
+		
+		return loadsheetManagementDao.getSequenceMasterDetails(seqMasterId);
+	}
+
+	/**
+	 * Method to update loadsheet sequencing details
+	 */
+	@Override
+	@Transactional
+	public void updateLoadsheetSequencingDetails(LoadsheetSequenceMaster seqMaster) {
+		
+		UserContext user = (UserContext) httpSession.getAttribute(ApplicationConstants.USER_MODEL);
+		List<LoadsheetCompGrpSeq> newCompGrpSeqList=null;
+		List<Integer> existingCompIds=null; //list for deleting the deleted components using NOT IN
+		List<Integer> existingGroupIds=new ArrayList<Integer>();
+		
+		if(seqMaster.getId()!=0){
+			//update sequence master details
+			loadsheetManagementDao.updateSeqMasterDetails(seqMaster, user);
+			
+			//Delete the deleted groups
+			for(LoadsheetSequenceGroupMaster grpMaster:seqMaster.getGroupMasterList()){
+				if(grpMaster.getDisplaySeq()!=0){
+					if(grpMaster.getGrpMasterId()!=0){
+						existingGroupIds.add(grpMaster.getGrpMasterId());
+					}
+				}
+			}
+			
+			//Delete the deleted Groups and its associated Components
+			if(existingGroupIds.size()>0){
+				loadsheetManagementDao.deleteGrpMasterDetails(existingGroupIds,seqMaster.getId());
+				loadsheetManagementDao.deleteCmpGrpSeqDetailsUsingGrpId(existingGroupIds);
+			}
+			
+			
+			//Update Group Details
+			for(LoadsheetSequenceGroupMaster grpMaster:seqMaster.getGroupMasterList()){
+				
+				if(grpMaster.getDisplaySeq()!=0){
+						
+						newCompGrpSeqList=new ArrayList<LoadsheetCompGrpSeq>();
+						existingCompIds=new ArrayList<Integer>();
+						
+						if(grpMaster.getGrpMasterId()!=0){//Update the Group Details
+							loadsheetManagementDao.updateGrpMasterDetails(grpMaster, user);
+						}else{//Insert the New Group
+							grpMaster.setSeqMasterId(seqMaster.getId());
+							loadsheetManagementDao.insertGrpMasterDetails(grpMaster, user);
+						}
+						
+						//Update Components Info
+						for(LoadsheetCompGrpSeq cmpGrpSeq:grpMaster.getCompGrpSeqList()){
+							
+							if(cmpGrpSeq.getDisplaySeq()!=0){
+								if(cmpGrpSeq.getCompGrpSeqId()!=0){//Update the componentID sequence
+									loadsheetManagementDao.updateCmpGrpSeqDeatils(cmpGrpSeq, user);
+								}else{//Add new components to list
+									cmpGrpSeq.setGrpMasterId(grpMaster.getGrpMasterId());
+									newCompGrpSeqList.add(cmpGrpSeq);
+								}
+								
+								if(cmpGrpSeq.getCompGrpSeqId()!=0){
+									existingCompIds.add(cmpGrpSeq.getCompGrpSeqId());
+								}
+								
+							}
+							
+							
+						}
+						
+						//delete the deleted Components
+						if(existingCompIds.size()>0){
+							loadsheetManagementDao.deleteCmpGrpSeqDetails(existingCompIds,grpMaster.getGrpMasterId());
+						}
+						
+						//Insert new Components
+						if(newCompGrpSeqList.size()>0){
+							loadsheetManagementDao.insertCmpGrpSeqDetails(newCompGrpSeqList, user);
+						}
+						
+			
+				}
+			}	
+			
+		}
+		
 	}
 
 

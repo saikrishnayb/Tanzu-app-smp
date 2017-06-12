@@ -40,5 +40,23 @@ public class LoadSheetComponentDetails {
 	}
 	
 	
+	//implementing hash code and equals method to remove the assigned components list from unassigned list 
+	@Override
+	 public int hashCode() {
+		 return componentId.hashCode();
+	 }
+	
+	 @Override
+	    public boolean equals(Object obj) {
+			 
+		 LoadsheetCompGrpSeq cmpGrpSeq=(LoadsheetCompGrpSeq)obj;
+
+	       return this.componentId.equals(cmpGrpSeq.getComponentId());
+	    }
+		
+	
+	
+	
+	
 
 }

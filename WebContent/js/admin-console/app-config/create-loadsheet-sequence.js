@@ -2,9 +2,12 @@ var srcId;
 var destId;
 var col1;
 var col2;
+var groupCount=1; //get this value based on max group count
 $(document).ready(function() {
 	selectCurrentNavigation("tab-app-config", "left-nav-loadsheet-sequence");
 	//var commonStaticUrl =$('#common-static-url').val();
+	
+	groupCount=$("#numberOfGroups").val();
 	
 	initializeComponentTables();
 	//Search for assigned components table
@@ -34,16 +37,26 @@ $(document).ready(function() {
     }); 
 
 	//delete row
-	 $('#assignedComponentsTable').on( 'click', '#deleteRow', function () {
+	$('#assignedComponentsTable').on( 'click', '#deleteRow', function () {
 		 var row=$(this).parents("tr");
+		 
+		 //remove the name attribute
+		 $(row).find('.componentId').removeAttr('name'); 
+		 $(row).find('.componentSequence').removeAttr('name'); 
+		 $(row).find('.compGrpSeqId').removeAttr('name');
+		 $(row).find('.grpMasterId').removeAttr('name');
+		 
 		 row.find('td')[1].remove();
 		 row.find('td')[1].remove();
 		 $(row).appendTo("#unAssignedComponentsTable");
+		 
 		 
 		 resetSequence('#assignedComponentsTable');
 		  $("#hiddenRow").hide(); //hide the hidden row while copying the group
 		 
 	} );
+	 
+	
 	
 	//delete Group
 	$('#assignedComponentsTable').on( 'click', '#deleteGroup', function () {
@@ -59,6 +72,20 @@ $(document).ready(function() {
 		});
 		
 		  $("#hiddenRow").hide(); //hide the hidden row while copying the group 
+	});
+	
+	
+	//Refresh Unassigned Componets on change of category or typr
+	$("#categoryID").on("change",function(){
+		var type=$("#typeID option:selected").val();
+		reloadUnassignedComponents(this.value,type);
+		
+	});
+	
+	$("#typeID").on("change",function(){
+		var category=$("#categoryID option:selected").val();
+		reloadUnassignedComponents(category,this.value);
+		
 	});
 
 
@@ -166,8 +193,8 @@ function AddRemoveExtraColumns(e,ui){
 			rowData.splice(1,2);
 			ui.item.children().replaceWith(rowData);
 		}else{
-			var col1='<td class="editable centerAlign"><img class="rightMargin" id="deleteRow" src="https://staticdev.penske.com/common/images/delete.png"></td>';
-			var col2='<td class="centerAlign seq"></td>';
+			var col1='<td style="width:5%" class="editable centerAlign"><img class="rightMargin" id="deleteRow" src="https://staticdev.penske.com/common/images/delete.png"></td>';
+			var col2='<td style="width:7%" class="centerAlign seq"></td>';
 			ui.item.children().each(function(i,data){
 				 if(i==1){
 					 $(this).replaceWith(col1);
@@ -228,22 +255,89 @@ $("#assignedComponentsTable").on('click', '.editGroup' , function(e){
 /* to make group name non editable */
 $(document).click(function() {
 	$(".groupName").attr('contenteditable','false');
+	
 });
+
+
+/* to submit the from */
+function submitLoadSheetForm(){
+	
+	var $loadSheetSequncingForm=$("#loadsheet-sequencing-form");
+	
+	//Setting the group name and seq to form
+	$(".groupName").each(function(index,data){
+		var editGroup=$(this).attr("id");
+		var count=editGroup.split("-")[1];
+		$("#formGroupName-"+count).val($("#"+editGroup).text());
+		$("#formGroupSeq-"+count).val(index+1);
+		
+	});
+	
+	var groupIndex=0;
+	
+	//Setting the hidden component id's and display seq
+	  $("#assignedComponentsTable tbody").each(function (index,data) {
+			$(data).children().each(function(componentIndex,component){
+				
+		        if(!$(component).hasClass('group')){//for setting component hidden field names
+		        	
+			       // $(component).find('.seq').html(componentIndex);
+			        $(component).find('.componentId').attr('name','groupMasterList[' + groupIndex+'].compGrpSeqList['+componentIndex+'].componentId'); 
+					$(component).find('.componentSequence').attr('name','groupMasterList[' + groupIndex+'].compGrpSeqList['+componentIndex+'].displaySeq'); 
+					 $(component).find('.componentSequence').attr('value',componentIndex);
+					 $(component).find('.compGrpSeqId').attr('name','groupMasterList[' + groupIndex+'].compGrpSeqList['+componentIndex+'].compGrpSeqId');
+					 $(component).find('.grpMasterId').attr('name','groupMasterList[' + groupIndex+'].compGrpSeqList['+componentIndex+'].grpMasterId');
+					  }else{//update group index
+						  var groupId=$(component).find('.groupName').attr("id");
+						  groupIndex=groupId.split("-")[1];
+						  
+					}
+				});
+		
+		});
+
+	
+	
+	var seqMasterId=$("#seqMasterId").val();
+	
+	if(seqMasterId=="0"){//Perform Insert
+		$loadSheetSequncingForm.attr("action","create-sequence.htm");
+	}else{//perform Update
+		$loadSheetSequncingForm.attr("action","update-sequence.htm");
+	}
+	
+	
+	processingImageAndTextHandler('visible','Loading data...');
+	$loadSheetSequncingForm.submit();
+	
+}
 
 /* function to add new group */
 function Addgroup(){
-	var groupCount =$("#assignedComponentsTable > tbody").length;	
+	groupCount++;	
 	$("#assignedComponentsTable").append(
 	 '<tbody class="ui-sortable-handle ui-sortable">'+
-	          '<tr class="group"><td colspan="1" class="pointer">'+
+	          '<tr class="group"><td style="width:10%" colspan="1" class="pointer">'+
 			  '<span class="icon-bar"></span>'+
 			  '<span class="icon-bar"></span>'+
 			  '<span class="icon-bar"></span>'+
 			  '</td>'+
-			  '<td class="editable centerAlign">'+
+			  '<td style="width:5%" class="editable centerAlign">'+
 			  '<img class="rightMargin" id="deleteGroup" src="https://staticdev.penske.com/common/images/delete.png"></td>'+
-			  '<td></td>'+
+			  '<td style="width:7%"></td>'+
 			  '<td colspan="3"><div id="editgroup-'+groupCount+'" class="groupName" style="float: left">GROUP NAME</div> <div id="edit-'+groupCount+'"'+
-			  'style="float: right;margin-right: 1%;" class="editGroup"> Edit</div></td></tr></tbody>');
+			  'style="float: right;margin-right: 1%;" class="editGroup"> Edit</div>'+
+			  '<input type="hidden" id="formGroupSeq-'+groupCount+'"  name="groupMasterList['+groupCount+'].displaySeq"/><input type="hidden" id="formGroupName-'+groupCount+'" name="groupMasterList['+groupCount+'].name"/>'+
+			  '<input type="hidden" name="groupMasterList['+groupCount+'].grpMasterId"/>'+
+			  '<input type="hidden" path="groupMasterList['+groupCount+'].seqMasterId"/>'+
+			  '</td></tr></tbody>');
 	initializeComponentTables();
 	}
+
+
+function reloadUnassignedComponents(category,type){
+	
+	processingImageAndTextHandler('visible','Loading data...');
+	window.location.href = './open-create-sequence.htm?category='+category+'&type='+type;
+	
+}

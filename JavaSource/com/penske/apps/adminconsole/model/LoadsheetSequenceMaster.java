@@ -1,13 +1,14 @@
 package com.penske.apps.adminconsole.model;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 
  * @author 505001934
  * This class represents model for component rule mapping
  */
-public class LoadsheetSequence {
+public class LoadsheetSequenceMaster {
 	private int id;
 	private String name;
 	private String description;
@@ -16,6 +17,8 @@ public class LoadsheetSequence {
 	private String oem;
 	private String editedBy;
 	private Date 	editedDate;
+	private List<LoadsheetSequenceGroupMaster> groupMasterList;
+	
 	public int getId() {
 		return id;
 	}
@@ -68,5 +71,13 @@ public class LoadsheetSequence {
 	public String getFmtEditedDate() {
 		return DateUtil.formatDate(this.editedDate,DateUtil.MM_dd_yy_HH_mm_a);
 	}
+	public List<LoadsheetSequenceGroupMaster> getGroupMasterList() {
+		return groupMasterList;
+	}
+	public void setGroupMasterList(
+			List<LoadsheetSequenceGroupMaster> groupMasterList) {
+		this.groupMasterList = groupMasterList;
+	}
+	
 	
 }

@@ -969,3 +969,28 @@ td .icon {
 	width:100%;
 }
 
+#table-wrapper {
+  position:relative;
+}
+#table-scroll {
+  height:400px;
+  overflow:auto;  
+  width:100%;
+  float:left;
+}
+#table-wrapper table {
+  width:100%;
+}
+
+tbody, thead tr {
+  display: table;
+  width: 100%;
+  /* table-layout: fixed; */
+}
+
+.fixedHeader{
+	position: sticky;
+	top:0; 
+	display:block;
+}
+

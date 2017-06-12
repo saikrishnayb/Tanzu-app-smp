@@ -204,7 +204,7 @@
 	
 	
 	<!-- To get load sheet sequences for selected category and type -->
-  	<select id="getLoadsheetSequences" resultType="com.penske.apps.adminconsole.model.LoadsheetSequence"> 
+  	<select id="getLoadsheetSequences" resultType="com.penske.apps.adminconsole.model.LoadsheetSequenceMaster"> 
 		SELECT
 			SEQ_MASTER_ID AS id,
 			NAME AS name,
@@ -228,7 +228,7 @@
  	</select> 
  	
  	<!-- To get load sheet sequences from navigation link -->
-  	<select id="getLoadsheetSequence" resultType="com.penske.apps.adminconsole.model.LoadsheetSequence"> 
+  	<select id="getLoadsheetSequence" resultType="com.penske.apps.adminconsole.model.LoadsheetSequenceMaster"> 
 		SELECT
 			SEQ_MASTER_ID AS id,
 			NAME AS name,
@@ -331,18 +331,219 @@
 				
 		<if test="category != null and type != null">
 		<where>
-        	<if test="category != null">
+        	<if test="category != null and category !='' ">
 				SCM.PO_CATEGORY = #{category}
        		</if>
-			<if test="type != null ">
+			<if test="type != null and  type != ''">
 				AND SCM.TYPE = #{type}
 			</if>
 		</where>
 		</if>
 		<!--  added for testing purpose -->
-		FETCH FIRST 15 ROWS ONLY
+		FETCH FIRST 100 ROWS ONLY
 	</select>
 	
+	<!-- Creating Loadsheet Sequencing -->
+	<!-- insert into seq master Table -->
+	<insert id="insertSeqMasterDetails" useGeneratedKeys="true" keyProperty="seqMaster.id" keyColumn="SEQ_MASTER_ID" >
+		INSERT INTO 
+					SMC_LOADSHEET_SEQ_MASTER 
+					(NAME,		DESCRIPTION,	PO_CATEGORY,	TYPE,	OEM,
+					CREATED_BY, CREATED_DATE,	MODIFIED_BY,	MODIFIED_DATE) 
+		VALUES 
+					(#{seqMaster.name}, #{seqMaster.description}, #{seqMaster.category}, #{seqMaster.type}, #{seqMaster.oem},
+					#{user.userSSO}, CURRENT TIMESTAMP, #{user.userSSO}, CURRENT TIMESTAMP)
+	</insert>
+	
+	<!-- insert into group master table -->
+	<insert id="insertGrpMasterDetails" useGeneratedKeys="true" keyProperty="grpMaster.grpMasterId" keyColumn="GRP_MASTER_ID" >
+		INSERT INTO 
+					SMC_LOADSHEET_GROUP_MASTER 
+					(SEQ_MASTER_ID,	NAME,	DISPLAY_SEQ,	CREATED_BY, 
+					CREATED_DATE,	MODIFIED_BY,	MODIFIED_DATE) 
+		VALUES 
+					(#{grpMaster.seqMasterId}, #{grpMaster.name}, #{grpMaster.displaySeq}, 
+					#{user.userSSO}, CURRENT TIMESTAMP, #{user.userSSO}, CURRENT TIMESTAMP)
+	</insert>
+	
+	<!-- insert into component grp sequencing table -->
+	<insert id="insertCmpGrpSeqDetails" >
+		INSERT INTO 
+					SMC_LOADSHEET_CMP_GROUP_SEQ 
+					(GRP_MASTER_ID,	COMPONENT_ID,	DISPLAY_SEQ,
+					CREATED_BY,	CREATED_DATE,	MODIFIED_BY,	MODIFIED_DATE) 
+		VALUES 
+				<foreach item="cmpGrpSeq" collection="cmpGrpSeqList" separator=",">
+					(#{cmpGrpSeq.grpMasterId},#{cmpGrpSeq.componentId},#{cmpGrpSeq.displaySeq},
+					#{user.userSSO}, CURRENT TIMESTAMP, #{user.userSSO}, CURRENT TIMESTAMP)
+				</foreach>
+	</insert>
+	
+	<!-- Queries to get the sequence details based on seqMasterId  -->
+	<!-- Get sequence master details -->
+	<select id="getSequenceMasterDetails" resultMap="sequenceMasterDetailsMap">
+		SELECT 
+				SEQ_MASTER_ID,
+				NAME,
+				DESCRIPTION,
+				PO_CATEGORY,
+				TYPE,
+				OEM
+		FROM
+				SMC_LOADSHEET_SEQ_MASTER
+		WHERE
+				SEQ_MASTER_ID = #{seqMasterId}
+	</select>
+	
+	<resultMap id="sequenceMasterDetailsMap" type="com.penske.apps.adminconsole.model.LoadsheetSequenceMaster">
+		 <id property="id" column="SEQ_MASTER_ID" />
+		 <result property="name" column="NAME" />
+		 <result property="description" column="DESCRIPTION" />
+		 <result property="category" column="PO_CATEGORY" />
+		 <result property="type" column="TYPE" />
+		 <result property="oem" column="OEM" />
+		 <collection property="groupMasterList" column="SEQ_MASTER_ID" ofType="com.penske.apps.adminconsole.model.LoadsheetSequenceGroupMaster" javaType="ArrayList" select="getGroupMasterDetails"/> 
+	</resultMap>
+	
+	<!-- get Group master details -->
+	<select id="getGroupMasterDetails" resultMap="groupMasterDetailsMap">
+		SELECT 
+				GRP_MASTER_ID,
+				SEQ_MASTER_ID,
+				NAME,
+				DISPLAY_SEQ
+		FROM 
+				SMC_LOADSHEET_GROUP_MASTER
+		WHERE
+				SEQ_MASTER_ID = #{id}
+		ORDER BY
+				DISPLAY_SEQ
+	</select>
+	
+	<resultMap id="groupMasterDetailsMap" type="com.penske.apps.adminconsole.model.LoadsheetSequenceGroupMaster">
+		<id property="grpMasterId" column="GRP_MASTER_ID" />
+		<result property="seqMasterId" column="SEQ_MASTER_ID" />
+		<result property="name" column="NAME" />
+		<result property="displaySeq" column="DISPLAY_SEQ" />
+		<collection property="compGrpSeqList" column="GRP_MASTER_ID" ofType="com.penske.apps.adminconsole.model.LoadsheetCompGrpSeq" javaType="ArrayList" select="getCompGroupSeqDetails"/>
+	</resultMap>
+	
+	<!-- to get the componet details based on group id -->
+	<select id="getCompGroupSeqDetails" resultMap="compGrpSeqDetailsMap">
+		SELECT 
+				CMP_GRP_SEQ_ID,
+				GRP_MASTER_ID,
+				CGS.COMPONENT_ID,
+				DISPLAY_SEQ,
+				COMPONENT_GROUP,
+				SUB_GROUP,
+				SUB_COMPONENT_NAME
+		FROM
+				SMC_LOADSHEET_CMP_GROUP_SEQ CGS
+		JOIN
+				CORP.VEHCMPSGF CMP
+		ON
+				CMP.COMPONENT_ID=CGS.COMPONENT_ID
+		WHERE
+				GRP_MASTER_ID = #{grpMasterId}
+		ORDER BY
+				DISPLAY_SEQ
+	</select>
+	
+	<resultMap id="compGrpSeqDetailsMap" type="com.penske.apps.adminconsole.model.LoadsheetCompGrpSeq">
+		<result property="compGrpSeqId" column="CMP_GRP_SEQ_ID" />
+		<result property="grpMasterId" column="GRP_MASTER_ID" />
+		<result property="componentId" column="COMPONENT_ID" />
+		<result property="displaySeq" column="DISPLAY_SEQ" />
+		<result property="componentGroup" column="COMPONENT_GROUP" />
+		<result property="subGroup" column="SUB_GROUP" />
+		<result property="componentName" column="SUB_COMPONENT_NAME" />
+	</resultMap>
+	
+	<!-- Queries to update load sheetSeqeuncing -->
+	<!-- Update Seqmaster Details -->
+	<update id="updateSeqMasterDetails">
+	
+		UPDATE 
+				SMC_LOADSHEET_SEQ_MASTER
+				
+		<set>
+				NAME			=	#{seqMaster.name},
+				DESCRIPTION		=	#{seqMaster.description},
+				OEM				=	#{seqMaster.oem},
+				MODIFIED_BY		=	#{user.userSSO},
+		 		MODIFIED_DATE	=	CURRENT_TIMESTAMP
+		</set>
+		WHERE
+				SEQ_MASTER_ID 	= 	#{seqMaster.id}
+				
+	</update>
+	
+	<update id="updateGrpMasterDetails">
+		
+		UPDATE
+				SMC_LOADSHEET_GROUP_MASTER
+		<set>
+				NAME 			=	#{grpMaster.name},
+				DISPLAY_SEQ 	= 	#{grpMaster.displaySeq},
+				MODIFIED_BY		=	#{user.userSSO},
+		 		MODIFIED_DATE	=	CURRENT_TIMESTAMP
+		</set>
+		WHERE 
+				GRP_MASTER_ID	=	#{grpMaster.grpMasterId}
+		
+	</update>
+	
+	<delete id="deleteGrpMasterDetails">
+		DELETE FROM
+			SMC_LOADSHEET_GROUP_MASTER
+		WHERE
+			GRP_MASTER_ID NOT IN
+			<foreach item="grpMasterId"  collection="groupMasterIdList" open="(" separator="," close=")">
+ 					#{grpMasterId}
+ 			</foreach>	 
+ 		AND 
+ 			SEQ_MASTER_ID = #{seqMasterId}
+	</delete>
+	
+	<update id="updateCmpGrpSeqDeatils">
+		UPDATE
+				SMC_LOADSHEET_CMP_GROUP_SEQ
+		<set>
+				DISPLAY_SEQ		= 	#{cmpGrpSeq.displaySeq},
+				MODIFIED_BY		=	#{user.userSSO},
+		 		MODIFIED_DATE	=	CURRENT_TIMESTAMP
+		</set>
+		WHERE
+				GRP_MASTER_ID 	=	#{cmpGrpSeq.grpMasterId}
+		AND
+				CMP_GRP_SEQ_ID	=	#{cmpGrpSeq.compGrpSeqId}
+		AND 
+				COMPONENT_ID 	= 	#{cmpGrpSeq.componentId}
+	</update>
+	
+	<delete id="deleteCmpGrpSeqDetailsUsingGrpId">
+		DELETE FROM
+				SMC_LOADSHEET_CMP_GROUP_SEQ
+		WHERE
+				GRP_MASTER_ID NOT IN
+				<foreach item="grpMasterId"  collection="groupMasterIdList" open="(" separator="," close=")">
+ 					#{grpMasterId}
+ 				</foreach>	 
+ 	</delete>
+	
+	<delete id="deleteCmpGrpSeqDetails">
+		DELETE FROM
+				SMC_LOADSHEET_CMP_GROUP_SEQ
+		WHERE
+				CMP_GRP_SEQ_ID NOT IN
+				<foreach item="compGrpSeqId"  collection="compGrpSeqIdList" open="(" separator="," close=")">
+					#{compGrpSeqId}
+ 				</foreach>
+ 		AND
+ 				GRP_MASTER_ID = #{grpMasterId}
+	</delete>
+		
 	
 	
 </mapper>

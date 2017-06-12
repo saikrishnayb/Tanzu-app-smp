@@ -61,7 +61,7 @@
 						<tr class="sequence-row">
 							<td class="editable centerAlign">
 							    <c:if test="${viewMode ne 'Y' }">
-								<a class="rightMargin edit-sequence">Edit</a>
+								<a class="rightMargin edit-sequence" href="open-edit-sequence.htm?seqMasterId=${temp.id}">Edit</a>
 								<a class="rightMargin copy-sequence">Copy</a>
 								<img src="${commonStaticUrl}/images/delete.png" class="centerImage rightMargin deactivate"/>
 								<input  class="template-id" type=hidden value="${temp.id}"/>

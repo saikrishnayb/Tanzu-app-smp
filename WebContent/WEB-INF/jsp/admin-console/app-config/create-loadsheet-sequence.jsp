@@ -16,6 +16,8 @@
 	<div id="mainContent" class="borderTop">
 		<%@ include file="../../../jsp/jsp-fragment/admin-console/app-config/left-nav.jsp"%>
 		<div class="leftNavAdjacentContainer">
+			<form:form id="loadsheet-sequencing-form" modelAttribute="seqMaster" method="POST">
+			<form:input path="id" id="seqMasterId" type="hidden" />
 			<div>
 			<div class="inputsDiv">
 			<div class="floatLeft" style="width:20%">
@@ -27,19 +29,19 @@
 				<div class="rowClass">
 					<div class="inputWidth">
 						<div class="labelClass rightAlign">
-							<label for="ruleName">Name:</label>
+							<form:label path="name" for="ruleName">Name:</form:label>
 						</div>
 						<div class="inputClass">
-							<input name="ruleName" id="ruleName" maxlength="50" type="text"  style="width:96%" />
+							<form:input id="name" path="name" maxlength="50" type="text"  style="width:96%" />
 						</div>
 					</div>
 
 					<div class="inputWidth">
 						<div class="labelClass rightAlign">
-							<label for="description">Description:</label>
+							<form:label path="description" for="description">Description:</form:label>
 						</div>
 						<div class="inputClass" >
-							<input name="description" id="description" maxlength="100" type="text" style="width:96%"/>
+							<form:input path="description" id="description" maxlength="100" type="text" style="width:96%"/>
 						</div>
 					</div>
 					<div class="inputWidth">
@@ -50,41 +52,41 @@
 				<div class="rowClass">
 					<div class="inputWidth">
 						<div class="labelClass rightAlign">
-							<label for="category">Category:</label>
+							<form:label path="category" for="category">Category:</form:label>
 						</div>
 						<div class="inputClass">
-							<select style="width:96%">
-								<option></option>
+							<form:select path="category" style="width:96%" id="categoryID">
+								<form:option value=""></form:option>
 								<c:forEach items="${categoriesList}" var="category">
-									<option value="${category}">${category}</option>
+									<form:option value="${category}">${category}</form:option>
 								</c:forEach>
-							</select>
+							</form:select>
 						</div>
 					</div>
 					<div class="inputWidth">
 						<div class="labelClass rightAlign">
-							<label for="type">Type:</label>
+							<form:label path="type" for="type">Type:</form:label>
 						</div>
 						<div class="inputClass">
-							<select style="width:96%">
-								<option></option>
+							<form:select path="type" style="width:96%" id="typeID">
+								<form:option value=""></form:option>
 								<c:forEach items="${typesList}" var="type">
-									<option value="${type}">${type}</option>
+									<form:option value="${type}">${type}</form:option>
 								</c:forEach>
-							</select>
+							</form:select>
 						</div>
 					</div>
 					<div class="inputWidth">
 						<div class="labelClass rightAlign">
-							<label for="mfr">MFR:</label>
+							<form:label path="oem" for="mfr">MFR:</form:label>
 						</div>
 						<div class="inputClass">
-							<select style="width:96%">
-								<option></option>
+							<form:select path="oem" style="width:96%">
+								<form:option value=""></form:option>
 								<c:forEach items="${mfrList}" var="mfr">
-									<option value="${mfr}">${mfr}</option>
+									<form:option value="${fn:substring(mfr, 0, 3)}">${mfr}</form:option>
 								</c:forEach>
-							</select>
+							</form:select>
 						</div>
 					</div>
 				</div>
@@ -124,30 +126,66 @@
 						
 					</div>
 					<div>
+					<div id="table-wrapper">
+					<div id="table-scroll">
 					<table id="assignedComponentsTable">
-						<thead class="header">
+						<col style="width:10%"/>
+						<col style="width:5%"/>
+						<col style="width:7%"/>
+						<col style="width:25%"/>
+						<col style="width:25%"/>
+						<col style="width:28%"/>
+						<thead class="header fixedHeader">
 							<tr>
-								<th class="pointer-column"></th>
-								<th class="delete-column"></th>
-								<th>Seq</th>
-								<th>Component Group</th>
-								<th>Sub Group</th>
-								<th>Component</th>
+								<th style="width:10%" class="pointer-column"></th>
+								<th style="width:5%" class="delete-column"></th>
+								<th style="width:7%">Seq</th>
+								<th style="width:25%">Component Group</th>
+								<th style="width:25%">Sub Group</th>
+								<th style="width:28%">Component</th>
 							</tr>
 						</thead>
+						<c:forEach items="${seqMaster.groupMasterList }" var="grpMasterData" varStatus="grpIndex">
 						<tbody>
+							<!-- Displaying the Header -->
 							<tr class="group">
-								<td colspan="1" class="pointer"><span class="icon-bar"></span>
-									<span class="icon-bar"></span> <span class="icon-bar"></span></td>
-								<td class="editable centerAlign"><img class="rightMargin" id="deleteGroup"
+								<td style="width:10%" class="pointer"><span class="icon-bar"></span>
+									<span class="icon-bar"></span> <span class="icon-bar"></span>
+									<form:input type="hidden" id="formGroupSeq-${grpIndex.count -1  }"  path="groupMasterList[${grpIndex.count -1 }].displaySeq"/><form:input type="hidden" id="formGroupName-${grpIndex.count -1}" path="groupMasterList[${grpIndex.count -1}].name"/>
+									<form:input type="hidden" path="groupMasterList[${grpIndex.count -1 }].grpMasterId"/>
+									<form:input type="hidden" path="groupMasterList[${grpIndex.count -1 }].seqMasterId"/>
+									</td>
+								<td style="width:5%" class="editable centerAlign"><img class="rightMargin" id="deleteGroup"
 									src="https://staticdev.penske.com/common/images/delete.png"></td>
-								<td></td>
-								<td colspan="3"><div id="editgroup-0" class="groupName" style="float: left">GROUP NAME</div> <div id="edit-0" style="float: right;margin-right: 1%;" class="editGroup"> Edit</div></td>
+								<td style="width:7%"></td>
+								<td  colspan="3"><div id="editgroup-${grpIndex.count- 1}" class="groupName" style="float: left">${grpMasterData.name }</div> <div id="edit-${grpIndex.count -1}" style="float: right;margin-right: 1%;" class="editGroup"> Edit </div></td>
 							</tr>
+							<!-- Dislpaying the components assigned to group -->
+							<c:forEach items="${grpMasterData.compGrpSeqList }" var="compData" varStatus="cmpIndex">
+								<tr>
+						          <td style="width:10%" class="pointer">
+						            <span class="icon-bar"></span>
+						            <span class="icon-bar"></span>
+						            <span class="icon-bar"></span>
+						            <form:input type="hidden" path="groupMasterList[${grpIndex.count -1}].compGrpSeqList[${cmpIndex.count -1 }].componentId" class="componentId" />
+                      				<form:input type="hidden" path="groupMasterList[${grpIndex.count -1}].compGrpSeqList[${cmpIndex.count -1}].displaySeq" class="componentSequence" />
+                      				<form:input type="hidden" path="groupMasterList[${grpIndex.count -1}].compGrpSeqList[${cmpIndex.count -1}].compGrpSeqId" class="compGrpSeqId" />
+                      				<form:input type="hidden" path="groupMasterList[${grpIndex.count -1}].compGrpSeqList[${cmpIndex.count -1}].grpMasterId" class="grpMasterId" />
+						          </td>
+						          <td style="width:5%" class="editable centerAlign"><img class="rightMargin" id="deleteRow" src="https://staticdev.penske.com/common/images/delete.png"></td>
+						          <td style="width:7%" class="centerAlign seq">${compData.displaySeq}</td>
+						          <td style="width:25%">${compData.componentGroup}</td>
+						          <td style="width:25%">${compData.subGroup}</td>
+						          <td style="width:28%">${compData.componentName}</td>
+						        </tr>
+							</c:forEach>
 							
 						</tbody>
+						</c:forEach>
 						
 					</table>
+					</div>
+					</div>
 					</div>
 				</div>
 				<div id="unAssignedDiv">
@@ -161,39 +199,57 @@
 							<label>Search:  </label><input type="text" id="unAssignedSearch" />
 						</div>
 					</div>
+					
 					<div>
-					<table id="unAssignedComponentsTable" class="display no-group">
-						<thead class="header">
+					<div id="table-wrapper">
+					<div id="table-scroll">
+					<table id="unAssignedComponentsTable" class="display no-group" style="height:200px;">
+						<col style="width:10%"/>
+						<col style="width:30%"/>
+						<col style="width:30%"/>
+						<col style="width:30%"/>
+						<thead class="header fixedHeader" >
 							<tr>
-								<th class="pointer-column"></th>
-								<th>Component Group</th>
-								<th>Sub Group</th>
-								<th>Component</th>
+								<th style="width:10%" class="pointer-column"></th>
+								<th style="width:30%">Component Group</th>
+								<th style="width:30%">Sub Group</th>
+								<th style="width:30%">Component</th>
 							</tr>
 						</thead>
 						<tbody>
 						<tr id="hiddenRow" class="displayNone"></tr>
-							<c:forEach items="${componentDetailsList }" var="component" varStatus="loopIndex">
+							<c:forEach items="${unassignedComponents }" var="component" varStatus="loopIndex">
 						        <tr>
-						          <td class="pointer">
+						          <td style="width:10%" class="pointer">
 						            <span class="icon-bar"></span>
 						            <span class="icon-bar"></span>
 						            <span class="icon-bar"></span>
+						            <input type="hidden" class="componentId" value="${component.componentId}">
+                      				<input type="hidden" class="componentSequence" value="">
+                      				<input type="hidden" class="compGrpSeqId" value="">
+                      				<input type="hidden" class="grpMasterId" value="">
 						          </td>
-						          <td>${component.componentGroup}</td>
-						          <td>${component.subGroup}</td>
-						          <td>${component.componentName}</td>
+						          <td style="width:30%">${component.componentGroup}</td>
+						          <td style="width:30%">${component.subGroup}</td>
+						          <td style="width:30%">${component.componentName}</td>
 						        </tr>
 						      </c:forEach>
 							
 						</tbody>
 					</table>
 					</div>
+					</div>
+					</div>
 				</div>
+			</div> <!-- end of unit assignmnets div -->
+			<div class="floatRight">
+				<a class="buttonPrimary" style="margin-top:25px;" href="#" onclick="submitLoadSheetForm();">Save</a>
 			</div>
+		</form:form>
 		</div>
 	</div>
-
+	
+	<input type="hidden" id="numberOfGroups" value="${fn:length(seqMaster.groupMasterList)}"/>
 	<script src="${context}/js/v2/jquery-2.2.4.min.js"></script>
 	<script src="${context}/js/v2/jquery-ui.min.js"></script>
 	<script src="${context}/js/admin-console/app-config/create-loadsheet-sequence.js" type="text/javascript"></script>

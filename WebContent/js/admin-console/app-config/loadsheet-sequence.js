@@ -52,7 +52,7 @@ $(document).ready(function() {
 	
 	//Add loadsheet sequence link
 	var strHTML='<span style="margin-right: 10px;" class="floatLeft addRow">'+
-	'<a href="create-loadsheet.htm" onclick="javascript:loadProcessImage();">Add Loadsheet Sequence </a>'+
+	'<a href="open-create-sequence.htm" onclick="javascript:loadProcessImage();">Add Loadsheet Sequence </a>'+
 	'<img src='+commonStaticUrl+'/images/add.png class="centerImage handCursor" alt="Add Load sheet Sequence"/>'+
     '</span>';
 
