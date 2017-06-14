@@ -2,16 +2,6 @@ package com.penske.apps.adminconsole.service;
 
 import java.util.List;
 
-
-
-
-
-
-
-
-
-
-
 import com.penske.apps.adminconsole.model.ComponentRuleAssociation;
 import com.penske.apps.adminconsole.model.ComponentVisibilityModel;
 import com.penske.apps.adminconsole.model.ConfigureRule;
@@ -24,6 +14,7 @@ public interface LoadSheetManagementService {
 	
 	public List<ComponentVisibilityModel> getLoadsheetComponents(String category,String type);
 	public List<LoadsheetSequenceMaster> getLoadsheetSequences(String category,String type);
+	public String getUsesDefaultForCategoryAndType(String category,String type);
 	public List<LoadsheetSequenceMaster> getLoadsheetSequences();
 	public List<RuleMaster> getComponentRules();
 	public List<ConfigureRule> getComponentVisibilityRules(int componentVisibleId);
@@ -42,5 +33,6 @@ public interface LoadSheetManagementService {
 	public void createLoadSheetSequencing(LoadsheetSequenceMaster seqMaster);
 	public LoadsheetSequenceMaster getSequenceMasterDetails(int seqMasterId);
 	public void updateLoadsheetSequencingDetails(LoadsheetSequenceMaster seqMaster);
+	public void deleteLoadsheetSequence(int sequenceId);
 	
 }

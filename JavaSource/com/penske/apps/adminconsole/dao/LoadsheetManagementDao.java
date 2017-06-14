@@ -22,6 +22,7 @@ public interface LoadsheetManagementDao {
 	public List<LoadsheetSequenceMaster> getLoadsheetSequences(@Param("category") String category,@Param("type") String type);
 	public List<LoadsheetSequenceMaster> getLoadsheetSequence();
 	public List<LoadsheetManagement> getLoadsheetManagementDetails();
+	public String getUsesDefaultForCategoryAndType(@Param("category") String category,@Param("type") String type);
 	public List<RuleMaster> getLoadsheetRules();
 	public List<RuleMaster> getComponentRules();
 	public List<ConfigureRule> getComponentVisibilityRules(@Param("componentVisibleId")int componentVisibleId);
@@ -48,7 +49,13 @@ public interface LoadsheetManagementDao {
 	public void updateSeqMasterDetails(@Param("seqMaster") LoadsheetSequenceMaster seqMaster,@Param("user") UserContext user);
 	public void updateGrpMasterDetails(@Param("grpMaster") LoadsheetSequenceGroupMaster grpMaster,@Param("user") UserContext user);
 	public void deleteGrpMasterDetails(@Param("groupMasterIdList") List<Integer> groupMasterIdList,@Param("seqMasterId") int seqMasterId);
+	public void deleteGrpMaster(@Param("seqMasterId") int seqMasterId);
 	public void updateCmpGrpSeqDeatils(@Param("cmpGrpSeq") LoadsheetCompGrpSeq cmpGrpSeq,@Param("user") UserContext user);
 	public void deleteCmpGrpSeqDetailsUsingGrpId(@Param("groupMasterIdList") List<Integer> groupMasterIdList);
 	public void deleteCmpGrpSeqDetails(@Param("compGrpSeqIdList") List<Integer> compGrpSeqIdList,@Param("grpMasterId") int grpMasterId);
+	public void deleteCmpGrpSeq(@Param("grpMasterId") int grpMasterId);
+	public void deleteLoadsheetSequenceMaster(@Param("sequenceId") int sequenceId);
+	public void deleteLoadsheetGroupMaster(@Param("sequenceId") int sequenceId);
+	public void deleteLoadsheetGroupSequnece(@Param("sequenceId") int sequenceId);
+	
 }

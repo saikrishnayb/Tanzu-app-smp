@@ -36,6 +36,13 @@
 		ON 		SUM.SSO=CTM.MODIFIED_BY
 	</select>
 	
+	
+	<!-- To Load the Details in Load Sheet Management Page-->
+	<select  id="getUsesDefaultForCategoryAndType" resultType="String">
+		SELECT 	USES_DEFAULT FROM SMC_CAT_TYPE_MASTER SCM
+		WHERE SCM.PO_CATEGORY=#{category} AND SCM.TYPE=#{type} 
+	</select>
+	
 	<!-- To Load the Details in Load Sheet Management Page-->
 	<select  id="getLoadsheetRules" resultType="com.penske.apps.adminconsole.model.RuleMaster">
 		SELECT 	CVRM.RULE_ID							AS 	ruleId,
@@ -339,8 +346,7 @@
 			</if>
 		</where>
 		</if>
-		<!--  added for testing purpose -->
-		FETCH FIRST 100 ROWS ONLY
+		
 	</select>
 	
 	<!-- Creating Loadsheet Sequencing -->
@@ -384,8 +390,8 @@
 	<select id="getSequenceMasterDetails" resultMap="sequenceMasterDetailsMap">
 		SELECT 
 				SEQ_MASTER_ID,
-				NAME,
-				DESCRIPTION,
+				TRIM(NAME) AS NAME,
+				TRIM(DESCRIPTION) AS DESCRIPTION,
 				PO_CATEGORY,
 				TYPE,
 				OEM
@@ -506,6 +512,13 @@
  			SEQ_MASTER_ID = #{seqMasterId}
 	</delete>
 	
+	<delete id="deleteGrpMaster">
+		DELETE FROM
+			SMC_LOADSHEET_GROUP_MASTER
+		WHERE
+ 			SEQ_MASTER_ID = #{seqMasterId}
+	</delete>
+	
 	<update id="updateCmpGrpSeqDeatils">
 		UPDATE
 				SMC_LOADSHEET_CMP_GROUP_SEQ
@@ -543,7 +556,43 @@
  		AND
  				GRP_MASTER_ID = #{grpMasterId}
 	</delete>
-		
+	
+	<delete id="deleteCmpGrpSeq">
+		DELETE FROM
+				SMC_LOADSHEET_CMP_GROUP_SEQ
+		WHERE
+ 				GRP_MASTER_ID = #{grpMasterId}
+	</delete>
+	
+	
+	<!-- To delete a load sheet component group sequence details -->
+ 	<delete id="deleteLoadsheetGroupSequnece">
+ 		DELETE
+ 		FROM
+ 				SMC_LOADSHEET_CMP_GROUP_SEQ
+ 		WHERE
+ 				GRP_MASTER_ID IN(SELECT GRP_MASTER_ID FROM  SMC_LOADSHEET_GROUP_MASTER WHERE SEQ_MASTER_ID=#{sequenceId})
+ 	</delete>
+	
+	<!-- To delete a load sheet sequence group master -->
+ 	<delete id="deleteLoadsheetGroupMaster">
+ 		DELETE
+ 		FROM
+ 				SMC_LOADSHEET_GROUP_MASTER
+ 		WHERE
+ 				SEQ_MASTER_ID=	#{sequenceId}
+ 				
+ 				
+ 	</delete>
+ 	
+ 	<!-- To delete a load sheet sequence from load sheet sequence master -->
+ 	<delete id="deleteLoadsheetSequenceMaster">
+ 		DELETE
+ 		FROM
+ 				SMC_LOADSHEET_SEQ_MASTER
+ 		WHERE
+ 				SEQ_MASTER_ID=	#{sequenceId}
+ 	</delete>	
 	
 	
 </mapper>

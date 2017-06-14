@@ -1,10 +1,10 @@
 package com.penske.apps.adminconsole.service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -389,21 +389,31 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 			//update sequence master details
 			loadsheetManagementDao.updateSeqMasterDetails(seqMaster, user);
 			
-			//Delete the deleted groups
+			//Delete the deleted components
 			for(LoadsheetSequenceGroupMaster grpMaster:seqMaster.getGroupMasterList()){
 				if(grpMaster.getDisplaySeq()!=0){
 					if(grpMaster.getGrpMasterId()!=0){
-						existingGroupIds.add(grpMaster.getGrpMasterId());
+						if(grpMaster.getCompGrpSeqList()!=null){
+						existingCompIds=getCmpGrpSeqIds(grpMaster);
+						//Delete the deleted Components
+						loadsheetManagementDao.deleteCmpGrpSeqDetails(existingCompIds,grpMaster.getGrpMasterId());
+						}else{
+						//Delete all Components
+						loadsheetManagementDao.deleteCmpGrpSeq(grpMaster.getGrpMasterId());
+						}
 					}
 				}
 			}
 			
-			//Delete the deleted Groups and its associated Components
-			if(existingGroupIds.size()>0){
-				loadsheetManagementDao.deleteGrpMasterDetails(existingGroupIds,seqMaster.getId());
-				loadsheetManagementDao.deleteCmpGrpSeqDetailsUsingGrpId(existingGroupIds);
+			//Delete the deleted Groups
+			if(seqMaster.getGroupMasterList()!=null){
+				    existingGroupIds=getGrpMasterIds(seqMaster.getGroupMasterList());
+				    //Delete the deleted Groups
+					loadsheetManagementDao.deleteGrpMasterDetails(existingGroupIds,seqMaster.getId());
+			}else{
+					//Delete all groups
+					loadsheetManagementDao.deleteGrpMaster(seqMaster.getId());	
 			}
-			
 			
 			//Update Group Details
 			for(LoadsheetSequenceGroupMaster grpMaster:seqMaster.getGroupMasterList()){
@@ -411,7 +421,7 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 				if(grpMaster.getDisplaySeq()!=0){
 						
 						newCompGrpSeqList=new ArrayList<LoadsheetCompGrpSeq>();
-						existingCompIds=new ArrayList<Integer>();
+						
 						
 						if(grpMaster.getGrpMasterId()!=0){//Update the Group Details
 							loadsheetManagementDao.updateGrpMasterDetails(grpMaster, user);
@@ -424,27 +434,14 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 						for(LoadsheetCompGrpSeq cmpGrpSeq:grpMaster.getCompGrpSeqList()){
 							
 							if(cmpGrpSeq.getDisplaySeq()!=0){
+								cmpGrpSeq.setGrpMasterId(grpMaster.getGrpMasterId());
 								if(cmpGrpSeq.getCompGrpSeqId()!=0){//Update the componentID sequence
 									loadsheetManagementDao.updateCmpGrpSeqDeatils(cmpGrpSeq, user);
 								}else{//Add new components to list
-									cmpGrpSeq.setGrpMasterId(grpMaster.getGrpMasterId());
 									newCompGrpSeqList.add(cmpGrpSeq);
 								}
-								
-								if(cmpGrpSeq.getCompGrpSeqId()!=0){
-									existingCompIds.add(cmpGrpSeq.getCompGrpSeqId());
-								}
-								
 							}
-							
-							
 						}
-						
-						//delete the deleted Components
-						if(existingCompIds.size()>0){
-							loadsheetManagementDao.deleteCmpGrpSeqDetails(existingCompIds,grpMaster.getGrpMasterId());
-						}
-						
 						//Insert new Components
 						if(newCompGrpSeqList.size()>0){
 							loadsheetManagementDao.insertCmpGrpSeqDetails(newCompGrpSeqList, user);
@@ -457,7 +454,51 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 		}
 		
 	}
+	/**
+	 * Method to get component sequence id's for the group.
+	 */
+	
+	private List<Integer> getCmpGrpSeqIds(LoadsheetSequenceGroupMaster grpMaster) {
+		List<Integer> existingCompIds=new ArrayList<Integer>();
+		for(LoadsheetCompGrpSeq cmpGrpSeq:grpMaster.getCompGrpSeqList()){
+			if(cmpGrpSeq!=null){
+					existingCompIds.add(cmpGrpSeq.getCompGrpSeqId());
+			}
+		}
+		return existingCompIds;
+	}
+	/**
+	 * Method to get group master id's for the sequence.
+	 */
+	private List<Integer> getGrpMasterIds(List<LoadsheetSequenceGroupMaster> groupMasterList) {
+		List<Integer> existingGroupIds=new ArrayList<Integer>();
+		for(LoadsheetSequenceGroupMaster grpMaster:groupMasterList){
+			if(grpMaster!=null){
+					existingGroupIds.add(grpMaster.getGrpMasterId());
+			}
+		}
+		return existingGroupIds;
+	}
 
+	/**
+	 * Method to Delete the sequence by using sequence id.
+	 */
+	@Override
+	@Transactional
+	public void deleteLoadsheetSequence(int sequenceId) {
+		loadsheetManagementDao.deleteLoadsheetGroupSequnece(sequenceId);
+		loadsheetManagementDao.deleteLoadsheetGroupMaster(sequenceId);
+		loadsheetManagementDao.deleteLoadsheetSequenceMaster(sequenceId);
+		
+		
+	}
+	/**
+	 * Method to get Uses Default value for selected category and type.
+	 */
+	@Override
+	public String getUsesDefaultForCategoryAndType(String category, String type) {
+		return loadsheetManagementDao.getUsesDefaultForCategoryAndType(category, type);
+	}
 
 
 }

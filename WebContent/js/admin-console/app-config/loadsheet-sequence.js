@@ -1,10 +1,10 @@
 $(document).ready(function() {
 	selectCurrentNavigation("tab-app-config", "left-nav-loadsheet-sequence");
 	var commonStaticUrl =$('#common-static-url').val();
-	$templateTable=$("#sequence-table");
+	$sequenceTable=$("#sequence-table");
 	var iDisplayLength = 10;//tableRowLengthCalc();
 	//sequence table
-	$templateTable.dataTable( { //All of the below are optional
+	$sequenceTable.dataTable( { //All of the below are optional
 		"aaSorting": [[ 1, "asc" ]], //default sort column
 		"bPaginate": true, //enable pagination
 		"aoColumnDefs"		: [{ 'bSortable': false, 'aTargets': [0] } ],//disable sorting for specific column indexes
@@ -43,16 +43,18 @@ $(document).ready(function() {
 	} );
 	
 	// category and type drop downs
-	var dropdowns='<div id="org-desc-div" style="float: left; text-align: right;">'+
+	var dropdowns='<form name="open-sequencing-form" id="open-sequencing-form" action="open-create-sequence.htm" method="POST"><div id="org-desc-div" style="float: left; text-align: right;">'+
 	'<label>Category :</label>'+ 
-	'<select  id="category"  onChange="getLoadsheetSequences()" ></select>'+
+	'<select name="category" id="category"  onChange="getLoadsheetSequences()" ></select>'+
 	'<label style="margin-left: 5px;">  Type :</label>'+ 
-	'<select  id="type"  onChange="getLoadsheetSequences()" ></select>'+
-    '</div>';
+	'<select name="type"  id="type"  onChange="getLoadsheetSequences()" ></select>'+
+	'<input id="backButton" name="viewMode" type="hidden" value="">'+
+	'<input id="pageAction" name="pageAction" type="hidden" value="BACK">'+
+    '</div></form>';
 	
 	//Add loadsheet sequence link
 	var strHTML='<span style="margin-right: 10px;" class="floatLeft addRow">'+
-	'<a href="open-create-sequence.htm" onclick="javascript:loadProcessImage();">Add Loadsheet Sequence </a>'+
+	'<a href="#" onclick="submitOpenSequenceForm();" onclick="javascript:loadProcessImage();">Add Loadsheet Sequence </a>'+
 	'<img src='+commonStaticUrl+'/images/add.png class="centerImage handCursor" alt="Add Load sheet Sequence"/>'+
     '</span>';
 
@@ -72,27 +74,24 @@ $(document).ready(function() {
 	$('#type').val($('#selectedType').val());
 	
 	
-	$('#sequence-table tbody tr').on( 'click', '#deleteRule', function () {
+	$('#confirmDeleteModal').dialog({
+		autoOpen: false,
+		modal: true,
+		dialogClass: 'popupModal',
+		width: 370,
+		minHeight: 150,
+		resizable: false,
+		title: 'Confirm',
+		closeOnEscape: false,
+		open: function(event, ui) {$(this).closest('.ui-dialog').find('.ui-dialog-titlebar-close').hide();}
+	});
+	
+	
+	$('#sequence-table').on( 'click', '#deleteSequence', function () {
 		
-		
-		var $this = $(this);
-		var ruleId=$this.closest('tr').find('#ruleId').val();
-		
-		
-		$.ajax({
-			  type: "POST",
-			  url: "./delete-sequence.htm",
-			  data: {ruleId : ruleId},
-			  success: function(data){
-				  
-				 var $row = $this.closest("tr");
-				$loadsheetRuleTable.dataTable().fnDeleteRow($row[0]);
-			  }
-			});
-		
-		
-		
-		
+		$selectedRow = $(this);
+		var sequenceName=$selectedRow.closest('tr').find('#sequenceName').val();
+		openConfirmModal(sequenceName);
 		
 	});
 	
@@ -108,7 +107,40 @@ $(document).ready(function() {
 		processingImageAndTextHandler('visible','Loading data...');
 	}
 
+	function openConfirmModal(sequenceName){
+		$('#confirmDeleteModal').dialog('open');
+		$('#deleteMessage').text("Do you really want to delete the Sequence: "+sequenceName +" ?");
+	}
+
+	function confirmDeleteSequence(){
+		
+		
+		var sequenceId=$selectedRow.closest('tr').find('#sequenceId').val();
+		
+		$.ajax({
+			  type: "POST",
+			  url: "./delete-sequence.htm",
+			  data: {sequenceId : sequenceId},
+			  success: function(data){  
+				var $row = $selectedRow.closest("tr");
+				$sequenceTable.dataTable().fnDeleteRow($row[0]);
+				closeConfirmDialog();
+			  }
+			});
+		
+	}
+
+
+	function closeConfirmDialog(){
+		$('#selectedRow').remove();
+		$('#confirmDeleteModal').dialog('close');
+	}
 	
+	function submitOpenSequenceForm(){
+		$("#backButton").val($('#viewMode').val());
+		processingImageAndTextHandler('visible','Loading data...');
+		$("#open-sequencing-form").submit();  // submit the form
+	}
 
 
 

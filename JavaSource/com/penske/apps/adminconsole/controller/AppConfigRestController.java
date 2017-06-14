@@ -838,4 +838,16 @@ public class AppConfigRestController {
 		}
 	}
 	
+	/* =========================DELETE Rule ========================*/
+	@RequestMapping(value="/delete-sequence",method= RequestMethod.POST)
+	@ResponseBody
+	public void deleteSequence(@RequestParam("sequenceId") int sequenceId,HttpServletResponse response) throws Exception{
+		
+		try{
+			loadsheetManagementService.deleteLoadsheetSequence(sequenceId);
+		}catch(Exception e){
+			CommonUtils.getCommonErrorAjaxResponse(response,"");
+		}
+	}
+	
 }

@@ -17,7 +17,10 @@ public class LoadsheetSequenceMaster {
 	private String oem;
 	private String editedBy;
 	private Date 	editedDate;
+	private String viewMode; // for back button functionality
 	private List<LoadsheetSequenceGroupMaster> groupMasterList;
+	
+	private String pageAction;
 	
 	public int getId() {
 		return id;
@@ -77,6 +80,18 @@ public class LoadsheetSequenceMaster {
 	public void setGroupMasterList(
 			List<LoadsheetSequenceGroupMaster> groupMasterList) {
 		this.groupMasterList = groupMasterList;
+	}
+	public String getPageAction() {
+		return pageAction;
+	}
+	public void setPageAction(String pageAction) {
+		this.pageAction = pageAction;
+	}
+	public String getViewMode() {
+		return viewMode;
+	}
+	public void setViewMode(String viewMode) {
+		this.viewMode = viewMode;
 	}
 	
 	

@@ -2,6 +2,8 @@ var srcId;
 var destId;
 var col1;
 var col2;
+var srcGrp;
+var destGrp;
 var groupCount=1; //get this value based on max group count
 $(document).ready(function() {
 	selectCurrentNavigation("tab-app-config", "left-nav-loadsheet-sequence");
@@ -15,10 +17,14 @@ $(document).ready(function() {
         $this = this;
         // Show only matching TR, hide rest of them
         $.each($("#assignedComponentsTable tbody tr"), function() {
-            if($(this).text().toLowerCase().indexOf($($this).val().toLowerCase()) === -1)
-               $(this).hide();
-            else
-               $(this).show();                
+            if($(this).text().toLowerCase().indexOf($($this).val().toLowerCase()) === -1){
+            	$(this).hide();
+            }
+            else{
+            	$(this).show();
+            	//To display the Group header
+            	$(this).parent().children().first().show();
+            }
         });
         
     });
@@ -39,12 +45,6 @@ $(document).ready(function() {
 	//delete row
 	$('#assignedComponentsTable').on( 'click', '#deleteRow', function () {
 		 var row=$(this).parents("tr");
-		 
-		 //remove the name attribute
-		 $(row).find('.componentId').removeAttr('name'); 
-		 $(row).find('.componentSequence').removeAttr('name'); 
-		 $(row).find('.compGrpSeqId').removeAttr('name');
-		 $(row).find('.grpMasterId').removeAttr('name');
 		 
 		 row.find('td')[1].remove();
 		 row.find('td')[1].remove();
@@ -86,9 +86,27 @@ $(document).ready(function() {
 		var category=$("#categoryID option:selected").val();
 		reloadUnassignedComponents(category,this.value);
 		
-	});
-
-
+	}); 
+	
+	//disable CategoryId and TypeId if pageAction is Edit or Copy
+	var pageAction=$("#pageAction").val();
+	if(pageAction == "EDIT" || pageAction == "COPY"){
+		$("#categoryID").attr("disabled",true);
+		$("#typeID").attr("disabled",true);
+	}
+	//disable all the actions ifpageAction is View.
+	if(pageAction == "VIEW"){
+		$("#categoryID").attr("disabled",true);
+		$("#typeID").attr("disabled",true);
+		$("#oem").attr("disabled",true);
+		$("#name").prop("readonly", true);
+		$("#description").prop("readonly", true);
+		$("#unAssignedComponentsTable").sortable("disable");
+		$("#assignedComponentsTable").sortable("disable");
+	    $("#unAssignedComponentsTable tbody").sortable("disable");
+	    $("#assignedComponentsTable tbody").sortable("disable");
+	}
+	
 });
 
 function initializeComponentTables(){
@@ -142,12 +160,23 @@ $("table tbody").sortable({
 	// modify ui.placeholder however you like
     ui.placeholder.find('tr').outerHeight(ui.item.outerHeight(true));
 	srcId=$(this).parent().attr('id');
+	srcGrp=$(this).children().first().find('.groupName').text();
 	},
   over: function( event, ui ) {
 	destId=$(this).parent().attr('id');
   },
   receive: AddRemoveExtraColumns ,
-  update: function(e, ui) {resetSequence('#assignedComponentsTable');},
+  update: function(e, ui) {
+	  resetSequence('#assignedComponentsTable');
+	  
+	  //remove the comgrpseqid if it's dragged from some other group
+	  destGrp=$(this).children().first().find('.groupName').text();
+	  if(srcGrp!=destGrp){
+		 var draggedRow=$(ui.item);
+		$(draggedRow).find('.compGrpSeqId').val('0');
+	  }
+	  
+	  },
   placeholder: "ui-state-highlight",
   forcePlaceholderSize: true,
   items: "tr:not(.group)",
@@ -174,6 +203,7 @@ function resetSequence(tableID) {
    count = $(this).parent().children().index($(this)) + 0;
    $(this).find('.seq').html(count); 
 });
+   $(".groupName").attr('contenteditable','false');
 
 }
 
@@ -252,6 +282,11 @@ $("#assignedComponentsTable").on('click', '.editGroup' , function(e){
 	event.stopPropagation();
 	});
 
+$(".groupName").click(function() {
+	event.stopPropagation();
+	
+});
+
 /* to make group name non editable */
 $(document).click(function() {
 	$(".groupName").attr('contenteditable','false');
@@ -261,55 +296,170 @@ $(document).click(function() {
 
 /* to submit the from */
 function submitLoadSheetForm(){
-	
-	var $loadSheetSequncingForm=$("#loadsheet-sequencing-form");
-	
-	//Setting the group name and seq to form
-	$(".groupName").each(function(index,data){
-		var editGroup=$(this).attr("id");
-		var count=editGroup.split("-")[1];
-		$("#formGroupName-"+count).val($("#"+editGroup).text());
-		$("#formGroupSeq-"+count).val(index+1);
+	 clearUnassignedComponentsfromFormBinding();
+	if(validateFileds()){
 		
-	});
-	
-	var groupIndex=0;
-	
-	//Setting the hidden component id's and display seq
-	  $("#assignedComponentsTable tbody").each(function (index,data) {
-			$(data).children().each(function(componentIndex,component){
+			var $loadSheetSequncingForm=$("#loadsheet-sequencing-form");
+			
+			//Setting the group name and seq to form
+			$(".groupName").each(function(index,data){
+				var editGroup=$(this).attr("id");
+				var count=editGroup.split("-")[1];
+				$("#formGroupName-"+count).val($("#"+editGroup).text());
+				$("#formGroupSeq-"+count).val(index+1);
 				
-		        if(!$(component).hasClass('group')){//for setting component hidden field names
-		        	
-			       // $(component).find('.seq').html(componentIndex);
-			        $(component).find('.componentId').attr('name','groupMasterList[' + groupIndex+'].compGrpSeqList['+componentIndex+'].componentId'); 
-					$(component).find('.componentSequence').attr('name','groupMasterList[' + groupIndex+'].compGrpSeqList['+componentIndex+'].displaySeq'); 
-					 $(component).find('.componentSequence').attr('value',componentIndex);
-					 $(component).find('.compGrpSeqId').attr('name','groupMasterList[' + groupIndex+'].compGrpSeqList['+componentIndex+'].compGrpSeqId');
-					 $(component).find('.grpMasterId').attr('name','groupMasterList[' + groupIndex+'].compGrpSeqList['+componentIndex+'].grpMasterId');
-					  }else{//update group index
-						  var groupId=$(component).find('.groupName').attr("id");
-						  groupIndex=groupId.split("-")[1];
-						  
+			});
+			
+			var groupIndex=0;
+			
+			//Setting the hidden component id's and display seq
+			$("#assignedComponentsTable tbody").each(function (index,data) {
+				$(data).children().each(function(componentIndex,component){
+					
+					if(!$(component).hasClass('group')){//for setting component hidden field names
+						
+						// $(component).find('.seq').html(componentIndex);
+						$(component).find('.componentId').attr('name','groupMasterList[' + groupIndex+'].compGrpSeqList['+componentIndex+'].componentId'); 
+						$(component).find('.componentSequence').attr('name','groupMasterList[' + groupIndex+'].compGrpSeqList['+componentIndex+'].displaySeq'); 
+						$(component).find('.componentSequence').attr('value',componentIndex);
+						$(component).find('.compGrpSeqId').attr('name','groupMasterList[' + groupIndex+'].compGrpSeqList['+componentIndex+'].compGrpSeqId');
+						$(component).find('.grpMasterId').attr('name','groupMasterList[' + groupIndex+'].compGrpSeqList['+componentIndex+'].grpMasterId');
+					}else{//update group index
+						var groupId=$(component).find('.groupName').attr("id");
+						groupIndex=groupId.split("-")[1];
+						
 					}
 				});
+				
+			});
+			
+			
+			
+			var seqMasterId=$("#seqMasterId").val();
+			var pageAction=$("#pageAction").val();
+			
+			if(seqMasterId=="0"){//Perform Insert
+				$loadSheetSequncingForm.attr("action","create-sequence.htm");
+			}else{//perform Update
+				if(pageAction == "EDIT"){//Edit Action
+					$loadSheetSequncingForm.attr("action","update-sequence.htm");
+				}else if(pageAction == "COPY"){//Copy action
+					$loadSheetSequncingForm.attr("action","create-sequence.htm");
+				}
+				
+			}
+			
+			
+			processingImageAndTextHandler('visible','Loading data...');
+			$("#categoryID").attr("disabled",false);
+			$("#typeID").attr("disabled",false);
+			$loadSheetSequncingForm.submit();
+			
 		
-		});
-
-	
-	
-	var seqMasterId=$("#seqMasterId").val();
-	
-	if(seqMasterId=="0"){//Perform Insert
-		$loadSheetSequncingForm.attr("action","create-sequence.htm");
-	}else{//perform Update
-		$loadSheetSequncingForm.attr("action","update-sequence.htm");
 	}
 	
+}
+
+
+/*function to validate fileds*/
+function validateFileds(){
 	
-	processingImageAndTextHandler('visible','Loading data...');
-	$loadSheetSequncingForm.submit();
+	var rtrnFlag=true;
 	
+	if(($("#name").val()=="") || $("#description").val()=="") {
+		$("#ErrorMsg span").text("Please enter Name and Description");
+		$("#ErrorMsg").show();
+		$("#name").addClass("errorMsgInput");
+		$("#description").addClass("errorMsgInput");
+		parent.resizeAfterPaginationChange();
+		return false;
+	}else if(($("#categoryID option:selected").text()=="") || $("#typeID option:selected").text()=="") {
+			
+		
+		$("#name").removeClass("errorMsgInput");
+		$("#description").removeClass("errorMsgInput");
+			
+		$("#ErrorMsg span").text("Please select Category and Type");
+		$("#ErrorMsg").show();
+		
+		$("#categoryID").addClass("errorMsgInput");
+		$("#typeID").addClass("errorMsgInput");
+		parent.resizeAfterPaginationChange();
+		return false;
+		
+	}else if($("#oem option:selected").text()==""){
+		
+		$("#name").removeClass("errorMsgInput");
+		$("#description").removeClass("errorMsgInput");
+		$("#categoryID").removeClass("errorMsgInput");
+		$("#typeID").removeClass("errorMsgInput");
+		
+		$("#ErrorMsg span").text("Please select MFR");
+		$("#ErrorMsg").show();
+		
+		$("#oem").addClass("errorMsgInput");
+		parent.resizeAfterPaginationChange();
+		return false;
+		
+	}else{
+		
+		$("#name").removeClass("errorMsgInput");
+		$("#description").removeClass("errorMsgInput");
+		$("#categoryID").removeClass("errorMsgInput");
+		$("#typeID").removeClass("errorMsgInput");
+		$("#oem").removeClass("errorMsgInput");
+		
+		//Validate the Assigned Components
+		
+		//check for Available group's
+		if($("#assignedComponentsTable tbody").children().size() == 0){
+				
+				$("#ErrorMsg span").text("Please add atleast one Group");
+				$("#ErrorMsg").show();
+				parent.resizeAfterPaginationChange();
+				return false;
+		}
+		
+		//check for Available Componets in each group
+		$("#assignedComponentsTable tbody").each(function (index,data) {
+			
+			if($(data).children().size() < 2){
+				$("#ErrorMsg span").text("Please add atleast one Component for each group");
+				$("#ErrorMsg").show();
+				parent.resizeAfterPaginationChange();
+				rtrnFlag= false;
+				return false;
+			}else{
+				$("#ErrorMsg").hide();
+			}
+		});
+		
+		//checking For Duplicate Group names
+		var grpNamesArray = new Array();
+		$("#assignedComponentsTable tbody").each(function (index,data) {
+			
+			$(data).children().each(function(componentIndex,component){
+				
+				if($(component).hasClass('group')){//for setting component hidden field names
+					var curGrpName=$(component).find('.groupName').text();
+					var convertedName=curGrpName.trim().toUpperCase();
+					
+					if($.inArray(convertedName, grpNamesArray) == -1) { //Not found
+						grpNamesArray.push(convertedName);
+					  } else {
+						  $("#ErrorMsg span").text("Group name: "+curGrpName+" found duplicate, Please change the group name.");
+						  $("#ErrorMsg").show();
+						  parent.resizeAfterPaginationChange();
+						  rtrnFlag= false;
+						  return false;
+					  }   
+				}
+					
+				});
+		});
+	}
+	
+	return rtrnFlag;
 }
 
 /* function to add new group */
@@ -323,7 +473,7 @@ function Addgroup(){
 			  '<span class="icon-bar"></span>'+
 			  '</td>'+
 			  '<td style="width:5%" class="editable centerAlign">'+
-			  '<img class="rightMargin" id="deleteGroup" src="https://staticdev.penske.com/common/images/delete.png"></td>'+
+			  '</td>'+
 			  '<td style="width:7%"></td>'+
 			  '<td colspan="3"><div id="editgroup-'+groupCount+'" class="groupName" style="float: left">GROUP NAME</div> <div id="edit-'+groupCount+'"'+
 			  'style="float: right;margin-right: 1%;" class="editGroup"> Edit</div>'+
@@ -336,8 +486,24 @@ function Addgroup(){
 
 
 function reloadUnassignedComponents(category,type){
-	
 	processingImageAndTextHandler('visible','Loading data...');
-	window.location.href = './open-create-sequence.htm?category='+category+'&type='+type;
+	$("#loadsheet-sequencing-form").attr("action", "open-create-sequence.htm");  //change the form action
+	$("#loadsheet-sequencing-form").submit();  // submit the form
+	
+	//window.location.href = './open-create-loadsheet.htm?category='+category+'&type='+type;
+	
+}
+/* function to clear unassigned components from the form binding */
+function clearUnassignedComponentsfromFormBinding(){
+	  $("#unAssignedComponentsTable tr").each(function () { 
+		  // count = $(this).parent().children().index($(this)) + 0;
+		  // var row=$(this).parents("tr");
+			 
+			 //remove the name attribute
+		   $(this).find('.componentId').removeAttr('name'); 
+		   $(this).find('.componentSequence').removeAttr('name'); 
+		   $(this).find('.compGrpSeqId').removeAttr('name');
+		   $(this).find('.grpMasterId').removeAttr('name');
+		});
 	
 }

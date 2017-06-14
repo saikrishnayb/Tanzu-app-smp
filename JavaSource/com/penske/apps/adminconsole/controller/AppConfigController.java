@@ -6,6 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -314,6 +315,7 @@ public class AppConfigController {
 		mav.addObject("sequences", loadsheetManagementService.getLoadsheetSequences());
 		mav.addObject("categories", loadsheetManagementService.getCategoryList());
 		mav.addObject("types", loadsheetManagementService.getTypeList());
+		mav.addObject("viewMode", "");
 		return mav;
 	}
 	
@@ -452,8 +454,14 @@ public class AppConfigController {
 	public ModelAndView getLoadsheetSequencePage(@RequestParam("categoryId") String categoryId,@RequestParam("category") String category,@RequestParam(value="type") String type,@RequestParam(value="viewMode") String viewMode) {
 		ModelAndView mav = new ModelAndView("/admin-console/app-config/loadsheet-sequence");
 		String defaultType=type;
-		if(viewMode.equals("Y")){// if uses default value is 'Y' we need to pass type as DEFAULT to load load sheet sequences.
-			defaultType=ApplicationConstants.DEFAULT_TYPE;
+		// to check for the selected category and type uses default is 'Y' or 'N'.
+		if(StringUtils.isNotBlank(category) && StringUtils.isNotBlank(type)){
+			defaultType=loadsheetManagementService.getUsesDefaultForCategoryAndType(category, type);
+			if(defaultType!=null && !(defaultType.equals("N"))){
+				defaultType=ApplicationConstants.DEFAULT_TYPE;// if uses default value is 'Y' we need to pass type as DEFAULT to load load sheet sequences.
+			}else{
+				defaultType=type;
+			}
 		}
 		mav.addObject("sequences", loadsheetManagementService.getLoadsheetSequences(category,defaultType));
 		mav.addObject("selectedCategory", category.trim());
@@ -466,10 +474,18 @@ public class AppConfigController {
 	
 	/* ================ Create New Loadsheet Sequence ===============*/
 	@RequestMapping(value={"/open-create-sequence"})
-	public ModelAndView loadCreateLoadSheetSequence(@RequestParam(value="category",required=false) String category,@RequestParam(value="type",required=false) String type){
+	public ModelAndView loadCreateLoadSheetSequence(LoadsheetSequenceMaster seqMaster,HttpServletRequest request){
 		ModelAndView mav=new ModelAndView("/admin-console/app-config/create-loadsheet-sequence");
 		
-		LoadsheetSequenceMaster seqMaster=new LoadsheetSequenceMaster();
+		//Add category and type values to the session for back button functionality.
+		HttpSession session = request.getSession(false);
+		if(session != null && seqMaster.getPageAction().equals("BACK") ){
+			 session.setAttribute("selectedCategoryinListPage", seqMaster.getCategory());
+			 session.setAttribute("selectedTypeinListPage", seqMaster.getType());
+			 session.setAttribute("selectedViewMode", seqMaster.getViewMode());
+		}
+		seqMaster.setPageAction("");
+		//LoadsheetSequenceMaster seqMaster=new LoadsheetSequenceMaster();
 		
 		List<LoadsheetSequenceGroupMaster> grpMasterList=new ArrayList<LoadsheetSequenceGroupMaster>();
 		
@@ -480,8 +496,6 @@ public class AppConfigController {
 		
 		grpMasterList.add(grpMaster);
 		seqMaster.setGroupMasterList(grpMasterList);
-		seqMaster.setCategory(category);
-		seqMaster.setType(type);
 		
 		mav.addObject("unassignedComponents",loadsheetManagementService.getUnAssignedComponents(seqMaster));
 		mav.addObject("categoriesList", loadsheetManagementService.getCategoryList());
@@ -503,26 +517,37 @@ public class AppConfigController {
 	
 	/* ==================== to open the Edit loadsheet sequence page==================*/
 	@RequestMapping(value={"/open-edit-sequence"})
-	public ModelAndView editLoadSheetSequence(@RequestParam(value="seqMasterId") int seqMasterId){
+	public ModelAndView editLoadSheetSequence(@RequestParam(value="seqMasterId") int seqMasterId,@RequestParam(value="action") String action,@RequestParam(value="category") String category,@RequestParam(value="type") String type,
+			@RequestParam(value="viewMode") String viewMode,HttpServletRequest request){
 		ModelAndView mav=new ModelAndView("/admin-console/app-config/create-loadsheet-sequence");
 		
+		
 		LoadsheetSequenceMaster seqMaster=loadsheetManagementService.getSequenceMasterDetails(seqMasterId);
+		//Add category and type values to the session for back button functionality.
+		HttpSession session = request.getSession(false);
+		if(session != null){
+			 session.setAttribute("selectedCategoryinListPage", category);
+			 session.setAttribute("selectedTypeinListPage", type);
+			 session.setAttribute("selectedViewMode", viewMode);
+		}
+		seqMaster.setPageAction(action);
 		
 		mav.addObject("unassignedComponents",loadsheetManagementService.getUnAssignedComponents(seqMaster));
 		mav.addObject("categoriesList", loadsheetManagementService.getCategoryList());
 		mav.addObject("typesList", loadsheetManagementService.getTypeList());
 		mav.addObject("mfrList", loadsheetManagementService.getMfrList());
 		mav.addObject("seqMaster",seqMaster);
+		
 		return mav;
 	}
 	
 	/* ================= Update the loadsheet seqeuncing details =================*/
 	@RequestMapping(value={"/update-sequence"})
-	public ModelAndView updateLoadsheetSequencingDetails(LoadsheetSequenceMaster seqMaster){
+	public ModelAndView updateLoadsheetSequencingDetails(LoadsheetSequenceMaster seqMaster,HttpServletRequest request){
 		
 		loadsheetManagementService.updateLoadsheetSequencingDetails(seqMaster);
-		
-		return editLoadSheetSequence(seqMaster.getId());
+		HttpSession session = request.getSession(false);
+		return editLoadSheetSequence(seqMaster.getId(),seqMaster.getPageAction(),session.getAttribute("selectedCategoryinListPage").toString(),session.getAttribute("selectedTypeinListPage").toString(),session.getAttribute("selectedViewMode").toString(),request);
 	}
 	
 	
