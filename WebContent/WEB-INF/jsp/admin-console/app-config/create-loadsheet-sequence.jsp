@@ -50,7 +50,7 @@
 						<div class="inputClass"></div>
 					</div>
 				</div>
-				<div class="rowClass">
+				<div class="secondRowClass">
 					<div class="inputWidth">
 						<div class="labelClass rightAlign">
 							<form:label path="category" for="category">Category:</form:label>

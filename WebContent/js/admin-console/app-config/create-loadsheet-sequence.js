@@ -18,12 +18,37 @@ $(document).ready(function() {
         // Show only matching TR, hide rest of them
         $.each($("#assignedComponentsTable tbody tr"), function() {
             if($(this).text().toLowerCase().indexOf($($this).val().toLowerCase()) === -1){
-            	$(this).hide();
+            	//if row doesn't have showchilds class then hide 
+            	if($(this).hasClass('showChilds')){
+					$(this).show();
+				}else{
+					$(this).hide();
+				}
+				//remove showchilds class for all the rows under the group
+				if($(this).hasClass('group')){
+					$(this).parent().children().each(function(index,data){
+						
+						$(this).removeClass('showChilds');  
+						$(this).hide();
+					
+					});
+				}
             }
             else{
+            	//Add show childs class for all the rows under the group
+            	if($(this).hasClass('group')){
+            		
+            			$(this).parent().children().each(function(index,data){
+						$(this).addClass('showChilds');  
+					
+					});
+            		
+            	}else{
+            		//To display the Group header
+            		$(this).parent().children().first().show();
+            	}
+            	
             	$(this).show();
-            	//To display the Group header
-            	$(this).parent().children().first().show();
             }
         });
         
@@ -442,17 +467,28 @@ function validateFileds(){
 				
 				if($(component).hasClass('group')){//for setting component hidden field names
 					var curGrpName=$(component).find('.groupName').text();
-					var convertedName=curGrpName.trim().toUpperCase();
 					
-					if($.inArray(convertedName, grpNamesArray) == -1) { //Not found
-						grpNamesArray.push(convertedName);
-					  } else {
-						  $("#ErrorMsg span").text("Group name: "+curGrpName+" found duplicate, Please change the group name.");
+					if(curGrpName.trim() !=''){
+						var convertedName=curGrpName.trim().toUpperCase();
+						
+						if($.inArray(convertedName, grpNamesArray) == -1) { //Not found
+							grpNamesArray.push(convertedName);
+						  } else {
+							  $("#ErrorMsg span").text("Group name: "+curGrpName+" found duplicate, Please change the group name.");
+							  $("#ErrorMsg").show();
+							  parent.resizeAfterPaginationChange();
+							  rtrnFlag= false;
+							  return false;
+						  }   
+					}else{
+						  $("#ErrorMsg span").text("Please enter Group Name for all groups.");
 						  $("#ErrorMsg").show();
 						  parent.resizeAfterPaginationChange();
 						  rtrnFlag= false;
 						  return false;
-					  }   
+					}
+					
+					
 				}
 					
 				});

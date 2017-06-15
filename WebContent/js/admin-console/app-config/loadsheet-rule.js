@@ -78,7 +78,7 @@ function initializeRuleTable($loadsheetRuleTable){
 function openConfirmModal(ruleName,timesUsed){
 	$('#confirmDeleteModal').dialog('open');
 	if(timesUsed > 0){
-		$('#deleteMessage').text("'"+ruleName+"' is used "+timesUsed+" time(s), Do you really want to delete ?");
+		$('#deleteMessage').text("Rule '"+ruleName+"' is used "+timesUsed+" time(s), Do you really want to delete ?");
 	}else{
 		$('#deleteMessage').text("Do you really want to delete the Rule: "+ruleName +" ?");
 	}
