@@ -81,7 +81,10 @@ $(document).ready(function() {
 		 
 	} );
 	 
-	
+	$("#name").on("focus",function(){
+		$("#ErrorMsg").hide();
+		$("#name").removeClass("errorMsgInput");
+	});
 	
 	//delete Group
 	$('#assignedComponentsTable').on( 'click', '#deleteGroup', function () {
@@ -169,7 +172,11 @@ $("table").sortable({
 	});
 	  
 	  $("#hiddenRow").hide(); //hide the hidden row while copying the group
-	
+	  
+	  if($('#assignedComponentsTable tbody').length == 1){
+			$("#hiddenHeader").show();
+		}
+		
 	},
   placeholder: "ui-state-highlight",
   forcePlaceholderSize: true,
@@ -242,26 +249,36 @@ function AddRemoveExtraColumns(e,ui){
 		});
 		
 		
-		
-		//if columns size is 6 remove the extra 2 columns
-		if(rowData.length==6){
-			rowData.splice(1,2);
-			ui.item.children().replaceWith(rowData);
+		if($('#assignedComponentsTable tbody').length == 1){
+			
+			ui.sender.sortable("cancel");//cancel dropping if groups are not there
+			$("#ErrorMsg span").text("Please Create Group first");
+			$("#ErrorMsg").show();
+			parent.resizeAfterPaginationChange();
+			
 		}else{
-			var col1='<td style="width:5%" class="editable centerAlign"><img class="rightMargin" id="deleteRow" src="https://staticdev.penske.com/common/images/delete.png"></td>';
-			var col2='<td style="width:7%" class="centerAlign seq"></td>';
-			ui.item.children().each(function(i,data){
-				 if(i==1){
-					 $(this).replaceWith(col1);
-				 }else if(i==2){
-					 $(this).replaceWith(col2);
-				}else if (i==3){
-					 $( rowData[1] ).insertBefore($(this));
-					 $( rowData[2] ).insertBefore($(this));
+			
+			//if columns size is 6 remove the extra 2 columns
+			if(rowData.length==6){
+				rowData.splice(1,2);
+				ui.item.children().replaceWith(rowData);
+			}else{
+				var col1='<td style="width:5%" class="editable centerAlign"><img class="rightMargin" id="deleteRow" src="https://staticdev.penske.com/common/images/delete.png"></td>';
+				var col2='<td style="width:7%" class="centerAlign seq"></td>';
+				ui.item.children().each(function(i,data){
+					if(i==1){
+						$(this).replaceWith(col1);
+					}else if(i==2){
+						$(this).replaceWith(col2);
+					}else if (i==3){
+						$( rowData[1] ).insertBefore($(this));
+						$( rowData[2] ).insertBefore($(this));
+						
+					}
 					
-				 }
-				
-			});
+				});
+		}
+		
 		
 		}
 		//to add a hidden row in table 2 if table size is 0
@@ -319,7 +336,7 @@ $(document).click(function() {
 });
 
 
-/* to submit the from */
+/* to submit the form */
 function submitLoadSheetForm(){
 	 clearUnassignedComponentsfromFormBinding();
 	if(validateFileds()){
@@ -374,13 +391,45 @@ function submitLoadSheetForm(){
 				
 			}
 			
+			var seqName= $("#name").val();
+			var seqMasterId=$("#seqMasterId").val();
 			
 			processingImageAndTextHandler('visible','Loading data...');
-			$("#categoryID").attr("disabled",false);
-			$("#typeID").attr("disabled",false);
-			$loadSheetSequncingForm.submit();
+			//Check for unique sequence Name
+			displayFlag=false;
+			var showLoading=true;
+			$.ajax({
+				  type: "POST",
+				  url: "./check-unique-name.htm",
+				  cache:false,
+				  data: {seqName : seqName,seqId:seqMasterId},
+				  success: function(isUnique){
+					  
+					  if(isUnique){
+						  showLoading=true;
+						  $("#categoryID").attr("disabled",false);
+							$("#typeID").attr("disabled",false);
+							$loadSheetSequncingForm.submit();
+						  
+					  }else{
+						  showLoading=false;
+						$("#ErrorMsg span").text("Entered Sequence Name already exists ! please enter different name.");
+						$("#ErrorMsg").show();
+						$("#name").addClass("errorMsgInput");
+						parent.resizeAfterPaginationChange();
+						}
+					
+				  },
+				});
 			
-		
+			$(document).ajaxComplete(function() {
+				if(showLoading){
+					processingImageAndTextHandler('visible','Loading data...');
+				}else{
+					processingImageAndTextHandler('hidden');
+				}
+			});
+
 	}
 	
 }
@@ -518,6 +567,8 @@ function Addgroup(){
 			  '<input type="hidden" path="groupMasterList['+groupCount+'].seqMasterId"/>'+
 			  '</td></tr></tbody>');
 	initializeComponentTables();
+	$("#hiddenHeader").hide();
+	$("#ErrorMsg").hide();
 	}
 
 

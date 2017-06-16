@@ -68,6 +68,18 @@
 				CVRM.RULE_ID,NAME,DESCRIPTION,SUMC.FIRST_NAME||' '||SUMC.LAST_NAME,CVRM.CREATED_DATE,SUME.FIRST_NAME||' '||SUME.LAST_NAME,CVRM.MODIFIED_DATE
 	</select>
 	
+	<!-- Get all the Rule names -->
+ 	<select id="getAllRuleNames" resultType="String">
+ 		SELECT 
+				TRIM(NAME)
+		FROM
+				SMC_CMP_VISIBILITY_RULES_MASTER
+		<if test="ruleId != 0">
+		WHERE
+				RULE_ID NOT IN ( #{ruleId} ) 
+		</if>
+	</select>
+	
 	<!-- To Insert the Rule master Details -->
  	<insert id="insertRuleMasterDetails" useGeneratedKeys="true" keyProperty="rule.ruleId" keyColumn="RULE_ID" >
  		INSERT INTO 
@@ -316,6 +328,39 @@
 				COMPONENt_GROUP,SUB_GROUP,SUB_COMPONENT_NAME
 				
 	</select>
+	
+	
+ 	
+ 	<!-- To get Loadsheet Category Assigned for the rule -->
+ 	<select id="getAssignedLoadsheetCategories" resultType="com.penske.apps.adminconsole.model.LoadsheetManagement" >
+ 		SELECT
+ 				CTM.CAT_TYPE_ID			AS 	catTypeId,
+				CTM.PO_CATEGORY			AS 	category,
+				CTM.TYPE				AS 	type,
+				CTM.USES_DEFAULT  		AS	usesDefault,
+				VCS.COMPONENT_GROUP		AS 	componentGroup,
+				VCS.SUB_GROUP			AS	subGroup,
+				VCS.SUB_COMPONENT_NAME	AS 	component
+		FROM 
+				SMC_COMPONENT_VISIBILITY SCV
+		JOIN 	
+				SMC_COMPONENT_RULE_OVERRIDES CRO
+		ON	
+				CRO.CMP_VISIBLE_ID = SCV.CMP_VISIBLE_ID
+		JOIN 	
+				CORP.VEHCMPSGF VCS 
+		ON 
+				SCV.COMPONENT_ID=VCS.COMPONENT_ID 
+		JOIN 
+				SMC.SMC_CAT_TYPE_MASTER CTM 
+		ON 
+				CTM.CAT_TYPE_ID = SCV.CAT_TYPE_ID
+		
+		WHERE 
+				RULE_ID=#{ruleId}
+ 		
+ 	</select>
+	
 	
 	
 	<!-- TO get Unassigned Components For create loadsheet seq -->
@@ -593,6 +638,20 @@
  		WHERE
  				SEQ_MASTER_ID=	#{sequenceId}
  	</delete>	
+ 	
+ 	
+ 	<!-- Get all the sequence names -->
+ 	<select id="getAllSequenceNames" resultType="String">
+ 		SELECT 
+				TRIM(NAME)
+		FROM
+				SMC_LOADSHEET_SEQ_MASTER
+		<if test="sequenceId != 0">
+		WHERE
+				SEQ_MASTER_ID NOT IN ( #{sequenceId} ) 
+		</if>
+	</select>
 	
 	
+
 </mapper>

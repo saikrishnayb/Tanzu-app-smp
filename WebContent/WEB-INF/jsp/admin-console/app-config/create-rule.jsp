@@ -23,7 +23,7 @@
 				<div class="floatLeft marginLeft" style="margin-top:4px;margin-right:5%;">
 					<form:label path="ruleName" for="ruleName">Enter Rule Name</form:label>
 					<form:input path="ruleName" id="ruleName" maxlength="50"  type="text"/>
-					<form:input path="ruleId"  type="hidden" value="${ruleMaster.ruleId }"/>
+					<form:input path="ruleId" id="ruleId"  type="hidden" value="${ruleMaster.ruleId }"/>
 				</div>
 				<div class="floatLeft marginLeft" style="margin-top:4px">
 					<form:label path="description" for="description">Description</form:label>
@@ -125,6 +125,40 @@
 					</tbody>
 				</table>
 				</fieldset>
+				<c:if test="${ fn:length(loadSheetManagementList) gt 0 }">
+				<fieldset style="width:100%;margin-top:10px;">
+					<legend>Loadsheet Category Assigned</legend>
+					<div class="displayNone" id="AssignedCount">
+					<div class="floatLeft">
+						<p>Assigned #: ${ fn:length(loadSheetManagementList)} </p>
+					</div>
+					</div>
+					<table id="Assigned-Table" style="width:100%;">
+						<thead>
+							<tr>
+								<th></th> 
+								<th>Category</th>
+								<th>Sub Category</th>
+								<th>Component Group</th>
+								<th>Sub-Group</th>
+								<th>Component</th>
+							</tr>
+						</thead>
+						<tbody>
+							<c:forEach items="${loadSheetManagementList }" var="loadSheetDetails">
+							<tr>
+								<td class="editable centerAlign"><a onclick="javascript:loadProcessImage();" href="get-loadsheet-components.htm?categoryId=${loadSheetDetails.catTypeId}&category=${loadSheetDetails.category} &type=${loadSheetDetails.type} &viewMode=${loadSheetDetails.usesDefault}">Go To</a></td>
+								<td>${loadSheetDetails.category }</td>
+								<td>${loadSheetDetails.type }</td>
+								<td>${loadSheetDetails.componentGroup }</td>
+								<td>${loadSheetDetails.subGroup }</td>
+								<td>${loadSheetDetails.component }</td>
+							</tr>
+							</c:forEach>	
+						</tbody>
+					</table>
+				</fieldset>
+				</c:if>
 			</div>
 			<input type="hidden" name="requestedFrom" value="${requestedFrom}"/>
 			</form:form>

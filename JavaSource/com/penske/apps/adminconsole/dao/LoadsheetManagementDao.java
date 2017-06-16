@@ -29,6 +29,7 @@ public interface LoadsheetManagementDao {
 	public void deleteComponentVisibilityRules(@Param("componentVisibilityId")int componentVisibilityId);
 	public void saveComponentVisibilityRules(ComponentRuleAssociation componentRule);
 	public List<LoadSheetComponentDetails> getComponents();
+	public List<String> getAllRuleNames(@Param("ruleId") int ruleId);
 	public void insertRuleMasterDetails(@Param("rule") RuleMaster rule,@Param("user") UserContext user);
 	public void insertRuleDefinitions(@Param("ruleDefList") List<RuleDefinitions> ruleDefList,@Param("user") UserContext user);
 	public void updateRuleMasterDetails(@Param("rule") RuleMaster rule,@Param("user") UserContext user);
@@ -38,6 +39,7 @@ public interface LoadsheetManagementDao {
 	public void deleteRuleMasterDetails(@Param("ruleId") int ruleId);
 	public void deleteRuleAssociation(@Param("ruleId") int ruleId);
 	public void deleteRuleDefDetails(@Param("ruleId") int ruleId);
+	public List<LoadsheetManagement> getAssignedLoadsheetCategories(@Param("ruleId") int ruleId);
 	public List<String> getCategoryList();
 	public List<String> getTypeList();
 	public List<String>  getMfrList();
@@ -57,5 +59,6 @@ public interface LoadsheetManagementDao {
 	public void deleteLoadsheetSequenceMaster(@Param("sequenceId") int sequenceId);
 	public void deleteLoadsheetGroupMaster(@Param("sequenceId") int sequenceId);
 	public void deleteLoadsheetGroupSequnece(@Param("sequenceId") int sequenceId);
+	public List<String> getAllSequenceNames(@Param("sequenceId") int sequenceId);
 	
 }

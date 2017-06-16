@@ -273,6 +273,26 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 	}
 	
 	/**
+	 * Method to check for unique rule name
+	 */
+	@Override
+	public boolean checkForUniqueRuleName(String newRuleName,int ruleId){
+		
+		List<String> existingNames=null;
+		boolean isUnique=true;
+		
+		existingNames=loadsheetManagementDao.getAllRuleNames(ruleId);
+		
+		for(String name:existingNames){
+			if(name.equalsIgnoreCase(newRuleName.trim())){
+				isUnique=false;
+			}
+		}
+		
+		return isUnique;
+	}
+	
+	/**
 	 * Method to Delete the rule details based on rule Id
 	 */
 	@Override
@@ -282,6 +302,14 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 		loadsheetManagementDao.deleteRuleAssociation(ruleId);
 		loadsheetManagementDao.deleteRuleMasterDetails(ruleId);
 		loadsheetManagementDao.deleteRuleDefDetails(ruleId);
+	}
+	/**
+	 * Method to get Assigned categories for the given rule
+	 */
+	@Override
+	public List<LoadsheetManagement> getAssignedLoadsheetCategories(int ruleId) {
+
+		return loadsheetManagementDao.getAssignedLoadsheetCategories(ruleId);
 	}
 	/**
 	 * Method to get loadsheet categories list in loadsheet sequence screen.
@@ -499,6 +527,27 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 	public String getUsesDefaultForCategoryAndType(String category, String type) {
 		return loadsheetManagementDao.getUsesDefaultForCategoryAndType(category, type);
 	}
+	
+	/**
+	 * Method to check for Unique sequencename
+	 */
+	@Override
+	public boolean checkForUniqueSequenceName(String newName,int seqId){
+		
+		List<String> existingNames=null;
+		boolean isUnique=true;
+		
+		existingNames=loadsheetManagementDao.getAllSequenceNames(seqId);
+		
+		for(String name:existingNames){
+			if(name.equalsIgnoreCase(newName.trim())){
+				isUnique=false;
+			}
+		}
+		
+		return isUnique;
+	}
+	
 
 
 }

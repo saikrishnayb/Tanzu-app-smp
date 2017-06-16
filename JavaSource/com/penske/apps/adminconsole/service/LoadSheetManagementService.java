@@ -2,6 +2,7 @@ package com.penske.apps.adminconsole.service;
 
 import java.util.List;
 
+
 import com.penske.apps.adminconsole.model.ComponentRuleAssociation;
 import com.penske.apps.adminconsole.model.ComponentVisibilityModel;
 import com.penske.apps.adminconsole.model.ConfigureRule;
@@ -20,12 +21,14 @@ public interface LoadSheetManagementService {
 	public List<ConfigureRule> getComponentVisibilityRules(int componentVisibleId);
 	public List<LoadsheetManagement> getLoadsheetManagementDetails();
 	public List<RuleMaster> getLoadsheetRuleDetails();
+	public boolean checkForUniqueRuleName(String newRuleName,int ruleId);
 	public void saveComponentRules(ComponentRuleAssociation componentRule);
 	public List<LoadSheetComponentDetails> getComponents();
 	public void createNewRule(RuleMaster rule);
 	public void updateRuleDetails(RuleMaster rule);
 	public RuleMaster getRuleDetails(int ruleId);
 	public void DeleteRuleDetails(int ruleId);
+	public List<LoadsheetManagement> getAssignedLoadsheetCategories(int ruleId);
 	public List<String> getCategoryList();
 	public List<String> getTypeList();
 	public List<String>  getMfrList();
@@ -34,5 +37,6 @@ public interface LoadSheetManagementService {
 	public LoadsheetSequenceMaster getSequenceMasterDetails(int seqMasterId);
 	public void updateLoadsheetSequencingDetails(LoadsheetSequenceMaster seqMaster);
 	public void deleteLoadsheetSequence(int sequenceId);
+	public boolean checkForUniqueSequenceName(String newName,int seqId);
 	
 }

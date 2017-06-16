@@ -152,6 +152,9 @@
 								<th style="width:28%">Component</th>
 							</tr>
 						</thead>
+						<tbody id="hiddenHeader" class="displayNone">
+							<tr ></tr>
+						</tbody>
 						<c:forEach items="${seqMaster.groupMasterList }" var="grpMasterData" varStatus="grpIndex">
 						<tbody>
 							<!-- Displaying the Header -->

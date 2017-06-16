@@ -40,6 +40,7 @@ import com.penske.apps.adminconsole.service.VendorReportServiceImpl;
 import com.penske.apps.adminconsole.util.ApplicationConstants;
 import com.penske.apps.adminconsole.util.CommonUtils;
 import com.penske.apps.suppliermgmt.model.UserContext;
+import com.penske.apps.adminconsole.model.LoadsheetManagement;
 
 /**
  * Controller handling all mapping and functionality for the Admin Console App Config sub tab
@@ -395,13 +396,19 @@ public class AppConfigController {
 	public ModelAndView getRuleDefinitions(int ruleId,@RequestParam("requestedFrom") String requestedFrom) {
 		
 		ModelAndView mav = new ModelAndView("/admin-console/app-config/create-rule");
+		List<LoadsheetManagement> loadSheetManagementList;
 		RuleMaster ruleMaster=loadsheetManagementService.getRuleDetails(ruleId);
 		
+
 		ruleMaster.setRequestedFrom(requestedFrom);
+
+		loadSheetManagementList = loadsheetManagementService.getAssignedLoadsheetCategories(ruleId);
+		
 		mav.addObject("componentsList", loadsheetManagementService.getComponents());
 		mav.addObject("pageAction","UPDATE");
 		mav.addObject("ruleMaster",ruleMaster);
 		mav.addObject("requestedFrom",ruleMaster.getRequestedFrom());
+		mav.addObject("loadSheetManagementList",loadSheetManagementList);
 		return mav;
 	
 	}
@@ -410,13 +417,17 @@ public class AppConfigController {
 	@RequestMapping(value={"/update-rule"})
 	public ModelAndView updateRuleDetails(RuleMaster ruleMaster) {
 		
+		List<LoadsheetManagement> loadSheetManagementList;
 		ModelAndView mav = new ModelAndView("/admin-console/app-config/create-rule");
 		
 		loadsheetManagementService.updateRuleDetails(ruleMaster);
+		loadSheetManagementList = loadsheetManagementService.getAssignedLoadsheetCategories(ruleMaster.getRuleId());
 		mav.addObject("componentsList", loadsheetManagementService.getComponents());
 		mav.addObject("pageAction","UPDATE");
 		mav.addObject("ruleMaster",ruleMaster);
 		mav.addObject("requestedFrom",ruleMaster.getRequestedFrom());
+		mav.addObject("loadSheetManagementList",loadSheetManagementList);
+
 		return mav;
 		
 	}

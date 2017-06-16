@@ -838,6 +838,14 @@ public class AppConfigRestController {
 		}
 	}
 	
+	/* ========== Check For Unique rule Name ===============*/
+	@RequestMapping(value="/check-unique-rule-name",method=RequestMethod.POST)
+	@ResponseBody
+	public boolean checkForUniqueRuleName(@RequestParam("ruleName") String ruleName,@RequestParam("ruleId") int ruleId){
+		
+		return loadsheetManagementService.checkForUniqueRuleName(ruleName, ruleId);
+	}
+	
 	/* =========================DELETE Rule ========================*/
 	@RequestMapping(value="/delete-sequence",method= RequestMethod.POST)
 	@ResponseBody
@@ -850,4 +858,11 @@ public class AppConfigRestController {
 		}
 	}
 	
+	/* ========== Check For Unique sequence Name ===============*/
+	@RequestMapping(value="/check-unique-name",method=RequestMethod.POST)
+	@ResponseBody
+	public boolean checkForUniqueName(@RequestParam("seqName") String seqName,@RequestParam("seqId") int seqId){
+		
+		return loadsheetManagementService.checkForUniqueSequenceName(seqName, seqId);
+	}
 }

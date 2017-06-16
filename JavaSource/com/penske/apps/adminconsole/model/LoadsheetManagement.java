@@ -11,6 +11,10 @@ public class LoadsheetManagement {
 	private String editedBy;
 	private Date editedDate;
 	
+	//added fields for loading assigned categories for one rule  
+	private String componentGroup;
+	private String subGroup;
+	private String component;
 	
 	
 	public String getCatTypeId() {
@@ -53,7 +57,24 @@ public class LoadsheetManagement {
 	public String getFmtEditedDate() {
 		return DateUtil.formatDate(this.editedDate,DateUtil.MM_dd_yy_HH_mm_a);
 	}
-	
+	public String getComponentGroup() {
+		return componentGroup;
+	}
+	public void setComponentGroup(String componentGroup) {
+		this.componentGroup = componentGroup;
+	}
+	public String getSubGroup() {
+		return subGroup;
+	}
+	public void setSubGroup(String subGroup) {
+		this.subGroup = subGroup;
+	}
+	public String getComponent() {
+		return component;
+	}
+	public void setComponent(String component) {
+		this.component = component;
+	}
 	
 	
 }

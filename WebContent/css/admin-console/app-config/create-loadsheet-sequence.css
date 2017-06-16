@@ -1003,3 +1003,8 @@ tbody, thead tr {
 	display:block;
 }
 
+
+.groupName:focus{
+	border:2px solid;
+}
+
