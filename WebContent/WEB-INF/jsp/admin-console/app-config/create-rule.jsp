@@ -147,7 +147,7 @@
 						<tbody>
 							<c:forEach items="${loadSheetManagementList }" var="loadSheetDetails">
 							<tr>
-								<td class="editable centerAlign"><a onclick="javascript:loadProcessImage();" href="get-loadsheet-components.htm?categoryId=${loadSheetDetails.catTypeId}&category=${loadSheetDetails.category} &type=${loadSheetDetails.type} &viewMode=${loadSheetDetails.usesDefault}">Go To</a></td>
+								<td class="editable centerAlign"><a onclick="javascript:loadProcessImage();" href="get-loadsheet-components.htm?categoryId=${loadSheetDetails.catTypeId}&category=${loadSheetDetails.category} &type=${loadSheetDetails.type} &viewMode=${loadSheetDetails.usesDefault}&compRqstdFrom=EDIT_RULE">Go To</a></td>
 								<td>${loadSheetDetails.category }</td>
 								<td>${loadSheetDetails.type }</td>
 								<td>${loadSheetDetails.componentGroup }</td>

@@ -431,11 +431,18 @@ function copyGroup(srcGrpIndex){
 	if(!checkMaxCriteriaGroupCount()){
 		return false;
 	}
+	processingImageAndTextHandler('visible','copying data...');
 	
 	
 	//get the total number of groups in page
 	grpIndex=grpIndex+1;
 	frmAryIdx=frmAryIdx+1;
+	var newGroupColor="grayRow";
+	if($('#createRule-Table tbody .groupHeader:last').hasClass( "grayRow" )){
+		newGroupColor="whiteRow";
+	}else{
+		newGroupColor="grayRow";
+	}
 	createGroupHeader(grpIndex);
 	
 	//Add the extra rows for the destination group
@@ -459,9 +466,20 @@ function copyGroup(srcGrpIndex){
 	
 	copyDatatoDestGroup(srcGrpIndex,grpIndex);
 	
-	applyOddEvenRule();
+	//apply background color for ned group.
+	var regExp="G_"+grpIndex;
+	if(newGroupColor=="grayRow"){
+		$('tr[id^="'+regExp+'"]').removeClass("whiteRow");
+    	$('tr[id^="'+regExp+'"]').addClass("grayRow");
+    	
+    }else{
+    	$('tr[id^="'+regExp+'"]').removeClass("grayRow");
+		$('tr[id^="'+regExp+'"]').addClass("whiteRow");
+    }
+	
 	//resize Iframe while adding the rows or groups
 	parent.resizeAfterPaginationChange();
+	processingImageAndTextHandler('hidden');
 }
 
 //Method to Copy data to the newly creadted group from src group

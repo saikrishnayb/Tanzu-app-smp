@@ -22,9 +22,9 @@ $(document).ready(function() {
 			 }
 		
 	} );
-	
+	var compRequestedFrom=$("#compRequestedFrom").val();
 	var strHTML='<div id="org-desc-div" style="float: right; text-align: right;margin-right: 2%;">'+
-	'<a class="buttonSecondary floatLeft clear-left back" href="loadsheet-management.htm">Back</a>'+
+	'<a class="buttonSecondary floatLeft clear-left back" href="goBack-componets.htm?requestedFrom='+compRequestedFrom+'">Back</a>'+
 '</div>';
 $("#component-table_wrapper").prepend(strHTML);
 

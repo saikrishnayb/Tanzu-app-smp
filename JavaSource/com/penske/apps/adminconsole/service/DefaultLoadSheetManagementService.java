@@ -308,8 +308,20 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 	 */
 	@Override
 	public List<LoadsheetManagement> getAssignedLoadsheetCategories(int ruleId) {
-
-		return loadsheetManagementDao.getAssignedLoadsheetCategories(ruleId);
+		
+		List<LoadsheetManagement> loadSheetList=null;
+		
+		loadSheetList=loadsheetManagementDao.getAssignedLoadsheetCategories(ruleId);
+		
+		for(LoadsheetManagement loadSheetManagement:loadSheetList){
+			//Setting uses default to N if it is empty
+			if(loadSheetManagement.getUsesDefault().equals(" ")){
+				loadSheetManagement.setUsesDefault("N");
+			}
+			
+		}
+		
+		return loadSheetList;
 	}
 	/**
 	 * Method to get loadsheet categories list in loadsheet sequence screen.

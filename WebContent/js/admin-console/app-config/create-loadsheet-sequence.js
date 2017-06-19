@@ -486,7 +486,7 @@ function validateFileds(){
 		//Validate the Assigned Components
 		
 		//check for Available group's
-		if($("#assignedComponentsTable tbody").children().size() == 0){
+		if($("#assignedComponentsTable tbody:not(.displayNone)").children().size() == 0){
 				
 				$("#ErrorMsg span").text("Please add atleast one Group");
 				$("#ErrorMsg").show();
@@ -495,22 +495,24 @@ function validateFileds(){
 		}
 		
 		//check for Available Componets in each group
-		$("#assignedComponentsTable tbody").each(function (index,data) {
+		$("#assignedComponentsTable tbody:not(.displayNone)").each(function (index,data) {
 			
-			if($(data).children().size() < 2){
-				$("#ErrorMsg span").text("Please add atleast one Component for each group");
-				$("#ErrorMsg").show();
-				parent.resizeAfterPaginationChange();
-				rtrnFlag= false;
-				return false;
-			}else{
-				$("#ErrorMsg").hide();
-			}
+				if($(data).children().size() < 2){
+					$("#ErrorMsg span").text("Please add atleast one Component for each group");
+					$("#ErrorMsg").show();
+					parent.resizeAfterPaginationChange();
+					rtrnFlag= false;
+					return false;
+				}else{
+					$("#ErrorMsg").hide();
+				}
+				
+			
 		});
 		
 		//checking For Duplicate Group names
 		var grpNamesArray = new Array();
-		$("#assignedComponentsTable tbody").each(function (index,data) {
+		$("#assignedComponentsTable tbody:not(.displayNone)").each(function (index,data) {
 			
 			$(data).children().each(function(componentIndex,component){
 				

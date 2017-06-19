@@ -77,5 +77,8 @@
 <input type="hidden" id="componentId" value="${componentId }"/>
 <input type="hidden" id="visibilityId" value="${visibilityId}"/>
 <input type="hidden" id="viewMode" value="${viewMode}"/>
+
+<input type="hidden" id="compRequestedFrom" value="${compRequestedFrom}"/>
+
 </body>
 </html>

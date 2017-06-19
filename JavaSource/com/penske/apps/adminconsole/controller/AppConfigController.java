@@ -357,6 +357,31 @@ public class AppConfigController {
 		
 	}
 	
+	@RequestMapping("/goBack-componets")
+	public ModelAndView goBackFromComponetsPage(HttpServletRequest request,@RequestParam("requestedFrom") String requestedFrom){
+		
+		ModelAndView mav=null;
+		int ruleId=0;
+		String editRuleRequestedFrom=null;
+		HttpSession session = request.getSession(false);
+		if(requestedFrom.equalsIgnoreCase("LOADSHEET_MANAGEMENT")){
+			
+			mav=getLoadsheetManagementDetails();
+			
+		}else if(requestedFrom.equalsIgnoreCase("EDIT_RULE")){
+			
+			//Get Rule Details from session
+			if(session != null){
+				ruleId=(Integer)session.getAttribute("RULE_ID");
+				editRuleRequestedFrom=(String)session.getAttribute("REQUESTED_FROM");
+				mav=getRuleDefinitions(request, ruleId, editRuleRequestedFrom);
+			}
+		}
+		
+		return mav;
+		
+	}
+	
 	/**
 	 * Method to redirect the page after save or back in create rule page
 	 * @param request
@@ -368,16 +393,18 @@ public class AppConfigController {
 		HttpSession session = request.getSession(false);
 		ModelAndView mav=null;
 		LoadSheetCategoryDetails catDetails=null;
+		String compRequestedFrom=null;
 		//Get component Details from session
 		if(session != null){
 			catDetails=(LoadSheetCategoryDetails)session.getAttribute("CATEGORY_DETAILS");
+			compRequestedFrom=(String)session.getAttribute("COMP_REQUESTED_FROM");
 		}
 		if(requestedFrom !=null){
 			if(requestedFrom.equalsIgnoreCase("CREATE_RULE")){
 				mav=getLoadsheetRuleDetails();
 			}else{
 				if(catDetails!=null){
-					mav=getLoadsheetComponents(request, catDetails.getCategoryId(), catDetails.getCategory(), catDetails.getType(), catDetails.getViewMode());
+					mav=getLoadsheetComponents(request, catDetails.getCategoryId(), catDetails.getCategory(), catDetails.getType(), catDetails.getViewMode(),compRequestedFrom);
 					//details for opening the Add rule popup
 					mav.addObject("componentId",catDetails.getComponentId());
 					mav.addObject("visibilityId",catDetails.getVisibilityId());
@@ -385,7 +412,7 @@ public class AppConfigController {
 				}
 			}
 		}else{//If page reloads in Add rule page
-			mav=getLoadsheetComponents(request, catDetails.getCategoryId(), catDetails.getCategory(), catDetails.getType(), catDetails.getViewMode());
+			mav=getLoadsheetComponents(request, catDetails.getCategoryId(), catDetails.getCategory(), catDetails.getType(), catDetails.getViewMode(),compRequestedFrom);
 		}
 		
 		return mav;
@@ -393,7 +420,7 @@ public class AppConfigController {
 	
 	/* ================Edit Rule =======================*/
 	@RequestMapping(value={"/edit-rule"})
-	public ModelAndView getRuleDefinitions(int ruleId,@RequestParam("requestedFrom") String requestedFrom) {
+	public ModelAndView getRuleDefinitions(HttpServletRequest request,int ruleId,@RequestParam("requestedFrom") String requestedFrom) {
 		
 		ModelAndView mav = new ModelAndView("/admin-console/app-config/create-rule");
 		List<LoadsheetManagement> loadSheetManagementList;
@@ -409,6 +436,15 @@ public class AppConfigController {
 		mav.addObject("ruleMaster",ruleMaster);
 		mav.addObject("requestedFrom",ruleMaster.getRequestedFrom());
 		mav.addObject("loadSheetManagementList",loadSheetManagementList);
+		
+		//Adding details to session to display page after clicking on GOTO link
+		HttpSession session = request.getSession(false); 
+		if(session != null){
+			 session.setAttribute("RULE_ID", ruleId);
+			 session.setAttribute("REQUESTED_FROM", requestedFrom);
+		}
+		
+		
 		return mav;
 	
 	}
@@ -434,8 +470,10 @@ public class AppConfigController {
 	
 	/* ================== loadsheet components ================== */
 	@RequestMapping(value={"/get-loadsheet-components"})
-	public ModelAndView getLoadsheetComponents(HttpServletRequest request,@RequestParam("categoryId") String categoryId,@RequestParam("category") String category,@RequestParam(value="type") String type,@RequestParam(value="viewMode") String viewMode) {
+	public ModelAndView getLoadsheetComponents(HttpServletRequest request,@RequestParam("categoryId") String categoryId,@RequestParam("category") String category,@RequestParam(value="type") String type,
+			@RequestParam(value="viewMode") String viewMode,@RequestParam("compRqstdFrom") String compRequestedFrom) {
 		ModelAndView mav = new ModelAndView("/admin-console/app-config/loadsheet-components");
+		HttpSession session = request.getSession(false); 
 		String defaultType=type;
 		if(viewMode.equals("Y")){// if uses default value is 'Y' we need to pass type as DEFAULT to load load sheet sequences.
 			defaultType=ApplicationConstants.DEFAULT_TYPE;
@@ -444,6 +482,10 @@ public class AppConfigController {
 		mav.addObject("category", category);
 		mav.addObject("type", type);
 		mav.addObject("viewMode", viewMode);
+		mav.addObject("compRequestedFrom",compRequestedFrom);
+		
+		
+		session.setAttribute("COMP_REQUESTED_FROM", compRequestedFrom);
 		
 		//Adding details to session for create rule back button
 		LoadSheetCategoryDetails catDetails=new LoadSheetCategoryDetails();
@@ -452,7 +494,6 @@ public class AppConfigController {
 		catDetails.setType(type);
 		catDetails.setViewMode(viewMode);
 		
-		HttpSession session = request.getSession(false); 
 		if(session != null){
 			 session.setAttribute("CATEGORY_DETAILS", catDetails);
 		}
