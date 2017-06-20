@@ -392,7 +392,10 @@ function submitLoadSheetForm(){
 			}
 			
 			var seqName= $("#name").val();
-			var seqMasterId=$("#seqMasterId").val();
+			var seqMasterId=0;
+			if(pageAction == "EDIT"){
+				seqMasterId=$("#seqMasterId").val();
+			}
 			
 			processingImageAndTextHandler('visible','Loading data...');
 			//Check for unique sequence Name

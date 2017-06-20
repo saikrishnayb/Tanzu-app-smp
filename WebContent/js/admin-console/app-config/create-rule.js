@@ -71,10 +71,13 @@ $(document).ready(function() {
  */
 function dataTableCustomSearch(){
 	
-	$(document).on('change','#createRule-Table td input', function(e) {
+	$(document).on('keyup','#createRule-Table td input', function(e) {
 		var $td = $(this).parent();
+		caretPos=this.selectionStart;
 	    $(this).attr('value', this.value);
 	    $createRuleTable.cell($td).invalidate('dom').draw();
+	    $(this).focus();
+	    this.setSelectionRange(caretPos, caretPos);
 	});
 	$(document).on('change','#createRule-Table td select', function() {
 	    var $td = $(this).parent();
@@ -213,102 +216,75 @@ function loadOperands(grpIndex,rIndex){
 		}
 		
 }
-
+//function to add new row.
 function addNewRow(gIndex){
+	showLoading().then(addRow.bind(null,gIndex)).then(hideLoading);
+}
+//function to show the loading image 
+var showLoading = function(gIndex) {
+    var defer = $.Deferred();
+
+    processingImageAndTextHandler('visible','Adding New Row...');
+    setTimeout(function() {
+        defer.resolve(gIndex);
+    }, 1);
+
+    return defer;
+};
+//function to hide the loading image 
+var hideLoading = function() {
+    var defer = $.Deferred();
+    processingImageAndTextHandler('hidden');
+    defer.resolve(); 
+    return defer;
+};
+
+
+var addRow= function(gIndex){
+	
 	
 	if(!checkMaxrowsCount(gIndex)){
 		return false;
 	}
 	
 	frmAryIdx=frmAryIdx+1;
-	//get rowcount based on group count
-	var rowCount=0;
-	for (var i=1;i<=gIndex;i++){
-			rowCount =rowCount + $('.group'+i).length;
-		}
 	
 	//getting rowindex based  on last divid in a group
 	var lastDivID=$('#createRule-Table tbody .group'+gIndex+':last').attr('id');
 	var lstIndx=lastDivID.lastIndexOf("_");
 	var rIndex=parseInt(lastDivID.substr(lstIndx+1,lstIndx.length))+1;
 	
-	jQuery.fn.dataTable.Api.register('row.addByPos()', function(data, index) {     
-	    var currentPage = this.page();
-
-	    //insert the row  
-	    var rowNode=this.row.add(data).draw().node();
-	    	    
-	    /*Apply the BG Clolor based on Parent BG color*/
-	    if($('#createRule-Table tbody .group'+gIndex+':last').hasClass( "grayRow" )){
-	    	$(rowNode).addClass("grayRow group"+gIndex);
-	    }else{
-	    	$(rowNode).addClass("whiteRow group"+gIndex);
-	    }
-	    
-		 $(rowNode).children(':nth-child(1)').addClass('editable centerAlign');
-		 $(rowNode).attr('id','G_'+gIndex+'-R_'+rIndex);
-		 
-	    //move added row to desired index
-	    var rowCount = this.data().length-1,
-	    	insertedRow = this.row(rowCount).data(),
-	    	tempRow;
-	    
-	    
-	    //Swapping the rows to desired location
-	    for (var i=rowCount;i>=index;i--) {
-	        tempRow = this.row(i-1).data();
-	        
-	        //preserving the textbox value while swapping the rows
-	        var textId=tempRow[3].split('"');
-	        var compId=tempRow[1].split('"');
-	        var opId=tempRow[2].split('"');
-	        
-	        var textOldVal=$("#"+textId[1]).val();
-	        var compOldVal=$("#"+compId[1]).val();
-	        var opOldVal=$("#"+opId[1]).val();
-	        
-	        var tempNode=this.row(i).data(tempRow).draw().node();
-	        $(tempNode).attr('id','G_'+gIndex+'-R_'+rIndex);
-	        var insertNode=this.row(i-1).data(insertedRow).draw().node();
-	        
-	        //swapping the classes and IDs
-	        var tempClass=$(tempNode).attr("class");
-	        var insertClas=$(insertNode).attr("class");
-	        var tempID=$(tempNode).attr("id");
-	        var insertID=$(insertNode).attr("id");
-	        //remove old classes and ID's
-	        $(tempNode).removeClass(tempClass);
-	        $(insertNode).removeClass(insertClas);
-	        $(tempNode).removeAttr('id');
-	        $(insertNode).removeAttr('id');
-	        //set new classes and ID's
-	        $(tempNode).addClass(insertClas);
-	        $(insertNode).addClass(tempClass);
-	        $(tempNode).attr('id',insertID);
-	        $(insertNode).attr('id',tempID);
-	        
-	        loadDropDownsDuringSwap(compId[1]);
-	        $("#"+textId[1]).val(textOldVal);
-	        $("#"+compId[1]).val(compOldVal);
-	        
-	        loadOperandDuringSwap(compId[1]);
-	        $("#"+opId[1]).val(opOldVal);
-	        
-	    }   
-	    
- //refresh the current page
-	    this.page(currentPage).draw(false);
-	});
+	//var table = $("#createRule-Table").DataTable();
 	
-	var table = $("#createRule-Table").DataTable();
-	var rowData=getRowData(gIndex,rIndex);
-	table.row.addByPos(rowData, rowCount+1);
+	$('#createRule-Table').DataTable().destroy();
+	
+	 var prevRowIndex=rIndex-1;
+	 preRowId='G_'+gIndex+'-R_'+prevRowIndex;
+	 $("#"+preRowId).after('<tr  class="even whiteRow group'+gIndex+'" id="G_'+gIndex+'-R_'+rIndex+'"><td class="editable centerAlign"></td>'+
+			 '<td><select id="componentsDropDown-G_'+gIndex+'-R_'+rIndex+'" name="ruleDefinitionsList['+frmAryIdx+'].componentId" onchange="loadOperands('+gIndex+','+rIndex+')" style="width:100%"><option></option></select></td>'+
+			 '<td><select id="operandsID-G_'+gIndex+'-R_'+rIndex+'" name="ruleDefinitionsList['+frmAryIdx+'].operand" disabled=""></select></td>'+
+			 '<td><input id="valueID-G_'+gIndex+'-R_'+rIndex+'" name="ruleDefinitionsList['+frmAryIdx+'].value" maxlength="30" type="text">'+
+			 '<input type="hidden" name="ruleDefinitionsList['+frmAryIdx+'].criteriaGroup" value="'+gIndex+'"></td>'+
+			 '<td><a><img src="'+commonStaticUrl+'/images/delete.png"id="deleteRow" class="centerImage handCursor"  alt="Delete Row"/></a>'+
+			 '</td></tr>');
+	//table.row.addByPos(rowData, rowCount+1);
 	addDropDownData(gIndex,rIndex);
+	
+	var $loadsheetRuleTable = $('#createRule-Table');
+	$createRuleTable=initializeRuleTable($loadsheetRuleTable);
+	
+	//Appending AddCriteriaGroup in data table
+	var $addCriteriaGrp=$("#AddCriteriaGroup").html();
+	$($addCriteriaGrp).appendTo("#createRule-Table_filter");
+	$("#createRule-Table_filter").addClass("floatRight");
+	$("#createRule-Table_wrapper").css("width","99%");
 	
 	applyOddEvenRule();
 	
 	parent.resizeAfterPaginationChange();
-}
+	 var defer = $.Deferred();
+	 defer.resolve(); 
+};
 
 function loadDropDownsDuringSwap(compId){
 	var grpIndex=compId.substring(compId.indexOf("_")+1,compId.lastIndexOf("-"));
@@ -415,10 +391,24 @@ function applyBGColors(gCountsArray){
 	
 }
 
-//Method to Copy the Group
 function copyGroup(srcGrpIndex){
-	
-	
+	showGroupLoading().then(copyGroupData.bind(null,srcGrpIndex)).then(hideLoading);
+}
+
+//function to show the loading image 
+var showGroupLoading = function(gIndex) {
+    var defer = $.Deferred();
+
+    processingImageAndTextHandler('visible','Copying...');
+    setTimeout(function() {
+        defer.resolve(gIndex);
+    }, 50);
+
+    return defer;
+};
+
+//Method to Copy the Group
+var copyGroupData= function(srcGrpIndex){
 	
 	var childRowNode=null;
 	
@@ -431,8 +421,6 @@ function copyGroup(srcGrpIndex){
 	if(!checkMaxCriteriaGroupCount()){
 		return false;
 	}
-	processingImageAndTextHandler('visible','copying data...');
-	
 	
 	//get the total number of groups in page
 	grpIndex=grpIndex+1;
@@ -479,8 +467,9 @@ function copyGroup(srcGrpIndex){
 	
 	//resize Iframe while adding the rows or groups
 	parent.resizeAfterPaginationChange();
-	processingImageAndTextHandler('hidden');
-}
+	 var defer = $.Deferred();
+	 defer.resolve(); 
+};
 
 //Method to Copy data to the newly creadted group from src group
 function copyDatatoDestGroup(srcGrp,destGrp){
