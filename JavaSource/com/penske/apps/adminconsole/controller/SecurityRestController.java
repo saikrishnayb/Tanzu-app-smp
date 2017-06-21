@@ -801,9 +801,7 @@ public class SecurityRestController {
 			mav.addObject("vendorNames", securityService.getVendorNames());
 			mav.addObject("userDepts", securityService.getUserDepts());
 			mav.addObject("orgList", securityService.getOrgList(currentUser));
-			//mav.addObject("orgList", securityService.getPenskeUserOrgList(currentUser));
 		}
-		//mav.addObject("vendorList", securityService.getVendorList("",""));
 		// If the page is an error page.
 		mav.addObject("isCreatePage", true);
 		
@@ -859,12 +857,9 @@ public class SecurityRestController {
 		List<Org> myOrgList=null;
 		if(currentUser.getUserTypeId() == 2) {
 			myOrgList=securityService.getOrgList(currentUser);
-			//mav.addObject("orgList", securityService.getOrgList(currentUser));
 		}
 		else if(currentUser.getUserTypeId() == 1) {
 			myOrgList=securityService.getOrgList(currentUser);
-			//mav.addObject("orgList", securityService.getPenskeUserOrgList(currentUser));
-			//mav.addObject("orgList", securityService.getOrgList(currentUser));
 		} 
 		mav.addObject("orgList", securityService.removeCurrentOrgAndChild(orgId, myOrgList));
 		mav.addObject("vendorList", securityService.getVendorList("","",editableOrg.getParentOrgId()));

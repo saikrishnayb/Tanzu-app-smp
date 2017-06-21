@@ -18,10 +18,10 @@ import java.util.List;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFFont;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.Workbook;
 /**
  * This is a utility class can be used for various data validation,
  * null checking , formatting and other general purposes.
@@ -450,22 +450,22 @@ public class DataUtil {
 	
 	//Temp Util method . To be moved to seperate class.
 	
-	public static HSSFCellStyle buildStyle(HSSFWorkbook workBook , String styleName,boolean isLocked){
+	public static CellStyle buildStyle(Workbook workBook , String styleName,boolean isLocked){
 
-		HSSFCellStyle cellStyle = workBook.createCellStyle();
-		HSSFFont cellFont = workBook.createFont();
+		CellStyle cellStyle = workBook.createCellStyle();
+		Font cellFont = workBook.createFont();
 
 		if(null != styleName){
 			if(styleName.equalsIgnoreCase("CELL")){
 				
 				cellStyle = workBook.createCellStyle();			
 				cellStyle.setFont(cellFont);
-				cellStyle.setAlignment(HSSFCellStyle.ALIGN_LEFT);								
+				cellStyle.setAlignment(CellStyle.ALIGN_LEFT);								
 		
-				cellStyle.setBorderLeft( HSSFCellStyle.BORDER_THIN );
-				cellStyle.setBorderBottom(HSSFCellStyle.BORDER_THIN);
-				cellStyle.setBorderTop(HSSFCellStyle.BORDER_THIN);
-				cellStyle.setBorderRight(HSSFCellStyle.BORDER_THIN);	    	
+				cellStyle.setBorderLeft( CellStyle.BORDER_THIN );
+				cellStyle.setBorderBottom(CellStyle.BORDER_THIN);
+				cellStyle.setBorderTop(CellStyle.BORDER_THIN);
+				cellStyle.setBorderRight(CellStyle.BORDER_THIN);	    	
 		    
 				cellStyle.setRightBorderColor(HSSFColor.BLACK.index);
 				cellStyle.setTopBorderColor(HSSFColor.BLACK.index);

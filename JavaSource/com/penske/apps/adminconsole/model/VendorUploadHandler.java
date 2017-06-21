@@ -10,8 +10,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
 
 import com.penske.apps.adminconsole.service.UploadService;
 import com.penske.apps.adminconsole.util.VsportalConstants;
@@ -37,6 +37,7 @@ public class VendorUploadHandler extends ExcelUploadHandler{
 	/* (non-Javadoc)
 	 * @see com.penske.apps.vsportal.excel.handler.ExcelUploadHandler#collectExcelDataList(boolean, java.util.List, java.lang.Object)
 	 */
+	@Override
 	protected void collectExcelDataList(boolean isReadable, List vendorReportList,
 			Object modelObject) throws Exception {
 		if (isReadable == true) {
@@ -63,6 +64,7 @@ public class VendorUploadHandler extends ExcelUploadHandler{
 	/* (non-Javadoc)
 	 * @see com.penske.apps.vsportal.excel.handler.ExcelUploadHandler#createModelObject()
 	 */
+	@Override
 	protected Object createModelObject(boolean pilot) {
 		return new VendorReport();
 	}
@@ -70,16 +72,18 @@ public class VendorUploadHandler extends ExcelUploadHandler{
 	/* (non-Javadoc)
 	 * @see com.penske.apps.vsportal.excel.handler.ExcelUploadHandler#getStartRow()
 	 */
+	@Override
 	protected int getStartRow(boolean pilot) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	/* (non-Javadoc)
-	 * @see com.penske.apps.vsportal.excel.handler.ExcelUploadHandler#populateExcelData(java.lang.String, java.lang.Object, int, org.apache.poi.hssf.usermodel.HSSFCell)
+	 * @see com.penske.apps.vsportal.excel.handler.ExcelUploadHandler#populateExcelData(java.lang.String, java.lang.Object, int, org.apache.poi.ss.usermodel.Cell)
 	 */
+	@Override
 	protected boolean populateExcelData(String value, Object vendorReportObj,
-			int cellNum, HSSFCell cell, HSSFRow row) throws Exception {
+			int cellNum, Cell cell, Row row) throws Exception {
 		//VendorReport vendorReport = (VendorReport)vendorReportObj;
 		VendorReport vendorReport = new VendorReport();
 		boolean readRecords = true;
@@ -93,8 +97,8 @@ public class VendorUploadHandler extends ExcelUploadHandler{
     			if(rowNum==0 && !isValidFile){
     				Iterator colItr = row.cellIterator();
     				while(colItr.hasNext()){
-    					HSSFCell nextCell = (HSSFCell)colItr.next();
-    					if(nextCell.getCellType()==HSSFCell.CELL_TYPE_STRING   
+    					Cell nextCell = (Cell)colItr.next();
+    					if(nextCell.getCellType()==Cell.CELL_TYPE_STRING   
     						&& VsportalConstants.PENSKE_REPORT_ID.equalsIgnoreCase(String.valueOf(nextCell.getRichStringCellValue()).trim())){
     						penkseIdColNum = nextCell.getColumnIndex();
     						isValidFile = true;
@@ -139,6 +143,7 @@ public class VendorUploadHandler extends ExcelUploadHandler{
 	/* (non-Javadoc)
 	 * @see com.penske.apps.vsportal.excel.handler.ExcelUploadHandler#uploadExcelDataList(java.util.List, com.penske.apps.vsportal.service.IUploadService)
 	 */
+	@Override
 	protected String uploadExcelDataList(List excelDataList, UploadService objUploadService) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
@@ -151,7 +156,8 @@ public class VendorUploadHandler extends ExcelUploadHandler{
 	 * @param uploadService com.penske.apps.vsportal.service.IUploadService
 	 * @return java.lang.String
 	 */
-	 public String validateFile(String fileName, InputStream input, UploadService uploadService, boolean pilot){
+	 @Override
+	public String validateFile(String fileName, InputStream input, UploadService uploadService, boolean pilot){
 		String message = "";
 
 		int extensionCheck = 3;
@@ -166,9 +172,9 @@ public class VendorUploadHandler extends ExcelUploadHandler{
 				message = "File Name can't be blank";
 			} else if (extensionCheck == 1) {
 				message = "The file has no extension. Upload Stopped for "	+ fileName;
-			} else if (extensionCheck == 2) {
+			} /*else if (extensionCheck == 2) {
 				message = "The file extension must be 'xls' for "+ fileName;
-			} else if (extensionCheck == 3) {
+			} */else if (extensionCheck == 3) {
 				message = "Error Occured while verifying extension for "+ fileName;
 			}	
 		}catch(Exception exp){

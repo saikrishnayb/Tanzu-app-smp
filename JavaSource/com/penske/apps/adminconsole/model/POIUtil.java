@@ -15,8 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
+import org.apache.poi.ss.usermodel.Cell;
 
 /**
  * Utility Class to provide POI related features.This requires POI jar to be included in the class path.
@@ -36,13 +35,13 @@ public class POIUtil{
 	    /**
 	     * Method to ge the Date as java.util.Date 
 	     * 
-	     * @author 600123480
+	     * @author 600104283
 	     * @param value java.lang.String
-	     * @param cell org.apache.poi.hssf.usermodel.HSSFCell
+	     * @param cell org.apache.poi.ss.usermodel.Cell
 	     * @return java.util.Date
 	     * @throws java.lang.Exception
 	     */
-	    public static Date getDate(String value, HSSFCell cell,String dateFormat ) throws Exception {
+	    public static Date getDate(String value, Cell cell,String dateFormat ) throws Exception {
 	    	
 	    	double doubleDate = 0.0;
 	    	Date date = null;
@@ -51,15 +50,15 @@ public class POIUtil{
 	    			//Method to Check if the value read(interpreted) from the excel sheet is a number.
 		    		if(DataUtil.isNumber(value)){
 		    			doubleDate = Double.parseDouble(value);	    		
-		    			if(HSSFDateUtil.isValidExcelDate(doubleDate)){
+		    			if(org.apache.poi.ss.usermodel.DateUtil.isValidExcelDate(doubleDate)){
 	    					// To Check if the value was originally a date or just a number by itself.
 	    					// i.e ., date 12/09/2009 can be read(interpreted) by the POI as 40123.4. In this case, even though the value is in the form
 	    					// of a number it is a valid date.This should be converted to Date format using getJavaDate method.
 	    					// If the Excel cell has the number 345621.0, it can be converted to some date form(e.g., 05/09/1978 using getJavaDate method.
 	    					// But if done so, it will be an invalid date.This data should be ignored.
 	    					// To do this validation, the following method isCellDateFormatted is used.
-		    				if(HSSFDateUtil.isCellDateFormatted(cell)){
-		    					date = HSSFDateUtil.getJavaDate(doubleDate);   
+		    				if(org.apache.poi.ss.usermodel.DateUtil.isCellDateFormatted(cell)){
+		    					date = org.apache.poi.ss.usermodel.DateUtil.getJavaDate(doubleDate);   
 		    					date = DateUtil.getDate(date);
 		    				}
 		    			}
@@ -91,11 +90,11 @@ public class POIUtil{
 	     * 
 	     * @author 600123480
 	     * @param value java.lang.String
-	     * @param cell org.apache.poi.hssf.usermodel.HSSFCell
+	     * @param cell org.apache.poi.ss.usermodel.Cell
 	     * @return java.util.Date
 	     * @throws java.lang.Exception
 	     */
-	    public static String getDateString(String value, HSSFCell cell ) throws Exception {	    	
+	    public static String getDateString(String value, Cell cell ) throws Exception {	    	
 	    	
 	    	return getDateString(value,cell,DateUtil.MM_DD_YY);
 	    }
@@ -113,11 +112,11 @@ public class POIUtil{
 	     * 
 	     * @author 600123480
 	     * @param value java.lang.String
-	     * @param cell org.apache.poi.hssf.usermodel.HSSFCell
+	     * @param cell org.apache.poi.ss.usermodel.Cell
 	     * @return java.util.Date
 	     * @throws java.lang.Exception
 	     */
-	    public static String getDateString(String value, HSSFCell cell , String dateFormat) throws Exception {
+	    public static String getDateString(String value, Cell cell , String dateFormat) throws Exception {
 	    	
 	    	double doubleDate = 0.0;
 	    	Date date = null;
@@ -128,15 +127,15 @@ public class POIUtil{
 		    		if(DataUtil.isNumber(value)){
 		    			doubleDate = Double.parseDouble(value);		    			
 		    				//To check if it is a valid date
-		    				if(HSSFDateUtil.isValidExcelDate(doubleDate)){
+		    				if(org.apache.poi.ss.usermodel.DateUtil.isValidExcelDate(doubleDate)){
 		    					//To Check if the value was originally a date or just a number by itself.
 		    					//i.e ., date 12/09/2009 can be read by the POI as 40123.4. In this case, even though the value is in the form
 		    					// of a number it is a valid date.This should be converted to Date format using getJavaDate method.
 		    					// If the Excel cell has the number 345621.0, it can be converted to some date form(e.g., 05/09/1978 using getJavaDate method.
 		    					// But if done so, it will be an invalid date.This data should be ignored.
 		    					// To do this validation, the following method isCellDateFormatted is used.
-		    					if(HSSFDateUtil.isCellDateFormatted(cell)){
-		    						date = HSSFDateUtil.getJavaDate(doubleDate);   
+		    					if(org.apache.poi.ss.usermodel.DateUtil.isCellDateFormatted(cell)){
+		    						date = org.apache.poi.ss.usermodel.DateUtil.getJavaDate(doubleDate);   
 		    						date = DateUtil.getDate(date);
 		    						returnDate = DateUtil.formatDate(date, dateFormat);
 		    					}	

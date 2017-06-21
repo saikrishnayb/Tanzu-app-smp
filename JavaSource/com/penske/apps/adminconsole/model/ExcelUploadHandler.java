@@ -18,14 +18,13 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
-import org.apache.poi.hssf.usermodel.HSSFFont;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.penske.apps.adminconsole.service.UploadService;
@@ -53,16 +52,16 @@ public abstract class ExcelUploadHandler {
 	static Logger logger = null;
 
 	// Declare workbook
-	HSSFWorkbook workBook = null;
+	Workbook workBook = null;
 
 	// Declare sheet
-	HSSFSheet workSheet = null;
+	Sheet workSheet = null;
 
 	// Declare sheet
-	HSSFCellStyle cellStyle = null;
+	CellStyle cellStyle = null;
 
 	// Declare font
-	HSSFFont cellFont = null;
+	Font cellFont = null;
 
 	List transports = new ArrayList();
 
@@ -97,7 +96,7 @@ public abstract class ExcelUploadHandler {
 	 * @return boolean
 	 */
 	protected abstract boolean populateExcelData(String value,
-			Object transportObj, int cellNum, HSSFCell cell,HSSFRow row) throws Exception;
+			Object transportObj, int cellNum, Cell cell,Row row) throws Exception;
 
 	/**
 	 * Method to add each and every Model object into a Collection
@@ -308,15 +307,10 @@ public abstract class ExcelUploadHandler {
 			boolean pilot) throws Exception {
 		List modelObjectList = new ArrayList();
 		String message = "";
-		try {
-
-			POIFSFileSystem fs = new POIFSFileSystem(input); // Getting the instance of POI File System
-			HSSFWorkbook wb = new HSSFWorkbook(fs); // Creating a workbook for the uploaded file
-
-			HSSFSheet sheet = wb.getSheetAt(0);
-            
+		try {			
+			Workbook wb = WorkbookFactory.create(input);
+			Sheet sheet = wb.getSheetAt(0);
 			Iterator rows = sheet.rowIterator();
-			
 			int totalrows = sheet.getLastRowNum();
 			/**
 			 * Adding limit to number of rows uploaded using Vendor exception
@@ -372,7 +366,7 @@ public abstract class ExcelUploadHandler {
 	
 		Object modelObject = null;
 		while (rows.hasNext()&& readRecords == true) {
-			HSSFRow row = (HSSFRow) rows.next();
+			Row row = (Row) rows.next();
 			
 			rowNum = row.getRowNum();
 
@@ -393,23 +387,23 @@ public abstract class ExcelUploadHandler {
 	/**
 	 * Method to Populate to each cell value into the appropriate attributes / properties in the Model object
 	 * 
-	 * @author 600123480
-	 * @param row org.apache.poi.hssf.usermodel.HSSFRow
+	 * @author 600104283
+	 * @param row org.apache.poi.ss.usermodel.Row
 	 * @param readRecords boolean
 	 * @param modelObject java.lang.Object
 	 */
-	private boolean populateCell(HSSFRow row,boolean readRecords,Object modelObject) throws Exception{
+	private boolean populateCell(Row row,boolean readRecords,Object modelObject) throws Exception{
 		Iterator cells = row.cellIterator();
 		int cellNum = 0;
 		String value = "";
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 		while (cells.hasNext() && readRecords == true) {
-			HSSFCell cell = (HSSFCell) cells.next();
+			Cell cell = (Cell) cells.next();
 			cellNum = cell.getColumnIndex();
 
 			switch (cell.getCellType()) {
-				case HSSFCell.CELL_TYPE_NUMERIC:
-					 if(HSSFDateUtil.isCellDateFormatted(cell)) {
+				case Cell.CELL_TYPE_NUMERIC:
+					 if(org.apache.poi.ss.usermodel.DateUtil.isCellDateFormatted(cell)) {
 						 try{
 							 value = sdf.format(cell.getDateCellValue());
 						 } catch(Exception e) {
@@ -420,11 +414,11 @@ public abstract class ExcelUploadHandler {
 					 }
 					 readRecords = populateExcelData(value, modelObject,cellNum,cell,row);
 					break;
-				case HSSFCell.CELL_TYPE_STRING:
+				case Cell.CELL_TYPE_STRING:
 					 value = String.valueOf(cell.getRichStringCellValue());
 					 readRecords = populateExcelData(value, modelObject,cellNum,cell,row);
 					break;
-				  case HSSFCell.CELL_TYPE_BLANK:
+				  case Cell.CELL_TYPE_BLANK:
                      value = "";
                      readRecords = populateExcelData(value,modelObject,cellNum,cell,row);	
                      break;
