@@ -157,7 +157,7 @@ $("table").sortable({
   },
   receive: function (e,ui){
 	  
-	  ui.item[0].remove();	//remove the tbody   from first table
+	  $(ui.item).remove();	//remove the tbody   from first table
 	  //remove extra columns in rows
 	  ui.item.children().each(function(i,data){
 		  
