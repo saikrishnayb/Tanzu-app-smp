@@ -223,7 +223,6 @@ function addNewRow(gIndex){
 //function to show the loading image 
 var showLoading = function(gIndex) {
     var defer = $.Deferred();
-
     processingImageAndTextHandler('visible','Adding New Row...');
     setTimeout(function() {
         defer.resolve(gIndex);
@@ -254,13 +253,19 @@ var addRow= function(gIndex){
 	var lstIndx=lastDivID.lastIndexOf("_");
 	var rIndex=parseInt(lastDivID.substr(lstIndx+1,lstIndx.length))+1;
 	
-	//var table = $("#createRule-Table").DataTable();
 	
 	$('#createRule-Table').DataTable().destroy();
 	
 	 var prevRowIndex=rIndex-1;
 	 preRowId='G_'+gIndex+'-R_'+prevRowIndex;
-	 $("#"+preRowId).after('<tr  class="even whiteRow group'+gIndex+'" id="G_'+gIndex+'-R_'+rIndex+'"><td class="editable centerAlign"></td>'+
+	 preRowId='G_'+gIndex+'-R_'+prevRowIndex;
+	 var newRowColor="grayRow";
+	 if($("#"+preRowId).hasClass( "grayRow" )){
+		 newRowColor="grayRow";
+	 }else{
+		 newRowColor="whiteRow";
+	 }
+	 $("#"+preRowId).after('<tr  class="even '+newRowColor+' group'+gIndex+'" id="G_'+gIndex+'-R_'+rIndex+'"><td class="editable centerAlign"></td>'+
 			 '<td><select id="componentsDropDown-G_'+gIndex+'-R_'+rIndex+'" name="ruleDefinitionsList['+frmAryIdx+'].componentId" onchange="loadOperands('+gIndex+','+rIndex+')" style="width:100%"><option></option></select></td>'+
 			 '<td><select id="operandsID-G_'+gIndex+'-R_'+rIndex+'" name="ruleDefinitionsList['+frmAryIdx+'].operand" disabled=""></select></td>'+
 			 '<td><input id="valueID-G_'+gIndex+'-R_'+rIndex+'" name="ruleDefinitionsList['+frmAryIdx+'].value" maxlength="30" type="text">'+
@@ -278,9 +283,6 @@ var addRow= function(gIndex){
 	$($addCriteriaGrp).appendTo("#createRule-Table_filter");
 	$("#createRule-Table_filter").addClass("floatRight");
 	$("#createRule-Table_wrapper").css("width","99%");
-	
-	applyOddEvenRule();
-	
 	parent.resizeAfterPaginationChange();
 	 var defer = $.Deferred();
 	 defer.resolve(); 
@@ -355,23 +357,14 @@ function deleteGroup(grpIndex){
 /*Method to apply different background colors for alternative groups*/
 function applyOddEvenRule(){
 	
-	var gCountsArray = new Array();
-	var curNode=null;
+var gCountsArray = new Array();
 	
-	$createRuleTable.rows().every( function ( index ) {
-	    curNode = $createRuleTable.row( index ).draw().node();
-	    var nodeId=$(curNode).attr("id");
-	    var gCount=nodeId.substring(nodeId.indexOf("_")+1,nodeId.lastIndexOf("-"));
-	    gCountsArray.push(gCount);
-	 
-	} );
-	
-	//Getting the unique values from array
-	var gCountsUniqueArray = gCountsArray.filter(function(value, index, gCountsArray) {
-	    return index == gCountsArray.indexOf(value);
+	$('#createRule-Table tbody .groupHeader').each(function () {
+		var nodeId=$(this).attr('id');
+		 var gCount=nodeId.substring(nodeId.indexOf("_")+1,nodeId.lastIndexOf("-"));
+		    gCountsArray.push(gCount);
 	});
-
-	applyBGColors(gCountsUniqueArray.sort(function(gCount1, gCount2){return gCount1-gCount2;}));
+	applyBGColors(gCountsArray.sort(function(gCount1, gCount2){return gCount1-gCount2;}));
 	
 }
 
@@ -402,7 +395,7 @@ var showGroupLoading = function(gIndex) {
     processingImageAndTextHandler('visible','Copying...');
     setTimeout(function() {
         defer.resolve(gIndex);
-    }, 50);
+    }, 1);
 
     return defer;
 };

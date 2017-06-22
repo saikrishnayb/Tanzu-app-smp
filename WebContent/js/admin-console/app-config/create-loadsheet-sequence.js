@@ -196,6 +196,15 @@ $("table tbody").sortable({
 	},
   over: function( event, ui ) {
 	destId=$(this).parent().attr('id');
+	//Modifying the placeholder width based on the table
+	var extraRows;
+	if(destId=="assignedComponentsTable"){
+		extraRows='<td colspan="1">&nbsp;</td><td colspan="1">&nbsp;</td><td colspan="1">&nbsp;</td><td colspan="1">&nbsp;</td><td colspan="1">&nbsp;</td><td colspan="1">&nbsp;</td>';
+		$(ui.placeholder).html(extraRows); 
+	}else{
+		extraRows='<td colspan="1">&nbsp;</td><td colspan="1">&nbsp;</td><td colspan="1">&nbsp;</td><td colspan="1">&nbsp;</td>';
+		$(ui.placeholder).html(extraRows); 
+	}
   },
   receive: AddRemoveExtraColumns ,
   update: function(e, ui) {
