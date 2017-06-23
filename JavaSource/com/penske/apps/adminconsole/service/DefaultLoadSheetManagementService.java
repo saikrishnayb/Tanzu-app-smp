@@ -334,8 +334,8 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 	 * Method to get loadsheet types list in loadsheet sequence screen.
 	 */
 	@Override
-	public List<String> getTypeList() {
-		return loadsheetManagementDao.getTypeList();
+	public List<String> getTypeList(String category) {
+		return loadsheetManagementDao.getTypeList(category);
 	}
 	
 	/**
@@ -559,7 +559,12 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 		
 		return isUnique;
 	}
-	
-
+	/**
+	 * Method to check for Unique sequence for selected category,type and oem.
+	 */
+	@Override
+	public int checkForUniqueSequence(String catgeory, String type,String mfr,int seqId) {
+		return loadsheetManagementDao.getSequenceCount(catgeory,type,mfr,seqId);
+	}
 
 }

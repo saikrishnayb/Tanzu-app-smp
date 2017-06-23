@@ -39,5 +39,6 @@ public class ApplicationConstants {
 	
 	/*load sheet management constants */
 	public static final String DEFAULT_TYPE="DEFAULT";
+	public static final String BLANK="";
 	
 }

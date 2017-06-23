@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -861,8 +862,24 @@ public class AppConfigRestController {
 	/* ========== Check For Unique sequence Name ===============*/
 	@RequestMapping(value="/check-unique-name",method=RequestMethod.POST)
 	@ResponseBody
-	public boolean checkForUniqueName(@RequestParam("seqName") String seqName,@RequestParam("seqId") int seqId){
-		
-		return loadsheetManagementService.checkForUniqueSequenceName(seqName, seqId);
+	public int checkForUniqueName(@RequestParam("seqName") String seqName,@RequestParam("seqId") int seqId,@RequestParam("category") String category,
+			@RequestParam("type") String type,@RequestParam("mfr") String mfr){
+		int UniqueStatus=0;
+		boolean status= loadsheetManagementService.checkForUniqueSequenceName(seqName, seqId);
+		if(status){
+			if(StringUtils.isNotBlank(category)){
+				int count = loadsheetManagementService.checkForUniqueSequence(category,type, mfr,seqId);
+				if(count>0){
+				 UniqueStatus=2; // duplicate sequence for category,type and mfr.	
+				}else{
+					UniqueStatus=0; // sequence is unique.
+				}
+			}
+			return UniqueStatus;
+		}else{
+			UniqueStatus=1;
+			return UniqueStatus; //duplicate sequence name.
+		}
 	}
+	
 }

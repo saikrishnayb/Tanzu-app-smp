@@ -272,7 +272,11 @@
 	<select  id="getTypeList" resultType="String">
 		SELECT DISTINCT TRIM(TYPE) AS TYPE
 		FROM
-		SMC_CAT_TYPE_MASTER ORDER BY TYPE
+		SMC_CAT_TYPE_MASTER
+		<if test="category != null and category !='' ">
+			WHERE PO_CATEGORY = #{category}
+       	</if>
+        ORDER BY TYPE
 	</select>
 	
 	<select  id="getMfrList" resultType="String">
@@ -649,6 +653,25 @@
 		<if test="sequenceId != 0">
 		WHERE
 				SEQ_MASTER_ID NOT IN ( #{sequenceId} ) 
+		</if>
+	</select>
+	
+	<!-- Get sequence count for selected category,type and oem -->
+ 	<select id="getSequenceCount" resultType="int">
+ 		SELECT 
+				count(*)
+		FROM
+				SMC_LOADSHEET_SEQ_MASTER
+		WHERE
+		   PO_CATEGORY=#{category} 
+		<if test="type != null">
+				 AND TYPE=#{type}
+		</if>
+		<if test="mfr != null">
+				AND OEM=#{mfr}
+		</if>
+		<if test="sequenceId != 0">
+				AND SEQ_MASTER_ID NOT IN ( #{sequenceId} ) 
 		</if>
 	</select>
 	

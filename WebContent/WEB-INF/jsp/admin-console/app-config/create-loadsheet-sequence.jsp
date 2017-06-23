@@ -122,15 +122,16 @@
 						<div class="floatLeft">
 							<h2>Assigned Components</h2>
 						</div>
+						<div class="floatRight">
 						<c:if test="${seqMaster.pageAction ne 'VIEW'}">
-						<div id="addGroup" class="floatLeft" style="margin-left: 10%;">
+						<div id="addGroup" class="floatLeft">
 					    <a href="#" onclick='Addgroup()'>Add Group<img  class="leftPad centerImage handCursor adder rightMargin" src="https://staticdev.penske.com/common/images/add.png" alt="Add Criteria Group"></img></a>
 						</div>
 						</c:if>
 						<div class="floatRight">
 							<label>Search:  </label><input type="text" id="assignedSearch" />
 						</div>
-						
+						</div>
 					</div>
 					<div>
 					<div id="table-wrapper">
@@ -167,10 +168,13 @@
 									</td>
 								<td style="width:5%" class="editable centerAlign"></td>
 								<td style="width:7%"></td>
-								<td  colspan="3"><div id="editgroup-${grpIndex.count- 1}" class="groupName" style="float: left">${grpMasterData.name }</div> 
+								<td  colspan="3">
+								<div>
+								<div style="height:20px;" id="editgroup-${grpIndex.count- 1}" class="groupName floatLeft">${grpMasterData.name }</div> 
 								<c:if test="${seqMaster.pageAction ne 'VIEW'}">
-								<div id="edit-${grpIndex.count -1}" style="float: right;margin-right: 1%;" class="editGroup"> Edit </div>
+								<div id="edit-${grpIndex.count -1}" style="margin-right: 1%;" class="editGroup floatRight"><u> Edit </u></div>
 								</c:if>
+								</div>
 								</td>
 							</tr>
 							<!-- Dislpaying the components assigned to group -->

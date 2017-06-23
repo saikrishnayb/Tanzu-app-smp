@@ -1006,5 +1006,7 @@ tbody, thead tr {
 
 .groupName:focus{
 	border:2px solid;
+	padding: 2px 8px; 
+	border-radius: 25px;
 }
 

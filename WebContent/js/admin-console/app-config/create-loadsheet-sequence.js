@@ -410,24 +410,33 @@ function submitLoadSheetForm(){
 			//Check for unique sequence Name
 			displayFlag=false;
 			var showLoading=true;
+			var category=$("#categoryID").val();
+			var type=$("#typeID").val();
+			var mfr=$("#oem").val();
 			$.ajax({
 				  type: "POST",
 				  url: "./check-unique-name.htm",
 				  cache:false,
-				  data: {seqName : seqName,seqId:seqMasterId},
+				  data: {seqName : seqName,seqId:seqMasterId,category:category,type:type,mfr:mfr},
 				  success: function(isUnique){
 					  
-					  if(isUnique){
+					  if(isUnique==0){
 						  showLoading=true;
 						  $("#categoryID").attr("disabled",false);
 							$("#typeID").attr("disabled",false);
 							$loadSheetSequncingForm.submit();
 						  
 					  }else{
-						  showLoading=false;
+						showLoading=false;
+						if(isUnique==1){
 						$("#ErrorMsg span").text("Entered Sequence Name already exists ! please enter different name.");
 						$("#ErrorMsg").show();
 						$("#name").addClass("errorMsgInput");
+						}else{
+							$("#ErrorMsg span").text("Loadsheet sequence with the Same Category, Type and MFR already Exists.");
+							$("#ErrorMsg").show();
+						}
+						
 						parent.resizeAfterPaginationChange();
 						}
 					
@@ -452,48 +461,29 @@ function validateFileds(){
 	
 	var rtrnFlag=true;
 	
-	if(($("#name").val()=="") || $("#description").val()=="") {
-		$("#ErrorMsg span").text("Please enter Name and Description");
+	if(($("#name").val()=="")) {
+		$("#ErrorMsg span").text("Please enter Name");
 		$("#ErrorMsg").show();
 		$("#name").addClass("errorMsgInput");
-		$("#description").addClass("errorMsgInput");
 		parent.resizeAfterPaginationChange();
 		return false;
-	}else if(($("#categoryID option:selected").text()=="") || $("#typeID option:selected").text()=="") {
+	}else if(($("#categoryID option:selected").text()=="")) {
 			
 		
 		$("#name").removeClass("errorMsgInput");
-		$("#description").removeClass("errorMsgInput");
+		
 			
-		$("#ErrorMsg span").text("Please select Category and Type");
+		$("#ErrorMsg span").text("Please select Category");
 		$("#ErrorMsg").show();
 		
 		$("#categoryID").addClass("errorMsgInput");
-		$("#typeID").addClass("errorMsgInput");
-		parent.resizeAfterPaginationChange();
-		return false;
-		
-	}else if($("#oem option:selected").text()==""){
-		
-		$("#name").removeClass("errorMsgInput");
-		$("#description").removeClass("errorMsgInput");
-		$("#categoryID").removeClass("errorMsgInput");
-		$("#typeID").removeClass("errorMsgInput");
-		
-		$("#ErrorMsg span").text("Please select MFR");
-		$("#ErrorMsg").show();
-		
-		$("#oem").addClass("errorMsgInput");
 		parent.resizeAfterPaginationChange();
 		return false;
 		
 	}else{
 		
 		$("#name").removeClass("errorMsgInput");
-		$("#description").removeClass("errorMsgInput");
 		$("#categoryID").removeClass("errorMsgInput");
-		$("#typeID").removeClass("errorMsgInput");
-		$("#oem").removeClass("errorMsgInput");
 		
 		//Validate the Assigned Components
 		
@@ -574,8 +564,11 @@ function Addgroup(){
 			  '<td style="width:5%" class="editable centerAlign">'+
 			  '</td>'+
 			  '<td style="width:7%"></td>'+
-			  '<td colspan="3"><div id="editgroup-'+groupCount+'" class="groupName" style="float: left">GROUP NAME</div> <div id="edit-'+groupCount+'"'+
-			  'style="float: right;margin-right: 1%;" class="editGroup"> Edit</div>'+
+			  '<td colspan="3">'+
+			  '<div>'+
+			  '<div  style="height:20px;" id="editgroup-'+groupCount+'" class="groupName floatLeft">GROUP NAME</div> <div id="edit-'+groupCount+'"'+
+			  'style="float: right;margin-right: 1%;" class="editGroup floatRight"><u> Edit </u></div>'+
+			  '</div>'+
 			  '<input type="hidden" id="formGroupSeq-'+groupCount+'"  name="groupMasterList['+groupCount+'].displaySeq"/><input type="hidden" id="formGroupName-'+groupCount+'" name="groupMasterList['+groupCount+'].name"/>'+
 			  '<input type="hidden" name="groupMasterList['+groupCount+'].grpMasterId"/>'+
 			  '<input type="hidden" path="groupMasterList['+groupCount+'].seqMasterId"/>'+

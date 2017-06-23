@@ -41,7 +41,7 @@ public interface LoadsheetManagementDao {
 	public void deleteRuleDefDetails(@Param("ruleId") int ruleId);
 	public List<LoadsheetManagement> getAssignedLoadsheetCategories(@Param("ruleId") int ruleId);
 	public List<String> getCategoryList();
-	public List<String> getTypeList();
+	public List<String> getTypeList(@Param("category") String category);
 	public List<String>  getMfrList();
 	public List<LoadSheetComponentDetails> getUnAssignedComponents(@Param("category") String category,@Param("type") String type);
 	public void insertSeqMasterDetails(@Param("seqMaster") LoadsheetSequenceMaster seqMaster,@Param("user") UserContext user);
@@ -60,5 +60,6 @@ public interface LoadsheetManagementDao {
 	public void deleteLoadsheetGroupMaster(@Param("sequenceId") int sequenceId);
 	public void deleteLoadsheetGroupSequnece(@Param("sequenceId") int sequenceId);
 	public List<String> getAllSequenceNames(@Param("sequenceId") int sequenceId);
+	public int getSequenceCount(@Param("category") String category,@Param("type") String type,@Param("mfr") String mfr,@Param("sequenceId") int sequenceId);
 	
 }

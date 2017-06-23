@@ -315,7 +315,7 @@ public class AppConfigController {
 		ModelAndView mav = new ModelAndView("/admin-console/app-config/loadsheet-sequence");
 		mav.addObject("sequences", loadsheetManagementService.getLoadsheetSequences());
 		mav.addObject("categories", loadsheetManagementService.getCategoryList());
-		mav.addObject("types", loadsheetManagementService.getTypeList());
+		mav.addObject("types", loadsheetManagementService.getTypeList(ApplicationConstants.BLANK));
 		mav.addObject("viewMode", "");
 		return mav;
 	}
@@ -520,7 +520,7 @@ public class AppConfigController {
 		mav.addObject("selectedType", type.trim());
 		mav.addObject("viewMode", viewMode);
 		mav.addObject("categories", loadsheetManagementService.getCategoryList());
-		mav.addObject("types", loadsheetManagementService.getTypeList());
+		mav.addObject("types", loadsheetManagementService.getTypeList(category));
 		return mav;
 	}
 	
@@ -551,7 +551,7 @@ public class AppConfigController {
 		
 		mav.addObject("unassignedComponents",loadsheetManagementService.getUnAssignedComponents(seqMaster));
 		mav.addObject("categoriesList", loadsheetManagementService.getCategoryList());
-		mav.addObject("typesList", loadsheetManagementService.getTypeList());
+		mav.addObject("typesList", loadsheetManagementService.getTypeList(seqMaster.getCategory()));
 		mav.addObject("mfrList", loadsheetManagementService.getMfrList());
 		
 		mav.addObject("seqMaster",seqMaster);
@@ -586,7 +586,7 @@ public class AppConfigController {
 		
 		mav.addObject("unassignedComponents",loadsheetManagementService.getUnAssignedComponents(seqMaster));
 		mav.addObject("categoriesList", loadsheetManagementService.getCategoryList());
-		mav.addObject("typesList", loadsheetManagementService.getTypeList());
+		mav.addObject("typesList", loadsheetManagementService.getTypeList(seqMaster.getCategory()));
 		mav.addObject("mfrList", loadsheetManagementService.getMfrList());
 		mav.addObject("seqMaster",seqMaster);
 		
