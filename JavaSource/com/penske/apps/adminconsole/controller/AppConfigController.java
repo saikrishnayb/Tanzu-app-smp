@@ -343,9 +343,9 @@ public class AppConfigController {
 	
 	/*=========Go back From Create Rule screen to Rules screen or configure rule screen*=======*/ 
 	@RequestMapping("/goBack-createRule")
-	public ModelAndView goBackFromCreateRule(HttpServletRequest request,@RequestParam(value="requestedFrom",required=false) String requestedFrom){
+	public ModelAndView goBackFromCreateRule(HttpServletRequest request,@RequestParam(value="requestedFrom",required=false) String requestedFrom,@RequestParam(value="componentId",required=false) String componentId){
 		
-		return redirectFromCreateRule(request, requestedFrom);
+		return redirectFromCreateRule(request, requestedFrom,componentId);
 	}
 	/* =============== Create New Rule ==================*/
 	@RequestMapping(value={"/create-rule"})
@@ -353,7 +353,7 @@ public class AppConfigController {
 		
 		loadsheetManagementService.createNewRule(ruleMaster);
 		
-		return redirectFromCreateRule(request, ruleMaster.getRequestedFrom());
+		return redirectFromCreateRule(request, ruleMaster.getRequestedFrom(),null);
 		
 	}
 	
@@ -388,7 +388,7 @@ public class AppConfigController {
 	 * @param requestedFrom
 	 * @return
 	 */
-	private ModelAndView redirectFromCreateRule(HttpServletRequest request,String requestedFrom){
+	private ModelAndView redirectFromCreateRule(HttpServletRequest request,String requestedFrom,String componentId){
 		
 		HttpSession session = request.getSession(false);
 		ModelAndView mav=null;
@@ -401,10 +401,10 @@ public class AppConfigController {
 		}
 		if(requestedFrom !=null){
 			if(requestedFrom.equalsIgnoreCase("CREATE_RULE")){
-				mav=getLoadsheetRuleDetails();
+				return new ModelAndView("redirect://admin-console/app-config/loadsheet-rule.htm");
 			}else{
 				if(catDetails!=null){
-					mav=getLoadsheetComponents(request, catDetails.getCategoryId(), catDetails.getCategory(), catDetails.getType(), catDetails.getViewMode(),compRequestedFrom);
+					mav=getLoadsheetComponents(request, catDetails.getCategoryId(), catDetails.getCategory(), catDetails.getType(), catDetails.getViewMode(),compRequestedFrom,componentId);
 					//details for opening the Add rule popup
 					mav.addObject("componentId",catDetails.getComponentId());
 					mav.addObject("visibilityId",catDetails.getVisibilityId());
@@ -412,7 +412,7 @@ public class AppConfigController {
 				}
 			}
 		}else{//If page reloads in Add rule page
-			mav=getLoadsheetComponents(request, catDetails.getCategoryId(), catDetails.getCategory(), catDetails.getType(), catDetails.getViewMode(),compRequestedFrom);
+			mav=getLoadsheetComponents(request, catDetails.getCategoryId(), catDetails.getCategory(), catDetails.getType(), catDetails.getViewMode(),compRequestedFrom,componentId);
 		}
 		
 		return mav;
@@ -451,27 +451,18 @@ public class AppConfigController {
 	
 	/* ================Update Rule =======================*/
 	@RequestMapping(value={"/update-rule"})
-	public ModelAndView updateRuleDetails(RuleMaster ruleMaster) {
-		
-		List<LoadsheetManagement> loadSheetManagementList;
-		ModelAndView mav = new ModelAndView("/admin-console/app-config/create-rule");
+	public String updateRuleDetails(RuleMaster ruleMaster) {
 		
 		loadsheetManagementService.updateRuleDetails(ruleMaster);
-		loadSheetManagementList = loadsheetManagementService.getAssignedLoadsheetCategories(ruleMaster.getRuleId());
-		mav.addObject("componentsList", loadsheetManagementService.getComponents());
-		mav.addObject("pageAction","UPDATE");
-		mav.addObject("ruleMaster",ruleMaster);
-		mav.addObject("requestedFrom",ruleMaster.getRequestedFrom());
-		mav.addObject("loadSheetManagementList",loadSheetManagementList);
-
-		return mav;
+		
+		return "redirect:/admin-console/app-config/edit-rule.htm?ruleId="+ruleMaster.getRuleId()+"&requestedFrom="+ruleMaster.getRequestedFrom();
 		
 	}
 	
 	/* ================== loadsheet components ================== */
 	@RequestMapping(value={"/get-loadsheet-components"})
 	public ModelAndView getLoadsheetComponents(HttpServletRequest request,@RequestParam("categoryId") String categoryId,@RequestParam("category") String category,@RequestParam(value="type") String type,
-			@RequestParam(value="viewMode") String viewMode,@RequestParam("compRqstdFrom") String compRequestedFrom) {
+			@RequestParam(value="viewMode") String viewMode,@RequestParam("compRqstdFrom") String compRequestedFrom,@RequestParam(value="componentId",required=false) String componentId) {
 		ModelAndView mav = new ModelAndView("/admin-console/app-config/loadsheet-components");
 		HttpSession session = request.getSession(false); 
 		String defaultType=type;
@@ -483,7 +474,7 @@ public class AppConfigController {
 		mav.addObject("type", type);
 		mav.addObject("viewMode", viewMode);
 		mav.addObject("compRequestedFrom",compRequestedFrom);
-		
+		mav.addObject("selectedComponentId",componentId);
 		
 		session.setAttribute("COMP_REQUESTED_FROM", compRequestedFrom);
 		
@@ -531,7 +522,7 @@ public class AppConfigController {
 		
 		//Add category and type values to the session for back button functionality.
 		HttpSession session = request.getSession(false);
-		if(session != null && seqMaster.getPageAction().equals("BACK") ){
+		if(session != null && seqMaster.getPageAction()!=null && seqMaster.getPageAction().equals("BACK") ){
 			 session.setAttribute("selectedCategoryinListPage", seqMaster.getCategory());
 			 session.setAttribute("selectedTypeinListPage", seqMaster.getType());
 			 session.setAttribute("selectedViewMode", seqMaster.getViewMode());
@@ -564,7 +555,7 @@ public class AppConfigController {
 	public ModelAndView saveLoadSheetSequence(LoadsheetSequenceMaster seqMaster){
 		
 		loadsheetManagementService.createLoadSheetSequencing(seqMaster);
-		return getLoadsheetSequences();
+		return new ModelAndView("redirect:/admin-console/app-config/loadsheet-sequence.htm");
 	}
 	
 	/* ==================== to open the Edit loadsheet sequence page==================*/
@@ -599,7 +590,8 @@ public class AppConfigController {
 		
 		loadsheetManagementService.updateLoadsheetSequencingDetails(seqMaster);
 		HttpSession session = request.getSession(false);
-		return editLoadSheetSequence(seqMaster.getId(),seqMaster.getPageAction(),session.getAttribute("selectedCategoryinListPage").toString(),session.getAttribute("selectedTypeinListPage").toString(),session.getAttribute("selectedViewMode").toString(),request);
+		return new ModelAndView("redirect:/admin-console/app-config/open-edit-sequence.htm?seqMasterId="+seqMaster.getId()+"&action="+seqMaster.getPageAction()+
+				"&category="+session.getAttribute("selectedCategoryinListPage").toString()+"&type="+session.getAttribute("selectedTypeinListPage").toString()+"&viewMode="+session.getAttribute("selectedViewMode").toString());
 	}
 	
 	

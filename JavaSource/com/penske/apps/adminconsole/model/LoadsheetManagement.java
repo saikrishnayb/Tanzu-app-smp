@@ -8,6 +8,7 @@ public class LoadsheetManagement {
 	private String category;
 	private String type;
 	private String usesDefault;
+	private String componentId;
 	private String editedBy;
 	private Date editedDate;
 	
@@ -74,6 +75,12 @@ public class LoadsheetManagement {
 	}
 	public void setComponent(String component) {
 		this.component = component;
+	}
+	public String getComponentId() {
+		return componentId;
+	}
+	public void setComponentId(String componentId) {
+		this.componentId = componentId;
 	}
 	
 	

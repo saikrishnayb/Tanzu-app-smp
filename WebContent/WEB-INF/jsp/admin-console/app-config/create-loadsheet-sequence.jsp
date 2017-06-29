@@ -118,14 +118,12 @@
 			</div>
 			<div class="unitAssignmnet">
 				<div id="assignedDiv">
-					<div id="headerContainer">
-						<div class="floatLeft">
-							<h2>Assigned Components</h2>
-						</div>
-						<div class="floatRight">
+				<span class="floatleft"><h2 style="margin-bottom: 0px">Assigned Components</h2></span>
+						<div id="headerContainer">
+			     			<div class="floatRight">
 						<c:if test="${seqMaster.pageAction ne 'VIEW'}">
 						<div id="addGroup" class="floatLeft">
-					    <a href="#" onclick='Addgroup()'>Add Group<img  class="leftPad centerImage handCursor adder rightMargin" src="https://staticdev.penske.com/common/images/add.png" alt="Add Criteria Group"></img></a>
+					    <a href="javascript:void(0)" onclick='Addgroup()'>Add Group<img  class="leftPad centerImage handCursor adder rightMargin" src="https://staticdev.penske.com/common/images/add.png" alt="Add Criteria Group"></img></a>
 						</div>
 						</c:if>
 						<div class="floatRight">
@@ -206,12 +204,9 @@
 					</div>
 				</div>
 				<div id="unAssignedDiv">
+				<span class="floatleft"><h2 style="margin-bottom: 0px">Unassigned Components</h2></span>
 					<div id="headerContainer">
-					    
-						<div class="floatLeft">
-							<h2>Unassigned Components</h2>
-						</div>
-						
+					    			
 						<div class="floatRight">
 							<label>Search:  </label><input type="text" id="unAssignedSearch" />
 						</div>
@@ -261,7 +256,7 @@
 			</div> <!-- end of unit assignmnets div -->
 			<c:if test="${seqMaster.pageAction ne 'VIEW'}">
 			<div class="floatRight">
-				<a class="buttonPrimary" style="margin-top:25px;" href="#" onclick="submitLoadSheetForm();">Save</a>
+				<a class="buttonPrimary" style="margin-top:25px;" href="javascript:void(0)" onclick="submitLoadSheetForm();">Save</a>
 			</div>
 			</c:if>
 		</form:form>

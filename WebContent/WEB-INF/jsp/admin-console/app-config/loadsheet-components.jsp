@@ -10,6 +10,7 @@
 	<link href="${commonStaticUrl}/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
 	<script src="${commonStaticUrl}/js/jquery.maskedinput-1.3.min.js" type="text/javascript"></script>
 	<link href="${context}/css/admin-console/security/org.css" rel="stylesheet" type="text/css"/>
+	<link href="${context}/css/admin-console/app-config/delay-management.css" rel="stylesheet" type="text/css"/>
 	<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
     <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 	<Script>
@@ -41,7 +42,7 @@
 					</thead>
 					<tbody>
 						<c:forEach items="${components}" var="component">
-						<tr class="component-row">
+						<tr class="component-row" id="${component.componentId}">
 							<td>${component.group}</td>
 							<td>${component.subGroup}</td>
 							<td class="editable">${component.componentName}</td>
@@ -75,9 +76,11 @@
 </div>
 <!-- Hidden fields to auto open the rule Association popup -->
 <input type="hidden" id="componentId" value="${componentId }"/>
+<input type="hidden" id="componentIdforAddRule" value=""/>
 <input type="hidden" id="visibilityId" value="${visibilityId}"/>
 <input type="hidden" id="viewMode" value="${viewMode}"/>
 
+<input type="hidden" id="selectedComponentId" value="${selectedComponentId}"/>
 <input type="hidden" id="compRequestedFrom" value="${compRequestedFrom}"/>
 
 </body>

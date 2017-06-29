@@ -344,7 +344,8 @@
 				CTM.USES_DEFAULT  		AS	usesDefault,
 				VCS.COMPONENT_GROUP		AS 	componentGroup,
 				VCS.SUB_GROUP			AS	subGroup,
-				VCS.SUB_COMPONENT_NAME	AS 	component
+				VCS.SUB_COMPONENT_NAME	AS 	component,
+				VCS.COMPONENT_ID		AS	componentId
 		FROM 
 				SMC_COMPONENT_VISIBILITY SCV
 		JOIN 	
@@ -465,7 +466,7 @@
 		SELECT 
 				GRP_MASTER_ID,
 				SEQ_MASTER_ID,
-				NAME,
+				TRIM(NAME) as NAME,
 				DISPLAY_SEQ
 		FROM 
 				SMC_LOADSHEET_GROUP_MASTER

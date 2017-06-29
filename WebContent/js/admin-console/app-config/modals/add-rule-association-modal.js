@@ -26,14 +26,30 @@ $(document).ready(function() {
 				  url: "./save-rule-association-modal-data.htm",
 				  data: $('#add-rule-association-form').serialize(),
 				  success: function(data){
-					 // $('#rule-association-modal').dialog('close');
 					  var url=window.location.href;
 						if (url.indexOf("requestedFrom") >= 0){	// if request came from Back button in create rule
-							window.location.href = url.split('?')[0];
+							window.location.href = url.split('?')[0]+"?componentId="+$("#componentIdforAddRule").val();
 						}else if(url.indexOf("create-rule.htm") >= 0){//if request came from Save button in create rule
-							window.location.href=url.replace("create-rule.htm","goBack-createRule.htm");
+							url=url.replace("create-rule.htm","goBack-createRule.htm");
+							window.location.href = url.split('?')[0]+"?componentId="+$("#componentIdforAddRule").val();
 						}else{
-							location.reload();	
+							//add component id while reloading to scroll to the correct component.
+							var url=window.location.href;
+							//i frequest comes from loadsheetmanagement page
+							if(url.indexOf("get-loadsheet-components.htm") >=0){
+								if(url.indexOf("?componentId") >=0){
+									window.location.href = url.split('?')[0]+"?componentId="+$("#componentIdforAddRule").val();
+								}
+								url=url.substring(0,url.indexOf("&componentId", 0));
+								if(url==''){
+								window.location.href=window.location.href +"&componentId="+$("#componentIdforAddRule").val();
+								}else{
+									window.location.href=url +"&componentId="+$("#componentIdforAddRule").val();
+								} 
+								
+							}else{//else from create rule back/save button
+								window.location.href = url.split('?')[0]+"?componentId="+$("#componentIdforAddRule").val();
+							}
 						}
 						processingImageAndTextHandler('visible','Loading data...');
 				  },
@@ -124,7 +140,7 @@ $(document).ready(function() {
 		return false;
 	});
 	
-	
+	$("#addRule").blur(); 	
 });
 
 /**

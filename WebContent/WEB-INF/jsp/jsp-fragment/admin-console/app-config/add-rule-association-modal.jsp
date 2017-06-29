@@ -28,7 +28,7 @@
 	<div class="column-right"><label>LS Override <span class="errorMsg">*</span></label></div>
 	<div class="column-right-most">
 	<c:if test="${viewMode ne 'Y'}">
-	<a style="padding-left: 20%;" id="addRule" href="#"onclick="addRule();"><img class="addRow"
+	<a style="padding-left: 20%;" id="addRule" href="#" onclick="addRule();"><img class="addRow"
 			 src="<c:out value='${commonStaticUrl}'/>/images/add.png"/></a>
 	</c:if>
 	</div>
@@ -104,7 +104,7 @@
 	</div>
 	<%-- <input class="floatLeft width-100" type="text" name="priority" value="${maxPriority}" autocomplete="off" /> --%>
 	 <c:if test="${viewMode ne 'Y'}">
-		<div style="width: 100%;display: inline-block;">
+		<div style="width: 100%;display: inline-block;margin-top:10px">
 		     <a id="saveRuleAssociation" class="buttonPrimary floatRight  save">Save</a>
 		     <div class="error floatRight hidden margin-upper-right">
 			   <img src="${commonStaticUrl}/images/warning.png">

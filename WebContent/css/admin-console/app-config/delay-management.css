@@ -257,3 +257,8 @@ input[type="text"], select {
 textarea[readonly="readonly"], textarea[readonly], input[readonly], [readonly], [readonly=readonly], [disabled], [disabled=disabled] {
 background: lightgray !important;
 }
+
+.row_selected{
+	border-top :1px solid;
+	border-bottom :1px solid;
+}

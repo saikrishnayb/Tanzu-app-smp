@@ -43,7 +43,7 @@
 					<legend>Rules</legend>
 					<div class="displayNone" id="AddCriteriaGroup">
 					<div class="floatLeft rightMargin">
-						<a href="#" onClick="addNewGroup();">Add Criteria Group<img src="${commonStaticUrl}/images/add.png"id="addRow" class="leftPad centerImage handCursor adder rightMargin" alt="Add Criteria Group"/></a>
+						<a href="javascript:void(0)" onClick="addNewGroup();">Add Criteria Group<img src="${commonStaticUrl}/images/add.png"id="addRow" class="leftPad centerImage handCursor adder rightMargin" alt="Add Criteria Group"/></a>
 					</div>
 					<div class="floatRight leftMargin">
 						<a class="buttonPrimary" onClick="submitCreateRuleForm();" id="save" href="javascript:void(0)">Save</a>
@@ -67,7 +67,7 @@
 							<c:set var = "rowCount" scope = "page" value = "1"/>
 							<!-- Creating group header column -->
 							<tr  class="groupHeader group${ruleDefinitionsList.criteriaGroup}" id="G_${ruleDefinitionsList.criteriaGroup}-R_${rowCount}">
-								<td class="editable centerAlign"><a href="#" class="rightMargin" onClick="copyGroup('${ruleDefinitionsList.criteriaGroup}')">Copy</a><a href="#" onClick="deleteGroup('${ruleDefinitionsList.criteriaGroup}');"><img src="${commonStaticUrl}/images/delete.png" class="centerImage rightMargin delete-button"/></a></td>
+								<td class="editable centerAlign"><a href="javascript:void(0)" class="rightMargin" onClick="copyGroup('${ruleDefinitionsList.criteriaGroup}')">Copy</a><a href="javascript:void(0)" onClick="deleteGroup('${ruleDefinitionsList.criteriaGroup}');"><img src="${commonStaticUrl}/images/delete.png" class="centerImage rightMargin delete-button"/></a></td>
 								<td>
 								<form:select id="componentsDropDown-G_${ruleDefinitionsList.criteriaGroup}-R_${rowCount}" path="ruleDefinitionsList[${loopIndex.count -1}].componentId"  onChange="loadOperands(${ruleDefinitionsList.criteriaGroup},${rowCount})" style="width:100%">
 									<form:option value=""></form:option>
@@ -147,7 +147,7 @@
 						<tbody>
 							<c:forEach items="${loadSheetManagementList }" var="loadSheetDetails">
 							<tr>
-								<td class="editable centerAlign"><a onclick="javascript:loadProcessImage();" href="get-loadsheet-components.htm?categoryId=${loadSheetDetails.catTypeId}&category=${loadSheetDetails.category} &type=${loadSheetDetails.type} &viewMode=${loadSheetDetails.usesDefault}&compRqstdFrom=EDIT_RULE">Go To</a></td>
+								<td class="editable centerAlign"><a onclick="javascript:loadProcessImage();" href="get-loadsheet-components.htm?categoryId=${loadSheetDetails.catTypeId}&category=${loadSheetDetails.category} &type=${loadSheetDetails.type} &viewMode=${loadSheetDetails.usesDefault}&compRqstdFrom=EDIT_RULE&componentId=${loadSheetDetails.componentId}">Go To</a></td>
 								<td>${loadSheetDetails.category }</td>
 								<td>${loadSheetDetails.type }</td>
 								<td>${loadSheetDetails.componentGroup }</td>

@@ -9,6 +9,7 @@ $(document).ready(function() {
 		"aoColumnDefs"		: [{ 'bSortable': false, 'aTargets': [5] } ],//disable sorting for specific column indexes
 		"sScrollY": "400px",
 		"sScrollX": "100%",
+		"bStateSave":true,
 		"bInfo" : false,
 		"bScrollCollapse": true,
 		"bAutoWidth": true, //cray cray
@@ -19,11 +20,20 @@ $(document).ready(function() {
 			type: "text",
 			bRegex: true,
 			bSmart: true
-			 }
-		
+			 },
+		"fnDrawCallback": function(settings, json) {
+				//to highlight the selected component   
+				var sletedComp=$("#selectedComponentId").val();
+				if(sletedComp){
+					   $("#"+sletedComp).addClass("row_selected");
+					   $(".dataTables_scrollBody").scrollTop( $("tr.row_selected").offset().top - $(".dataTables_scrollBody").height() );
+				}
+				   
+				   
+				  }
 	} );
 	var compRequestedFrom=$("#compRequestedFrom").val();
-	var strHTML='<div id="org-desc-div" style="float: right; text-align: right;margin-right: 2%;">'+
+	var strHTML='<div id="org-desc-div" style="float: right; text-align: right;margin-bottom: 1%;">'+
 	'<a class="buttonSecondary floatLeft clear-left back" href="goBack-componets.htm?requestedFrom='+compRequestedFrom+'">Back</a>'+
 '</div>';
 $("#component-table_wrapper").prepend(strHTML);
@@ -43,11 +53,28 @@ $('#rule-association-modal').dialog({
     
 		var url=window.location.href;
 		if (url.indexOf("requestedFrom") >= 0){	// if request came from Back button in create rule
-			window.location.href = url.split('?')[0];
+			window.location.href = url.split('?')[0]+"?componentId="+$("#componentIdforAddRule").val();
 		}else if(url.indexOf("create-rule.htm") >= 0){//if request came from Save button in create rule
-			window.location.href=url.replace("create-rule.htm","goBack-createRule.htm");
+			url=url.replace("create-rule.htm","goBack-createRule.htm");
+			window.location.href = url.split('?')[0]+"?componentId="+$("#componentIdforAddRule").val();
 		}else{
-			location.reload();	
+			//add component id while reloading to scroll to the correct component.
+			var url=window.location.href;
+			//i frequest comes from loadsheetmanagement page
+			if(url.indexOf("get-loadsheet-components.htm") >=0){
+				if(url.indexOf("?componentId") >=0){
+					window.location.href = url.split('?')[0]+"?componentId="+$("#componentIdforAddRule").val();
+				}
+				url=url.substring(0,url.indexOf("&componentId", 0));
+				if(url==''){
+				window.location.href=window.location.href +"&componentId="+$("#componentIdforAddRule").val();
+				}else{
+					window.location.href=url +"&componentId="+$("#componentIdforAddRule").val();
+				} 
+				
+			}else{//else from create rule back/save button
+				window.location.href = url.split('?')[0]+"?componentId="+$("#componentIdforAddRule").val();
+			}
 		}
 		processingImageAndTextHandler('visible','Loading data...');
     }
@@ -57,6 +84,7 @@ $('#rule-association-modal').dialog({
 $('.add-rule-association').on('click', function() {
 	var val = $(this).attr('id');
 	var values=val.split('-');
+	$("#componentIdforAddRule").val(values[0]);
 	$.post('./get-rule-association-modal-data.htm',
 			{'componentId':values[0],'componentVisibleId':values[1],'viewMode':values[2]},
 			function(data) {
@@ -74,9 +102,21 @@ var visibilityId=$("#visibilityId").val();
 var viewMode=$("#viewMode").val();
 if(componentId!=''&&visibilityId!=''&viewMode!=''){
 	var $divId=componentId+"-"+visibilityId+"-"+viewMode;
+	$("#componentIdforAddRule").val(componentId);
 	$('#'+$divId)[0].click();
 	
 }
+
+
+//Remove selected row class if users perform click
+$(document).click(function() {
+	
+	var sletedComp=$("#selectedComponentId").val();
+	if(sletedComp){
+		   $("#"+sletedComp).removeClass("row_selected");
+	}
+	
+});
 
 });
 

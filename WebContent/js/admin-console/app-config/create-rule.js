@@ -320,7 +320,7 @@ function addNewGroup(){
 function createGroupHeader(grpIndex){
 	
 	var rowNode=$createRuleTable.row.add( [
-	                                       '<a href="#" class="rightMargin" onClick="copyGroup('+grpIndex+')">Copy</a><a href="#" onClick="deleteGroup('+grpIndex+');"><img src="'+commonStaticUrl+'/images/delete.png" class="centerImage rightMargin delete-button"/></a>',
+	                                       '<a href="javascript:void(0)" class="rightMargin" onClick="copyGroup('+grpIndex+')">Copy</a><a href="javascript:void(0)" onClick="deleteGroup('+grpIndex+');"><img src="'+commonStaticUrl+'/images/delete.png" class="centerImage rightMargin delete-button"/></a>',
 	                	               	   '<select id="componentsDropDown-G_'+grpIndex+'-R_1" name="ruleDefinitionsList['+frmAryIdx+'].componentId" onChange="loadOperands('+grpIndex+',1)" style="width:100%"><option></option></select>',
 	                	            	   '<select id="operandsID-G_'+grpIndex+'-R_1" name="ruleDefinitionsList['+frmAryIdx+'].operand" disabled></select>',
 	                	            	   '<input id="valueID-G_'+grpIndex+'-R_1" name="ruleDefinitionsList['+frmAryIdx+'].value" maxlength="30" type="text"><input type="hidden" name="ruleDefinitionsList['+frmAryIdx+'].criteriaGroup" value="'+grpIndex+'">',

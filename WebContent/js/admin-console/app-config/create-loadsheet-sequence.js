@@ -135,6 +135,7 @@ $(document).ready(function() {
 	    $("#assignedComponentsTable tbody").sortable("disable");
 	}
 	
+	
 });
 
 function initializeComponentTables(){
@@ -307,10 +308,24 @@ $("#assignedComponentsTable").on('keypress', '.groupName' , function(e){
 	editGroupId="editgroup-"+editGroupId.split('-')[1];
 	check_charcount(editGroupId,50, e);
 });
+//preventing paste event for group Name
+$("#assignedComponentsTable").on('paste', function() {
+	   return false; // to prevent user insert
+});
+
+/* to remove Editable on click of Enter in Groupname*/
+$(document).keypress('.groupName',function(event){
+	if (event.keyCode == 13) {
+		$(".groupName").attr('contenteditable','false');
+    }
+});
+
+
+
 /* function to check the group name character count */
 function check_charcount(content_id, max, e)
 {   
-    if(e.which != 8 && $('#'+content_id).text().length > max)
+    if(e.which != 8 && $('#'+content_id).text().length >= max)
     {
        e.preventDefault();
     }
