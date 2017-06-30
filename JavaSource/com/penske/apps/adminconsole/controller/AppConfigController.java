@@ -401,7 +401,7 @@ public class AppConfigController {
 		}
 		if(requestedFrom !=null){
 			if(requestedFrom.equalsIgnoreCase("CREATE_RULE")){
-				return new ModelAndView("redirect://admin-console/app-config/loadsheet-rule.htm");
+				return new ModelAndView("redirect:/admin-console/app-config/loadsheet-rule.htm");
 			}else{
 				if(catDetails!=null){
 					mav=getLoadsheetComponents(request, catDetails.getCategoryId(), catDetails.getCategory(), catDetails.getType(), catDetails.getViewMode(),compRequestedFrom,componentId);
