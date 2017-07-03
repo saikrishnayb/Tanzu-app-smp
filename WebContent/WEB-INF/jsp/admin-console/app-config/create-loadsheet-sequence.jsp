@@ -85,7 +85,8 @@
 							<form:select path="oem" style="width:96%">
 								<form:option value=""></form:option>
 								<c:forEach items="${mfrList}" var="mfr">
-									<form:option value="${fn:substring(mfr, 0, 3)}">${mfr}</form:option>
+									<c:set var="mfrLength" value="${fn:length(mfr)}" scope="page"></c:set>
+									<form:option value="${fn:substring(mfr,  mfrLength-4, mfrLength-1)}">${mfr}</form:option>
 								</c:forEach>
 							</form:select>
 						</div>
