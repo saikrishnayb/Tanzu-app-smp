@@ -402,6 +402,7 @@
 		
 		</if>
 		</where>
+		Order By componentGroup,subGroup,componentName
 	</select>
 	
 	<!-- Creating Loadsheet Sequencing -->
