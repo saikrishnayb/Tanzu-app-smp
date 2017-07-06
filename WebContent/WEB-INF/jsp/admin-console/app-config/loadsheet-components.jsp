@@ -66,7 +66,7 @@
 			</div>
 			<div id="notes" style="padding-top: 1%">
 			<fieldset style="width:50%;height:15px;">
-			<pre>   R=Required Component     A=Allowed Component     N=Not Allowed     Blank=Use Default</pre>
+			<pre>   R=Required Component     A=Allowed Component     N=Not Allowed     D=Display VEHTVINR even if not entered    Blank=Use Default</pre>
             </fieldset>
 			</div>
 		</div>
