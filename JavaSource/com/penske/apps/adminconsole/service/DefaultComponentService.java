@@ -26,192 +26,196 @@ import com.penske.apps.suppliermgmt.model.LookUp;
 @Service
 public class DefaultComponentService implements ComponentService {
 
-	@Autowired
-	private ComponentDao componentDao;
-	
-	@Autowired
-	private LookupManager lookupManager;
-	
-	//Template Page -- start
-	
-	@Override
-	public List<Template> getAllTemplates(){
-		return componentDao.getAllTemplates();
-	}
-	@Override
-	public List<TemplatePoAssociation> getAllPoAssociation(){
-		return componentDao.getAllPoAssociation();
-	}
-	@Override
-	public Template getTemplatesById(int templateID){
-		return componentDao.getTemplatesById(templateID);
-	}
-	@Override
-	public List<Components> getAllComponent(){
-		return componentDao.getAllComponent();
-	}
-	
-	@Override
-	@Transactional
-	public void addTemplate(Template template) {
-		componentDao.addTemplate(template);
-		int templateID=template.getTemplateID();
-		List<Components> componentList=template.getComponentList();
-		if(componentList !=null && !componentList.isEmpty()){
-			addTemplateComponent(componentList, templateID,template);
-		}
-	}
+    @Autowired
+    private ComponentDao componentDao;
 
-	@Override
-	@Transactional
-	public void deleteTemplate(int templateID) {
-		componentDao.deleteTemplate(templateID);
-		componentDao.deleteTemplateComponents(templateID);
-	}
-	
-	@Override
-	public List<Components> getTemplateComponentById(List<Components> compList,int templateId){
-		List<Components> availableCompList= componentDao.getTemplateComponentById(templateId);
-		if(compList !=null && !compList.isEmpty() && availableCompList !=null && !availableCompList.isEmpty()){
-			return getMassageCompList(compList, availableCompList);
-		}else{
-			return compList;
-		}
-	}
-	private List<Components> getMassageCompList(List<Components> compList,List<Components> availableCompList){
-		for (Components components : compList) {
-			for (Components availComponents : availableCompList) {
-				if(components.getComponentId() !=null && availComponents.getComponentId() !=null 
-						&& components.getComponentId().equalsIgnoreCase(availComponents.getComponentId())){
-					if(availComponents.getEditRequiredStr() !=null 
-							&& availComponents.getEditRequiredStr().equalsIgnoreCase("R")){
-						components.setViewable(true);
-						components.setEditable(true);
-						components.setRequired(true);
-					}else if(availComponents.getEditRequiredStr() !=null 
-							&& availComponents.getEditRequiredStr().equalsIgnoreCase("E")){
-						components.setViewable(true);
-						components.setEditable(true);
-					}else if(availComponents.getEditRequiredStr() !=null 
-							&& availComponents.getEditRequiredStr().equalsIgnoreCase("V")){
-						components.setViewable(true);
-					}
-					if(availComponents.getExcelStr() !=null && availComponents.getExcelStr().equalsIgnoreCase("Y")){
-						components.setExcel(true);
-					}
-					if(availComponents.getDispOtherPOStr() !=null && availComponents.getDispOtherPOStr().equalsIgnoreCase("Y")){
-						components.setDispOtherPO(true);
-					}
-				}
-					
-			}
-		}
-		return compList;
-	}
+    @Autowired
+    private LookupManager lookupManager;
 
-	@Override
-	@Transactional
-	public void updateTemplate(Template template) {
-		componentDao.updateTemplate(template);
-		int templateID=template.getTemplateID();
-		componentDao.deleteTemplateComponents(templateID);
-		List<Components> componentList=template.getComponentList();
-		if(componentList !=null && !componentList.isEmpty()){
-			addTemplateComponent(componentList, templateID,template);
-		}
-	}
-	
-	private void addTemplateComponent(List<Components> componentList,int templateID,Template template){
-		for (Components components : componentList) {
-			Components dbComponents=new Components();
-			dbComponents.setTemplateId(templateID);
-			dbComponents.setComponentId(components.getComponentId());
-			dbComponents.setEditRequiredStr("I"); //Check with Dav. //TODO
-			if(components.isRequired()){
-				dbComponents.setEditRequiredStr("R");
-			}
-			if(!components.isRequired() && components.isEditable()){
-				dbComponents.setEditRequiredStr("E");
-			}
-			if(!components.isRequired() && !components.isEditable() && components.isViewable()){
-				dbComponents.setEditRequiredStr("V");
-			}
-			if(components.isDispOtherPO()){
-				dbComponents.setDispOtherPOStr("Y");
-			}
-			if(components.isExcel()){
-				dbComponents.setExcelStr("Y");
-			}
-			dbComponents.setCreatedBy(template.getCreatedBy());
-			dbComponents.setModifiedBy(template.getModifiedBy());
-			componentDao.addTemplateComponents(dbComponents);
-		}
-	}
+    //Template Page -- start
 
-	@Override
-	public List<Integer> findTemplateExist(Template template) {
-		return componentDao.findTemplateExist(template);
-	}
-	
-	
-	@Override
-	public List<TemplatePoAssociation> getAllPoAssociationAddEdit(boolean isAdd,int catAssocId){
-		if(isAdd){
-			return componentDao.getAllPoAssociationForAdd();
-		}else{
-			return componentDao.getAllPoAssociationForEdit(catAssocId);
-		}
-	}
-	
-	@Override
-	public List<LookUp> getOverrideTypes() {
-		return lookupManager.getLookUpListByName(ApplicationConstants.EXCEPTIONS_TYPES);
-	}
-	@Override
-	public List<ComponentVisibilityOverride> getAllComponentVisibilityOverrides() {
-		return componentDao.getAllComponentVisibilityOverrides();
-	}
-	@Override
-	public void addComponentVisibilityOverrides(
-			ComponentVisibilityOverride componentVisibilityOverride) {
-		componentDao.addComponentVisibilityOverrides(componentVisibilityOverride);		
-	}
-	@Override
-	public void updateComponentVisibilityOverrides(
-			ComponentVisibilityOverride componentVisibilityOverride) {
-		componentDao.updateComponentVisibilityOverrides(componentVisibilityOverride);
-		
-	}
-	@Override
-	public void deleteComponentVisibilityOverrides(int visiblityOverrideId) {
-		componentDao.deleteComponentVisibilityOverrides(visiblityOverrideId);
-	}
-	
-	@Override
-	public ComponentVisibilityOverride getComponentVisibilityOverridesById(int visiblityOverrideId){
-		return componentDao.getComponentVisibilityOverridesById(visiblityOverrideId);
-	}
-	@Override
-	public boolean checkComponentVisibilityOverrideExist(
-			ComponentVisibilityOverride componentVisibilityOverride,boolean isCreate) {
-		ComponentVisibilityOverride overrideObj=componentDao.checkComponentVisibilityOverrideExist(componentVisibilityOverride);
-		boolean returnFlg=true;
-		if(overrideObj !=null){
-			if(isCreate){
-				returnFlg= false;
-			}else{
-				if(overrideObj.getVisiblityOverrideId() !=componentVisibilityOverride.getVisiblityOverrideId()){
-					returnFlg= false;
-				}
-			}
-		}
-		return returnFlg;
-	}
-	
-	@Override
-	public List<Component> loadAllAvailableComponents() {
-		return componentDao.loadAllAvailableComponents();
-	}
+    @Override
+    public List<Template> getAllTemplates(){
+        return componentDao.getAllTemplates();
+    }
+    @Override
+    public List<TemplatePoAssociation> getAllPoAssociation(){
+        return componentDao.getAllPoAssociation();
+    }
+    @Override
+    public Template getTemplatesById(int templateID){
+        return componentDao.getTemplatesById(templateID);
+    }
+    @Override
+    public List<Components> getAllComponent(){
+        return componentDao.getAllComponent();
+    }
+
+    @Override
+    @Transactional
+    public void addTemplate(Template template) {
+        componentDao.addTemplate(template);
+        int templateID=template.getTemplateID();
+        List<Components> componentList=template.getComponentList();
+        if(componentList !=null && !componentList.isEmpty()){
+            addTemplateComponent(componentList, templateID,template);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void deleteTemplate(int templateID) {
+        componentDao.deleteTemplate(templateID);
+        componentDao.deleteTemplateComponents(templateID);
+    }
+
+    @Override
+    public List<Components> getTemplateComponentById(List<Components> compList,int templateId){
+        List<Components> availableCompList= componentDao.getTemplateComponentById(templateId);
+        if(compList !=null && !compList.isEmpty() && availableCompList !=null && !availableCompList.isEmpty()){
+            return getMassageCompList(compList, availableCompList);
+        }else{
+            return compList;
+        }
+    }
+    private List<Components> getMassageCompList(List<Components> compList,List<Components> availableCompList){
+        for (Components components : compList) {
+            for (Components availComponents : availableCompList) {
+                if(components.getComponentId() !=null && availComponents.getComponentId() !=null
+                        && components.getComponentId().equalsIgnoreCase(availComponents.getComponentId())){
+                    if(availComponents.getEditRequiredStr() !=null
+                            && availComponents.getEditRequiredStr().equalsIgnoreCase("R")){
+                        components.setViewable(true);
+                        components.setEditable(true);
+                        components.setRequired(true);
+                    }else if(availComponents.getEditRequiredStr() !=null
+                            && availComponents.getEditRequiredStr().equalsIgnoreCase("E")){
+                        components.setViewable(true);
+                        components.setEditable(true);
+                    }else if(availComponents.getEditRequiredStr() !=null
+                            && availComponents.getEditRequiredStr().equalsIgnoreCase("V")){
+                        components.setViewable(true);
+                    }
+                    if(availComponents.getExcelStr() !=null && availComponents.getExcelStr().equalsIgnoreCase("Y")){
+                        components.setExcel(true);
+                    }
+                    if(availComponents.getDispOtherPOStr() !=null && availComponents.getDispOtherPOStr().equalsIgnoreCase("Y")){
+                        components.setDispOtherPO(true);
+                    }
+                }
+
+            }
+        }
+        return compList;
+    }
+
+    @Override
+    @Transactional
+    public void updateTemplate(Template template) {
+        componentDao.updateTemplate(template);
+        int templateID=template.getTemplateID();
+        componentDao.deleteTemplateComponents(templateID);
+        List<Components> componentList=template.getComponentList();
+        if(componentList !=null && !componentList.isEmpty()){
+            addTemplateComponent(componentList, templateID,template);
+        }
+
+        componentDao.markTemplateForRebuild(templateID);
+        componentDao.insertTemplateForRegen(templateID);
+
+    }
+
+    private void addTemplateComponent(List<Components> componentList,int templateID,Template template){
+        for (Components components : componentList) {
+            Components dbComponents=new Components();
+            dbComponents.setTemplateId(templateID);
+            dbComponents.setComponentId(components.getComponentId());
+            dbComponents.setEditRequiredStr("I"); //Check with Dav. //TODO
+            if(components.isRequired()){
+                dbComponents.setEditRequiredStr("R");
+            }
+            if(!components.isRequired() && components.isEditable()){
+                dbComponents.setEditRequiredStr("E");
+            }
+            if(!components.isRequired() && !components.isEditable() && components.isViewable()){
+                dbComponents.setEditRequiredStr("V");
+            }
+            if(components.isDispOtherPO()){
+                dbComponents.setDispOtherPOStr("Y");
+            }
+            if(components.isExcel()){
+                dbComponents.setExcelStr("Y");
+            }
+            dbComponents.setCreatedBy(template.getCreatedBy());
+            dbComponents.setModifiedBy(template.getModifiedBy());
+            componentDao.addTemplateComponents(dbComponents);
+        }
+    }
+
+    @Override
+    public List<Integer> findTemplateExist(Template template) {
+        return componentDao.findTemplateExist(template);
+    }
+
+
+    @Override
+    public List<TemplatePoAssociation> getAllPoAssociationAddEdit(boolean isAdd,int catAssocId){
+        if(isAdd){
+            return componentDao.getAllPoAssociationForAdd();
+        }else{
+            return componentDao.getAllPoAssociationForEdit(catAssocId);
+        }
+    }
+
+    @Override
+    public List<LookUp> getOverrideTypes() {
+        return lookupManager.getLookUpListByName(ApplicationConstants.EXCEPTIONS_TYPES);
+    }
+    @Override
+    public List<ComponentVisibilityOverride> getAllComponentVisibilityOverrides() {
+        return componentDao.getAllComponentVisibilityOverrides();
+    }
+    @Override
+    public void addComponentVisibilityOverrides(
+            ComponentVisibilityOverride componentVisibilityOverride) {
+        componentDao.addComponentVisibilityOverrides(componentVisibilityOverride);
+    }
+    @Override
+    public void updateComponentVisibilityOverrides(
+            ComponentVisibilityOverride componentVisibilityOverride) {
+        componentDao.updateComponentVisibilityOverrides(componentVisibilityOverride);
+
+    }
+    @Override
+    public void deleteComponentVisibilityOverrides(int visiblityOverrideId) {
+        componentDao.deleteComponentVisibilityOverrides(visiblityOverrideId);
+    }
+
+    @Override
+    public ComponentVisibilityOverride getComponentVisibilityOverridesById(int visiblityOverrideId){
+        return componentDao.getComponentVisibilityOverridesById(visiblityOverrideId);
+    }
+    @Override
+    public boolean checkComponentVisibilityOverrideExist(
+            ComponentVisibilityOverride componentVisibilityOverride,boolean isCreate) {
+        ComponentVisibilityOverride overrideObj=componentDao.checkComponentVisibilityOverrideExist(componentVisibilityOverride);
+        boolean returnFlg=true;
+        if(overrideObj !=null){
+            if(isCreate){
+                returnFlg= false;
+            }else{
+                if(overrideObj.getVisiblityOverrideId() !=componentVisibilityOverride.getVisiblityOverrideId()){
+                    returnFlg= false;
+                }
+            }
+        }
+        return returnFlg;
+    }
+
+    @Override
+    public List<Component> loadAllAvailableComponents() {
+        return componentDao.loadAllAvailableComponents();
+    }
 
     @Override
     public void copyCorpComponentRow(int componentId, int componentGroupId) {

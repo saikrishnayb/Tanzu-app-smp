@@ -493,6 +493,66 @@ AND OVR_TYPE=#{overrideType} AND CONTROLLING_COMPONENT_ID=#{controllingComponent
            FROM CORP.VEHCMPGRF
           WHERE COMPONENT_GROUP_ID = #{groupId}
   </insert>
-	
+    
+    <update id="markTemplateForRebuild">
+        UPDATE SMC.SMC_UNIT_MASTER 
+           SET IS_COMP_GENERATED = 'N', 
+               IS_DATA_CONFLICT_CHECK = 'N' 
+         WHERE MASTER_ID IN (
+              SELECT Distinct unt.MASTER_ID
+                FROM SMC.SMC_UNIT_MASTER unt 
+                     INNER JOIN SMC.SMC_UNIT_TEMPLATE tmplt 
+                        ON unt.PO_NUMBER = tmplt.PO_NUMBER AND unt.UNIT_NUMBER = tmplt.UNIT_NUMBER 
+                     INNER JOIN SMC.SMC_PURCHASING_HEADER purch 
+                        ON unt.PO_NUMBER = purch.PO_NUMBER AND unt.CORP = purch.CORP 
+                     INNER JOIN SMC.SMC_PURCHASING_DETAILS purchdtl
+                         ON unt.PO_NUMBER = purchdtl.PO_NUMBER 
+                     INNER JOIN SMC.SMC_VENDOR_MASTER vnd 
+                        ON purch.CORP = vnd.CORP AND purch.VENDOR_NUMBER = vnd.VENDOR_NUMBER 
+                     INNER JOIN smc.smc_unit_Date_info dte
+                        ON unt.master_id = dte.MASTER_ID
+                     INNER JOIN smc.smc_po_unit_map unmap 
+                        ON unt.MASTER_ID = unmap.MASTER_ID
+               WHERE tmplt.TEMPLATE_ID = #{templateId} 
+                 AND purchdtl.CO_NUMBER = 0
+                 AND purchdtl.CANCEL_SEQ = 0
+                 AND purchdtl.IS_PDF_GENERATED = 'Y'
+                 AND unt.IS_REPLACED = 'N'
+                 AND (dte.ACT_DEL_DATE = '0001-01-01' or dte.ACT_DEL_DATE is null)
+                 AND unmap.PAYABLE_STATUS NOT IN ('CLOSED', 'VOID')
+          )
+    
+    </update>
+    
+    <insert id="insertTemplateForRegen">
+      INSERT INTO SMC.SMC_UNIT_MISSING_INFO_PROCESS (UNIT_NUMBER, PO_NUMBER, STATUS, CREATED_BY, CREATED_DATE) (
+                  SELECT Distinct unt.UNIT_NUMBER, 
+                         unt.PO_NUMBER, 
+                         'P', 
+                         CURRENT_USER, 
+                         CURRENT_TIMESTAMP
+                    FROM SMC.SMC_UNIT_MASTER unt 
+                         INNER JOIN SMC.SMC_UNIT_TEMPLATE tmplt 
+                            ON unt.PO_NUMBER = tmplt.PO_NUMBER AND unt.UNIT_NUMBER = tmplt.UNIT_NUMBER 
+                         INNER JOIN SMC.SMC_PURCHASING_HEADER purch 
+                            ON unt.PO_NUMBER = purch.PO_NUMBER AND unt.CORP = purch.CORP 
+                         INNER JOIN SMC.SMC_PURCHASING_DETAILS purchdtl
+                             ON unt.PO_NUMBER = purchdtl.PO_NUMBER 
+                         INNER JOIN SMC.SMC_VENDOR_MASTER vnd 
+                            ON purch.CORP = vnd.CORP AND purch.VENDOR_NUMBER = vnd.VENDOR_NUMBER 
+                         INNER JOIN smc.smc_unit_Date_info dte
+                            ON unt.master_id = dte.MASTER_ID
+                         INNER JOIN smc.smc_po_unit_map unmap 
+                            ON unt.MASTER_ID = unmap.MASTER_ID
+                   WHERE tmplt.TEMPLATE_ID = #{templateId} 
+                     AND purchdtl.CO_NUMBER = 0
+                     AND purchdtl.CANCEL_SEQ = 0
+                     AND purchdtl.IS_PDF_GENERATED = 'Y'
+                     AND unt.IS_REPLACED = 'N'
+                     AND (dte.ACT_DEL_DATE = '0001-01-01' or dte.ACT_DEL_DATE is null)
+                     AND unmap.PAYABLE_STATUS NOT IN ('CLOSED', 'VOID')
+        )
+    
+    </insert>
 	
 </mapper>

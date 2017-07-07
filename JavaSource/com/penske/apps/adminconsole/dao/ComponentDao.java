@@ -21,85 +21,90 @@ import com.penske.apps.adminconsole.model.TemplatePoAssociation;
  */
 
 public interface ComponentDao {
-	public  List<ComponentVisibility> getComponent();
-	
-	public List<ComponentVisibility> getCategory(@Param("componentId")int componentId);
-	
-	public List<ComponentVisibility> getVehicleCategory(@Param("componentId")int componentId);
-	
-	public List<SubCategory>getComponentSubCategory(@Param("componentId")int componentId,@Param("poCategoryId")int poCategoryId);
-	
-	public List<SubCategory>getVehicleSubCategory(@Param("componentId")int componentId,@Param("poCategoryId")int poCategoryId);
-	
-	public List<ComponentVisibility> getComponentName();
-	
-	public void deleteComponentVisibility(@Param("componentId")int componentId,@Param("poCategoryId")int poCategoryId,@Param("subCategoryId")int subCategoryId);
-	
-	public void deleteVehicleVisibility(@Param("componentId")int componentId,@Param("poCategoryId")int poCategoryId,@Param("subCategoryId")int subCategoryId);
-	
-	public void addComponentVisibility(@Param("componentId")int componentId,@Param("poCategoryId")int poCategoryId,@Param("subCategoryId")int subCategoryId);
-	
-	public void addVehicleVisibility(@Param("componentId")int componentId,@Param("poCategoryId")int poCategoryId,@Param("subCategoryId")int subCategoryId);
-	
-	public ComponentVisibility getComponentDetails(@Param("componentId")int componentId,@Param("poCategoryId")int poCategoryId,@Param("subCategoryId")int subCategoryId);
-	
-	public ComponentVisibility getVehicleComponentDetails(@Param("componentId")int componentId,@Param("poCategoryId")int poCategoryId,@Param("subCategoryId")int subCategoryId);
+    public  List<ComponentVisibility> getComponent();
 
-	public List<PoCategory> getCategoryList();
+    public List<ComponentVisibility> getCategory(@Param("componentId")int componentId);
 
-	public List<SubCategory> getSubCategoryList(int poCategoryId);
+    public List<ComponentVisibility> getVehicleCategory(@Param("componentId")int componentId);
 
-	public List<ComponentVisibility> getComponentList(int poCategoryId);
-	
-	
-	//Template Page --- start
-	
-	public List<Template> getAllTemplates();
-	
-	public List<TemplatePoAssociation> getAllPoAssociation();
-	
-	public Template getTemplatesById(@Param("templateID")int templateID);
-	
-	public List<Components> getAllComponent();
-	
-	public void addTemplate(Template template);
-	
-	public void addTemplateComponents(Components components);
-	
-	public void updateTemplate(Template template);
-	
-	public void deleteTemplate(@Param("templateID")int templateID);
-	
-	public void deleteTemplateComponents(@Param("templateID")int templateID);
-	
-	public List<Components> getTemplateComponentById(@Param("templateID")int templateID);
-	
-	public List<Integer> findTemplateExist(Template template);
-	
-	public List<TemplatePoAssociation> getAllPoAssociationForAdd();
-	
-	public List<TemplatePoAssociation> getAllPoAssociationForEdit(@Param("assocId")int assocId);
-		//Template Page --- End
-	//COMPONENT VISIBILITY OVERRIDES -- start
-	
-	public List<ComponentVisibilityOverride> getAllComponentVisibilityOverrides();
-	
-	public void addComponentVisibilityOverrides(ComponentVisibilityOverride componentVisibilityOverride);
-	
-	public void updateComponentVisibilityOverrides(ComponentVisibilityOverride componentVisibilityOverride);
-	
-	public void deleteComponentVisibilityOverrides(@Param("visiblityOverrideId") int visiblityOverrideId);
-	
-	public ComponentVisibilityOverride getComponentVisibilityOverridesById(@Param("visiblityOverrideId") int visiblityOverrideId);
-	
-	public ComponentVisibilityOverride  checkComponentVisibilityOverrideExist(ComponentVisibilityOverride componentVisibilityOverride);
-	//COMPONENT VISIBILITY OVERRIDES -- End
+    public List<SubCategory>getComponentSubCategory(@Param("componentId")int componentId,@Param("poCategoryId")int poCategoryId);
 
-	public List<Component> loadAllAvailableComponents();
+    public List<SubCategory>getVehicleSubCategory(@Param("componentId")int componentId,@Param("poCategoryId")int poCategoryId);
+
+    public List<ComponentVisibility> getComponentName();
+
+    public void deleteComponentVisibility(@Param("componentId")int componentId,@Param("poCategoryId")int poCategoryId,@Param("subCategoryId")int subCategoryId);
+
+    public void deleteVehicleVisibility(@Param("componentId")int componentId,@Param("poCategoryId")int poCategoryId,@Param("subCategoryId")int subCategoryId);
+
+    public void addComponentVisibility(@Param("componentId")int componentId,@Param("poCategoryId")int poCategoryId,@Param("subCategoryId")int subCategoryId);
+
+    public void addVehicleVisibility(@Param("componentId")int componentId,@Param("poCategoryId")int poCategoryId,@Param("subCategoryId")int subCategoryId);
+
+    public ComponentVisibility getComponentDetails(@Param("componentId")int componentId,@Param("poCategoryId")int poCategoryId,@Param("subCategoryId")int subCategoryId);
+
+    public ComponentVisibility getVehicleComponentDetails(@Param("componentId")int componentId,@Param("poCategoryId")int poCategoryId,@Param("subCategoryId")int subCategoryId);
+
+    public List<PoCategory> getCategoryList();
+
+    public List<SubCategory> getSubCategoryList(int poCategoryId);
+
+    public List<ComponentVisibility> getComponentList(int poCategoryId);
+
+
+    //Template Page --- start
+
+    public List<Template> getAllTemplates();
+
+    public List<TemplatePoAssociation> getAllPoAssociation();
+
+    public Template getTemplatesById(@Param("templateID")int templateID);
+
+    public List<Components> getAllComponent();
+
+    public void addTemplate(Template template);
+
+    public void addTemplateComponents(Components components);
+
+    public void updateTemplate(Template template);
+
+    public void deleteTemplate(@Param("templateID")int templateID);
+
+    public void deleteTemplateComponents(@Param("templateID")int templateID);
+
+    public List<Components> getTemplateComponentById(@Param("templateID")int templateID);
+
+    public List<Integer> findTemplateExist(Template template);
+
+    public List<TemplatePoAssociation> getAllPoAssociationForAdd();
+
+    public List<TemplatePoAssociation> getAllPoAssociationForEdit(@Param("assocId")int assocId);
+    //Template Page --- End
+    //COMPONENT VISIBILITY OVERRIDES -- start
+
+    public List<ComponentVisibilityOverride> getAllComponentVisibilityOverrides();
+
+    public void addComponentVisibilityOverrides(ComponentVisibilityOverride componentVisibilityOverride);
+
+    public void updateComponentVisibilityOverrides(ComponentVisibilityOverride componentVisibilityOverride);
+
+    public void deleteComponentVisibilityOverrides(@Param("visiblityOverrideId") int visiblityOverrideId);
+
+    public ComponentVisibilityOverride getComponentVisibilityOverridesById(@Param("visiblityOverrideId") int visiblityOverrideId);
+
+    public ComponentVisibilityOverride  checkComponentVisibilityOverrideExist(ComponentVisibilityOverride componentVisibilityOverride);
+    //COMPONENT VISIBILITY OVERRIDES -- End
+
+    public List<Component> loadAllAvailableComponents();
 
     public ComponentInfoDetail getComponentInfoDetail(@Param("componentId") int componentId);
     public ComponentGroup getComponentGroup(@Param("groupId") int groupId);
 
     public void copyCorpComponentGroupRow(@Param("groupId") int groupId);
     public void copyCorpComponentRow(@Param("componentId") int componentId);
+
+    public void markTemplateForRebuild(@Param("templateId") int templateId);
+
+    public void insertTemplateForRegen(@Param("templateId") int templateId);
+
 }
