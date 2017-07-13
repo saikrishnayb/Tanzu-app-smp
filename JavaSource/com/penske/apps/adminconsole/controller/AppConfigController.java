@@ -15,9 +15,11 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.penske.apps.adminconsole.annotation.DefaultController;
+import com.penske.apps.adminconsole.enums.PoCategoryType;
 import com.penske.apps.adminconsole.model.ExcelUploadHandler;
 import com.penske.apps.adminconsole.model.GlobalException;
 import com.penske.apps.adminconsole.model.LoadSheetCategoryDetails;
+import com.penske.apps.adminconsole.model.LoadsheetManagement;
 import com.penske.apps.adminconsole.model.LoadsheetSequenceGroupMaster;
 import com.penske.apps.adminconsole.model.LoadsheetSequenceMaster;
 import com.penske.apps.adminconsole.model.Notification;
@@ -40,7 +42,6 @@ import com.penske.apps.adminconsole.service.VendorReportServiceImpl;
 import com.penske.apps.adminconsole.util.ApplicationConstants;
 import com.penske.apps.adminconsole.util.CommonUtils;
 import com.penske.apps.suppliermgmt.model.UserContext;
-import com.penske.apps.adminconsole.model.LoadsheetManagement;
 
 /**
  * Controller handling all mapping and functionality for the Admin Console App Config sub tab
@@ -496,6 +497,10 @@ public class AppConfigController {
 	@RequestMapping(value={"/get-loadsheet-sequence"})
 	public ModelAndView getLoadsheetSequencePage(@RequestParam("categoryId") String categoryId,@RequestParam("category") String category,@RequestParam(value="type") String type,@RequestParam(value="viewMode") String viewMode) {
 		ModelAndView mav = new ModelAndView("/admin-console/app-config/loadsheet-sequence");
+		//if type is DEFAULT we should load all sequence for selected category irrespective of type(VOD-309)
+		if(type.trim().equals(ApplicationConstants.DEFAULT_TYPE)){
+			type=ApplicationConstants.BLANK;
+		}
 		String defaultType=type;
 		// to check for the selected category and type uses default is 'Y' or 'N'.
 		if(StringUtils.isNotBlank(category) && StringUtils.isNotBlank(type)){
@@ -519,7 +524,7 @@ public class AppConfigController {
 	@RequestMapping(value={"/open-create-sequence"})
 	public ModelAndView loadCreateLoadSheetSequence(LoadsheetSequenceMaster seqMaster,HttpServletRequest request){
 		ModelAndView mav=new ModelAndView("/admin-console/app-config/create-loadsheet-sequence");
-		
+		List<String> mfrList=new ArrayList<String>();
 		//Add category and type values to the session for back button functionality.
 		HttpSession session = request.getSession(false);
 		if(session != null && seqMaster.getPageAction()!=null && seqMaster.getPageAction().equals("BACK") ){
@@ -539,11 +544,18 @@ public class AppConfigController {
 		
 		grpMasterList.add(grpMaster);
 		seqMaster.setGroupMasterList(grpMasterList);
-		
+		    // to get manufacture list for selected category
+			if(StringUtils.isNotEmpty(seqMaster.getCategory())){
+				 PoCategoryType poCategoryType = PoCategoryType.findTypeByName(seqMaster.getCategory());
+				 boolean isNoneOrDecalOrOtherPoCategoryType = PoCategoryType.NONE == poCategoryType || PoCategoryType.DECAL == poCategoryType || PoCategoryType.OTHER == poCategoryType || PoCategoryType.CONTAINR == poCategoryType;
+			        if(!isNoneOrDecalOrOtherPoCategoryType){
+			        	mfrList=loadsheetManagementService.getMfrList(poCategoryType);
+			        }
+			}
 		mav.addObject("unassignedComponents",loadsheetManagementService.getUnAssignedComponents(seqMaster));
 		mav.addObject("categoriesList", loadsheetManagementService.getCategoryList());
 		mav.addObject("typesList", loadsheetManagementService.getTypeList(seqMaster.getCategory()));
-		mav.addObject("mfrList", loadsheetManagementService.getMfrList());
+		mav.addObject("mfrList", mfrList);
 		
 		mav.addObject("seqMaster",seqMaster);
 		
@@ -563,7 +575,7 @@ public class AppConfigController {
 	public ModelAndView editLoadSheetSequence(@RequestParam(value="seqMasterId") int seqMasterId,@RequestParam(value="action") String action,@RequestParam(value="category") String category,@RequestParam(value="type") String type,
 			@RequestParam(value="viewMode") String viewMode,HttpServletRequest request){
 		ModelAndView mav=new ModelAndView("/admin-console/app-config/create-loadsheet-sequence");
-		
+		List<String> mfrList=new ArrayList<String>();
 		
 		LoadsheetSequenceMaster seqMaster=loadsheetManagementService.getSequenceMasterDetails(seqMasterId);
 		//Add category and type values to the session for back button functionality.
@@ -574,11 +586,18 @@ public class AppConfigController {
 			 session.setAttribute("selectedViewMode", viewMode);
 		}
 		seqMaster.setPageAction(action);
-		
+		// to get manufacture list for selected category
+		if(StringUtils.isNotEmpty(seqMaster.getCategory())){
+			 PoCategoryType poCategoryType = PoCategoryType.findTypeByName(seqMaster.getCategory());
+			 boolean isNoneOrDecalOrOtherPoCategoryType = PoCategoryType.NONE == poCategoryType || PoCategoryType.DECAL == poCategoryType || PoCategoryType.OTHER == poCategoryType || PoCategoryType.CONTAINR == poCategoryType;
+		        if(!isNoneOrDecalOrOtherPoCategoryType){
+		        	mfrList=loadsheetManagementService.getMfrList(poCategoryType);
+		        }
+		}
 		mav.addObject("unassignedComponents",loadsheetManagementService.getUnAssignedComponents(seqMaster));
 		mav.addObject("categoriesList", loadsheetManagementService.getCategoryList());
 		mav.addObject("typesList", loadsheetManagementService.getTypeList(seqMaster.getCategory()));
-		mav.addObject("mfrList", loadsheetManagementService.getMfrList());
+		mav.addObject("mfrList", mfrList);
 		mav.addObject("seqMaster",seqMaster);
 		
 		return mav;

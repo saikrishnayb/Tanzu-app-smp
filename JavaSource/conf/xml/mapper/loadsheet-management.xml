@@ -8,9 +8,9 @@
 		SELECT 	SCV.CMP_VISIBLE_ID AS componentVisibilityId,
 		SCV.CAT_TYPE_ID AS categoryId,
 		SCV.COMPONENT_ID AS componentId,
-		VCS.COMPONENT_GROUP AS group,
-		VCS.SUB_GROUP AS subGroup,
-		VCS.SUB_COMPONENT_NAME AS componentName,
+		TRIM(VCS.COMPONENT_GROUP) AS group,
+		TRIM(VCS.SUB_GROUP) AS subGroup,
+		TRIM(VCS.SUB_COMPONENT_NAME) AS componentName,
 		SCV.V2B_VISIBILITY AS screen2b,
 		SCV.LOADSHEET_VISIBILITY AS lsOverride,
 		(SELECT COUNT(SCRO.RULE_ID) FROM SMC_COMPONENT_RULE_OVERRIDES SCRO WHERE SCRO.CMP_VISIBLE_ID = SCV.CMP_VISIBLE_ID) AS ruleCount
@@ -273,19 +273,22 @@
 		SELECT DISTINCT TRIM(TYPE) AS TYPE
 		FROM
 		SMC_CAT_TYPE_MASTER
+		<where>
+		   TYPE != 'DEFAULT'
 		<if test="category != null and category !='' ">
-			WHERE PO_CATEGORY = #{category}
+			AND PO_CATEGORY = #{category}
        	</if>
+       	</where>
         ORDER BY TYPE
 	</select>
-	
-	<select  id="getMfrList" resultType="String">
-		SELECT
-				MFNAME ||' - ('|| MFCODE ||')' as MFR 
-		FROM	
-				CORP.FVEHMFR 
-		ORDER BY  
-				MFR
+ 	<select  id="getMfrList" resultType="String">
+		 SELECT DISTINCT (MFNAME ||' - ('|| MFCODE ||')') as MFR 
+        FROM 
+           CORP.FVEHMFR
+		WHERE
+				MFTYP${poCategoryType.mfrFieldCode} = #{poCategoryType.mfrFieldCode}
+		ORDER BY MFR
+		
 	</select>
  	
 	<!-- TO get component rules-->
@@ -345,7 +348,8 @@
 				VCS.COMPONENT_GROUP		AS 	componentGroup,
 				VCS.SUB_GROUP			AS	subGroup,
 				VCS.SUB_COMPONENT_NAME	AS 	component,
-				VCS.COMPONENT_ID		AS	componentId
+				VCS.COMPONENT_ID		AS	componentId,
+				CRO.VISIBILITY_OVERRIDE AS lsOverride
 		FROM 
 				SMC_COMPONENT_VISIBILITY SCV
 		JOIN 	

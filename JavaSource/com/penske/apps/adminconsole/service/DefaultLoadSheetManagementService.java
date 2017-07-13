@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.penske.apps.adminconsole.dao.LoadsheetManagementDao;
+import com.penske.apps.adminconsole.enums.PoCategoryType;
 import com.penske.apps.adminconsole.model.ComponentRuleAssociation;
 import com.penske.apps.adminconsole.model.ComponentVisibilityModel;
 import com.penske.apps.adminconsole.model.ConfigureRule;
@@ -342,8 +343,8 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 	 * Method to get MFR list in loadsheet sequence screen.
 	 */
 	@Override
-	public List<String>  getMfrList(){
-		return loadsheetManagementDao.getMfrList();
+	public List<String>  getMfrList(PoCategoryType poCategoryType){
+		return loadsheetManagementDao.getMfrList(poCategoryType);
 	}
 
 	/**

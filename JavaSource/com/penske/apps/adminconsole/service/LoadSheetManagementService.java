@@ -2,6 +2,7 @@ package com.penske.apps.adminconsole.service;
 
 import java.util.List;
 
+import com.penske.apps.adminconsole.enums.PoCategoryType;
 import com.penske.apps.adminconsole.model.ComponentRuleAssociation;
 import com.penske.apps.adminconsole.model.ComponentVisibilityModel;
 import com.penske.apps.adminconsole.model.ConfigureRule;
@@ -30,7 +31,7 @@ public interface LoadSheetManagementService {
 	public List<LoadsheetManagement> getAssignedLoadsheetCategories(int ruleId);
 	public List<String> getCategoryList();
 	public List<String> getTypeList(String category);
-	public List<String>  getMfrList();
+	public List<String>  getMfrList(PoCategoryType poCategoryType);
 	public List<LoadSheetComponentDetails> getUnAssignedComponents(LoadsheetSequenceMaster seqMaster);
 	public void createLoadSheetSequencing(LoadsheetSequenceMaster seqMaster);
 	public LoadsheetSequenceMaster getSequenceMasterDetails(int seqMasterId);

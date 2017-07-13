@@ -16,6 +16,7 @@ public class LoadsheetManagement {
 	private String componentGroup;
 	private String subGroup;
 	private String component;
+	private String lsOverride;
 	
 	
 	public String getCatTypeId() {
@@ -81,6 +82,12 @@ public class LoadsheetManagement {
 	}
 	public void setComponentId(String componentId) {
 		this.componentId = componentId;
+	}
+	public String getLsOverride() {
+		return lsOverride;
+	}
+	public void setLsOverride(String lsOverride) {
+		this.lsOverride = lsOverride;
 	}
 	
 	

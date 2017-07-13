@@ -128,11 +128,11 @@
 				<c:if test="${ fn:length(loadSheetManagementList) gt 0 }">
 				<fieldset style="width:100%;margin-top:10px;">
 					<legend>Loadsheet Category Assigned</legend>
-					<div class="displayNone" id="AssignedCount">
-					<div class="floatLeft">
+					
+					<div class="floatLeft" style="margin-top:10px;">
 						<p>Assigned #: ${ fn:length(loadSheetManagementList)} </p>
 					</div>
-					</div>
+					
 					<table id="Assigned-Table" style="width:100%;">
 						<thead>
 							<tr>
@@ -142,6 +142,7 @@
 								<th>Component Group</th>
 								<th>Sub-Group</th>
 								<th>Component</th>
+								<th>LS Override</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -153,6 +154,7 @@
 								<td>${loadSheetDetails.componentGroup }</td>
 								<td>${loadSheetDetails.subGroup }</td>
 								<td>${loadSheetDetails.component }</td>
+								<td>${loadSheetDetails.lsOverride }</td>
 							</tr>
 							</c:forEach>	
 						</tbody>

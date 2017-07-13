@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.penske.apps.adminconsole.enums.PoCategoryType;
 import com.penske.apps.adminconsole.model.ComponentRuleAssociation;
 import com.penske.apps.adminconsole.model.ComponentVisibilityModel;
 import com.penske.apps.adminconsole.model.ConfigureRule;
@@ -42,7 +43,7 @@ public interface LoadsheetManagementDao {
 	public List<LoadsheetManagement> getAssignedLoadsheetCategories(@Param("ruleId") int ruleId);
 	public List<String> getCategoryList();
 	public List<String> getTypeList(@Param("category") String category);
-	public List<String>  getMfrList();
+	public List<String>  getMfrList(@Param("poCategoryType") PoCategoryType poCategoryType);
 	public List<LoadSheetComponentDetails> getUnAssignedComponents(@Param("category") String category,@Param("type") String type);
 	public void insertSeqMasterDetails(@Param("seqMaster") LoadsheetSequenceMaster seqMaster,@Param("user") UserContext user);
 	public void insertGrpMasterDetails(@Param("grpMaster") LoadsheetSequenceGroupMaster grpMaster,@Param("user") UserContext user);

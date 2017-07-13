@@ -124,7 +124,7 @@
 			     			<div class="floatRight">
 						<c:if test="${seqMaster.pageAction ne 'VIEW'}">
 						<div id="addGroup" class="floatLeft">
-					    <a href="javascript:void(0)" onclick='Addgroup()'>Add Group<img  class="leftPad centerImage handCursor adder rightMargin" src="https://staticdev.penske.com/common/images/add.png" alt="Add Criteria Group"></img></a>
+					    <a href="javascript:void(0)" onclick='openAddGroupModal()'>Add Group<img  class="leftPad centerImage handCursor adder rightMargin" src="https://staticdev.penske.com/common/images/add.png" alt="Add Criteria Group"></img></a>
 						</div>
 						</c:if>
 						<div class="floatRight">
@@ -263,10 +263,30 @@
 		</form:form>
 		</div>
 	</div>
-	
+	    <!-- Add Group Name Popup -->
+		<div id="addGroupModal">
+		    <div>
+	         <label>Group Name</label>
+	         <input size="30" type="text" maxlength="50"  name="newGroupName"  id="newGroupName" class="alpha alpha-numeric" />
+	        </div>
+	        <div id="AddGrpErrorMsg" style="clear:both" class="floatLeft error-messages-container displayNone">
+					<img src="${commonStaticUrl}/images/warning.png"></img>
+					<span class="errorMsg"></span>
+			</div>
+			<div style="position:absolute;bottom:3px;right:5px;">
+				<a href="javascript:void(0)" class="secondaryLink" onclick="closeaddGroupDialog();" tabIndex="-1">Cancel</a> 
+				<a href="javascript:void(0)" class="buttonPrimary" onclick="addGroupName();" tabIndex="-1">Add</a>
+			</div>
+		</div>
 	<input type="hidden" id="numberOfGroups" value="${fn:length(seqMaster.groupMasterList)}"/>
 	<script src="${context}/js/v2/jquery-2.2.4.min.js"></script>
+	<Script>
+		var j2 = jQuery.noConflict();
+	</Script>
 	<script src="${context}/js/v2/jquery-ui.min.js"></script>
+	<Script>
+		var j1 = jQuery.noConflict();
+	</Script>
 	<script src="${context}/js/admin-console/app-config/create-loadsheet-sequence.js" type="text/javascript"></script>
 
 

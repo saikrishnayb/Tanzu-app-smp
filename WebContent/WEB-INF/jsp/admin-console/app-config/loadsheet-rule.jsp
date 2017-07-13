@@ -24,7 +24,7 @@
 							<th></th>
 							<th>Rule</th>
 							<th>Description</th>
-							<th>Times Used</th>
+							<th>Associated With</th>
 							<th>Created by</th>
 							<th>Created Date</th>
 							<th>Edit by</th>

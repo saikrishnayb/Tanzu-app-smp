@@ -9,7 +9,6 @@ $(document).ready(function() {
 		"aoColumnDefs"		: [{ 'bSortable': false, 'aTargets': [5] } ],//disable sorting for specific column indexes
 		"sScrollY": "400px",
 		"sScrollX": "100%",
-		"bStateSave":true,
 		"bInfo" : false,
 		"bScrollCollapse": true,
 		"bAutoWidth": true, //cray cray
