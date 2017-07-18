@@ -9,6 +9,7 @@
 	file="../../../jsp/jsp-fragment/global/default-head-block.jsp"%>
 
 <link href="${context}/css/admin-console/app-config/create-loadsheet-sequence.css" rel="stylesheet" type="text/css" />
+<script src="${context}/js/admin-console/components/excel-sequence-components.js" type="text/javascript"></script>
 
 </head>
 <body>

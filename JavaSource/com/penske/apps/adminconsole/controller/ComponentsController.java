@@ -16,6 +16,7 @@ import com.penske.apps.adminconsole.model.HeaderUser;
 import com.penske.apps.adminconsole.model.Manufacture;
 import com.penske.apps.adminconsole.model.PoCategory;
 import com.penske.apps.adminconsole.model.SubCategory;
+import com.penske.apps.adminconsole.model.TemplateComponent;
 import com.penske.apps.adminconsole.model.VendorTemplate;
 import com.penske.apps.adminconsole.model.VendorTemplateSearch;
 import com.penske.apps.adminconsole.service.CategoryManagementService;
@@ -79,6 +80,19 @@ public class ComponentsController {
 		mav.addObject("categories",categories);
 		return mav;
 	}
+	
+	
+	/*========================Excel Sequence Templates ======================*/
+	@RequestMapping("/load-excel-seq-templates")
+	public ModelAndView getExcelSequenceTemplates(){
+		ModelAndView mav = new ModelAndView("/admin-console/components/excel-sequence-templates");
+		
+		mav.addObject("excelSeqTemplates", componentVendorTemplateService.getExcelSeqTemplates());
+		
+		return mav;
+	}
+	
+	
 	
 	@RequestMapping(value="/category-management")
 	public ModelAndView getCategoryByManagementPage(){
@@ -156,6 +170,5 @@ public class ComponentsController {
 		return mav;
 	}
 
-	
-	
+
 }

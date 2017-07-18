@@ -60,5 +60,5 @@
   			   VISIBILITY_PENSKE = #{searchTemplateForm.visibilityPenske}
   		WHERE  TEMPLATE_ID = #{searchTemplateForm.templateId}
   	</update>
-
+  	
 </mapper>

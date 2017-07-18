@@ -64,4 +64,5 @@ public class DefaultSearchTemplateService implements SearchTemplateService {
 		searchTemplateDao.updateSearchTemplate(searchTemplateForm);
 	}
 
+	
 }

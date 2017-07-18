@@ -485,4 +485,47 @@ select
 		edi.EDI_MFR =#{MFR}
 
 </select>
+
+
+  	
+  	<!-- Queries for Excel Sequence Templates -->
+  	
+  	<!-- Query to get the Excel Sequence -->
+  	<select id="getExcelSeqTemplates" resultType="com.penske.apps.adminconsole.model.Template">
+  		SELECT 
+  				TEMPLATE_ID 	AS	templateID,
+  				TEMPLATE_NAME	AS	templateName
+  		FROM
+  				SMC_TEMPLATE_MASTER
+  		ORDER BY
+  				TEMPLATE_NAME
+  	</select>
+  	
+  	<!-- Query to get the template components -->
+  	<select id="getTemplateComponentSequences" resultType="com.penske.apps.adminconsole.model.ComponentSequence">
+  		SELECT
+            AV.DISPLAY_NAME AS displayName,
+            AV.COMPONENT_ID AS componentId
+		FROM UNIT_COMPONENTS_TEMPLATE_SEQUENCE_FOR_EXCEL UCTS
+		jOIN V_SMC_AVAILABLE_COMPONENTS AV ON UCTS.COMPONENT_ID=AV.COMPONENT_ID
+		WHERE UCTS.TEMPLATE_ID=#{templateId}
+		ORDER by UCTS.COMPONENT_SEQUENCE
+
+  	</select>
+
+    <!-- To Update the template component sequence -->
+ 	<update id="updateTemplateComponentSequence">
+ 		UPDATE
+ 				UNIT_COMPONENTS_TEMPLATE_SEQUENCE_FOR_EXCEL
+ 		<set>		
+ 				COMPONENT_SEQUENCE  = #{componentSequence}
+ 				
+ 		</set>
+ 		WHERE
+ 				TEMPLATE_ID		 =	#{templateId}
+ 				AND COMPONENT_ID =	#{componentId}
+ 				
+ 	</update>
+
+
 </mapper>

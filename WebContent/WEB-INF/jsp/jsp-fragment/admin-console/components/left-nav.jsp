@@ -14,7 +14,8 @@
 	</tl:isAuthorized>
 	
 	<tl:isAuthorized tabName="Admin Console" secFunction="MANAGE_TEMPLATE"> 
-		<div class="leftNavGroup"><a href="${pageContext.request.contextPath}/admin-console/components/template.htm" id="left-nav-template" onclick="javascript:loadProcessImage();">Template Management</a></div> 
+		<div class="leftNavGroup"><a href="${pageContext.request.contextPath}/admin-console/components/template.htm" id="left-nav-template" onclick="javascript:loadProcessImage();">Template Management</a></div>
+		<div ><a href="${pageContext.request.contextPath}/admin-console/components/load-excel-seq-templates.htm" id="left-nav-excel-seq" onclick="javascript:loadProcessImage();">Excel Sequence</a></div> 
  	</tl:isAuthorized>
 
  	<tl:isAuthorized tabName="Admin Console" secFunction="MANAGE_COMPONENT_OVERRIDE"> 

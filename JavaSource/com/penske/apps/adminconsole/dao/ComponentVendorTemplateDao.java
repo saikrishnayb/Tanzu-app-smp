@@ -3,10 +3,12 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.penske.apps.adminconsole.model.ComponentSequence;
 import com.penske.apps.adminconsole.model.CorpCode;
 import com.penske.apps.adminconsole.model.Manufacture;
 import com.penske.apps.adminconsole.model.PoCategory;
 import com.penske.apps.adminconsole.model.SubCategory;
+import com.penske.apps.adminconsole.model.Template;
 import com.penske.apps.adminconsole.model.TemplateComponents;
 import com.penske.apps.adminconsole.model.TemplatePoCategorySubCategory;
 import com.penske.apps.adminconsole.model.VendorLocation;
@@ -77,4 +79,9 @@ public interface ComponentVendorTemplateDao {
 	public TemplatePoCategorySubCategory getDeleteInEditModalContent(@Param("templateId")int templateId,@Param("poCategoryId")int poCategoryId,@Param("subCategoryId")int subCategoryIdy);
 	
 	public int getTemplateComponentCount(@Param("templateId")int templateId);
+	
+	//Excele Sequence 
+	public List<Template> getExcelSeqTemplates();
+	public List<ComponentSequence> getTemplateComponentSequences(@Param("templateId") int templateId);
+	public void updateTemplateComponentSequence(@Param("templateId") int templateId,@Param("componentId")String componentId, @Param("componentSequence")int componentSequence);
 }

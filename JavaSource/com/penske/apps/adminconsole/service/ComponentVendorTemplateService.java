@@ -2,9 +2,12 @@ package com.penske.apps.adminconsole.service;
 
 import java.util.List;
 
+import com.penske.apps.adminconsole.model.ComponentSequence;
 import com.penske.apps.adminconsole.model.Manufacture;
 import com.penske.apps.adminconsole.model.PoCategory;
+import com.penske.apps.adminconsole.model.Template;
 import com.penske.apps.adminconsole.model.SubCategory;
+import com.penske.apps.adminconsole.model.TemplateComponent;
 import com.penske.apps.adminconsole.model.TemplateComponents;
 import com.penske.apps.adminconsole.model.TemplatePoCategorySubCategory;
 import com.penske.apps.adminconsole.model.VendorTemplate;
@@ -58,6 +61,11 @@ public interface ComponentVendorTemplateService {
 	
 	public int getTemplateComponentCount(int templateId);
 
+	public List<Template> getExcelSeqTemplates();
+	
+	public List<ComponentSequence> getTemplateComponentSequences(int templateID);
+	
+	public void updateTemplateComponentSequence(TemplateComponent templateComponents);
 	
 	
 	public TemplatePoCategorySubCategory getDeleteInEditModalContent(

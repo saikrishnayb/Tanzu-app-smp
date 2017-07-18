@@ -9,10 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.penske.apps.adminconsole.dao.ComponentVendorTemplateDao;
+import com.penske.apps.adminconsole.model.ComponentSequence;
 import com.penske.apps.adminconsole.model.CorpCode;
 import com.penske.apps.adminconsole.model.Manufacture;
 import com.penske.apps.adminconsole.model.PoCategory;
 import com.penske.apps.adminconsole.model.SubCategory;
+import com.penske.apps.adminconsole.model.Template;
+import com.penske.apps.adminconsole.model.TemplateComponent;
 import com.penske.apps.adminconsole.model.TemplateComponents;
 import com.penske.apps.adminconsole.model.TemplatePoCategorySubCategory;
 import com.penske.apps.adminconsole.model.VendorLocation;
@@ -320,7 +323,31 @@ public class DefaultComponentVendorTemplateService implements ComponentVendorTem
 		
 	}
 
-	
+	@Override
+	public List<Template> getExcelSeqTemplates() {
+		
+		return templateDao.getExcelSeqTemplates();
+	}
+
+	@Override
+	public List<ComponentSequence> getTemplateComponentSequences(int templateId) {
+		return templateDao.getTemplateComponentSequences(templateId);
+	}
+
+	@Override
+	public void updateTemplateComponentSequence(TemplateComponent templateComponents) {
+		//Update template component sequences
+		
+		if(templateComponents.getTemplateId()!=0 && !templateComponents.getComponents().isEmpty()){
+			
+			for(ComponentSequence componentSequence:templateComponents.getComponents()){
+				templateDao.updateTemplateComponentSequence(templateComponents.getTemplateId(), componentSequence.getComponentId(),componentSequence.getComponentSequence());
+				
+			}
+			
+		}
+		
+	}
 
 	
 

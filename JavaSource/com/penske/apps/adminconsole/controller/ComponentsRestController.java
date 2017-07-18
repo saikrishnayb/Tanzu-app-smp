@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.penske.apps.adminconsole.model.CategoryAssociation;
+import com.penske.apps.adminconsole.model.ComponentSequence;
 import com.penske.apps.adminconsole.model.ComponentVisibility;
 import com.penske.apps.adminconsole.model.ComponentVisibilityOverride;
 import com.penske.apps.adminconsole.model.Components;
@@ -27,6 +28,7 @@ import com.penske.apps.adminconsole.model.HeaderUser;
 import com.penske.apps.adminconsole.model.PoCategory;
 import com.penske.apps.adminconsole.model.SubCategory;
 import com.penske.apps.adminconsole.model.Template;
+import com.penske.apps.adminconsole.model.TemplateComponent;
 import com.penske.apps.adminconsole.model.TemplateComponents;
 import com.penske.apps.adminconsole.model.TemplatePoCategorySubCategory;
 import com.penske.apps.adminconsole.model.VendorTemplate;
@@ -681,5 +683,31 @@ public class ComponentsRestController {
 	@ResponseBody
 	public void deleteComponentVisibilityOverrides(@RequestParam(value="overrideId") int overrideId, HttpSession session) {
 		componentService.deleteComponentVisibilityOverrides(overrideId);
+	}
+	
+	/*==============Load template component sequence===================*/
+	@RequestMapping("/load-template-componenet-sequence")
+	@ResponseBody
+	public ModelAndView getTemplateComponents(@RequestParam("templateId") int templateId){
+		ModelAndView mav = new ModelAndView("/admin-console/components/excel-sequence-components");
+		TemplateComponent templateComponents= new TemplateComponent();
+		templateComponents.setTemplateId(templateId);
+		List<ComponentSequence> templateComponentList=componentVendorTemplateService.getTemplateComponentSequences(templateId);
+		templateComponents.setComponents(templateComponentList);
+		mav.addObject("templateComponents", templateComponents);
+		return mav;
+	}
+	/*==============update template component sequence===================*/
+	@RequestMapping("/update-template-componenet-sequence")
+	@ResponseBody
+	public String updateTemplateComponentSequence(TemplateComponent templateComponents,HttpServletResponse response) throws Exception{
+		String status="SUCCESS";
+		try{
+		componentVendorTemplateService.updateTemplateComponentSequence(templateComponents);
+		}catch (Exception e) {
+			logger.error("Error while updating TEMPLATE COMPONENT SEQUENCE: "+e);
+			CommonUtils.getCommonErrorAjaxResponse(response,"Error Processing the Component Visibility Override");
+		}
+		return status;
 	}
 }
