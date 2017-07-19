@@ -24,22 +24,25 @@
 	<table id="componetsTable" style="width:100%;height:250px;">
 		<thead class="header fixedHeader">
 			<tr>
-				<th class="pointer-column" style="width:5%"></th>
-				<th style="width:55%" >Component</th>
-				<th style="width:40%">Component ID</th>
+				<th class="pointer-column" style="width:6%"></th>
+				<th style="width:6%" >Seq</th>
+				<th style="width:58%" >Component</th>
+				<th style="width:30%">Component ID</th>
 			</tr>
 		</thead>
 		<tbody>
 			<c:forEach items="${templateComponents.components}" var="component" varStatus="cmpIndex">
 				<tr >
-					<td class="pointer" style="width:5%"> <span class="icon-bar"></span>
+					<td class="pointer" style="width:6%"> <span class="icon-bar"></span>
 						  <span class="icon-bar"></span>
 						  <span class="icon-bar"></span>
 						  <form:input type="hidden" path="components[${cmpIndex.count -1}].componentSequence" class="seq" value=${component.componentSequence }/>
 						  <form:input type="hidden" path="components[${cmpIndex.count -1}].componentId" class="componentId" value="${component.componentId}"/>
 						  </td>
-					<td style="width:55%">${component.displayName }</td>
-					<td style="width:40%">${component.componentId }</td>
+				    <td class="seq" style="width:6%">${component.componentSequence }</td>
+					<td style="width:58%">${component.displayName }</td>
+					<td style="width:30%">${component.componentId }</td>
+					
 				</tr>
 			</c:forEach>
 	

@@ -505,7 +505,8 @@ select
   	<select id="getTemplateComponentSequences" resultType="com.penske.apps.adminconsole.model.ComponentSequence">
   		SELECT
             AV.DISPLAY_NAME AS displayName,
-            AV.COMPONENT_ID AS componentId
+            AV.COMPONENT_ID AS componentId,
+            UCTS.COMPONENT_SEQUENCE AS componentSequence
 		FROM UNIT_COMPONENTS_TEMPLATE_SEQUENCE_FOR_EXCEL UCTS
 		jOIN V_SMC_AVAILABLE_COMPONENTS AV ON UCTS.COMPONENT_ID=AV.COMPONENT_ID
 		WHERE UCTS.TEMPLATE_ID=#{templateId}
