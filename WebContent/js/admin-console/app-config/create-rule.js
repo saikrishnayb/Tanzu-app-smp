@@ -142,7 +142,7 @@ function initializeAssignedTable($assigendTable){
 		"aoColumnDefs"		: [{ 'bSortable': false, 'aTargets': [0] } ],//disable sorting for specific column indexes
 		"bInfo"				: true, //Showing 1 to 10 of 11 entries
 		"sPaginationType"	: "full_numbers", //Shows first/previous 1,2,3,4 next/last buttons
-		"iDisplayLength"	: 10 , //number of records per page for pagination
+		"iDisplayLength"	: -1 , //number of records per page for pagination
 		"aLengthMenu"		: [[10, 25, 50,100,-1], [10, 25, 50,100,"All"]],//number of records per page for pagination
 		"oLanguage"			: {"sEmptyTable": "&nbsp;"}, //Message displayed when no records are found
 		"search"			: {

@@ -2,7 +2,7 @@ $(document).ready(function() {
 	selectCurrentNavigation("tab-app-config", "left-nav-loadsheet-sequence");
 	var commonStaticUrl =$('#common-static-url').val();
 	$sequenceTable=$("#sequence-table");
-	var iDisplayLength = 10;//tableRowLengthCalc();
+	var iDisplayLength = -1;//tableRowLengthCalc();
 	//sequence table
 	$sequenceTable.dataTable( { //All of the below are optional
 		"aaSorting"			: [[ 1, "asc" ]], //default sort column

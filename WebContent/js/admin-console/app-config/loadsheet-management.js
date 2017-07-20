@@ -22,7 +22,7 @@ function initializeloadSheetTable($loadsheetTable){
 		"sPaginationType"	: "full_numbers", //Shows first/previous 1,2,3,4 next/last buttons
 		"bRetrieve"			: true,
 		"bDestroy"			: true,
-		"iDisplayLength"	: 10 , //number of records per page for pagination
+		"iDisplayLength"	: -1 , //number of records per page for pagination
 		"aLengthMenu"		: [[10, 25, 50,100,-1], [10, 25, 50,100,"All"]],//number of records per page for pagination
 		"oLanguage"			: {"sEmptyTable": "&nbsp;"}, //Message displayed when no records are found
 		"search"			: {

@@ -14,6 +14,7 @@ $(document).ready(function() {
 		   $(this).siblings().children().removeClass('selectedName');
 		   
 		   var templateId=$(this).find('td').attr('id');
+		   if (typeof templateId != 'undefined'){
 		   //load component details
 		   $("#componentDetails").hide();
 		   $("#showWait").show();
@@ -40,6 +41,7 @@ $(document).ready(function() {
 					
 				}
 				});
+		   }
 		   
 		   
 	});
