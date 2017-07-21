@@ -520,7 +520,7 @@ AND OVR_TYPE=#{overrideType} AND CONTROLLING_COMPONENT_ID=#{controllingComponent
                  AND unt.IS_REPLACED = 'N'
                  AND (dte.ACT_DEL_DATE = '0001-01-01' or dte.ACT_DEL_DATE is null)
                  AND unmap.PAYABLE_STATUS NOT IN ('CLOSED', 'VOID')
-                 AND unt.unit_status not in ('VOID')
+                 AND unt.unit_status not in ('CLOSED', 'VOID')
           )
     
     </update>
@@ -552,7 +552,7 @@ AND OVR_TYPE=#{overrideType} AND CONTROLLING_COMPONENT_ID=#{controllingComponent
                      AND unt.IS_REPLACED = 'N'
                      AND (dte.ACT_DEL_DATE = '0001-01-01' or dte.ACT_DEL_DATE is null)
                      AND unmap.PAYABLE_STATUS NOT IN ('CLOSED', 'VOID')
-                     AND unt.unit_status not in ('VOID')
+                     AND unt.unit_status not in ('CLOSED', 'VOID')
         )
     
     </insert>
