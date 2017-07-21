@@ -174,6 +174,12 @@ function initializeAssignedTable($assigendTable){
 		}
 });
 	
+	//To resize iframe on datatable search
+	$("div.dataTables_filter input").keyup( function (e) {
+		parent.resizeAfterPaginationChange();
+	} );	
+
+	
 	//To resize iframe on change of page size and on click of page numbers
 	$('select[name=Assigned-Table_length]').change(function(){
 		parent.resizeAfterPaginationChange();
