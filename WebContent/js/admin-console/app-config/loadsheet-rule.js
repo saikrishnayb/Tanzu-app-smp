@@ -73,7 +73,13 @@ function initializeRuleTable($loadsheetRuleTable){
 			else{
 				infoRow.css("display", "none");
 			}
-		}
+		},
+		"fnStateSave": function (oSettings, oData) {
+            localStorage.setItem( 'loadSheetRuleTable', JSON.stringify(oData) );
+        },
+        "fnStateLoad": function (oSettings) {
+            return JSON.parse( localStorage.getItem('loadSheetRuleTable') );
+        }
 });
 	
 	//To resize iframe on datatable search
