@@ -45,11 +45,11 @@
 					            <ul class="dropdown-menu">
 					            <c:choose>
 					              <c:when test="${loadsheet.usesDefault eq 'Y'}">
-					                <li><a onclick="processingImageAndTextHandler('visible','Loading data...');" href="get-loadsheet-components.htm?categoryId=${loadsheet.catTypeId}&category=${loadsheet.category} &type=${loadsheet.type} &viewMode=Y&compRqstdFrom=LOADSHEET_MANAGEMENT">View Component Rules</a></li>
+					                <li><a onclick="processingImageAndTextHandler('visible','Loading data...');" id="componentRulesLabel" href="get-loadsheet-components.htm?categoryId=${loadsheet.catTypeId}&category=${loadsheet.category} &type=${loadsheet.type} &viewMode=Y&compRqstdFrom=LOADSHEET_MANAGEMENT">View Component Rules</a></li>
 					                <li><a onclick="processingImageAndTextHandler('visible','Loading data...');" href="get-loadsheet-sequence.htm?categoryId=${loadsheet.catTypeId}&category=${loadsheet.category} &type=${loadsheet.type} &viewMode=Y">View Loadsheet Sequence</a></li>
 					              </c:when>
 					              <c:otherwise>
-					                <li><a onclick="processingImageAndTextHandler('visible','Loading data...');" href="get-loadsheet-components.htm?categoryId=${loadsheet.catTypeId}&category=${loadsheet.category} &type=${loadsheet.type} &viewMode=N&compRqstdFrom=LOADSHEET_MANAGEMENT" >Configure Component Rules</a></li>
+					                <li><a onclick="processingImageAndTextHandler('visible','Loading data...');" id="componentRulesLabel" href="get-loadsheet-components.htm?categoryId=${loadsheet.catTypeId}&category=${loadsheet.category} &type=${loadsheet.type} &viewMode=N&compRqstdFrom=LOADSHEET_MANAGEMENT" >Configure Component Rules</a></li>
 					                <li><a onclick="processingImageAndTextHandler('visible','Loading data...');" href="get-loadsheet-sequence.htm?categoryId=${loadsheet.catTypeId}&category=${loadsheet.category} &type=${loadsheet.type} &viewMode=N">Set Loadsheet Sequence</a></li>
 					              </c:otherwise>
 					            </c:choose>

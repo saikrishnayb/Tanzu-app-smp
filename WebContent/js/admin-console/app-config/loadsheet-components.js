@@ -4,33 +4,47 @@ $(document).ready(function() {
 	$templateTable=$("#component-table");
 	//component table
 	$templateTable.dataTable( { //All of the below are optional
-		"aaSorting": [[ 0, "asc" ]], //default sort column
-		"bPaginate": false, //enable pagination
+		"aaSorting"			: [[ 0, "asc" ]], //default sort column
+		"bPaginate"			: false, //enable pagination
+		"bStateSave"		: true,	//To retrieve the data on click of back button
 		"aoColumnDefs"		: [{ 'bSortable': false, 'aTargets': [5] } ],//disable sorting for specific column indexes
-		"sScrollY": "400px",
-		"sScrollX": "100%",
-		"bInfo" : false,
-		"bScrollCollapse": true,
-		"bAutoWidth": true, //cray cray
-		"bFilter": true, //Allows dynamic filtering of results, do not enable if using ajax for pagination
-		"bSort": true, //Allow sorting by column header
-		"oLanguage": {"sEmptyTable": "No Results Found"}, //Message displayed when no records are found
-		"search": {
-			type: "text",
-			bRegex: true,
-			bSmart: true
-			 },
-		"fnDrawCallback": function(settings, json) {
-				//to highlight the selected component   
-				var sletedComp=$("#selectedComponentId").val();
-				if(sletedComp){
-					   $("#"+sletedComp).addClass("row_selected");
-					   $(".dataTables_scrollBody").scrollTop( $("tr.row_selected").offset().top - $(".dataTables_scrollBody").height() );
-				}
-				   
-				   
-				  }
+		"sScrollY"			: "400px",
+		"sScrollX"			: "100%",
+		"bInfo" 			: false,
+		"bScrollCollapse"	: true,
+		"bAutoWidth"		: true, //cray cray
+		"bFilter"			: true, //Allows dynamic filtering of results, do not enable if using ajax for pagination
+		"bSort"				: true, //Allow sorting by column header
+		"oLanguage"			: {"sEmptyTable": "No Results Found"}, //Message displayed when no records are found
+		"search"			: {
+								type: "text",
+								bRegex: true,
+								bSmart: true
+								},
+		"fnDrawCallback"	: function(settings, json) {
+									//to highlight the selected component   
+									var sletedComp=$("#selectedComponentId").val();
+									if(sletedComp){
+										   $("#"+sletedComp).addClass("row_selected");
+										   $(".dataTables_scrollBody").scrollTop( $("tr.row_selected").offset().top - $(".dataTables_scrollBody").height() );
+									}
+									   
+									   
+								},
+		"fnStateSave"		: function (oSettings, oData) {
+						            localStorage.setItem( 'loadSheetCompTable', JSON.stringify(oData) );
+						        },
+		"fnStateLoad"		: function (oSettings) {
+						            return JSON.parse( localStorage.getItem('loadSheetCompTable') );
+						        }
 	} );
+	
+	//To resize iframe on datatable search
+	$("div.dataTables_filter input").keyup( function (e) {
+		parent.resizeAfterPaginationChange();
+	} );	
+
+	
 	var compRequestedFrom=$("#compRequestedFrom").val();
 	var strHTML='<div id="org-desc-div" style="float: right; text-align: right;margin-bottom: 1%;">'+
 	'<a class="buttonSecondary floatLeft clear-left back" href="goBack-componets.htm?requestedFrom='+compRequestedFrom+'">Back</a>'+

@@ -6,6 +6,14 @@ $(document).ready(function() {
 	selectCurrentNavigation("tab-app-config", "left-nav-loadsheet-management");
 	var $loadsheetTable = $('#loadsheet-table');
 	initializeloadSheetTable($loadsheetTable);
+	
+	//Removing state saving for load sheet component table 
+	var $componentRuleLabel=$("#componentRulesLabel");
+	
+	$(document).on('click',$componentRuleLabel,function () {
+		localStorage.removeItem('loadSheetCompTable');
+	});
+	
 });
 
 function initializeloadSheetTable($loadsheetTable){
