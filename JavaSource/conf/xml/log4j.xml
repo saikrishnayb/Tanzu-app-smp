@@ -13,6 +13,15 @@
     </layout>
   </appender>
 
+  <appender class="org.apache.log4j.RollingFileAppender" name="splunk">
+    <param value="/logs/apps/suppliermgmt/splunk.spk" name="File"/>
+    <param value="9" name="MaxBackupIndex"/>
+    <param value="1000KB" name="MaxFileSize"/>
+    <layout class="com.penske.log4j.WebSpherePatternLayout">
+      <param value="%d [~C | ~N | ~S | %t] %-5p (%F:%M():%L) - %m%n" name="ConversionPattern"/>
+    </layout>
+  </appender>
+
   <appender class="org.apache.log4j.ConsoleAppender" name="CONSOLE">
     <layout class="org.apache.log4j.PatternLayout">
       <param name="ConversionPattern" value="%d{dd MMM yyyy HH:mm:ss,SSS} %p in %F:%M:%L - %m%n" />
@@ -40,6 +49,11 @@
   <logger name="org.springframework">
     <level value="debug" />
     <appender-ref ref="FILE" />
+  </logger>
+
+  <logger name="splunk" additivity="false">
+    <level value="debug"/>
+    <appender-ref ref="splunk"/>
   </logger>
 
   <root>

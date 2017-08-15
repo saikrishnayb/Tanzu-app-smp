@@ -43,6 +43,11 @@ xmlns="http://www.springframework.org/schema/beans">
 <context:component-scan base-package="com.penske.apps.adminconsole.service"/>
 
 <mvc:annotation-driven content-negotiation-manager="contentNegotiationManager" />
+
+	<mvc:interceptors>
+		<bean id="requestLoggingHandlerInterceptor" class="com.penske.apps.suppliermgmt.interceptor.RequestLoggingHandlerInterceptor"/>
+	</mvc:interceptors>
+
     <bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
         <property name="favorPathExtension" value="false" />
         <property name="favorParameter" value="false" />
