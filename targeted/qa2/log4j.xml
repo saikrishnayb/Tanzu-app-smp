@@ -16,7 +16,7 @@
        </appender>
 
   <appender class="org.apache.log4j.RollingFileAppender" name="splunk">
-    <param value="/logs/apps/suppliermgmt/splunk.spk" name="File"/>
+    <param value="/logs/apps/suppliermgmt2/splunk.spk" name="File"/>
     <param value="9" name="MaxBackupIndex"/>
     <param value="1000KB" name="MaxFileSize"/>
     <layout class="com.penske.log4j.WebSpherePatternLayout">
