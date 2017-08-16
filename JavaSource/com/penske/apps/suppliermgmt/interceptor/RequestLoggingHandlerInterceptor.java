@@ -66,7 +66,7 @@ public class RequestLoggingHandlerInterceptor extends HandlerInterceptorAdapter
 			
 			String serverName = request.getLocalName();
 			String ssoid = getSSSOID(request);
-			String module = "suppliermgmt";
+			String module = "";
 			
 			String moduleSpecificInformation = getModuleSpecificInformation();
 			
