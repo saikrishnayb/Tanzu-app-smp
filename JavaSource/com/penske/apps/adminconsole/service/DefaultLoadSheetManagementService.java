@@ -10,6 +10,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -375,7 +376,10 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 		UserContext user = (UserContext) httpSession.getAttribute(ApplicationConstants.USER_MODEL);
 		List<LoadsheetCompGrpSeq> cmpGrpSeqList=null;
 		LoadsheetCompGrpSeq cmpGrpSeq;
-		
+		//if category type is empty then set default type(VOD-351).
+		if(StringUtils.isEmpty(seqMaster.getType())){
+			seqMaster.setType(com.penske.apps.adminconsole.util.ApplicationConstants.DEFAULT_TYPE);
+		}
 		loadsheetManagementDao.insertSeqMasterDetails(seqMaster,user);
 		for(LoadsheetSequenceGroupMaster grpMaster:seqMaster.getGroupMasterList()){
 			grpMaster.setSeqMasterId(seqMaster.getId());

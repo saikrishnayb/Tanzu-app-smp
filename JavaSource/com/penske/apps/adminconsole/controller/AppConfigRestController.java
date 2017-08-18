@@ -49,6 +49,7 @@ import com.penske.apps.adminconsole.service.SearchTemplateService;
 import com.penske.apps.adminconsole.service.SubjectService;
 import com.penske.apps.adminconsole.service.TabService;
 import com.penske.apps.adminconsole.service.TermsAndConditionsService;
+import com.penske.apps.adminconsole.util.ApplicationConstants;
 import com.penske.apps.adminconsole.util.CommonUtils;
 
 /**
@@ -865,6 +866,10 @@ public class AppConfigRestController {
 	public int checkForUniqueName(@RequestParam("seqName") String seqName,@RequestParam("seqId") int seqId,@RequestParam("category") String category,
 			@RequestParam("type") String type,@RequestParam("mfr") String mfr){
 		int UniqueStatus=0;
+		//if category type is empty then set default type(VOD-351).
+		if(StringUtils.isEmpty(type)){
+			type=ApplicationConstants.DEFAULT_TYPE;
+		}
 		boolean status= loadsheetManagementService.checkForUniqueSequenceName(seqName, seqId);
 		if(status){
 			if(StringUtils.isNotBlank(category)){

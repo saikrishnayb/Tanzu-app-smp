@@ -47,7 +47,7 @@ $(document).ready(function() {
 	//spinner modal listener
 	$document.ajaxSend(function(){
 		if(displayFlag){
-			processingImageAndTextHandler('visible','Ajax Action Sent..');
+			processingImageAndTextHandler('visible','Processing...');
 		}
 	});
 
@@ -57,7 +57,7 @@ $(document).ready(function() {
 	
 	$document.ajaxStart(function() {
 		if(displayFlag){
-			processingImageAndTextHandler('visible','Ajax Action Started..');
+			processingImageAndTextHandler('visible','Processing...');
 		}
 	});
 

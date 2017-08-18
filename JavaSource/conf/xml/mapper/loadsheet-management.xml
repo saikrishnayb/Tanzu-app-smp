@@ -17,7 +17,7 @@
 		FROM SMC_COMPONENT_VISIBILITY SCV
 		JOIN CORP.VEHCMPSGF VCS on SCV.COMPONENT_ID=VCS.COMPONENT_ID
 		JOIN SMC_CAT_TYPE_MASTER SCM ON SCV.CAT_TYPE_ID=SCM.CAT_TYPE_ID
-		WHERE SCM.PO_CATEGORY=#{category} AND SCM.TYPE=#{type} AND SCV.LOADSHEET_VISIBILITY !=''
+		WHERE SCM.PO_CATEGORY=#{category} AND SCM.TYPE=#{type} AND SCV.LOADSHEET_VISIBILITY !='' 
  		
  	</select>
  	
@@ -394,11 +394,16 @@
 		ON 	
 				SCMO.CMP_VISIBLE_ID=SCV.CMP_VISIBLE_ID
 		<where>		
-		  (SCV.LOADSHEET_VISIBILITY in( 'A','R')  or (SCMO.VISIBILITY_OVERRIDE  in ( 'A','R') AND SCV.LOADSHEET_VISIBILITY !=''))
+		  SCV.LOADSHEET_VISIBILITY !=''
 		<if test="category != null and type != null">
 		
         	<if test="category != null and category !='' ">
-			AND	SCM.PO_CATEGORY = #{category}
+			 AND	SCM.PO_CATEGORY = #{category}
+			 
+			 <if test="type == null or  type == ''">
+				AND SCM.TYPE = 'DEFAULT'
+			</if>
+			 
        		</if>
 			<if test="type != null and  type != ''">
 				AND SCM.TYPE = #{type}

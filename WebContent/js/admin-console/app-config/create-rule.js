@@ -34,6 +34,10 @@ $(document).ready(function() {
 	
 	
 	$("#Assigned-Table_wrapper").css("width","99%");
+	
+	$("#footerDiv").insertBefore("#Assigned-Table_info"); 
+	$("#footerDiv").show();
+	
 	 //To Delete a row in the table
 	 $('#createRule-Table tbody').on( 'click', '#deleteRow', function () {
 		 

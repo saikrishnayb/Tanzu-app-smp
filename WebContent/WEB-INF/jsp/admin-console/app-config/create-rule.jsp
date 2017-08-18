@@ -159,6 +159,9 @@
 							</c:forEach>	
 						</tbody>
 					</table>
+					<div id="footerDiv" class="displayNone"> 
+						<%@ include file="/WEB-INF/jsp/admin-console/app-config/loadSheet-footer.jspf" %>					
+					</div>
 				</fieldset>
 				</c:if>
 			</div>
