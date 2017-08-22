@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.penske.apps.adminconsole.annotation.VendorAllowed;
 import com.penske.apps.suppliermgmt.common.constants.ApplicationConstants;
 import com.penske.apps.suppliermgmt.model.UserContext;
 import com.penske.apps.suppliermgmt.service.HelpService;
@@ -49,6 +50,7 @@ public class NavigationController extends BaseController {
 	/** The logger. */
 	private static Logger LOGGER = Logger.getLogger(NavigationController.class);
 	
+	@VendorAllowed
 	@ResponseBody
 	@RequestMapping(value = "/navigate", method = RequestMethod.POST)
 	public String navigateapplication(@RequestParam(value="path") String destination,
@@ -99,7 +101,7 @@ public class NavigationController extends BaseController {
 		return url.toString();
 	}
 	
-	
+	@VendorAllowed
 	@RequestMapping(value = "/getHelp")
 	protected  ModelAndView getHelp(HttpServletRequest request) {
 		ModelAndView model=new ModelAndView();
@@ -118,6 +120,7 @@ public class NavigationController extends BaseController {
 		return model;
 	}	
 	
+	@VendorAllowed
 	@RequestMapping(value = "/getHowTo")
 	protected  ModelAndView getHowTo(HttpServletRequest request) {
 		return new ModelAndView("home/howTo");
