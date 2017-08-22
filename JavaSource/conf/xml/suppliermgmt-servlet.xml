@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans
-xsi:schemaLocation="http://www.springframework.org/schema/beans
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
 http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
 http://www.springframework.org/schema/context
 http://www.springframework.org/schema/context/spring-context-3.2.xsd
@@ -10,77 +10,73 @@ http://www.springframework.org/schema/mvc
 http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
 http://www.springframework.org/schema/jee
 http://www.springframework.org/schema/jee/spring-jee-3.2.xsd"
-xmlns:jee="http://www.springframework.org/schema/jee"
-xmlns:oxm="http://www.springframework.org/schema/oxm"
-xmlns:mvc="http://www.springframework.org/schema/mvc"
-xmlns:context="http://www.springframework.org/schema/context"
-xmlns:p="http://www.springframework.org/schema/p"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xmlns="http://www.springframework.org/schema/beans"> 
+  xmlns:jee="http://www.springframework.org/schema/jee" xmlns:oxm="http://www.springframework.org/schema/oxm" xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.springframework.org/schema/beans">
 
-<!-- User Creation Service -->
-<bean id="remoteCreationService" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
-	<property name="serviceUrl" ref="usrCreationSvcUrl"/>
-	<property name="serviceInterface" value="com.penske.apps.ucsc.service.UserInfoService"/>
-</bean>
+  <!-- User Creation Service -->
+  <bean id="remoteCreationService" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+    <property name="serviceUrl" ref="usrCreationSvcUrl" />
+    <property name="serviceInterface" value="com.penske.apps.ucsc.service.UserInfoService" />
+  </bean>
 
-<!-- Mail config -->
-<bean id="mailSender"
-		class="org.springframework.mail.javamail.JavaMailSenderImpl">
-	<property name="host">
-		<value>mail.penske.com</value>
-	</property>
-</bean>
-<context:component-scan base-package="com.penske.apps.suppliermgmt.controller"/>
-<context:component-scan base-package="com.penske.apps.suppliermgmt.validator"/>
-<context:component-scan base-package="com.penske.apps.suppliermgmt.service"/>
-<context:component-scan base-package="com.penske.apps.suppliermgmt.dao"/>
-<context:component-scan base-package="com.penske.apps.suppliermgmt.common.util"/>
+  <!-- Mail config -->
+  <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+    <property name="host">
+      <value>mail.penske.com</value>
+    </property>
+  </bean>
+  <context:component-scan base-package="com.penske.apps.suppliermgmt.controller" />
+  <context:component-scan base-package="com.penske.apps.suppliermgmt.validator" />
+  <context:component-scan base-package="com.penske.apps.suppliermgmt.service" />
+  <context:component-scan base-package="com.penske.apps.suppliermgmt.dao" />
+  <context:component-scan base-package="com.penske.apps.suppliermgmt.common.util" />
 
-<context:component-scan base-package="com.penske.apps.adminconsole.controller"/>
-<context:component-scan base-package="com.penske.apps.adminconsole.service"/>
-<context:component-scan base-package="com.penske.apps.adminconsole.controller"/>
-<context:component-scan base-package="com.penske.apps.adminconsole.service"/>
+  <context:component-scan base-package="com.penske.apps.adminconsole.controller" />
+  <context:component-scan base-package="com.penske.apps.adminconsole.service" />
 
-<mvc:annotation-driven content-negotiation-manager="contentNegotiationManager" />
+  <mvc:annotation-driven content-negotiation-manager="contentNegotiationManager" />
 
-	<mvc:interceptors>
-		<bean id="requestLoggingHandlerInterceptor" class="com.penske.apps.suppliermgmt.interceptor.RequestLoggingHandlerInterceptor"/>
-	</mvc:interceptors>
+  <mvc:interceptors>
+    <bean id="requestLoggingHandlerInterceptor" class="com.penske.apps.suppliermgmt.interceptor.RequestLoggingHandlerInterceptor" />
+    <mvc:interceptor>
+      <mvc:mapping path="/**" />
+      <bean id="smcSecurityInterceptor" class="com.penske.apps.suppliermgmt.interceptor.SmcSecurityInterceptor" />
+    </mvc:interceptor>
+  </mvc:interceptors>
 
-    <bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
-        <property name="favorPathExtension" value="false" />
-        <property name="favorParameter" value="false" />
-        <property name="ignoreAcceptHeader" value="false" />
-        <property name="mediaTypes" >
-            <value>
-                atom=application/atom+xml
-                html=text/html
-                json=application/json
-                *=*/*
-            </value>
-        </property>
-    </bean>
- 
-<bean id="lookUpManager"
-		class="com.penske.apps.suppliermgmt.common.util.LookupManager" init-method="loadLookUpData" >
-</bean>
+  <bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+    <property name="favorPathExtension" value="false" />
+    <property name="favorParameter" value="false" />
+    <property name="ignoreAcceptHeader" value="false" />
+    <property name="mediaTypes">
+      <value>
+        atom=application/atom+xml
+        html=text/html
+        json=application/json
+        *=*/*
+      </value>
+    </property>
+  </bean>
 
-<bean
-class="org.springframework.web.servlet.view.UrlBasedViewResolver" id="viewResolver">
- <property value="org.springframework.web.servlet.view.JstlView" name="viewClass"/>
-<property value="/WEB-INF/jsp/" name="prefix"/> <property value=".jsp" name="suffix"/>
-</bean>
-<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"> 
-    </bean>
-<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+  <bean id="lookUpManager" class="com.penske.apps.suppliermgmt.common.util.LookupManager" init-method="loadLookUpData">
+  </bean>
 
-            <property name="basename" value="classpath:conf/suppliermgmt" />
-	
-</bean>
+  <bean class="org.springframework.web.servlet.view.UrlBasedViewResolver" id="viewResolver">
+    <property value="org.springframework.web.servlet.view.JstlView" name="viewClass" />
+    <property value="/WEB-INF/jsp/" name="prefix" />
+    <property value=".jsp" name="suffix" />
+  </bean>
+  <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+  </bean>
+  <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+
+    <property name="basename" value="classpath:conf/suppliermgmt" />
+
+  </bean>
 
 
-<bean id="usrCreationSvcUrl" factory-bean="usrCreationSvcJndi" factory-method="toString"/>
-<jee:jndi-lookup id="usrCreationSvcJndi" jndi-name="url/url_usrcreationsvc"/>
+  <bean id="usrCreationSvcUrl" factory-bean="usrCreationSvcJndi" factory-method="toString" />
+  <jee:jndi-lookup id="usrCreationSvcJndi" jndi-name="url/url_usrcreationsvc" />
 
 </beans>

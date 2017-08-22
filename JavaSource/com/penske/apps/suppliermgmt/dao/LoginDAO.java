@@ -2,7 +2,7 @@ package com.penske.apps.suppliermgmt.dao;
 /**
  *****************************************************************************************************************
  * File Name     : LoginDAO
- * Description   : DAO class for fetching userdetails 
+ * Description   : DAO class for fetching userdetails
  * Project       : SMC
  * Package       : com.penske.apps.smcop.dao
  * Author        : 502403391
@@ -21,16 +21,19 @@ import org.apache.ibatis.annotations.Param;
 
 import com.penske.apps.suppliermgmt.model.Tab;
 import com.penske.apps.suppliermgmt.model.User;
+import com.penske.apps.suppliermgmt.model.UserContext;
 import com.penske.apps.suppliermgmt.model.VendorLocation;
 
 public interface LoginDAO {
 
-	public User getUserDetails(User userModel);
+    public User getUserDetails(User userModel);
 
-	public List<VendorLocation> getAssociatedVendors(int orgId);
-	
-	public List<Tab> getTabs(int roleId);
+    public List<VendorLocation> getAssociatedVendors(int orgId);
 
-	public List<String> getSecurityFunctions(@Param("roleId") int roleId,@Param("tabKey") String tabKey);
+    public List<Tab> getTabs(int roleId);
+
+    public List<String> getSecurityFunctions(@Param("roleId") int roleId,@Param("tabKey") String tabKey);
+
+    public List<String> getAllSecurityFunctionsWithUser(UserContext userContext);
 
 }

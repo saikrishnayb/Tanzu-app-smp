@@ -17,20 +17,22 @@ package com.penske.apps.suppliermgmt.service;
  */
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import com.penske.apps.adminconsole.annotation.SmcSecurity.SecurityFunction;
 import com.penske.apps.suppliermgmt.model.User;
+import com.penske.apps.suppliermgmt.model.UserContext;
 import com.penske.apps.suppliermgmt.model.VendorLocation;
 
 public interface LoginService {
-	
-	public User getUserDetails(User userModel);
-	
-	public List<VendorLocation> getAssociatedVendors(int orgId);
-	
-	public Map<String, Map<String,String>> getTabs(int roleId);
-	
-	
-	
+
+    public User getUserDetails(User userModel);
+
+    public List<VendorLocation> getAssociatedVendors(int orgId);
+
+    public Map<String, Map<String,String>> getTabs(int roleId);
+
+    public Set<SecurityFunction> getAllUserSecurityFunctions(UserContext userContext);
 
 }
 

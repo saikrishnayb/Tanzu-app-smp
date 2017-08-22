@@ -10,21 +10,22 @@ import com.penske.apps.adminconsole.service.HeaderService;
 @Controller
 public class HeaderRestController {
 
-	@Autowired
-	private HeaderService headerService;
+    @Autowired
+    private HeaderService headerService;
 
-	@RequestMapping("get-role-modal-content")
-	public ModelAndView getRoleModalContent(@RequestParam("roleId") int roleId, @RequestParam("roleName") String roleName){
-		
-		boolean isHeaderRoleInfo = true;
-		
-		ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/security/permissions-accordion");
-		
-		mav.addObject("tabPermissionsMap", headerService.getRoleInformation(roleId));
-		mav.addObject("isHeaderRoleInfo", isHeaderRoleInfo);
-		mav.addObject("roleName", roleName);
-		
-		return mav;
-	}
-	
+    // TODO SMCSEC is this even used?????
+    @RequestMapping("get-role-modal-content")
+    public ModelAndView getRoleModalContent(@RequestParam("roleId") int roleId, @RequestParam("roleName") String roleName){
+
+        boolean isHeaderRoleInfo = true;
+
+        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/security/permissions-accordion");
+
+        mav.addObject("tabPermissionsMap", headerService.getRoleInformation(roleId));
+        mav.addObject("isHeaderRoleInfo", isHeaderRoleInfo);
+        mav.addObject("roleName", roleName);
+
+        return mav;
+    }
+
 }

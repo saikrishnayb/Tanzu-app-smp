@@ -7,20 +7,22 @@ import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.penske.apps.adminconsole.annotation.VendorAllowed;
 import com.penske.util.CPTBaseServlet;
 
 /**
-* Controller that handles all the logoff mapping and functionality
-*
-* @author erik.munoz 600139451
-*/
+ * Controller that handles all the logoff mapping and functionality
+ *
+ * @author erik.munoz 600139451
+ */
 @Controller
 public class LogoffController {
-	
-	@RequestMapping(value = {"/exit", "/logoff"})
-	public void loadWelcome(HttpServletRequest request, HttpServletResponse response, HttpSession session){ 	
-	    
-		CPTBaseServlet.logoff(request,response);
-	}
-	
+
+    @VendorAllowed
+    @RequestMapping(value = {"/exit", "/logoff"})
+    public void loadWelcome(HttpServletRequest request, HttpServletResponse response, HttpSession session){
+
+        CPTBaseServlet.logoff(request,response);
+    }
+
 }

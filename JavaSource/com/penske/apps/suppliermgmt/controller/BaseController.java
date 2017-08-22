@@ -25,7 +25,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.penske.apps.suppliermgmt.common.constants.ApplicationConstants;
@@ -46,7 +45,6 @@ public class BaseController {
  * @param request 
 	 * @return
 	 */
-	@ExceptionHandler(Exception.class)
 	public ModelAndView handleException(Exception ex, HttpServletRequest request) {
 		ModelAndView mv = new ModelAndView("error/GlobalErrorPage");
 		ErrorModel model = new ErrorModel();
@@ -109,7 +107,6 @@ public class BaseController {
 	 * @param ex the caught exception.
 	 * @return
 	 */
-	@ExceptionHandler(RuntimeException.class)
 	public ModelAndView handleException(RuntimeException ex, HttpServletRequest request) {
 		ModelAndView mv = new ModelAndView("error/GlobalErrorPage");
 		ErrorModel model = new ErrorModel();

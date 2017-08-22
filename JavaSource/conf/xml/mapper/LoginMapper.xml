@@ -102,5 +102,14 @@ SELECT
 		AND ST.TAB_KEY=#{tabKey}
 		AND SF.STATUS ='A' 
 	</select> 
+  
+    <select id="getAllSecurityFunctionsWithUser" resultType="String">
+       SELECT securityFunction.NAME 
+         FROM SMC.SMC_SECURITY_FUNCTION securityFunction 
+         JOIN SMC.SMC_ROLE_SEC_FUNCTIONS roleFunctions
+              ON roleFunctions.SEC_FUNC_ID = securityFunction.SEC_FUNC_ID
+        WHERE roleFunctions.ROLE_ID = #{roleId}
+          AND securityFunction.STATUS='A'
+    </select>
 		
 </mapper>
