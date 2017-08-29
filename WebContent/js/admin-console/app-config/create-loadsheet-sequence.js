@@ -186,6 +186,16 @@ j2(document).ready(function() {
 	    j2("#assignedComponentsTable tbody").sortable("disable");
 	}
 	
+	//if category is empty display error msg
+	var category=j2("#categoryID").val();
+	
+	if(category==''){
+		j2("#ErrorMsg span").text("Please select Category");
+		j2("#ErrorMsg").show();	
+		j2("#categoryID").addClass("errorMsgInput");
+	} 
+
+	
 	
 });
 

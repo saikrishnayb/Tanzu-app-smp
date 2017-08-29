@@ -375,7 +375,7 @@
 	<!-- TO get Unassigned Components For create loadsheet seq -->
 	<select id="getUnAssignedComponents" resultType="com.penske.apps.adminconsole.model.LoadSheetComponentDetails">
 		SELECT 	
-  				DISTINCT VCS.COMPONENT_ID				AS componentId,
+  				DISTINCT VCS.COMPONENT_ID	    AS componentId,
   				TRIM(VCS.COMPONENT_GROUP)		AS componentGroup,
   				TRIM(VCS.SUB_GROUP)				AS subGroup,
   				TRIM(VCS.SUB_COMPONENT_NAME)	AS componentName
@@ -389,23 +389,19 @@
 				SMC_CAT_TYPE_MASTER SCM 
 		ON 	
 				SCV.CAT_TYPE_ID=SCM.CAT_TYPE_ID
-		LEFT JOIN 
-				SMC_COMPONENT_RULE_OVERRIDES SCMO 
-		ON 	
-				SCMO.CMP_VISIBLE_ID=SCV.CMP_VISIBLE_ID
 		<where>		
 		  SCV.LOADSHEET_VISIBILITY !=''
 		<if test="category != null and type != null">
 		
-        	<if test="category != null and category !='' ">
+        	<if test="category !='' ">
 			 AND	SCM.PO_CATEGORY = #{category}
 			 
-			 <if test="type == null or  type == ''">
+			 <if test="type == ''">
 				AND SCM.TYPE = 'DEFAULT'
 			</if>
 			 
        		</if>
-			<if test="type != null and  type != ''">
+			<if test="type != ''">
 				AND SCM.TYPE = #{type}
 			</if>
 		

@@ -21,6 +21,7 @@ import com.penske.apps.adminconsole.enums.PoCategoryType;
 import com.penske.apps.adminconsole.model.ExcelUploadHandler;
 import com.penske.apps.adminconsole.model.GlobalException;
 import com.penske.apps.adminconsole.model.LoadSheetCategoryDetails;
+import com.penske.apps.adminconsole.model.LoadSheetComponentDetails;
 import com.penske.apps.adminconsole.model.LoadsheetManagement;
 import com.penske.apps.adminconsole.model.LoadsheetSequenceGroupMaster;
 import com.penske.apps.adminconsole.model.LoadsheetSequenceMaster;
@@ -531,6 +532,9 @@ public class AppConfigController {
     public ModelAndView loadCreateLoadSheetSequence(LoadsheetSequenceMaster seqMaster,HttpServletRequest request){
         ModelAndView mav=new ModelAndView("/admin-console/app-config/create-loadsheet-sequence");
         List<String> mfrList=new ArrayList<String>();
+        List<LoadSheetComponentDetails> allComponents=new ArrayList<LoadSheetComponentDetails>();
+        List<String> typeList=new ArrayList<String>();
+
         //Add category and type values to the session for back button functionality.
         HttpSession session = request.getSession(false);
         if(session != null && seqMaster.getPageAction()!=null && seqMaster.getPageAction().equals("BACK") ){
@@ -557,10 +561,12 @@ public class AppConfigController {
             if(!isNoneOrDecalOrOtherPoCategoryType){
                 mfrList=loadsheetManagementService.getMfrList(poCategoryType);
             }
+            allComponents=loadsheetManagementService.getUnAssignedComponents(seqMaster);
+            typeList=loadsheetManagementService.getTypeList(seqMaster.getCategory());
         }
-        mav.addObject("unassignedComponents",loadsheetManagementService.getUnAssignedComponents(seqMaster));
+        mav.addObject("unassignedComponents",allComponents);
         mav.addObject("categoriesList", loadsheetManagementService.getCategoryList());
-        mav.addObject("typesList", loadsheetManagementService.getTypeList(seqMaster.getCategory()));
+        mav.addObject("typesList", typeList);
         mav.addObject("mfrList", mfrList);
 
         mav.addObject("seqMaster",seqMaster);
