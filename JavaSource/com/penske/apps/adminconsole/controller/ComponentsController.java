@@ -26,8 +26,6 @@ import com.penske.apps.adminconsole.service.ComponentVendorTemplateService;
 import com.penske.apps.adminconsole.service.ComponentVisibilityService;
 import com.penske.apps.adminconsole.util.ApplicationConstants;
 import com.penske.apps.adminconsole.util.CommonUtils;
-import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
-import com.penske.apps.suppliermgmt.model.UserContext;
 
 
 /**
@@ -51,9 +49,6 @@ public class ComponentsController {
     @Autowired
     private ComponentService componentService;
 
-    @Autowired
-    private SuppliermgmtSessionBean sessionBean;
-    
     // TODO SMCSEC is this even used
     @Deprecated
     @RequestMapping(value={"/visibility-by-category"})
@@ -119,13 +114,12 @@ public class ComponentsController {
 
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_CATEGORY_ASSOCIATION)
     @RequestMapping(value="/category-association")
-    public ModelAndView getCategoryAssociationPage(){
+    public ModelAndView getCategoryAssociationPage(HttpSession session){
 
         List<CategoryAssociation> categoryAssociations = categoryManagementService.getAllCategoryAssociation();
-        UserContext userContext = sessionBean.getUserContext();
         ModelAndView modelAndView = new ModelAndView("/admin-console/components/category-association");
         modelAndView.addObject("categoryAssociation",categoryAssociations);
-        modelAndView.addObject("access",CommonUtils.hasAccess(ApplicationConstants.COMPONENTS, userContext));
+        modelAndView.addObject("access",CommonUtils.hasAccess(ApplicationConstants.COMPONENTS, session));
         return modelAndView;
 
     }
@@ -177,7 +171,7 @@ public class ComponentsController {
 
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_COMPONENT_OVERRIDE)
     @RequestMapping(value ={"/component-Visibility-Override"})
-    public ModelAndView getComponentVisibilityOverrides() {
+    public ModelAndView getComponentVisibilityOverrides(HttpSession session) {
         ModelAndView mav = new ModelAndView("/admin-console/components/component-Visibility-Override");
         mav.addObject("overrideList", componentService.getAllComponentVisibilityOverrides());
         return mav;

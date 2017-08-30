@@ -5,15 +5,15 @@ package com.penske.apps.suppliermgmt.interceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
+import com.penske.apps.suppliermgmt.common.constants.ApplicationConstants;
 import com.penske.apps.suppliermgmt.model.UserContext;
 
 /**
@@ -25,9 +25,6 @@ public class RequestLoggingHandlerInterceptor extends HandlerInterceptorAdapter
 {
 	private static final Logger logger = Logger.getLogger(RequestLoggingHandlerInterceptor.class);
 	private static final Logger splunk = Logger.getLogger("splunk");
-	
-	@Autowired
-	private SuppliermgmtSessionBean sessionBean;
 
 	/**
 	 * Override: @see org.springframework.web.servlet.handler.HandlerInterceptorAdapter#preHandle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.Object)
@@ -68,7 +65,7 @@ public class RequestLoggingHandlerInterceptor extends HandlerInterceptorAdapter
 			String requestUrl = requestUrlBuffer == null ? null : requestUrlBuffer.toString();
 			
 			String serverName = request.getLocalName();
-			String ssoid = getSSSOID();
+			String ssoid = getSSSOID(request);
 			String module = "";
 			
 			String moduleSpecificInformation = getModuleSpecificInformation();
@@ -99,9 +96,13 @@ public class RequestLoggingHandlerInterceptor extends HandlerInterceptorAdapter
 		super.afterCompletion(request, response, handler, ex);
 	}
 	
-	private String getSSSOID()
+	private String getSSSOID(HttpServletRequest request)
 	{
-		UserContext userContext = sessionBean.getUserContext();
+		HttpSession session = request.getSession(false);
+		if(session == null)
+			return null;
+		
+		UserContext userContext = (UserContext) session.getAttribute(ApplicationConstants.USER_MODEL);
 		if(userContext == null)
 			return null;
 		

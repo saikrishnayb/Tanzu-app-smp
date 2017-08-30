@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.penske.apps.adminconsole.annotation.VendorAllowed;
-import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.common.constants.ApplicationConstants;
 import com.penske.apps.suppliermgmt.common.util.LookupManager;
 import com.penske.apps.suppliermgmt.model.AlertHeader;
@@ -47,9 +46,6 @@ public class HomeController extends BaseController{
     @Autowired
     private HomeDashboardService homeService;
 
-    @Autowired
-    private SuppliermgmtSessionBean sessionBean;
-    
     private static final Logger LOGGER = Logger.getLogger(HomeController.class);
 
     /**
@@ -58,12 +54,12 @@ public class HomeController extends BaseController{
      */
     @VendorAllowed
     @RequestMapping("/displayHome")
-    public ModelAndView displayHome(){
+    public ModelAndView displayHome(HttpServletRequest request){
         LOGGER.debug("Inside displayHome()");
         ModelAndView modelandView = null;
         String helpLink=null;
         try{
-            UserContext userModel = sessionBean.getUserContext();
+            UserContext userModel = getUserContext(request);
             modelandView=new ModelAndView("appContainer");
             //getting support num from lookup
             LookupManager lookupManger=new LookupManager();
@@ -90,7 +86,7 @@ public class HomeController extends BaseController{
 
             modelandView.addObject("userDetails",userModel);
         }catch(Exception e){
-            modelandView = handleException(e);
+            modelandView = handleException(e, request);
         }
         return modelandView;
     }
@@ -104,14 +100,14 @@ public class HomeController extends BaseController{
      */
     @VendorAllowed
     @RequestMapping(value = "/homePage", method = {RequestMethod.GET})
-    public ModelAndView getHomePage(@RequestParam("tabId") String tabId){
+    public ModelAndView getHomePage(HttpServletRequest request,@RequestParam("tabId") String tabId){
         LOGGER.debug("Inside getHomePage()");
         ModelAndView modelandView = new ModelAndView("/home/home");
         String defaultTab="";
         List<String> tabIdList=new ArrayList<String>();
         List<AlertHeader> alertHeaders=new ArrayList<AlertHeader>();
         try{
-            UserContext userModel = sessionBean.getUserContext();
+            UserContext userModel = getUserContext(request);
             List<Tab> tabs = homeService.selectTabs(userModel);
             for(Tab tab:tabs) {
                 tabIdList.add(tab.getTabKey());
@@ -141,7 +137,7 @@ public class HomeController extends BaseController{
             modelandView.addObject("TabKey", defaultTab);
             modelandView.addObject("alertHeaders", alertHeaders);//To display alerts with count
         }catch(Exception e){
-            modelandView = handleException(e);
+            modelandView = handleException(e, request);
         }
 
         return modelandView;
@@ -161,16 +157,16 @@ public class HomeController extends BaseController{
 
     @VendorAllowed
     @RequestMapping(value = "/getAlerts", method = {RequestMethod.GET})
-    public @ResponseBody ModelAndView getAlerts(HttpServletResponse response,@RequestParam("tabKey") String tabKey){
+    public @ResponseBody ModelAndView getAlerts(HttpServletRequest request,HttpServletResponse response,@RequestParam("tabKey") String tabKey){
         LOGGER.debug("Inside getAlerts()");
         ModelAndView model = new ModelAndView("/home/home");
         try{
-            UserContext userModel = sessionBean.getUserContext();
+            UserContext userModel = getUserContext(request);
             model.addObject("TabKey", tabKey);
             model.addObject("alertHeaders", homeService.getAlerts(userModel.getUserSSO(), tabKey,userModel.getUserType()));
         }catch(Exception e ){
             LOGGER.debug("Error while excecuting method");
-            handleAjaxException(e, response);
+            handleAjaxException(e, response, request);
         }
         return model;
     }

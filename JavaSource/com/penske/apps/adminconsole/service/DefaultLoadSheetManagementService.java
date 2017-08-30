@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,7 +27,7 @@ import com.penske.apps.adminconsole.model.LoadsheetSequenceGroupMaster;
 import com.penske.apps.adminconsole.model.LoadsheetSequenceMaster;
 import com.penske.apps.adminconsole.model.RuleDefinitions;
 import com.penske.apps.adminconsole.model.RuleMaster;
-import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
+import com.penske.apps.suppliermgmt.common.constants.ApplicationConstants;
 import com.penske.apps.suppliermgmt.model.UserContext;
 
 @Service
@@ -34,7 +36,7 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 	@Autowired
     private LoadsheetManagementDao loadsheetManagementDao;
 	@Autowired
-	private SuppliermgmtSessionBean sessionBean;
+    private HttpSession httpSession;
 
 	@Override
 	public List<ComponentVisibilityModel> getLoadsheetComponents(String category,String type) {
@@ -106,7 +108,7 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 	@Transactional
 	public void createNewRule(RuleMaster rule) {
 		
-		UserContext user = sessionBean.getUserContext();
+		UserContext user = (UserContext) httpSession.getAttribute(ApplicationConstants.USER_MODEL);
 		
 		
 		loadsheetManagementDao.insertRuleMasterDetails(rule, user);
@@ -120,7 +122,7 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 	@Override
 	@Transactional
 	public void updateRuleDetails(RuleMaster rule) {
-		UserContext user = sessionBean.getUserContext();
+		UserContext user = (UserContext) httpSession.getAttribute(ApplicationConstants.USER_MODEL);
 		List<RuleDefinitions> newRuleDefList=new ArrayList<RuleDefinitions> ();
 		loadsheetManagementDao.updateRuleMasterDetails(rule, user);
 		
@@ -371,7 +373,7 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 	@Transactional
 	public void createLoadSheetSequencing(LoadsheetSequenceMaster seqMaster) {
 			
-		UserContext user = sessionBean.getUserContext();
+		UserContext user = (UserContext) httpSession.getAttribute(ApplicationConstants.USER_MODEL);
 		List<LoadsheetCompGrpSeq> cmpGrpSeqList=null;
 		LoadsheetCompGrpSeq cmpGrpSeq;
 		//if category type is empty then set default type(VOD-351).
@@ -423,7 +425,7 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 	@Transactional
 	public void updateLoadsheetSequencingDetails(LoadsheetSequenceMaster seqMaster) {
 		
-		UserContext user = sessionBean.getUserContext();
+		UserContext user = (UserContext) httpSession.getAttribute(ApplicationConstants.USER_MODEL);
 		List<LoadsheetCompGrpSeq> newCompGrpSeqList=null;
 		List<Integer> existingCompIds=null; //list for deleting the deleted components using NOT IN
 		List<Integer> existingGroupIds=new ArrayList<Integer>();

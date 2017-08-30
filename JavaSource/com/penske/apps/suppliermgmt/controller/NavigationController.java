@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.penske.apps.adminconsole.annotation.VendorAllowed;
-import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.common.constants.ApplicationConstants;
 import com.penske.apps.suppliermgmt.model.UserContext;
 import com.penske.apps.suppliermgmt.service.HelpService;
@@ -47,9 +46,6 @@ public class NavigationController extends BaseController {
     @Autowired
     private HelpService helpService;
 
-    @Autowired
-    private SuppliermgmtSessionBean sessionBean;
-    
     /** The logger. */
     private static Logger LOGGER = Logger.getLogger(NavigationController.class);
 
@@ -71,7 +67,7 @@ public class NavigationController extends BaseController {
 
             url=new StringBuffer();
             app = destination.toLowerCase();
-            userContext = sessionBean.getUserContext();
+            userContext = getUserContext(request);
             if("adminconsole".equalsIgnoreCase(destination)){
                 if(!templateKey.equalsIgnoreCase("0")){
                     //If user comes from Home page dash board
@@ -97,7 +93,7 @@ public class NavigationController extends BaseController {
 
         catch(Exception e)
         {
-            handleException(e);
+            handleException(e, request);
         }
         LOGGER.debug("Tab Application URL ::"+ url.toString());
         return url.toString();
@@ -105,26 +101,26 @@ public class NavigationController extends BaseController {
 
     @VendorAllowed
     @RequestMapping(value = "/getHelp")
-    protected  ModelAndView getHelp() {
+    protected  ModelAndView getHelp(HttpServletRequest request) {
         ModelAndView model=new ModelAndView();
         UserContext userContext = new UserContext();
 
         try
         {
-            userContext = sessionBean.getUserContext();
+            userContext = getUserContext(request);
             String help = helpService.getHelp(userContext.getUserType());
             model.addObject("helpContent",help);
             model.setViewName("home/help");
 
         }catch(Exception e){
-            model=handleException(e);
+            model=handleException(e, request);
         }
         return model;
     }
 
     @VendorAllowed
     @RequestMapping(value = "/getHowTo")
-    protected  ModelAndView getHowTo() {
+    protected  ModelAndView getHowTo(HttpServletRequest request) {
         return new ModelAndView("home/howTo");
     }
 }

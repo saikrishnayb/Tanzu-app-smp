@@ -19,7 +19,6 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-import com.penske.apps.adminconsole.annotation.NonVendorQuery;
 import com.penske.apps.suppliermgmt.model.Tab;
 import com.penske.apps.suppliermgmt.model.User;
 import com.penske.apps.suppliermgmt.model.UserContext;
@@ -27,19 +26,14 @@ import com.penske.apps.suppliermgmt.model.VendorLocation;
 
 public interface LoginDAO {
 
-	@NonVendorQuery
     public User getUserDetails(User userModel);
 
-	@NonVendorQuery
     public List<VendorLocation> getAssociatedVendors(int orgId);
 
-    @NonVendorQuery
     public List<Tab> getTabs(int roleId);
 
-    @NonVendorQuery
     public List<String> getSecurityFunctions(@Param("roleId") int roleId,@Param("tabKey") String tabKey);
 
-    @NonVendorQuery
     public List<String> getAllSecurityFunctionsWithUser(UserContext userContext);
 
 }

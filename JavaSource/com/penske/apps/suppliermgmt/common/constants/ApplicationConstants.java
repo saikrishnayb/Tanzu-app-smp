@@ -21,7 +21,7 @@ package com.penske.apps.suppliermgmt.common.constants;
 public class ApplicationConstants {
 
 	/** Session Constants **/
-	public static final String USER_SSO = "userSSO";
+	public static final String USER_MODEL = "userModel";
 	
 	public static final String USER_NOT_FOUND = "USER_NOT_FOUND";
 	public static final String SEC_FUNCTION_NOT_FOUND = "SEC_FUNCTION_NOT_FOUND";

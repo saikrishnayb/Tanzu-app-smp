@@ -44,7 +44,6 @@ import com.penske.apps.adminconsole.service.TransporterServiceImpl;
 import com.penske.apps.adminconsole.service.VendorReportServiceImpl;
 import com.penske.apps.adminconsole.util.ApplicationConstants;
 import com.penske.apps.adminconsole.util.CommonUtils;
-import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.model.UserContext;
 
 /**
@@ -79,9 +78,7 @@ public class AppConfigController {
     private VendorReportServiceImpl objVendorService;
     @Autowired
     private LoadSheetManagementService loadsheetManagementService;
-    @Autowired
-    private SuppliermgmtSessionBean sessionBean;
-    
+
     /* ================== Subject Management ================== */
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_SUBJECTS)
     @RequestMapping(value={"/subject-management"})
@@ -102,10 +99,9 @@ public class AppConfigController {
      */
     @SmcSecurity(securityFunction = SecurityFunction.UPLOAD_EXCEL)
     @RequestMapping("/excelUploads")
-    public ModelAndView getExcelUploadPage(){
+    public ModelAndView getExcelUploadPage(HttpSession session){
         ModelAndView mav = new ModelAndView("/admin-console/app-config/excelUploads");
-        UserContext userContext = sessionBean.getUserContext();
-        mav.addObject("access",CommonUtils.hasAccess(ApplicationConstants.UPLOAD_EXCEL, userContext));
+        mav.addObject("access",CommonUtils.hasAccess(ApplicationConstants.UPLOAD_EXCEL, session));
         return mav;
     }
 
@@ -120,12 +116,12 @@ public class AppConfigController {
      */
     @SmcSecurity(securityFunction = SecurityFunction.UPLOAD_EXCEL)
     @RequestMapping(method = RequestMethod.POST, value = "/upload")
-    public ModelAndView uploadTransportExcelFile(@RequestParam(value = "file") MultipartFile file, @RequestParam(value = "uploadSelect") String uploadSelect) throws Exception
+    public ModelAndView uploadTransportExcelFile(@RequestParam(value = "file") MultipartFile file, HttpSession session, @RequestParam(value = "uploadSelect") String uploadSelect) throws Exception
     {
-        UserContext userContext = sessionBean.getUserContext();
+        UserContext userContext = (UserContext) session.getAttribute(ApplicationConstants.USER_MODEL);
 
         ModelAndView mav = new ModelAndView("/admin-console/app-config/excelUploads");
-        mav.addObject("access",CommonUtils.hasAccess(ApplicationConstants.UPLOAD_EXCEL, userContext));
+        mav.addObject("access",CommonUtils.hasAccess(ApplicationConstants.UPLOAD_EXCEL, session));
 
         //This will handle calling the different save functions.
         ExcelUploadHandler excelUploadHandler = null;
@@ -188,16 +184,14 @@ public class AppConfigController {
     /* ================== Dynamic Rules ================== */
     @SmcSecurity(securityFunction = SecurityFunction.DYNAMIC_RULES_MANAGEMENT)
     @RequestMapping("/dynamic-rules")
-    public ModelAndView getDynamicRulesPage(){
+    public ModelAndView getDynamicRulesPage(HttpSession session){
         ModelAndView mav = new ModelAndView("/admin-console/app-config/dynamic-rules");
-        
-        UserContext userContext = sessionBean.getUserContext();
 
         mav.addObject("activeDynamicRules", dynamicRuleService.getAllDynamicRulesByStatus("A"));
         mav.addObject("inactiveDynamicRules", dynamicRuleService.getAllDynamicRulesByStatus("I"));
         mav.addObject("corpCodes", dynamicRuleService.getAllCorpCodes());
         mav.addObject("makes", dynamicRuleService.getAllVehicleMakes());
-        mav.addObject("access",CommonUtils.hasAccess(ApplicationConstants.DYNAMICRULE, userContext));
+        mav.addObject("access",CommonUtils.hasAccess(ApplicationConstants.DYNAMICRULE, session));
         return mav;
     }
 

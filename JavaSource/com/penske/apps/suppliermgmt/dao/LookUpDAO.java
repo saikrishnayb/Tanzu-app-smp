@@ -17,14 +17,12 @@ package com.penske.apps.suppliermgmt.dao;
  */
 import java.util.List;
 
-import com.penske.apps.adminconsole.annotation.NonVendorQuery;
 import com.penske.apps.suppliermgmt.model.LookUp;
 
 public interface LookUpDAO {
-
-	@NonVendorQuery
+	
 	public List<LookUp> getAllLookupList();
-	@NonVendorQuery
+	
 	public LookUp getLookupDetails();
 
 }

@@ -11,9 +11,12 @@ package com.penske.apps.suppliermgmt.common.util;
 
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
+import com.penske.apps.suppliermgmt.common.constants.ApplicationConstants;
 import com.penske.apps.suppliermgmt.model.UserContext;
 
 
@@ -63,37 +66,42 @@ public class IsAuthorized extends BodyTagSupport {
 	{
 		
 		
-		UserContext userRuleModel =   SpringBeanHelper.getUserContext();
-		if(userRuleModel!=null){
-			Map<String, Map<String, String>> userRuleMap =userRuleModel.getTabSecFunctionMap();	
-			if(userRuleMap != null){
-				
-				Map<String,String> secFunctions=userRuleMap.get(tabName);
-				if(secFunction.equalsIgnoreCase("USERS_MANAGEMENT")){
-					if (userRuleMap.containsKey(tabName)&&(secFunctions!=null && (secFunctions.containsKey("MANAGE_VENDOR_USERS")
-							|| secFunctions.containsKey("MANAGE_USERS")))){
-							{
-								
-								return EVAL_BODY_INCLUDE;
-							}
-						}
-				}
-				
-				if(secFunction.equalsIgnoreCase("DELAY_ASSOCIATION")){
-					if (userRuleMap.containsKey(tabName)&&(secFunctions!=null && (secFunctions.containsKey("MANAGE_DELAY_TYPE")
-							|| secFunctions.containsKey("MANAGE_DELAY_REASONS")))){
-							{
-								
-								return EVAL_BODY_INCLUDE;
-							}
-						}
-				}
-				
-				if (userRuleMap.containsKey(tabName)&&secFunctions.containsKey(secFunction)&&secFunctions!=null){
-					{
+		HttpSession session = (HttpSession) pageContext.getAttribute(PageContext.SESSION);
+		if(session!=null){
+			if((UserContext) session.getAttribute(ApplicationConstants.USER_MODEL)!=null){
+				UserContext userRuleModel =   (UserContext) session.getAttribute(ApplicationConstants.USER_MODEL);
+				if(userRuleModel!=null){
+					Map<String, Map<String, String>> userRuleMap =userRuleModel.getTabSecFunctionMap();	
+					if(userRuleMap != null){
 						
-						return EVAL_BODY_INCLUDE;
-					}
+						Map<String,String> secFunctions=userRuleMap.get(tabName);
+						if(secFunction.equalsIgnoreCase("USERS_MANAGEMENT")){
+							if (userRuleMap.containsKey(tabName)&&(secFunctions!=null && (secFunctions.containsKey("MANAGE_VENDOR_USERS")
+									|| secFunctions.containsKey("MANAGE_USERS")))){
+									{
+										
+										return EVAL_BODY_INCLUDE;
+									}
+								}
+						}
+						
+						if(secFunction.equalsIgnoreCase("DELAY_ASSOCIATION")){
+							if (userRuleMap.containsKey(tabName)&&(secFunctions!=null && (secFunctions.containsKey("MANAGE_DELAY_TYPE")
+									|| secFunctions.containsKey("MANAGE_DELAY_REASONS")))){
+									{
+										
+										return EVAL_BODY_INCLUDE;
+									}
+								}
+						}
+						
+						if (userRuleMap.containsKey(tabName)&&secFunctions.containsKey(secFunction)&&secFunctions!=null){
+							{
+								
+								return EVAL_BODY_INCLUDE;
+							}
+						}
+					}    	        
 				}
 			}
 		}
