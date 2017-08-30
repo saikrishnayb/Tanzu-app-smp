@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
@@ -19,7 +18,6 @@ import com.penske.apps.adminconsole.model.Components;
 import com.penske.apps.adminconsole.model.DateType;
 import com.penske.apps.adminconsole.model.Role;
 import com.penske.apps.adminconsole.model.User;
-import com.penske.apps.adminconsole.model.UserDept;
 import com.penske.apps.suppliermgmt.model.UserContext;
 
 
@@ -120,8 +118,7 @@ public class CommonUtils {
 		 return true;					
 	}
 	
-	public static boolean hasAccess(String secFunction,HttpSession session){
-			UserContext userRuleModel =   (UserContext) session.getAttribute(ApplicationConstants.USER_MODEL);
+	public static boolean hasAccess(String secFunction,UserContext userRuleModel){
 			if(userRuleModel!=null){
 				Map<String, Map<String, String>> userRuleMap =userRuleModel.getTabSecFunctionMap();	
 				if(userRuleMap != null){

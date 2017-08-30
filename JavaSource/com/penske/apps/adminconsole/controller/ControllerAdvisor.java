@@ -4,12 +4,14 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.UUID;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,7 +23,8 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.penske.apps.adminconsole.annotation.SmcSecurity.SecurityFunction;
 import com.penske.apps.adminconsole.exceptions.UnauthorizedSecurityFunctionException;
-import com.penske.apps.adminconsole.util.ApplicationConstants;
+import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
+import com.penske.apps.suppliermgmt.common.exception.HumanReadableException;
 import com.penske.apps.suppliermgmt.model.ErrorModel;
 import com.penske.apps.suppliermgmt.model.UserContext;
 
@@ -35,6 +38,9 @@ public class ControllerAdvisor {
     @Autowired
     private HttpSession httpSession;
 
+    @Autowired
+    private SuppliermgmtSessionBean sessionBean;
+    
     private static Logger logger = Logger.getLogger(ControllerAdvisor.class);
 
     @ExceptionHandler(UnauthorizedSecurityFunctionException.class)
@@ -44,20 +50,20 @@ public class ControllerAdvisor {
         ModelAndView modelAndView = new ModelAndView("error/GlobalErrorPage");
 
         ErrorModel model = new ErrorModel();
-        UserContext userContext = (UserContext) httpSession.getAttribute(ApplicationConstants.USER_MODEL);
+        UserContext userContext = sessionBean.getUserContext();
+        String userSSO = userContext == null ? "" : userContext.getUserSSO();
+        String userType = userContext == null ? "Unknown" : (userContext.isVisibleToPenske() ? "Penske" : "Vendor");
 
         String requestURI = exception.getRequestURI();
 
         if (requestURI != null) {
-            logger.error("UnauthorizedSecurityFunctionException. Vendor " + userContext.getUserSSO()
+            logger.error("UnauthorizedSecurityFunctionException. Vendor " + userSSO
             + " tried accesing the following request mapping: " + requestURI, exception);
         } else {
 
-            String userType = userContext.isVisibleToPenske() ? "Penske" : "Vendor";
-
             StringBuilder errorStringBuilder = new StringBuilder();
 
-            errorStringBuilder.append("UnauthorizedSecurityFunctionException. " + userType + " user " + userContext.getUserSSO()
+            errorStringBuilder.append("UnauthorizedSecurityFunctionException. " + userType + " user " + userSSO
             + " does not have access to the following security functions: ");
 
             SecurityFunction[] securityFunctions = exception.getSecurityFunctions();
@@ -76,6 +82,27 @@ public class ControllerAdvisor {
         return modelAndView;
     }
 
+    public ModelAndView handleHumanReadableException(HumanReadableException ex)
+    {    	
+    	ModelAndView mv = new ModelAndView("error/GlobalErrorPage");
+        ErrorModel model = new ErrorModel();
+        try {
+            UserContext userContext = sessionBean.getUserContext();
+            String userSSO = userContext == null ? "" : userContext.getUserSSO();
+            String randomNumber = UUID.randomUUID().toString();
+            logger.error("Caught Unhandled Exception.  Reference Number is:" + randomNumber + " And Logged in User is:" + userSSO
+            + " and Exception is::" + ex.toString(), ex);
+            model.setMessage(ex.getHumanReadableMessage() + " Reference number is " + randomNumber);
+            mv.addObject("supportNum", "1-866-926-7240");
+        } catch (Exception e) {
+            logger.error("Exception occured in handleException method of BaseController" + e.toString(), e);
+            mv.addObject("supportNum", "1-866-926-7240");
+            return mv;
+        }
+        mv.addObject(model);
+        return mv;
+    }
+    
 
     /**
      * Messy exception handler logic below
@@ -84,6 +111,19 @@ public class ControllerAdvisor {
     @ExceptionHandler(Exception.class)
     public ModelAndView globalExceptionCatcher(Exception e, HttpServletRequest request){
 
+    	//Check if this exception has a human-readable exception somewhere in its stack trace.
+    	int humanReadableExceptionIndex = ExceptionUtils.indexOfType(e, HumanReadableException.class);
+    	if(humanReadableExceptionIndex != -1)
+    	{
+    		Throwable[] chain = ExceptionUtils.getThrowables(e);
+    		if(chain != null && chain.length > humanReadableExceptionIndex)
+    		{
+    			Throwable th = chain[humanReadableExceptionIndex];
+    			if(HumanReadableException.class.isAssignableFrom(th.getClass()))
+    				return handleHumanReadableException((HumanReadableException) th);
+    		}
+    	}
+    	
         String pathInfo = request.getServletPath();
         String leftNavDirectory = StringUtils.substringBeforeLast(pathInfo,  "/");
 

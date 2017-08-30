@@ -26,12 +26,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.penske.apps.adminconsole.model.Vendor;
+import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.common.constants.ApplicationConstants;
 import com.penske.apps.suppliermgmt.common.exception.SMCException;
 import com.penske.apps.suppliermgmt.dao.UserDAO;
@@ -52,8 +51,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserDAO userDao;
+	
 	@Autowired
-	private HttpSession httpSession;
+	private SuppliermgmtSessionBean sessionBean;
 	
 	@Override
 	public List<User> getUserDetails() throws SMCException {
@@ -141,7 +141,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<OrgFilter> getAllOrgFilters() {
         
-        UserContext userContext = (UserContext) httpSession.getAttribute(ApplicationConstants.USER_MODEL);
+        UserContext userContext = sessionBean.getUserContext();
         Integer userId = userContext.getUserId();
         
         List<OrgFilter> orgFilters = new ArrayList<OrgFilter>();
@@ -198,7 +198,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void saveUserVendorFilterSelections(Collection<Integer> vendorIds) {
 
-        UserContext userContext = (UserContext) httpSession.getAttribute(ApplicationConstants.USER_MODEL);
+        UserContext userContext = sessionBean.getUserContext();
         Integer userId = userContext.getUserId();
         
         userDao.deletePreviousUserVendorFilters(userId);

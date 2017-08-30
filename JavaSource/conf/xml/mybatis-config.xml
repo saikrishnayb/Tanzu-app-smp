@@ -18,6 +18,10 @@
   <typeAlias alias="UserContext" type="com.penske.apps.suppliermgmt.model.UserContext" />
  </typeAliases>
 
+  <plugins>
+  	<plugin interceptor="com.penske.apps.suppliermgmt.plugins.VendorQueryWrappingPlugin" />
+  </plugins>
+
  <databaseIdProvider type="VENDOR">
   <property name="DB2" value="db2" />
  </databaseIdProvider>
