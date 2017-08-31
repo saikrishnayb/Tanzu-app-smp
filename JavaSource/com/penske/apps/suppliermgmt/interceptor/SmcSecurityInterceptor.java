@@ -53,7 +53,7 @@ public class SmcSecurityInterceptor extends HandlerInterceptorAdapter {
         Set<SecurityFunction> userSecurityFunctions = user.getSecurityFunctions();
 
         boolean doesNotHaveSecurityAccess = true;
-        for (SecurityFunction securityFunction : userSecurityFunctions) {
+        for (SecurityFunction securityFunction : securityFunctions) {
 
             boolean hasSecurityClearance = userSecurityFunctions.contains(securityFunction);
             if (hasSecurityClearance) {
