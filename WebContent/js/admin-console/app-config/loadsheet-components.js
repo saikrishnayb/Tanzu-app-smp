@@ -4,7 +4,7 @@ $(document).ready(function() {
 	$templateTable=$("#component-table");
 	//component table
 	$templateTable.dataTable( { //All of the below are optional
-		"aaSorting"			: [[ 0, "asc" ]], //default sort column
+		"aaSorting"			: [[ 0, "asc" ],[ 1, "asc" ],[ 2, "asc" ]], //default sort column
 		"bPaginate"			: false, //enable pagination
 		"bStateSave"		: true,	//To retrieve the data on click of back button
 		"aoColumnDefs"		: [{ 'bSortable': false, 'aTargets': [5] } ],//disable sorting for specific column indexes

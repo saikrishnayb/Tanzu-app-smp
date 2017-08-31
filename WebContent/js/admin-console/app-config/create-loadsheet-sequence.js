@@ -190,9 +190,10 @@ j2(document).ready(function() {
 	var category=j2("#categoryID").val();
 	
 	if(category==''){
+		j2("#categoryID").addClass("errorMsgInput");
 		j2("#ErrorMsg span").text("Please select Category");
 		j2("#ErrorMsg").show();	
-		j2("#categoryID").addClass("errorMsgInput");
+		
 	} 
 
 	
