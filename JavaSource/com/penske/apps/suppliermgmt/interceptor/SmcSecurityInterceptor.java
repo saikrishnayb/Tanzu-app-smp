@@ -39,12 +39,13 @@ public class SmcSecurityInterceptor extends HandlerInterceptorAdapter {
 
         VendorAllowed vendorAllowed = handlerMethod.getMethod().getAnnotation(VendorAllowed.class);
         SmcSecurity smcSecurity = handlerMethod.getMethod().getAnnotation(SmcSecurity.class);
+        String requestURI = httpServletRequest.getRequestURI();
 
         UserContext user = (UserContext) httpSession.getAttribute(ApplicationConstants.USER_MODEL);
 
         boolean isVendorUserAccesingPenskeOnly = !user.isVisibleToPenske() && vendorAllowed == null;
         if (isVendorUserAccesingPenskeOnly)
-            throw new UnauthorizedSecurityFunctionException(httpServletRequest.getRequestURI());
+            throw new UnauthorizedSecurityFunctionException(handlerMethod, requestURI);
 
         boolean noSecurityChecks = smcSecurity == null;
         if (noSecurityChecks) return true;
@@ -64,7 +65,7 @@ public class SmcSecurityInterceptor extends HandlerInterceptorAdapter {
         }
 
         if (doesNotHaveSecurityAccess)
-            throw new UnauthorizedSecurityFunctionException(securityFunctions);
+            throw new UnauthorizedSecurityFunctionException(securityFunctions, handlerMethod, requestURI);
 
         return true;
     }

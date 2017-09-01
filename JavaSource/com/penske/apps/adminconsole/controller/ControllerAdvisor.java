@@ -4,6 +4,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
+import java.util.UUID;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
@@ -46,11 +49,17 @@ public class ControllerAdvisor {
         ErrorModel model = new ErrorModel();
         UserContext userContext = (UserContext) httpSession.getAttribute(ApplicationConstants.USER_MODEL);
 
+        HandlerMethod handlerMethod = exception.getHandlerMethod();
+
+        Method method = handlerMethod.getMethod();
+        Class<?> declaringClass = method.getDeclaringClass();
+
         String requestURI = exception.getRequestURI();
 
         if (requestURI != null) {
             logger.error("UnauthorizedSecurityFunctionException. Vendor " + userContext.getUserSSO()
-            + " tried accesing the following request mapping: " + requestURI, exception);
+                    + " tried accesing the following request mapping: " + requestURI + " located in  " + declaringClass.getName() + "::"
+                    + method.getName(), exception);
         } else {
 
             String userType = userContext.isVisibleToPenske() ? "Penske" : "Vendor";
@@ -58,7 +67,7 @@ public class ControllerAdvisor {
             StringBuilder errorStringBuilder = new StringBuilder();
 
             errorStringBuilder.append("UnauthorizedSecurityFunctionException. " + userType + " user " + userContext.getUserSSO()
-            + " does not have access to the following security functions: ");
+                    + " does not have access to the following security functions: ");
 
             SecurityFunction[] securityFunctions = exception.getSecurityFunctions();
 
@@ -66,6 +75,11 @@ public class ControllerAdvisor {
                 errorStringBuilder.append(securityFunctions[i]);
                 if (securityFunctions.length > 1 && i != securityFunctions.length - 1) errorStringBuilder.append(", ");
             }
+
+            errorStringBuilder.append(" located in  ");
+            errorStringBuilder.append(declaringClass.getName());
+            errorStringBuilder.append("::");
+            errorStringBuilder.append(method.getName());
 
             logger.error(errorStringBuilder.toString(), exception);
         }
@@ -75,6 +89,7 @@ public class ControllerAdvisor {
         modelAndView.addObject(model);
         return modelAndView;
     }
+
 
 
     /**
