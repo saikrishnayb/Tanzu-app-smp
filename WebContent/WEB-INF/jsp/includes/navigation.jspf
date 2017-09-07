@@ -41,8 +41,10 @@
 						     <li><a href="#" id="upStreamVendor" onmousedown="linkRequest('button'); redirectToTab('upStreamVendor');">Upstream Change</a></li>
 						     <tl:isAuthorized tabName="Production" secFunction="UPDATE_DATES">
 						 		<li><a href="#" id="dateValidation" onmousedown="linkRequest('button'); redirectToTab('dateValidation');">Update Date/Delay</a></li>
-							 </tl:isAuthorized>						     
-						     <li><a href="#" id="massUpload"  onmousedown="redirectToTab('massUpload')">Unit Template Upload</a></li>   
+							 </tl:isAuthorized>
+                             <tl:isAuthorized tabName="Production" secFunction="MASS_UPDATE">				     
+						       <li><a href="#" id="massUpload"  onmousedown="redirectToTab('massUpload')">Unit Template Upload</a></li>   
+                             </tl:isAuthorized>
 						</ul>
 						
 				</li>
