@@ -3,7 +3,6 @@ package com.penske.apps.suppliermgmt.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
@@ -18,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.penske.apps.adminconsole.annotation.SmcSecurity;
 import com.penske.apps.adminconsole.annotation.SmcSecurity.SecurityFunction;
 import com.penske.apps.adminconsole.annotation.VendorAllowed;
+import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.common.constants.ApplicationConstants;
 import com.penske.apps.suppliermgmt.handler.UserHandler;
 import com.penske.apps.suppliermgmt.model.Buddies;
@@ -35,15 +35,18 @@ public class UserController extends BaseController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private SuppliermgmtSessionBean sessionBean;
+    
     @RequestMapping(value = "/getUsersList", method = {RequestMethod.GET, RequestMethod.POST })
-    protected  ModelAndView validateUser(HttpServletRequest request) {
+    protected  ModelAndView validateUser() {
         ModelAndView model=new ModelAndView();
         UserContext userContext = new UserContext();
         List<User> userList=new ArrayList<User>();
         try
         {
 
-            userContext = getUserContext(request);
+            userContext = sessionBean.getUserContext();
             userList=userService.getUserDetails();
             List<User> purchasingUsersList=new ArrayList<User>();
             List<User> planningUsersList=new ArrayList<User>();
@@ -60,7 +63,7 @@ public class UserController extends BaseController {
             model.addObject("purchasingUsersList", purchasingUsersList);
 
         }catch(Exception e){
-            model=handleException(e, request);
+            model=handleException(e);
         }
         model.setViewName("home/buddy");
         return model;
@@ -73,7 +76,7 @@ public class UserController extends BaseController {
      * @return void
      * @Excepton Exception
      */
-    public void addBuddyList(List<Buddies> newBuddyList,String loggedInUserSso,HttpServletRequest request) {
+    public void addBuddyList(List<Buddies> newBuddyList,String loggedInUserSso) {
         try {
             String selectionType=null;
             List<Buddies> newRandomBuddyList=new ArrayList<Buddies>();
@@ -133,7 +136,7 @@ public class UserController extends BaseController {
                 userService.addBuddyList(newBuddyList);
             }
         }catch(Exception e){
-            handleException(e,request);
+            handleException(e);
         }
     }
 
@@ -144,10 +147,10 @@ public class UserController extends BaseController {
      * @Excepton Exception
      */
     @RequestMapping(value = "/deleteBuddyList", method = {RequestMethod.GET, RequestMethod.POST })
-    public @ResponseBody void deleteBuddyList(@RequestParam("newBuddies")List<String> newBuddyArray,@RequestParam("existingBuddyList")List<String> existingBuddyList,HttpServletRequest request,HttpServletResponse response) throws Exception
+    public @ResponseBody void deleteBuddyList(@RequestParam("newBuddies")List<String> newBuddyArray,@RequestParam("existingBuddyList")List<String> existingBuddyList,HttpServletResponse response) throws Exception
     {	//
 
-        UserContext userContext= getUserContext(request);
+        UserContext userContext= sessionBean.getUserContext();
         List<Buddies> newBuddyList=new ArrayList<Buddies>();
         String loggedInUserSso=userContext.getUserSSO();
         try{
@@ -160,20 +163,20 @@ public class UserController extends BaseController {
             List<User> usersList=userService.getUserDetails();
             UserHandler.populateNewBuddyUserList(newBuddyList,usersList,deptDetailList,loggedInUserSso,newBuddyArray);
 
-            addBuddyList(newBuddyList,loggedInUserSso, request);
+            addBuddyList(newBuddyList,loggedInUserSso);
         }catch(Exception e){
-            handleAjaxException(e, response, request);
+            handleAjaxException(e, response);
         }
     }
 
     @VendorAllowed
     @RequestMapping(value="/getTermsAndCondition")
-    public @ResponseBody String getTermsAndCondition(HttpServletResponse response,HttpServletRequest request){
+    public @ResponseBody String getTermsAndCondition(HttpServletResponse response){
         String terms = null;
         try{
             terms = userService.getTermsAndCondition();
         }catch(Exception e){
-            handleAjaxException(e, response, request);
+            handleAjaxException(e, response);
         }
         return terms;
     }

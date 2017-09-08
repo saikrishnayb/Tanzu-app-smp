@@ -18,9 +18,9 @@ package com.penske.apps.suppliermgmt.controller;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,6 +31,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.penske.apps.adminconsole.annotation.VendorAllowed;
 import com.penske.apps.adminconsole.model.HeaderUser;
 import com.penske.apps.adminconsole.service.HeaderService;
+import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.common.constants.ApplicationConstants;
 import com.penske.apps.suppliermgmt.common.util.LookupManager;
 import com.penske.apps.suppliermgmt.model.LookUp;
@@ -49,19 +50,19 @@ public class LoginController extends BaseController {
     private HeaderService headerService;
     @Autowired
     private LookupManager lookUpManager;
-
+    @Autowired
+    private SuppliermgmtSessionBean sessionBean;
+    
     private static final Logger LOGGER = Logger.getLogger(LoginController.class);
 
     @VendorAllowed
     @RequestMapping(value = "/validate", method = {RequestMethod.GET, RequestMethod.POST })
     protected  ModelAndView validateUser(HttpServletRequest request) {
         LOGGER.debug("Inside validateUser() ");
-        UserContext userContext = new UserContext();
         User usermodel = new User();
         ModelAndView model=new ModelAndView();
         String forward=null;
         try{
-            userContext = getUserContext(request);
             forward="forward:/home/displayHome.htm";
 
             //Reloading LookupData
@@ -77,20 +78,21 @@ public class LoginController extends BaseController {
                 lookUp=suppNumlist.get(0);
                 model.addObject("supportNum",lookUp.getLookUpValue());
             }
+            
+            //Pull the user's ID out of the session, and then look up the actual user object, and put it in the session bean
+            HttpSession session = request.getSession(false);
+            String userSSO = (String) session.getAttribute(ApplicationConstants.USER_SSO);
 
-            userContext = getUserContext(request);
-
-            if(userContext != null){
-                usermodel.setSso(userContext.getUserSSO());
+            if(StringUtils.isNotBlank(userSSO)){
+                usermodel.setSso(userSSO);
                 usermodel.setStatus(ApplicationConstants.ACTIVE);
                 usermodel = loginService.getUserDetails(usermodel);
-
-                HttpSession session = request.getSession(false);
 
                 if(null != usermodel) {
 
                     HeaderUser currentUser = headerService.getApplicationUserInfo(usermodel.getUserId());
                     session.setAttribute("currentUser", currentUser);
+                    UserContext userContext = new UserContext();
                     userContext.setUserId(usermodel.getUserId());
                     userContext.setUserName(usermodel.getSso());
                     userContext.setUserType(usermodel.getUserType());
@@ -128,6 +130,7 @@ public class LoginController extends BaseController {
                             forward="error/GlobalErrorPage";
                         }
                     }
+                    sessionBean.setUserContext(userContext);
                 }
                 else{
                     LOGGER.debug("Logged in user not present in SMC tables");
@@ -144,7 +147,7 @@ public class LoginController extends BaseController {
             model.addObject("supportNum",lookUp.getLookUpValue());
             model.setViewName(forward);
         }catch(Exception e){
-            model = handleException(e, request);
+            model = handleException(e);
         }
         return model;
 
@@ -152,7 +155,7 @@ public class LoginController extends BaseController {
 
     @VendorAllowed
     @RequestMapping(value = "/validateSession", method = {RequestMethod.GET, RequestMethod.POST })
-    protected void validateSession(HttpServletRequest request,HttpServletResponse response)
+    protected void validateSession()
     {
         LOGGER.info("Inside suppliermgmt validateSession() ");
 

@@ -23,6 +23,8 @@ import com.penske.apps.adminconsole.service.SecurityService;
 import com.penske.apps.adminconsole.service.VendorService;
 import com.penske.apps.adminconsole.util.ApplicationConstants;
 import com.penske.apps.adminconsole.util.CommonUtils;
+import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
+import com.penske.apps.suppliermgmt.model.UserContext;
 
 /**
  * Controller handling all mapping and functionality for the Admin Console Security sub tab
@@ -39,7 +41,8 @@ public class SecurityController {
     private RoleService roleService;
     @Autowired
     private SecurityService securityService;
-
+    @Autowired
+    private SuppliermgmtSessionBean sessionBean;
 
     /* ================== Users ================== */
     // TODO SMCSEC Admin console mapping never being hit
@@ -48,6 +51,7 @@ public class SecurityController {
     @RequestMapping(value ={"/users"})
     public ModelAndView getUsersPage(HttpSession session) {
         ModelAndView mav = new ModelAndView("/admin-console/security/users");
+        UserContext userContext = sessionBean.getUserContext();
         HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
         boolean isSupplier = currentUser.getUserTypeId() == ApplicationConstants.SUPPLIER_USER;
         // If the user is a supplier.
@@ -63,7 +67,7 @@ public class SecurityController {
         }
         mav.addObject("hasBeenSearched", false);
         mav.addObject("userTypeList", securityService.getUserTypes());
-        mav.addObject("access",CommonUtils.hasAccess(ApplicationConstants.PENSKEUSER, session));
+        mav.addObject("access",CommonUtils.hasAccess(ApplicationConstants.PENSKEUSER, userContext));
         return mav;
     }
 
@@ -71,13 +75,14 @@ public class SecurityController {
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
     @RequestMapping(value ={"/vendorUsers"})
     public ModelAndView getVendorMainContentPage(HttpSession session){
-        if(CommonUtils.hasAccess(ApplicationConstants.VENDORUSER, session)){
+    	UserContext userContext = sessionBean.getUserContext();
+        if(CommonUtils.hasAccess(ApplicationConstants.VENDORUSER, userContext)){
             return getVendorPageData(session);
         }
-        if(CommonUtils.hasAccess(ApplicationConstants.ROLES_ACCESS, session)){
+        if(CommonUtils.hasAccess(ApplicationConstants.ROLES_ACCESS, userContext)){
             return getRolesPage(session);
         }
-        if(CommonUtils.hasAccess(ApplicationConstants.ORG_ACCESS, session)){
+        if(CommonUtils.hasAccess(ApplicationConstants.ORG_ACCESS, userContext)){
             return getOrgPage(session);
         }
         ModelAndView mav = new ModelAndView("/admin-console/security/noAccess");
@@ -89,6 +94,7 @@ public class SecurityController {
     @RequestMapping(value = "/users-search")
     public ModelAndView getUserSearchResults(HeaderUser userSearchForm,HttpSession session) {
         ModelAndView mav = new ModelAndView("/admin-console/security/users");
+        UserContext userContext = sessionBean.getUserContext();
         HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
 
         boolean isSupplier = currentUser.getUserTypeId() == ApplicationConstants.SUPPLIER_USER;
@@ -97,12 +103,12 @@ public class SecurityController {
             userSearchForm.setUserTypeId(ApplicationConstants.SUPPLIER_USER);
             mav = new ModelAndView("/admin-console/security/vendorUsers");
             mav.addObject("roleList", securityService.getVendorRoles(false,currentUser.getRoleId(),currentUser.getOrgId()));
-            mav.addObject("accessVendor",CommonUtils.hasAccess(ApplicationConstants.VENDORUSER, session));
+            mav.addObject("accessVendor",CommonUtils.hasAccess(ApplicationConstants.VENDORUSER, userContext));
         } else {
             userSearchForm.setUserTypeId(ApplicationConstants.PENSKE_USER);
             mav.addObject("roleList", securityService.getUserRoles(currentUser.getRoleId()));
-            mav.addObject("accessVendor",CommonUtils.hasAccess(ApplicationConstants.VENDORUSER, session));
-            mav.addObject("access",CommonUtils.hasAccess(ApplicationConstants.PENSKEUSER, session));
+            mav.addObject("accessVendor",CommonUtils.hasAccess(ApplicationConstants.VENDORUSER, userContext));
+            mav.addObject("access",CommonUtils.hasAccess(ApplicationConstants.PENSKEUSER, userContext));
         }
 
         mav.addObject("userList", securityService.getSearchUserList(userSearchForm, currentUser));
@@ -280,13 +286,14 @@ public class SecurityController {
     private ModelAndView getVendorPageData(HttpSession session){
         ModelAndView mav = new ModelAndView("/admin-console/security/vendorUsers");
         HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
+        UserContext userContext = sessionBean.getUserContext();
         mav.addObject("userList", securityService.getVendorUserList(currentUser));
         // If the user is a supplier.
         boolean isVendor = currentUser.getUserTypeId() == ApplicationConstants.SUPPLIER_USER;
         mav.addObject("roleList", securityService.getVendorRoles(isVendor,currentUser.getRoleId(),currentUser.getOrgId()));
         mav.addObject("hasBeenSearched", false);
         mav.addObject("userTypeList", securityService.getUserTypes());
-        mav.addObject("accessVendor",CommonUtils.hasAccess(ApplicationConstants.VENDORUSER, session));
+        mav.addObject("accessVendor",CommonUtils.hasAccess(ApplicationConstants.VENDORUSER, userContext));
         return mav;
     }
 

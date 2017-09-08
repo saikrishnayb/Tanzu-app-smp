@@ -65,7 +65,9 @@
               
                               <tl:isAuthorized tabName="Admin Console" secFunction="VENDOR_FILTER"> 
                                 <li>
-                                  <a class="vendor-filter">Vendor Filter</a>
+                                  <tl:penskeOnly>
+                                    <a class="vendor-filter">Vendor Filter</a>
+                                  </tl:penskeOnly>
                                 </li>
                                </tl:isAuthorized> 
                           

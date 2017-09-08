@@ -1,6 +1,7 @@
 package com.penske.apps.suppliermgmt.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,11 +24,9 @@ import com.penske.apps.adminconsole.annotation.SmcSecurity.SecurityFunction;
  ******************************************************************************/
 public class UserContext implements Serializable {
 
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -9150733293161470427L;
-    private Integer userId;
+	private static final long serialVersionUID = 7853812056722969776L;
+	
+	private Integer userId;
     private String userName;
     private String firstName;
     private String lastName;
@@ -42,6 +41,7 @@ public class UserContext implements Serializable {
     private String userDeptName;
     private int orgId;
     private List<VendorLocation> associatedVendorList;
+    private List<Integer> associatedVendorIds = new ArrayList<Integer>();
     private List<Buddies> associatedBuddyList;
     private Map<String, Map<String, String>> tabSecFunctionMap;
     private Set<SecurityFunction> securityFunctions;
@@ -146,10 +146,6 @@ public class UserContext implements Serializable {
         return associatedVendorList;
     }
 
-    public void setAssociatedVendorList(List<VendorLocation> associatedVendorList) {
-        this.associatedVendorList = associatedVendorList;
-    }
-
     public List<Buddies> getAssociatedBuddyList() {
         return associatedBuddyList;
     }
@@ -190,10 +186,29 @@ public class UserContext implements Serializable {
         this.securityFunctions = securityFunctions;
     }
 
+	public List<Integer> getAssociatedVendorIds() {
+		return associatedVendorIds;
+	}
+    
     /* Modified Accessors */
     public boolean isVisibleToPenske() {
         return this.userType == 1;
     }
 
+    public boolean isVendorUser()
+    {
+    	return this.userType == 2;
+    }
+
+    public void setAssociatedVendorList(List<VendorLocation> associatedVendorList) {
+        this.associatedVendorList = associatedVendorList;
+        if(associatedVendorList == null)
+        	associatedVendorIds = new ArrayList<Integer>();
+        else
+        {
+        	for(VendorLocation vendorLoc : associatedVendorList)
+        		associatedVendorIds.add(vendorLoc.getVendorId());
+        }
+    }
 
 }

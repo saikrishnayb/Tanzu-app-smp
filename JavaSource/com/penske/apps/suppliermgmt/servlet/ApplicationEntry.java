@@ -14,7 +14,6 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 
 import com.penske.apps.suppliermgmt.common.constants.ApplicationConstants;
-import com.penske.apps.suppliermgmt.model.UserContext;
 import com.penske.business.ldap.CPBLDAPSessionInfo;
 
 
@@ -78,7 +77,6 @@ public class ApplicationEntry extends HttpServlet {
 		String strSSO = null;
 		String forwardPage 	= null;		
 		CPBLDAPSessionInfo oLdapSession = null;	
-		UserContext userModel = new UserContext();
 		try
 		{
 			//Get the session associated with this request
@@ -97,10 +95,7 @@ public class ApplicationEntry extends HttpServlet {
 				if( oLdapSession != null ){
 					LOGGER.info("SSO from LDAP in Suppliermgmt::"+oLdapSession.getLoginUserID());
 					LOGGER.info("First Name + Last Name "+oLdapSession.getFirstName()+ " "+oLdapSession.getLastName());
-					userModel.setUserSSO(oLdapSession.getLoginUserID());
-					userModel.setFirstName(oLdapSession.getFirstName());
-					userModel.setLastName(oLdapSession.getLastName());
-					session.setAttribute(ApplicationConstants.USER_MODEL, userModel);
+					session.setAttribute(ApplicationConstants.USER_SSO, oLdapSession.getLoginUserID());
 					forwardPage = "/login/validate.htm";	
 				}else
 				{

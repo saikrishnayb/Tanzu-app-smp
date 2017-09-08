@@ -25,7 +25,9 @@
 				</tl:isAuthorized> 
 				<!-- Include Components only if user has access to at least one left nav inside Components -->
 				<c:if test="${hasComponents == '1'}">
+                  <tl:penskeOnly>
 					<li><a id="tab-components"  href="${pageContext.request.contextPath}/admin-console/components/category-association.htm" onclick="javascript:loadProcessImage();">Components</a></li>
+                  </tl:penskeOnly>
 				</c:if>
 				
 				<!-- Check if user has access to at least one left nav inside App Config -->
@@ -67,7 +69,9 @@
 				</tl:isAuthorized> 
 				<!-- Include app config if user has access to at least one left nav inside app config -->
 				<c:if test="${hasAppConfig == '1'}">
+                  <tl:penskeOnly>
 					<li><a id="tab-app-config" href="${pageContext.request.contextPath}/admin-console/app-config/dynamic-rules.htm" onclick="javascript:loadProcessImage();">App Config</a></li>
+                  </tl:penskeOnly>
 				</c:if>
 			</ul>
 		</li>

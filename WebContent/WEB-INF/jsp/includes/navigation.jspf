@@ -11,7 +11,9 @@
 		<!--   Order Fulfillment TAB ------------------------------------------------------ START 	-->
 		
 		<tl:isAuthorized tabName="Order Fulfillment" secFunction="ORDER_FULFILLMENT_TAB">
+          <tl:penskeOnly>
 			<li><a href="#" id="orderfulfillment" onmousedown="redirectToTab('orderfulfillment');">Order Fulfillment</a></li>
+          </tl:penskeOnly>
 		</tl:isAuthorized>
 
 		<!--   Order Fulfillment TAB ------------------------------------------------------ END	-->
@@ -36,7 +38,9 @@
 						     <li><a href="#" id="edi870Error" onmousedown="redirectToTab('edi870Error')">EDI 870 Errors</a></li>
 						     </tl:isAuthorized>
 						     <tl:isAuthorized tabName="Production" secFunction="DATA_CONFLICT_MENU">
-						     <li><a href="#" id="dataConflict" onmousedown="redirectToTab('dataConflict')">Data Conflicts</a></li>
+                             <tl:penskeOnly>
+						       <li><a href="#" id="dataConflict" onmousedown="redirectToTab('dataConflict')">Data Conflicts</a></li>
+                             </tl:penskeOnly>
 						     </tl:isAuthorized>
 						     <li><a href="#" id="upStreamVendor" onmousedown="linkRequest('button'); redirectToTab('upStreamVendor');">Upstream Change</a></li>
 						     <tl:isAuthorized tabName="Production" secFunction="UPDATE_DATES">

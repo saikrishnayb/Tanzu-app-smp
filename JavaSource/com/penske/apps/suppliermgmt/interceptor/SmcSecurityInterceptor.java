@@ -4,8 +4,8 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -15,7 +15,7 @@ import com.penske.apps.adminconsole.annotation.SmcSecurity;
 import com.penske.apps.adminconsole.annotation.SmcSecurity.SecurityFunction;
 import com.penske.apps.adminconsole.annotation.VendorAllowed;
 import com.penske.apps.adminconsole.exceptions.UnauthorizedSecurityFunctionException;
-import com.penske.apps.adminconsole.util.ApplicationConstants;
+import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.model.UserContext;
 
 /**
@@ -30,18 +30,22 @@ import com.penske.apps.suppliermgmt.model.UserContext;
 public class SmcSecurityInterceptor extends HandlerInterceptorAdapter {
 
     @Autowired
-    private HttpSession httpSession;
+    private SuppliermgmtSessionBean sessionBean;
 
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object handler) throws Exception {
 
         HandlerMethod handlerMethod = (HandlerMethod) handler;
 
+        //During initial login, the user won't have a user object in session. The login URL is allowed for all users.
+        if(StringUtils.endsWith(httpServletRequest.getRequestURI(), "/validate.htm"))
+            return true;
+
         VendorAllowed vendorAllowed = handlerMethod.getMethod().getAnnotation(VendorAllowed.class);
         SmcSecurity smcSecurity = handlerMethod.getMethod().getAnnotation(SmcSecurity.class);
         String requestURI = httpServletRequest.getRequestURI();
 
-        UserContext user = (UserContext) httpSession.getAttribute(ApplicationConstants.USER_MODEL);
+        UserContext user = sessionBean.getUserContext();
 
         boolean isVendorUserAccesingPenskeOnly = !user.isVisibleToPenske() && vendorAllowed == null;
         if (isVendorUserAccesingPenskeOnly)
