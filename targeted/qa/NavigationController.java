@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.penske.apps.adminconsole.annotation.VendorAllowed;
+import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.common.constants.ApplicationConstants;
 import com.penske.apps.suppliermgmt.model.UserContext;
 import com.penske.apps.suppliermgmt.service.HelpService;
@@ -46,6 +47,8 @@ public class NavigationController extends BaseController {
 	
 	@Autowired
 	private HelpService helpService;
+	@Autowired
+    private SuppliermgmtSessionBean sessionBean;
 	
 	/** The logger. */
 	private static Logger LOGGER = Logger.getLogger(NavigationController.class);
@@ -56,7 +59,7 @@ public class NavigationController extends BaseController {
 	public String navigateapplication(@RequestParam(value="path") String destination,
 			@RequestParam(value="controllerName") String controllerName,
 			@RequestParam(value="templateKey") String templateKey,
-			HttpServletRequest request) throws Exception{
+            HttpServletRequest request) throws Exception{
 		
 		
 		String app = "";
@@ -68,7 +71,7 @@ public class NavigationController extends BaseController {
       
 			url=new StringBuffer();
 			app = destination.toLowerCase();
-			 userContext = getUserContext(request);
+			 userContext = sessionBean.getUserContext();
 			if("adminconsole".equalsIgnoreCase(destination)){
 
 				if(!templateKey.equalsIgnoreCase("0")){
@@ -95,7 +98,7 @@ public class NavigationController extends BaseController {
 
 		catch(Exception e)
 		{
-			handleException(e, request);
+			handleException(e);
 		}
 		LOGGER.debug("Tab Application URL ::"+ url.toString());
 		return url.toString();
@@ -103,19 +106,19 @@ public class NavigationController extends BaseController {
 	
 	@VendorAllowed
 	@RequestMapping(value = "/getHelp")
-	protected  ModelAndView getHelp(HttpServletRequest request) {
+	protected  ModelAndView getHelp() {
 		ModelAndView model=new ModelAndView();
 		UserContext userContext = new UserContext();
 		
 		try
 		{		
-			userContext = getUserContext(request);
+		    userContext = sessionBean.getUserContext();
 			String help = helpService.getHelp(userContext.getUserType());
 			model.addObject("helpContent",help);
 			model.setViewName("home/help");
 				 
 		  }catch(Exception e){
-			  model=handleException(e, request);
+			  model=handleException(e);
 		  }
 		return model;
 	}	

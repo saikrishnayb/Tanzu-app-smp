@@ -3,7 +3,7 @@ package com.penske.apps.adminconsole.dao;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
-
+import com.penske.apps.adminconsole.annotation.NonVendorQuery;
 import com.penske.apps.adminconsole.model.TermsAndConditions;
 
 
@@ -15,7 +15,9 @@ import com.penske.apps.adminconsole.model.TermsAndConditions;
  */
 
 public interface TermsAndConditionsDao {
+	@NonVendorQuery //TODO: Review Query
 	public List<TermsAndConditions> selectAllTermsAndConditions();
 	
+	@NonVendorQuery //TODO: Review Query
 	public String selectTermsAndConditionsText(@Param("versionNumber") int versionNumber);
 }

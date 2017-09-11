@@ -42,19 +42,25 @@ public interface HomeDashboardDao {
 	public List<Alert> selectAlerts(@Param("headerId")int headerId,@Param("userType")int userType);
 	
 	@Deprecated
+	@NonVendorQuery //TODO: Review Query
 	public String getOrderFullfillmentActionItems(Map<String, Object> errorMap);
 	@Deprecated
+	@NonVendorQuery //TODO: Review Query
 	public String getOrderConfirmationActionItems(Map<String, Object> errorMap);
 	@Deprecated
+	@NonVendorQuery //TODO: Review Query
 	public String getProductionActionItems(Map<String, Object> errorMap);
 	@Deprecated
+	@NonVendorQuery //TODO: Review Query
 	public String getCommunicationActionItems(Map<String, Object> errorMap);
 	
-	@NonVendorQuery("Uses a stored procedure - can't filter by vendor ID")
+	@NonVendorQuery("Uses a stored procedure - can't filter by vendor ID")  //TODO: Review Query
 	@MapKey("alertKey")
 	public Map<String, AlertCount> getOrderConfirmationAlertCountsByAlertKey(@Param("sso") String sso);
+	@NonVendorQuery //TODO: Review Query
 	@MapKey("alertKey")
     public Map<String, AlertCount> getOrderFullfillmentCountsByAlertKey(@Param("sso") String sso);
+	@NonVendorQuery //TODO: Review Query
 	@MapKey("alertKey")
     public Map<String, AlertCount> getProductionAlertCountsByAlertKey(@Param("sso") String sso);
 		

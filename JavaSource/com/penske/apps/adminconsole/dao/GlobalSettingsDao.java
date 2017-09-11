@@ -1,6 +1,7 @@
 package com.penske.apps.adminconsole.dao;
 
 import org.apache.ibatis.annotations.Param;
+import com.penske.apps.adminconsole.annotation.NonVendorQuery;
 /**
  * Global Settings DAO
  * 
@@ -9,7 +10,9 @@ import org.apache.ibatis.annotations.Param;
  */
 
 public interface GlobalSettingsDao {
+	@NonVendorQuery //TODO: Review Query
 	public void updateGlobalSettingsByKeyName(@Param("value") String value, @Param("keyName") String keyName);
 	
+	@NonVendorQuery //TODO: Review Query
 	public String selectGlobalSettingsValueByKeyName(@Param("keyName") String keyName);
 }

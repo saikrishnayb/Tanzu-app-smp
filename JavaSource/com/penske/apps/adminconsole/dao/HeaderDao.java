@@ -12,7 +12,9 @@ public interface HeaderDao {
 	@NonVendorQuery
 	public HeaderUser getApplicationUser(int userID);
 	
+	@NonVendorQuery //TODO: Review Query
 	public List<Permission> getPermissions(int roleIdId);
 	
+	@NonVendorQuery //TODO: Review Query
 	public List<String> getAllTabNames();
 }

@@ -16,8 +16,10 @@ package com.penske.apps.suppliermgmt.dao;
  * ****************************************************************************************************************
  */
 import org.apache.ibatis.annotations.Param;
+import com.penske.apps.adminconsole.annotation.NonVendorQuery;
 
 public interface HelpDAO {
 
+	@NonVendorQuery //TODO: Review Query
 	public String getHelp(@Param("userType") String userType);
 }

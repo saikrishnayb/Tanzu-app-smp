@@ -1,5 +1,6 @@
 package com.penske.apps.adminconsole.dao;
 
+
 /**
 * This class is used in @ComponentScan. It ensures all classes in this package
 * is scanned by Spring. This allows for easy refactoring without having to remember 
