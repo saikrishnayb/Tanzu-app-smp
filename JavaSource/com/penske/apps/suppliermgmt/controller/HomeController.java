@@ -49,7 +49,7 @@ public class HomeController extends BaseController{
 
     @Autowired
     private SuppliermgmtSessionBean sessionBean;
-    
+
     private static final Logger LOGGER = Logger.getLogger(HomeController.class);
 
     /**
@@ -122,6 +122,10 @@ public class HomeController extends BaseController{
             }else{
                 if(tabs!=null && !tabs.isEmpty()){
                     defaultTab = tabs.get(0).getTabKey();
+
+                    if (defaultTab.equals("TAB_OF") && userModel.isVendorUser())
+                        defaultTab = tabs.get(1).getTabKey();
+
                 }
             }
 

@@ -33,7 +33,9 @@
 						<c:choose>
 							<c:when test="${tab.tabKey eq 'TAB_OF'}">	
 								<tl:isAuthorized tabName="Order Fulfillment" secFunction="ORDER_FULFILLMENT_TAB">
+                                  <tl:penskeOnly>
 									<c:set var="isValidTab" value="Y"/>	
+                                  </tl:penskeOnly>
 								</tl:isAuthorized>	
 							</c:when>
 							<c:when test="${tab.tabKey eq 'TAB_OC'}">	
@@ -75,7 +77,8 @@
 			            <spring:message code="alert.ajax.timeout" />
 			       </span>
 		        </div>
-				<div id ="alertTable" >
+                
+				<div id ="alertTable"  <c:if test="${hideTable}">style="display:none"</c:if> >
 					<div class="tab-header" id="${TabKey}">
 					<c:forEach var="alertHeader" items="${alertHeaders}">
 						<c:set var="tabKey" value="${TabKey}"/>
