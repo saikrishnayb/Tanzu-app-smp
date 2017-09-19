@@ -2,6 +2,7 @@ package com.penske.apps.adminconsole.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -17,7 +18,9 @@ import org.springframework.web.servlet.ModelAndView;
 import com.penske.apps.adminconsole.annotation.DefaultController;
 import com.penske.apps.adminconsole.annotation.SmcSecurity;
 import com.penske.apps.adminconsole.annotation.SmcSecurity.SecurityFunction;
+import com.penske.apps.adminconsole.enums.LeftNav;
 import com.penske.apps.adminconsole.enums.PoCategoryType;
+import com.penske.apps.adminconsole.enums.Tab.SubTab;
 import com.penske.apps.adminconsole.model.ExcelUploadHandler;
 import com.penske.apps.adminconsole.model.GlobalException;
 import com.penske.apps.adminconsole.model.LoadSheetCategoryDetails;
@@ -81,7 +84,27 @@ public class AppConfigController {
     private LoadSheetManagementService loadsheetManagementService;
     @Autowired
     private SuppliermgmtSessionBean sessionBean;
-    
+
+    @RequestMapping(value = {"/navigate-app-config"})
+    public ModelAndView navigateAppConfig(HttpServletRequest request) {
+
+        Set<SecurityFunction> securityFunctions = sessionBean.getUserContext().getSecurityFunctions();
+
+        List<LeftNav> leftNavs = SubTab.APP_CONFIG.getLeftNavs();
+
+        for (LeftNav leftNav : leftNavs) {
+
+            SecurityFunction securityFunction = leftNav.getSecurityFunction();
+
+            boolean noAccess = securityFunction != null && !securityFunctions.contains(securityFunction);
+            if (noAccess) continue;
+
+            return new ModelAndView("redirect:/" + leftNav.getUrlEntry());
+        }
+
+        throw new RuntimeException();
+    }
+
     /* ================== Subject Management ================== */
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_SUBJECTS)
     @RequestMapping(value={"/subject-management"})
@@ -92,7 +115,6 @@ public class AppConfigController {
 
         return mav;
     }
-
 
     /* ================== Excel Uploads    ================== */
     /**
@@ -190,7 +212,7 @@ public class AppConfigController {
     @RequestMapping("/dynamic-rules")
     public ModelAndView getDynamicRulesPage(){
         ModelAndView mav = new ModelAndView("/admin-console/app-config/dynamic-rules");
-        
+
         UserContext userContext = sessionBean.getUserContext();
 
         mav.addObject("activeDynamicRules", dynamicRuleService.getAllDynamicRulesByStatus("A"));

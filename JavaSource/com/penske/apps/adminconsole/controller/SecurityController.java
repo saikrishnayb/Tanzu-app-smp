@@ -1,7 +1,9 @@
 package com.penske.apps.adminconsole.controller;
 
 import java.util.List;
+import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,8 @@ import com.penske.apps.adminconsole.annotation.DefaultController;
 import com.penske.apps.adminconsole.annotation.SmcSecurity;
 import com.penske.apps.adminconsole.annotation.SmcSecurity.SecurityFunction;
 import com.penske.apps.adminconsole.annotation.VendorAllowed;
+import com.penske.apps.adminconsole.enums.LeftNav;
+import com.penske.apps.adminconsole.enums.Tab.SubTab;
 import com.penske.apps.adminconsole.model.HeaderUser;
 import com.penske.apps.adminconsole.model.Org;
 import com.penske.apps.adminconsole.model.Role;
@@ -43,6 +47,26 @@ public class SecurityController {
     private SecurityService securityService;
     @Autowired
     private SuppliermgmtSessionBean sessionBean;
+
+    @RequestMapping(value = {"/navigate-security"})
+    public ModelAndView navigateAppConfig(HttpServletRequest request) {
+
+        Set<SecurityFunction> securityFunctions = sessionBean.getUserContext().getSecurityFunctions();
+
+        List<LeftNav> leftNavs = SubTab.SECURITY.getLeftNavs();
+
+        for (LeftNav leftNav : leftNavs) {
+
+            SecurityFunction securityFunction = leftNav.getSecurityFunction();
+
+            boolean noAccess = securityFunction != null && !securityFunctions.contains(securityFunction);
+            if (noAccess) continue;
+
+            return new ModelAndView("redirect:/" + leftNav.getUrlEntry());
+        }
+
+        throw new RuntimeException();
+    }
 
     /* ================== Users ================== */
     // TODO SMCSEC Admin console mapping never being hit
@@ -75,7 +99,7 @@ public class SecurityController {
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
     @RequestMapping(value ={"/vendorUsers"})
     public ModelAndView getVendorMainContentPage(HttpSession session){
-    	UserContext userContext = sessionBean.getUserContext();
+        UserContext userContext = sessionBean.getUserContext();
         if(CommonUtils.hasAccess(ApplicationConstants.VENDORUSER, userContext)){
             return getVendorPageData(session);
         }

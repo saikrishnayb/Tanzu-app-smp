@@ -1,7 +1,9 @@
 package com.penske.apps.adminconsole.controller;
 
 import java.util.List;
+import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,8 @@ import org.springframework.web.servlet.ModelAndView;
 import com.penske.apps.adminconsole.annotation.DefaultController;
 import com.penske.apps.adminconsole.annotation.SmcSecurity;
 import com.penske.apps.adminconsole.annotation.SmcSecurity.SecurityFunction;
+import com.penske.apps.adminconsole.enums.LeftNav;
+import com.penske.apps.adminconsole.enums.Tab.SubTab;
 import com.penske.apps.adminconsole.model.CategoryAssociation;
 import com.penske.apps.adminconsole.model.ComponentVisibility;
 import com.penske.apps.adminconsole.model.HeaderUser;
@@ -53,7 +57,27 @@ public class ComponentsController {
 
     @Autowired
     private SuppliermgmtSessionBean sessionBean;
-    
+
+    @RequestMapping(value = {"/navigate-components"})
+    public ModelAndView navigateAppConfig(HttpServletRequest request) {
+
+        Set<SecurityFunction> securityFunctions = sessionBean.getUserContext().getSecurityFunctions();
+
+        List<LeftNav> leftNavs = SubTab.COMPONENTS.getLeftNavs();
+
+        for (LeftNav leftNav : leftNavs) {
+
+            SecurityFunction securityFunction = leftNav.getSecurityFunction();
+
+            boolean noAccess = securityFunction != null && !securityFunctions.contains(securityFunction);
+            if (noAccess) continue;
+
+            return new ModelAndView("redirect:/" + leftNav.getUrlEntry());
+        }
+
+        throw new RuntimeException();
+    }
+
     // TODO SMCSEC is this even used
     @Deprecated
     @RequestMapping(value={"/visibility-by-category"})

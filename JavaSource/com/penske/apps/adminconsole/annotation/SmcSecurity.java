@@ -23,30 +23,36 @@ public @interface SmcSecurity {
      */
     public static enum SecurityFunction {
 
+
         ADMIN_CONSOLE_TAB,
-        ALERT_MANAGEMENT,
-        DYNAMIC_RULES_MANAGEMENT,
-        GLOBAL_EXCEPTIONS_MANAGEMENT,
-        MANAGE_CATEGORY,
+
+        MANAGE_USERS,
+        MANAGE_VENDOR_USERS,
+        MANAGE_ROLES,
+        MANAGE_VENDORS,
+        MANAGE_ORG,
+
         MANAGE_CATEGORY_ASSOCIATION,
-        MANAGE_COMPONENT_OVERRIDE,
+        MANAGE_CATEGORY,
         MANAGE_COMPONENTS,
-        MANAGE_DELAY,
+        MANAGE_TEMPLATE,
+        MANAGE_COMPONENT_OVERRIDE,
+
+        MANAGE_SUBJECTS,
+        DYNAMIC_RULES_MANAGEMENT,
+        SEARCH_TEMPLATES,
+        ALERT_MANAGEMENT,
+        GLOBAL_EXCEPTIONS_MANAGEMENT,
         MANAGE_DELAY_REASONS,
+        MANAGE_TC,
+        UPLOAD_EXCEL,
+
+        UNIT_EXCEPTIONS_MANAGEMENT,
+        MANAGE_DELAY,
         MANAGE_DELAY_TYPE,
         MANAGE_NOTIFICATIONS,
-        MANAGE_ORG,
-        MANAGE_ROLES,
-        MANAGE_SUBJECTS,
-        MANAGE_TC,
-        MANAGE_TEMPLATE,
-        MANAGE_USERS,
+
         MANAGE_VENDOR_TEMPLATES,
-        MANAGE_VENDOR_USERS,
-        MANAGE_VENDORS,
-        SEARCH_TEMPLATES,
-        UNIT_EXCEPTIONS_MANAGEMENT,
-        UPLOAD_EXCEL,
         VENDOR_FILTER;
 
         public static SecurityFunction findByName(String name) {
