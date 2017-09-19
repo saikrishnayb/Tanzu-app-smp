@@ -75,7 +75,7 @@ public class ComponentsController {
             return new ModelAndView("redirect:/" + leftNav.getUrlEntry());
         }
 
-        throw new RuntimeException();
+        return new ModelAndView("/admin-console/security/noAccess");
     }
 
     // TODO SMCSEC is this even used

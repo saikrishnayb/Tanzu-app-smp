@@ -65,7 +65,7 @@ public class SecurityController {
             return new ModelAndView("redirect:/" + leftNav.getUrlEntry());
         }
 
-        throw new RuntimeException();
+        return new ModelAndView("/admin-console/security/noAccess");
     }
 
     /* ================== Users ================== */
