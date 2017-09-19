@@ -28,7 +28,7 @@
 	<div class="column-right"><label>LS Override <span class="errorMsg">*</span></label></div>
 	<div class="column-right-most">
 	<c:if test="${viewMode ne 'Y'}">
-	<a style="padding-left: 20%;" id="addRule" href="#" onclick="addRule();"><img class="addRow"
+	<a style="padding-left: 20%;" id="addRule"  onclick="addRule();"><img class="addRow"
 			 src="<c:out value='${commonStaticUrl}'/>/images/add.png"/></a>
 	</c:if>
 	</div>
@@ -64,7 +64,7 @@
 										<form:option value="N">N</form:option>
 					    </form:select>
 					     <c:if test="${viewMode ne 'Y'}">
-					     <a style="text-decoration:none;padding-left: 20%;" id="deleteRule" href="#"onclick="deleteRule(${indexCount.index});"><img class="addRow"
+					     <a style="text-decoration:none;padding-left: 20%;" id="deleteRule"  onclick="deleteRule(${indexCount.index});"><img class="addRow"
 						           src="<c:out value='${commonStaticUrl}'/>/images/delete.png"/></a>
 						</c:if>
 						</div>

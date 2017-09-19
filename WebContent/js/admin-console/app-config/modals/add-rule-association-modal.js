@@ -157,7 +157,7 @@ function addRule() {
 	+'</select></div>'
 	+'<div class="column-data-right"><select  name="rule['+rowCount+'].lsOverride" class="lsOverRide" id="rulelsOverride'+rowCount+'" style="width:60%">'
 	+'</select>'
-	+'<a style="text-decoration:none;padding-left: 22%;" id="addRule" href="#"onclick="deleteRule('+rowCount+');">'
+	+'<a style="text-decoration:none;padding-left: 22%;" id="deleteRule" onclick="deleteRule('+rowCount+');">'
 	+'<img src='+commonStaticUrl+'/images/delete.png class="centerImage handCursor" alt="delete Row"/></a></div>'
 	+'</div>';
 	$('#rule-association-modal #rules').append(newDiv);
