@@ -72,13 +72,10 @@ public class SecurityController {
     }
 
     /* ================== Users ================== */
-    // TODO SMCSEC Admin console mapping never being hit
     @VendorAllowed
     @SmcSecurity(securityFunction = {SecurityFunction.MANAGE_USERS, SecurityFunction.MANAGE_VENDOR_USERS})
     @RequestMapping(value ={"/users"})
     public ModelAndView getUsersPage(HttpSession session) {
-
-        LOGGER.error("getUsersPage is used!!!! :)");
 
         ModelAndView mav = new ModelAndView("/admin-console/security/users");
         UserContext userContext = sessionBean.getUserContext();
