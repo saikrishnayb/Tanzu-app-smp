@@ -63,6 +63,8 @@ import com.penske.apps.adminconsole.util.CommonUtils;
 @RequestMapping("/admin-console/app-config")
 public class AppConfigRestController {
 
+    private static final Logger LOGGER = Logger.getLogger(AppConfigRestController.class);
+
     @Autowired
     private ExceptionService exceptionService;
     @Autowired
@@ -113,6 +115,9 @@ public class AppConfigRestController {
     @RequestMapping("get-notification-modal-content")
     @ResponseBody
     public ModelAndView getNotificationModalContent(@RequestParam(value="notificationId") int notificationId) {
+
+        LOGGER.error("getNotificationModalContent is used!!!! :)");
+
         ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/app-config/notification-modal-content");
 
         Notification notification = notificationService.getNotification(notificationId);
@@ -129,6 +134,9 @@ public class AppConfigRestController {
     @RequestMapping("get-user-emails")
     @ResponseBody
     public String getUserEmails() {
+
+        LOGGER.error("getUserEmails is used!!!! :)");
+
         StringBuilder emails = new StringBuilder();
         List<String> userEmails = notificationService.getUserEmails();
 
@@ -150,6 +158,9 @@ public class AppConfigRestController {
     @RequestMapping("update-notification")
     @ResponseBody
     public Notification updateNotification(NotificationForm notificationForm) {
+
+        LOGGER.error("updateNotification is used!!!! :)");
+
         notificationService.updateNotification(notificationForm);
         notificationService.updateNotificationParty(notificationForm);
 
@@ -165,6 +176,8 @@ public class AppConfigRestController {
     @ResponseBody
     public ModelAndView getGlobalExceptionsEditModal(@RequestParam(value = "exceptionId") int exceptionId) {
 
+        LOGGER.error("getGlobalExceptionsEditModal is used!!!! :)");
+
         ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/app-config/edit-global-exceptions-modal");
 
         GlobalException exception = exceptionService.getException(exceptionId);
@@ -179,6 +192,8 @@ public class AppConfigRestController {
     @ResponseBody
     public List<String> getSubGroups(@RequestParam(value = "selectedOption") String selectedOption) {
 
+        LOGGER.error("getSubGroups is used!!!! :)");
+
         List<String> subGroups = exceptionService.getSubGroups(selectedOption);
         return subGroups;
     }
@@ -187,6 +202,8 @@ public class AppConfigRestController {
     @RequestMapping("edit-global-exception")
     @ResponseBody
     public void modifyGlobalException(@RequestParam(value = "exceptionId") int exceptionId, @RequestParam(value = "provider") String provider, @RequestParam(value = "subProvider") String subProvider) {
+
+        LOGGER.error("modifyGlobalException is used!!!! :)");
 
         exceptionService.modifyGlobalException(exceptionId, provider, subProvider);
     }
@@ -384,6 +401,9 @@ public class AppConfigRestController {
     @RequestMapping("delete-unit-exception")
     @ResponseBody
     public void deleteUnitException(@RequestParam(value = "exceptionId") int exceptionId) {
+
+        LOGGER.error("deleteUnitException is used!!!! :)");
+
         exceptionService.deleteUnitException(exceptionId);
     }
 
@@ -391,6 +411,8 @@ public class AppConfigRestController {
     @RequestMapping("get-unit-exceptions-edit-modal")
     @ResponseBody
     public ModelAndView getUnitExceptionsEditModal(@RequestParam(value = "exceptionId") int exceptionId) {
+
+        LOGGER.error("getUnitExceptionsEditModal is used!!!! :)");
 
         ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/app-config/edit-unit-exceptions-modal");
 
@@ -405,6 +427,8 @@ public class AppConfigRestController {
     @RequestMapping("edit-unit-exception")
     @ResponseBody
     public void editUnitException(@RequestParam(value = "exceptionId") int exceptionId, @RequestParam(value = "provider") String provider, @RequestParam(value = "subProvider") String subProvider, @RequestParam(value = "globalFlag") boolean globalFlag) {
+
+        LOGGER.error("editUnitException is used!!!! :)");
 
         if (globalFlag) {
             // get Unit Exception by passed id, delete unit exception, then add new global exception
@@ -423,6 +447,8 @@ public class AppConfigRestController {
     @ResponseBody
     public ModelAndView getAddDelayModalContent() {
 
+        LOGGER.error("getAddDelayModalContent is used!!!! :)");
+
         ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/app-config/add-delay-modal-content");
         List<DelayPoModel> POs = delayService.getPOs();
         List<DelayReasonModel> reasons = delayService.getReasons();
@@ -440,6 +466,8 @@ public class AppConfigRestController {
     @RequestMapping("add-new-delay")
     @ResponseBody
     public int addDelay(DelayModel delay, HttpServletResponse response) throws Exception {
+
+        LOGGER.error("addDelay is used!!!! :)");
 
         // check if delay with these values already exists
         if (delay != null) {
@@ -471,6 +499,8 @@ public class AppConfigRestController {
     @ResponseBody
     public List<DelayReasonModel> getAssociatedReasons(@RequestParam(value = "typeId") int typeId) {
 
+        LOGGER.error("getAssociatedReasons is used!!!! :)");
+
         List<DelayReasonModel> reasons = delayService.getAssocReasons(typeId);
         return reasons;
     }
@@ -480,13 +510,15 @@ public class AppConfigRestController {
     @ResponseBody
     public ModelAndView getEditDelayModalContent(DelayModel delay) {
 
+        LOGGER.error("getEditDelayModalContent is used!!!! :)");
+
         ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/app-config/edit-delay-modal-content");
         List<DelayReasonModel> reasons = null;
         String currDateType = "";
         List<DelayPoModel> POs = delayService.getPOs();
 
         DelayModel delayModelDB = delayService.getTypeId(delay.getDelayId()); // GET AssocId and
-                                                                              // datetype
+        // datetype
         if (delayModelDB != null) {
             currDateType = delayModelDB.getDateType();
             // GET type and reason id from assoc table
@@ -512,6 +544,8 @@ public class AppConfigRestController {
     @ResponseBody
     public void editDelay(DelayModel delay, HttpServletResponse response) throws Exception {
 
+        LOGGER.error("editDelay is used!!!! :)");
+
         DelayTypeReason typeReason = delayService.getAssocByTypeReasonId(delay.getDelayTypeId(), delay.getDelayReasonId());
         if (typeReason != null) {
             delay.setDelayTypeReasonId(typeReason.getDelayAssocid());
@@ -533,6 +567,8 @@ public class AppConfigRestController {
     @ResponseBody
     public ModelAndView getDeleteDelayModalContent(DelayModel delay) {
 
+        LOGGER.error("getDeleteDelayModalContent is used!!!! :)");
+
         ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/app-config/delete-delay-modal-content");
         mav.addObject("delay", delay);
         return mav;
@@ -542,7 +578,7 @@ public class AppConfigRestController {
     @RequestMapping("delete-delay")
     @ResponseBody
     public void deleteDelay(@RequestParam(value = "delayId") int delayId) {
-
+        LOGGER.error("deleteDelay is used!!!! :)");
         delayService.deleteDelay(delayId);
     }
 
@@ -550,7 +586,7 @@ public class AppConfigRestController {
     @RequestMapping("get-delete-delay-type-modal-page")
     @ResponseBody
     public ModelAndView getDeleteDelayTypeModalPage(DelayTypeModel type) {
-
+        LOGGER.error("getDeleteDelayTypeModalPage is used!!!! :)");
         // This needs to have functionality implemented assuming that there will be a multiple
         // delete option in the future.
         List<DelayTypeModel> typeList = new ArrayList<DelayTypeModel>();
@@ -562,7 +598,7 @@ public class AppConfigRestController {
     @RequestMapping("delete-delay-type")
     @ResponseBody
     public void deleteDelayType(@RequestParam(value = "typeId") int typeId) {
-
+        LOGGER.error("deleteDelayType is used!!!! :)");
         // delete type association, any delays with this reason, and finally the reason itself
         delayService.deleteDelayType(typeId);
     }
@@ -571,7 +607,7 @@ public class AppConfigRestController {
     @RequestMapping(value = "get-edit-delay-type-modal-page")
     @ResponseBody
     public ModelAndView getEditDelayTypeModalPage(DelayTypeModel type) {
-
+        LOGGER.error("getEditDelayTypeModalPage is used!!!! :)");
         return new ModelAndView("/jsp-fragment/admin-console/app-config/edit-delay-type-modal", "type", type);
     }
 
@@ -581,6 +617,7 @@ public class AppConfigRestController {
     // public void editDelayType(DelayTypeModel delayType,HttpServletResponse response) throws
     // Exception{
     public void editDelayType(@RequestParam(value = "typeId") int typeId, @RequestParam(value = "oldVal") String oldVal, @RequestParam(value = "delayType") String delayType, HttpServletResponse response) throws Exception {
+        LOGGER.error("editDelayType is used!!!! :)");
         DelayTypeModel delayTypeModel = new DelayTypeModel();
         delayTypeModel.setTypeId(typeId);
         delayTypeModel.setDelayType(delayType);
@@ -613,6 +650,7 @@ public class AppConfigRestController {
     @RequestMapping(value = "get-delete-delay-type-reason-page")
     @ResponseBody
     public ModelAndView getDeleteDelayTypeReasonModal(@RequestParam(value = "reasonVal") String reasonVal, @RequestParam(value = "typeVal") String typeVal, @RequestParam(value = "typeReasonId") int typeReasonId) {
+        LOGGER.error("getDeleteDelayTypeReasonModal is used!!!! :)");
         ModelAndView model = new ModelAndView("/jsp-fragment/admin-console/app-config/delete-delay-type-reason-modal");
         model.addObject("reason", reasonVal);
         model.addObject("type", typeVal);
@@ -632,7 +670,7 @@ public class AppConfigRestController {
     @RequestMapping("delete-delay-type-reason")
     @ResponseBody
     public void deleteDelayTypeReason(@RequestParam(value = "assocId") int assocId) {
-
+        LOGGER.error("deleteDelayTypeReason is used!!!! :)");
         delayService.deleteDelayTypeReason(assocId);
     }
 
@@ -653,7 +691,7 @@ public class AppConfigRestController {
     @RequestMapping(value = "get-edit-delay-type-reason-page")
     @ResponseBody
     public ModelAndView getEditDelayTypeReasonModalPage(@RequestParam(value = "typeReasonId") int typeReasonId) {
-
+        LOGGER.error("getEditDelayTypeReasonModalPage is used!!!! :)");
         ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/app-config/edit-delay-type-reason-assoc-modal");
         // need to get a list of all the types in order to populate the Delay Type dropdown
         List<DelayTypeModel> types = delayService.getTypes();
@@ -674,7 +712,7 @@ public class AppConfigRestController {
     @RequestMapping("edit-delay-type-reason")
     @ResponseBody
     public DelayTypeReason editDelayReason(@RequestParam(value = "oldTypeId") int oldTypeId, @RequestParam(value = "newTypeId") int newTypeId, @RequestParam(value = "oldReasonId") int oldReasonId, @RequestParam(value = "newReasonId") int newReasonId, @RequestParam(value = "assocId") int assocId, HttpServletResponse response) throws Exception {
-
+        LOGGER.error("editDelayReason is used!!!! :)");
         if ((oldTypeId != newTypeId) || (oldReasonId != newReasonId)) {
             DelayReasonModel delayReasonModel = new DelayReasonModel();
             delayReasonModel.setTypeId(newTypeId);
@@ -727,6 +765,7 @@ public class AppConfigRestController {
     @RequestMapping(value = "get-add-delay-type-reason-page")
     @ResponseBody
     public ModelAndView getAddDelayTypeReasonModal() {
+        LOGGER.error("getAddDelayTypeReasonModal is used!!!! :)");
         ModelAndView model = new ModelAndView("/jsp-fragment/admin-console/app-config/add-delay-type-reason-assoc-modal");
         List<DelayTypeModel> types = delayService.getTypes();
         List<DelayReasonModel> reason = delayService.getReasons();
@@ -739,7 +778,7 @@ public class AppConfigRestController {
     @RequestMapping(value = "add-delay-type-reason")
     @ResponseBody
     public DelayTypeReason addDelayTypeReason(@RequestParam("typeId") int typeId, @RequestParam("reasonId") int reasonId, HttpServletResponse response) throws Exception {
-
+        LOGGER.error("addDelayTypeReason is used!!!! :)");
         // check if Reason Name already exists
         DelayReasonModel delayReasonModel = new DelayReasonModel();
         delayReasonModel.setTypeId(typeId);
@@ -778,7 +817,7 @@ public class AppConfigRestController {
     @RequestMapping(value = "add-new-delay-type")
     @ResponseBody
     public DelayTypeModel addDelayType(@RequestParam(value = "delayType") String delayType, HttpServletResponse response) throws Exception {
-
+        LOGGER.error("addDelayType is used!!!! :)");
         boolean result = delayService.checkDelayTypeExist(delayType);
         if (result) {
 
@@ -798,7 +837,7 @@ public class AppConfigRestController {
     @RequestMapping("get-add-delay-type-modal-page")
     @ResponseBody
     public ModelAndView getAddDelayTypeModal() {
-
+        LOGGER.error("getAddDelayTypeModal is used!!!! :)");
         return new ModelAndView("/jsp-fragment/admin-console/app-config/add-delay-type-modal");
     }
 
@@ -807,6 +846,7 @@ public class AppConfigRestController {
     @RequestMapping("update-t-and-c-frequency")
     @ResponseBody
     public void updateTermsAndConditionsFrequency(@RequestParam(value = "frequencyDays") String frequencyDays) {
+        LOGGER.error("updateTermsAndConditionsFrequency is used!!!! :)");
         try {
             Integer.parseInt(frequencyDays);
         } catch (Exception e) {

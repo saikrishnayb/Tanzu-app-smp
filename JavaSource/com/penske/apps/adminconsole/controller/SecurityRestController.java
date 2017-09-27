@@ -43,17 +43,14 @@ public class SecurityRestController {
 
     @Autowired
     private SecurityService securityService;
-
     @Autowired
     private VendorService vendorService;
-
     @Autowired
     private RoleService roleService;
-
     @Autowired
     private UserCreationService userCreationService;
 
-    private static final Logger logger = Logger.getLogger(SecurityRestController.class);
+    private static final Logger LOGGER = Logger.getLogger(SecurityRestController.class);
 
     /* ================== Users ================== */
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_USERS)
@@ -122,6 +119,7 @@ public class SecurityRestController {
     @RequestMapping("get-vendor-locations-content")
     @ResponseBody
     public List<VendorLocation> getVendorLocations(@RequestParam(value="vendorName") String vendorName, HttpSession session) {
+        LOGGER.error("getVendorLocations is used!!!! :)");
         HeaderUser currentUser = (HeaderUser) session.getAttribute("currentUser");
 
         return securityService.getVendorLocations(vendorName, currentUser.getUserId(), currentUser.getUserTypeId());
@@ -142,7 +140,7 @@ public class SecurityRestController {
                 securityService.modifyUserStatus(userId, currentUser);
             }
         }catch (Exception e) {
-            logger.error("Error while deactivation user: "+e);
+            LOGGER.error("Error while deactivation user: " + e);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while deactivation user.");
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().write("Error while deactivation user.");
@@ -190,7 +188,7 @@ public class SecurityRestController {
             HeaderUser currentUser = (HeaderUser) session.getAttribute("currentUser");
             securityService.deleteOrg(orgId, currentUser.getSso());
         }catch (Exception e) {
-            logger.error("Error while deactivation ORG: "+e);
+            LOGGER.error("Error while deactivation ORG: " + e);
             CommonUtils.getCommonErrorAjaxResponse(response,"");
         }
     }
@@ -199,6 +197,9 @@ public class SecurityRestController {
     @RequestMapping("vendor-templates")
     @ResponseBody
     public ModelAndView getVendorTemplateInfo(@RequestParam(value="vendorIds[]") String[] vendorIds) {
+
+        LOGGER.error("getVendorTemplateInfo is used!!!! :)");
+
         ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/security/templates-accordion");
 
         if(vendorIds[0].equalsIgnoreCase("empty")) {
@@ -282,13 +283,13 @@ public class SecurityRestController {
         }
         catch (UserServiceException e) {
             if(IUserConstants.DUP_SSO_ERROR_CODE==e.getErrorCode()){
-                logger.error(IUserConstants.DUP_SSO_ERROR_MESSAGE+e);
+                LOGGER.error(IUserConstants.DUP_SSO_ERROR_MESSAGE + e);
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,"USER_SERVICE_DUP_SSO:"+String.valueOf(e.getErrorCode()));
             }else if(IUserConstants.NOT_STANDARD_SSO_ERROR_CODE==e.getErrorCode()){
-                logger.error(IUserConstants.NOT_STANDARD_SSO_ERROR_MESSAGE+e);
+                LOGGER.error(IUserConstants.NOT_STANDARD_SSO_ERROR_MESSAGE + e);
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,"USER_SERVICE_NOT_STANDARD_SSO:"+String.valueOf(e.getErrorCode()));
             }else{
-                logger.error("Error while creating user: "+e);
+                LOGGER.error("Error while creating user: " + e);
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while creating user.");
             }
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -296,7 +297,7 @@ public class SecurityRestController {
             response.flushBuffer();
         }
         catch (Exception e) {
-            logger.error("Error while updating user: "+e);
+            LOGGER.error("Error while updating user: " + e);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while updating user.");
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().write("Error while updating user.");
@@ -310,6 +311,8 @@ public class SecurityRestController {
     @ResponseBody
     public ModelAndView modifyUserInfoSubmit(User user, int[] vendorIds, HttpSession session, @RequestParam(value="signatureFile", required=false)MultipartFile signatureImage,
             @RequestParam(value="initialsFile", required=false)MultipartFile initialsImage){
+
+        LOGGER.error("modifyUserInfoSubmit is used!!!! :)");
 
         boolean initialsEmpty = initialsImage == null || initialsImage.getSize() == 0;
         boolean signatureEmpty = signatureImage == null || signatureImage.getSize() == 0;
@@ -346,7 +349,7 @@ public class SecurityRestController {
                 throw e;
             }
         }else{
-            logger.info("No issue>>>>>>>>>>>>>>>");
+            LOGGER.info("No issue>>>>>>>>>>>>>>>");
         }
     }
 
@@ -363,7 +366,7 @@ public class SecurityRestController {
             }
             return user;
         }catch (Exception e) {
-            logger.error("Error in processing the last request.: "+e);
+            LOGGER.error("Error in processing the last request.: " + e);
             CommonUtils.getCommonErrorAjaxResponse(response,"");
         }
         return null;
@@ -430,7 +433,7 @@ public class SecurityRestController {
             HeaderUser currentUser = (HeaderUser) session.getAttribute("currentUser");
             securityService.addUser(user, vendorIds, currentUser);
         }catch (Exception e) {
-            logger.error("Error while creating user: "+e);
+            LOGGER.error("Error while creating user: " + e);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while creating user.");
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().write("Error while creating user.");
@@ -452,13 +455,13 @@ public class SecurityRestController {
         }
         catch (UserServiceException e) {
             if(IUserConstants.DUP_SSO_ERROR_CODE==e.getErrorCode()){
-                logger.error(IUserConstants.DUP_SSO_ERROR_MESSAGE+e);
+                LOGGER.error(IUserConstants.DUP_SSO_ERROR_MESSAGE + e);
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,"USER_SERVICE_DUP_SSO:"+String.valueOf(e.getErrorCode()));
             }else if(IUserConstants.NOT_STANDARD_SSO_ERROR_CODE==e.getErrorCode()){
-                logger.error(IUserConstants.NOT_STANDARD_SSO_ERROR_MESSAGE+e);
+                LOGGER.error(IUserConstants.NOT_STANDARD_SSO_ERROR_MESSAGE + e);
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,"USER_SERVICE_NOT_STANDARD_SSO:"+String.valueOf(e.getErrorCode()));
             }else{
-                logger.error("Error while creating user: "+e);
+                LOGGER.error("Error while creating user: " + e);
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while creating user.");
             }
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -466,7 +469,7 @@ public class SecurityRestController {
             response.flushBuffer();
         }
         catch (Exception e) {
-            logger.error("Error while creating user: "+e);
+            LOGGER.error("Error while creating user: " + e);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while creating user.");
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().write("Error while creating user.");
@@ -684,17 +687,17 @@ public class SecurityRestController {
                 response.getWriter().write(sme.getErrorDetails().getMessage());
                 response.flushBuffer();
             } catch (IOException e) {
-                logger.error(e.getMessage());
+                LOGGER.error(e.getMessage());
             }
         }catch (Exception e) {
-            logger.debug(e);
+            LOGGER.debug(e);
             try {
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while loading user data");
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 response.getWriter().write("Error while loading user data");
                 response.flushBuffer();
             } catch (IOException ie) {
-                logger.error(ie.getMessage());
+                LOGGER.error(ie.getMessage());
             }
         }
         return	user;
@@ -770,17 +773,17 @@ public class SecurityRestController {
                 response.getWriter().write(sme.getErrorDetails().getMessage());
                 response.flushBuffer();
             } catch (IOException e) {
-                logger.error(e.getMessage());
+                LOGGER.error(e.getMessage());
             }
         }catch (Exception e) {
-            logger.debug(e);
+            LOGGER.debug(e);
             try {
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while loading user data");
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 response.getWriter().write("Error while loading user data");
                 response.flushBuffer();
             } catch (IOException ie) {
-                logger.error(ie.getMessage());
+                LOGGER.error(ie.getMessage());
             }
         }
         user.setSsoUserUpdated( editableUser.validateUserWithSSOData(user));
@@ -814,7 +817,7 @@ public class SecurityRestController {
                 response.getWriter().write(sme.getErrorDetails().getMessage());
                 response.flushBuffer();
             } catch (IOException e) {
-                logger.error(e.getMessage());
+                LOGGER.error(e.getMessage());
             }
         }
         editableUser.setEmail(user.getEmail());
@@ -839,7 +842,7 @@ public class SecurityRestController {
             org.setModifiedBy(currentUser.getSso());
             securityService.updateOrg(org);
         }catch (Exception e) {
-            logger.error("Error Processing the Org: "+e);
+            LOGGER.error("Error Processing the Org: " + e);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error Processing the Org");
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().write("Error Processing the Org");
@@ -881,7 +884,7 @@ public class SecurityRestController {
             org.setCreatedBy(currentUser.getSso());
             securityService.addOrg(org);
         }catch (Exception e) {
-            logger.error("Error Processing the Org: "+e);
+            LOGGER.error("Error Processing the Org: " + e);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error Processing the Org");
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().write("Error Processing the Org");

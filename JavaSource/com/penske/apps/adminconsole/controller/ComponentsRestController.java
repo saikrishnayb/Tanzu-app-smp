@@ -54,7 +54,7 @@ import com.penske.apps.adminconsole.util.CommonUtils;
 @RequestMapping("/admin-console/components")
 public class ComponentsRestController {
 
-    private static final Logger logger = Logger.getLogger(ComponentsRestController.class);
+    private static final Logger LOGGER = Logger.getLogger(ComponentsRestController.class);
 
     //////////////////////////////////////////////////////////////////////
     // Service Members
@@ -74,7 +74,7 @@ public class ComponentsRestController {
     @RequestMapping(value="get-add-visibility-modal-content")
     @ResponseBody
     public ModelAndView getAddVisibilityModalContent(){
-
+        LOGGER.error("getAddVisibilityModalContent is used!!!! :)");
         List<ComponentVisibility> componentNames = componentVisibilityService.getComponentName();
         List<PoCategory> categoriesList = componentVisibilityService.getCategoryList();
         ModelAndView modelAndView = new ModelAndView("/jsp-fragment/admin-console/components/add-visibility-modal-content");
@@ -88,7 +88,7 @@ public class ComponentsRestController {
     @RequestMapping(value="get-compnent-list")
     @ResponseBody
     public List<ComponentVisibility>  getComponentList(@RequestParam("poCategoryId")int poCategoryId){
-
+        LOGGER.error("getComponentList is used!!!! :)");
         List<ComponentVisibility> componentList = componentVisibilityService.getComponentList(poCategoryId);
         return componentList;
 
@@ -99,6 +99,7 @@ public class ComponentsRestController {
     @ResponseBody
     public void postSaveVisibility(@RequestParam("isComponentVehicle") String isComponentVehicle , @RequestParam("componentId") int componentId,@RequestParam("poCategoryId") int poCategoryId,@RequestParam("subCategoryId") int subCategoryId){
 
+        LOGGER.error("postSaveVisibility is used!!!! :)");
 
         if("Yes".equalsIgnoreCase(isComponentVehicle))
         {
@@ -113,6 +114,9 @@ public class ComponentsRestController {
     @RequestMapping(value="get-po-categories")
     @ResponseBody
     public List<ComponentVisibility> getPoCategories(@RequestParam("isComponentVehicle") String isComponentVehicle,@RequestParam("componentId") int componentId){
+
+        LOGGER.error("getPoCategories is used!!!! :)");
+
         boolean isComponent = "Yes".equalsIgnoreCase(isComponentVehicle);
         if(isComponent)
         {
@@ -131,7 +135,7 @@ public class ComponentsRestController {
     @ResponseBody
     public List<SubCategory> getPoSubCategories(@RequestParam("poCategoryId")int poCategoryId){
 
-
+        LOGGER.error("getPoSubCategories is used!!!! :)");
 
         List<SubCategory> subCategories = componentVisibilityService.getSubCategoryList(poCategoryId);
         return subCategories;
@@ -144,6 +148,8 @@ public class ComponentsRestController {
     @ResponseStatus(value=HttpStatus.OK)
     public void deleteVisibility(@RequestParam("isComponentVehicle")int isComponentVehicle,@RequestParam("componentId")int componentId,@RequestParam("category")int category,@RequestParam("subCategory")int subCategory)
     {
+
+        LOGGER.error("deleteVisibility is used!!!! :)");
 
         boolean isComponent = isComponentVehicle==ApplicationConstants.VEHICLE_COMPONENT;
         if(isComponent) {
@@ -159,6 +165,8 @@ public class ComponentsRestController {
     @ResponseBody
     public ModelAndView getDeleteModalContent(@RequestParam("isComponentVehicle")int isComponentVehicle,@RequestParam("componentId")int componentId,@RequestParam("category")int category,@RequestParam("subCategory")int subCategory)
     {
+
+        LOGGER.error("getDeleteModalContent is used!!!! :)");
 
         boolean isComponent = isComponentVehicle==ApplicationConstants.VEHICLE_COMPONENT;
         ComponentVisibility componentVisibility = null;
@@ -181,6 +189,8 @@ public class ComponentsRestController {
     @ResponseBody
     public ModelAndView getVendorTemplate(@RequestParam("vendorNumber") int vendorNumber,@RequestParam("corpCode")  String corpCode){
 
+        LOGGER.error("getVendorTemplate is used!!!! :)");
+
         List<VendorTemplate> template = componentVendorTemplateService.getVendorCategories(vendorNumber,corpCode);
         ModelAndView mav =new ModelAndView("/jsp-fragment/admin-console/components/edit-template-modal-content");
         mav.addObject("template",template);
@@ -192,6 +202,8 @@ public class ComponentsRestController {
     @ResponseBody
     public void deleteCategory(@RequestParam("poCategoryId") int poCategoryId,@RequestParam("subCategoryId") int subCategoryId,@RequestParam("templateId") int templateId)
     {
+
+        LOGGER.error("deleteCategory is used!!!! :)");
 
         componentVendorTemplateService.deleteCategory(poCategoryId, subCategoryId, templateId);
         int templateComponentcount = componentVendorTemplateService.getTemplateComponentCount(templateId);
@@ -209,6 +221,8 @@ public class ComponentsRestController {
     public ModelAndView deleteCategoryContent(@RequestParam("poCategoryId") int poCategoryId,@RequestParam("subCategoryId") int subCategoryId)
     {
 
+        LOGGER.error("deleteCategoryContent is used!!!! :)");
+
         ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/components/category-delete-modal-content");
         TemplatePoCategorySubCategory categories = componentVendorTemplateService.getPoCategorySubCategory(poCategoryId, subCategoryId);
         mav.addObject("categories",categories);
@@ -222,6 +236,7 @@ public class ComponentsRestController {
     public ModelAndView deleteCategoryContentEditModal(@RequestParam("templateId") int templateId,@RequestParam("poCategoryId") int poCategoryId,@RequestParam("subCategoryId") int subCategoryId)
     {
 
+        LOGGER.error("deleteCategoryContentEditModal is used!!!! :)");
         ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/components/template-category-edit-delete-modal-content");
         TemplatePoCategorySubCategory categories = componentVendorTemplateService.getDeleteInEditModalContent(templateId,poCategoryId,subCategoryId);
         mav.addObject("categories",categories);
@@ -233,6 +248,7 @@ public class ComponentsRestController {
     @RequestMapping(value="get-add-po-categories")
     @ResponseBody
     public ModelAndView getCategories() {
+        LOGGER.error("getCategories is used!!!! :)");
         List<PoCategory> categories = componentVendorTemplateService.getPoCategories();
         ModelAndView mav =new ModelAndView("/jsp-fragment/admin-console/components/add-category-modal-content");
         mav.addObject("categories",categories);
@@ -243,6 +259,7 @@ public class ComponentsRestController {
     @RequestMapping(value="get-edit-add-po-categories")
     @ResponseBody
     public ModelAndView getAddCategories() {
+        LOGGER.error("getAddCategories is used!!!! :)");
         List<PoCategory> categories = componentVendorTemplateService.getPoCategories();
         ModelAndView mav =new ModelAndView("/jsp-fragment/admin-console/components/add-category-modal-content");
         mav.addObject("categories",categories);
@@ -253,6 +270,7 @@ public class ComponentsRestController {
     @RequestMapping(value="get-add-po-sub-categories")
     @ResponseBody
     public List<SubCategory> getsubCategories(@RequestParam("poCategoryId") int poCategoryId) {
+        LOGGER.error("getsubCategories is used!!!! :)");
         List<SubCategory> categories = componentVendorTemplateService.getSubCategories(poCategoryId);
         return categories;
     }
@@ -261,7 +279,7 @@ public class ComponentsRestController {
     @RequestMapping(value="get-category-components")
     @ResponseBody
     public ModelAndView getCategoryComponents(@RequestParam("poCategoryId") int poCategoryId,@RequestParam("subCategoryIds[]") int [] subCategoryIds) {
-
+        LOGGER.error("getCategoryComponents is used!!!! :)");
         List<TemplatePoCategorySubCategory> poCategorySubCategory =new ArrayList<TemplatePoCategorySubCategory>();
         for (int subCategoryId : subCategoryIds) {
 
@@ -280,7 +298,7 @@ public class ComponentsRestController {
     @RequestMapping(value="get-add-category-components")
     @ResponseBody
     public ModelAndView getAddCategoryComponents(@RequestParam("poCategoryId") int poCategoryId,@RequestParam("subCategoryIds[]") int [] subCategoryIds) {
-
+        LOGGER.error("getAddCategoryComponents is used!!!! :)");
         List<TemplatePoCategorySubCategory> poCategorySubCategory =new ArrayList<TemplatePoCategorySubCategory>();
         for (int subCategoryId : subCategoryIds) {
 
@@ -298,7 +316,7 @@ public class ComponentsRestController {
     @RequestMapping(value="get-delete-template-modal-content")
     @ResponseBody
     public ModelAndView getVendorInfo(@RequestParam("templateId") int templateId) {
-
+        LOGGER.error("getVendorInfo is used!!!! :)");
         VendorTemplate vendorTemplate =componentVendorTemplateService.getVendorTemplate(templateId);
         ModelAndView mav =new ModelAndView("/jsp-fragment/admin-console/components/template-delete-modal-content");
         mav.addObject("vendorTemplate",vendorTemplate);
@@ -310,7 +328,7 @@ public class ComponentsRestController {
     @RequestMapping(value="delete-template-table-content")
     @ResponseBody
     public void deleteTemplateTableContent(@RequestParam("templateId") int templateId) {
-
+        LOGGER.error("deleteTemplateTableContent is used!!!! :)");
         componentVendorTemplateService.deleteTemplate(templateId);
     }
 
@@ -318,6 +336,7 @@ public class ComponentsRestController {
     @RequestMapping(value="add-template")
     @ResponseBody
     public int addTemplate(@RequestParam("vendorNumber") int vendorNumber,@RequestParam("corpCode") String corpCode, HttpSession session) {
+        LOGGER.error("addTemplate is used!!!! :)");
         HeaderUser currentUser = (HeaderUser) session.getAttribute("currentUser");
         componentVendorTemplateService.addTemplate(vendorNumber, currentUser.getSso());
 
@@ -330,7 +349,7 @@ public class ComponentsRestController {
     @RequestMapping(value="get-vendor-numbers-by-mfr")
     @ResponseBody
     public List<Integer> addTemplate(@RequestParam("MFR") String mfr) {
-
+        LOGGER.error("addTemplate / get-vendor-numbers-by-mfr  is used!!!! :)");
         List<Integer> vendorNumbers =  componentVendorTemplateService.getVendorNumberByMfr(mfr);
         return vendorNumbers;
     }
@@ -339,7 +358,7 @@ public class ComponentsRestController {
     @RequestMapping(value="add-template-components")
     @ResponseBody
     public void addTemplate(TemplateComponents serializedObject,@RequestParam("poCategoryId")int poCategoryId,@RequestParam("subCategoryId") int subCategoryId,@RequestParam("templateId") String templateId) {
-
+        LOGGER.error("addTemplate / add-template-components is used!!!! :)");
         componentVendorTemplateService.addTemplateComponents(serializedObject, poCategoryId, subCategoryId);
 
     }
@@ -348,7 +367,7 @@ public class ComponentsRestController {
     @RequestMapping(value="update-template-components")
     @ResponseBody
     public void updateTemplateComponents(TemplateComponents serializedObject) {
-
+        LOGGER.error("updateTemplateComponents is used!!!! :)");
         componentVendorTemplateService.updateTemplateComponents(serializedObject);
     }
 
@@ -357,7 +376,7 @@ public class ComponentsRestController {
     @RequestMapping(value="get-edit-category-content")
     @ResponseBody
     public ModelAndView getEditCategoryContent(@RequestParam("poCategoryId") int poCategoryId) {
-
+        LOGGER.error("getEditCategoryContent is used!!!! :)");
         PoCategory poCategory =categoryManagementService.getSelectedPoCategory(poCategoryId);
         ModelAndView mav =new ModelAndView("/jsp-fragment/admin-console/components/edit-category-modal");
         mav.addObject("category", poCategory);
@@ -377,6 +396,7 @@ public class ComponentsRestController {
     @RequestMapping(value="update-po-category")
     @ResponseBody
     public ModelAndView updatePoCategory(PoCategory categoryData,HttpServletResponse response) throws Exception {
+        LOGGER.error("updatePoCategory is used!!!! :)");
         try{
             if(categoryManagementService.checkCategoryExist(categoryData, false)){
                 categoryManagementService.updatePoCategory(categoryData);
@@ -387,7 +407,7 @@ public class ComponentsRestController {
                 response.flushBuffer();
             }
         }catch (Exception e) {
-            logger.error("Error while Updating PO Category: "+e);
+            LOGGER.error("Error while Updating PO Category: " + e);
             CommonUtils.getCommonErrorAjaxResponse(response,"Error Processing the Update PO Category");
         }
         return null;
@@ -397,6 +417,9 @@ public class ComponentsRestController {
     @RequestMapping(value="insert-po-category")
     @ResponseBody
     public PoCategory insertPoCategory(PoCategory categoryData,HttpSession session,HttpServletResponse response) throws Exception {
+
+        LOGGER.error("insertPoCategory is used!!!! :)");
+
         try{
             HeaderUser currentUser = (HeaderUser) session.getAttribute("currentUser");
             categoryData.setCreatedBy(currentUser.getSso());
@@ -411,7 +434,7 @@ public class ComponentsRestController {
                 response.flushBuffer();
             }
         }catch (Exception e) {
-            logger.error("Error while adding PO Category: "+e);
+            LOGGER.error("Error while adding PO Category: " + e);
             CommonUtils.getCommonErrorAjaxResponse(response,"Error Processing the Insert PO Category");
         }
         return null;
@@ -442,7 +465,7 @@ public class ComponentsRestController {
                 response.flushBuffer();
             }
         }catch (Exception e) {
-            logger.error("Error while updating Sub-Category: "+e);
+            LOGGER.error("Error while updating Sub-Category: " + e);
             CommonUtils.getCommonErrorAjaxResponse(response,"Error Processing the updating Sub-Category");
         }
         return null;
@@ -475,7 +498,7 @@ public class ComponentsRestController {
                 response.flushBuffer();
             }
         }catch (Exception e) {
-            logger.error("Error while adding Sub-Category: "+e);
+            LOGGER.error("Error while adding Sub-Category: " + e);
             CommonUtils.getCommonErrorAjaxResponse(response,"Error Processing the Insert Sub-Category");
         }
         return 0;
@@ -485,6 +508,7 @@ public class ComponentsRestController {
     @RequestMapping(value="delete-po-category")
     @ResponseBody
     public void deletePoCategory(@RequestParam("poCatId") int poCatId) {
+        LOGGER.error("deletePoCategory is used!!!! :)");
         categoryManagementService.modifyPoCatStatus(poCatId);
     }
 
@@ -533,10 +557,13 @@ public class ComponentsRestController {
     @ResponseBody
     public void changeAssociationStatus(@RequestParam("assId") int assId,@RequestParam("status") String status,@RequestParam("poCatId") int poCatId,
             @RequestParam("subCatId") int subCatId,HttpServletResponse response) {
+
+        LOGGER.error("changeAssociationStatus is used!!!! :)");
+
         try{
             categoryManagementService.modifyAssStatus(assId,status,poCatId,subCatId);//1- Active, 0-Inactive
         }catch (Exception e) {
-            logger.debug(e);
+            LOGGER.debug(e);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
@@ -687,7 +714,7 @@ public class ComponentsRestController {
                 response.flushBuffer();
             }
         }catch (Exception e) {
-            logger.error("Error while adding COMPONENT VISIBILITY OVERRIDES: "+e);
+            LOGGER.error("Error while adding COMPONENT VISIBILITY OVERRIDES: " + e);
             CommonUtils.getCommonErrorAjaxResponse(response,"Error Processing the Component Visibility Override");
         }
     }
@@ -706,7 +733,7 @@ public class ComponentsRestController {
                 response.flushBuffer();
             }
         }catch (Exception e) {
-            logger.error("Error while updating COMPONENT VISIBILITY OVERRIDES: "+e);
+            LOGGER.error("Error while updating COMPONENT VISIBILITY OVERRIDES: " + e);
             CommonUtils.getCommonErrorAjaxResponse(response,"Error Processing the Component Visibility Override");
         }
     }
@@ -750,7 +777,7 @@ public class ComponentsRestController {
         try{
             componentVendorTemplateService.updateTemplateComponentSequence(templateComponents);
         }catch (Exception e) {
-            logger.error("Error while updating TEMPLATE COMPONENT SEQUENCE: "+e);
+            LOGGER.error("Error while updating TEMPLATE COMPONENT SEQUENCE: " + e);
             CommonUtils.getCommonErrorAjaxResponse(response,"Error Processing the Component Visibility Override");
         }
         return status;

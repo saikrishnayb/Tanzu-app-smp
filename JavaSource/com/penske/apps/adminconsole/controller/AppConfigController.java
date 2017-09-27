@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -59,6 +60,8 @@ import com.penske.apps.suppliermgmt.model.UserContext;
 @DefaultController
 @RequestMapping("/admin-console/app-config")
 public class AppConfigController {
+
+    private static final Logger LOGGER = Logger.getLogger(AppConfigController.class);
 
     @Autowired
     private ExceptionService exceptionService;
@@ -195,6 +198,9 @@ public class AppConfigController {
     // TODO SMCSEC is this even used?????
     @RequestMapping("/notifications")
     public ModelAndView getNotificationsPage(){
+
+        LOGGER.error("getNotificationsPage is used!!!! :)");
+
         ModelAndView mav = new ModelAndView("/admin-console/app-config/notifications");
         List<Notification> notificationList = notificationService.getNotifications();
 
@@ -263,6 +269,9 @@ public class AppConfigController {
     @RequestMapping("/unit-exceptions")
     @Deprecated
     public ModelAndView getUnitExcpetionsPage(){
+
+        LOGGER.error("getUnitExcpetionsPage is used!!!! :)");
+
         ModelAndView mav = new ModelAndView("/admin-console/app-config/unit-exceptions");
         List<UnitException> exceptions = exceptionService.getUnitExceptions();
 
@@ -278,6 +287,9 @@ public class AppConfigController {
     // TODO SMCSEC is this even used?????
     @RequestMapping("/delay-management")
     public ModelAndView getDelayManagementPage(){
+
+        LOGGER.error("getDelayManagementPage is used!!!! :)");
+
         ModelAndView mav = new ModelAndView("/admin-console/app-config/delay-management");
 
         mav.addObject("delays", delayService.getDelays());
@@ -289,6 +301,9 @@ public class AppConfigController {
     // TODO SMCSEC is this even used?????
     @RequestMapping("/delay-reason-types")
     public ModelAndView getReasonTypesPage(){
+
+        LOGGER.error("getReasonTypesPage is used!!!! :)");
+
         ModelAndView mav = new ModelAndView("/admin-console/app-config/delay-reason-types");
 
         mav.addObject("types", delayService.getTypes());
@@ -309,6 +324,9 @@ public class AppConfigController {
     // TODO SMCSEC is this even used?????
     @RequestMapping("/delay-type-reason-assoc")
     public ModelAndView getTypeReasonassocPage(){
+
+        LOGGER.error("getTypeReasonassocPage is used!!!! :)");
+
         ModelAndView mav = new ModelAndView("/admin-console/app-config/delay-type-reason-assoc");
 
         mav.addObject("delays", delayService.getAssociations());

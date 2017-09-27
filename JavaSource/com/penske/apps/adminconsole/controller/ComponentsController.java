@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,6 +43,8 @@ import com.penske.apps.suppliermgmt.model.UserContext;
 @DefaultController
 @RequestMapping("/admin-console/components")
 public class ComponentsController {
+
+    private static final Logger LOGGER = Logger.getLogger(ComponentsController.class);
 
     @Autowired
     private ComponentVisibilityService componentVisibilityService;
@@ -82,7 +85,7 @@ public class ComponentsController {
     @Deprecated
     @RequestMapping(value={"/visibility-by-category"})
     public ModelAndView getVisisbilityByCategoryPage(){
-
+        LOGGER.error("getVisisbilityByCategoryPage is used!!!! :)");
         List<ComponentVisibility> componentList = componentVisibilityService.getComponent();
         ModelAndView modelAndView = new ModelAndView("/admin-console/components/visibility-by-category");
         modelAndView.addObject("componentList",componentList);
@@ -102,7 +105,7 @@ public class ComponentsController {
     // TODO SMCSEC is this even used
     @RequestMapping("/templates")
     public ModelAndView getTemplatesPage(){
-
+        LOGGER.error("getTemplatesPage is used!!!! :)");
         List<VendorTemplate> templates = componentVendorTemplateService.getVendorTemplates();
         List<String> manufactures = componentVendorTemplateService.getAllTemplateManufactures();
         List<PoCategory> categories = componentVendorTemplateService.getTemplatePoCategory();
@@ -158,7 +161,7 @@ public class ComponentsController {
     @RequestMapping(value="vendor-template-search")
     public ModelAndView vendorTemplateSearch(@ModelAttribute("command") VendorTemplateSearch template) {
 
-
+        LOGGER.error("vendorTemplateSearch is used!!!! :)");
         List<VendorTemplate> templates = componentVendorTemplateService.selectVenderBySearchCriteria(template);
         List<String> manufactures = componentVendorTemplateService.getAllTemplateManufactures();
         List<PoCategory> categories = componentVendorTemplateService.getTemplatePoCategory();
@@ -176,7 +179,7 @@ public class ComponentsController {
     // TODO SMCSEC is this even used. This is also repeated in the rest controller....
     @RequestMapping("/create-template")
     public ModelAndView getCreateTemplatePage(){
-
+        LOGGER.error("getCreateTemplatePage is used!!!! :)");
         List<Manufacture> manufacture = componentVendorTemplateService.getManufacture();
         ModelAndView mav =new ModelAndView("/admin-console/components/create-template");
         mav.addObject("manufacture",manufacture);

@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,6 +39,8 @@ import com.penske.apps.suppliermgmt.model.UserContext;
 @DefaultController
 @RequestMapping("/admin-console/security")
 public class SecurityController {
+
+    private static final Logger LOGGER = Logger.getLogger(SecurityController.class);
 
     @Autowired
     private VendorService vendorService;
@@ -74,6 +77,9 @@ public class SecurityController {
     @SmcSecurity(securityFunction = {SecurityFunction.MANAGE_USERS, SecurityFunction.MANAGE_VENDOR_USERS})
     @RequestMapping(value ={"/users"})
     public ModelAndView getUsersPage(HttpSession session) {
+
+        LOGGER.error("getUsersPage is used!!!! :)");
+
         ModelAndView mav = new ModelAndView("/admin-console/security/users");
         UserContext userContext = sessionBean.getUserContext();
         HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
