@@ -7,10 +7,16 @@
 	    <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 	    <%@ include file="../../../jsp/jsp-fragment/global/default-head-block.jsp" %>
 	    	<!-- Scripts -->
-		<script src="${context}/js/admin-console/app-config/create-rule.js" type="text/javascript"></script>
+	    	
+	    <script src="${context}/jQuery/choosen.js" type="text/javascript"></script>
+	    <script src="${context}/js/admin-console/app-config/create-rule.js" type="text/javascript"></script>
 		<script src="${context}/js/v2/jquery.dataTables.min.js" type="text/javascript"></script>
 		<link href="${commonStaticUrl}/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
 		<link href="${context}/css/admin-console/app-config/delay-management.css" rel="stylesheet" type="text/css"/>
+		<link href="${context}/css/choosenstyle.css" rel="stylesheet" type="text/css"/>
+		<link href="${context}/css/admin-console/app-config/create-rule.css" rel="stylesheet" type="text/css"/>
+		
+		
 	</head>
 	<body>
 		<%@ include file="../../../jsp/jsp-fragment/global/header.jsp" %>
@@ -69,7 +75,7 @@
 							<tr  class="groupHeader group${ruleDefinitionsList.criteriaGroup}" id="G_${ruleDefinitionsList.criteriaGroup}-R_${rowCount}">
 								<td class="editable centerAlign"><a href="javascript:void(0)" class="rightMargin" onClick="copyGroup('${ruleDefinitionsList.criteriaGroup}')">Copy</a><a href="javascript:void(0)" onClick="deleteGroup('${ruleDefinitionsList.criteriaGroup}');"><img src="${commonStaticUrl}/images/delete.png" class="centerImage rightMargin delete-button"/></a></td>
 								<td>
-								<form:select id="componentsDropDown-G_${ruleDefinitionsList.criteriaGroup}-R_${rowCount}" path="ruleDefinitionsList[${loopIndex.count -1}].componentId"  onChange="loadOperands(${ruleDefinitionsList.criteriaGroup},${rowCount})" style="width:100%">
+								<form:select class="searchSelect" id="componentsDropDown-G_${ruleDefinitionsList.criteriaGroup}-R_${rowCount}" path="ruleDefinitionsList[${loopIndex.count -1}].componentId"  onChange="loadOperands(${ruleDefinitionsList.criteriaGroup},${rowCount})" style="width:786px">
 									<form:option value=""></form:option>
 									<c:forEach items="${componentsList}" var="component">
 				                   		<form:option value="${component.componentId}-${component.componentType}">${component.componentGroup}<c:if test="${not empty  component.subGroup}"> ${component.subGroup}</c:if> - ${component.componentName} (ID: ${component.componentId})</form:option>
@@ -98,7 +104,7 @@
 							<tr  class="group${ruleDefinitionsList.criteriaGroup}" id="G_${ruleDefinitionsList.criteriaGroup}-R_${rowCount}">
 								<td class="editable centerAlign"></td>
 								<td>
-								<form:select id="componentsDropDown-G_${ruleDefinitionsList.criteriaGroup}-R_${rowCount}" path="ruleDefinitionsList[${loopIndex.count -1}].componentId"  onChange="loadOperands(${ruleDefinitionsList.criteriaGroup},${rowCount})" style="width:100%">
+								<form:select class="searchSelect" id="componentsDropDown-G_${ruleDefinitionsList.criteriaGroup}-R_${rowCount}" path="ruleDefinitionsList[${loopIndex.count -1}].componentId"  onChange="loadOperands(${ruleDefinitionsList.criteriaGroup},${rowCount})" style="width:786px">
 									<form:option value=""></form:option>
 									<c:forEach items="${componentsList}" var="component">
 				                   		<form:option value="${component.componentId}-${component.componentType}">${component.componentGroup}<c:if test="${not empty  component.subGroup}"> ${component.subGroup}</c:if> - ${component.componentName} (ID: ${component.componentId})</form:option>

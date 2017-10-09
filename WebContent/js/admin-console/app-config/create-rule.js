@@ -66,6 +66,9 @@ $(document).ready(function() {
 			$("#ruleName").removeClass("errorMsgInput");
 		});
 	 
+	 //chosen plugin to add search filter in select dropdown
+	 
+	 $(".searchSelect").chosen();
 });
 
 /**
@@ -284,7 +287,7 @@ var addRow= function(gIndex){
 		 newRowColor="whiteRow";
 	 }
 	 $("#"+preRowId).after('<tr  class="even '+newRowColor+' group'+gIndex+'" id="G_'+gIndex+'-R_'+rIndex+'"><td class="editable centerAlign"></td>'+
-			 '<td><select id="componentsDropDown-G_'+gIndex+'-R_'+rIndex+'" name="ruleDefinitionsList['+frmAryIdx+'].componentId" onchange="loadOperands('+gIndex+','+rIndex+')" style="width:100%"><option></option></select></td>'+
+			 '<td><select class="searchSelect" id="componentsDropDown-G_'+gIndex+'-R_'+rIndex+'" name="ruleDefinitionsList['+frmAryIdx+'].componentId" onchange="loadOperands('+gIndex+','+rIndex+')" style="width:786px"><option></option></select></td>'+
 			 '<td><select id="operandsID-G_'+gIndex+'-R_'+rIndex+'" name="ruleDefinitionsList['+frmAryIdx+'].operand" disabled=""></select></td>'+
 			 '<td><input id="valueID-G_'+gIndex+'-R_'+rIndex+'" name="ruleDefinitionsList['+frmAryIdx+'].value" maxlength="30" type="text">'+
 			 '<input type="hidden" name="ruleDefinitionsList['+frmAryIdx+'].criteriaGroup" value="'+gIndex+'"></td>'+
@@ -304,6 +307,7 @@ var addRow= function(gIndex){
 	parent.resizeAfterPaginationChange();
 	 var defer = $.Deferred();
 	 defer.resolve(); 
+	 $(".searchSelect").chosen();
 };
 
 function loadDropDownsDuringSwap(compId){
@@ -331,6 +335,7 @@ function addNewGroup(){
 	frmAryIdx=frmAryIdx+1;
 	createGroupHeader(grpIndex);
 	applyOddEvenRule();
+	 $(".searchSelect").chosen();
 	//resize Iframe while adding the rows or groups
 	parent.resizeAfterPaginationChange();
 }
@@ -339,7 +344,7 @@ function createGroupHeader(grpIndex){
 	
 	var rowNode=$createRuleTable.row.add( [
 	                                       '<a href="javascript:void(0)" class="rightMargin" onClick="copyGroup('+grpIndex+')">Copy</a><a href="javascript:void(0)" onClick="deleteGroup('+grpIndex+');"><img src="'+commonStaticUrl+'/images/delete.png" class="centerImage rightMargin delete-button"/></a>',
-	                	               	   '<select id="componentsDropDown-G_'+grpIndex+'-R_1" name="ruleDefinitionsList['+frmAryIdx+'].componentId" onChange="loadOperands('+grpIndex+',1)" style="width:100%"><option></option></select>',
+	                	               	   '<select class="searchSelect" id="componentsDropDown-G_'+grpIndex+'-R_1" name="ruleDefinitionsList['+frmAryIdx+'].componentId" onChange="loadOperands('+grpIndex+',1)" style="width:786px"><option></option></select>',
 	                	            	   '<select id="operandsID-G_'+grpIndex+'-R_1" name="ruleDefinitionsList['+frmAryIdx+'].operand" disabled></select>',
 	                	            	   '<input id="valueID-G_'+grpIndex+'-R_1" name="ruleDefinitionsList['+frmAryIdx+'].value" maxlength="30" type="text"><input type="hidden" name="ruleDefinitionsList['+frmAryIdx+'].criteriaGroup" value="'+grpIndex+'">',
 	                	            	   '<a><img src="'+commonStaticUrl+'/images/add.png" class="centerImage handCursor adder" onclick="addNewRow('+grpIndex+');" alt="Add Row"/></a>'
@@ -480,6 +485,7 @@ var copyGroupData= function(srcGrpIndex){
 	parent.resizeAfterPaginationChange();
 	 var defer = $.Deferred();
 	 defer.resolve(); 
+	 $(".searchSelect").chosen();
 };
 
 //Method to Copy data to the newly creadted group from src group
@@ -520,7 +526,7 @@ function copyDatatoDestGroup(srcGrp,destGrp){
 	    var $tr=$("#valueID-G_"+destGrpIndex+'-R_'+destIndex).parent().parent();
 	    $createRuleTable.row($tr).invalidate('dom').draw();
 	}
-		
+	 $(".searchSelect").chosen();	
 	
 }
 
@@ -529,7 +535,7 @@ function getRowData(grpIndex,rIndex){
 	
 	
 	var rowData=[ '',
-    '<select id="componentsDropDown-G_'+grpIndex+'-R_'+rIndex+'" name="ruleDefinitionsList['+frmAryIdx+'].componentId" onChange="loadOperands('+grpIndex+','+rIndex+')" style="width:100%"><option></option></select>',
+    '<select class="searchSelect" id="componentsDropDown-G_'+grpIndex+'-R_'+rIndex+'" name="ruleDefinitionsList['+frmAryIdx+'].componentId" onChange="loadOperands('+grpIndex+','+rIndex+')" style="width:786px"><option></option></select>',
     '<select id="operandsID-G_'+grpIndex+'-R_'+rIndex+'" name="ruleDefinitionsList['+frmAryIdx+'].operand" disabled></select>',
     '<input id="valueID-G_'+grpIndex+'-R_'+rIndex+'" name="ruleDefinitionsList['+frmAryIdx+'].value" maxlength="30" type="text"><input type="hidden" name="ruleDefinitionsList['+frmAryIdx+'].criteriaGroup" value="'+grpIndex+'">',
     '<a><img src="'+commonStaticUrl+'/images/delete.png"id="deleteRow" class="centerImage handCursor"  alt="Delete Row"/></a>'];
