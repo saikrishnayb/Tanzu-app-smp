@@ -30,7 +30,7 @@
        <param name="SMTPHost" value="mail.penske.com" />
        <param name="from" value="log4j@suppliermgmt2.penske.com"/>
               <param name="subject" value=" Suppliermgmt QA2 logging system"/>
-       <param name="to" value="david.roth@penske.com,Frank.D'Angelo@penske.com,erik.munoz@penske.com"/>
+       <param name="to" value="smc.developers@penske.com"/>
        <layout class="org.apache.log4j.PatternLayout">
               <param name="ConversionPattern" value="%m%n"/>
        </layout>
