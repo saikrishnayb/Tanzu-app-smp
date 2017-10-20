@@ -80,7 +80,9 @@ i{
 #leftFooter {
 	margin-left: 10px;
 }
-
+#footer {
+  margin-top: 0px;
+}
 /** Penske Common Overwrites *********************************/
 #mainContent{
 	display: inline-block;
