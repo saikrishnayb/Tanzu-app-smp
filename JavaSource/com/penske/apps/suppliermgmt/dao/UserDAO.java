@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
+
 import com.penske.apps.adminconsole.annotation.NonVendorQuery;
 import com.penske.apps.suppliermgmt.domain.Organization;
 import com.penske.apps.suppliermgmt.domain.UserVendorFilterSelection;

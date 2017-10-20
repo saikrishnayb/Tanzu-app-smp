@@ -1,6 +1,5 @@
 package com.penske.apps.adminconsole.model;
 
-import sun.util.logging.resources.logging;
 
 public class SearchTemplateForm {
 	private int templateId;
