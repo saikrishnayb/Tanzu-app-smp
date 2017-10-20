@@ -143,6 +143,7 @@ public class VendorQueryWrappingPlugin implements Interceptor
 		String queryId = statement.getId();
 		String className = StringUtils.substringBeforeLast(queryId, ".");
 		String methodName = StringUtils.substringAfterLast(queryId, ".");
+		methodName=StringUtils.substringBefore(methodName, "!");	//removing the selectKey from method name
 		Class<?> daoClass;
 		try {
 			daoClass = Class.forName(className);
