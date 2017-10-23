@@ -654,7 +654,6 @@ public class SecurityRestController {
     @RequestMapping("modify-vendor-info")
     @ResponseBody
     public Vendor modifyVendorInfo(Vendor vendor, HttpSession session) {
-        ModelAndView mav = new ModelAndView("/admin-console/security/vendors");
         HeaderUser user = (HeaderUser)session.getAttribute("currentUser");
         vendorService.modifyVendorInformation(vendor,user);
         List<Vendor> updatedVendors = vendorService.getAllVendors( user.getOrgId() );

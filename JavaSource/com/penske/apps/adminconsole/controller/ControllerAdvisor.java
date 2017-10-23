@@ -71,8 +71,11 @@ public class ControllerAdvisor {
 
             StringBuilder errorStringBuilder = new StringBuilder();
 
-            errorStringBuilder.append("UnauthorizedSecurityFunctionException. " + userType + " user " + userSSO
-                    + " does not have access to the following security functions: ");
+            errorStringBuilder.append("UnauthorizedSecurityFunctionException. ")
+            				  .append(userType)
+            				  .append(" user ")
+            				  .append(userSSO)
+            				  .append(" does not have access to the following security functions: ");
 
             SecurityFunction[] securityFunctions = exception.getSecurityFunctions();
 
