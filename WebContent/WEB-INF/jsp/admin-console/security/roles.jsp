@@ -28,7 +28,7 @@
 						<fieldset>
 							<legend>Advanced Search</legend>
 							<label class="floatLeft clear-left width-150">Role Name</label>
-							<input class="floatLeft width-200" type="text" name="roleName" value="${searchedRole.roleName}" maxlength="50" autocomplete="off" />
+							<input class="floatLeft width-200" type="text" name="roleName" value="<c:out value="${searchedRole.roleName}"/>" maxlength="50" autocomplete="off" />
 							
 							<label class="floatLeft clear-left width-150">Base Role</label>
 							<select class="floatLeft width-200" name="baseRoleId">

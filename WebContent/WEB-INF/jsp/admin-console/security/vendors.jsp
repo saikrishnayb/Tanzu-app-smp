@@ -30,16 +30,16 @@
 							<legend>Advanced Search</legend>
 							<div class="form-column floatLeft margin-bottom-10">
 								<label class="floatLeft clear-left leftLbl">Vendor Name</label>
-								<input class="floatLeft" name="vendorName" type="text" value="${searchedVendor.vendorName}" autocomplete="off" maxlength="50" />
+								<input class="floatLeft" name="vendorName" type="text" value="<c:out value="${searchedVendor.vendorName}"/>" autocomplete="off" maxlength="50" />
 								
 								<label class="floatLeft clear-left leftLbl">Vendor Number</label>
-								<input class="floatLeft" id="vendorNumber" name="vendorNumber" maxlength="9" type="text" <c:if test="${searchedVendor.vendorNumber ne 0}">value="${searchedVendor.vendorNumber}"</c:if> autocomplete="off" />
+								<input class="floatLeft" id="vendorNumber" name="vendorNumber" maxlength="9" type="text" <c:if test="${searchedVendor.vendorNumber ne 0}">value="<c:out value="${searchedVendor.vendorNumber}"/>"</c:if> autocomplete="off" />
 								
 								<label class="floatLeft clear-left leftLbl">Corp Code</label>
-								<input class="floatLeft" name="corpCode" type="text" value="${searchedVendor.corpCode}" autocomplete="off" maxlength="4" />
+								<input class="floatLeft" name="corpCode" type="text" value="<c:out value="${searchedVendor.vendorNumber}"/>" autocomplete="off" maxlength="4" />
 								
 								<label class="floatLeft clear-left leftLbl">MFR Code</label>
-								<input class="floatLeft" name="manufacturerCode" type="text" value="${searchedVendor.manufacturerCode}" autocomplete="off" maxlength="4" />
+								<input class="floatLeft" name="manufacturerCode" type="text" value="<c:out value="${searchedVendor.manufacturerCode}"/>" autocomplete="off" maxlength="4" />
 								<c:if test="${isPenskeUser}">
 									<label class="floatLeft clear-left leftLbl" >Alerts</label>
 									<select class="floatLeft" name="alertType">

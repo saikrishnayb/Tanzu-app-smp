@@ -1,14 +1,3 @@
-<div id="footer">
-	<span id="leftFooter"> 
-		<script>getLeftFooter();</script> 
-	</span>
-
-	<ul id="rightFooter" class="utility-list">
-		<li>Questions? Call ${supportNum}</li>
-		<li><a class="exit">Exit</a>
-		</li>
-	</ul>
-</div>
 <!-- global modals -->
 
 <div id="ajax-error-modal" class="modal">
