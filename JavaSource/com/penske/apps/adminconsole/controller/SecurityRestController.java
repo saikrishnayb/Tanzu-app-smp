@@ -162,7 +162,8 @@ public class SecurityRestController {
         return mav;
     }
 
-    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_USERS)
+    @VendorAllowed
+    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_ORG)
     @RequestMapping("get-deactivate-org-modal-content")
     @ResponseBody
     public ModelAndView getDeactivateOrgInfo(@RequestParam(value="orgName") String orgName, @RequestParam(value="orgId") int orgId) {
