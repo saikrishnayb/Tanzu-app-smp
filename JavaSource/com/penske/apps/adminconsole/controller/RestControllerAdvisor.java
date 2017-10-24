@@ -1,5 +1,7 @@
 package com.penske.apps.adminconsole.controller;
 
+import java.lang.reflect.Method;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -7,6 +9,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.method.HandlerMethod;
 
 import com.penske.apps.adminconsole.annotation.SmcSecurity.SecurityFunction;
 import com.penske.apps.adminconsole.exceptions.DelayReasonAlreadyExistsException;
@@ -80,11 +83,17 @@ public class RestControllerAdvisor {
         String userSSO = userContext == null ? "" : userContext.getUserSSO();
         String userType = userContext == null ? "Unknown" : (userContext.isVisibleToPenske() ? "Penske" : "Vendor");
 
+        HandlerMethod handlerMethod = exception.getHandlerMethod();
+
+        Method method = handlerMethod.getMethod();
+        Class<?> declaringClass = method.getDeclaringClass();
+        
         String requestURI = exception.getRequestURI();
 
         if (requestURI != null) {
             logger.error("UnauthorizedSecurityFunctionException. Vendor " + userSSO
-            + " tried accesing the following request mapping: " + requestURI, exception);
+                    + " tried accesing the following request mapping: " + requestURI + " located in  " + declaringClass.getName() + "::"
+                    + method.getName(), exception);
         } else {
         	
             StringBuilder errorStringBuilder = new StringBuilder();
