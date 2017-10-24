@@ -36,7 +36,7 @@
 								<input class="floatLeft" id="vendorNumber" name="vendorNumber" maxlength="9" type="text" <c:if test="${searchedVendor.vendorNumber ne 0}">value="<c:out value="${searchedVendor.vendorNumber}"/>"</c:if> autocomplete="off" />
 								
 								<label class="floatLeft clear-left leftLbl">Corp Code</label>
-								<input class="floatLeft" name="corpCode" type="text" value="<c:out value="${searchedVendor.vendorNumber}"/>" autocomplete="off" maxlength="4" />
+								<input class="floatLeft" name="corpCode" type="text" value="<c:out value="${searchedVendor.corpCode}"/>" autocomplete="off" maxlength="4" />
 								
 								<label class="floatLeft clear-left leftLbl">MFR Code</label>
 								<input class="floatLeft" name="manufacturerCode" type="text" value="<c:out value="${searchedVendor.manufacturerCode}"/>" autocomplete="off" maxlength="4" />
