@@ -552,13 +552,10 @@ public class ComponentsRestController {
 
     }
 
-    // TODO SMCSEC is this even used
     @RequestMapping(value="change-category-association-status")
     @ResponseBody
     public void changeAssociationStatus(@RequestParam("assId") int assId,@RequestParam("status") String status,@RequestParam("poCatId") int poCatId,
             @RequestParam("subCatId") int subCatId,HttpServletResponse response) {
-
-        LOGGER.error("changeAssociationStatus is used!!!! :)");
 
         try{
             categoryManagementService.modifyAssStatus(assId,status,poCatId,subCatId);//1- Active, 0-Inactive
