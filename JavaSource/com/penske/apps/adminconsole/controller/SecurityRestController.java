@@ -2,6 +2,7 @@ package com.penske.apps.adminconsole.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -67,7 +68,9 @@ public class SecurityRestController {
 
         }
         else {
-            mav.addObject("userRoles", securityService.getPenskeRoles(currentUser.getRoleId()));
+            List<Role> penskeRoles = securityService.getPenskeRoles(currentUser.getRoleId());
+            Collections.sort(penskeRoles, Role.ROLE_NAME_ASC);
+            mav.addObject("userRoles", penskeRoles);
         }
 
         if(currentUser.getUserTypeId() == 2) {
@@ -96,7 +99,12 @@ public class SecurityRestController {
         User editableUser = securityService.getEditInfo(userId, userType);
         mav.addObject("isCreatePage", false);
         mav.addObject("userTypes", securityService.getVendorUserTypes());
-        mav.addObject("userRoles", securityService.getVendorRoles(isVendor, currentUser.getRoleId(),currentUser.getOrgId()));
+
+        List<Role> vendorRoles = securityService.getVendorRoles(isVendor, currentUser.getRoleId(), currentUser.getOrgId());
+        Collections.sort(vendorRoles, Role.ROLE_NAME_ASC);
+
+        mav.addObject("userRoles", vendorRoles);
+
         mav.addObject("orgList", securityService.getVendorOrg(isVendor, currentUser.getOrgId()));
         mav.addObject("editableUser", editableUser);
         mav.addObject("tabPermissionsMap", securityService.getPermissions(roleId));
