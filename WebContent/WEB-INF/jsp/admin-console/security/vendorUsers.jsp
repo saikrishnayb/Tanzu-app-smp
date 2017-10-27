@@ -39,7 +39,7 @@
 					<div class="threeColumnContainer">
 						<div class="clear-float-left">	
 							<label class="rightAlign">First Name</label>
-							<input id="search-first-name" name="firstName" class="supportingLabel input alpha alpha-name optional" type="text" value="<c:out value="${userSearchForm.firstName}"/> "/>
+							<input id="search-first-name" name="firstName" class="supportingLabel input alpha alpha-name optional" type="text" value="<c:out value="${userSearchForm.firstName}"/>"/>
 						</div>
 						<div class="clear-float-left">
 							<label class="rightAlign">Role</label>
@@ -55,14 +55,14 @@
 					<div class="threeColumnContainer">
 						<div class="clear-float-left">
 							<label class="rightAlign">Last Name</label>
-							<input id="search-last-name" name="lastName" class="supportingLabel input alpha alpha-name optional" type="text" value="<c:out value="${userSearchForm.lastName}"/> "/>
+							<input id="search-last-name" name="lastName" class="supportingLabel input alpha alpha-name optional" type="text" value="<c:out value="${userSearchForm.lastName}"/>"/>
 						</div>
 					</div>
 				
 					<div id="threeColumnContainer third" class="threeColumnContainer third">
 						<div class="clear-float-left">
 							<label class="rightAlign">Email</label>
-							<input id="search-email" name="email" class="supportingLabel input alpha alpha-email optional" type="text" value="<c:out value="${userSearchForm.email}"/> "/>
+							<input id="search-email" name="email" class="supportingLabel input alpha alpha-email optional" type="text" value="<c:out value="${userSearchForm.email}"/>"/>
 						</div>
 					</div>
 					<input type="hidden" name="vendorSearch" value="true">
