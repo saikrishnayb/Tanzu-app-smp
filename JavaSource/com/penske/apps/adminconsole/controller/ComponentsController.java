@@ -48,16 +48,12 @@ public class ComponentsController {
 
     @Autowired
     private ComponentVisibilityService componentVisibilityService;
-
     @Autowired
     private ComponentVendorTemplateService componentVendorTemplateService;
-
     @Autowired
     private CategoryManagementService categoryManagementService;
-
     @Autowired
     private ComponentService componentService;
-
     @Autowired
     private SuppliermgmtSessionBean sessionBean;
 

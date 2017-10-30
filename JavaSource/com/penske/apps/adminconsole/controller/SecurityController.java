@@ -51,6 +51,7 @@ public class SecurityController {
     @Autowired
     private SuppliermgmtSessionBean sessionBean;
 
+    @VendorAllowed
     @RequestMapping(value = {"/navigate-security"})
     public ModelAndView navigateAppConfig(HttpServletRequest request) {
 
