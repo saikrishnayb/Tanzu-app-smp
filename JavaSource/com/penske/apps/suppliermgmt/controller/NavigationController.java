@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,68 +23,57 @@ import com.penske.apps.adminconsole.enums.Tab;
 import com.penske.apps.adminconsole.enums.Tab.SubTab;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.common.constants.ApplicationConstants;
+import com.penske.apps.suppliermgmt.enums.SpringProfile;
 import com.penske.apps.suppliermgmt.model.UserContext;
 import com.penske.apps.suppliermgmt.service.HelpService;
 
-
 /************************************************************************************
- * @Author         : 502403391
- * @Version        : 1.0
- * @FileName       : NavigationController
- * @Date Created	  : May 15,2015
- * @Date Modified  :
- * @Modified By    :
- * @Contact        :
- * @Description    : Class for redirecting to different application
- * @History        :
- *This class is under targeted folder, make sure the changes to be merged in targeted folder also
+ * @Author : 502403391
+ * @Version : 1.0
+ * @FileName : NavigationController
+ * @Date Created : May 15,2015
+ * @Date Modified :
+ * @Modified By :
+ * @Contact :
+ * @Description : Class for redirecting to different application
+ * @History : This class is under targeted folder, make sure the changes to be merged in targeted
+ *          folder also ????????????????????????????????????????????? - EM
  ************************************************************************************/
 @Controller
 @RequestMapping("/navigation")
 public class NavigationController extends BaseController {
 
-    /**
-     * Navigateapplication.
-     *
-     * @param destination the destination
-     * @param session the session
-     * @param request the request
-     * @return the string
-     */
-
     @Autowired
     private HelpService helpService;
-
+    @Autowired
+    private Environment springEnvironment;
     @Autowired
     private SuppliermgmtSessionBean sessionBean;
 
-    /** The logger. */
     private static Logger LOGGER = Logger.getLogger(NavigationController.class);
 
     @VendorAllowed
     @RequestMapping(value = "/navigate", method = RequestMethod.POST)
     @ResponseBody
-    public String navigateapplication(@RequestParam(value="path") String destination,
-            @RequestParam(value="controllerName") String controllerName,
-            @RequestParam(value="templateKey") String templateKey,
-            HttpServletRequest request) throws Exception{
-
+    public String navigateapplication(@RequestParam(value = "path") String destination, @RequestParam(value = "controllerName") String controllerName, @RequestParam(value = "templateKey") String templateKey, HttpServletRequest request) throws Exception {
 
         String app = "";
         StringBuffer url = null;
 
         UserContext userContext = new UserContext();
-        try
-        {
 
-            url=new StringBuffer();
+        try {
+
+            url = new StringBuffer();
             app = destination.toLowerCase();
             userContext = sessionBean.getUserContext();
-            if("adminconsole".equalsIgnoreCase(destination)){
-                if(!templateKey.equalsIgnoreCase("0")){
-                    //If user comes from Home page dash board
+
+            if ("adminconsole".equalsIgnoreCase(destination)) {
+
+                if (!templateKey.equalsIgnoreCase("0")) {
+                    // If user comes from Home page dash board
                     url.append(request.getContextPath()).append(ApplicationConstants.SLASH).append(ApplicationConstants.VENDOR_TEMPLATE_URL).append(templateKey);
-                }else{
+                } else {
                     // Dircetly On click of admin consoleTab
 
                     Set<SecurityFunction> securityFunctions = userContext.getSecurityFunctions();
@@ -108,51 +98,86 @@ public class NavigationController extends BaseController {
                     }
 
                 }
-            }else if("Home".equalsIgnoreCase(destination)){
+            } else if ("Home".equalsIgnoreCase(destination)) {
                 url.append(request.getContextPath()).append(ApplicationConstants.SLASH).append("home/homePage.htm?tabId=").append(controllerName);
-            }else{
-                url.append(ApplicationConstants.SLASH).append(app).append(ApplicationConstants.DEV_ENTRY_SERVLET).append(userContext.getUserSSO());
+            } else {
 
-                if(controllerName!=null){
-                    url.append(ApplicationConstants.DEV_CONTROLLER_NAME).append(controllerName);
+                SpringProfile activeSpringProfile = this.getActiveSpringProfile();
+
+                boolean isDevProfile = activeSpringProfile == SpringProfile.DEV;
+                boolean isQa2Profile = activeSpringProfile == SpringProfile.QA2;
+
+                url.append(ApplicationConstants.SLASH);
+                url.append(app);
+                if (isQa2Profile) url.append("2");
+
+                if (isDevProfile)
+                    url.append(ApplicationConstants.DEV_ENTRY_SERVLET).append(userContext.getUserSSO());
+                else
+                    url.append(ApplicationConstants.ENTRY_SERVLET);
+
+                if (controllerName != null) {
+
+                    if (isDevProfile)
+                        url.append(ApplicationConstants.DEV_CONTROLLER_NAME);
+                    else
+                        url.append(ApplicationConstants.CONTROLLER_NAME);
+
+                    url.append(controllerName);
                 }
-                if(!templateKey.equalsIgnoreCase("0")){
+                if (!templateKey.equalsIgnoreCase("0")) {
                     url.append(ApplicationConstants.DEV_TEMPLATE_KEY).append(templateKey);
                 }
             }
-            LOGGER.info("Navigating the iframe to the URL"+url);
+
+            LOGGER.info("Navigating the iframe to the URL" + url);
         }
 
-        catch(Exception e)
-        {
+        catch (Exception e) {
             handleException(e);
         }
-        LOGGER.debug("Tab Application URL ::"+ url.toString());
+
         return url.toString();
     }
 
     @VendorAllowed
     @RequestMapping(value = "/getHelp")
-    protected  ModelAndView getHelp() {
-        ModelAndView model=new ModelAndView();
+    protected ModelAndView getHelp() {
+
+        ModelAndView model = new ModelAndView();
         UserContext userContext = new UserContext();
 
-        try
-        {
+        try {
             userContext = sessionBean.getUserContext();
             String help = helpService.getHelp(userContext.getUserType());
-            model.addObject("helpContent",help);
+            model.addObject("helpContent", help);
             model.setViewName("home/help");
 
-        }catch(Exception e){
-            model=handleException(e);
+        } catch (Exception e) {
+            model = handleException(e);
         }
         return model;
     }
 
     @VendorAllowed
     @RequestMapping(value = "/getHowTo")
-    protected  ModelAndView getHowTo() {
+    protected ModelAndView getHowTo() {
         return new ModelAndView("home/howTo");
+    }
+
+    private SpringProfile getActiveSpringProfile() {
+
+        String[] activeProfiles = springEnvironment.getActiveProfiles();
+
+        for (String xmlProfile : activeProfiles) {
+
+            SpringProfile springProfile = SpringProfile.findByXmlName(xmlProfile);
+            if (springProfile != null)
+                return springProfile;
+
+        }
+
+        return null;
+
     }
 }

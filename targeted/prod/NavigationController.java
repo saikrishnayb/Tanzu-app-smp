@@ -1,6 +1,9 @@
 
 package com.penske.apps.suppliermgmt.controller;
 
+import java.util.List;
+import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
@@ -14,6 +17,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.penske.apps.adminconsole.annotation.VendorAllowed;
+import com.penske.apps.adminconsole.annotation.SmcSecurity.SecurityFunction;
+import com.penske.apps.adminconsole.enums.LeftNav;
+import com.penske.apps.adminconsole.enums.Tab;
+import com.penske.apps.adminconsole.enums.Tab.SubTab;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.common.constants.ApplicationConstants;
 import com.penske.apps.suppliermgmt.model.UserContext;
@@ -78,7 +85,28 @@ public class NavigationController extends BaseController {
 					url.append(request.getContextPath()).append(ApplicationConstants.SLASH).append(ApplicationConstants.VENDOR_TEMPLATE_URL).append(templateKey);
 				}else{
 					//Dircetly On click of admin consoleTab
-					url.append(request.getContextPath()).append(ApplicationConstants.SLASH).append(ApplicationConstants.PENSKE_USER_URL);
+				    
+				    Set<SecurityFunction> securityFunctions = userContext.getSecurityFunctions();
+
+                    List<SubTab> subTabs = Tab.ADMIN_CONSOLE.getSubTabs();
+
+                    subTabLoop: for (SubTab subTab : subTabs) {
+
+                        List<LeftNav> leftNavs = subTab.getLeftNavs();
+
+                        for (LeftNav leftNav : leftNavs) {
+
+                            SecurityFunction securityFunction = leftNav.getSecurityFunction();
+
+                            boolean noAccess = securityFunction != null && !securityFunctions.contains(securityFunction);
+                            if (noAccess) continue;
+
+                            url.append(request.getContextPath()).append(ApplicationConstants.SLASH).append(leftNav.getUrlEntry());
+                            break subTabLoop;
+                        }
+
+                    }
+                    
 				}
 			}else if("Home".equalsIgnoreCase(destination)){
 				url.append(request.getContextPath()).append(ApplicationConstants.SLASH).append("home/homePage.htm?tabId=").append(controllerName);

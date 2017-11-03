@@ -44,7 +44,9 @@
 	</target>
 
 	<target name="preCompileHook">
-		<if>
+		
+     <!--  We don't need this anymore, should have never been mulitple controllers
+        <if>
 			<equals arg1="${applnName}" arg2="suppliermgmt" />
 			<then>
 				<echo> Copying targeted java files from ${config.dir} to ${source.code.dir}/com/penske/apps/${applnName}/controller</echo>
@@ -59,5 +61,7 @@
 				</copy>
 			</else>
 		</if>
+    
+      -->
 	</target>
 </project>
