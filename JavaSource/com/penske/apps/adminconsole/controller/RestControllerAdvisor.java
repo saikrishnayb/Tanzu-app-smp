@@ -1,7 +1,5 @@
 package com.penske.apps.adminconsole.controller;
 
-import java.lang.reflect.Method;
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,16 +7,12 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.method.HandlerMethod;
 
-import com.penske.apps.adminconsole.annotation.SmcSecurity.SecurityFunction;
 import com.penske.apps.adminconsole.exceptions.DelayReasonAlreadyExistsException;
 import com.penske.apps.adminconsole.exceptions.TemplateNameAlreadyExistsException;
-import com.penske.apps.adminconsole.exceptions.UnauthorizedSecurityFunctionException;
 import com.penske.apps.adminconsole.exceptions.UserAlreadyExistsException;
 import com.penske.apps.adminconsole.model.AjaxError;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
-import com.penske.apps.suppliermgmt.model.UserContext;
 
 @ControllerAdvice
 public class RestControllerAdvisor {
@@ -27,7 +21,7 @@ public class RestControllerAdvisor {
 
     @Autowired
     private SuppliermgmtSessionBean sessionBean;
-    
+
     @ResponseStatus(value=HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(DelayReasonAlreadyExistsException.class)
     @ResponseBody
@@ -73,6 +67,7 @@ public class RestControllerAdvisor {
         return error;
     }
 
+    /**
     @ExceptionHandler(UnauthorizedSecurityFunctionException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public AjaxError handleUnauthorizedSecurityFunctionException(UnauthorizedSecurityFunctionException exception) {
@@ -87,24 +82,23 @@ public class RestControllerAdvisor {
 
         Method method = handlerMethod.getMethod();
         Class<?> declaringClass = method.getDeclaringClass();
-        
+
+        SecurityFunction[] securityFunctions = exception.getSecurityFunctions();
         String requestURI = exception.getRequestURI();
 
-        if (requestURI != null) {
-            logger.error("UnauthorizedSecurityFunctionException. Vendor " + userSSO
+        if (securityFunctions == null) {
+            logger.error("UnauthorizedSecurityFunctionException. " + userType + " user " + userSSO
                     + " tried accesing the following request mapping: " + requestURI + " located in  " + declaringClass.getName() + "::"
                     + method.getName(), exception);
         } else {
-        	
+
             StringBuilder errorStringBuilder = new StringBuilder();
 
             errorStringBuilder.append("UnauthorizedSecurityFunctionException. ")
-            				  .append(userType)
-            				  .append(" user ")
-            				  .append(userSSO)
-            				  .append(" does not have access to the following security functions: ");
-
-            SecurityFunction[] securityFunctions = exception.getSecurityFunctions();
+            .append(userType)
+            .append(" user ")
+            .append(userSSO)
+            .append(" does not have access to the following security functions: ");
 
             for (int i = 0; i < securityFunctions.length; i++) {
                 errorStringBuilder.append(securityFunctions[i]);
@@ -118,6 +112,7 @@ public class RestControllerAdvisor {
 
         return error;
     }
+     **/
 
     @ResponseStatus(value=HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)

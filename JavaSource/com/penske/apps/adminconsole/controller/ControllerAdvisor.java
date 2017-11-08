@@ -9,7 +9,6 @@ import java.util.UUID;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -34,22 +33,18 @@ import com.penske.apps.suppliermgmt.model.UserContext;
 @EnableWebMvc
 public class ControllerAdvisor {
 
-
     @Autowired
     private ServletContext servletContext;
     @Autowired
-    private HttpSession httpSession;
-
-    @Autowired
     private SuppliermgmtSessionBean sessionBean;
-    
+
     private static Logger logger = Logger.getLogger(ControllerAdvisor.class);
 
     @ExceptionHandler(UnauthorizedSecurityFunctionException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ModelAndView handleUnauthorizedSecurityFunctionException(UnauthorizedSecurityFunctionException exception) {
 
-        ModelAndView modelAndView = new ModelAndView("error/GlobalErrorPage");
+        ModelAndView modelAndView = new ModelAndView("error/global-error-page");
 
         ErrorModel model = new ErrorModel();
         UserContext userContext = sessionBean.getUserContext();
@@ -61,10 +56,11 @@ public class ControllerAdvisor {
         Method method = handlerMethod.getMethod();
         Class<?> declaringClass = method.getDeclaringClass();
 
+        SecurityFunction[] securityFunctions = exception.getSecurityFunctions();
         String requestURI = exception.getRequestURI();
 
-        if (requestURI != null) {
-            logger.error("UnauthorizedSecurityFunctionException. Vendor " + userSSO
+        if (securityFunctions == null) {
+            logger.error("UnauthorizedSecurityFunctionException. " + userType + " user " + userSSO
                     + " tried accesing the following request mapping: " + requestURI + " located in  " + declaringClass.getName() + "::"
                     + method.getName(), exception);
         } else {
@@ -72,12 +68,10 @@ public class ControllerAdvisor {
             StringBuilder errorStringBuilder = new StringBuilder();
 
             errorStringBuilder.append("UnauthorizedSecurityFunctionException. ")
-            				  .append(userType)
-            				  .append(" user ")
-            				  .append(userSSO)
-            				  .append(" does not have access to the following security functions: ");
-
-            SecurityFunction[] securityFunctions = exception.getSecurityFunctions();
+            .append(userType)
+            .append(" user ")
+            .append(userSSO)
+            .append(" does not have access to the following security functions: ");
 
             for (int i = 0; i < securityFunctions.length; i++) {
                 errorStringBuilder.append(securityFunctions[i]);
@@ -99,15 +93,15 @@ public class ControllerAdvisor {
     }
 
     public ModelAndView handleHumanReadableException(HumanReadableException ex)
-    {    	
-    	ModelAndView mv = new ModelAndView("error/GlobalErrorPage");
+    {
+        ModelAndView mv = new ModelAndView("error/GlobalErrorPage");
         ErrorModel model = new ErrorModel();
         try {
             UserContext userContext = sessionBean.getUserContext();
             String userSSO = userContext == null ? "" : userContext.getUserSSO();
             String randomNumber = UUID.randomUUID().toString();
             logger.error("Caught Unhandled Exception.  Reference Number is:" + randomNumber + " And Logged in User is:" + userSSO
-            + " and Exception is::" + ex.toString(), ex);
+                    + " and Exception is::" + ex.toString(), ex);
             model.setMessage(ex.getHumanReadableMessage() + " Reference number is " + randomNumber);
             mv.addObject("supportNum", "1-866-926-7240");
         } catch (Exception e) {
@@ -118,7 +112,7 @@ public class ControllerAdvisor {
         mv.addObject(model);
         return mv;
     }
-    
+
 
 
     /**
@@ -128,19 +122,19 @@ public class ControllerAdvisor {
     @ExceptionHandler(Exception.class)
     public ModelAndView globalExceptionCatcher(Exception e, HttpServletRequest request){
 
-    	//Check if this exception has a human-readable exception somewhere in its stack trace.
-    	int humanReadableExceptionIndex = ExceptionUtils.indexOfType(e, HumanReadableException.class);
-    	if(humanReadableExceptionIndex != -1)
-    	{
-    		Throwable[] chain = ExceptionUtils.getThrowables(e);
-    		if(chain != null && chain.length > humanReadableExceptionIndex)
-    		{
-    			Throwable th = chain[humanReadableExceptionIndex];
-    			if(HumanReadableException.class.isAssignableFrom(th.getClass()))
-    				return handleHumanReadableException((HumanReadableException) th);
-    		}
-    	}
-    	
+        //Check if this exception has a human-readable exception somewhere in its stack trace.
+        int humanReadableExceptionIndex = ExceptionUtils.indexOfType(e, HumanReadableException.class);
+        if(humanReadableExceptionIndex != -1)
+        {
+            Throwable[] chain = ExceptionUtils.getThrowables(e);
+            if(chain != null && chain.length > humanReadableExceptionIndex)
+            {
+                Throwable th = chain[humanReadableExceptionIndex];
+                if(HumanReadableException.class.isAssignableFrom(th.getClass()))
+                    return handleHumanReadableException((HumanReadableException) th);
+            }
+        }
+
         String pathInfo = request.getServletPath();
         String leftNavDirectory = StringUtils.substringBeforeLast(pathInfo,  "/");
 
