@@ -228,6 +228,20 @@ $(document).ready(function() {
 			}
 		}
 	});
+	
+	$addDelayReasonModal.on('keypress', function(e) {
+		if (e.which == 13) {
+			$addDelayReasonModal.find('.add-delay-reason-save').trigger('click');
+			event.preventDefault();
+		}
+	});
+	
+	$editDelayReasonModal.on('keypress', function(e) {
+		if (e.which == 13) {
+			$editDelayReasonModal.find('.edit-delay-reason').trigger('click');
+			event.preventDefault();
+		}
+	});
 });
 
 // data table initialization

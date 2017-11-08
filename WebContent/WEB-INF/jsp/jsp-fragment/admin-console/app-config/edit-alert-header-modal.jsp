@@ -18,14 +18,17 @@
 	<a id="cancel-edit-header-name" class="bold floatLeft secondaryLink header-change hidden">Cancel</a>
 	
 	<label class="floatLeft clear-left width-150">Hover Over Help</label>
-	<input class="floatLeft width-300 margin-left-fix width-100" name="helpText" type="text" maxLength="100" autocomplete="off" />
+	<input class="floatLeft width-300 margin-left-fix width-100" tabindex=1 name="helpText" type="text" maxLength="100" autocomplete="off" />
 	
 	<label class="floatLeft clear-left width-150">Display Sequence  <span class="errorMsg">*</span></label>
-	<input class="floatLeft margin-left-fix width-100" name="displaySequence" type="text" autocomplete="off" />
+	<input class="floatLeft margin-left-fix width-100" tabindex=2 name="displaySequence" type="text" autocomplete="off" />
 </form>
-
-<a class="buttonPrimary floatRight clear-left save">Save</a>
-<a class="secondaryLink floatRight cancel">Cancel</a>
+     <div class="floatRight">
+	  <a class="secondaryLink floatLeft cancel margin-upper-right" tabindex=3>Cancel</a>
+	   <a class="buttonPrimary  clear-left save" tabindex=4>Save</a>
+     </div>
+<!-- <a class="buttonPrimary floatRight clear-left save" tabindex=3>Save</a>
+<a class="secondaryLink floatRight cancel" tabindex=4>Cancel</a> -->
 <div class="error floatRight hidden">
 	<img src="${commonStaticUrl}/images/warning.png">
 	<span class="errorMsg"></span>

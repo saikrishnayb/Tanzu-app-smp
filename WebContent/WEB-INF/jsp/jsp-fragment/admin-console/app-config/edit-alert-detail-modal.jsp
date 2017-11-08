@@ -33,13 +33,13 @@
 	<a id="cancel-edit-template-name" class="bold floatLeft secondaryLink template-change hidden">Cancel</a>
 	
 	<label class="floatLeft clear-left width-150">Hover Over Help</label>
-	<input class="floatLeft width-300 margin-left-fix" name="helpText" type="text" maxLength="100" autocomplete="off" />
+	<input class="floatLeft width-300 margin-left-fix" tabindex=1 name="helpText" type="text" maxLength="100" autocomplete="off" />
 	
 	<label class="floatLeft clear-left width-150">Display Sequence <span class="errorMsg">*</span></label>
-	<input class="floatLeft margin-left-fix width-100" name="displaySequence" type="text" autocomplete="off" />
+	<input class="floatLeft margin-left-fix width-100" tabindex=2 name="displaySequence" type="text" autocomplete="off" />
 	
 	<label class="floatLeft clear-left width-150">Visibility <span class="errorMsg">*</span></label>
-	<select class="floatLeft margin-left-fix width-100" name="visibility">
+	<select class="floatLeft margin-left-fix width-100" tabindex=3 name="visibility">
 		<option value="">Select...</option>
 		<option value="1">Vendor</option>
 		<option value="2">Penske</option>
@@ -47,8 +47,10 @@
 	</select>
 </form>
 
-<a class="buttonPrimary floatRight clear-left save">Save</a>
-<a class="secondaryLink floatRight cancel">Cancel</a>
+    <div class="floatRight">
+	  <a class="secondaryLink floatLeft cancel margin-upper-right" tabindex=3>Cancel</a>
+	   <a class="buttonPrimary  clear-left save" tabindex=4>Save</a>
+     </div>
 <div class="error floatRight hidden">
 	<img src="${commonStaticUrl}/images/warning.png">
 	<span class="errorMsg"></span>

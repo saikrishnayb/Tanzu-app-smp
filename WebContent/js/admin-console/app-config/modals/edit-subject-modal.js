@@ -29,6 +29,7 @@ $(document).ready(function() {
 	$editSubjectModal.on('keypress', function(e) {
 		if (e.which == 13) {
 			$editSubjectModal.find('.save').trigger('click');
+			event.preventDefault();
 		}
 	});
 	

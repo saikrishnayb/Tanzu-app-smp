@@ -69,6 +69,12 @@ $(document).ready(function() {
 	 //chosen plugin to add search filter in select dropdown
 	 
 	 $(".searchSelect").chosen();
+	 $("#create-rule-form").on('keypress', function(e) {
+			if (e.which == 13) {
+				submitCreateRuleForm();
+			}
+		});
+	 
 });
 
 /**

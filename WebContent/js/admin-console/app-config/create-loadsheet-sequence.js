@@ -196,7 +196,11 @@ j2(document).ready(function() {
 		
 	} 
 
-	
+	$("#loadsheet-sequencing-form").on('keypress', function(e) {
+		if (e.which == 13) {
+			submitLoadSheetForm();
+		}
+	});
 	
 });
 

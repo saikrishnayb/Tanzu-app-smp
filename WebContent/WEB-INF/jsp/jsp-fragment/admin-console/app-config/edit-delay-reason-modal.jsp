@@ -9,7 +9,7 @@
 	</div>
 	<div class="line">
 		<label>Edited Reason</label>
-		<input type="text" class="edit-modal-input alpha alpha-numeric input" id="edit-delay-reason-name" value=""/>
+		<input type="text" tabindex=1 class="edit-modal-input alpha alpha-numeric input" id="edit-delay-reason-name" value=""/>
 	</div>
 </form>
 <div class="blank"></div>
@@ -19,7 +19,7 @@
 		<span id="message-span" class="errorMsg"></span>
 	</div>
 	<div class="float-right">
-		<a class="cancel">Cancel</a>
-		<a class="buttonPrimary edit-delay-reason">Save</a>
+		<a class="cancel" tabindex=2>Cancel</a>
+		<a class="buttonPrimary edit-delay-reason" tabindex=3>Save</a>
 	</div>
 </div>

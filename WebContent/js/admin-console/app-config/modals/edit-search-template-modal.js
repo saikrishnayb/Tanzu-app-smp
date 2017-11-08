@@ -45,6 +45,13 @@ $(document).ready(function() {
 		$saveTemplate.css({ 'visibility' : 'visible' });
 	});
 	
+	$editModal.on('keypress', function(e) {
+		if (e.which == 13) {
+			$editModal.find('.save-template').trigger('click');
+			event.preventDefault();
+		}
+	});
+	
 	//Saves the template when the user clicks "Save"
 	$('.save-template').on('click', function() {
 		var $searchTemplateForm = $('#editForm');

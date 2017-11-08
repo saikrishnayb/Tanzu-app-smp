@@ -20,7 +20,7 @@
 		<div class="edit-section">
 			<span class="label-span"><label class="edit-label">Default For Tab*:</label></span>
 			<span class="info-span">
-				<select name="defaultForTab" <c:if test="${searchTemplate.defaultForTab == 1}">disabled</c:if>>
+				<select name="defaultForTab" tabindex=1 <c:if test="${searchTemplate.defaultForTab == 1}">disabled</c:if>>
 					<option value="NO" <c:if test="${searchTemplate.defaultForTab == 0}">selected</c:if>>NO</option>
 					<option value="YES" <c:if test="${searchTemplate.defaultForTab == 1}">selected</c:if>>YES</option>
 				</select>
@@ -30,7 +30,7 @@
 	
 	<div class="edit-section">
 		<span class="label-span"><label class="edit-label">Display Sequence:</label></span>
-		<span class="info-span"><input type="text" class="display-sequence-text" name="displaySequence" value="${searchTemplate.displaySequence}"/></span>
+		<span class="info-span"><input type="text" class="display-sequence-text" tabindex=2 name="displaySequence" value="${searchTemplate.displaySequence}"/></span>
 		<span class="error">
 			<img class="error-img" src="${commonStaticUrl}/images/warning.png" />
 			<span class="errorMsg">Must Be a Positive Number</span>
@@ -40,7 +40,7 @@
 	<div class="edit-section">
 		<span class="label-span"><label class="edit-label">Visibility:</label></span>
 		<span class="info-span">
-			<select name="visibility">
+			<select name="visibility" tabindex=3>
 				<option value="BOTH" <c:if test="${searchTemplate.visibilityPenske == 1 and searchTemplate.visibilityVendor == 1}">selected</c:if>>Both</option>
 				<option value="PENSKE" <c:if test="${searchTemplate.visibilityPenske == 1 and searchTemplate.visibilityVendor == 0}">selected</c:if>>Penske</option>
 				<option value="VENDOR" <c:if test="${searchTemplate.visibilityPenske == 0 and searchTemplate.visibilityVendor == 1}">selected</c:if>>Vendor</option>
@@ -60,8 +60,8 @@
 	</c:if>
 	
 	<span class="primary-functions">
-		<a class="cancel">Cancel</a>
-		<a class="buttonPrimary save-template">Save</a>
+		<a class="cancel" tabindex=4>Cancel</a>
+		<a class="buttonPrimary save-template" tabindex=5>Save</a>
 	</span>
 	
 	<input type="hidden" id="templateId" name="templateId" value="${searchTemplate.templateId}" />
