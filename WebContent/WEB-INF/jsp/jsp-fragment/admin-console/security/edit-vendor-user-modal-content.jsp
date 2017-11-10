@@ -5,8 +5,8 @@
 <c:set var="context" value="${pageContext.request.contextPath}" scope="page" />
 <%@ include file="user-form-vendor.jsp"%>
 <div class="edit-buttons">
-	<a class="secondaryLink cancel" tabIndex="-1">Cancel</a>
-	<a id="save-user-vendor-edit" class="buttonPrimary saveVendor" tabIndex="-1">Save</a>
+	<a class="secondaryLink cancel" tabIndex="10">Cancel</a>
+	<a id="save-user-vendor-edit" class="buttonPrimary saveVendor" tabIndex="11">Save</a>
 	<div class="error-messages-container displayNone">
 		<img src="${commonStaticUrl}/images/warning.png"></img>
 		<span class=errorMsg>One or more required fields not filled in correctly.</span>

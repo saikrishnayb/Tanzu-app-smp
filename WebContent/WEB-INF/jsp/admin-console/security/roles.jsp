@@ -28,10 +28,10 @@
 						<fieldset>
 							<legend>Advanced Search</legend>
 							<label class="floatLeft clear-left width-150">Role Name</label>
-							<input class="floatLeft width-200" type="text" name="roleName" value="<c:out value="${searchedRole.roleName}"/>" maxlength="50" autocomplete="off" />
+							<input class="floatLeft width-200" type="text" tabindex=1 name="roleName" value="<c:out value="${searchedRole.roleName}"/>" maxlength="50" autocomplete="off" />
 							
 							<label class="floatLeft clear-left width-150">Base Role</label>
-							<select class="floatLeft width-200" name="baseRoleId">
+							<select class="floatLeft width-200" tabindex=2 name="baseRoleId">
 								<option value="">Select...</option>
 								<option value="-1" <c:if test="${searchedRole.baseRoleId eq -1}">selected</c:if>>-- No Base Role --</option>
 								<c:forEach var="baseRole" items="${baseRoles}">
@@ -43,8 +43,8 @@
 					</form>
 					
 					<div class="floatRight clear-left button-div">
-						<a class="buttonSecondary floatRight search">Search</a>
-						<a class="secondaryLink floatRight reset">Reset</a>
+						<a class="buttonSecondary floatRight search" tabindex=4>Search</a>
+						<a class="secondaryLink floatRight reset" tabindex=3>Reset</a>
 					</div>
 				</div>
 				

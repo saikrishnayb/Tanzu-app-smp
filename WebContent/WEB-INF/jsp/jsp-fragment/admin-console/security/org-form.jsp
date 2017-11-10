@@ -41,13 +41,13 @@
 					<div id="org-components" class="org-component">
 						<div id="org-id-div" class="single-line-content">
 								<label for="orgName">Org Name <span class=requiredField>*</span></label> 
-								<input id="orgName" name="orgName"  class="input alpha alpha-numeric"  maxlength="50" autocomplete="off"  type="text" <c:if test="${isCreatePage eq false}">value='${editableOrg.orgName}'</c:if> />
+								<input id="orgName" tabindex=1 name="orgName"  class="input alpha alpha-numeric"  maxlength="50" autocomplete="off"  type="text" <c:if test="${isCreatePage eq false}">value='${editableOrg.orgName}'</c:if> />
 							
 						</div>
 					
 						<div class="single-line-content">
 							<label for="parent-org">Parent Org<span class=requiredField>*</span></label> 
-							<select id="parent-org" name="parentOrgId" class="input numeric numeric-whole">
+							<select id="parent-org" tabindex=2 name="parentOrgId" class="input numeric numeric-whole">
 								<option value="">Select Parent Org</option>
 								<c:forEach items="${orgList}" var="org">
 								 <c:if test="${isCreatePage eq false}">
@@ -64,10 +64,10 @@
 						
 						<div id="org-desc-div" class="single-line-content">
 								<label for="orgDescription">Description<span class=requiredField>*</span></label> 
-							<textarea rows="4" cols="50" id="orgDescription" name="orgDescription" maxlength="250" class="input alpha alpha-numeric"><c:if test="${isCreatePage eq false}">${editableOrg.orgDescription}</c:if></textarea> 
+							<textarea rows="4" tabindex=3 cols="50" id="orgDescription" name="orgDescription" maxlength="250" class="input alpha alpha-numeric"><c:if test="${isCreatePage eq false}">${editableOrg.orgDescription}</c:if></textarea> 
 						</div>
 				<div class="single-line-content"> 
-							<label id="filterlbl" for="associatedVendor">Associated  Vendor: &nbsp;(<a href="#" class="vendor-filter">filter</a>)<span class=requiredField>*</span></label> 
+							<label id="filterlbl" for="associatedVendor">Associated  Vendor: &nbsp;(<a href="#" tabindex=4 class="vendor-filter">filter</a>)<span class=requiredField>*</span></label> 
 							<label id="resetlbl" style="display: none;" for="associatedVendor">Associated  Vendor: &nbsp;(<a href="#" class="vendor-filter-reset">reset</a>)<span class=requiredField>*</span>
 							</label>
 							<a id="show" class="secondaryLink show" tabIndex="-1">Show All</a>&nbsp;|&nbsp;<a id="hide" class="secondaryLink hide" tabIndex="-1">Show Selected</a> 

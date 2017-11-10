@@ -312,6 +312,8 @@ $(document).ready(function() {
 		
 	});
 	
+	
+	
 	$addCategoryModal.on("click",'.save-category',function(e){
 		
 		$('#status').removeAttr('disabled');
@@ -374,7 +376,12 @@ $(document).ready(function() {
 		});
 		
 	});
-	
+	$editSubCategoryModal.on('keypress', function(e) {
+		if (e.which == 13) {
+			$editSubCategoryModal.find('.save-category-edited').trigger('click');
+			event.preventDefault();
+		}
+	});
 	
 	$editSubCategoryModal.on("click",'.save-category-edited',function(){
 		
@@ -438,6 +445,13 @@ $(document).ready(function() {
 		});
 		openModal($addSubCategoryModal);
 		
+	});
+	
+	$addSubCategoryModal.on('keypress', function(e) {
+		if (e.which == 13) {
+			$addSubCategoryModal.find('.save-category').trigger('click');
+			event.preventDefault();
+		}
 	});
 	
 	$addSubCategoryModal.on("click",'.save-category',function(){

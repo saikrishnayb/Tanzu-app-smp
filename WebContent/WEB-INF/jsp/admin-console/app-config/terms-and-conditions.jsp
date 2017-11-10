@@ -20,7 +20,7 @@
 					<span>
 						<input type="text" id="t-and-c-frequency" class="number-text-box" value="${tandcFrequency}" />
 					</span>
-					<a class="buttonPrimary save-frequency" id="save-frequency">Save</a>
+					<a class="buttonPrimary save-frequency" id="save-frequency" tabindex=0>Save</a>
 					<span class="frequency-error">
 						<img class="error-img" src="${commonStaticUrl}/images/warning.png" />
 						<span class="error-message">Must Be a Positive Number</span>
@@ -41,7 +41,7 @@
 						<c:forEach items="${tandcList}" var="tandc">
 							<tr class="t-and-c-row">
 								<td class="editable centerAlign">
-									<a class="view-t-and-c">View</a>
+									<a class="view-t-and-c" tabindex=0>View</a>
 									<input type="hidden" value="${tandc.versionNumber}" class="tandc-version-number" />
 								</td>
 								<td class="version-number">${tandc.versionNumber}</td>

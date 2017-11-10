@@ -98,8 +98,23 @@ $(document).ready(function() {
 		$('.error-messages-container').addClass('displayNone');
 	});
 	
+	
+	$('#search-org-form').on('keypress', function(e) {
+		var  $searchForm = $('#search-org-form');
+		if(($searchForm.find('[name="orgName"]').val().length > 0) || ($searchForm.find('[name="parentOrgId"]').val().length > 0) || ($searchForm.find('[name="parentOrgId"]').val() != 'select')){
+		if (e.which == 13) {
+			search();
+			event.preventDefault();
+		}
+		}
+		});
+	
 	//search for org accounts
 	$searchButtonsContainer.on('click', '.search', function(){
+		search();
+	});
+	
+	function search(){
 		var  $searchForm = $('#search-org-form');
 		var isValid = validateSearchForm($searchForm);
 		
@@ -109,7 +124,8 @@ $(document).ready(function() {
 		} else if(isValid == false){
 			$('.error-messages-container').removeClass('displayNone');
 		}
-	});
+		
+	}
 	
 	if($("#search-content").is(":visible")){
 		if($("#advancedSearch").is(":visible")){

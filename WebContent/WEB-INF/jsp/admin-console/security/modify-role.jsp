@@ -35,14 +35,14 @@
 						<label class="floatLeft clear-left width-100">Role Name<span class=requiredField>*</span></label>
 						<c:choose>
 						  <c:when test="${editOrCopy=='E'}">
-						  			<input class="floatLeft width-200" name="roleName" id="roleName" value="${editRole.roleName}" type="text" maxlength="20" autocomplete="off" />
+						  			<input class="floatLeft width-200" name="roleName" tabindex=1 id="roleName" value="${editRole.roleName}" type="text" maxlength="20" autocomplete="off" />
 						  </c:when>
 						  <c:otherwise>
 						  			<input class="floatLeft width-200" name="roleName" id="roleName" type="text" maxlength="20" autocomplete="off" />
 						  </c:otherwise>
 						</c:choose>	
 						<label class="floatLeft clear-left width-100">Base Role<span class=requiredField>*</span></label>
-						<select class="floatLeft width-300" name="baseRoleId" id="baseRoleId">
+						<select class="floatLeft width-300" tabindex=2 name="baseRoleId" id="baseRoleId">
 							<option value="">Select...</option>
 							<c:forEach var="role" items="${roles}">
 							 	<c:if test="${editRole.roleId ne role.roleId}"> 
@@ -55,7 +55,7 @@
 							
 						<c:choose>
 						  <c:when test="${editOrCopy=='E'}">
-						  		<textarea rows="6" cols="35" id="roleDescription" name="roleDescription" maxlength="50" class="floatLeft width-200">${editRole.roleDescription}</textarea>
+						  		<textarea rows="6" cols="35" id="roleDescription" tabindex=3 name="roleDescription" maxlength="50" class="floatLeft width-200">${editRole.roleDescription}</textarea>
 						  </c:when>
 						  <c:otherwise>
 						  		<textarea rows="6" cols="35" id="roleDescription" name="roleDescription" maxlength="255" class="floatLeft width-200"></textarea>
@@ -78,8 +78,8 @@
 					</div>
 					
 					<div id="modify-role-buttons" class="floatRight button-div">
-						<a id="save-role" class="buttonPrimary floatRight clear-left save">Save</a>
-						<a class="secondaryLink floatRight cancel"  id="back">Cancel</a>
+						<a id="save-role" tabindex=5 class="buttonPrimary floatRight clear-left save">Save</a>
+						<a class="secondaryLink floatRight cancel" tabindex=4  id="back">Cancel</a>
 						<div class="error floatRight hidden">
 							<img src="${commonStaticUrl}/images/warning.png">
 							<span class="errorMsg"></span>

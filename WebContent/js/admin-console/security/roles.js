@@ -73,7 +73,22 @@ $(document).ready(function() {
 		setAdvancedFormStatus();
 	});
 	
+
+	$('#advanced-search-form').on('keypress', function(e) {
+		var $advancedForm = $('#advanced-search-form')
+		if($advancedForm.find('[name="baseRoleId"]').val().length > 0){
+		if (e.which == 13) {
+			search();
+			event.preventDefault();
+		}
+		}
+		});
+	
 	$('.search').on('click', function() {
+		search();
+	});
+	
+	function search(){
 		// Disable all inputs that are unused so they do not get passed to the controller.
 		if ($advancedForm.find('input[name="roleName"]').val().length == 0) {
 			$advancedForm.find('input[name="roleName"]').prop('disabled', true);
@@ -86,7 +101,8 @@ $(document).ready(function() {
 		$advancedForm.find('input[type="checkbox"]').prop('disabled', true);
 		
 		$advancedForm.submit();
-	});
+	}
+	
 	
 	$('.reset').on('click', function() {
 		$advancedForm.find('input[name="roleName"]').val('');

@@ -9,6 +9,7 @@ var maxRowsCount=10; //Max number of rows can be for one Group
 var maxGroupsCount=10; //Max number of Groups can be added
 var deletedRowIdArray =new Array(); //to store the deleted rowdef id's
 $(document).ready(function() {
+	 $("#ruleName").focus();
 	selectCurrentNavigation("tab-app-config", "left-nav-loadsheet-rules");
 	commonStaticUrl =$('#common-static-url').val();
 	var $loadsheetRuleTable = $('#createRule-Table');
@@ -353,7 +354,7 @@ function createGroupHeader(grpIndex){
 	                	               	   '<select class="searchSelect" id="componentsDropDown-G_'+grpIndex+'-R_1" name="ruleDefinitionsList['+frmAryIdx+'].componentId" onChange="loadOperands('+grpIndex+',1)" style="width:786px"><option></option></select>',
 	                	            	   '<select id="operandsID-G_'+grpIndex+'-R_1" name="ruleDefinitionsList['+frmAryIdx+'].operand" disabled></select>',
 	                	            	   '<input id="valueID-G_'+grpIndex+'-R_1" name="ruleDefinitionsList['+frmAryIdx+'].value" maxlength="30" type="text"><input type="hidden" name="ruleDefinitionsList['+frmAryIdx+'].criteriaGroup" value="'+grpIndex+'">',
-	                	            	   '<a><img src="'+commonStaticUrl+'/images/add.png" class="centerImage handCursor adder" onclick="addNewRow('+grpIndex+');" alt="Add Row"/></a>'
+	                	            	   '<a><img src="'+commonStaticUrl+'/images/add.png" tabindex=0 class="centerImage handCursor adder" onclick="addNewRow('+grpIndex+');" alt="Add Row"/></a>'
 	                                	  ] ).draw().node();
 	
 
@@ -544,7 +545,7 @@ function getRowData(grpIndex,rIndex){
     '<select class="searchSelect" id="componentsDropDown-G_'+grpIndex+'-R_'+rIndex+'" name="ruleDefinitionsList['+frmAryIdx+'].componentId" onChange="loadOperands('+grpIndex+','+rIndex+')" style="width:786px"><option></option></select>',
     '<select id="operandsID-G_'+grpIndex+'-R_'+rIndex+'" name="ruleDefinitionsList['+frmAryIdx+'].operand" disabled></select>',
     '<input id="valueID-G_'+grpIndex+'-R_'+rIndex+'" name="ruleDefinitionsList['+frmAryIdx+'].value" maxlength="30" type="text"><input type="hidden" name="ruleDefinitionsList['+frmAryIdx+'].criteriaGroup" value="'+grpIndex+'">',
-    '<a><img src="'+commonStaticUrl+'/images/delete.png"id="deleteRow" class="centerImage handCursor"  alt="Delete Row"/></a>'];
+    '<a><img src="'+commonStaticUrl+'/images/delete.png" id="deleteRow" tabindex=0 class="centerImage handCursor"  alt="Delete Row"/></a>'];
 	
 	return rowData;
 	

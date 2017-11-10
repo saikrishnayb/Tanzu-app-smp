@@ -39,9 +39,9 @@
 				<fieldset>
 						<legend>Advanced Search</legend>	
 							<label class="floatLeft clear-left width-150">Org Name</label>
-							<input class="floatLeft width-200"  name="orgName" id="orgName" class="supportingLabel" type="text" value="${userSearchForm.firstName}"/>
+							<input class="floatLeft width-200"  name="orgName" tabindex=1  id="orgName" class="supportingLabel" type="text" value="${userSearchForm.firstName}"/>
 							<label class="floatLeft clear-left width-150">Parent Org</label>
-							<select class="floatLeft width-200" name="parentOrgId" id="parentOrgId">
+							<select class="floatLeft width-200" tabindex=2 name="parentOrgId" id="parentOrgId">
 								<option value="0">Select...</option>
 								<c:forEach items="${orgListDrop}" var="orgDrop">
 									<option value="${orgDrop.orgId}">${orgDrop.orgName}</option>
@@ -51,8 +51,8 @@
 				
 					</form>
 					<div id="search-buttons-div" class="search-buttons-div">
-							<a class="buttonSecondary floatRight search" href="#">Search</a>
-							<a class="buttonSecondary floatRight margin-right reset" href="#">Reset</a>
+							<a class="buttonSecondary floatRight search" tabindex=4 href="#">Search</a>
+							<a class="buttonSecondary floatRight margin-right reset" tabindex=3 href="#">Reset</a>
 							<div class="error-messages-container displayNone">
 								<img src="${commonStaticUrl}/images/warning.png"></img>
 								<span class=errorMsg></span>

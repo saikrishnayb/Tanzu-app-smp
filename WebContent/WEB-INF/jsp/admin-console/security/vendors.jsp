@@ -30,19 +30,19 @@
 							<legend>Advanced Search</legend>
 							<div class="form-column floatLeft margin-bottom-10">
 								<label class="floatLeft clear-left leftLbl">Vendor Name</label>
-								<input class="floatLeft" name="vendorName" type="text" value="<c:out value="${searchedVendor.vendorName}"/>" autocomplete="off" maxlength="50" />
+								<input class="floatLeft" name="vendorName" tabindex=1 type="text" value="<c:out value="${searchedVendor.vendorName}"/>" autocomplete="off" maxlength="50" />
 								
 								<label class="floatLeft clear-left leftLbl">Vendor Number</label>
-								<input class="floatLeft" id="vendorNumber" name="vendorNumber" maxlength="9" type="text" <c:if test="${searchedVendor.vendorNumber ne 0}">value="<c:out value="${searchedVendor.vendorNumber}"/>"</c:if> autocomplete="off" />
+								<input class="floatLeft" id="vendorNumber" tabindex=3 name="vendorNumber" maxlength="9" type="text" <c:if test="${searchedVendor.vendorNumber ne 0}">value="<c:out value="${searchedVendor.vendorNumber}"/>"</c:if> autocomplete="off" />
 								
 								<label class="floatLeft clear-left leftLbl">Corp Code</label>
-								<input class="floatLeft" name="corpCode" type="text" value="<c:out value="${searchedVendor.corpCode}"/>" autocomplete="off" maxlength="4" />
+								<input class="floatLeft" name="corpCode" tabindex=5 type="text" value="<c:out value="${searchedVendor.corpCode}"/>" autocomplete="off" maxlength="4" />
 								
 								<label class="floatLeft clear-left leftLbl">MFR Code</label>
-								<input class="floatLeft" name="manufacturerCode" type="text" value="<c:out value="${searchedVendor.manufacturerCode}"/>" autocomplete="off" maxlength="4" />
+								<input class="floatLeft" tabindex=8 name="manufacturerCode" type="text" value="<c:out value="${searchedVendor.manufacturerCode}"/>" autocomplete="off" maxlength="4" />
 								<c:if test="${isPenskeUser}">
 									<label class="floatLeft clear-left leftLbl" >Alerts</label>
-									<select class="floatLeft" name="alertType">
+									<select class="floatLeft" tabindex=9 name="alertType">
 										<option value="0">Select...</option>
 										<c:forEach var="alert" items="${alertTypeList}">
 										<option value="${alert.alertType}" <c:if test="${searchedVendor.alertType eq alert.alertType}">selected</c:if>>${alert.alertName}</option>
@@ -53,21 +53,21 @@
 							
 							<div class="form-column floatLeft margin-bottom-10">
 								<label class="floatLeft clear-left rlbl">Notification Exception</label>
-								<select class="floatLeft" name="notificationException">
+								<select class="floatLeft" tabindex=2 name="notificationException">
 									<option value="-1">Select...</option>
 									<option value="Y" <c:if test="${searchedVendor.notificationException eq 'Y'}">selected</c:if>>Yes</option>
 									<option value="N" <c:if test="${searchedVendor.notificationException eq 'N'}">selected</c:if>>No</option>
 								</select>
 								
 								<label class="floatLeft clear-left rlbl">Annual Agreement</label>
-								<select class="floatLeft" name="annualAgreement">
+								<select class="floatLeft" tabindex=4 name="annualAgreement">
 									<option value="-1">Select...</option>
 									<option value="Y" <c:if test="${searchedVendor.annualAgreement eq 'Y'}">selected</c:if>>Yes</option>
 									<option value="N" <c:if test="${searchedVendor.annualAgreement eq 'N'}">selected</c:if>>No</option>
 								</select>
 								
 								<label class="floatLeft clear-left rlbl">Planning Analyst</label>
-								<select class="floatLeft" name="planningAnalyst.userId">
+								<select class="floatLeft" tabindex=7 name="planningAnalyst.userId">
 									<option value="0">Select...</option>
 									<c:forEach var="analyst" items="${analysts}">
 									<option value="${analyst.userId}" <c:if test="${searchedVendor.planningAnalyst.userId eq analyst.userId}">selected</c:if>>${analyst.firstName} ${analyst.lastName}</option>
@@ -75,7 +75,7 @@
 								</select>
 								
 								<label class="floatLeft clear-left rlbl">Supply Specialist</label>
-								<select class="floatLeft" name="supplySpecialist.userId">
+								<select class="floatLeft" tabindex=8 name="supplySpecialist.userId">
 									<option value="0">Select...</option>
 									<c:forEach var="specialist" items="${specialists}">
 									<option value="${specialist.userId}" <c:if test="${searchedVendor.supplySpecialist.userId eq specialist.userId}">selected</c:if>>${specialist.firstName} ${specialist.lastName}</option>
@@ -85,8 +85,8 @@
 						</fieldset>
 						
 						<div class="floatRight button-div clear-both">
-							<a class="buttonPrimary floatRight search">Search</a>
-							<a class="secondaryLink floatRight reset">Reset</a>
+							<a class="buttonPrimary floatRight search" tabindex=11>Search</a>
+							<a class="secondaryLink floatRight reset" tabindex=10>Reset</a>
 							<div class="error floatRight hidden">
 								<img src="${commonStaticUrl}/images/warning.png">
 								<span class="errorMsg"></span>

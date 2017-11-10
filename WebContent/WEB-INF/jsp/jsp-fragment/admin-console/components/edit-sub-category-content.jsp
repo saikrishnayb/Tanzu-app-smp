@@ -9,19 +9,19 @@
 		
 		<div class="category">
 			<label>Category Name<span class="requiredField">*</span></label>
-			<input type="text" value="${category.subCategoryName}" class="category-name input alpha alpha-numeric" name="subCategoryName"/>
+			<input type="text" tabindex=1 autofocus value="${category.subCategoryName}" class="category-name input alpha alpha-numeric" name="subCategoryName"/>
 		</div>
 		
 		<input type="hidden" value="${category.subCategoryId}" class="category-id" name="subCategoryId"/>
 		
 		<div class="category">
 			<label>Description<span class="requiredField">*</span></label>
-			<input type="text" value="${category.description}" class="category-description input alpha alpha-numeric" name="description"/>
+			<input type="text"  tabindex=2 value="${category.description}" class="category-description input alpha alpha-numeric" name="description"/>
 		</div>
 		
 		<div class="category">
 			<label>Status</label>
-			<select id="status" name="status">
+			<select id="status" tabindex=3 name="status">
 					<c:choose>
 						<c:when test="${category.status eq 'A'}">
 							<option value="A" selected>Active</option>

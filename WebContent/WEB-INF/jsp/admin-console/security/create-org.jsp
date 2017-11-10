@@ -32,12 +32,12 @@
 		<div class="leftNavAdjacentContainer">
 			<%@ include file="../../../jsp/jsp-fragment/admin-console/security/org-form.jsp"%>
 			<div class="edit-buttons">
-				<a class="secondaryLink back" tabIndex="-1">Cancel</a> 
+				<a class="secondaryLink back" tabIndex="5">Cancel</a> 
 				<c:if test="${isCreatePage eq true}">
-					<a id="save-user-edit" class="buttonPrimary create" tabIndex="-1">Save</a>
+					<a id="save-user-edit" class="buttonPrimary create" tabIndex="6">Save</a>
 				</c:if>
 				<c:if test="${isCreatePage eq false}">
-					<a id="save-user-edit" class="buttonPrimary save" tabIndex="-1">Save</a>
+					<a id="save-user-edit" class="buttonPrimary save" tabIndex="6">Save</a>
 				</c:if>
 				<div class="error-messages-container displayNone">
 					<img src="${commonStaticUrl}/images/warning.png"></img>

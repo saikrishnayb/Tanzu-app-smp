@@ -104,7 +104,7 @@ $(document).ready(function() {
 			$('#deactivate-category-association-modal').prepend('<p>Are you sure you want to deactivate this PO Category</p><ul><li>' + poCatName + '-' + subCatName + '<input type="input" class="displayNone" id="ass-id" value="' + associationId + '"/>'+
 					'<input type="input" class="displayNone" id="poCatId" value="' + poCatId + '"/><input type="input" class="displayNone" id="subCatId" value="' + subCatId + '"/></li></ul>'
 					+'<p> <h3><u>Note:</u> By deactivate the association. PO Category & Sub Category will be deactivate,if there is no other association contains PO Category & Sub Category.</h3></p>'
-					+ '<div style="position:absolute;bottom:3px;right:5px;"><a class="secondaryLink cancel" tabIndex="-1">No, Cancel</a><a class="buttonPrimary delete" tabIndex="-1">Yes, Delete</a></div>');
+					+ '<div style="position:absolute;bottom:3px;right:5px;"><a class="secondaryLink cancel" tabIndex="1">No, Cancel</a><a class="buttonPrimary delete" tabIndex="2">Yes, Delete</a></div>');
 			
 			openModal($('#deactivate-category-association-modal'));
 		 });
@@ -176,6 +176,13 @@ $(document).ready(function() {
 		
 		});
 		
+		$addAssociationModal.on('keypress', function(e) {
+			if (e.which == 13) {
+				addAssociation();
+				event.preventDefault();
+			}
+		});
+		
 		$addAssociationModal.on("change",'#po-category',function(){
 			var $this =$(this);
 			var poCategoryId = $this.val();
@@ -206,6 +213,11 @@ $(document).ready(function() {
 		});
 		
 		$addAssociationModal.on("click",'.save-association',function(){
+			addAssociation();
+		});
+		
+		function addAssociation(){
+
 			var $error = $addAssociationModal.find('.error');
 			var $selectedPoCategory = $('#po-category').find('option:selected');
 			var poCategoryId= $selectedPoCategory.val();
@@ -245,8 +257,8 @@ $(document).ready(function() {
 				//  return view();
 			}
 			
-		});
 		
+		}
 });
 
 function validate(poCategoryId,subCategoryId){

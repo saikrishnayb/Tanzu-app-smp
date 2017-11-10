@@ -64,7 +64,7 @@
 										<form:option value="N">N</form:option>
 					    </form:select>
 					     <c:if test="${viewMode ne 'Y'}">
-					     <a style="text-decoration:none;padding-left: 20%;" id="deleteRule"  onclick="deleteRule(${indexCount.index});"><img class="addRow"
+					     <a style="text-decoration:none;padding-left: 20%;" id="deleteRule" tabindex=0 onclick="deleteRule(${indexCount.index});"><img class="addRow"
 						           src="<c:out value='${commonStaticUrl}'/>/images/delete.png"/></a>
 						</c:if>
 						</div>
@@ -90,7 +90,7 @@
 										<form:option value="A">A</form:option>
 										<form:option value="N">N</form:option>
 					    </form:select>
-					  <a style="text-decoration:none;padding-left: 20%;" id="deleteRule" href="#"onclick="deleteRule(0);"><img class="addRow"
+					  <a style="text-decoration:none;padding-left: 20%;" id="deleteRule" tabindex=0 href="#"onclick="deleteRule(0);"><img class="addRow"
 						           src="<c:out value='${commonStaticUrl}'/>/images/delete.png"/></a>
 				</div>
 				</div>
@@ -105,7 +105,7 @@
 	<%-- <input class="floatLeft width-100" type="text" name="priority" value="${maxPriority}" autocomplete="off" /> --%>
 	 <c:if test="${viewMode ne 'Y'}">
 		<div style="width: 100%;display: inline-block;margin-top:10px">
-		     <a id="saveRuleAssociation" class="buttonPrimary floatRight  save">Save</a>
+		     <a id="saveRuleAssociation" class="buttonPrimary floatRight  save" tabindex=0>Save</a>
 		     <div class="error floatRight hidden margin-upper-right">
 			   <img src="${commonStaticUrl}/images/warning.png">
 			   <span class="errorMsg"></span>

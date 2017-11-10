@@ -6,7 +6,7 @@
 
 
 <div  class="save-cancel" >
-				<a href="#" class="secondaryLink cancel" tabIndex="-1">No, Cancel</a>
-				<a href="#" class="buttonPrimary save-category" tabIndex="-1">Yes, save</a>
+				<a href="#" class="secondaryLink cancel" tabIndex="4">No, Cancel</a>
+				<a href="#" class="buttonPrimary save-category" tabIndex="5">Yes, save</a>
 				
 </div>

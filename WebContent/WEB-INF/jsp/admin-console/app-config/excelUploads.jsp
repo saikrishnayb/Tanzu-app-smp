@@ -37,7 +37,7 @@
 							</span>	
 							
 							<br><br>
-							<a  id = "fileUploadSubmit" class="buttonPrimary">Upload Excel</a>
+							<a  id = "fileUploadSubmit" class="buttonPrimary" tabindex=0>Upload Excel</a>
 							<c:if test = "${not empty transport_message}">
 								<div>
 									<br>

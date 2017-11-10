@@ -39,11 +39,11 @@
 					<div class="threeColumnContainer">
 						<div class="clear-float-left">	
 							<label class="rightAlign">First Name</label>
-							<input id="search-first-name" name="firstName" class="supportingLabel input alpha alpha-name optional" type="text" value="<c:out value="${userSearchForm.firstName}"/>"/>
+							<input id="search-first-name" tabindex=1 name="firstName" class="supportingLabel input alpha alpha-name optional" type="text" value="<c:out value="${userSearchForm.firstName}"/>"/>
 						</div>
 						<div class="clear-float-left">
 							<label class="rightAlign">Role</label>
-							<select id="search-role" name="roleId" class="input numeric numeric-whole optional">
+							<select id="search-role" tabindex=4 name="roleId" class="input numeric numeric-whole optional">
 								<option></option>
 								<c:forEach items="${roleList}" var="role">
 									<option value="${role.roleId}" <c:if test="${userSearchForm.roleId eq role.roleId}"> selected </c:if>>${role.roleName}</option>
@@ -55,21 +55,21 @@
 					<div class="threeColumnContainer">
 						<div class="clear-float-left">
 							<label class="rightAlign">Last Name</label>
-							<input id="search-last-name" name="lastName" class="supportingLabel input alpha alpha-name optional" type="text" value="<c:out value="${userSearchForm.lastName}"/>"/>
+							<input id="search-last-name" tabindex=2name="lastName" class="supportingLabel input alpha alpha-name optional" type="text" value="<c:out value="${userSearchForm.lastName}"/>"/>
 						</div>
 					</div>
 				
 					<div id="threeColumnContainer third" class="threeColumnContainer third">
 						<div class="clear-float-left">
 							<label class="rightAlign">Email</label>
-							<input id="search-email" name="email" class="supportingLabel input alpha alpha-email optional" type="text" value="<c:out value="${userSearchForm.email}"/>"/>
+							<input id="search-email" tabindex=3 name="email" class="supportingLabel input alpha alpha-email optional" type="text" value="<c:out value="${userSearchForm.email}"/>"/>
 						</div>
 					</div>
 					<input type="hidden" name="vendorSearch" value="false">
 					</form>
 					<div id="search-buttons-div" class="search-buttons-div">
-							<a class="buttonSecondary floatRight search" href="#">Search</a>
-							<a class="buttonSecondary floatRight margin-right reset" href="#">Reset</a>
+							<a class="buttonSecondary floatRight search" tabindex=6 href="#">Search</a>
+							<a class="buttonSecondary floatRight margin-right reset" tabindex=5 href="#">Reset</a>
 							<div class="error-messages-container displayNone">
 								<img src="${commonStaticUrl}/images/warning.png"></img>
 								<span class=errorMsg></span>

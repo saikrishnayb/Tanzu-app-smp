@@ -220,6 +220,13 @@ $(document).ready(function() {
 		openModal($confirmOrgDeactivationModal);
 	});
 	
+	$templateForm.on('keypress', function(e) {
+		if (e.which == 13) {
+			$saveTemplateEdit.trigger('click');
+			event.preventDefault();
+		}
+	});	
+	
 	//deactivate execution
 	$confirmOrgDeactivationModal.on("click", ".deactivate-confirm", function(){
 		var templateId = $('#template-id').val();

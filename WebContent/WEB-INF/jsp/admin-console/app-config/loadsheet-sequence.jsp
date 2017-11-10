@@ -63,7 +63,7 @@
 							    <c:if test="${viewMode ne 'Y' }">
 								<a class="rightMargin edit-sequence" href="open-edit-sequence.htm?seqMasterId=${sequence.id}&action=EDIT&category=${selectedCategory}&type=${selectedType}&viewMode=${viewMode}">Edit</a>
 								<a class="rightMargin copy-sequence" onclick="processingImageAndTextHandler('visible','Loading data...');" href="open-edit-sequence.htm?seqMasterId=${sequence.id}&action=COPY&category=${selectedCategory}&type=${selectedType}&viewMode=${viewMode}">Copy</a>
-								<img src="${commonStaticUrl}/images/delete.png" id="deleteSequence"  class="centerImage rightMargin deactivate"/>
+								<img src="${commonStaticUrl}/images/delete.png" id="deleteSequence" tabindex=0 class="centerImage rightMargin deactivate"/>
 								<input type="hidden"  id="sequenceId"  value="${sequence.id}"/>
 								<input type="hidden" id="sequenceName" value="${sequence.name}"/>
 								</c:if>

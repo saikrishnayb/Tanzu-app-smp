@@ -34,12 +34,12 @@
 			<%@ include file="../../../jsp/jsp-fragment/admin-console/components/comp-visiblity-override-form.jsp"%>
 			<div class="edit-buttons-90">
 				<span class="errorMsg">* indicates a required field</span>
-				<a class="secondaryLink back" tabIndex="-1">Cancel</a> 
+				<a class="secondaryLink back" tabindex=6>Cancel</a> 
 				<c:if test="${isCreatePage eq true}">
-					<a id="save-template-create" class="buttonPrimary create" tabIndex="-1">Save</a>
+					<a id="save-template-create" class="buttonPrimary create" tabindex=7>Save</a>
 				</c:if>
 				<c:if test="${isCreatePage eq false}">
-					<a id="save-template-edit" class="buttonPrimary save" tabIndex="-1">Save</a>
+					<a id="save-template-edit" class="buttonPrimary save" tabindex=7>Save</a>
 				</c:if>
 				<div class="error-messages-container displayNone">
 					<img src="${commonStaticUrl}/images/warning.png"></img>

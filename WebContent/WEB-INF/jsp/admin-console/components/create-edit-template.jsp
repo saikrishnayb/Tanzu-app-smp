@@ -34,12 +34,12 @@
 			<%@ include file="../../../jsp/jsp-fragment/admin-console/components/template-form.jsp"%>
 			<div class="edit-buttons">
 				<span class="errorMsg">* indicates a required field</span>
-				<a class="secondaryLink back" tabIndex="-1">Cancel</a> 
+				<a class="secondaryLink back" tabIndex="3">Cancel</a> 
 				<c:if test="${isCreatePage eq true}">
-					<a id="save-template-create" class="buttonPrimary create" tabIndex="-1">Save</a>
+					<a id="save-template-create" class="buttonPrimary create" tabIndex="4">Save</a>
 				</c:if>
 				<c:if test="${isCreatePage eq false}">
-					<a id="save-template-edit" class="buttonPrimary save" tabIndex="-1">Save</a>
+					<a id="save-template-edit" class="buttonPrimary save" tabIndex="4">Save</a>
 				</c:if>
 				<div class="error-messages-container displayNone">
 					<img src="${commonStaticUrl}/images/warning.png"></img>

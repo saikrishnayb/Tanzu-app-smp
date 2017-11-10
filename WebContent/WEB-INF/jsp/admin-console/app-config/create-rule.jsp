@@ -94,7 +94,7 @@
 								<form:input type="hidden" id="ruleDefId" path="ruleDefinitionsList[${loopIndex.count -1}].ruleDefId" value="${ruleDefinitionsList.ruleDefId}"/><!-- Hidden field for ruleDefId -->
 								<form:input type="hidden" class="criteriaGroupVal" path="ruleDefinitionsList[${loopIndex.count -1}].criteriaGroup" value="${ruleDefinitionsList.criteriaGroup}"/><!-- Hidden field for criteria group -->
 								</td>
-								<td><a><img src="${commonStaticUrl}/images/add.png"id="addRow" class="centerImage handCursor adder" onclick="addNewRow('${ruleDefinitionsList.criteriaGroup}');" alt="Add Row"/></a></td>
+								<td><a><img src="${commonStaticUrl}/images/add.png"id="addRow" tabindex=0 class="centerImage handCursor adder" onclick="addNewRow('${ruleDefinitionsList.criteriaGroup}');" alt="Add Row"/></a></td>
 							</tr>
 						</c:if>
 						<c:if test="${!ruleDefinitionsList.isGroupHeader}">

@@ -3,7 +3,8 @@ var $searchLName = $('#search-last-name');
 var $searchRole = $('#search-role');
 var $searchEmail = $('#search-email');
 var $searchuserType = $('#search-user-type');
-
+var $searchUserForm = $('#search-user-form');
+var $inputs = $('#search-first-name','#search-last-name','#search-role','#search-email');
 $(document).ready(function() {
 	var $tabNavUser=$('#tabNavUser').val();
 	selectCurrentNavigation("tab-security",$tabNavUser);
@@ -106,10 +107,134 @@ $(document).ready(function() {
 		$searchForm.submit();
 	});
 	
+	function basicSearch()
+	{
+		if($("#searchAction").hasClass('buttonDisabled')){
+			return false;
+		}
+		var showEntryValue=$('select[name=mainTable_length]').val();
+		$('#entryCount').val(showEntryValue);
+		hideErrorMessages();
+		if(validateBaicSearchFields())
+			{
+				$("#templateKey").val(0);
+				//setValuestoZeroforBasic();
+				showLoading();
+				var searchType="basic";
+				$("#searchType").attr("value",searchType);
+				var url= getContextRoot()+"/fulfillment/search.htm";
+				$("form#fulfillmentSearchForm").attr("action",url);		
+				$("form#fulfillmentSearchForm").submit();	
+
+			}
+		
+	}
+
+	function validateBaicSearchFields()
+	{
+		hideErrorMessages();
+	var result=true;
+		
+	var $searchFName = $('#search-first-name');
+	var $searchLName = $('#search-last-name');
+	var $searchRole = $('#search-role');
+	var $searchEmail = $('#search-email');
+		if(!$searchFName && !$searchLName  && !$searchRole && !$searchEmail)
+		{
+			clearBasicSearch();
+			$(".basicValidation").show();
+			return false;
+		}
+		else
+		{
+			if(!validateNumbers(dcn))
+			{
+				$("#basicDcn").addClass("errorMsgInput");
+				$(".basicDcn").show();
+				result= false;
+			}
+			/*if(!validateAlphaNumericWithoutspaces(unitNum))
+			{
+				$("#basicUnitNo").addClass("errorMsgInput");
+				$(".basicUnitNo").show();
+				result= false;
+			}*/
+			if(!validateNumbers(poNum))
+			{
+				
+				$("#basicPoNum").addClass("errorMsgInput");
+				$(".basicPoNum").show();
+				result= false;
+			}
+			//removeZerosForBasic();
+			return result;
+		}
+	}
+
+	
+	$('#search-user-form').on('keypress', function(e) {
+		var $searchUserForm = $('#search-user-form');
+	//Show the advanced search form if the user had just used it.
+	if( ($searchUserForm.find('[name="firstName"]').val().length > 0) || ($searchUserForm.find('[name="lastName"]').val().length > 0) ||
+	($searchUserForm.find('[name="email"]').val().length > 0) || ($searchUserForm.find('[name="roleId"]').val().length > 0)){
+	
+			if (e.which == 13) {
+				
+				$searchUserForm.submit();
+				
+				//event.preventDefault();
+			}
+		
+	}
+	});
+	
+	
+/*	function checkInputsnotEmpty(){
+		var $inputs = $('#search-first-name','#search-last-name','#search-role','#search-email');
+		$('.search').addClass('disabled');
+		$('.reset').addClass('disabled');
+		var result = 1;
+	    for (var i = 0; i < $inputs.length; i++) {
+	      if (!$inputs[i].value) {
+	        result = 0;
+	        break;
+	      }
+	    }
+	    if (result) {
+	    	$('.search').removeAttr('disabled');
+	    	$('.reset').removeAttr('disabled');
+	    } else {
+	      $submit.attr('disabled', 'disabled');
+	    }
+		
+	}
+	
+	$('.search').click(function (e) {
+        if ($(this).hasClass('disabled')) return false;
+        checkInputsnotEmpty();
+    });*/
+	
 	//search for vendor user accounts
 	$searchButtonsContainer.on('click', '.vendorSearch', function(){
 		var  $searchForm = $('#search-vendor-user-form');
 		$searchForm.submit();
+	});
+	
+
+	$('#search-vendor-user-form').on('keypress', function(e) {
+		var $searchUserForm = $('#search-vendor-user-form');
+	//Show the advanced search form if the user had just used it.
+	if( ($searchUserForm.find('[name="firstName"]').val().length > 0) || ($searchUserForm.find('[name="lastName"]').val().length > 0) ||
+	($searchUserForm.find('[name="email"]').val().length > 0) || ($searchUserForm.find('[name="roleId"]').val().length > 0)){
+	
+			if (e.which == 13) {
+				
+				$searchUserForm.submit();
+				
+				//event.preventDefault();
+			}
+		
+	}
 	});
 	
 	if($("#search-content").is(":visible")){

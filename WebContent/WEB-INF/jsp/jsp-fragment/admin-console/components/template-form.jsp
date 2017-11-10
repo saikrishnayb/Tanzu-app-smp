@@ -9,7 +9,7 @@
 			<div id="org-components" class="org-component">
 				<div class="single-line-content">
 					<label for="poCatAssID">Cat/Sub Cat<span class=requiredField>*</span></label> 
-					<select id="poCatAssID" name="poCatAssID" class="input numeric numeric-whole" <c:if test="${isCreatePage eq false}">disabled</c:if>>
+					<select id="poCatAssID" tabindex=1 name="poCatAssID" class="input numeric numeric-whole" <c:if test="${isCreatePage eq false}">disabled</c:if>>
 						<option value="">Select Cat/SubCat...</option>
 						<c:forEach items="${allPoAssocList}" var="poAssocList">
 						 <c:if test="${isCreatePage eq false}">
@@ -23,7 +23,7 @@
 				</div>
 				<div id="org-id-div" class="single-line-content">
 						<label for="templateDesc">Description <span class=requiredField>*</span></label> 
-						<input id="templateDesc" name="templateDesc"  class="input alpha alpha-numeric"  maxlength="50" autocomplete="off"  type="text" <c:if test="${isCreatePage eq false}">value='${editableTemplate.templateDesc}'</c:if> />
+						<input id="templateDesc" tabindex=2 name="templateDesc"  class="input alpha alpha-numeric"  maxlength="50" autocomplete="off"  type="text" <c:if test="${isCreatePage eq false}">value='${editableTemplate.templateDesc}'</c:if> />
 				</div>
 				<div class="full-width">
 					<table id="template-Component-table" >

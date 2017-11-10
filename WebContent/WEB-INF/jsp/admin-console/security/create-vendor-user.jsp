@@ -25,8 +25,8 @@
 		<%@ include file="../../../jsp/jsp-fragment/admin-console/security/left-nav.jsp"%>
 		<div class="leftNavAdjacentContainer">
 			<div class="edit-buttons">
-				<a class="secondaryLink back" tabIndex="-1">Cancel</a> 
-				<a id="save-user-vendor-edit" class="buttonPrimary createVendorUser" tabIndex="-1">Add To SMC</a>
+				<a class="secondaryLink back" tabIndex="11">Cancel</a> 
+				<a id="save-user-vendor-edit" class="buttonPrimary createVendorUser" tabIndex="12">Add To SMC</a>
 				<div class="error-messages-container displayNone">
 					<img src="${commonStaticUrl}/images/warning.png"></img>
 					<span class=errorMsg></span>  

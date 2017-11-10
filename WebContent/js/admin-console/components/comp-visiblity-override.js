@@ -11,6 +11,7 @@ $(document).ready(function() {
 	
 	var $overrideTable = $('#visiblity-override-table');
 	
+	
 	$componentSearchModal = $('#component-search-modal');
 	
 	var $confirmDeactivationModal = $('#delete-visiblity-override-modal');
@@ -81,11 +82,15 @@ $(document).ready(function() {
 	$('#controllingComponentSel').on("click", function(){
 		loadSearchComponentScreen(1);
 	});
+	//on click event on create button
 	$('.create').on("click", function(){
-		
+		createComponentOveride();
+	});
+	
+	function createComponentOveride(){
+
 		var $overrideForm = $('#visiblity-override-form');
 		var isValid = validate($overrideForm);
-		
 		if(isValid){
 			$errMsgContainer.addClass('displayNone');
 			var $overrideAddPromise = $.post('./create-comp-visiblity-override.htm', $overrideForm.serialize());
@@ -107,7 +112,8 @@ $(document).ready(function() {
 		else {
 			$errMsgContainer.removeClass('displayNone');
 		}
-	});
+	
+	}
 	
 	//edit modal
 	$overrideTable.on("click", ".edit-visiblity-override", function(){
@@ -115,9 +121,16 @@ $(document).ready(function() {
 		var overrideId = $this.closest('.visiblity-override-row').find('.visiblity-override-id').val();
 		location.assign('./create-modify-comp-visiblity-override-page.htm?isCreatePage=false&overrideId='+overrideId);
 	});
+	
+	
 
 	
 	$('.save').on("click", function(){
+		saveComponentOverride();
+	});
+	
+	function saveComponentOverride(){
+
 		
 		var $overrideForm = $('#visiblity-override-form');
 		var isValid = validate($overrideForm);
@@ -143,7 +156,9 @@ $(document).ready(function() {
 		else {
 			$errMsgContainer.removeClass('displayNone');
 		}
-	});
+	
+	}
+	
 	
 	//deactivate modal
 	$overrideTable.on("click", ".delete-visiblity-override", function(){
@@ -178,6 +193,24 @@ $(document).ready(function() {
 		});
 	});
 	
+	
+	var $visibleOverrideForm = $("#visiblity-override-form");
+	$visibleOverrideForm.on('keypress', function(e) {
+		if (e.which == 13) {
+			saveComponentOverride();
+			event.preventDefault();
+		}
+	});
+
+
+	//save on click enter in create page
+	$visibleOverrideForm.on('keypress', function(e) {
+		if (e.which == 13) {
+			$visibleOverrideForm.find('.create').trigger('click');
+			event.preventDefault();
+		}
+	});
+	
 });
 
 function loadSearchComponentScreen(val){
@@ -187,6 +220,10 @@ function loadSearchComponentScreen(val){
 		openModal($componentSearchModal);
 	});
 }
+
+
+
+
 function initSearchPage(){
 	var $searchComponenttable=$('#component-search-modal #search-Component-table');
 	$searchComponenttable.dataTable( { //All of the below are optional
