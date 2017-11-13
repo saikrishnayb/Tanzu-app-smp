@@ -17,7 +17,7 @@ import com.penske.apps.suppliermgmt.model.Tab;
 /**
  *****************************************************************************************************************
  * File Name     : HomeDashboardDao
- * Description   : dao class for home/dashboard page. This interface is used for queries to the database 
+ * Description   : dao class for home/dashboard page. This interface is used for queries to the database
  * 				   for the home/dashboard page in the Admin Console under the App Config tab.
  * Project       : SMC
  * Package       : com.penske.apps.suppliermgmt.dao
@@ -29,39 +29,41 @@ import com.penske.apps.suppliermgmt.model.Tab;
  * --------------------------------------------------------------------------------------------------------------
  *
  * ****************************************************************************************************************
-**/
+ **/
 public interface HomeDashboardDao {
 
-	@NonVendorQuery //FIXME: should this be filtered by vendor?
-	public List<Tab> selectTabs(@Param("dashBoardId") int dashBoardId, @Param("roleId")int roleId, @Param("status") String status);
+    @NonVendorQuery //FIXME: should this be filtered by vendor?
+    public List<Tab> selectTabs(@Param("dashBoardId") int dashBoardId, @Param("roleId")int roleId, @Param("status") String status);
 
-	@NonVendorQuery //FIXME: should this be filtered by vendor?
-	public List<AlertHeader> selectHeaders(String tabKey);
-	
-	@NonVendorQuery //FIXME: should this be filtered by vendor?
-	public List<Alert> selectAlerts(@Param("headerId")int headerId,@Param("userType")int userType);
-	
-	@Deprecated
-	@NonVendorQuery //TODO: Review Query
-	public String getOrderFullfillmentActionItems(Map<String, Object> errorMap);
-	@Deprecated
-	@NonVendorQuery //TODO: Review Query
-	public String getOrderConfirmationActionItems(Map<String, Object> errorMap);
-	@Deprecated
-	@NonVendorQuery //TODO: Review Query
-	public String getProductionActionItems(Map<String, Object> errorMap);
-	@Deprecated
-	@NonVendorQuery //TODO: Review Query
-	public String getCommunicationActionItems(Map<String, Object> errorMap);
-	
-	@NonVendorQuery("Uses a stored procedure - can't filter by vendor ID")  //TODO: Review Query
-	@MapKey("alertKey")
-	public Map<String, AlertCount> getOrderConfirmationAlertCountsByAlertKey(@Param("sso") String sso);
-	@NonVendorQuery //TODO: Review Query
-	@MapKey("alertKey")
+    @NonVendorQuery //FIXME: should this be filtered by vendor?
+    public List<AlertHeader> selectHeaders(String tabKey);
+
+    @NonVendorQuery //FIXME: should this be filtered by vendor?
+    public List<Alert> selectAlerts(@Param("headerId")int headerId,@Param("userType")int userType);
+
+    @Deprecated
+    @NonVendorQuery
+    public String getOrderFullfillmentActionItems(Map<String, Object> errorMap);
+    @Deprecated
+    @NonVendorQuery
+    public String getOrderConfirmationActionItems(Map<String, Object> errorMap);
+    @Deprecated
+    @NonVendorQuery
+    public String getProductionActionItems(Map<String, Object> errorMap);
+    @Deprecated
+    @NonVendorQuery
+    public String getCommunicationActionItems(Map<String, Object> errorMap);
+
+    @NonVendorQuery("Uses a stored procedure - can't filter by vendor ID")  //TODO: Review Query
+    @MapKey("alertKey")
+    public Map<String, AlertCount> getOrderConfirmationAlertCountsByAlertKey(@Param("sso") String sso);
+
+    @NonVendorQuery
+    @MapKey("alertKey")
     public Map<String, AlertCount> getOrderFullfillmentCountsByAlertKey(@Param("sso") String sso);
-	@NonVendorQuery //TODO: Review Query
-	@MapKey("alertKey")
+
+    @NonVendorQuery
+    @MapKey("alertKey")
     public Map<String, AlertCount> getProductionAlertCountsByAlertKey(@Param("sso") String sso);
-		
+
 }

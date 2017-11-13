@@ -27,10 +27,10 @@ import com.penske.apps.suppliermgmt.model.VendorLocation;
 
 public interface LoginDAO {
 
-	@NonVendorQuery
+    @NonVendorQuery
     public User getUserDetails(User userModel);
 
-	@NonVendorQuery
+    @NonVendorQuery // This need to be here since we need to get the ass vendors ids at least
     public List<VendorLocation> getAssociatedVendors(int orgId);
 
     @NonVendorQuery

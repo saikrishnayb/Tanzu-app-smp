@@ -869,10 +869,11 @@ public class AppConfigRestController {
     /* ================== Get Rule Association model ================== */
     @RequestMapping(value = "/get-rule-association-modal-data", method = RequestMethod.POST)
     @ResponseBody
-    public ModelAndView getRuleAssociationModalData(HttpServletRequest request, @ModelAttribute("componentRule") ComponentRuleAssociation componentRule, @RequestParam("componentId") int componentId, @RequestParam("componentVisibleId") int componentVisibleId, @RequestParam(value = "viewMode") String viewMode) {
+    public ModelAndView getRuleAssociationModalData(HttpServletRequest request, @ModelAttribute("componentRule") ComponentRuleAssociation componentRule, @RequestParam("componentId") int componentId, @RequestParam("componentVisibleId") int componentVisibleId, @RequestParam(value = "viewMode") String viewMode, @RequestParam(value = "displayName") String displayName) {
         ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/app-config/add-rule-association-modal");
         componentRule.setRule(loadsheetManagementService.getComponentVisibilityRules(componentVisibleId));
         componentRule.setComponentVisibilityId(componentVisibleId);
+        componentRule.setDisplayName(displayName);
         mav.addObject("rules", loadsheetManagementService.getComponentRules());
         mav.addObject("componentRule", componentRule);
         mav.addObject("viewMode", viewMode);

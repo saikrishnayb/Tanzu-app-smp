@@ -55,7 +55,7 @@
 					<div class="threeColumnContainer">
 						<div class="clear-float-left">
 							<label class="rightAlign">Last Name</label>
-							<input id="search-last-name" tabindex=2name="lastName" class="supportingLabel input alpha alpha-name optional" type="text" value="<c:out value="${userSearchForm.lastName}"/>"/>
+							<input id="search-last-name" tabindex=2 name="lastName" class="supportingLabel input alpha alpha-name optional" type="text" value="<c:out value="${userSearchForm.lastName}"/>"/>
 						</div>
 					</div>
 				

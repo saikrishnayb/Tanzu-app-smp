@@ -32,48 +32,46 @@ import com.penske.apps.suppliermgmt.model.LabelValue;
 import com.penske.apps.suppliermgmt.model.User;
 
 public interface UserDAO {
-		
-	@NonVendorQuery //TODO: Review Query	
-	
-	public void deleteBuddyList(String userSSO) throws  SQLException;
-	@NonVendorQuery //TODO: Review Query
-	
-	public void addBuddyList(List<Buddies> newBuddyList)throws  SQLException; 
-	@NonVendorQuery //TODO: Review Query
-	
-	public List<User> getUserList(@Param("userType")int userType)throws  SQLException;
-	
-	@NonVendorQuery //TODO: Review Query
-	public void addBuddyBasedOnselectionType(Buddies buddy);
-	
-	@NonVendorQuery //TODO: Review Query
-	public String getSelectionType(@Param("loggedInSso") String loggedInSso);
-	
-	@NonVendorQuery //TODO: Review Query
-	public List<Buddies> getExistingBuddiesListFromUserMaster(@Param("selectionType") String selectionType,@Param("loggedInSso") String loggedInSso);
-	
-	@NonVendorQuery //TODO: Review Query
-	public List<Buddies> getExistingBuddiesList(@Param("userSso")String userSSO);
 
-	@NonVendorQuery //TODO: Review Query
-	public List<LabelValue> getDeptDetailList();
+    @NonVendorQuery
+    public void deleteBuddyList(String userSSO) throws  SQLException;
 
-	@NonVendorQuery //TODO: Review Query
-	public String getTermsAndCondition(@Param("date")Date date,@Param("status")String status);
+    @NonVendorQuery
+    public void addBuddyList(List<Buddies> newBuddyList)throws  SQLException;
 
-	@NonVendorQuery //TODO: Review Query
-	public List<UserVendorFilterSelection> getUserVendorFilterSelections(@Param("userId") int userId);
-	
-	@NonVendorQuery //TODO: Review Query
-	public List<Organization> getAllOrganizations();
-	
-	@NonVendorQuery //TODO: Review Query
-	public Organization getOrganizationWithOrgId(@Param("orgId") int orgId);
-	
-	@NonVendorQuery //TODO: Review Query
-	public void deletePreviousUserVendorFilters(@Param("userId") int userId);
-	
-	@NonVendorQuery //TODO: Review Query
-	public void saveUserVendorFilterSelections(@Param("vendorIds") Collection<Integer> vendorIds, @Param("userId") int userId);
-	
+    @NonVendorQuery
+    public List<User> getUserList(@Param("userType")int userType)throws  SQLException;
+
+    @NonVendorQuery
+    public void addBuddyBasedOnselectionType(Buddies buddy);
+
+    @NonVendorQuery
+    public String getSelectionType(@Param("loggedInSso") String loggedInSso);
+
+    @NonVendorQuery
+    public List<Buddies> getExistingBuddiesListFromUserMaster(@Param("selectionType") String selectionType,@Param("loggedInSso") String loggedInSso);
+
+    @NonVendorQuery
+    public List<Buddies> getExistingBuddiesList(@Param("userSso")String userSSO);
+
+    @NonVendorQuery
+    public List<LabelValue> getDeptDetailList();
+
+    @NonVendorQuery
+    public String getTermsAndCondition(@Param("date")Date date,@Param("status")String status);
+
+    public List<UserVendorFilterSelection> getUserVendorFilterSelections(@Param("userId") int userId);
+
+    @NonVendorQuery
+    public List<Organization> getAllOrganizations();
+
+    @NonVendorQuery
+    public Organization getOrganizationWithOrgId(@Param("orgId") int orgId);
+
+    @NonVendorQuery
+    public void deletePreviousUserVendorFilters(@Param("userId") int userId);
+
+    @NonVendorQuery
+    public void saveUserVendorFilterSelections(@Param("vendorIds") Collection<Integer> vendorIds, @Param("userId") int userId);
+
 }

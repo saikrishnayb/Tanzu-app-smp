@@ -11,9 +11,9 @@ import com.penske.apps.adminconsole.annotation.NonVendorQuery;
  */
 
 public interface GlobalSettingsDao {
-	@NonVendorQuery //TODO: Review Query
+	@NonVendorQuery
 	public void updateGlobalSettingsByKeyName(@Param("value") String value, @Param("keyName") String keyName);
 	
-	@NonVendorQuery //TODO: Review Query
+	@NonVendorQuery
 	public String selectGlobalSettingsValueByKeyName(@Param("keyName") String keyName);
 }

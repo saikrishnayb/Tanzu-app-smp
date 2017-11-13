@@ -16,18 +16,18 @@ import com.penske.apps.adminconsole.model.SearchTemplate;
 
 public interface AlertDao {
 
-	@NonVendorQuery //TODO: Review Query
-	public List<Alert> getAllAlertsAndHeaders();
-	
-	@NonVendorQuery //TODO: Review Query
-	public List<SearchTemplate> getAllTemplateNames();
-	
-	@NonVendorQuery //TODO: Review Query
-	public int checkForTemplateId(@Param("alertId") int alertId, @Param("templateId") int templateId);
-	
-	@NonVendorQuery //TODO: Review Query
-	public void modifyAlertHeader(Alert alert);
+    @NonVendorQuery
+    public List<Alert> getAllAlertsAndHeaders();
 
-	@NonVendorQuery //TODO: Review Query
-	public void modifyAlertDetail(Alert alert);
+    @NonVendorQuery
+    public List<SearchTemplate> getAllTemplateNames();
+
+    @NonVendorQuery
+    public int checkForTemplateId(@Param("alertId") int alertId, @Param("templateId") int templateId);
+
+    @NonVendorQuery
+    public void modifyAlertHeader(Alert alert);
+
+    @NonVendorQuery
+    public void modifyAlertDetail(Alert alert);
 }

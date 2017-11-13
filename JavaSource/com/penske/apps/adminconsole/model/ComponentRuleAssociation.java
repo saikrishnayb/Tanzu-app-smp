@@ -13,7 +13,14 @@ public class ComponentRuleAssociation {
 	private int componentVisibilityId;
 	private String createdBy;
 	private List<ConfigureRule> rule;
+	private String displayName;
 	
+	public String getDisplayName() {
+		return displayName;
+	}
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
 	public int getComponentVisibilityId() {
 		return componentVisibilityId;
 	}

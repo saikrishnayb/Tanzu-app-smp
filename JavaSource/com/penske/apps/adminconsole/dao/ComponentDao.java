@@ -22,131 +22,132 @@ import com.penske.apps.adminconsole.model.TemplatePoAssociation;
  */
 
 public interface ComponentDao {
-	@NonVendorQuery //TODO: Review Query
+
+    @NonVendorQuery
     public  List<ComponentVisibility> getComponent();
 
-	@NonVendorQuery //TODO: Review Query
+    @NonVendorQuery
     public List<ComponentVisibility> getCategory(@Param("componentId")int componentId);
 
-	@NonVendorQuery //TODO: Review Query
+    @NonVendorQuery
     public List<ComponentVisibility> getVehicleCategory(@Param("componentId")int componentId);
 
-	@NonVendorQuery //TODO: Review Query
+    @NonVendorQuery
     public List<SubCategory>getComponentSubCategory(@Param("componentId")int componentId,@Param("poCategoryId")int poCategoryId);
 
-	@NonVendorQuery //TODO: Review Query
+    @NonVendorQuery
     public List<SubCategory>getVehicleSubCategory(@Param("componentId")int componentId,@Param("poCategoryId")int poCategoryId);
 
-	@NonVendorQuery //TODO: Review Query
+    @NonVendorQuery
     public List<ComponentVisibility> getComponentName();
 
-	@NonVendorQuery //TODO: Review Query
+    @NonVendorQuery
     public void deleteComponentVisibility(@Param("componentId")int componentId,@Param("poCategoryId")int poCategoryId,@Param("subCategoryId")int subCategoryId);
 
-	@NonVendorQuery //TODO: Review Query
+    @NonVendorQuery
     public void deleteVehicleVisibility(@Param("componentId")int componentId,@Param("poCategoryId")int poCategoryId,@Param("subCategoryId")int subCategoryId);
 
-	@NonVendorQuery //TODO: Review Query
+    @NonVendorQuery
     public void addComponentVisibility(@Param("componentId")int componentId,@Param("poCategoryId")int poCategoryId,@Param("subCategoryId")int subCategoryId);
 
-	@NonVendorQuery //TODO: Review Query
+    @NonVendorQuery
     public void addVehicleVisibility(@Param("componentId")int componentId,@Param("poCategoryId")int poCategoryId,@Param("subCategoryId")int subCategoryId);
 
-	@NonVendorQuery //TODO: Review Query
+    @NonVendorQuery
     public ComponentVisibility getComponentDetails(@Param("componentId")int componentId,@Param("poCategoryId")int poCategoryId,@Param("subCategoryId")int subCategoryId);
 
-	@NonVendorQuery //TODO: Review Query
+    @NonVendorQuery
     public ComponentVisibility getVehicleComponentDetails(@Param("componentId")int componentId,@Param("poCategoryId")int poCategoryId,@Param("subCategoryId")int subCategoryId);
 
-	@NonVendorQuery //TODO: Review Query
+    @NonVendorQuery
     public List<PoCategory> getCategoryList();
 
-	@NonVendorQuery //TODO: Review Query
+    @NonVendorQuery
     public List<SubCategory> getSubCategoryList(int poCategoryId);
 
-	@NonVendorQuery //TODO: Review Query
+    @NonVendorQuery
     public List<ComponentVisibility> getComponentList(int poCategoryId);
 
 
     //Template Page --- start
-	@NonVendorQuery //TODO: Review Query
+    @NonVendorQuery
     public List<Template> getAllTemplates();
 
-	@NonVendorQuery //TODO: Review Query
+    @NonVendorQuery
     public List<TemplatePoAssociation> getAllPoAssociation();
 
-	@NonVendorQuery //TODO: Review Query
+    @NonVendorQuery
     public Template getTemplatesById(@Param("templateID")int templateID);
 
-	@NonVendorQuery //TODO: Review Query
+    @NonVendorQuery
     public List<Components> getAllComponent();
 
-	@NonVendorQuery //TODO: Review Query
+    @NonVendorQuery
     public void addTemplate(Template template);
 
-	@NonVendorQuery //TODO: Review Query
+    @NonVendorQuery
     public void addTemplateComponents(Components components);
 
-	@NonVendorQuery //TODO: Review Query
+    @NonVendorQuery
     public void updateTemplate(Template template);
 
-	@NonVendorQuery //TODO: Review Query
+    @NonVendorQuery
     public void deleteTemplate(@Param("templateID")int templateID);
 
-	@NonVendorQuery //TODO: Review Query
+    @NonVendorQuery
     public void deleteTemplateComponents(@Param("templateID")int templateID);
 
-	@NonVendorQuery //TODO: Review Query
+    @NonVendorQuery
     public List<Components> getTemplateComponentById(@Param("templateID")int templateID);
 
-	@NonVendorQuery //TODO: Review Query
+    @NonVendorQuery
     public List<Integer> findTemplateExist(Template template);
 
-	@NonVendorQuery //TODO: Review Query
+    @NonVendorQuery
     public List<TemplatePoAssociation> getAllPoAssociationForAdd();
 
-	@NonVendorQuery //TODO: Review Query
+    @NonVendorQuery
     public List<TemplatePoAssociation> getAllPoAssociationForEdit(@Param("assocId")int assocId);
     //Template Page --- End
     //COMPONENT VISIBILITY OVERRIDES -- start
 
-	@NonVendorQuery //TODO: Review Query
+    @NonVendorQuery
     public List<ComponentVisibilityOverride> getAllComponentVisibilityOverrides();
 
-	@NonVendorQuery //TODO: Review Query
+    @NonVendorQuery
     public void addComponentVisibilityOverrides(ComponentVisibilityOverride componentVisibilityOverride);
 
-	@NonVendorQuery //TODO: Review Query
+    @NonVendorQuery
     public void updateComponentVisibilityOverrides(ComponentVisibilityOverride componentVisibilityOverride);
 
-	@NonVendorQuery //TODO: Review Query
+    @NonVendorQuery
     public void deleteComponentVisibilityOverrides(@Param("visiblityOverrideId") int visiblityOverrideId);
 
-	@NonVendorQuery //TODO: Review Query
+    @NonVendorQuery
     public ComponentVisibilityOverride getComponentVisibilityOverridesById(@Param("visiblityOverrideId") int visiblityOverrideId);
 
-	@NonVendorQuery //TODO: Review Query
+    @NonVendorQuery
     public ComponentVisibilityOverride  checkComponentVisibilityOverrideExist(ComponentVisibilityOverride componentVisibilityOverride);
     //COMPONENT VISIBILITY OVERRIDES -- End
 
-	@NonVendorQuery //TODO: Review Query
+    @NonVendorQuery
     public List<Component> loadAllAvailableComponents();
 
-	@NonVendorQuery //TODO: Review Query
+    @NonVendorQuery
     public ComponentInfoDetail getComponentInfoDetail(@Param("componentId") int componentId);
-	
-	@NonVendorQuery //TODO: Review Query
+
+    @NonVendorQuery
     public ComponentGroup getComponentGroup(@Param("groupId") int groupId);
 
-	@NonVendorQuery //TODO: Review Query
+    @NonVendorQuery
     public void copyCorpComponentGroupRow(@Param("groupId") int groupId);
-    
-	@NonVendorQuery //TODO: Review Query
-	public void copyCorpComponentRow(@Param("componentId") int componentId);
 
-	@NonVendorQuery //TODO: Review Query
+    @NonVendorQuery
+    public void copyCorpComponentRow(@Param("componentId") int componentId);
+
+    @NonVendorQuery
     public void markTemplateForRebuild(@Param("templateId") int templateId);
 
-	@NonVendorQuery //TODO: Review Query
+    @NonVendorQuery
     public void insertTemplateForRegen(@Param("templateId") int templateId);
 }

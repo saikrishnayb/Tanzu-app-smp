@@ -96,10 +96,11 @@ $('#rule-association-modal').dialog({
 /* ------------- Adding A Rule -------------- */
 $('.add-rule-association').on('click', function() {
 	var val = $(this).attr('id');
+	var displayName = $(this).data('value');
 	var values=val.split('-');
 	$("#componentIdforAddRule").val(values[0]);
 	$.post('./get-rule-association-modal-data.htm',
-			{'componentId':values[0],'componentVisibleId':values[1],'viewMode':values[2]},
+			{'componentId':values[0],'componentVisibleId':values[1],'viewMode':values[2],'displayName':displayName},
 			function(data) {
 				$('#rule-association-modal').html(data);
 				$('#rule-association-modal').dialog('open');

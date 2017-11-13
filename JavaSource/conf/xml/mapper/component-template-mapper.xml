@@ -5,16 +5,14 @@
 
 
 <select id="getVendorTemplates" resultType="com.penske.apps.adminconsole.model.VendorTemplate">
-		select 
-	
-		t.template_id as templateId,
-		vmaster.MFR as manufacture,
-		vmaster.vendor_id as vendorNumber,
-		vmaster.corp as corpCode
-	from smc.smc_vendor_template t,
-		smc.smc_vendor_master vmaster
-	where 
-		t.vendor_id= vmaster.vendor_id 
+		 SELECT T.TEMPLATE_ID AS TEMPLATEID,
+        		VMASTER.MFR AS MANUFACTURE,
+        		VMASTER.VENDOR_ID AS VENDORNUMBER,
+                VMASTER.VENDOR_ID AS VENDOR_ID,
+        		VMASTER.CORP AS CORPCODE
+	       FROM SMC.SMC_VENDOR_TEMPLATE T,
+		        SMC.SMC_VENDOR_MASTER VMASTER
+	      WHERE T.VENDOR_ID= VMASTER.VENDOR_ID 
 </select>	
 <select id="getVendorCategories" resultType="com.penske.apps.adminconsole.model.VendorTemplate">
 	select 
@@ -23,6 +21,7 @@
 		t.template_id as templateId,
 		edi.EDI_MFR as manufacture,
 		t.vendor_id as vendorNumber,
+        t.vendor_id as vendor_id,
 		t.corp_code as corpCode
 	from smc.smc_vendor_template t,
 		CORP.FPURVND pur,corp.NVOEDIVND edi
@@ -42,6 +41,7 @@
 		t.template_id as templateId,
 		edi.EDI_MFR as manufacture,
 		t.vendor_id as vendorNumber,
+        t.vendor_id as vendor_id,
 		t.corp_code as corpCode
 	from smc.smc_vendor_template t,
 		CORP.FPURVND pur,corp.NVOEDIVND edi
@@ -135,7 +135,8 @@
 
 <select id="getManufacture" resultType="com.penske.apps.adminconsole.model.Manufacture">
 
-SELECT DISTINCT LOC.MFR as manufacture
+SELECT DISTINCT LOC.MFR as manufacture,
+       LOC.VENDOR_ID
 from 
 	smc.SMC_VENDOR_MASTER LOC
 WHERE 
@@ -145,9 +146,9 @@ WHERE
 
 <select id ="getCorpCodes" resultType="com.penske.apps.adminconsole.model.CorpCode">
 
-	SELECT DISTINCT
-	LOC.CORP as corpCode,
-	LOC.MFR as manufacture
+	SELECT  DISTINCT LOC.CORP as corpCode,
+        	LOC.MFR as manufacture,
+            LOC.VENDOR_ID
 from 
 	smc.SMC_VENDOR_MASTER LOC WHERE 	
 	LOC.VENDOR_NUMBER NOT IN (SELECT tMPL.VENDOR_ID FROM smc.smc_vendor_template tMPL) 
@@ -163,7 +164,8 @@ from
 	 smcv.CORP as corpCode, 
 	 smcv.VENDOR_NUMBER as vendorNumber , 
 	smcv.city as city,
-		smcv.state as state
+		smcv.state as state,
+    smcv.VENDOR_ID
 from 
 
 	smc.SMC_VENDOR_MASTER smcv 
@@ -175,66 +177,6 @@ where
 
 </select>
 
-<select id="getSelectedVendorTemplate" resultType="com.penske.apps.adminconsole.model.VendorTemplate">
-	select 
-		CASE WHEN pur.PVSCTY IS NULL or pur.PVSCTY = '' THEN pur.PVOCTY ELSE pur.PVSCTY END as city,
-		CASE WHEN pur.PVSST IS NULL or pur.PVSST = '' THEN pur.PVOST ELSE pur.PVSST END  as state,
-		t.template_id as templateId,
-		edi.EDI_MFR as manufacture,
-		t.vendor_id as vendorNumber,
-		t.corp_code as corpCode
-	from smc.smc_vendor_template t,
-		CORP.FPURVND pur,corp.NVOEDIVND edi
-	where 
-		pur.PVCORP = edi.EDI_CORP and 
-		pur.PVNBR = edi.EDI_VENDOR and 
-		t.vendor_id=pur.PVNBR and 
-		t.corp_code=pur.PVCORP and
-		edi.EDI_MFR =#{MFR}
-
-
-</select>
-
-<select id="getVendorTemplateSelectedCorpCode" resultType="com.penske.apps.adminconsole.model.VendorTemplate">
-	
-	select 
-			CASE WHEN pur.PVSCTY IS NULL or pur.PVSCTY = '' THEN pur.PVOCTY ELSE pur.PVSCTY END as city,
-			CASE WHEN pur.PVSST IS NULL or pur.PVSST = '' THEN pur.PVOST ELSE pur.PVSST END  as state,
-			t.template_id as templateId,
-			edi.EDI_MFR as manufacture,
-			t.vendor_id as vendorNumber,
-			t.corp_code as corpCode
-		from smc.smc_vendor_template t,
-			CORP.FPURVND pur,corp.NVOEDIVND edi
-		where 
-			pur.PVCORP = edi.EDI_CORP and 
-			pur.PVNBR = edi.EDI_VENDOR and 
-			t.vendor_id=pur.PVNBR and 
-			t.corp_code=pur.PVCORP and
-			edi.EDI_MFR =#{MFR} and 	
-			t.corp_code=#{corpCode}
-			
-</select>
-
-<!-- <select id="getDeleteModalContent"  resultType="TemplatePoCategorySubCategory">
-
-	SELECT  distinct
-		POC.PO_CATEGORY_ID as "poCategory.categoryId", 
-		POC.PO_CATEGORY as "poCategory.categoryName", 
-		SUBC.PO_SUBCATEGORY as "subCategory.subCategoryName",
-		SUBC.PO_SUBCATEGORY_ID as "subCategory.subCategoryId" 
-	FROM SMC.SMC_PO_CATEGORY POC 
-	LEFT JOIN 	
-		SMC.SMC_TEMPLATE_COMPONENTS TMCL
-	ON POC.PO_CATEGORY_ID = TMCL.PO_CATEGORY_ID
-	LEFT JOIN SMC.SMC_PO_SUBCATEGORY SUBC
-	ON SUBC.PO_SUBCATEGORY_ID = TMCL.SUB_CATEGORY_ID
-	WHERE
-			TMCL.PO_CATEGORY_ID=#{poCategoryId} and
-			TMCL.SUB_CATEGORY_ID=#{subCategoryId}
-			
-</select>
- -->
 <select id="getDeleteInEditModalContent"  resultType="com.penske.apps.adminconsole.model.TemplatePoCategorySubCategory">
 
 	SELECT  distinct
@@ -342,16 +284,15 @@ WHERE
 
 
 <insert id="addTemplate">
-INSERT into 
-	smc.smc_vendor_template(vendor_ID,created_by,created_date) values(#{vendorNumber},#{createdBy},CURRENT TIMESTAMP)
-
-
+INSERT INTO smc.smc_vendor_template(vendor_ID,created_by,created_date) 
+         values(#{vendorNumber},#{createdBy},CURRENT TIMESTAMP)
 </insert>
 
 <select id="getTemplateId" resultType="com.penske.apps.adminconsole.model.VendorTemplate">
 SELECT 
 	TEMPLATE_ID as templateId,
-	VENDOR_ID as vendorNumber
+	VENDOR_ID as vendorNumber,
+    VENDOR_ID
 FROM 
 	smc.smc_vendor_template 
 WHERE 
@@ -387,9 +328,10 @@ WHERE
 
 <select id="getAllTemplateManufactures" resultType="java.lang.String">
 		
-	SELECT DISTINCT 
-		vmaster.MFR  from smc.smc_vendor_template tmpl,
-	smc.smc_vendor_master vmaster
+	SELECT DISTINCT vmaster.MFR,
+           vmaster.VENDOR_ID
+      from smc.smc_vendor_template tmpl,
+	       smc.smc_vendor_master vmaster
 
 where  	tmpl.vendor_id= vmaster.vendor_id 
 
@@ -446,6 +388,7 @@ select
 		t.template_id as templateId,
 		edi.EDI_MFR as manufacture,
 		t.vendor_id as vendorNumber,
+        t.VENDOR_ID,
 		t.corp_code as corpCode
 	from smc.smc_vendor_template t,
 		CORP.FPURVND pur,corp.NVOEDIVND edi

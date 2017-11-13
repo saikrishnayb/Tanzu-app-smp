@@ -2,7 +2,7 @@ package com.penske.apps.suppliermgmt.dao;
 /**
  *****************************************************************************************************************
  * File Name     : HelpDAO
- * Description   : DAO class for fetching help 
+ * Description   : DAO class for fetching help
  * Project       : SMC
  * Package       : com.penske.apps.smcop.dao
  * Author        : 600104283
@@ -21,6 +21,6 @@ import com.penske.apps.adminconsole.annotation.NonVendorQuery;
 
 public interface HelpDAO {
 
-	@NonVendorQuery //TODO: Review Query
-	public String getHelp(@Param("userType") String userType);
+    @NonVendorQuery
+    public String getHelp(@Param("userType") String userType);
 }

@@ -15,15 +15,16 @@ import com.penske.apps.adminconsole.model.SearchTemplateForm;
  */
 
 public interface SearchTemplateDao {
-	@NonVendorQuery //TODO: Review Query
-	public List<SearchTemplate> selectAllSearchTemplates();
-	
-	@NonVendorQuery //TODO: Review Query
-	public SearchTemplate selectSearchTemplate(@Param("templateId") int templateId);
-	
-	@NonVendorQuery //TODO: Review Query
-	public SearchTemplate selectSearchTemplateByName(@Param("templateName") String templateName, @Param("templateId") int templateId);
-	
-	@NonVendorQuery //TODO: Review Query
-	public void updateSearchTemplate(@Param("searchTemplateForm") SearchTemplateForm searchTemplateForm);
+
+    @NonVendorQuery
+    public List<SearchTemplate> selectAllSearchTemplates();
+
+    @NonVendorQuery
+    public SearchTemplate selectSearchTemplate(@Param("templateId") int templateId);
+
+    @NonVendorQuery
+    public SearchTemplate selectSearchTemplateByName(@Param("templateName") String templateName, @Param("templateId") int templateId);
+
+    @NonVendorQuery
+    public void updateSearchTemplate(@Param("searchTemplateForm") SearchTemplateForm searchTemplateForm);
 }

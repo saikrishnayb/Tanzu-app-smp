@@ -12,39 +12,36 @@ import com.penske.apps.adminconsole.model.VendorContact;
 
 
 public interface VendorDao {
-	@NonVendorQuery //TODO: Review Query
-	public List<Vendor> getAllVendors(@Param("orgId")int orgId);
-	
-	@NonVendorQuery //TODO: Review Query
-	public List<Vendor> getVendorsBySearchConditions(@Param("orgId")int orgId,@Param("vendor") Vendor vendor);
-	
-	@NonVendorQuery //TODO: Review Query
-	public List<User> getAllPlanningAnalysts();
-	
-	@NonVendorQuery //TODO: Review Query
-	public List<User> getAllSupplySpecialists();
-	
-	@NonVendorQuery //TODO: Review Query
-	public Integer getVendorContact(@Param("contactType") String contactType, @Param("vendorId") int vendorId);
-	
-	@NonVendorQuery //TODO: Review Query
-	public Vendor getViewVendorInformation(int vendorId);
-	
-	@NonVendorQuery //TODO: Review Query
-	public Vendor getEditVendorInformation(int vendorId);
-	
-	@NonVendorQuery //TODO: Review Query
-	public void modifyVendorInfo(Vendor vendor);
-	
-	@NonVendorQuery //TODO: Review Query
-	public void modifyVendorContactInfo(VendorContact contact);
-	
-	@NonVendorQuery //TODO: Review Query
-	public void addVendorContact(VendorContact contact);
-	
-	@NonVendorQuery //TODO: Review Query
-	public void removeVendorContact(@Param("contactType") String contactType, @Param("vendorId") int vendorId);
-	
-	@NonVendorQuery //TODO: Review Query
-	public List<Alert> getAllAlerts();
+    public List<Vendor> getAllVendors(@Param("orgId")int orgId);
+
+    public List<Vendor> getVendorsBySearchConditions(@Param("orgId")int orgId,@Param("vendor") Vendor vendor);
+
+    @NonVendorQuery
+    public List<User> getAllPlanningAnalysts();
+
+    @NonVendorQuery
+    public List<User> getAllSupplySpecialists();
+
+    @NonVendorQuery // TODO: No harm to leave this annotation on here, but we should prob never look
+                    // athis in the future
+    public Integer getVendorContact(@Param("contactType") String contactType, @Param("vendorId") int vendorId);
+
+    public Vendor getViewVendorInformation(int vendorId);
+
+    public Vendor getEditVendorInformation(int vendorId);
+
+    @NonVendorQuery
+    public void modifyVendorInfo(Vendor vendor);
+
+    @NonVendorQuery
+    public void modifyVendorContactInfo(VendorContact contact);
+
+    @NonVendorQuery
+    public void addVendorContact(VendorContact contact);
+
+    @NonVendorQuery
+    public void removeVendorContact(@Param("contactType") String contactType, @Param("vendorId") int vendorId);
+
+    @NonVendorQuery
+    public List<Alert> getAllAlerts();
 }

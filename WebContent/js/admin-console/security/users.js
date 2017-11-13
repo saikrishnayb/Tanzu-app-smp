@@ -177,42 +177,13 @@ $(document).ready(function() {
 	//Show the advanced search form if the user had just used it.
 	if( ($searchUserForm.find('[name="firstName"]').val().length > 0) || ($searchUserForm.find('[name="lastName"]').val().length > 0) ||
 	($searchUserForm.find('[name="email"]').val().length > 0) || ($searchUserForm.find('[name="roleId"]').val().length > 0)){
-	
 			if (e.which == 13) {
-				
-				$searchUserForm.submit();
-				
-				//event.preventDefault();
+				$searchButtonsContainer.find('.search').trigger('click');
 			}
-		
 	}
 	});
 	
 	
-/*	function checkInputsnotEmpty(){
-		var $inputs = $('#search-first-name','#search-last-name','#search-role','#search-email');
-		$('.search').addClass('disabled');
-		$('.reset').addClass('disabled');
-		var result = 1;
-	    for (var i = 0; i < $inputs.length; i++) {
-	      if (!$inputs[i].value) {
-	        result = 0;
-	        break;
-	      }
-	    }
-	    if (result) {
-	    	$('.search').removeAttr('disabled');
-	    	$('.reset').removeAttr('disabled');
-	    } else {
-	      $submit.attr('disabled', 'disabled');
-	    }
-		
-	}
-	
-	$('.search').click(function (e) {
-        if ($(this).hasClass('disabled')) return false;
-        checkInputsnotEmpty();
-    });*/
 	
 	//search for vendor user accounts
 	$searchButtonsContainer.on('click', '.vendorSearch', function(){
@@ -226,12 +197,8 @@ $(document).ready(function() {
 	//Show the advanced search form if the user had just used it.
 	if( ($searchUserForm.find('[name="firstName"]').val().length > 0) || ($searchUserForm.find('[name="lastName"]').val().length > 0) ||
 	($searchUserForm.find('[name="email"]').val().length > 0) || ($searchUserForm.find('[name="roleId"]').val().length > 0)){
-	
 			if (e.which == 13) {
-				
-				$searchUserForm.submit();
-				
-				//event.preventDefault();
+				$searchButtonsContainer.find('.search').trigger('click');
 			}
 		
 	}

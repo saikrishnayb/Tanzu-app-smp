@@ -14,12 +14,13 @@ import com.penske.apps.adminconsole.model.SearchTemplate;
  */
 
 public interface TemplateDao {
-	@NonVendorQuery //TODO: Review Query
-	public List<String> getAllTemplateNames();
-	
-	@NonVendorQuery //TODO: Review Query
-	public List<SearchTemplate> getAllTemplates();
-	
-	@NonVendorQuery //TODO: Review Query
-	public SearchTemplate selectSearchTemplate(@Param("templateId") int templateId);
+
+    @NonVendorQuery
+    public List<String> getAllTemplateNames();
+
+    @NonVendorQuery
+    public List<SearchTemplate> getAllTemplates();
+
+    @NonVendorQuery
+    public SearchTemplate selectSearchTemplate(@Param("templateId") int templateId);
 }

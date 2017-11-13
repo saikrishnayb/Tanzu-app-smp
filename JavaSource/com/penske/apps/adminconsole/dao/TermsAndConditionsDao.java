@@ -16,9 +16,10 @@ import com.penske.apps.adminconsole.model.TermsAndConditions;
  */
 
 public interface TermsAndConditionsDao {
-	@NonVendorQuery //TODO: Review Query
-	public List<TermsAndConditions> selectAllTermsAndConditions();
-	
-	@NonVendorQuery //TODO: Review Query
-	public String selectTermsAndConditionsText(@Param("versionNumber") int versionNumber);
+
+    @NonVendorQuery
+    public List<TermsAndConditions> selectAllTermsAndConditions();
+
+    @NonVendorQuery
+    public String selectTermsAndConditionsText(@Param("versionNumber") int versionNumber);
 }

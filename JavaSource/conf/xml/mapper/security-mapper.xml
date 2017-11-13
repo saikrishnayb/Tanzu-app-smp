@@ -219,25 +219,6 @@
 	baseRoleName,r.status as status FROM result r
  	</select>
  	
- 	<select id="getVendorLocationInfo" resultType="com.penske.apps.adminconsole.model.VendorLocation">
- 		SELECT	CASE WHEN pur.PVSCTY IS NULL or pur.PVSCTY = '' THEN pur.PVOCTY ELSE pur.PVSCTY END as city,
-				CASE WHEN pur.PVSST IS NULL or pur.PVSST = '' THEN pur.PVOST ELSE pur.PVSST END  as state,
-				t.TEMPLATE_ID as templateId,
-				l.MFR as manufacture,
-				t.CORP_CODE as corpCode
-		FROM 	SMC.SMC_VENDOR_TEMPLATE t, 
-				SMC.SMC_VENDOR_MASTER l,
-				CORP.FPURVND pur,
-				CORP.NVOEDIVND edi 
-		WHERE 	pur.PVCORP = edi.EDI_CORP and 
-				pur.PVNBR = edi.EDI_VENDOR and 
-				t.VENDOR_ID = pur.PVNBR and 
-				l.MFR = edi.EDI_MFR and
-				t.CORP_CODE = pur.PVCORP and
-				l.VENDOR_NUMBER = pur.PVNBR and
-				l.VENDOR_ID = #{value}
- 	</select>
-
  	<!-- ********************************dropdowns and accordions********************************************* -->
  	
  	<select id="getAllVendorNames" resultType="String">
@@ -329,6 +310,7 @@
 				l.MFR as manufacturer,
 				l.vendor_number as vendorNumber,
 				l.vendor_id as vendorId,
+                l.vendor_id,
 				l.corp as corpCode
 				from smc.SMC_VENDOR_MASTER l,
 				CORP.FPURVND pur,corp.NVOEDIVND edi 
@@ -410,7 +392,8 @@
 				vmaster.MFR as manufacturer,
 				vmaster.vendor_number as vendorNumber,
 				vmaster.corp as corpCode,
-				vtemp.template_id as templateId
+				vtemp.template_id as templateId,
+                vmaster.vendor_id
 		FROM 
 				smc.SMC_VENDOR_MASTER vmaster
 				left outer join smc.smc_vendor_template vtemp
@@ -635,36 +618,12 @@
 		 	CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID ORDER BY ORG_ID
 		)
  	</delete>
- 	<!-- <insert id="addVendorUserAssoc">
- 		INSERT 	INTO SMC.SMC_VENDOR_USER_ASSOC 
- 				VALUES(#{param1}, #{param2})
- 	</insert> -->
  	
  	<delete  id="removeVendorUserAssoc">
  		DELETE 	FROM SMC.SMC_VENDOR_USER_ASSOC
  		WHERE 	USER_ID = #{userId}
  		AND 	VENDOR_ID = #{vendorId}
  	</delete>
- 	
- 	
- 	<!--<select id="selectVendorNumber" resultType="Integer">
- 		SELECT VENDOR_NUMBER FROM SMC.SMC_VENDOR_MASTER WHERE VENDOR_NAME=#{VENDOR_NAME}
- 	</select>
- 	 <select id="getVendorList" resultMap="VendorTreeMap">
- 		SELECT VENDOR_NAME FROM SMC.SMC_VENDOR_MASTER GROUP BY VENDOR_NAME 
- 	</select> -->
- 	<!--  <select id="getVendorList" resultMap="VendorTreeMap">
- 		SELECT VENDOR_ID,VENDOR_NAME,VENDOR_NUMBER FROM SMC.SMC_VENDOR_MASTER 
- 		<where>
-		  <if test="corp != ''">
-		  	CORP=#{corp}
-		  </if>
-	  	 <if test="vendor != ''">
-	  	 	AND VENDOR_NAME=#{vendor}
-	  	 </if>
-  	 </where>
-  	  order by  VENDOR_NAME ,VENDOR_NUMBER 
- 	</select>-->
  	
  	<select id="getVendorList" resultMap="VendorTreeMap">
 			SELECT m.VENDOR_ID, m.VENDOR_NUMBER, m.CORP, m.VENDOR_NAME, 

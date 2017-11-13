@@ -12,15 +12,16 @@ import com.penske.apps.adminconsole.model.Subject;
  */
 
 public interface SubjectDao {
-	@NonVendorQuery //TODO: Review Query
-	public List<Subject> getAllSubjects();
-	
-	@NonVendorQuery //TODO: Review Query
-	public void addSubject(Subject subject);
 
-	@NonVendorQuery //TODO: Review Query
-	public void modifySubject(Subject subject);
+    @NonVendorQuery
+    public List<Subject> getAllSubjects();
 
-	@NonVendorQuery //TODO: Review Query
-	public void modifySubjectStatus(int subjectId);
+    @NonVendorQuery
+    public void addSubject(Subject subject);
+
+    @NonVendorQuery
+    public void modifySubject(Subject subject);
+
+    @NonVendorQuery
+    public void modifySubjectStatus(int subjectId);
 }

@@ -15,51 +15,52 @@ import com.penske.apps.adminconsole.model.VehicleMake;
  */
 
 public interface DynamicRuleDao {
-	@NonVendorQuery //TODO: Review Query
-	public List<DynamicRule> getAllDynamicRulesByStatus(String status);
-	
-	@NonVendorQuery //TODO: Review Query
-	public Integer getDynamicRuleByPriority(int priority);
-	
-	@NonVendorQuery //TODO: Review Query
-	public DynamicRule getDynamicRuleById(int dynamicRuleId);
-	
-	// TODO This method uses an old table and may be changed to use a different table.
-	@NonVendorQuery //TODO: Review Query
-	public List<String> getAllCorpCodes();
-	
-	// TODO This method uses an old table and may be changed to use a different table.
-	@NonVendorQuery //TODO: Review Query
-	public List<VehicleMake> getAllVehicleMakes();
-	
-	// TODO This method uses an old table and may be changed to use a different table.
-	@NonVendorQuery //TODO: Review Query
-	public List<String> getVehicleModelsByMake(String make);
-	
-	@NonVendorQuery //TODO: Review Query
-	public void addDynamicRule(DynamicRule rule);
-	
-	@NonVendorQuery //TODO: Review Query
-	public void modifyDynamicRule(DynamicRule rule);
-	
-	@NonVendorQuery //TODO: Review Query
-	public void modifyDynamicRuleStatus(@Param("dynamicRuleId") int dynamicRuleId,@Param("modifiedBy") String modifiedBy);
-	
-	@NonVendorQuery //TODO: Review Query
-	public void modifyDynamicRulesByPriority(@Param("priority") int priority, @Param("increment") int increment);
 
-	@NonVendorQuery //TODO: Review Query
-	public List<String> getAvailableStatus();
-	
-	@NonVendorQuery //TODO: Review Query
-	public List<DynamicRule> getDynamicRuleByNonPriority(DynamicRule rule);
-	
-	@NonVendorQuery //TODO: Review Query
-	public Integer reOrderPriority(int newPriority);
-	
-	@NonVendorQuery //TODO: Review Query
-	public int getMaxPriority();
-	
-	@NonVendorQuery //TODO: Review Query
-	public void deleteDynamicRule(@Param("dynamicRuleId") int dynamicRuleId);
+    @NonVendorQuery
+    public List<DynamicRule> getAllDynamicRulesByStatus(String status);
+
+    @NonVendorQuery
+    public Integer getDynamicRuleByPriority(int priority);
+
+    @NonVendorQuery
+    public DynamicRule getDynamicRuleById(int dynamicRuleId);
+
+    // TODO This method uses an old table and may be changed to use a different table.
+    @NonVendorQuery
+    public List<String> getAllCorpCodes();
+
+    // TODO This method uses an old table and may be changed to use a different table.
+    @NonVendorQuery
+    public List<VehicleMake> getAllVehicleMakes();
+
+    // TODO This method uses an old table and may be changed to use a different table.
+    @NonVendorQuery
+    public List<String> getVehicleModelsByMake(String make);
+
+    @NonVendorQuery
+    public void addDynamicRule(DynamicRule rule);
+
+    @NonVendorQuery
+    public void modifyDynamicRule(DynamicRule rule);
+
+    @NonVendorQuery
+    public void modifyDynamicRuleStatus(@Param("dynamicRuleId") int dynamicRuleId,@Param("modifiedBy") String modifiedBy);
+
+    @NonVendorQuery
+    public void modifyDynamicRulesByPriority(@Param("priority") int priority, @Param("increment") int increment);
+
+    @NonVendorQuery
+    public List<String> getAvailableStatus();
+
+    @NonVendorQuery
+    public List<DynamicRule> getDynamicRuleByNonPriority(DynamicRule rule);
+
+    @NonVendorQuery
+    public Integer reOrderPriority(int newPriority);
+
+    @NonVendorQuery
+    public int getMaxPriority();
+
+    @NonVendorQuery
+    public void deleteDynamicRule(@Param("dynamicRuleId") int dynamicRuleId);
 }

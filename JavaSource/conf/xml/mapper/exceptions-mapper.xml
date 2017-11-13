@@ -103,7 +103,8 @@
          		ON SUBC.PO_SUBCATEGORY_ID = asoc.PO_SUBCATEGORY_ID
          		WHERE grp.GLOBAL_EXCEPTION_ID=excp.GLOBAL_EXCEPTION_ID
          	   ) as POGROUP,
-              excp.PROVIDER_VENDOR_ID
+              excp.PROVIDER_VENDOR_ID,
+              excp.PROVIDER_VENDOR_ID AS VENDOR_ID
              
 		
 		  FROM SMC.SMC_GLOBAL_EXCEPTIONS excp 

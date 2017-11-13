@@ -5,3 +5,4 @@
 .column-data-left{ float: left; width: 17%; }
 .column-data-right{ float: right; width: 36%; }
 .column-data-center{ display: inline-block; width: 47%; }
+.ui-dialog-titlebar{margin-bottom: -6px! important;}

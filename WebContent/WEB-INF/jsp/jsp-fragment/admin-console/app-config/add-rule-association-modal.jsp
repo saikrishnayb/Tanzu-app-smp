@@ -22,6 +22,7 @@
 			<option value="A">A</option>
 			<option value="N">N</option>
 	</select>
+	<h2 style="display: inline-block;">${componentRule.displayName}</h2>
 	<div id="label" style="width:100%">
 	<div class="column-left"><label>Priority <span class="errorMsg">*</span></label></div>
 	<div class="column-center"><label>Rule <span class="errorMsg">*</span></label></div>

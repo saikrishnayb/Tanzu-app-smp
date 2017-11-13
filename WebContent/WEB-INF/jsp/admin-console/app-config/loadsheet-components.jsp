@@ -49,7 +49,7 @@
 							<td>${component.lsOverride}</td>
 							<td>${component.screen2b}</td>
 							<td>
-							<a class="add-rule-association" id="${component.componentId}-${component.componentVisibilityId}-${viewMode}"><c:choose>
+							<a class="add-rule-association"  data-value="${component.group}${not empty component.subGroup ?' - ':''}${component.subGroup}${not empty component.componentName ?' - ':''}${component.componentName}" id="${component.componentId}-${component.componentVisibilityId}-${viewMode}"><c:choose>
 							        <c:when test="${viewMode eq 'Y' }">
 							         <c:if test="${component.ruleCount gt 0 }">
 							         View Rule(${component.ruleCount})
