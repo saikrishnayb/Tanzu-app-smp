@@ -2,6 +2,7 @@ var $vendorTable = $('#vendor-table');
 var $editVendorModal = $('#edit-vendor-modal');
 var $viewVendorModal = $('#view-vendor-modal');
 var $massUpdateModal = $('#mass-update-modal');
+var $searchButtonsContainer = $('#search-buttons-div');
 
 $(document).ready(function() {
 	selectCurrentNavigation("tab-security", "left-nav-vendors");
@@ -82,15 +83,18 @@ $(document).ready(function() {
 	
 	/* ------------ Advanced Search ------------ */
 	var $advancedForm = $('#advanced-search-form');
+	$searchButtonsContainer.on('click', '.search', function(){
 	
-	$('#search-content .search').on('click', function() {
+	/*$('#search-content .search').on('click', function() {*/
 		submitAdvancedSearch();
 	});
 	
 	// Allow user to submit form by using the enter key.
 	$('#advanced-search-form input, #advanced-search-form select').keypress(function(key) {
 		if (key.which == 13) {
-			submitAdvancedSearch();
+			/*submitAdvancedSearch();*/
+			$searchButtonsContainer.find('.search').trigger('click');
+			event.preventDefault();
 		}
 	});
 	

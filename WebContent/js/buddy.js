@@ -102,6 +102,8 @@ function saveBuddyList()
         		unBlockPopupModal("popupModal"); 
         		showLoadingForPage();
         		refreshPage();
+        		$("#hasBuddies").css("display", data);
+        		
         		
           },
          error: function(jqXHR, textStatus, errorThrown) 

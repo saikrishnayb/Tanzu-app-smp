@@ -75,11 +75,11 @@ $('.btn-save-vendor-filter').on('click', function() {
   
   var $saveUserVendorSelectionsPromise = $.post(getContextRoot() + "/userController/save-user-vendor-selections.htm", {vendorIds: selectedVendorIds.join()});
   
-  $saveUserVendorSelectionsPromise.done(function() {
+  $saveUserVendorSelectionsPromise.done(function(data) {
 	  //commented out so that the loading spinner stays visible until page refresh
 	  //hideLoading();
     ModalUtil.closeModal($('.modal-utility'));
-    
+    $("#hasVendors").css("display",data);
     //refreshes the page, without "resend data" warning
     document.querySelector('#mainFrame').contentWindow.location.href = document.querySelector('#mainFrame').contentWindow.location.href 
     });

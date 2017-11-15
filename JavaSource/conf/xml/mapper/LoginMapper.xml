@@ -111,5 +111,19 @@ SELECT
         WHERE roleFunctions.ROLE_ID = #{roleId}
           AND securityFunction.STATUS='A'
     </select>
+    
+    <select id="getUserVendorFilterSelections" resultType="com.penske.apps.suppliermgmt.domain.UserVendorFilterSelection">
+         SELECT orgMaster.ORG_ID,
+                vendorFilter.VENDOR_ID
+          FROM SMC_VENDOR_FILTER vendorFilter
+               INNER JOIN SMC_ORG_VENDOR_ASSOC vendorAssoc
+               ON vendorAssoc.VENDOR_ID = vendorFilter.VENDOR_ID
+               
+               INNER JOIN SMC_ORG_MASTER orgMaster
+               ON orgMaster.ORG_ID = vendorAssoc.ORG_ID
+    
+         WHERE vendorFilter.USER_ID = #{userId}
+           AND orgMaster.PARENT_ORG_ID = 1 -- only loads orgs which have a parent equal to 1 (Penske) -- Dave Roth
+  </select>
 		
 </mapper>

@@ -20,7 +20,7 @@
 			</div>
 			<div class="single-line-content" style="margin-top: 10px;">
 				<label for="dependentComponent">Dependent Component<span class=requiredField>*</span></label> 
-				<input id="dependentComponentName" tabindex=2 name="dependentComponentName" type="text" size="23" class="input alpha alpha-numeric" value="${editOverride.dependentComponentName}"  readonly="readonly"/>&nbsp;<a id="dependentComponentSel"><img src="${commonStaticUrl}/images/search.png"/></a>
+				<input id="dependentComponentName"  name="dependentComponentName" type="text" size="23" class="input alpha alpha-numeric" value="${editOverride.dependentComponentName}"  readonly="readonly"/>&nbsp;<a id="dependentComponentSel"><img tabindex=2 src="${commonStaticUrl}/images/search.png"/></a>
 				<input id="dependentComponentId" name="dependentComponentId" type="hidden" value="${editOverride.dependentComponentId}" class="input numeric numeric-whole" />
 			</div>
 			<div class="single-line-content" style="margin-top: 10px;">
@@ -39,7 +39,7 @@
 			</div>
 			<div class="single-line-content" style="margin-top: 10px;">
 				<label for="controllingComponent">Controlling Component</label> 
-				<input id="controllingComponentName"  tabindex=4 name="controllingComponentName" type="text" size="23" class="input alpha alpha-numeric optional" value="${editOverride.controllingComponentName}" readonly="readonly"/>&nbsp;<a id="controllingComponentSel"><img src="${commonStaticUrl}/images/search.png"/></a>
+				<input id="controllingComponentName"   name="controllingComponentName" type="text" size="23" class="input alpha alpha-numeric optional" value="${editOverride.controllingComponentName}" readonly="readonly"/>&nbsp;<a id="controllingComponentSel"><img tabindex=4 src="${commonStaticUrl}/images/search.png"/></a>
 				<input id="controllingComponentId" name="controllingComponentId" type="hidden" value="${editOverride.controllingComponentId}" />
 			</div>
 			<div class="single-line-content" style="margin-top: 18px;">

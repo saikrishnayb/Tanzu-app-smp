@@ -28,7 +28,8 @@ $(document).ready(function() {
 					vendorData,
 					function(data) {
 						//location.reload();
-						location.assign('./vendors.htm');
+						//location.assign('./vendors.htm');
+						 submitAdvancedSearch();//vod-982 change.
 					});
 		}
 		else {

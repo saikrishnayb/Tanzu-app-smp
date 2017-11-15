@@ -61,12 +61,12 @@
 					<ul class="utility-list">
 						<li>Welcome, ${userDetails.firstName} ${userDetails.lastName} </li>
 						<c:if test="${displayLink eq 'display' }">
-							<li><a href="#" onclick="openBuddyPopup();return false;">Buddy</a></li>
+							<li><a href="#" onclick="openBuddyPopup();return false;">Buddy</a><img id="hasBuddies" src="${commonStaticUrl}/images/status_green.png"  style="display: ${hasBuddies}"/></li>
               
                               <tl:isAuthorized tabName="Admin Console" secFunction="VENDOR_FILTER"> 
                                 <li>
                                   <tl:penskeOnly>
-                                    <a class="vendor-filter">Vendor Filter</a>
+                                    <a class="vendor-filter">Vendor Filter</a><img id="hasVendors" src="${commonStaticUrl}/images/status_green.png"  style="display: ${hasVendors}"/>
                                   </tl:penskeOnly>
                                 </li>
                                </tl:isAuthorized> 

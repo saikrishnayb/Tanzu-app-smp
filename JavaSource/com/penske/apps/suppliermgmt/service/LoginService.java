@@ -19,7 +19,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.penske.apps.adminconsole.annotation.SmcSecurity.SecurityFunction;
+import com.penske.apps.suppliermgmt.domain.UserVendorFilterSelection;
 import com.penske.apps.suppliermgmt.model.User;
 import com.penske.apps.suppliermgmt.model.UserContext;
 import com.penske.apps.suppliermgmt.model.VendorLocation;
@@ -33,6 +36,7 @@ public interface LoginService {
     public Map<String, Map<String,String>> getTabs(int roleId);
 
     public Set<SecurityFunction> getAllUserSecurityFunctions(UserContext userContext);
+    public List<UserVendorFilterSelection> getUserVendorFilterSelections(@Param("userId") int userId);
 
 }
 

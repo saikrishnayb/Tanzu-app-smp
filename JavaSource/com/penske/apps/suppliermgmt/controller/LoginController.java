@@ -34,10 +34,14 @@ import com.penske.apps.adminconsole.service.HeaderService;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.common.constants.ApplicationConstants;
 import com.penske.apps.suppliermgmt.common.util.LookupManager;
+import com.penske.apps.suppliermgmt.dao.UserDAO;
+import com.penske.apps.suppliermgmt.domain.UserVendorFilterSelection;
+import com.penske.apps.suppliermgmt.model.Buddies;
 import com.penske.apps.suppliermgmt.model.LookUp;
 import com.penske.apps.suppliermgmt.model.User;
 import com.penske.apps.suppliermgmt.model.UserContext;
 import com.penske.apps.suppliermgmt.service.LoginService;
+import com.penske.apps.suppliermgmt.service.UserService;
 
 
 @Controller
@@ -52,6 +56,11 @@ public class LoginController extends BaseController {
     private LookupManager lookUpManager;
     @Autowired
     private SuppliermgmtSessionBean sessionBean;
+    
+    @Autowired
+    private UserService userService;
+    @Autowired
+	private UserDAO userDao;
     
     private static final Logger LOGGER = Logger.getLogger(LoginController.class);
 
@@ -109,6 +118,12 @@ public class LoginController extends BaseController {
                     userContext.setOrgId(usermodel.getOrgId());
                     userContext.setTabSecFunctionMap(loginService.getTabs(userContext.getRoleId()));
                     userContext.setSecurityFunctions(loginService.getAllUserSecurityFunctions(userContext));
+                    if(userContext.getUserType()==ApplicationConstants.PENSKE_USER_TYPE){
+                    List<Buddies> existingBuddies=userService.getExistingBuddiesList(userContext.getUserName());
+                    List<UserVendorFilterSelection> userVendorFilterSelection = loginService.getUserVendorFilterSelections(usermodel.getUserId());
+                    session.setAttribute("hasBuddies", existingBuddies.size()>1?"inline-block":"none");
+                    session.setAttribute("hasVendors", userVendorFilterSelection.size()>0?"inline-block":"none");
+                    }
                     /*if logged in user is vendor user checking for associated vendors*/
                     if(userContext.getTabSecFunctionMap() == null || userContext.getTabSecFunctionMap().isEmpty()){
                         LOGGER.debug("Security functions not found for the logged in user");

@@ -6,6 +6,7 @@ $(document).ready(function() {
 	setAdvancedFormStatus();
 	
 	var $advancedForm = $('#advanced-search-form');
+	var $searchButtonsContainer = $('#search-buttons-div');
 	
 	/* ----------- Datatable Declaration ----------- */
 	var $roleTable = $('#roles-table');
@@ -74,21 +75,28 @@ $(document).ready(function() {
 	});
 	
 
-	$('#advanced-search-form').on('keypress', function(e) {
-		var $advancedForm = $('#advanced-search-form')
-		if($advancedForm.find('[name="baseRoleId"]').val().length > 0){
+	$('#advanced-search-form input, #advanced-search-form select').on('keypress', function(e) {
 		if (e.which == 13) {
-			search();
+			$searchButtonsContainer.find('.search').trigger('click');
 			event.preventDefault();
-		}
 		}
 		});
 	
-	$('.search').on('click', function() {
-		search();
+	$searchButtonsContainer.on('click', '.search', function(){
+		if ($advancedForm.find('input[name="roleName"]').val().length == 0) {
+			$advancedForm.find('input[name="roleName"]').prop('disabled', true);
+		}
+		
+		if ($advancedForm.find('select[name="baseRoleId"]').val().length == 0) {
+			$advancedForm.find('select[name="baseRoleId"]').prop('disabled', true);
+		}
+		
+		$advancedForm.find('input[type="checkbox"]').prop('disabled', true);
+		
+		$advancedForm.submit();
 	});
 	
-	function search(){
+/*	function search(){
 		// Disable all inputs that are unused so they do not get passed to the controller.
 		if ($advancedForm.find('input[name="roleName"]').val().length == 0) {
 			$advancedForm.find('input[name="roleName"]').prop('disabled', true);
@@ -101,7 +109,7 @@ $(document).ready(function() {
 		$advancedForm.find('input[type="checkbox"]').prop('disabled', true);
 		
 		$advancedForm.submit();
-	}
+	}*/
 	
 	
 	$('.reset').on('click', function() {

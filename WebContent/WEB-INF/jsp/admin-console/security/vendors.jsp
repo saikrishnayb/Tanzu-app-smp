@@ -84,7 +84,7 @@
 							</div>
 						</fieldset>
 						
-						<div class="floatRight button-div clear-both">
+						<div class="floatRight button-div clear-both" id="search-buttons-div">
 							<a class="buttonPrimary floatRight search" tabindex=11>Search</a>
 							<a class="secondaryLink floatRight reset" tabindex=10>Reset</a>
 							<div class="error floatRight hidden">

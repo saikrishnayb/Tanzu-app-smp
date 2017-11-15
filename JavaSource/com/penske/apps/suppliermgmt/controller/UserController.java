@@ -147,12 +147,13 @@ public class UserController extends BaseController {
      * @Excepton Exception
      */
     @RequestMapping(value = "/deleteBuddyList", method = {RequestMethod.GET, RequestMethod.POST })
-    public @ResponseBody void deleteBuddyList(@RequestParam("newBuddies")List<String> newBuddyArray,@RequestParam("existingBuddyList")List<String> existingBuddyList,HttpServletResponse response) throws Exception
+    public @ResponseBody String deleteBuddyList(@RequestParam("newBuddies")List<String> newBuddyArray,@RequestParam("existingBuddyList")List<String> existingBuddyList,HttpServletResponse response) throws Exception
     {	//
 
         UserContext userContext= sessionBean.getUserContext();
         List<Buddies> newBuddyList=new ArrayList<Buddies>();
         String loggedInUserSso=userContext.getUserSSO();
+        List<Buddies> existingBuddies=new ArrayList<Buddies>();
         try{
 
             if(existingBuddyList!=null&&!existingBuddyList.isEmpty())
@@ -164,9 +165,12 @@ public class UserController extends BaseController {
             UserHandler.populateNewBuddyUserList(newBuddyList,usersList,deptDetailList,loggedInUserSso,newBuddyArray);
 
             addBuddyList(newBuddyList,loggedInUserSso);
+            existingBuddies =userService.getExistingBuddiesList(userContext.getUserName());
+            
         }catch(Exception e){
             handleAjaxException(e, response);
         }
+        return existingBuddies.size()>1?"inline-block":"none";
     }
 
     @VendorAllowed
@@ -206,8 +210,9 @@ public class UserController extends BaseController {
     @SmcSecurity(securityFunction = SecurityFunction.VENDOR_FILTER)
     @RequestMapping(value = "/save-user-vendor-selections", method = {RequestMethod.POST })
     @ResponseBody
-    public void saveUserVendorFilters(@RequestParam("vendorIds") List<Integer> vendorIds) {
+    public String saveUserVendorFilters(@RequestParam("vendorIds") List<Integer> vendorIds) {
         userService.saveUserVendorFilterSelections(vendorIds);
+        return vendorIds.size()>0?"inline-block":"none";
     }
 
 }

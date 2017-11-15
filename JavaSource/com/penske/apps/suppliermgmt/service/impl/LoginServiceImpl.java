@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.penske.apps.adminconsole.annotation.SmcSecurity.SecurityFunction;
 import com.penske.apps.suppliermgmt.dao.LoginDAO;
+import com.penske.apps.suppliermgmt.domain.UserVendorFilterSelection;
 import com.penske.apps.suppliermgmt.model.Tab;
 import com.penske.apps.suppliermgmt.model.User;
 import com.penske.apps.suppliermgmt.model.UserContext;
@@ -93,6 +94,14 @@ public class LoginServiceImpl implements LoginService{
 
         return userSecurityFunctions;
     }
+
+
+	@Override
+	public List<UserVendorFilterSelection> getUserVendorFilterSelections(
+			int userId) {
+		 List<UserVendorFilterSelection> userVendorFilterSelections = loginDao.getUserVendorFilterSelections(userId);
+		return userVendorFilterSelections;
+	}
 
 
 }

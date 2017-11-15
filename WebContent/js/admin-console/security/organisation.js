@@ -103,7 +103,7 @@ $(document).ready(function() {
 		var  $searchForm = $('#search-org-form');
 		if(($searchForm.find('[name="orgName"]').val().length > 0) || ($searchForm.find('[name="parentOrgId"]').val().length > 0) || ($searchForm.find('[name="parentOrgId"]').val() != 'select')){
 		if (e.which == 13) {
-			search();
+			$searchButtonsContainer.find('.search').trigger('click');
 			event.preventDefault();
 		}
 		}

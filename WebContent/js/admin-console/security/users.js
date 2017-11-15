@@ -179,6 +179,7 @@ $(document).ready(function() {
 	($searchUserForm.find('[name="email"]').val().length > 0) || ($searchUserForm.find('[name="roleId"]').val().length > 0)){
 			if (e.which == 13) {
 				$searchButtonsContainer.find('.search').trigger('click');
+				event.preventDefault();
 			}
 	}
 	});
@@ -198,7 +199,8 @@ $(document).ready(function() {
 	if( ($searchUserForm.find('[name="firstName"]').val().length > 0) || ($searchUserForm.find('[name="lastName"]').val().length > 0) ||
 	($searchUserForm.find('[name="email"]').val().length > 0) || ($searchUserForm.find('[name="roleId"]').val().length > 0)){
 			if (e.which == 13) {
-				$searchButtonsContainer.find('.search').trigger('click');
+				$searchButtonsContainer.find('.vendorSearch').trigger('click');
+				event.preventDefault();
 			}
 		
 	}
@@ -258,6 +260,7 @@ $(document).ready(function() {
 		$getEditUserModalContentPromise.done(function(data){
 			$editModal.html(data);
 			openModal($editModal);
+			$('#ui-dialog-title-edit-modal').prop('title','testtooltip');
 			//   $(".ui-dialog").addClass("custom_dialog_style");
 			
 		});

@@ -42,7 +42,7 @@
 						</fieldset>
 					</form>
 					
-					<div class="floatRight clear-left button-div">
+					<div class="floatRight clear-left button-div" id="search-buttons-div">
 						<a class="buttonSecondary floatRight search" tabindex=4>Search</a>
 						<a class="secondaryLink floatRight reset" tabindex=3>Reset</a>
 					</div>
