@@ -11,12 +11,12 @@
 					<form id="user-form" <c:if test="${isCreatePage == true}"> action="${pageContext.request.contextPath}/admin-console/security/create-user.htm"  </c:if> 
 										 <c:if test="${isCreatePage != true}"> action="${pageContext.request.contextPath}/admin-console/security/edit-user-submit.htm" </c:if> 
 										 enctype="multipart/form-data" method="POST">
-						<input id="user-id" name="userId" type="text" class="displayNone" class="input" value="<c:out value="${editableUser.userId}"/> "/>
+						<input id="user-id" name="userId" type="text" class="displayNone" class="input" value="<c:out value="${editableUser.userId}"/>"/>
 						<input id="vendor-ids" name="vendorIds" type="text" class="displayNone" class="input"/>
-						<input id="ge-sso-id" name="gessouid" type="text" class="displayNone" class="input" value="<c:out value="${editableUser.gessouid}"/> "/>
+						<input id="ge-sso-id" name="gessouid" type="text" class="displayNone" class="input" value="<c:out value="${editableUser.gessouid}"/>"/>
 						<div id="sso-id-div" class="single-line-content">
 								<label for="sso-id">SSO ID <span class=requiredField>*</span></label> 
-								<input id="sso-id" name="ssoId"  class="input alpha alpha-numeric" tabindex=1 type="text" value="<c:out value="${editableUser.ssoId}"/> "/>
+								<input id="sso-id" name="ssoId"  class="input alpha alpha-numeric" tabindex=1 type="text" value="<c:out value="${editableUser.ssoId}"/>"/>
 							<c:if test = "${isCreatePage == false}">
 							 <span id="refreshSSODetails" class="reloadImage"><a href="#" id="refreshSSO"></a></span>
 							  </c:if>
