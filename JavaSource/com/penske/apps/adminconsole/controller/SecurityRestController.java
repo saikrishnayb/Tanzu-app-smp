@@ -757,6 +757,7 @@ public class SecurityRestController {
         return "Succes:"+deleted;
     }
 
+    @VendorAllowed
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_USERS)
     @RequestMapping("sso-user-lookup-refresh")
     @ResponseBody
