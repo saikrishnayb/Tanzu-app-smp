@@ -3,9 +3,12 @@ package com.penske.apps.adminconsole.model;
 import java.util.Comparator;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class Role {
 
     public static final Comparator<Role> ROLE_NAME_ASC = new RoleNameComparator();
+    public static final Comparator<Role> ORG_NAME_ASC_ROLE_NAME_ASC = new OrgNameRoleNameComparator();
 
     private String roleName;
     private String baseRoleName;
@@ -146,8 +149,32 @@ public class Role {
             String otherRoleName = otherRole.getRoleName();
 
             if (roleName == otherRoleName) return 0;// This takes care of nulls
+            return roleName == null ? 1 : roleName.compareToIgnoreCase(otherRoleName);
+        }
+    }
 
-            return roleName != null ? roleName.compareTo(otherRoleName) : 1;
+    private static class OrgNameRoleNameComparator implements Comparator<Role> {
+
+        @Override
+        public int compare(Role role, Role otherRole) {
+
+            String orgName = role.getOrgName();
+            String otherOrgName = otherRole.getOrgName();
+
+            boolean sameOrgName = StringUtils.equalsIgnoreCase(orgName, otherOrgName);
+
+            if (!sameOrgName) {
+                return orgName == null ? 1 : orgName.compareToIgnoreCase(otherOrgName);
+            } else {
+
+                String roleName = role.getRoleName();
+                String otherRoleName = otherRole.getRoleName();
+
+                if (roleName == otherRoleName) return 0;// This takes care of nulls
+                return roleName == null ? 1 : roleName.compareToIgnoreCase(otherRoleName);
+
+            }
+
         }
     }
 

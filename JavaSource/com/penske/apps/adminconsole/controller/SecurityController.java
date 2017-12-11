@@ -1,5 +1,6 @@
 package com.penske.apps.adminconsole.controller;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -163,6 +164,7 @@ public class SecurityController {
         }else{
             myRoleList=roleService.getMyRoles(currentUser.getRoleId(),currentUser.getOrgId(), 0,null,isSupplier);
         }
+        Collections.sort(myRoleList, Role.ROLE_NAME_ASC);
         mav.addObject("roles", myRoleList);
         mav.addObject("myRole", currentUser.getRoleId());
         mav.addObject("baseRoles",myRoleList);
@@ -180,8 +182,12 @@ public class SecurityController {
         mav.addObject("searchedRole", role);
 
         // For populating the rest of the page
-        mav.addObject("roles", roleService.getMyRoles(currentUser.getRoleId(),currentUser.getOrgId(),role.getBaseRoleId(),role.getRoleName(),isSupplier));
-        mav.addObject("baseRoles",roleService.getMyRoles(currentUser.getRoleId(),currentUser.getOrgId(), 0,null,isSupplier));
+        List<Role> myRoles = roleService.getMyRoles(currentUser.getRoleId(), currentUser.getOrgId(), role.getBaseRoleId(), role.getRoleName(), isSupplier);
+        Collections.sort(myRoles, Role.ROLE_NAME_ASC);
+        mav.addObject("roles", myRoles);
+        List<Role> myRoles2 = roleService.getMyRoles(currentUser.getRoleId(), currentUser.getOrgId(), 0, null, isSupplier);
+        Collections.sort(myRoles2, Role.ROLE_NAME_ASC);
+        mav.addObject("baseRoles", myRoles2);
 
         return mav;
     }
@@ -196,6 +202,7 @@ public class SecurityController {
         List<Role> myRoles=roleService.getMyRoleDescend(currentUser.getRoleId(),currentUser.getOrgId(),isSupplier);
         //Removed current role and its child -- to prevent from choosing while modify
         List<Role> roles=roleService.removeCurrentRoleAndChild(roleId, myRoles,currentUser.getOrgId());
+        Collections.sort(roles, Role.ORG_NAME_ASC_ROLE_NAME_ASC);
         mav.addObject("roles",roles);
         mav.addObject("editRole", roleService.getRoleById(roleId));
         mav.addObject("editOrCopy", editOrCopy);
@@ -211,7 +218,9 @@ public class SecurityController {
         ModelAndView mav = new ModelAndView("/admin-console/security/create-new-role");
         HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
         boolean isSupplier = currentUser.getUserTypeId() == ApplicationConstants.SUPPLIER_USER;
-        mav.addObject("roles", roleService.getMyRoleDescend(currentUser.getRoleId(),currentUser.getOrgId(),isSupplier));
+        List<Role> myRoleDescend = roleService.getMyRoleDescend(currentUser.getRoleId(), currentUser.getOrgId(), isSupplier);
+        Collections.sort(myRoleDescend, Role.ORG_NAME_ASC_ROLE_NAME_ASC);
+        mav.addObject("roles", myRoleDescend);
 
         return mav;
     }
