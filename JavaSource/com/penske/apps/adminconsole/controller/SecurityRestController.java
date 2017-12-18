@@ -758,7 +758,7 @@ public class SecurityRestController {
     }
 
     @VendorAllowed
-    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_USERS)
+    @SmcSecurity(securityFunction = {SecurityFunction.MANAGE_USERS, SecurityFunction.MANAGE_VENDOR_USERS})
     @RequestMapping("sso-user-lookup-refresh")
     @ResponseBody
     public ModelAndView ssoLookupRefresh(@RequestParam(value="userId") String userId, @RequestParam(value="userType") String userType,HttpServletResponse response) {
