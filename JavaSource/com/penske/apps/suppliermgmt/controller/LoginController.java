@@ -34,7 +34,6 @@ import com.penske.apps.adminconsole.service.HeaderService;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.common.constants.ApplicationConstants;
 import com.penske.apps.suppliermgmt.common.util.LookupManager;
-import com.penske.apps.suppliermgmt.dao.UserDAO;
 import com.penske.apps.suppliermgmt.domain.UserVendorFilterSelection;
 import com.penske.apps.suppliermgmt.model.Buddies;
 import com.penske.apps.suppliermgmt.model.LookUp;
@@ -59,8 +58,6 @@ public class LoginController extends BaseController {
     
     @Autowired
     private UserService userService;
-    @Autowired
-	private UserDAO userDao;
     
     private static final Logger LOGGER = Logger.getLogger(LoginController.class);
 

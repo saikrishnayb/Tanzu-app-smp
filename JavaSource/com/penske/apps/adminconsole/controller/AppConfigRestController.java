@@ -900,6 +900,7 @@ public class AppConfigRestController {
         try {
             loadsheetManagementService.saveComponentRules(componentRule);
         } catch (Exception e) {
+            logger.info(e);
             CommonUtils.getCommonErrorAjaxResponse(response, "Error ocuured while adding the rules, please contact system admin.");
         }
     }
@@ -912,6 +913,7 @@ public class AppConfigRestController {
         try {
             loadsheetManagementService.DeleteRuleDetails(ruleId);
         } catch (Exception e) {
+            logger.info(e);
             CommonUtils.getCommonErrorAjaxResponse(response, "");
         }
     }
@@ -932,6 +934,7 @@ public class AppConfigRestController {
         try {
             loadsheetManagementService.deleteLoadsheetSequence(sequenceId);
         } catch (Exception e) {
+            logger.info(e);
             CommonUtils.getCommonErrorAjaxResponse(response, "");
         }
     }

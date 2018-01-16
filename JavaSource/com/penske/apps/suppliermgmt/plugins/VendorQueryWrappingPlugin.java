@@ -35,6 +35,7 @@ import org.apache.ibatis.reflection.wrapper.ObjectWrapper;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.type.SimpleTypeRegistry;
+import org.apache.log4j.Logger;
 
 import com.penske.apps.adminconsole.annotation.NonVendorQuery;
 import com.penske.apps.suppliermgmt.common.exception.HumanReadableException;
@@ -58,6 +59,7 @@ import com.penske.apps.suppliermgmt.model.UserContext;
 })
 public class VendorQueryWrappingPlugin implements Interceptor
 {
+    private static final Logger logger = Logger.getLogger(VendorQueryWrappingPlugin.class);
 	private static final String WRAPPER_SQL_PREFIX = "SELECT inside.* FROM (";
 	private static final String WRAPPER_SQL_MIDDLE = ") inside WHERE VENDOR_ID IN (";
 	private static final String WRAPPER_SQL_SUFFIX = ")";
@@ -148,6 +150,7 @@ public class VendorQueryWrappingPlugin implements Interceptor
 		try {
 			daoClass = Class.forName(className);
 		} catch (ClassNotFoundException e) {
+		    logger.info(e);
 			throw new IllegalStateException("Could not find DAO class for query " + queryId);
 		}
 		

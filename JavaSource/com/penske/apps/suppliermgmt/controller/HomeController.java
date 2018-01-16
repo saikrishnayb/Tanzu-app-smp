@@ -61,7 +61,7 @@ public class HomeController extends BaseController{
     public ModelAndView displayHome(){
         LOGGER.debug("Inside displayHome()");
         ModelAndView modelandView = null;
-        String helpLink=null;
+        // String helpLink=null;
         try{
             UserContext userModel = sessionBean.getUserContext();
             modelandView=new ModelAndView("appContainer");
