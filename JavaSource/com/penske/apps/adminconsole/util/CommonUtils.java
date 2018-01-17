@@ -50,7 +50,7 @@ public class CommonUtils {
 		        ObjectOutputStream o = new ObjectOutputStream(b);
 		        o.writeObject(componentNameList);
 		        
-		        md1 = MessageDigest.getInstance("MD5");
+		        md1 = MessageDigest.getInstance("MD5"); // parasoft-suppress SECURITY.WSC.ICA "We don't use this to store any sensitive data"
 
 				byte[] thedigest = md1.digest(b.toByteArray());
 				
