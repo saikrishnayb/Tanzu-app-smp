@@ -31,9 +31,7 @@ public interface CategoryManagementService {
 
 	public List<SubCategory> getSubCategories(int poCategoryId);
 	
-	public void addCategoryAssociation( int poCategoryId, int subCategoryId);
-	
-	public CategoryAssociation getNewCategoryAssociation(int poCategoryId,int subCategoryId);
+	public void addCategoryAssociation(CategoryAssociation addAssociationForm);
 	
 	public PoCategory getMaxCategoryId();
 	
@@ -49,4 +47,10 @@ public interface CategoryManagementService {
 	
 	public boolean checkCategoryExist(PoCategory category,boolean isCreate);
 	public boolean checkSubCategoryExist(SubCategory subCategory,boolean isCreate);
+
+	public CategoryAssociation getEditCategoryAssociation(int associationId);
+
+	public void updateCategoryAssociation(CategoryAssociation addAssociationForm);
+
+	
 }

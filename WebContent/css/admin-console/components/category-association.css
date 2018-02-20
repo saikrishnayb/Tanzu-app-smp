@@ -1,6 +1,7 @@
 .add-association label{
 	width:140px;
 	display:inline-block;	
+	margin-top: 8px;
 }
 
 .add-association select{
@@ -8,7 +9,28 @@
 		
 }
 .close-save{
-	position:absolute;
 	bottom:3px;
 	right:5px;
+}
+.associated-fields{
+	display:none;
+}
+.reqField{
+	margin-top: 12px;
+	display: inline-block!important;
+	vertical-align: top;
+}
+.checkboxStyle{
+	ertical-align: top;
+    line-height: 24px;
+    margin: 2px 0;
+    display: block;
+    height: 79px;
+    width: 178px;
+    padding-left: 155px;    
+    margin-top: -21px;
+}
+
+.edit-category-association{
+	 padding-left: 20px;
 }

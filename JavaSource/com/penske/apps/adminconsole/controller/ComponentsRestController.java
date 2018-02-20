@@ -2,7 +2,9 @@ package com.penske.apps.adminconsole.controller;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -11,6 +13,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.penske.apps.adminconsole.annotation.SmcSecurity;
 import com.penske.apps.adminconsole.annotation.SmcSecurity.SecurityFunction;
+import com.penske.apps.adminconsole.enums.PoCategoryType;
 import com.penske.apps.adminconsole.model.CategoryAssociation;
 import com.penske.apps.adminconsole.model.ComponentSequence;
 import com.penske.apps.adminconsole.model.ComponentVisibility;
@@ -529,27 +533,57 @@ public class ComponentsRestController {
         List<PoCategory> categoryList = componentVendorTemplateService.getPoCategories();
         ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/components/add-category-association-content");
         mav.addObject("categoryList",categoryList);
+        mav.addObject("isEditPage",false);
         return mav;
+    }
+    
+    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_CATEGORY_ASSOCIATION)
+    @RequestMapping(value="get-edit-category-association-modal-content")
+    @ResponseBody
+    public ModelAndView getEditCategoryAssociationContent(int associationId) {
+       
+        CategoryAssociation categoryAssociation = categoryManagementService.getEditCategoryAssociation(associationId);
+        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/components/add-category-association-content");
+        mav.addObject("categoryAssociation",categoryAssociation);
+        mav.addObject("isEditPage",true);
+        return mav; 
     }
 
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_CATEGORY_ASSOCIATION)
     @RequestMapping(value="get-sub-categories-association")
     @ResponseBody
-    public List<SubCategory> getSubCategoryAssociation(@RequestParam("poCategoryId") int poCategoryId) {
-
-        List<SubCategory> categoryList = categoryManagementService.getSubCategories(poCategoryId);
-        return categoryList;
+    public  Map<String, Object> getSubCategoryAssociation(@RequestParam("poCategoryId") int poCategoryId,@RequestParam("poCategoryText") PoCategoryType poCategory,HttpServletResponse response) {
+       
+    	Map<String,Object> subCategoryAssociationMap = new HashMap<String, Object>();
+    	   List<SubCategory> categoryList = new ArrayList<SubCategory>();
+    	try{
+       categoryList = categoryManagementService.getSubCategories(poCategoryId);
+    	}catch (Exception e) {
+            LOGGER.debug(e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+        boolean makeModelYearReqdAsDefault = PoCategoryType.isManufacturerInfoRequired(poCategory);
+    	boolean vehicleTypeReqdAsDefault =  PoCategoryType.isVehicleTypeRequired(poCategory);
+    	boolean vehicleSizeReqdAsDefault	= PoCategoryType.isSizeRequired(poCategory);
+    	subCategoryAssociationMap.put("subCategoryList",categoryList);
+    	subCategoryAssociationMap.put("makeModelYearReqdAsDefault",makeModelYearReqdAsDefault);
+    	subCategoryAssociationMap.put("vehicleTypeReqdAsDefault",vehicleTypeReqdAsDefault);
+    	subCategoryAssociationMap.put("vehicleSizeReqdAsDefault",vehicleSizeReqdAsDefault);
+        return subCategoryAssociationMap; 
     }
 
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_CATEGORY_ASSOCIATION)
     @RequestMapping(value="add-category-association")
     @ResponseBody
-    public CategoryAssociation addCategoryAssociation(@RequestParam("poCategoryId") int poCategoryId,@RequestParam("subCategoryId") int subCategoryId,HttpServletResponse response) throws Exception  {
-
-        categoryManagementService.addCategoryAssociation(poCategoryId, subCategoryId);
-        CategoryAssociation categoryAssociation = categoryManagementService.getNewCategoryAssociation(poCategoryId, subCategoryId);
-        return categoryAssociation;
-
+    public void addCategoryAssociation(@ModelAttribute("addAssociationForm") CategoryAssociation addAssociationForm,HttpServletResponse response) throws Exception  {
+		categoryManagementService.addCategoryAssociation(addAssociationForm);
+   	}
+    
+    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_CATEGORY_ASSOCIATION)
+    @RequestMapping(value="update-category-association")
+    @ResponseBody
+    public void updateCategoryAssociation(@ModelAttribute("addAssociationForm") CategoryAssociation addAssociationForm,HttpServletResponse response) throws Exception  {
+		categoryManagementService.updateCategoryAssociation(addAssociationForm);
     }
 
     @RequestMapping(value="change-category-association-status")

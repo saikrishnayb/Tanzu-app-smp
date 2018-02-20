@@ -51,7 +51,6 @@ $(document).ready(function() {
 			width: 'auto',
 			minHeight:150,
 			resizable: false,
-			title: 'Add association',
 			closeOnEscape: false,
 			open: function(event, ui) { }
 		});
@@ -107,6 +106,25 @@ $(document).ready(function() {
 					+ '<div style="position:absolute;bottom:3px;right:5px;"><a class="secondaryLink cancel" tabIndex="1">No, Cancel</a><a class="buttonPrimary delete" tabIndex="2">Yes, Delete</a></div>');
 			
 			openModal($('#deactivate-category-association-modal'));
+		 });
+		
+		//edit association
+		$categoryAssociationTable.on("click",'.edit-category-association',function(){
+	
+			var $this =$(this);
+			var associationId = $this.closest('.category-association-row').find('.editable').find('.association-id').val();
+			var $getEditCategoryAssociationModalContentPromise  =$.get("get-edit-category-association-modal-content.htm",{associationId:associationId});
+			
+			$getEditCategoryAssociationModalContentPromise.done(function(data){
+				$addAssociationModal.html(data);
+				$('#add-association-modal').dialog({title: 'Edit Association'});
+				$('.associated-fields').css({"display":"inline"},{"width":"198px"});
+				$('.checkboxStyle').css({"padding-left":"152px"});
+				
+				openModal($addAssociationModal);
+				
+		    });
+			
 		 });
 		
 		
@@ -170,6 +188,7 @@ $(document).ready(function() {
 				
 			$getAddCategoryAssociationModalContentPromise.done(function(data){
 				$addAssociationModal.html(data);
+				$('#add-association-modal').dialog({title: 'Add Association'});
 				openModal($addAssociationModal);
 				
 		    });
@@ -187,13 +206,28 @@ $(document).ready(function() {
 			var $this =$(this);
 			var poCategoryId = $this.val();
 			var poCategoryText = $(this).find("option:selected").text();
-			var $getPoSubCategoriesPromise =$.get("get-sub-categories-association.htm",{poCategoryId:poCategoryId});
+			if(poCategoryText=='MISC' ){
+				$(".associated-fields").show();
+				$('#makeModelYearRequired').prop('checked',true);
+				$('#vehicleSizeRequired').prop('checked',true);
+				$('#vehicleTypeRequired').prop('checked',true);
+			}else{
+				$(".associated-fields").hide();
+				$('#makeModelYearRequired').prop('checked',false);
+				$('#vehicleSizeRequired').prop('checked',false);
+				$('#vehicleTypeRequired').prop('checked',false);
+			}
+			var $getPoSubCategoriesPromise =$.get("get-sub-categories-association.htm",{poCategoryId:poCategoryId,poCategoryText:poCategoryText});
 			var $poSubCategoryDropDown = $('#sub-category');
 			$getPoSubCategoriesPromise.done(function(data){
 				
 				$poSubCategoryDropDown.attr('disabled', false);
 				$poSubCategoryDropDown.empty().append("<option value="+''+">Select</option>");
-				var poSubCategoryList =data;
+				var poSubCategoryList =data["subCategoryList"];
+				var makeModelYearReqdAsDefault = data["makeModelYearReqdAsDefault"];
+				var vehicleTypeReqdAsDefault = data["vehicleTypeReqdAsDefault"];
+				var vehicleSizeReqdAsDefault = data["vehicleSizeReqdAsDefault"];
+				
 				if(poSubCategoryList !=null && poSubCategoryList.length>0){
 					 $('.error-messages-container').addClass('displayNone');
 					 $('.error-messages-container').find('.errorMsg').text('');
@@ -206,6 +240,18 @@ $(document).ready(function() {
 					$poSubCategoryDropDown.attr('disabled', true);
 					 $('.error-messages-container').removeClass('displayNone');
 					$('.error-messages-container').find('.errorMsg').text("PO Category-'"+poCategoryText+"' associated to all Sub-Categories");
+				}
+				
+				if(poCategoryText!='MISC'){
+					if(makeModelYearReqdAsDefault == true){
+					$('#makeModelYearRequired').prop('checked',true);
+					}
+					if(vehicleSizeReqdAsDefault  == true){
+					$('#vehicleSizeRequired').prop('checked',true);
+					}
+					if(vehicleTypeReqdAsDefault  == true){
+					$('#vehicleTypeRequired').prop('checked',true);
+					}
 				}
 		
 			});
@@ -223,37 +269,59 @@ $(document).ready(function() {
 			var poCategoryId= $selectedPoCategory.val();
 			var $selectedSubCategory = $('#sub-category').find('option:selected');
 			var subCategoryId= $selectedSubCategory.val();
+			var makeModelYearRequired = $('#makeModelYearRequired').is(':checked')?true:false;
+			var vehicleSizeRequired = $('#vehicleSizeRequired').is(':checked')?true:false;
+			var vehicleTypeRequired = $('#vehicleTypeRequired').is(':checked')?true:false;
+			
 			 $('.error-messages-container').addClass('displayNone');
 			 $('.error-messages-container').find('.errorMsg').text('');
 			if(validate(poCategoryId,subCategoryId)){
-				var $addCategoryAssociationPromise =$.post("add-category-association.htm",{poCategoryId:poCategoryId,subCategoryId:subCategoryId});
+				var $addCategoryAssociationPromise =$.post("add-category-association.htm",{poCategoryId:poCategoryId,subCategoryId:subCategoryId,makeModelYearRequired:makeModelYearRequired,vehicleSizeRequired:vehicleSizeRequired,vehicleTypeRequired:vehicleTypeRequired});
 				$error.hide();
 				$addCategoryAssociationPromise.done(function(data){
 					
-				/*	var firstColoumn = '<a><img src="' + commonStaticUrl + '/images/delete.png" class="centerImage rightMargin delete-association" /></a>'
-					 + '<input type ="hidden" class="association-id" value="' +data.associationId+'"/>';
-					
-					var rowIndex = $categoryAssociationTable.fnAddData([firstColoumn,data.poCategoryName,data.subCategoryName,'Active']);
-					var newRow = $categoryAssociationTable.fnGetNodes(rowIndex[0]);
-					$(newRow).addClass("category-association-row");
-					closeModal($addAssociationModal);
-					*/
+				
 					location.assign('./category-association.htm');
 				});
 				
 				$addCategoryAssociationPromise.fail( function(xhr, textStatus, errorThrown) {
 					 if(xhr.responseText.indexOf('POCategory-SubCategory association already exist')>0){
-						 
-						 // $error.find('.errorMsg').text('POCategory-SubCategory association already exist');
-						//  $error.show();
 						 $('.error-messages-container').removeClass('displayNone');
 						 $('.error-messages-container').find('.errorMsg').text("'POCategory-SubCategory association already exist'");
-						//  return view();
 					  }			
 			    });
 			}else{
 				 $('.error-messages-container').removeClass('displayNone');
 				 $('.error-messages-container').find('.errorMsg').text("A required field is missing.");
+			}
+			
+		
+		}
+		
+		$addAssociationModal.on("click",'.update-association',function(){
+			updateAssociation();
+		});
+		
+		function updateAssociation(){
+
+			var $error = $addAssociationModal.find('.error');
+			var associationId = $('#associationId').val();
+			var makeModelYearRequired = $('#makeModelYearRequired').is(':checked')?true:false;
+			var vehicleSizeRequired = $('#vehicleSizeRequired').is(':checked')?true:false;
+			var vehicleTypeRequired = $('#vehicleTypeRequired').is(':checked')?true:false;
+			 $('.error-messages-container').addClass('displayNone');
+			 $('.error-messages-container').find('.errorMsg').text('');
+			if(associationId!=null){
+				var $updateCategoryAssociationPromise =$.post("update-category-association.htm",{associationId:associationId,makeModelYearRequired:makeModelYearRequired,vehicleSizeRequired:vehicleSizeRequired,vehicleTypeRequired:vehicleTypeRequired});
+				$error.hide();
+				$updateCategoryAssociationPromise.done(function(data){
+					
+				location.assign('./category-association.htm');
+				});
+				
+			}else{
+				 $('.error-messages-container').removeClass('displayNone');
+				 $('.error-messages-container').find('.errorMsg').text("Error occured during Insert");
 				//  return view();
 			}
 			
@@ -261,17 +329,17 @@ $(document).ready(function() {
 		}
 });
 
-function validate(poCategoryId,subCategoryId){
-	var flag=true;
-	if(poCategoryId=='Select' ){
-		flag=false;
-	}
-	
-	if(subCategoryId=='Select' || subCategoryId==''){
-		flag=false;
-	}
-	
-	return flag;
-}
+		function validate(poCategoryId,subCategoryId){
+			var flag=true;
+			if(poCategoryId=='Select' ){
+				flag=false;
+			}
+			
+			if(subCategoryId=='Select' || subCategoryId==''){
+				flag=false;
+			}
+			
+			return flag;
+		}
 
 

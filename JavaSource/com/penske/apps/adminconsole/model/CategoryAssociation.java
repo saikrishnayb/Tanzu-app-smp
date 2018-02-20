@@ -10,6 +10,9 @@ public String subCategoryName;
 public String poCatStatus;
 public String subCatStatus;
 public String assocStatus;
+public boolean makeModelYearRequired;
+public boolean vehicleSizeRequired;
+public boolean vehicleTypeRequired;
 
 public int getAssociationId() {
 	return associationId;
@@ -63,9 +66,27 @@ public void setSubCatStatus(String subCatStatus) {
 public String getAssocStatus() {
 	return assocStatus;
 }
-public void setAssocStatus(String assocStatus) {
-	this.assocStatus = assocStatus;
+public boolean isMakeModelYearRequired() {
+	return makeModelYearRequired;
 }
+public void setMakeModelYearRequired(boolean makeModelYearRequired) {
+	this.makeModelYearRequired = makeModelYearRequired;
+}
+public boolean isVehicleSizeRequired() {
+	return vehicleSizeRequired;
+}
+public void setVehicleSizeRequired(boolean vehicleSizeRequired) {
+	this.vehicleSizeRequired = vehicleSizeRequired;
+}
+public boolean isVehicleTypeRequired() {
+	return vehicleTypeRequired;
+}
+public void setVehicleTypeRequired(boolean vehicleTypeRequired) {
+	this.vehicleTypeRequired = vehicleTypeRequired;
+}
+
+
+
 
 
 }

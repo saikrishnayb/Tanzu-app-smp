@@ -117,30 +117,23 @@ WHERE
 <insert id="addCategoryAssociation">
 INSERT 
 INTO 
-	SMC.SMC_PO_CATEGORY_ASSOC(PO_CATEGORY_ID,  PO_SUBCATEGORY_ID) 
-VALUES (#{poCategoryId},#{subCategoryId})
+	SMC.SMC_PO_CATEGORY_ASSOC(PO_CATEGORY_ID,  PO_SUBCATEGORY_ID, MAKE_MODEL_YEAR_REQ, VEHICLE_TYPE_REQ, VEHICLE_SIZE_REQ) 
+VALUES (#{poCategoryId},#{subCategoryId},
+	<choose>
+		<when test="makeModelYearRequired == true">'Y'</when>
+		<otherwise>'N'</otherwise>
+	</choose>,
+		<choose>
+		<when test="vehicleTypeRequired == true">'Y'</when>
+		<otherwise>'N'</otherwise>
+	</choose>,
+		<choose>
+		<when test="vehicleSizeRequired == true">'Y'</when>
+		<otherwise>'N'</otherwise>
+	</choose>)
 
 </insert>
 
-<select id="getNewCategoryAssociation"  resultType="com.penske.apps.adminconsole.model.CategoryAssociation">
-SELECT 
- 		asoc.po_category_ASSOC_ID as associationId,
-		POC.PO_CATEGORY_ID as poCategoryId, 
-		POC.PO_CATEGORY as poCategoryName, 
-		SUBC.PO_SUBCATEGORY as subCategoryName,
-		SUBC.PO_SUBCATEGORY_ID as subCategoryId
-	FROM SMC.SMC_PO_CATEGORY_ASSOC asoc
-	LEFT JOIN 	
-			SMC.SMC_PO_CATEGORY POC 
-		ON POC.PO_CATEGORY_ID = asoc.PO_CATEGORY_ID
-	LEFT JOIN SMC.SMC_PO_SUBCATEGORY SUBC
-		ON SUBC.PO_SUBCATEGORY_ID = asoc.PO_SUBCATEGORY_ID
-	WHERE
-		asoc.PO_CATEGORY_ID =#{poCategoryId} AND
-		asoc.PO_SUBCATEGORY_ID =#{subCategoryId}
-		
-
-</select>
 <select id="getMaxCategoryId" resultType="com.penske.apps.adminconsole.model.PoCategory"> 
 SELECT 
 	max(PO_CATEGORY_ID) as categoryId
@@ -222,5 +215,46 @@ WHERE
 	UPPER(PO_SUBCATEGORY)=UPPER(#{subCategoryName})
 
 </select>
+
+<select id="getEditCategoryAssociation"  resultType="com.penske.apps.adminconsole.model.CategoryAssociation">
+SELECT 
+ 		asoc.po_category_ASSOC_ID as associationId,
+		POC.PO_CATEGORY_ID as poCategoryId, 
+		POC.PO_CATEGORY as poCategoryName, 
+		SUBC.PO_SUBCATEGORY as subCategoryName,
+		SUBC.PO_SUBCATEGORY_ID as subCategoryId,
+		CASE WHEN asoc.MAKE_MODEL_YEAR_REQ = 'Y' then 1 ELSE 0 END AS makeModelYearRequired,
+		CASE WHEN asoc.VEHICLE_TYPE_REQ = 'Y' then 1 ELSE 0 END AS vehicleTypeRequired,
+		CASE WHEN asoc.VEHICLE_SIZE_REQ = 'Y' then 1 ELSE 0 END AS vehicleSizeRequired
+	FROM SMC.SMC_PO_CATEGORY_ASSOC asoc
+	LEFT JOIN 	
+			SMC.SMC_PO_CATEGORY POC 
+		ON POC.PO_CATEGORY_ID = asoc.PO_CATEGORY_ID
+	LEFT JOIN SMC.SMC_PO_SUBCATEGORY SUBC
+		ON SUBC.PO_SUBCATEGORY_ID = asoc.PO_SUBCATEGORY_ID
+	WHERE
+		asoc.po_category_ASSOC_ID  = #{associationId}
+		
+</select>
+
+<update id="updateCategoryAssociation">
+		UPDATE 	SMC.SMC_PO_CATEGORY_ASSOC 
+	SET 	MAKE_MODEL_YEAR_REQ =
+	<choose>
+		<when test="makeModelYearRequired == true">'Y'</when>
+		<otherwise>'N'</otherwise>
+	</choose>,VEHICLE_TYPE_REQ =
+		<choose>
+		<when test="vehicleTypeRequired == true">'Y'</when>
+		<otherwise>'N'</otherwise>
+	</choose>,VEHICLE_SIZE_REQ =
+		<choose>
+		<when test="vehicleSizeRequired == true">'Y'</when>
+		<otherwise>'N'</otherwise>
+	</choose>
+	WHERE 	PO_CATEGORY_ASSOC_ID = #{associationId}
+</update>
+
+
 
 </mapper>

@@ -83,14 +83,13 @@ public class DefaultCategoryManagementService implements CategoryManagementServi
 	}
 
 	@Override
-	public void addCategoryAssociation(int poCategoryId, int subCategoryId) {
-		categoryDao.addCategoryAssociation(poCategoryId, subCategoryId);
+	public void addCategoryAssociation(CategoryAssociation addAssociationForm) {
+		categoryDao.addCategoryAssociation(addAssociationForm);
 	}
 
 	@Override
-	public CategoryAssociation getNewCategoryAssociation(int poCategoryId,
-			int subCategoryId) {
-		CategoryAssociation categoryAssociation = categoryDao.getNewCategoryAssociation(poCategoryId, subCategoryId);
+	public CategoryAssociation getEditCategoryAssociation(int associationId) {
+		CategoryAssociation categoryAssociation = categoryDao.getEditCategoryAssociation(associationId);
 		return categoryAssociation;
 	}
 
@@ -176,6 +175,12 @@ public class DefaultCategoryManagementService implements CategoryManagementServi
 			}
 		}
 		return returnFlg;
+	}
+
+	@Override
+	public void updateCategoryAssociation(CategoryAssociation addAssociationForm) {
+		categoryDao.updateCategoryAssociation(addAssociationForm);
+		
 	}
 	
 }

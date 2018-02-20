@@ -45,10 +45,7 @@ public interface CategoryManagementDao {
     public List<SubCategory> getSubCategories(int poCategoryId);
 
     @NonVendorQuery
-    public void addCategoryAssociation(@Param("poCategoryId") int poCategoryId,@Param("subCategoryId") int subCategoryId);
-
-    @NonVendorQuery
-    public CategoryAssociation getNewCategoryAssociation(@Param("poCategoryId") int poCategoryId,@Param("subCategoryId") int subCategoryId);
+    public void addCategoryAssociation(CategoryAssociation addAssociationForm);
 
     @NonVendorQuery
     public PoCategory getMaxCategoryId();
@@ -82,4 +79,12 @@ public interface CategoryManagementDao {
 
     @NonVendorQuery
     public SubCategory getSubCategoryByName(SubCategory subCategory);
+
+    @NonVendorQuery
+	public CategoryAssociation getEditCategoryAssociation(int associationId);
+
+    @NonVendorQuery
+	public void updateCategoryAssociation(CategoryAssociation addAssociationForm);
+
+	
 }

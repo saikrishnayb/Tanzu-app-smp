@@ -589,10 +589,7 @@ public class AppConfigController {
             session.setAttribute("selectedViewMode", seqMaster.getViewMode());
         }
         seqMaster.setPageAction("");
-        //LoadsheetSequenceMaster seqMaster=new LoadsheetSequenceMaster();
-
         List<LoadsheetSequenceGroupMaster> grpMasterList=new ArrayList<LoadsheetSequenceGroupMaster>();
-
         //Adding one empty Group onload
         LoadsheetSequenceGroupMaster grpMaster=new LoadsheetSequenceGroupMaster();
         grpMaster.setDisplaySeq(1);
@@ -603,10 +600,7 @@ public class AppConfigController {
         // to get manufacture list for selected category
         if(StringUtils.isNotEmpty(seqMaster.getCategory())){
             PoCategoryType poCategoryType = PoCategoryType.findTypeByName(seqMaster.getCategory());
-            boolean isNoneOrDecalOrOtherPoCategoryType = PoCategoryType.NONE == poCategoryType || PoCategoryType.DECAL == poCategoryType || PoCategoryType.OTHER == poCategoryType || PoCategoryType.CONTAINR == poCategoryType;
-            if(!isNoneOrDecalOrOtherPoCategoryType){
-                mfrList=loadsheetManagementService.getMfrList(poCategoryType);
-            }
+           	mfrList=loadsheetManagementService.getMfrList(poCategoryType);
             allComponents=loadsheetManagementService.getUnAssignedComponents(seqMaster);
             typeList=loadsheetManagementService.getTypeList(seqMaster.getCategory());
         }
@@ -614,9 +608,7 @@ public class AppConfigController {
         mav.addObject("categoriesList", loadsheetManagementService.getCategoryList());
         mav.addObject("typesList", typeList);
         mav.addObject("mfrList", mfrList);
-
         mav.addObject("seqMaster",seqMaster);
-
         return mav;
     }
 
@@ -647,10 +639,7 @@ public class AppConfigController {
         // to get manufacture list for selected category
         if(StringUtils.isNotEmpty(seqMaster.getCategory())){
             PoCategoryType poCategoryType = PoCategoryType.findTypeByName(seqMaster.getCategory());
-            boolean isNoneOrDecalOrOtherPoCategoryType = PoCategoryType.NONE == poCategoryType || PoCategoryType.DECAL == poCategoryType || PoCategoryType.OTHER == poCategoryType || PoCategoryType.CONTAINR == poCategoryType;
-            if(!isNoneOrDecalOrOtherPoCategoryType){
-                mfrList=loadsheetManagementService.getMfrList(poCategoryType);
-            }
+           	mfrList=loadsheetManagementService.getMfrList(poCategoryType);
         }
         mav.addObject("unassignedComponents",loadsheetManagementService.getUnAssignedComponents(seqMaster));
         mav.addObject("categoriesList", loadsheetManagementService.getCategoryList());

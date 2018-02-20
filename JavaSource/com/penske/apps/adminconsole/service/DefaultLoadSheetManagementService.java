@@ -343,6 +343,10 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 	 */
 	@Override
 	public List<String>  getMfrList(PoCategoryType poCategoryType){
+		
+		if(poCategoryType == null || poCategoryType.getMfrFieldCode() == null)
+			return Collections.emptyList();
+		
 		return loadsheetManagementDao.getMfrList(poCategoryType);
 	}
 

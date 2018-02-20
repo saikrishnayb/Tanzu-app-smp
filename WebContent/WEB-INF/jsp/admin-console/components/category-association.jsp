@@ -44,6 +44,9 @@
 										<c:choose>
 												<c:when test="${association.assocStatus=='1'}">
 													<a><img src="${commonStaticUrl}/images/delete.png" class="leftMargin delete-association" /></a>
+													<c:if test="${association.poCategoryName eq 'MISC'}">
+													 <a	class="rightMargin edit-category-association">Edit</a>
+													 </c:if>
 												</c:when>
 												<c:otherwise>
 													<a class="activat-association margin-left:30px"><img alt="activate" src="${commonStaticUrl}/images/add.png" class="leftMargin"/>activate</a>
