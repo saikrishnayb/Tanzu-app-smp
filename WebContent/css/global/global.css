@@ -72,6 +72,11 @@ i{
 	margin-right: 10px;
 }
 
+#utility .last-login {
+  font-size: 100%;
+  color: #666666;
+}
+
 /** Footer ***************************************************/
 #rightFooter {
 	margin-right: 10px;

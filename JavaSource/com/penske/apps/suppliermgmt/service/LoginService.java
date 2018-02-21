@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.ibatis.annotations.Param;
 
 import com.penske.apps.adminconsole.annotation.SmcSecurity.SecurityFunction;
@@ -37,6 +39,8 @@ public interface LoginService {
 
     public Set<SecurityFunction> getAllUserSecurityFunctions(UserContext userContext);
     public List<UserVendorFilterSelection> getUserVendorFilterSelections(@Param("userId") int userId);
+
+    public void recordUserLogin(HttpServletRequest request, UserContext userContext);
 
 }
 

@@ -76,6 +76,7 @@
 						<li><a class="exit" href="#" onclick="logOut();">Log off</a></li>
 					</ul>
 					 <hr noshade="noshade"/>
+           <p class="last-login">Last Logged In On ${productionSessionBean.formattedUserLoginDate}</p>
 				
 		 </div>
 		</div>

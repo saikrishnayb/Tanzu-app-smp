@@ -7,11 +7,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.penske.apps.adminconsole.annotation.SmcSecurity.SecurityFunction;
+import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.dao.LoginDAO;
+import com.penske.apps.suppliermgmt.domain.UserLoginHistory;
 import com.penske.apps.suppliermgmt.domain.UserVendorFilterSelection;
 import com.penske.apps.suppliermgmt.model.Tab;
 import com.penske.apps.suppliermgmt.model.User;
@@ -39,6 +43,8 @@ public class LoginServiceImpl implements LoginService{
 
     @Autowired
     private LoginDAO loginDao;
+    @Autowired
+    private SuppliermgmtSessionBean sessionBean;
 
     @Override
     public User getUserDetails(User userModel){
@@ -96,12 +102,30 @@ public class LoginServiceImpl implements LoginService{
     }
 
 
-	@Override
-	public List<UserVendorFilterSelection> getUserVendorFilterSelections(
-			int userId) {
-		 List<UserVendorFilterSelection> userVendorFilterSelections = loginDao.getUserVendorFilterSelections(userId);
-		return userVendorFilterSelections;
-	}
+    @Override
+    public List<UserVendorFilterSelection> getUserVendorFilterSelections(
+            int userId) {
+        List<UserVendorFilterSelection> userVendorFilterSelections = loginDao.getUserVendorFilterSelections(userId);
+        return userVendorFilterSelections;
+    }
 
+
+    @Override
+    public void recordUserLogin(HttpServletRequest request, UserContext userContext) {
+
+        UserLoginHistory userLoginHistory = loginDao.getUserLoginHistory(userContext);
+        sessionBean.setLastUserLoginDate(userLoginHistory);
+
+        int loginCount = userLoginHistory.getLoginCount();
+        String serverName = request.getServerName();
+
+        /*
+         * If the user has logged in more than 30 times, pass in their firstLogin date so we can update that
+         * row with this current login. If they have not logged in 30 times pass in null to force the query
+         * to insert a new row.
+         */
+        loginDao.putUserLogin(userContext, serverName, loginCount > 29? userLoginHistory.getFirstLoginDate() : null);
+
+    }
 
 }

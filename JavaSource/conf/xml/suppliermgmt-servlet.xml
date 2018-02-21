@@ -64,10 +64,11 @@ http://www.springframework.org/schema/aop/spring-aop-3.0.xsd"
   <bean id="lookUpManager" class="com.penske.apps.suppliermgmt.common.util.LookupManager" init-method="loadLookUpData">
   </bean>
 
-  <bean class="org.springframework.web.servlet.view.UrlBasedViewResolver" id="viewResolver">
+  <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" id="viewResolver">
     <property value="org.springframework.web.servlet.view.JstlView" name="viewClass" />
     <property value="/WEB-INF/jsp/" name="prefix" />
     <property value=".jsp" name="suffix" />
+     <property name="exposeContextBeansAsAttributes" value="true" />
   </bean>
   <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
   </bean>

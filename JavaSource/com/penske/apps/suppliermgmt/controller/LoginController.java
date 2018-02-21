@@ -55,10 +55,10 @@ public class LoginController extends BaseController {
     private LookupManager lookUpManager;
     @Autowired
     private SuppliermgmtSessionBean sessionBean;
-    
+
     @Autowired
     private UserService userService;
-    
+
     private static final Logger LOGGER = Logger.getLogger(LoginController.class);
 
     @VendorAllowed
@@ -84,7 +84,7 @@ public class LoginController extends BaseController {
                 lookUp=suppNumlist.get(0);
                 model.addObject("supportNum",lookUp.getLookUpValue());
             }
-            
+
             //Pull the user's ID out of the session, and then look up the actual user object, and put it in the session bean
             HttpSession session = request.getSession(false);
             String userSSO = (String) session.getAttribute(ApplicationConstants.USER_SSO);
@@ -116,10 +116,10 @@ public class LoginController extends BaseController {
                     userContext.setTabSecFunctionMap(loginService.getTabs(userContext.getRoleId()));
                     userContext.setSecurityFunctions(loginService.getAllUserSecurityFunctions(userContext));
                     if(userContext.getUserType()==ApplicationConstants.PENSKE_USER_TYPE){
-                    List<Buddies> existingBuddies=userService.getExistingBuddiesList(userContext.getUserName());
-                    List<UserVendorFilterSelection> userVendorFilterSelection = loginService.getUserVendorFilterSelections(usermodel.getUserId());
-                    session.setAttribute("hasBuddies", existingBuddies.size()>1?"inline-block":"none");
-                    session.setAttribute("hasVendors", userVendorFilterSelection.size()>0?"inline-block":"none");
+                        List<Buddies> existingBuddies=userService.getExistingBuddiesList(userContext.getUserName());
+                        List<UserVendorFilterSelection> userVendorFilterSelection = loginService.getUserVendorFilterSelections(usermodel.getUserId());
+                        session.setAttribute("hasBuddies", existingBuddies.size()>1?"inline-block":"none");
+                        session.setAttribute("hasVendors", userVendorFilterSelection.size()>0?"inline-block":"none");
                     }
                     /*if logged in user is vendor user checking for associated vendors*/
                     if(userContext.getTabSecFunctionMap() == null || userContext.getTabSecFunctionMap().isEmpty()){
@@ -142,7 +142,10 @@ public class LoginController extends BaseController {
                             forward="error/GlobalErrorPage";
                         }
                     }
+
                     sessionBean.setUserContext(userContext);
+
+                    loginService.recordUserLogin(request, userContext);
                 }
                 else{
                     LOGGER.debug("Logged in user not present in SMC tables");
