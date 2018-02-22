@@ -141,7 +141,7 @@ SELECT
                 
                 (VALUES 
                     (
-                        CAST(#{user.userSSO} AS INTEGER),
+                        CAST(#{user.userSSO} AS VARCHAR(100)),
                         CAST(#{serverLocation} AS VARCHAR(30)),
                         CAST(#{loginDate} AS TIMESTAMP)
                     )
