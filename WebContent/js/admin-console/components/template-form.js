@@ -1,16 +1,71 @@
+var $unsavedChangesModal = $('#unsaved-changes-modal');
+var $templateComponenttable=$("#template-Component-table");
+
+$unsavedChangesModal.dialog({
+  autoOpen: false,
+  modal: true,
+  dialogClass: 'popupModal',
+  width: 370,
+  minHeight: 125,
+  resizable: false,
+  closeOnEscape: false
+});
+ 
+$('#poCatAssID').on('change', function(event, forceContinue) {
+  
+  forceContinue = forceContinue === undefined? false : forceContinue;
+  
+  var select = this;
+  
+  var isNotEditPageMode = select.getAttribute('data-edit-page-mode') != 'true';
+  if(isNotEditPageMode) return true;
+  
+  var isDirty = $templateComponenttable.data('isDirty');
+  if(isDirty && !forceContinue) {
+    $unsavedChangesModal.dialog('open');
+    return false;
+  }
+  
+  var selectedTemplate = select.options[select.selectedIndex].getAttribute('data-template-id');
+  
+  $('.save').addClass('buttonDisabled');
+  processingImageAndTextHandler('visible','Loading data...');
+  
+  window.location.href = './create-modify-template-page.htm?isCreatePage=false&templateId=' + selectedTemplate;
+  
+});
+
+$templateComponenttable.on('change', 'input', function() {
+  $templateComponenttable.data('isDirty', true);
+});
+
+$('.po-cat-ass-id-search').on('click', function() {
+  $('#poCatAssID').trigger('change');
+});
+
+$('.unsaved-modal-close').on('click', function() {
+  $unsavedChangesModal.dialog('close');
+});
+
+$('.unsaved-modal-continue').on('click', function() {
+  $('#poCatAssID').trigger('change', [true]);
+});
+
+
 var $errMsg = $('.edit-buttons').find('.error-messages-container').find('.errorMsg');
 var toggleSelection="ALL";
 $(document).ready(function() {
 	selectCurrentNavigation("tab-components", "left-nav-template");
 	$('.back').on('click', function(){
-		parent.history.back();
-		return false;
+	  processingImageAndTextHandler('visible','Loading data...');
+	  window.location.href = './template.htm';
 	});
 	
 	$templateForm=$("#template-form");
 	var $confirmOrgDeactivationModal = $('#deactivate-modal');
+	
 	$templateTable=$("#template-table");
-	$templateComponenttable=$("#template-Component-table");
+	
 	//$chekIds=$( "input[id^='chekIds']");
 	$saveTemplateCreate=$("#save-template-create");
 	$saveTemplateEdit=$("#save-template-edit");
@@ -121,7 +176,6 @@ $(document).ready(function() {
 		open: function(event, ui) { }
 	});
 	
-
 	$saveTemplateCreate.on("click",function(){
 		createOrUpdate(true);
 	});

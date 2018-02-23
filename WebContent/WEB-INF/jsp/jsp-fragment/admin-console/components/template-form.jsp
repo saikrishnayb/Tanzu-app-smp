@@ -9,17 +9,22 @@
 			<div id="org-components" class="org-component">
 				<div class="single-line-content">
 					<label for="poCatAssID">Cat/Sub Cat<span class=requiredField>*</span></label> 
-					<select id="poCatAssID" tabindex=1 name="poCatAssID" class="input numeric numeric-whole" <c:if test="${isCreatePage eq false}">disabled</c:if>>
+          
+					<select id="poCatAssID" tabindex=1 name="poCatAssID" class="input numeric numeric-whole" data-edit-page-mode="${isCreatePage eq false}">
 						<option value="">Select Cat/SubCat...</option>
 						<c:forEach items="${allPoAssocList}" var="poAssocList">
 						 <c:if test="${isCreatePage eq false}">
-							<option value="${poAssocList.poCatAssocID}" <c:if test="${editableTemplate.poCatAssID eq poAssocList.poCatAssocID}">selected</c:if> >${poAssocList.poCatSubCatDesc}</option>
+							<option value="${poAssocList.poCatAssocID}" <c:if test="${editableTemplate.poCatAssID eq poAssocList.poCatAssocID}">selected</c:if> data-template-id="${poAssocList.templateId}">
+                              ${poAssocList.poCatSubCatDesc}
+                            </option>
 							</c:if>
 						<c:if test="${isCreatePage eq true}">
 								<option value="${poAssocList.poCatAssocID}">${poAssocList.poCatSubCatDesc}</option>
 						</c:if>
 						</c:forEach>
 					</select>
+          
+                      <img class="po-cat-ass-id-search" src="${commonStaticUrl}/images/search.png" alt="search" title="Search">
 				</div>
 				<div id="org-id-div" class="single-line-content">
 						<label for="templateDesc">Description <span class=requiredField>*</span></label> 

@@ -107,7 +107,7 @@ public interface ComponentDao {
     public List<TemplatePoAssociation> getAllPoAssociationForAdd();
 
     @NonVendorQuery
-    public List<TemplatePoAssociation> getAllPoAssociationForEdit(@Param("assocId")int assocId);
+    public List<TemplatePoAssociation> getAllPoAssociationForEdit();
     //Template Page --- End
     //COMPONENT VISIBILITY OVERRIDES -- start
 

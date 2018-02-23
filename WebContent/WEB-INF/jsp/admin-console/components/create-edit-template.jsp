@@ -45,6 +45,15 @@
 					<img src="${commonStaticUrl}/images/warning.png"></img>
 					<span class=errorMsg>One or more required fields not filled in correctly.</span>
 				</div>
+                <div id="unsaved-changes-modal" class="modal" title="Unsaved Changes">
+                  <p>You have unsaved changes on this page, would you like to continue?</p>
+                  
+                  <div class="floatRight modal-buttons">
+                    <a class="unsaved-modal-close">Cancel</a>
+                    <a class="buttonPrimary unsaved-modal-continue">Continue</a>
+                  </div>
+                  
+                </div>
 			</div>
 		</div>
 	</div>

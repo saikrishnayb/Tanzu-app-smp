@@ -13,7 +13,9 @@ var ModalUtil = new function() {
       resizable: false,
       closeOnEscape: true,
       close: function() {
-        $(this).children().detach().remove();
+        var emptyContents = !this.querySelector('.modal-content').hasAttribute('data-perserve-contents');
+        if(emptyContents)
+          $(this).children().detach().remove();
       },
       position: position
     });

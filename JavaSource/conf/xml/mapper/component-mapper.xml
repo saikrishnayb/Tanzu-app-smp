@@ -355,8 +355,12 @@ PO_SUBCATEGORY as subCategoryName
  	</select>
  	
  	<select id="getAllPoAssociationForEdit"  resultType="com.penske.apps.adminconsole.model.TemplatePoAssociation">
-		SELECT CATEGORY || '/' || SUBCATEGORY as poCatSubCatDesc, ASSOC_ID as poCatAssocID FROM SMC.V_SMC_PO_CATEGORY_COMBINATIONS
-		WHERE ASSOC_ID NOT IN (Select PO_CATEGORY_ASSOC_ID from SMC.SMC_TEMPLATE_MASTER where PO_CATEGORY_ASSOC_ID Is NOT NULL AND PO_CATEGORY_ASSOC_ID !=#{assocId})
+		  SELECT combinations.CATEGORY || '/' || combinations.SUBCATEGORY as poCatSubCatDesc, 
+                 combinations.ASSOC_ID as poCatAssocID,
+                 templateMaster.TEMPLATE_ID as templateId
+            FROM SMC.V_SMC_PO_CATEGORY_COMBINATIONS combinations
+                 INNER JOIN SMC.SMC_TEMPLATE_MASTER templateMaster
+                 ON templateMaster.PO_CATEGORY_ASSOC_ID = combinations.ASSOC_ID
  	</select>
 <!-- Template Page End -->	
 		

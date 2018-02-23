@@ -163,7 +163,7 @@ public class DefaultComponentService implements ComponentService {
         if(isAdd){
             return componentDao.getAllPoAssociationForAdd();
         }else{
-            return componentDao.getAllPoAssociationForEdit(catAssocId);
+            return componentDao.getAllPoAssociationForEdit();
         }
     }
 

@@ -277,3 +277,13 @@ background-color:white !important;
     margin-top: 5px;
     clear: both;
 }
+
+
+#unsaved-changes-modal .modal-buttons {
+  margin-top: 20px;  
+}
+
+.po-cat-ass-id-search {
+  vertical-align:middle;
+  cursor:pointer;
+}
