@@ -103,6 +103,7 @@
 		AND		rfn.ROLE_ID = #{roleId}
 		</if>
 		AND		tab.TAB_KEY = #{tabKey}
+        AND sfn.STATUS = 'A'
 	</select>
 	
 	<select id="getAllRolePermissions" resultType="com.penske.apps.adminconsole.model.Permission">
@@ -114,6 +115,7 @@
 				
 		WHERE 	sfn.TAB_KEY = tab.TAB_KEY
 		AND		tab.TAB_KEY = #{tabKey}
+        AND sfn.STATUS = 'A'
 	</select>
 	
 	<select id="getRoleSecurityFunctions" resultType="Integer">
