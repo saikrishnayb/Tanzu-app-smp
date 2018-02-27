@@ -14,7 +14,7 @@ public class DefaultSuppliermgmtSessionBean implements SuppliermgmtSessionBean, 
     private UserContext userContext;
     private Date lastUserLoginDate;
 
-    private final SimpleDateFormat loginDateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss a");
+    private final SimpleDateFormat loginDateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
 
     /** {@inheritDoc} */
     @Override
