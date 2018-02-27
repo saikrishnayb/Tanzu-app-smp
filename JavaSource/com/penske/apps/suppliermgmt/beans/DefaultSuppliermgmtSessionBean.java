@@ -40,6 +40,6 @@ public class DefaultSuppliermgmtSessionBean implements SuppliermgmtSessionBean, 
 
     @Override
     public String getFormattedUserLoginDate() {
-        return lastUserLoginDate == null? "Never" : loginDateFormat.format(lastUserLoginDate);
+        return lastUserLoginDate == null? null : "Last Logged In On " + loginDateFormat.format(lastUserLoginDate);
     }
 }

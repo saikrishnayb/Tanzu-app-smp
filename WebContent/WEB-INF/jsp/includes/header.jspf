@@ -56,29 +56,30 @@
  				<c:set var="displayLink" value="hide" scope="page"/>
  			</c:if>
  			<div id="utility">
+
+              <ul class="utility-list">
+                <li>Welcome, ${userDetails.firstName} ${userDetails.lastName}</li>
+                <c:if test="${displayLink eq 'display' }">
+                  <li><a href="#" onclick="openBuddyPopup();return false;">Buddy</a><img id="hasBuddies"
+                    src="${commonStaticUrl}/images/status_green.png" style="padding-left:3px;display: ${hasBuddies}" /></li>
+        
+                  <tl:isAuthorized tabName="Admin Console" secFunction="VENDOR_FILTER">
+                    <li><tl:penskeOnly>
+                        <a class="vendor-filter">Vendor Filter</a>
+                        <img id="hasVendors" src="${commonStaticUrl}/images/status_green.png"
+                          style="padding-left:3px;display: ${hasVendors}" />
+                      </tl:penskeOnly></li>
+                  </tl:isAuthorized>
+        
+                </c:if>
+                <li><a href="#" id="helpLink">Help</a></li>
+                <li><a class="exit" href="#" onclick="logOut();">Log off</a></li>
+              </ul>
+              <hr noshade="noshade" />
+
+              <p class="last-login">${productionSessionBean.formattedUserLoginDate}</p>
 				
-					
-					<ul class="utility-list">
-						<li>Welcome, ${userDetails.firstName} ${userDetails.lastName} </li>
-						<c:if test="${displayLink eq 'display' }">
-							<li><a href="#" onclick="openBuddyPopup();return false;">Buddy</a><img id="hasBuddies" src="${commonStaticUrl}/images/status_green.png"  style="padding-left:3px;display: ${hasBuddies}"/></li>
-              
-                              <tl:isAuthorized tabName="Admin Console" secFunction="VENDOR_FILTER"> 
-                                <li>
-                                  <tl:penskeOnly>
-                                    <a class="vendor-filter">Vendor Filter</a><img id="hasVendors" src="${commonStaticUrl}/images/status_green.png"  style="padding-left:3px;display: ${hasVendors}"/>
-                                  </tl:penskeOnly>
-                                </li>
-                               </tl:isAuthorized> 
-                          
-						</c:if>
-						<li><a  href="#" id="helpLink">Help</a></li>
-						<li><a class="exit" href="#" onclick="logOut();">Log off</a></li>
-					</ul>
-					 <hr noshade="noshade"/>
-           <p class="last-login">Last Logged In On ${productionSessionBean.formattedUserLoginDate}</p>
-				
-		 </div>
+		    </div>
 		</div>
 		
 		<div id="helpSelector" style="display: none;">
