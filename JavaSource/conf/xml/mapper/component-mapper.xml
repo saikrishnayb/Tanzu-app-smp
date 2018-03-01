@@ -285,6 +285,14 @@ PO_SUBCATEGORY as subCategoryName
 	
 <!-- Template Page Start -->
 	<select id="getAllTemplates"  resultType="com.penske.apps.adminconsole.model.Template">
+  
+          WITH components AS (
+            SELECT COUNT(EXPORT_TO_EXCEL) AS excelExportCount, TEMPLATE_ID
+            FROM SMC.SMC_TEMPLATE_COMPONENTS
+            WHERE EXPORT_TO_EXCEL = 'Y'
+            GROUP BY TEMPLATE_ID
+          )
+  
  		  SELECT templateMaster.TEMPLATE_ID as templateID, 
             templateMaster.TEMPLATE_HASH as templateHash, 
             templateMaster.TEMPLATE_NAME as templateName,
@@ -292,13 +300,12 @@ PO_SUBCATEGORY as subCategoryName
             PO_CATEGORY_ASSOC_ID as poCatAssID,
             COALESCE(CATEGORY,'') as poCatDesc,
             COALESCE(SUBCATEGORY,'') as poSubCatDesc ,
-            CASE WHEN (select count(EXPORT_TO_EXCEL) 
-                         from SMC.SMC_TEMPLATE_COMPONENTS templateComponents 
-                        WHERE templateComponents.EXPORT_TO_EXCEL = 'Y' 
-                          AND templateComponents.TEMPLATE_ID = templateMaster.TEMPLATE_ID) > 0 THEN 1 ELSE 0 END as hasExcelExport
+            CASE WHEN (components.excelExportCount) > 0 THEN 1 ELSE 0 END as hasExcelExport
        FROM SMC.SMC_TEMPLATE_MASTER templateMaster
-INNER JOIN  SMC.V_SMC_PO_CATEGORY_COMBINATIONS  catCombinations
+ INNER JOIN SMC.V_SMC_PO_CATEGORY_COMBINATIONS  catCombinations
             ON templateMaster.PO_CATEGORY_ASSOC_ID = catCombinations.ASSOC_ID
+       JOIN components
+            ON templateMaster.TEMPLATE_ID = components.TEMPLATE_ID
  	</select>
  	
  	<select id="getAllPoAssociation"  resultType="com.penske.apps.adminconsole.model.TemplatePoAssociation">
