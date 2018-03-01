@@ -59,5 +59,6 @@
 	</div>
 </body>
 <!-- Scripts -->
+<script src="${context}/js/global/modal-util.js" type="text/javascript"></script>
 <script src="${context}/js/admin-console/components/template-form.js" type="text/javascript"></script>
 </html>

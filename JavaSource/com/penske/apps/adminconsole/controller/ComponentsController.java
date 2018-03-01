@@ -113,19 +113,6 @@ public class ComponentsController {
         return mav;
     }
 
-
-    /*========================Excel Sequence Templates ======================*/
-    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_TEMPLATE)
-    @RequestMapping("/load-excel-seq-templates")
-    public ModelAndView getExcelSequenceTemplates(){
-        ModelAndView mav = new ModelAndView("/admin-console/components/excel-sequence-templates");
-
-        mav.addObject("excelSeqTemplates", componentVendorTemplateService.getExcelSeqTemplates());
-
-        return mav;
-    }
-
-
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_CATEGORY)
     @RequestMapping(value="/category-management")
     public ModelAndView getCategoryByManagementPage(){
@@ -183,7 +170,7 @@ public class ComponentsController {
     }
 
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_TEMPLATE)
-    @RequestMapping(value ={"/template"})
+    @RequestMapping("/template")
     public ModelAndView getTemplatePage(HttpSession session) {
         ModelAndView mav = new ModelAndView("/admin-console/components/template");
         HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");

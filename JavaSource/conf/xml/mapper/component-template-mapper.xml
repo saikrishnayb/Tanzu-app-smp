@@ -443,6 +443,9 @@ select
   		INNER JOIN SMC.SMC_PO_CATEGORY_ASSOC ASS
   		ON MST.PO_CATEGORY_ASSOC_ID = ASS.PO_CATEGORY_ASSOC_ID
   		WHERE ACTIVE = 1
+          <if test="templateId != null">
+            AND TEMPLATE_ID = #{templateId}
+          </if>
   		ORDER BY
   				TEMPLATE_NAME
   	</select>

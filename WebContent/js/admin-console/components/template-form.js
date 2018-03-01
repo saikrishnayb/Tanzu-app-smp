@@ -1,5 +1,9 @@
 var $unsavedChangesModal = $('#unsaved-changes-modal');
-var $templateComponenttable=$("#template-Component-table");
+var $templateComponenttable = $("#template-Component-table");
+var $templateTable = $("#template-table");
+var $templateModal = $("#template-modal");
+
+ModalUtil.initializeModal($templateModal);
 
 $unsavedChangesModal.dialog({
   autoOpen: false,
@@ -51,6 +55,20 @@ $('.unsaved-modal-continue').on('click', function() {
   $('#poCatAssID').trigger('change', [true]);
 });
 
+$templateTable.on('click', '.sequence-edit', function() {
+  
+  var templateId = this.parentNode.querySelector('input.template-id').value;
+  
+  var $getComponentSequencePromise = $.get('get-template-component-sequence.htm', {templateId: templateId});
+  
+  $getComponentSequencePromise.done(function(modalContent) {
+    $templateModal.html(modalContent);
+    ModalUtil.openModal($templateModal);
+  }).fail(function() {
+    parent.window.displayAlertModal('Something went wrong with the request, please try again later.')
+  });
+  
+});
 
 var $errMsg = $('.edit-buttons').find('.error-messages-container').find('.errorMsg');
 var toggleSelection="ALL";
@@ -63,8 +81,6 @@ $(document).ready(function() {
 	
 	$templateForm=$("#template-form");
 	var $confirmOrgDeactivationModal = $('#deactivate-modal');
-	
-	$templateTable=$("#template-table");
 	
 	//$chekIds=$( "input[id^='chekIds']");
 	$saveTemplateCreate=$("#save-template-create");
@@ -87,8 +103,8 @@ $(document).ready(function() {
 		"bInfo": true, //Showing 1 to 10 of 11 entries
 		"aoColumnDefs": [
 		                 {"bSortable": false, "aTargets": [ 0 ]}, //stops first column from being sortable
-		                 { "sWidth": "100px", "aTargets": [ 0 ] }
-		                 ],
+		                 {"sWidth": "75px", "aTargets": [ 0 ] }
+		                ],
 		"sPaginationType": "full_numbers", //Shows first/previous 1,2,3,4 next/last buttons
 		"iDisplayLength": iDisplayLength , //number of records per page for pagination
 		"oLanguage": {"sEmptyTable": "No Results Found"}, //Message displayed when no records are found

@@ -105,7 +105,7 @@ public interface ComponentVendorTemplateDao {
 
     //Excele Sequence
     @NonVendorQuery
-    public List<Template> getExcelSeqTemplates();
+    public List<Template> getExcelSeqTemplates(@Param("templateId") Integer templateId);
 
     @NonVendorQuery
     public List<ComponentSequence> getTemplateComponentSequences(@Param("templateId") int templateId);

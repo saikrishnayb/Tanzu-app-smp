@@ -197,10 +197,13 @@ i{
 .col-xs-6{
 	width: 50%
 }
-.col-xs-6{
+.col-xs-12{
+    width: 100%
+}
+.col-xs-6, .col-xs-12{
 	float: left;
 }
-.col-xs-6{
+.col-xs-6, .col-xs-12 {
 	position: relative;
 	min-height: 1px;
 	padding-right: 15px;
@@ -296,6 +299,18 @@ p.tandc-paragraph { padding-bottom: 10px; }
   	opacity: 1 !important;
 }
 
+/* Icons **********************************************/
+.icon {
+  vertical-align: middle;
+  display: inline-block;
+  cursor: pointer;
+}
+td .icon {
+  margin-left: 3px;
+}
+.icon.icon-list::before {
+  content: url("../../images/list.png");
+}
 
 /** Main Page Styles ****************************************/
 .modal {

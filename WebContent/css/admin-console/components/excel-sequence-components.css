@@ -1,0 +1,57 @@
+#componetsTable .icon-bar {
+  background-color: #000000;
+  display: block;
+  width: 22px;
+  height: 2px;
+  border-radius: 1px;
+  margin-top: 3px;
+}
+
+#componetsTable thead th {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#componetsTable thead th.component-header {
+  width: 470px;
+}
+
+
+#componetsTable tbody tr:nth-child(odd) {
+  background-color: #EBEBEB;
+  height: 35px;
+}
+
+#componetsTable tbody tr:nth-child(even) {
+  height: 35px;
+  background-color: #ffffff;
+}
+
+
+#componetsTable tr,
+#componetsTable .pointer {
+  cursor: pointer;
+  padding-left: 15px;
+  width: 20px;
+  padding-right: 10px;
+}
+
+
+.modal .modal-content .modal-footer {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+#template-modal {
+  overflow-x: hidden;
+}
+
+#table-wrapper {
+  position: relative;
+}
+
+#table-scroll {
+  height: 350px;
+  overflow: auto;
+  width: 100%;
+}

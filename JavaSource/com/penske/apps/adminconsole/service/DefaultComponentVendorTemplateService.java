@@ -30,329 +30,336 @@ import com.penske.apps.adminconsole.model.VendorTemplateSearch;
 @Service
 public class DefaultComponentVendorTemplateService implements ComponentVendorTemplateService {
 
-	
-	@Autowired
-	private  ComponentVendorTemplateDao templateDao;
 
-	private static Logger logger = Logger.getLogger(DefaultComponentVendorTemplateService.class);
-	
-	@Override
-	public List<VendorTemplate> getVendorTemplates() {
-		
-		
-		List<TemplatePoCategorySubCategory> poCategorySubCategory = templateDao.getTemplatePoCategorySubCategory();
-		List<VendorTemplate> templates = templateDao.getVendorTemplates();
-		
-		for (VendorTemplate vendorTemplate : templates) {
-			
-			List<TemplatePoCategorySubCategory> category =new ArrayList<TemplatePoCategorySubCategory>();
-			for (TemplatePoCategorySubCategory tempPoSub : poCategorySubCategory) {
-				
-				if(vendorTemplate.getTemplateId()==tempPoSub.getTemplateId()) {
-				category.add(tempPoSub);
-				}
-				
-			}
-		vendorTemplate.setTemplatePoCategorySubCategory(category);
-		}
-		
-		return templates;
-	}
+    @Autowired
+    private  ComponentVendorTemplateDao templateDao;
 
-	@Override
-	public List<Manufacture> getManufacture() {
-		List<Manufacture> manufactures = templateDao.getManufacture();
-		
-		try{
-		for (Manufacture manufacture : manufactures) {
-//			System.out.println("manufacture>>>>>>>>"+manufacture);
-			List<CorpCode> codes= templateDao.getCorpCodes(manufacture.getManufacture());
-			List<CorpCode> corpCodes =new ArrayList<CorpCode>();
-			
-			for (CorpCode corpCode : codes) {
-//				System.out.println("corpCode>>>>>>>>"+corpCode);
-				List<VendorLocation> locations= templateDao.getVendorLocation(manufacture.getManufacture(), corpCode.getCorpCode());
-//				System.out.println("locations>>>>>>>>"+locations);
-				corpCode.setVendorLocation(locations);
-				
-				if(manufacture.getManufacture().equals(corpCode.getManufacture())) {
-					corpCodes.add(corpCode);
-				}
-			}
-				
-			manufacture.setCorpCodes(corpCodes);
-		}
-		}catch(Exception e){
-			logger.error(e.getMessage());
-		}
-		return manufactures;
-	}
+    private static Logger logger = Logger.getLogger(DefaultComponentVendorTemplateService.class);
 
-	//get vendor template for edit template modal
-	@Override
-	public List<VendorTemplate> getVendorCategories(int vendorNumber,String corpCode) {
-		//get all categories from template components table
-		List<TemplatePoCategorySubCategory> poCategorySubCategory = templateDao.getTemplatePoCategorySubCategory();
-		//get selected vendor from vendor template tabl
-		List<VendorTemplate> templates = templateDao.getVendorCategories(vendorNumber,corpCode);
-		
-		for (VendorTemplate vendorTemplate : templates) {
-			
-				List<TemplatePoCategorySubCategory> category =new ArrayList<TemplatePoCategorySubCategory>();
-				for (TemplatePoCategorySubCategory tempPoSub : poCategorySubCategory) {
-				
-						List<TemplateComponents> templateComponentss= templateDao.getTemplateComponents(tempPoSub.getPoCategory().getCategoryId(),tempPoSub.getSubCategory().getSubCategoryId(),tempPoSub.getTemplateId());
-							
-						for (TemplateComponents templateComponents : templateComponentss) {
-								if(templateComponents.getDataType().equalsIgnoreCase("smc_component_info")) {
-									//getting component names 
-									TemplateComponents component = templateDao.getComponentName(templateComponents.getComponentId());
-									templateComponents.setComponentName(component.getComponentName());
-								}
-								else {
-									TemplateComponents component = templateDao.getVehicleComponentName(templateComponents.getComponentId());
-									templateComponents.setComponentName(component.getComponentName());
-								}
-						}	
-					
-						tempPoSub.setTemplateComponents(templateComponentss);
-						
-						if(vendorTemplate.getTemplateId()==tempPoSub.getTemplateId()) {
-							
-						category.add(tempPoSub);
-						}
-				
-			   }
-			   vendorTemplate.setTemplatePoCategorySubCategory(category);
-		}
-		return templates;
-	}
+    @Override
+    public List<VendorTemplate> getVendorTemplates() {
 
-	@Override
-	public TemplatePoCategorySubCategory getDeleteModalContent(
-			int poCategoryId, int subCategoryId) {
-	
-		TemplatePoCategorySubCategory modalContent = templateDao.getDeleteModalContent(poCategoryId, subCategoryId);
-		return modalContent;
-	}
 
-	@Override
-	public void deleteCategory(int poCategoryId, int subCategoryId,
-			int templateId) {
-		
-		templateDao.deleteCategory(poCategoryId, subCategoryId, templateId);
-		
-	}
+        List<TemplatePoCategorySubCategory> poCategorySubCategory = templateDao.getTemplatePoCategorySubCategory();
+        List<VendorTemplate> templates = templateDao.getVendorTemplates();
 
-	@Override
-	public List<PoCategory> getPoCategories() {
-		
-		List<PoCategory> poCategories =templateDao.getPoCategories();
-		return poCategories;
-	}
+        for (VendorTemplate vendorTemplate : templates) {
 
-	@Override
-	public List<SubCategory> getSubCategories(int poCategoryId) {
-		List<SubCategory> subCategories =templateDao.getSubCategories(poCategoryId);
-		return subCategories;
-	}
+            List<TemplatePoCategorySubCategory> category =new ArrayList<TemplatePoCategorySubCategory>();
+            for (TemplatePoCategorySubCategory tempPoSub : poCategorySubCategory) {
 
-	@Override
-	public TemplatePoCategorySubCategory getPoCategorySubCategory(
-			int poCategoryId, int subCategoryId) {
-		
-			TemplatePoCategorySubCategory poCategorySubCategory = templateDao.getPoCategorySubCategory(poCategoryId, subCategoryId);
-		
-			List<TemplateComponents> templateComponentss= templateDao.getCategoryComponents(poCategoryId, subCategoryId);
-			
-			poCategorySubCategory.setTemplateComponents(templateComponentss);
-			
-			return poCategorySubCategory;
-	}
+                if(vendorTemplate.getTemplateId()==tempPoSub.getTemplateId()) {
+                    category.add(tempPoSub);
+                }
 
-	@Override
-	public VendorTemplate getVendorTemplate(int templateId) {
-		
-		VendorTemplate vendorTemplate = templateDao.getVendorTemplate(templateId);
-		return vendorTemplate;
-	}
+            }
+            vendorTemplate.setTemplatePoCategorySubCategory(category);
+        }
 
-	@Override
-	public void addTemplate(int vendorNumber, String createdBy) {
-		templateDao.addTemplate(vendorNumber, createdBy);
-		
-	}
+        return templates;
+    }
 
-	@Override
-	public VendorTemplate getTemplateId(int vendorNumber, String corpCode) {
-		VendorTemplate template =templateDao.getTemplateId(vendorNumber, corpCode);
-		return template;
-	}
+    @Override
+    public List<Manufacture> getManufacture() {
+        List<Manufacture> manufactures = templateDao.getManufacture();
 
-	@Override
-	public void addTemplateComponents(TemplateComponents templateComponents,
-			int poCategoryId, int subCategoryId) {
-		
-		templateDao.addTemplateComponents(templateComponents, poCategoryId, subCategoryId);
-		
-	}
+        try{
+            for (Manufacture manufacture : manufactures) {
+                //			System.out.println("manufacture>>>>>>>>"+manufacture);
+                List<CorpCode> codes= templateDao.getCorpCodes(manufacture.getManufacture());
+                List<CorpCode> corpCodes =new ArrayList<CorpCode>();
 
-	@Override
-	public void updateTemplateComponents(TemplateComponents templateComponents) {
-		templateDao.updateTemplateComponents(templateComponents);
-		
-	}
+                for (CorpCode corpCode : codes) {
+                    //				System.out.println("corpCode>>>>>>>>"+corpCode);
+                    List<VendorLocation> locations= templateDao.getVendorLocation(manufacture.getManufacture(), corpCode.getCorpCode());
+                    //				System.out.println("locations>>>>>>>>"+locations);
+                    corpCode.setVendorLocation(locations);
 
-	@Override
-	public List<String> getAllTemplateManufactures() {
-		List<String> manufactures=templateDao.getAllTemplateManufactures();
-		return manufactures;
-	}
+                    if(manufacture.getManufacture().equals(corpCode.getManufacture())) {
+                        corpCodes.add(corpCode);
+                    }
+                }
 
-	@Override
-	public void deleteTemplate(int templateId) {
-	
-		templateDao.deleteTemplateComponents(templateId);
-		templateDao.deleteTemplate(templateId);
-	}
-	@Override
-	public void deleteVendorTemplate(int templateId) {
-		templateDao.deleteTemplate(templateId);
-		
-	}
-	@Override
-	public List<VendorTemplate> selectVenderBySearchCriteria(VendorTemplateSearch template) {
-		
-	
-		List<TemplatePoCategorySubCategory> searchCategorySubCategory = templateDao.getSearchTemplatePoCategorySubCategory(template.getPoCategoryId(), template.getSubCategoryId());
-		
-		List<VendorTemplate> templates = templateDao.selectVenderBySearchCriteria(template);
-		List<VendorTemplate> resultTemplates;
-		
-		if(template.getPoCategoryId()== 0)
-		
-		{
-			resultTemplates =selectVenderByMfr(templates, searchCategorySubCategory);
-			
-		}
-		
-		else {
-			resultTemplates=selectVenderByCategory(templates,searchCategorySubCategory);
-		}
-		
-		
-		return resultTemplates;
-	}
+                manufacture.setCorpCodes(corpCodes);
+            }
+        }catch(Exception e){
+            logger.error(e.getMessage());
+        }
+        return manufactures;
+    }
 
-	@Override
-	public List<VendorTemplate> selectVenderByCategory(List<VendorTemplate> templates,List<TemplatePoCategorySubCategory> searchCategorySubCategory) {
-		Iterator<VendorTemplate> itr = templates.iterator();
-	
-		
-		while(itr.hasNext()) {
-				VendorTemplate vendorTemplate =itr.next();
-				Iterator<TemplatePoCategorySubCategory> categoryItr = searchCategorySubCategory.iterator();
-				List<TemplatePoCategorySubCategory> category =new ArrayList<TemplatePoCategorySubCategory>();
-			boolean isTemplateMatch =false;
-				
-				while(categoryItr.hasNext()) {
-						TemplatePoCategorySubCategory tempPoSub = categoryItr.next();
-						if(vendorTemplate.getTemplateId() == tempPoSub.getTemplateId() ) {
-							category.add(tempPoSub);
-							isTemplateMatch=true;
-						}
-						
-				}
-				if(isTemplateMatch==false) {
-					itr.remove();
-				}
-				else {
-					vendorTemplate.setTemplatePoCategorySubCategory(category);
-				}
-		}
-		
-		return templates;
-		
-	}
+    //get vendor template for edit template modal
+    @Override
+    public List<VendorTemplate> getVendorCategories(int vendorNumber,String corpCode) {
+        //get all categories from template components table
+        List<TemplatePoCategorySubCategory> poCategorySubCategory = templateDao.getTemplatePoCategorySubCategory();
+        //get selected vendor from vendor template tabl
+        List<VendorTemplate> templates = templateDao.getVendorCategories(vendorNumber,corpCode);
 
-	@Override
-	public List<VendorTemplate> selectVenderByMfr(List<VendorTemplate> templates,List<TemplatePoCategorySubCategory> searchCategorySubCategory) {
-		
-		for (VendorTemplate vendorTemplate : templates) {
-			
-			List<TemplatePoCategorySubCategory> category =new ArrayList<TemplatePoCategorySubCategory>();
-			for (TemplatePoCategorySubCategory tempPoSub : searchCategorySubCategory) {
-			
-				if(vendorTemplate.getTemplateId()==tempPoSub.getTemplateId()) {
-					category.add(tempPoSub);
-				}
-			}
-			vendorTemplate.setTemplatePoCategorySubCategory(category);
-		}
-		return templates;
-	}
-	
-	
-	
-	@Override
-	public List<PoCategory> getTemplatePoCategory() {
-		List<PoCategory> categories=templateDao.getTemplatePoCategory();
-		
-		return categories;
-	}
+        for (VendorTemplate vendorTemplate : templates) {
 
-	
-	@Override
-	public TemplatePoCategorySubCategory getDeleteInEditModalContent(
-			int templateId, int poCategoryId, int subCategoryId) {
-		TemplatePoCategorySubCategory category =templateDao.getDeleteInEditModalContent(templateId, poCategoryId, subCategoryId);
-		return category;
-	}
+            List<TemplatePoCategorySubCategory> category =new ArrayList<TemplatePoCategorySubCategory>();
+            for (TemplatePoCategorySubCategory tempPoSub : poCategorySubCategory) {
 
-	@Override
-	public int getTemplateComponentCount(int templateId) {
-	
-		int templateComponentCount = templateDao.getTemplateComponentCount(templateId);
-		return templateComponentCount;
-	}
+                List<TemplateComponents> templateComponentss= templateDao.getTemplateComponents(tempPoSub.getPoCategory().getCategoryId(),tempPoSub.getSubCategory().getSubCategoryId(),tempPoSub.getTemplateId());
 
-	@Override
-	public List<Integer> getVendorNumberByMfr(String mfr) {
-		List<Integer> vendorNumbers =templateDao.getVendorNumberByMfr(mfr);
-		return vendorNumbers;
-		
-	}
+                for (TemplateComponents templateComponents : templateComponentss) {
+                    if(templateComponents.getDataType().equalsIgnoreCase("smc_component_info")) {
+                        //getting component names
+                        TemplateComponents component = templateDao.getComponentName(templateComponents.getComponentId());
+                        templateComponents.setComponentName(component.getComponentName());
+                    }
+                    else {
+                        TemplateComponents component = templateDao.getVehicleComponentName(templateComponents.getComponentId());
+                        templateComponents.setComponentName(component.getComponentName());
+                    }
+                }
 
-	@Override
-	public List<Template> getExcelSeqTemplates() {
-		
-		return templateDao.getExcelSeqTemplates();
-	}
+                tempPoSub.setTemplateComponents(templateComponentss);
 
-	@Override
-	public List<ComponentSequence> getTemplateComponentSequences(int templateId) {
-		return templateDao.getTemplateComponentSequences(templateId);
-	}
+                if(vendorTemplate.getTemplateId()==tempPoSub.getTemplateId()) {
 
-	@Override
-	public void updateTemplateComponentSequence(TemplateComponent templateComponents) {
-		//Update template component sequences
-		
-		if(templateComponents.getTemplateId()!=0 && !templateComponents.getComponents().isEmpty()){
-			
-			for(ComponentSequence componentSequence:templateComponents.getComponents()){
-				templateDao.updateTemplateComponentSequence(templateComponents.getTemplateId(), componentSequence.getComponentId(),componentSequence.getComponentSequence());
-				
-			}
-			
-		}
-		
-	}
+                    category.add(tempPoSub);
+                }
 
-	
+            }
+            vendorTemplate.setTemplatePoCategorySubCategory(category);
+        }
+        return templates;
+    }
 
-	
-	
+    @Override
+    public TemplatePoCategorySubCategory getDeleteModalContent(
+            int poCategoryId, int subCategoryId) {
 
-	
+        TemplatePoCategorySubCategory modalContent = templateDao.getDeleteModalContent(poCategoryId, subCategoryId);
+        return modalContent;
+    }
+
+    @Override
+    public void deleteCategory(int poCategoryId, int subCategoryId,
+            int templateId) {
+
+        templateDao.deleteCategory(poCategoryId, subCategoryId, templateId);
+
+    }
+
+    @Override
+    public List<PoCategory> getPoCategories() {
+
+        List<PoCategory> poCategories =templateDao.getPoCategories();
+        return poCategories;
+    }
+
+    @Override
+    public List<SubCategory> getSubCategories(int poCategoryId) {
+        List<SubCategory> subCategories =templateDao.getSubCategories(poCategoryId);
+        return subCategories;
+    }
+
+    @Override
+    public TemplatePoCategorySubCategory getPoCategorySubCategory(
+            int poCategoryId, int subCategoryId) {
+
+        TemplatePoCategorySubCategory poCategorySubCategory = templateDao.getPoCategorySubCategory(poCategoryId, subCategoryId);
+
+        List<TemplateComponents> templateComponentss= templateDao.getCategoryComponents(poCategoryId, subCategoryId);
+
+        poCategorySubCategory.setTemplateComponents(templateComponentss);
+
+        return poCategorySubCategory;
+    }
+
+    @Override
+    public VendorTemplate getVendorTemplate(int templateId) {
+
+        VendorTemplate vendorTemplate = templateDao.getVendorTemplate(templateId);
+        return vendorTemplate;
+    }
+
+    @Override
+    public void addTemplate(int vendorNumber, String createdBy) {
+        templateDao.addTemplate(vendorNumber, createdBy);
+
+    }
+
+    @Override
+    public VendorTemplate getTemplateId(int vendorNumber, String corpCode) {
+        VendorTemplate template =templateDao.getTemplateId(vendorNumber, corpCode);
+        return template;
+    }
+
+    @Override
+    public void addTemplateComponents(TemplateComponents templateComponents,
+            int poCategoryId, int subCategoryId) {
+
+        templateDao.addTemplateComponents(templateComponents, poCategoryId, subCategoryId);
+
+    }
+
+    @Override
+    public void updateTemplateComponents(TemplateComponents templateComponents) {
+        templateDao.updateTemplateComponents(templateComponents);
+
+    }
+
+    @Override
+    public List<String> getAllTemplateManufactures() {
+        List<String> manufactures=templateDao.getAllTemplateManufactures();
+        return manufactures;
+    }
+
+    @Override
+    public void deleteTemplate(int templateId) {
+
+        templateDao.deleteTemplateComponents(templateId);
+        templateDao.deleteTemplate(templateId);
+    }
+    @Override
+    public void deleteVendorTemplate(int templateId) {
+        templateDao.deleteTemplate(templateId);
+
+    }
+    @Override
+    public List<VendorTemplate> selectVenderBySearchCriteria(VendorTemplateSearch template) {
+
+
+        List<TemplatePoCategorySubCategory> searchCategorySubCategory = templateDao.getSearchTemplatePoCategorySubCategory(template.getPoCategoryId(), template.getSubCategoryId());
+
+        List<VendorTemplate> templates = templateDao.selectVenderBySearchCriteria(template);
+        List<VendorTemplate> resultTemplates;
+
+        if(template.getPoCategoryId()== 0)
+
+        {
+            resultTemplates =selectVenderByMfr(templates, searchCategorySubCategory);
+
+        }
+
+        else {
+            resultTemplates=selectVenderByCategory(templates,searchCategorySubCategory);
+        }
+
+
+        return resultTemplates;
+    }
+
+    @Override
+    public List<VendorTemplate> selectVenderByCategory(List<VendorTemplate> templates,List<TemplatePoCategorySubCategory> searchCategorySubCategory) {
+        Iterator<VendorTemplate> itr = templates.iterator();
+
+
+        while(itr.hasNext()) {
+            VendorTemplate vendorTemplate =itr.next();
+            Iterator<TemplatePoCategorySubCategory> categoryItr = searchCategorySubCategory.iterator();
+            List<TemplatePoCategorySubCategory> category =new ArrayList<TemplatePoCategorySubCategory>();
+            boolean isTemplateMatch =false;
+
+            while(categoryItr.hasNext()) {
+                TemplatePoCategorySubCategory tempPoSub = categoryItr.next();
+                if(vendorTemplate.getTemplateId() == tempPoSub.getTemplateId() ) {
+                    category.add(tempPoSub);
+                    isTemplateMatch=true;
+                }
+
+            }
+            if(isTemplateMatch==false) {
+                itr.remove();
+            }
+            else {
+                vendorTemplate.setTemplatePoCategorySubCategory(category);
+            }
+        }
+
+        return templates;
+
+    }
+
+    @Override
+    public List<VendorTemplate> selectVenderByMfr(List<VendorTemplate> templates,List<TemplatePoCategorySubCategory> searchCategorySubCategory) {
+
+        for (VendorTemplate vendorTemplate : templates) {
+
+            List<TemplatePoCategorySubCategory> category =new ArrayList<TemplatePoCategorySubCategory>();
+            for (TemplatePoCategorySubCategory tempPoSub : searchCategorySubCategory) {
+
+                if(vendorTemplate.getTemplateId()==tempPoSub.getTemplateId()) {
+                    category.add(tempPoSub);
+                }
+            }
+            vendorTemplate.setTemplatePoCategorySubCategory(category);
+        }
+        return templates;
+    }
+
+
+
+    @Override
+    public List<PoCategory> getTemplatePoCategory() {
+        List<PoCategory> categories=templateDao.getTemplatePoCategory();
+
+        return categories;
+    }
+
+
+    @Override
+    public TemplatePoCategorySubCategory getDeleteInEditModalContent(
+            int templateId, int poCategoryId, int subCategoryId) {
+        TemplatePoCategorySubCategory category =templateDao.getDeleteInEditModalContent(templateId, poCategoryId, subCategoryId);
+        return category;
+    }
+
+    @Override
+    public int getTemplateComponentCount(int templateId) {
+
+        int templateComponentCount = templateDao.getTemplateComponentCount(templateId);
+        return templateComponentCount;
+    }
+
+    @Override
+    public List<Integer> getVendorNumberByMfr(String mfr) {
+        List<Integer> vendorNumbers =templateDao.getVendorNumberByMfr(mfr);
+        return vendorNumbers;
+
+    }
+
+    @Override
+    public List<Template> getExcelSeqTemplates(Integer templateId) {
+        return templateDao.getExcelSeqTemplates(templateId);
+    }
+
+    @Override
+    public Template getExcelSeqTemplate(Integer templateId) {
+
+        List<Template> excelSeqTemplates = templateDao.getExcelSeqTemplates(templateId);
+
+        return excelSeqTemplates.size() == 0? null : excelSeqTemplates.get(0);
+    }
+
+    @Override
+    public List<ComponentSequence> getTemplateComponentSequences(int templateId) {
+        return templateDao.getTemplateComponentSequences(templateId);
+    }
+
+    @Override
+    public void updateTemplateComponentSequence(TemplateComponent templateComponents) {
+        //Update template component sequences
+
+        if(templateComponents.getTemplateId()!=0 && !templateComponents.getComponents().isEmpty()){
+
+            for(ComponentSequence componentSequence:templateComponents.getComponents()){
+                templateDao.updateTemplateComponentSequence(templateComponents.getTemplateId(), componentSequence.getComponentId(),componentSequence.getComponentSequence());
+
+            }
+
+        }
+
+    }
+
+
+
+
+
+
+
 }

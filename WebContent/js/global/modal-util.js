@@ -57,7 +57,7 @@ var ModalUtil = new function() {
     if(hasModalWidth) $modal.dialog("option", "width", modalWidth);
     if(hasModalMaxWidth) $modal.dialog("option", "width", modalMaxWidth); //Dumb hack since maxWidth seems to not work with "auto" width
     if(hasModalMinHeight) $modal.dialog("option", "minHeight", modalMinHeight);
-    if(hasModalMaxHeight) $modal.dialog("option", "maxHeight", modalMaxHeight);
+    if(hasModalMaxHeight) $modal.dialog("option", "height", modalMaxHeight);
     
     
     $modal.addClass('loading').find('.modal-content').addClass('content-loading').css('visibility',  'hidden'); 
