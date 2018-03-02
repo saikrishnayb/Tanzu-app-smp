@@ -210,9 +210,6 @@ function redirect(tabName,templateKey){
 	}else if(tabName == 'orderconfirmation'){
 		path = "smcop";
 		controllerName="oc";
-	}else if(tabName == 'communication'){
-		path = "smcop";
-		controllerName="com";
 	}else if(tabName == 'production'){
 		path = "smcop";
 		controllerName="prod";
@@ -295,9 +292,6 @@ function redirectToTemplate(tabKey,templateKey){
 	}
 	else if(tabKey=='TAB_PROD'){	//to redirect to Production Tab
 		redirect("production",templateKey);
-	}
-	else if(tabKey=='TAB_COMM'){	//to redirect to Communication Tab
-		redirect("communication",templateKey);
 	}
 }
 

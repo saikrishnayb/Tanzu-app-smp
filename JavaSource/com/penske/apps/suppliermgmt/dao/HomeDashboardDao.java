@@ -41,19 +41,6 @@ public interface HomeDashboardDao {
     @NonVendorQuery //FIXME: should this be filtered by vendor?
     public List<Alert> selectAlerts(@Param("headerId")int headerId,@Param("userType")int userType);
 
-    @Deprecated
-    @NonVendorQuery
-    public String getOrderFullfillmentActionItems(Map<String, Object> errorMap);
-    @Deprecated
-    @NonVendorQuery
-    public String getOrderConfirmationActionItems(Map<String, Object> errorMap);
-    @Deprecated
-    @NonVendorQuery
-    public String getProductionActionItems(Map<String, Object> errorMap);
-    @Deprecated
-    @NonVendorQuery
-    public String getCommunicationActionItems(Map<String, Object> errorMap);
-
     @NonVendorQuery("Uses a stored procedure - can't filter by vendor ID")  //TODO: Review Query
     @MapKey("alertKey")
     public Map<String, AlertCount> getOrderConfirmationAlertCountsByAlertKey(@Param("sso") String sso);

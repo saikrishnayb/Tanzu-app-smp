@@ -3,9 +3,7 @@ package com.penske.apps.suppliermgmt.service.impl;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -69,14 +67,6 @@ public class DefaultHomeDashboardService implements HomeDashboardService {
 						break;
 						case TAB_PROD: alert.setLink("./production?alertId=" + alert.getAlertId());
 						break;
-						case TAB_COMM: String alertName = alert.getAlertName();
-						if (alertName.length() >= 18 && alertName.substring(0, 18).equalsIgnoreCase("order confirmation")) {
-						alert.setLink("./order-confirmation?alertId=" + alert.getAlertId());
-						}
-						else if (alertName.length() >= 10 && alertName.substring(0, 10).equalsIgnoreCase("production")) {
-							alert.setLink("./production?alertId=" + alert.getAlertId());
-						}
-						break;
 						default : break;
 						}
 					}
@@ -139,8 +129,6 @@ public class DefaultHomeDashboardService implements HomeDashboardService {
 					break;
 					case TAB_PROD: alert.setLink("./production?alertId=" + alert.getAlertId());
 					break;
-					case TAB_COMM: alert.setLink("./communication?alertId=" + alert.getAlertId());
-					break;
 					default : break;
 				}
 				}
@@ -148,58 +136,12 @@ public class DefaultHomeDashboardService implements HomeDashboardService {
 		}
 		return headers;
 	}
-	/**
-	 * Method to fetch alert count and flag value
-	 * @param current SSOId,tabId
-	 * @return Map<Integer,String[]>
-	 */
-	public Map<String,String[]>  getActionCount (String sso,String tabKey){
-
-		Map<String, Object> alertParamMap = new HashMap<String, Object>();
-		Map<String,String[]> alertCountMap = new HashMap<String, String[]>();
-
-		LOGGER.debug("Inside getActionCount()");
-		alertParamMap.put("IN_SSO_ID", sso);
-		alertParamMap.put("OUT_ACTION_ITEMS","");
-		alertParamMap.put("ERR_CODE", 0);
-		alertParamMap.put("ERR_MSG", "");
-		switch(TabKeyVal.valueOf(tabKey)){
-		case TAB_OF : homeDashboardDao.getOrderFullfillmentActionItems(alertParamMap);
-		break;
-		case TAB_OC: homeDashboardDao.getOrderConfirmationActionItems(alertParamMap);
-		break;
-		case TAB_PROD: homeDashboardDao.getProductionActionItems(alertParamMap);
-		break;
-		case TAB_COMM: homeDashboardDao.getCommunicationActionItems(alertParamMap);
-		break;
-		default : break;
-		}
-		if (!StringUtils.trimToEmpty(String.valueOf(alertParamMap.get("ERR_MSG"))).equals("SUCCESS")) {
-			LOGGER.debug("Error message: " + alertParamMap.get("ERR_MSG"));
-		} else {
-			String actionItems= String.valueOf(alertParamMap.get("OUT_ACTION_ITEMS"));
-			if(actionItems.length() > 0 && actionItems != ""){
-				StringTokenizer alertIdCount = new StringTokenizer(actionItems,"|");
-				String countResult[];
-				String countFlagVal[];
-				while (alertIdCount.hasMoreTokens()){
-					countResult= alertIdCount.nextToken().split(",");
-					countFlagVal = new String[2] ;
-					countFlagVal[0] = StringUtils.trimToEmpty(countResult[1]);
-					countFlagVal[1] = StringUtils.trimToEmpty(countResult[2]);
-					alertCountMap.put(StringUtils.trimToEmpty(countResult[0]), countFlagVal);
-				}
-			}
-			
-		}
-
-		return alertCountMap;
-	}	
+	
 	
 	/**
 	 * enum method to provide tabKey values to check
 	 **/
 	public enum TabKeyVal{
-		TAB_OF, TAB_OC, TAB_PROD,TAB_COMM
+		TAB_OF, TAB_OC, TAB_PROD
 	}
 }

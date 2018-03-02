@@ -16,7 +16,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-ma
 		ON ST.TAB_ID = SF.TAB_ID 
 		JOIN SMC_ROLE_SEC_FUNCTIONS RSF
 		ON RSF.SEC_FUNC_ID = SF.SEC_FUNC_ID
-		WHERE	ST.DASHBOARD_TAB = #{dashBoardId} AND RSF.ROLE_ID=#{roleId} AND  ST.STATUS= #{status} AND SF.NAME IN ('ORDER_FULFILLMENT_TAB','ORDER_CONFIRMATION_TAB','PRODUCTION_TAB','COMMUNICATIONS_TAB') 
+		WHERE	ST.DASHBOARD_TAB = #{dashBoardId} AND RSF.ROLE_ID=#{roleId} AND  ST.STATUS= #{status} AND SF.NAME IN ('ORDER_FULFILLMENT_TAB','ORDER_CONFIRMATION_TAB','PRODUCTION_TAB') 
 		ORDER BY DISPLAY_SEQUENCE ASC
 		
 	</select>  
@@ -58,121 +58,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-ma
 			AND SA.VISIBILITY_VENDOR = 1
 		</if>
 		ORDER BY SA.DISPLAY_SEQUENCE ASC
-	</select>	
-	<!--  
-	 * This method  is used to access the database for getting OrderFulfillment count.
-	 * Input : current SSOId
-	 * Output : Hasmap contains alertid and count 
-	 *  
-	 */ -->
-	<select id="getOrderFullfillmentActionItems" parameterType ="java.util.HashMap" statementType="CALLABLE">
-    {
-      CALL SMC.SMC_ACTION_ITEMS_FULFILLMENT
-      (
-               #{IN_SSO_ID, mode=IN, jdbcType=VARCHAR},
-               #{OUT_ACTION_ITEMS,mode=OUT,jdbcType=VARCHAR},
-                #{ERR_CODE, mode=OUT, jdbcType=INTEGER},
-                #{ERR_MSG, mode=OUT, jdbcType=VARCHAR}
-       )   
-     }    
-   </select>
-   
-   <!--  
-	 * This method  is used to access the database for getting OrderConfirmation count.
-	 * Input : current SSOId
-	 * Output : Hasmap contains alertid and count 
-	 *  
-	 */ -->
-	<select id="getOrderConfirmationActionItems" parameterType ="java.util.HashMap" statementType="CALLABLE">
-    {
-      CALL SMC.SMC_ACTION_ITEMS_CONFIRMATION
-      (
-               #{IN_SSO_ID, mode=IN, jdbcType=VARCHAR},
-               #{OUT_ACTION_ITEMS,mode=OUT,jdbcType=VARCHAR},
-                #{ERR_CODE, mode=OUT, jdbcType=INTEGER},
-                #{ERR_MSG, mode=OUT, jdbcType=VARCHAR}
-       )   
-     }    
-   </select>
-   
-    <!--  
-	 * This method  is used to access the database for getting Production action items count.
-	 * Input : current SSOId
-	 * Output : Hasmap contains alertid and count 
-	 *  
-	 */ -->
-	<select id="getProductionActionItems" parameterType ="java.util.HashMap" statementType="CALLABLE">
-    {
-      CALL SMC.SMC_ACTION_ITEMS_PRODUCTION
-      (
-               #{IN_SSO_ID, mode=IN, jdbcType=VARCHAR},
-               #{OUT_ACTION_ITEMS,mode=OUT,jdbcType=VARCHAR},
-                #{ERR_CODE, mode=OUT, jdbcType=INTEGER},
-                #{ERR_MSG, mode=OUT, jdbcType=VARCHAR}
-       )   
-     }    
-   </select>
-   
-    <!--  
-	 * This method  is used to access the database for getting Communication Action items count.
-	 * Input : current SSOId
-	 * Output : Hasmap contains alertid and count 
-	 *  
-	 */ -->
-	<select id="getCommunicationActionItems" parameterType ="java.util.HashMap" statementType="CALLABLE">
-    {
-      CALL SMC.SMC_ACTION_ITEMS_COMMUNICATION
-      (
-               #{IN_SSO_ID, mode=IN, jdbcType=VARCHAR},
-               #{OUT_ACTION_ITEMS,mode=OUT,jdbcType=VARCHAR},
-                #{ERR_CODE, mode=OUT, jdbcType=INTEGER},
-                #{ERR_MSG, mode=OUT, jdbcType=VARCHAR}
-       )   
-     }    
-   </select>
-   
-	<!-- <select id="getTheCount" parameterType="com.penske.apps.suppliermgmt.model.OrderFulfillment" resultType="com.penske.apps.suppliermgmt.model.LookUp">
-		<if test=""> TO-DO condition check for pending release to supplier 
-		SELECT SUM (CASE WHEN 1=1 THEN 1 ELSE 0 END) AS lookUpName,
-				SUM ( CASE WHEN((days(CURRENT DATE) - days(VSSTATUS_DATE) + 1) -
-				((52 * (year(CURRENT DATE) - year(VSSTATUS_DATE)) + week(CURRENT DATE) - week(VSSTATUS_DATE)) * 2) - 
-				(case when dayofweek(VSSTATUS_DATE) = 1 then 1 else 0 end) -
-				(case when dayofweek(CURRENT DATE) = 7 then 1 else 0 end))> 1 THEN 1 ELSE 0 END) AS lookUpValue 
-				FROM SMC_FULFILLMENT_SEARCH_VIEW FSVIEW 
-				JOIN SMC_BUDDIES ON BUYER_SSO = BUDDY_SSO and SSO =#{ssoID}
-				
-				<where>
-					 <if test="vsStatus !=null">	
-					 		FSVIEW.VSSTATUS = #{vsStatus}
-					 </if>
-					 
-					 <if test="caStatus !=null">
-						AND	 FSVIEW.CASTATUS IN 
-								<foreach close=")" separator="," open="(" collection="caStatus" item="item"> 
-									#{item}
-								 </foreach>	
-					</if>
-					
-					 <if test="isPurchaseReview !=null">
-					 	AND FSVIEW.IS_PURCHASE_REVIEW=#{isPurchaseReview}
-					 </if>
-					 
-					  <if test="inHouseOrder !=null">
-					  AND	FSVIEW.IN_HOUSEORDER=#{inHouseOrder}
-					  </if>
-					AND FSVIEW.IS_DELETED='N'
-				</where>
-				
-				
-			SELECT COUNT(1) FROM SMC_DCN_HEADER SDH 
-				JOIN SMC_PURCHASING_DETAILS SPD ON SDH.DCN = SPD.DCN
-				JOIN SMC_PURCHASING_HEADER SPH ON SPD.PO_NUMBER = SPH.PO_NUMBER
-				JOIN SMC_BUDDIES ON BUYER_SSO = BUDDY_SSO and SSO =501895003
-				WHERE SPH.RELEASE_DATE = '0001-01-01-00.00.00.000000' AND SPH.IS_PDF_GENERATED = 'Y' AND EDI_FLAG = 'N'
-				
-				
-		
-	</select> -->
+	</select>
  
   <select id="getOrderConfirmationAlertCountsByAlertKey"  statementType="CALLABLE" resultType="com.penske.apps.suppliermgmt.domain.AlertCount">
     {

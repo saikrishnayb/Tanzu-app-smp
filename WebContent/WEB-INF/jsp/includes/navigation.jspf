@@ -33,7 +33,6 @@
 		<li><a href="#" id="production" onmousedown="redirectToTab('production')">Production</a>
 						<ul>
 						     <li><a id="productionStatus"  onmousedown="redirectToTab('productionStatus')">Production Status</a></li>
-						    <!--  <li><a href="#" id="communicationsProd">Data Transmission</a></li> -->
 						    <tl:isAuthorized tabName="Production" secFunction="EDI_870_MENU">
 						     <li><a href="#" id="edi870Error" onmousedown="redirectToTab('edi870Error')">EDI 870 Errors</a></li>
 						     </tl:isAuthorized>
@@ -56,15 +55,6 @@
 		</tl:isAuthorized> 
 		
 		<!--   Production TAB ------------------------------------------------------ END	-->
-		
-		<!--   Communications TAB ------------------------------------------------------ START 	-->
-		
-	 	<tl:isAuthorized tabName="Communications" secFunction="COMMUNICATIONS_TAB">
-			<li><a href="#" id="communication" onmousedown="redirectToTab('communication')">Communications</a></li>
-		
-		</tl:isAuthorized> 
-		
-		<!--   Communications TAB ------------------------------------------------------ END 	-->
 		
 		<!--   Admin Console TAB ------------------------------------------------------ START 	-->
 		<tl:isAuthorized tabName="Admin Console" secFunction="ADMIN_CONSOLE_TAB">

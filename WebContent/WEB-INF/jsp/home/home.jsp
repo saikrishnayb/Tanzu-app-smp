@@ -48,11 +48,6 @@
 									<c:set var="isValidTab" value="Y"/>	
 								</tl:isAuthorized>		
 							</c:when>
-							<c:when test="${tab.tabKey eq 'TAB_COMM'}">		
-								<tl:isAuthorized tabName="Communications" secFunction="COMMUNICATIONS_TAB">
-									<c:set var="isValidTab" value="Y"/>	
-								</tl:isAuthorized>	
-							</c:when>
 							<c:otherwise>
 								<c:set var="isValidTab" value="Y"/>	
 							</c:otherwise>
