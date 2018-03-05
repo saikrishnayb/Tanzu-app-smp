@@ -12,7 +12,7 @@
   
     <form:form name="excelSeqCompForm" id="excelSeqCompForm" modelAttribute="templateComponents" method="POST">
       <form:input path="templateId" type="hidden" />
-      <div style="display: inline-block" class="floatRight">
+      <div style="text-align: right;">
         <div id="ErrorMsg" style="clear: both; margin-right: 235px;" class="floatLeft error-messages-container displayNone">
           <img src="${commonStaticUrl}/images/warning.png"></img> <span class="errorMsg">Error while updating template
             component sequences.</span>

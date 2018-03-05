@@ -61,8 +61,6 @@ public interface ComponentVendorTemplateService {
 
     public int getTemplateComponentCount(int templateId);
 
-    public List<Template> getExcelSeqTemplates(Integer templateId);
-
     public Template getExcelSeqTemplate(Integer templateId);
 
     public List<ComponentSequence> getTemplateComponentSequences(int templateID);

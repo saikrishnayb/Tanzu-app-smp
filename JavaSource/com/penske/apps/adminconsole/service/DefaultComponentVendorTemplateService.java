@@ -324,11 +324,6 @@ public class DefaultComponentVendorTemplateService implements ComponentVendorTem
     }
 
     @Override
-    public List<Template> getExcelSeqTemplates(Integer templateId) {
-        return templateDao.getExcelSeqTemplates(templateId);
-    }
-
-    @Override
     public Template getExcelSeqTemplate(Integer templateId) {
 
         List<Template> excelSeqTemplates = templateDao.getExcelSeqTemplates(templateId);

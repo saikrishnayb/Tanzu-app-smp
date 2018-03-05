@@ -300,11 +300,11 @@ PO_SUBCATEGORY as subCategoryName
             PO_CATEGORY_ASSOC_ID as poCatAssID,
             COALESCE(CATEGORY,'') as poCatDesc,
             COALESCE(SUBCATEGORY,'') as poSubCatDesc ,
-            CASE WHEN (components.excelExportCount) > 0 THEN 1 ELSE 0 END as hasExcelExport
+            CASE WHEN (COALESCE(components.excelExportCount, 0)) > 0 THEN 1 ELSE 0 END as hasExcelExport
        FROM SMC.SMC_TEMPLATE_MASTER templateMaster
  INNER JOIN SMC.V_SMC_PO_CATEGORY_COMBINATIONS  catCombinations
             ON templateMaster.PO_CATEGORY_ASSOC_ID = catCombinations.ASSOC_ID
-       JOIN components
+  LEFT JOIN components
             ON templateMaster.TEMPLATE_ID = components.TEMPLATE_ID
  	</select>
  	
