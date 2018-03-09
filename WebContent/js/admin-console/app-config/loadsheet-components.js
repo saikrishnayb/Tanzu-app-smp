@@ -26,6 +26,7 @@ $(document).ready(function() {
 									var sletedComp=$("#selectedComponentId").val();
 									if(sletedComp){
 										   $("#"+sletedComp).addClass("row_selected");
+										   if($("tr.row_selected").offset() != null) // highlight only if search results contains selectd row.
 										   $(".dataTables_scrollBody").scrollTop( $("tr.row_selected").offset().top - $(".dataTables_scrollBody").height() );
 									}
 									   
