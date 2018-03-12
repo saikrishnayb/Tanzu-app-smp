@@ -58,7 +58,7 @@
   </div>
   
   <div class="col-xs-12 modal-footer">
-    <a class="buttonPrimary" id="submitComponentSeq" href="javascript:void(0)" onclick="submitComponentSeqForm();">Save</a>
+    <a class="buttonPrimary buttonDisabled" id="submitComponentSeq" href="javascript:void(0)" onclick="submitComponentSeqForm();">Save</a>
   </div>
   
 </div>
