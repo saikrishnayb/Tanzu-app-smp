@@ -47,12 +47,6 @@ public @interface SmcSecurity {
         MANAGE_TC,
         UPLOAD_EXCEL,
 
-        UNIT_EXCEPTIONS_MANAGEMENT,
-        MANAGE_DELAY,
-        MANAGE_DELAY_TYPE,
-        MANAGE_NOTIFICATIONS,
-
-        MANAGE_VENDOR_TEMPLATES,
         VENDOR_FILTER;
 
         public static SecurityFunction findByName(String name) {

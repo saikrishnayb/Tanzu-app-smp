@@ -47,16 +47,7 @@
 				<tl:isAuthorized tabName="Admin Console" secFunction="GLOBAL_EXCEPTIONS_MANAGEMENT">
 					<c:set var="hasAppConfig" value="1"></c:set>
 				</tl:isAuthorized>
-				<tl:isAuthorized tabName="Admin Console" secFunction="UNIT_EXCEPTIONS_MANAGEMENT">
-					<c:set var="hasAppConfig" value="1"></c:set>
-				</tl:isAuthorized>
-				<tl:isAuthorized tabName="Admin Console" secFunction="MANAGE_DELAY">
-					<c:set var="hasAppConfig" value="1"></c:set>
-				</tl:isAuthorized>
 				<tl:isAuthorized tabName="Admin Console" secFunction="DELAY_ASSOCIATION">
-					<tl:isAuthorized tabName="Admin Console" secFunction="MANAGE_DELAY_TYPE">
-						<c:set var="hasAppConfig" value="1"></c:set>
-					</tl:isAuthorized>
 					<tl:isAuthorized tabName="Admin Console" secFunction="MANAGE_DELAY_REASONS">
 						<c:set var="hasAppConfig" value="1"></c:set>
 					</tl:isAuthorized>

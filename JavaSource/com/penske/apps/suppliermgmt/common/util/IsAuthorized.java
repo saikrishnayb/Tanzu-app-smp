@@ -80,8 +80,7 @@ public class IsAuthorized extends BodyTagSupport {
 				}
 				
 				if(secFunction.equalsIgnoreCase("DELAY_ASSOCIATION")){
-					if (userRuleMap.containsKey(tabName)&&(secFunctions!=null && (secFunctions.containsKey("MANAGE_DELAY_TYPE")
-							|| secFunctions.containsKey("MANAGE_DELAY_REASONS")))){
+					if (userRuleMap.containsKey(tabName)&&(secFunctions!=null && secFunctions.containsKey("MANAGE_DELAY_REASONS"))){
 							{
 								
 								return EVAL_BODY_INCLUDE;
