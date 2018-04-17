@@ -1,6 +1,10 @@
 .modal-body {
-  max-height: 500px;
+  max-height: 450px;
   overflow-y: auto;
+}
+
+.modal-footer {
+  margin-top: 15px;
 }
 
 .common-tree-container {

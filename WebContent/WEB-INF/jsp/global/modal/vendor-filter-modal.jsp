@@ -3,7 +3,7 @@
 
 <link href="${context}/css/global/vendor-filter.css" rel="stylesheet" type="text/css"/>    
 
-<div class="modal-content" data-modal-title="Vendor Filter" data-modal-width="500" data-modal-max-height="550">
+<div class="modal-content" data-modal-title="Vendor Filter" data-modal-width="500">
 
   <div class="modal-body">
     <c:forEach items="${allOrgFilters}" var="orgFilter">
