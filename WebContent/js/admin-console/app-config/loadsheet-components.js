@@ -96,6 +96,12 @@ $('#rule-association-modal').dialog({
 
 /* ------------- Adding A Rule -------------- */
 $('.add-rule-association').on('click', function() {
+	
+	//remove previously highlighted row.
+	var sletedComp=$("#selectedComponentId").val();
+	if(sletedComp){
+		   $("#"+sletedComp).removeClass("row_selected");
+	}
 	var val = $(this).attr('id');
 	var displayName = $(this).data('value');
 	var values=val.split('-');
@@ -121,17 +127,6 @@ if(componentId!=''&&visibilityId!=''&viewMode!=''){
 	$('#'+$divId)[0].click();
 	
 }
-
-
-//Remove selected row class if users perform click
-$(document).click(function() {
-	
-	var sletedComp=$("#selectedComponentId").val();
-	if(sletedComp){
-		   $("#"+sletedComp).removeClass("row_selected");
-	}
-	
-});
 
 });
 
