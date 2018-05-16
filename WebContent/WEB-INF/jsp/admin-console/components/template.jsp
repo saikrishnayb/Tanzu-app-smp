@@ -35,15 +35,23 @@
               </tr>
             </thead>
             <tbody>
-              <c:forEach items="${templateList}" var="temp">
+              <c:forEach items="${templateList}" var="temp" varStatus="status">   
                 <tr class="template-row">
                   <td class="editable">
+                  <input id="status-${status.index}"  type=hidden value="${temp.active?'A':'I'}" />
+                   <c:choose>
+                    <c:when test="${temp.active}">
                     <a class="edit-template">Edit</a> 
                     <img src="${commonStaticUrl}/images/delete.png" class="deactivate" />
-                    <c:if test="${temp.hasExcelExport}">
+                     <c:if test="${temp.hasExcelExport}">
                       <i class="icon icon-list sequence-edit"></i>
-                    </c:if>
-                    <input class="template-id" type=hidden value="${temp.templateID}" />
+                     </c:if>
+                    </c:when>
+                    <c:otherwise>
+                     <a class="activate">Activate</a> 
+                    </c:otherwise>
+                    </c:choose>
+                    <input  class="template-id" type=hidden value="${temp.templateID}" />
                   </td>
                   <td class="template-Cat">${temp.poCatDesc}</td>
                   <td class="template-Cat">${temp.poSubCatDesc}</td>
@@ -55,10 +63,21 @@
         </div>
       </div>
     </div>
-    
+    <input id="selectedTemplateType" type="hidden" value="${selectedTemplateType}"/>
     <!-- Modals -->
     <div id="template-modal" class="modal"></div>
     <div id="deactivate-modal" class="deactivate-modal modal" title="Confirm Template Deactivation"></div>
+    <div id="activate-modal" class="activate-modal modal" title="Confirm Template activation">
+		<p>Are you sure you want to activate the Template</p>
+		<ul>
+			<li id="templateName"></li>
+		</ul>
+		<input id="template-id" type="hidden" value=""/>
+		<div class="deactivate-buttons-div">
+			<a class="secondaryLink cancel-activate" tabIndex="-1">No, Cancel</a> 
+			<a class="buttonPrimary activate-confirm" tabIndex="-1">Yes, Activate</a>
+		</div>
+</div>
     <!-- Scripts -->
     <script>var hostUrl='${context}';</script>
     

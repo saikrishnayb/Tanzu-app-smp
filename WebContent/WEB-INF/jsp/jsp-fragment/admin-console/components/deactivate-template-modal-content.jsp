@@ -1,8 +1,4 @@
-<p>
-<h3>
-	<b>This operation cannot be undone!</b>
-</h3>
-<p>Are you sure you want to delete the Template</p>
+<p>Are you sure you want to deactivate the template ?</p>
 <ul>
 	<li>${templateName}</li>
 </ul>

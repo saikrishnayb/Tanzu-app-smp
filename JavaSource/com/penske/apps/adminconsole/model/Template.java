@@ -18,6 +18,7 @@ public class Template {
     private List<Components> componentList;
     private String poCatDesc;
     private String poSubCatDesc;
+    private boolean active;
 
     private boolean hasExcelExport;
 
@@ -85,5 +86,9 @@ public class Template {
     public boolean isHasExcelExport() {
         return hasExcelExport;
     }
+	public boolean isActive() {
+		return active;
+	}
+    
 
 }

@@ -1,7 +1,6 @@
 package com.penske.apps.adminconsole.controller;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,15 +11,12 @@ import com.penske.apps.adminconsole.exceptions.DelayReasonAlreadyExistsException
 import com.penske.apps.adminconsole.exceptions.TemplateNameAlreadyExistsException;
 import com.penske.apps.adminconsole.exceptions.UserAlreadyExistsException;
 import com.penske.apps.adminconsole.model.AjaxError;
-import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 
 @ControllerAdvice
 public class RestControllerAdvisor {
 
     private static Logger logger = Logger.getLogger(RestControllerAdvisor.class);
 
-    @Autowired
-    private SuppliermgmtSessionBean sessionBean;
 
     @ResponseStatus(value=HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(DelayReasonAlreadyExistsException.class)

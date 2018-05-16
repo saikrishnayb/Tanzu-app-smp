@@ -3,9 +3,11 @@ package com.penske.apps.adminconsole.service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.penske.apps.adminconsole.dao.ComponentDao;
 import com.penske.apps.adminconsole.dao.LoadsheetManagementDao;
 import com.penske.apps.adminconsole.enums.PoCategoryType;
 import com.penske.apps.adminconsole.model.ComponentRuleAssociation;
@@ -25,6 +28,7 @@ import com.penske.apps.adminconsole.model.LoadsheetSequenceGroupMaster;
 import com.penske.apps.adminconsole.model.LoadsheetSequenceMaster;
 import com.penske.apps.adminconsole.model.RuleDefinitions;
 import com.penske.apps.adminconsole.model.RuleMaster;
+import com.penske.apps.adminconsole.model.TemplateComponentRuleAssociation;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.model.UserContext;
 
@@ -35,6 +39,11 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
     private LoadsheetManagementDao loadsheetManagementDao;
 	@Autowired
 	private SuppliermgmtSessionBean sessionBean;
+	
+	@Autowired
+	private ComponentDao componentDao;
+	
+	private static final char UNIT_TEMPLATE_RULE='U';
 
 	@Override
 	public List<ComponentVisibilityModel> getLoadsheetComponents(String category,String type) {
@@ -93,6 +102,67 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 		}
 		
 	}
+	/* this method will insert/update all the component-rule visibility mappings for selected rule.*/
+	private void createOrUpdateTemplateComponentRules(RuleMaster ruleMaster,char operationType) throws Exception {
+		UserContext user = sessionBean.getUserContext();
+		TemplateComponentRuleAssociation templateComponentRuleAssociation = new TemplateComponentRuleAssociation();
+		templateComponentRuleAssociation.setTemplateComponentId(ruleMaster.getTemplateComponentId());
+		templateComponentRuleAssociation.setRuleId(ruleMaster.getRuleId());
+		templateComponentRuleAssociation.setCreatedBy(user.getUserSSO());
+        if(ruleMaster.isForRules() && !ruleMaster.isRequired() && !ruleMaster.isEditable() && !ruleMaster.isViewable()){
+        	templateComponentRuleAssociation.setLsOverride('N');
+        }
+        else if(ruleMaster.isRequired()){
+            templateComponentRuleAssociation.setLsOverride('R');
+        }
+        else if(!ruleMaster.isRequired() && ruleMaster.isEditable()){
+            templateComponentRuleAssociation.setLsOverride('E');
+        }
+        else if(!ruleMaster.isRequired() && !ruleMaster.isEditable() &&  ruleMaster.isViewable()){ 
+            templateComponentRuleAssociation.setLsOverride('V');
+        }else{
+        	throw new Exception("Atleast one checkbox must be checked");
+        }
+        if(operationType=='I'){
+            Map<String, Integer> compTempCompMap = getTemplateComponentMap(ruleMaster.getTemplateId());
+            	//to update rule priority for the selected component when new rule is added
+    			saveTemplateComponentVisibilityRules(ruleMaster.getRuleId(),templateComponentRuleAssociation);    			 	
+			 	for(RuleDefinitions ruleDef:ruleMaster.getNewRuleDef()){
+			 		//to update rule priority for components(one or multiple) mapped to the rule for rule name 
+			 		templateComponentRuleAssociation.setTemplateComponentId(compTempCompMap.get(ruleDef.getComponentId()));
+    				saveTemplateComponentVisibilityRules(ruleMaster.getRuleId(),templateComponentRuleAssociation);
+			 	}
+        }else{//update component visibility of all components for the selected rule
+            	loadsheetManagementDao.updateTemplateComponentVisibilityRules(templateComponentRuleAssociation);
+        }
+    }
+    	/**
+    	 * 
+    	 * @param ruleId
+    	 * @param templateComponentRuleAssociation
+    	 */
+    	private void saveTemplateComponentVisibilityRules(int ruleId, TemplateComponentRuleAssociation templateComponentRuleAssociation) {
+    		int ruleCount = 0;
+    		boolean isExistComponent = componentDao.isComponentExistInRule(ruleId,templateComponentRuleAssociation.getTemplateComponentId());
+     		if(!isExistComponent){
+	    		ruleCount= getRuleCountByTempCompId(templateComponentRuleAssociation.getTemplateComponentId());
+	    		templateComponentRuleAssociation.setPriority(ruleCount+1);
+	    	    loadsheetManagementDao.saveTemplateComponentVisibilityRules(templateComponentRuleAssociation);	
+     		 }
+    	}
+	
+	/* this method will return  component - templateComponent map for given template id .*/
+	private Map<String,Integer> getTemplateComponentMap(int templateId) {
+		List<String> compTempcomponents = componentDao.getCompTempCompMapByTempId(templateId);
+		HashMap<String,Integer>  compTempCompMap = new HashMap<String, Integer>();
+		for (String component : compTempcomponents) {
+			String CompId = component.split("-")[0];
+			Integer tempCompId = Integer.parseInt(component.split("-")[1]);
+			compTempCompMap.put(CompId, tempCompId);
+		}
+        return compTempCompMap;
+	}
+
 	@Override
 	public List<LoadSheetComponentDetails> getComponents() {
 		
@@ -101,31 +171,45 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 	/**
 	 * Method to create new Rule
 	 * First inserts the data into rule master table and then inserts the list of Rule definitions
+	 * @throws Exception 
 	 */
 	@Override
 	@Transactional
-	public void createNewRule(RuleMaster rule) {
+	public int createNewRule(RuleMaster rule) throws Exception{
 		
 		UserContext user = sessionBean.getUserContext();
-		
-		
+		rule.setDescription(rule.getDescription().trim());
 		loadsheetManagementDao.insertRuleMasterDetails(rule, user);
-		
 		populateRuleMaster(rule);
-		
+		for(RuleDefinitions ruleDef:rule.getRuleDefinitionsList()){
+			if(ruleDef.getOperand().equals("E") || ruleDef.getOperand().equals("=")){
+				if(ruleDef.getComponentId()!=null && ruleDef.getValue()==null)
+					ruleDef.setValue("");
+			}
+		}
 		loadsheetManagementDao.insertRuleDefinitions(rule.getRuleDefinitionsList(), user);
+		if(rule.getRuleType()==UNIT_TEMPLATE_RULE){
+			rule.setNewRuleDef(rule.getRuleDefinitionsList());
+			createOrUpdateTemplateComponentRules(rule,'I');
+		}
 		
+		return rule.getRuleId();
 	}
 	//to Update the rule master and rule definitions
 	@Override
 	@Transactional
-	public void updateRuleDetails(RuleMaster rule) {
+	public void updateRuleDetails(RuleMaster rule) throws Exception{
 		UserContext user = sessionBean.getUserContext();
 		List<RuleDefinitions> newRuleDefList=new ArrayList<RuleDefinitions> ();
+		rule.setDescription(rule.getDescription().trim());
 		loadsheetManagementDao.updateRuleMasterDetails(rule, user);
 		
 		populateRuleMaster(rule);
 		for(RuleDefinitions ruleDef:rule.getRuleDefinitionsList()){
+			if(ruleDef.getOperand().equals("E") || ruleDef.getOperand().equals("=")){
+				if(ruleDef.getValue()==null)
+					ruleDef.setValue("");
+			}
 			if(ruleDef.getRuleDefId() != 0){
 				loadsheetManagementDao.updateRuleDefinitions(ruleDef, user);
 			}else{
@@ -136,12 +220,27 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 		//Insert the new RuleDefinitions
 		if(newRuleDefList.size()>0){
 			loadsheetManagementDao.insertRuleDefinitions(newRuleDefList, user);
+			if(rule.getRuleType()==UNIT_TEMPLATE_RULE){
+				rule.setNewRuleDef(newRuleDefList);
+				createOrUpdateTemplateComponentRules(rule,'I');
+			}
 		}
 		//Delete the deleted rule definitions
 		if(rule.getDeletedRuleDefIds().size()>0){
 			loadsheetManagementDao.deleteRuleDefinitions(rule.getDeletedRuleDefIds());
+			if(rule.getRuleType()==UNIT_TEMPLATE_RULE){
+			    Map<String, Integer> compTempCompMap = getTemplateComponentMap(rule.getTemplateId());
+				List<Integer> components = componentDao.getComponetsByRuleDefIds(rule.getDeletedRuleDefIds());
+				 for (Integer componentId : components) {
+					 boolean compnentExists = componentDao.isComponentExistInRuleDefinitions(rule.getRuleId(),componentId);
+						if(!compnentExists)
+							componentDao.deleteComponentRuleMapping(rule.getRuleId(),compTempCompMap.get(componentId));
+				}
+			}
+				
 		}
-		
+		if(rule.getRuleType()==UNIT_TEMPLATE_RULE)
+		createOrUpdateTemplateComponentRules(rule,'U');
 		formTheComponentDropdownValue(rule);
 	}
 	
@@ -149,6 +248,7 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 	 * Method to form the RuleMaster Object for insert/update actions
 	 * @param rule
 	 * @return rule
+	 * @throws Exception 
 	 */
 	private RuleMaster populateRuleMaster(RuleMaster rule){
 		
@@ -157,6 +257,7 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 		RuleDefinitions ruleDef;
 		int criteriaGrpCount=0;
 		
+		String requestFrom="";
 		List<RuleDefinitions> rulDefList=rule.getRuleDefinitionsList();
 		//sort list based on criteria group count
 		if (rulDefList.size() > 0) {
@@ -190,24 +291,24 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 			}else{
 				ruleDefIt.remove();	//remove empty values
 			}
-			
 		}
 		
-		rule=getOperandsDropdownValues(rule);
-		
+		rule=getOperandsDropdownValues(rule,requestFrom);
 		return rule;
 	}
+		
 
 	/**
 	 * Method to get the rule details On click of Edit
+	 * @throws Exception 
 	 */
 	@Override
-	public RuleMaster getRuleDetails(int ruleId) {
+	public RuleMaster getRuleDetails(int ruleId,String requestFrom){
 		
-		RuleMaster ruleMaster=loadsheetManagementDao.getRuleDetails(ruleId);
+		RuleMaster ruleMaster=loadsheetManagementDao.getRuleDetails(ruleId, requestFrom);
 		
 		ruleMaster=formTheComponentDropdownValue(ruleMaster);
-		ruleMaster=getOperandsDropdownValues(ruleMaster);
+		ruleMaster=getOperandsDropdownValues(ruleMaster,requestFrom);
 		return ruleMaster;
 	}
 	
@@ -250,14 +351,14 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 	 * @param ruleMaster
 	 * @return
 	 */
-	private RuleMaster getOperandsDropdownValues(RuleMaster ruleMaster){
+	private RuleMaster getOperandsDropdownValues(RuleMaster ruleMaster,String requestFrom){
 		List<String> operandsList;
 		
 		for(RuleDefinitions ruleDef:ruleMaster.getRuleDefinitionsList()){
 			
 			//populate operands list for the particular ruledef
 			operandsList=new ArrayList<String>();
-			if(!ruleDef.getComponentType().equals("T")){
+			if(ruleDef.getComponentType().equals("N") || ruleDef.getComponentType().equals("Y")){
 				operandsList.add("<");
 				operandsList.add("<=");
 				operandsList.add("=");
@@ -266,6 +367,9 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 			}else{
 				operandsList.add("=");
 			}
+			if(requestFrom.equals("templateRule"))
+				operandsList.add("E");
+			
 			ruleDef.setOperandsList(operandsList);
 		}
 				
@@ -572,6 +676,58 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 	@Override
 	public int checkForUniqueSequence(String catgeory, String type,String mfr,int seqId) {
 		return loadsheetManagementDao.getSequenceCount(catgeory,type,mfr,seqId);
+	}
+
+	@Override
+	public List<RuleMaster> getRulesByTemplateComponentId(int templateComponentId) {
+		return loadsheetManagementDao.getRulesByTemplateComponentId(templateComponentId);
+	}
+	
+	/**
+	 * Method to update component rules priority
+	 * @param ruleList
+	 * @param templateComponentId
+	 */
+	@Override
+	public void updateComponentRulesPriority(List<Integer> ruleList,int templateComponentId){
+		int priority = 1;
+		UserContext user = sessionBean.getUserContext();
+		for(Integer ruleId:ruleList){
+	        loadsheetManagementDao.updateComponentRulePriority(templateComponentId,ruleId,priority,user.getUserSSO());
+		    priority++;
+		}
+	}
+
+	
+	@Override
+	public void getTemplateComponentRuleVisibilty(int templateComponentId,int ruleId,RuleMaster ruleMaster) throws Exception{
+		TemplateComponentRuleAssociation templateComponentRuleAssociation = loadsheetManagementDao.getTemplateComponentRuleVisibilty(templateComponentId,ruleId);
+		if(templateComponentRuleAssociation.getLsOverride() !=' ' 
+                 && templateComponentRuleAssociation.getLsOverride()=='R'){
+			 ruleMaster.setViewable(true);
+			 ruleMaster.setEditable(true);
+			 ruleMaster.setRequired(true);
+			 ruleMaster.setForRules(true);
+         }else if(templateComponentRuleAssociation.getLsOverride() !=' '
+                 && templateComponentRuleAssociation.getLsOverride()=='E'){
+        	 ruleMaster.setViewable(true);
+        	 ruleMaster.setEditable(true);
+        	 ruleMaster.setForRules(true);
+         }else if(templateComponentRuleAssociation.getLsOverride() !=' '
+                 && templateComponentRuleAssociation.getLsOverride()=='V'){
+        	 ruleMaster.setViewable(true);
+        	 ruleMaster.setForRules(true);
+         }else if(templateComponentRuleAssociation.getLsOverride() !=' '
+                 && templateComponentRuleAssociation.getLsOverride() == 'N'){
+        	 ruleMaster.setForRules(true);
+         }else{
+        	 throw new Exception("Error during fetching rule visibilty");
+         }
+		 
+	}
+	
+	public int getRuleCountByTempCompId(int templateComponentId){
+		return loadsheetManagementDao.getRuleCountByTemplateComponentId(templateComponentId);
 	}
 
 }

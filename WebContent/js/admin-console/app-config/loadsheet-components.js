@@ -112,7 +112,7 @@ $('.add-rule-association').on('click', function() {
 				$('#rule-association-modal').html(data);
 				$('#rule-association-modal').dialog('open');
 				if(values[2]!='Y'){
-					$(".ui-dialog-titlebar").prepend('<a class="buttonPrimary" style="margin-left: 37%;" onclick="processingImageAndTextHandler(\'visible\',\'Loading data...\');" href="load-create-rule.htm?requestedFrom=ADD_RULE" >Create Rule</a>');
+					$(".ui-dialog-titlebar").prepend('<a class="buttonPrimary" style="margin-left: 37%;" onclick="processingImageAndTextHandler(\'visible\',\'Loading data...\');" href="./load-create-rule.htm?requestedFrom=ADD_RULE" >Create Rule</a>');
 				}
 			});
 });

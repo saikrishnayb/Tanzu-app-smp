@@ -11,6 +11,7 @@ import com.penske.apps.adminconsole.model.Component;
 import com.penske.apps.adminconsole.model.ComponentVisibility;
 import com.penske.apps.adminconsole.model.ComponentVisibilityOverride;
 import com.penske.apps.adminconsole.model.Components;
+import com.penske.apps.adminconsole.model.LoadSheetComponentDetails;
 import com.penske.apps.adminconsole.model.PoCategory;
 import com.penske.apps.adminconsole.model.SubCategory;
 import com.penske.apps.adminconsole.model.Template;
@@ -86,16 +87,42 @@ public interface ComponentDao {
     public void addTemplate(Template template);
 
     @NonVendorQuery
-    public void addTemplateComponents(Components components);
+    public void addTemplateComponent(Components components);
+    
+    @NonVendorQuery
+    public void updateTemplateComponent(Components component);
 
     @NonVendorQuery
     public void updateTemplate(Template template);
+    
+    @NonVendorQuery
+    public boolean isTemplateComponentExist(@Param("templateId") int templateId,@Param("componentId") int componentId);
+    
+    @NonVendorQuery
+    public boolean isComponentExistInRule(@Param("ruleId") int templateId,@Param("tempCompId") int tempCompId);
+   
+    @NonVendorQuery
+	public boolean isComponentExistInRuleDefinitions(@Param("ruleId") int ruleId,@Param("componentId") int componentId);
+    
+    @NonVendorQuery
+    public List<Integer> getComponetsByRuleDefIds(@Param("ruleDefIds") List<Integer> ruleDefIds);
+    
+    @NonVendorQuery
+    public List<String> getCompTempCompMapByTempId(@Param("templateId") int templateId);
+    
+    
+    @NonVendorQuery
+    public void deActivateTemplate(@Param("templateID")int templateID);
+    
+    @NonVendorQuery
+    public void activateTemplate(@Param("templateID")int templateID);
 
     @NonVendorQuery
-    public void deleteTemplate(@Param("templateID")int templateID);
-
+    public void deleteTemplateComponents(@Param("deletedTempComponents")List<Integer> deletedTempComponents,@Param("templateId")int templateId);
+    
     @NonVendorQuery
-    public void deleteTemplateComponents(@Param("templateID")int templateID);
+    public void deleteComponentRuleMapping(@Param("ruleId")int ruleId,@Param("tempCompId") int tempCompId);
+    
 
     @NonVendorQuery
     public List<Components> getTemplateComponentById(@Param("templateID")int templateID);
@@ -146,8 +173,6 @@ public interface ComponentDao {
     public void copyCorpComponentRow(@Param("componentId") int componentId);
 
     @NonVendorQuery
-    public void markTemplateForRebuild(@Param("templateId") int templateId);
-
-    @NonVendorQuery
-    public void insertTemplateForRegen(@Param("templateId") int templateId);
+	public List<LoadSheetComponentDetails> getTemplateComponentByTempId(@Param("templateId")int templateId);
+    
 }

@@ -4,6 +4,8 @@ public class Components {
 	private String componentName;
 	private String componentId;
 	private int templateId;
+	private int templateComponentId;
+	private int ruleCount;
 	private String visibility;
 	private boolean viewable;
 	private boolean editable;
@@ -17,6 +19,8 @@ public class Components {
 	private String createdBy;
 	private String modifiedBy;
 	private String fullName;
+	private boolean forRules;
+	
 	public String getComponentName() {
 		return componentName;
 	}
@@ -89,6 +93,18 @@ public class Components {
 	public void setTemplateId(int templateId) {
 		this.templateId = templateId;
 	}
+	public int getTemplateComponentId() {
+		return templateComponentId;
+	}
+	public void setTemplateComponentId(int templateComponentId) {
+		this.templateComponentId = templateComponentId;
+	}
+	public int getRuleCount() {
+		return ruleCount;
+	}
+	public void setRuleCount(int ruleCount) {
+		this.ruleCount = ruleCount;
+	}
 	public String getCreatedBy() {
 		return createdBy;
 	}
@@ -113,6 +129,11 @@ public class Components {
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
 	}
-	
-	
+	public boolean isForRules() {
+		return forRules;
+	}
+	public void setForRules(boolean forRules) {
+		this.forRules = forRules;
+	}
+		
 }

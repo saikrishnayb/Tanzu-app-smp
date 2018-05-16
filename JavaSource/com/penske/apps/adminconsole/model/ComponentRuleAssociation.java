@@ -39,6 +39,4 @@ public class ComponentRuleAssociation {
 	public void setRule(List<ConfigureRule> rule) {
 		this.rule = rule;
 	}
-	
-
 }

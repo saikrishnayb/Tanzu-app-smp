@@ -5,6 +5,7 @@ import java.util.List;
 import com.penske.apps.adminconsole.model.Component;
 import com.penske.apps.adminconsole.model.ComponentVisibilityOverride;
 import com.penske.apps.adminconsole.model.Components;
+import com.penske.apps.adminconsole.model.LoadSheetComponentDetails;
 import com.penske.apps.adminconsole.model.Template;
 import com.penske.apps.adminconsole.model.TemplatePoAssociation;
 import com.penske.apps.suppliermgmt.model.LookUp;
@@ -25,11 +26,13 @@ public interface ComponentService {
 	
 	public List<Components> getAllComponent();
 	
-	public void addTemplate(Template template);
+	public void addTemplate(Template template) throws Exception;
 	
-	public void updateTemplate(Template template);
+	public void updateTemplate(Template template) throws Exception;
 	
-	public void deleteTemplate(int templateId);
+	public void deActivateTemplate(int templateId);
+	
+	public void activateTemplate(int templateId);
 	
 	public List<Components> getTemplateComponentById(List<Components> compList,int templateId);
 	
@@ -56,6 +59,8 @@ public interface ComponentService {
 	public List<Component> loadAllAvailableComponents();
 
     public void copyCorpComponentRow(int componentId, int componentGroupId);
+
+	public List<LoadSheetComponentDetails> getTemplateComponentByTempId(int templateId);
 
 //COMPONENT VISIBILITY OVERRIDES -- End
 		

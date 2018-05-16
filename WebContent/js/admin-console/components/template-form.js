@@ -2,7 +2,10 @@ var $unsavedChangesModal = $('#unsaved-changes-modal');
 var $templateComponenttable = $("#template-Component-table");
 var $templateTable = $("#template-table");
 var $templateModal = $("#template-modal");
-
+var $ruleModal = $('#component-rule-popup');
+var $selectedTemplateType =  $('#selectedTemplateType'); // Either Active OR ALL templates
+var $getAlertModal = $('#component-associatedToRules-alert-popup'); //Alert popup when component unchecked Available for Rules 
+var $errorModal=$('#error-modal');
 ModalUtil.initializeModal($templateModal);
 
 $unsavedChangesModal.dialog({
@@ -65,13 +68,13 @@ $templateTable.on('click', '.sequence-edit', function() {
     $templateModal.html(modalContent);
     ModalUtil.openModal($templateModal);
   }).fail(function() {
-    parent.window.displayAlertModal('Something went wrong with the request, please try again later.')
+    parent.window.displayAlertModal('Something went wrong with the request, please try again later.');
   });
   
 });
 
-var $errMsg = $('.edit-buttons').find('.error-messages-container').find('.errorMsg');
 var toggleSelection="ALL";
+var templateSelection=$selectedTemplateType.val();
 $(document).ready(function() {
 	selectCurrentNavigation("tab-components", "left-nav-template");
 	$('.back').on('click', function(){
@@ -81,15 +84,15 @@ $(document).ready(function() {
 	
 	$templateForm=$("#template-form");
 	var $confirmOrgDeactivationModal = $('#deactivate-modal');
+	var $confirmOrgActivationModal =$('#activate-modal');
 	
 	//$chekIds=$( "input[id^='chekIds']");
-	$saveTemplateCreate=$("#save-template-create");
-	$saveTemplateEdit=$("#save-template-edit");
-	$editChckBox=$("input[id^='editable-'");
-	$requiredChckBox=$("input[id^='required-'");
-	$dispOtherPOChckBox=$("input[id^='dispOtherPO-'");
-	$excelChckBox=$("input[id^='excel-'");
-	$viewChckBox=$("input[id^='viewable-'");
+	var	$saveTemplateCreate=$("#save-template-create");
+	var	$saveTemplateEdit=$("#save-template-edit");
+	var $editChckBox=$("input[id^='editable-'");
+	var $requiredChckBox=$("input[id^='required-'");
+	var $viewChckBox=$("input[id^='viewable-'");
+	var $forRulesChckBox=$("input[id^='forRules-'");
 	var iDisplayLength = 10;//tableRowLengthCalc();
 	//org summary table
 	$templateTable.dataTable( { //All of the below are optional
@@ -134,7 +137,12 @@ $(document).ready(function() {
 		}
 	} );
 	
-	
+	var tempCompFilters='<div id="org-desc-div" style="float: left; text-align: right;">'+
+					'<a id="showActiveTemplates">Show Active Templates </a>&nbsp;&nbsp;|&nbsp;&nbsp;<a id="showAllTemplates">Show All Templates</a>&nbsp;&nbsp;'+
+				'</div>';
+	$("#template-table_wrapper").prepend(tempCompFilters);
+	$showActiveTemplates=$("#template-table_wrapper").find("#showActiveTemplates");
+	$showAllTemplates=$('#template-table_wrapper').find("#showAllTemplates");
 	$templateComponenttable.dataTable( { //All of the below are optional
 		"aaSorting": [[ 1, "asc" ]], //default sort column
 		"bPaginate": true, //enable pagination
@@ -170,23 +178,40 @@ $(document).ready(function() {
 	} else {
 		infoRow.css("display", "none");
 	}
+	
+	//to highlight the selected component   
+	var seletedComp=$("#tempCompId").val();
+	if(seletedComp != null){
+		   $("#component-"+seletedComp).addClass("row_selected");
+	}
+	   
 		}
 	} );
-	//$("#template-Component-table_filter").hide();
 	var strHTML='<div id="org-desc-div" style="float: left; text-align: right;">'+
 					'<label>&nbsp;<span class=requiredField>*</span></label>'+ 
-					'<a id="showAll"> Show All</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a id="showSelected">Show Selected</a>'+
+					'<a id="showAll"> Show All</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a id="showSelected">Show Selected</a>|&nbsp;&nbsp;<a id="showRules">Show with Rules</a>'+
 				'</div>';
 	$("#template-Component-table_wrapper").prepend(strHTML);
 	$showAll=$('#template-Component-table_wrapper').find(' #showAll');
 	$showSelected=$('#template-Component-table_wrapper').find("#showSelected");
-	
+	$showRules =$('#template-Component-table_wrapper').find('#showRules');
 	$confirmOrgDeactivationModal.dialog({
 		autoOpen: false,
 		modal: true,
 		dialogClass: 'popupModal',
 		width: 370,
 		minHeight: 150,
+		resizable: false,
+		closeOnEscape: false,
+		open: function(event, ui) { }
+	});
+	
+	$confirmOrgActivationModal.dialog({
+		autoOpen: false,
+		modal: true,
+		dialogClass: 'popupModal',
+		width: 370,
+		minHeight: 110,
 		resizable: false,
 		closeOnEscape: false,
 		open: function(event, ui) { }
@@ -200,13 +225,42 @@ $(document).ready(function() {
 		createOrUpdate(false);
 	});
 	
+	$forRulesChckBox.on("click",function(){
+		var str =this.id.split("-").pop();
+		var $curforRulesObj=$( "#forRules-"+str);
+		var $curEditObj=$( "#editable-"+str);
+		var $curDispOtherPOObj=$( "#dispOtherPO-"+str);
+		var $curExcelObj=$( "#excel-"+str);
+		var	$includeClassId=$('#template-comp-tr-'+str);
+		if($(this).is(':checked')){
+			$curDispOtherPOObj.attr("disabled", false);
+			$curExcelObj.attr("disabled", false);
+			$includeClassId.html("hasSelected");
+		}else{
+			$curEditObj.attr("disabled", false);
+			$curDispOtherPOObj.attr("disabled", true);
+			$curExcelObj.attr("disabled", true);
+			$curDispOtherPOObj.attr('checked', false);
+			$curExcelObj.attr('checked', false);
+			$includeClassId.html("");
+			var row = $(this).closest('#template-Component-table tbody tr');
+			var ruleCount = row.find('#templateName').attr('data-rulecount');
+			if(ruleCount>0){
+				isAssociatedToRule(this);
+				$curforRulesObj.attr("checked", true);
+			}
+			
+		}
+	});
+	
 	$requiredChckBox.on("click",function(){
 		var str =this.id.split("-").pop();
-		 $curEditObj=$( "#editable-"+str);
-		 $curViewObj=$( "#viewable-"+str);
-		 $curDispOtherPOObj=$( "#dispOtherPO-"+str);
-		 $curExcelObj=$( "#excel-"+str);
-		 $includeClassId=$('#template-comp-tr-'+str);
+		var	$curforRulesObj=$( "#forRules-"+str);
+		var	$curEditObj=$( "#editable-"+str);
+		var	$curViewObj=$( "#viewable-"+str);
+		var	$curDispOtherPOObj=$( "#dispOtherPO-"+str);
+		var $curExcelObj=$( "#excel-"+str);
+		var	$includeClassId=$('#template-comp-tr-'+str);
 		if($(this).is(':checked')){
 			$curEditObj.attr('checked', true);
 			$curEditObj.attr("disabled", true);
@@ -214,61 +268,51 @@ $(document).ready(function() {
 			$curExcelObj.attr("disabled", false);
 			$curViewObj.attr('checked', true);
 			$curViewObj.attr("disabled", true);
-			$includeClassId.html("1~~9");
+			$curforRulesObj.attr('checked', true);
+			$curforRulesObj.attr("disabled", true);
+			$includeClassId.html("hasSelected");
 		}else{
-			//$curEditObj.attr('checked', false);
 			$curEditObj.attr("disabled", false);
-			//$curDispOtherPOObj.attr("disabled", true);
-			//$curExcelObj.attr("disabled", true);
-			//$curDispOtherPOObj.attr('checked', false);
-			//$curExcelObj.attr('checked', false);
-			//$curViewObj.attr('checked', false);
-			//$curViewObj.attr("disabled", false);
 			$includeClassId.html("");
 		}
 	});
 	
 	$editChckBox.on("click",function(){
 		var str =this.id.split("-").pop();
-		 $curDispOtherPOObj=$( "#dispOtherPO-"+str);
-		 $curExcelObj=$( "#excel-"+str);
-		 $curViewObj=$( "#viewable-"+str);
-		 $includeClassId=$('#template-comp-tr-'+str);
+		var	$curforRulesObj=$( "#forRules-"+str);
+		var	$curDispOtherPOObj=$( "#dispOtherPO-"+str);
+		var	$curExcelObj=$( "#excel-"+str);
+		var	$curViewObj=$( "#viewable-"+str);
+		var	$includeClassId=$('#template-comp-tr-'+str);
 		if($(this).is(':checked')){
 			$curDispOtherPOObj.attr("disabled", false);
 			$curExcelObj.attr("disabled", false);
 			$curViewObj.attr('checked', true);
 			$curViewObj.attr("disabled", true);
-			//$includeClassId.addClass("include-filter-class");
-			$includeClassId.html("1~~9");
+			$curforRulesObj.attr("checked", true);
+			$curforRulesObj.attr("disabled", true);
+			$includeClassId.html("hasSelected");
 		}else{
-			//$curDispOtherPOObj.attr("disabled", true);
-			//$curExcelObj.attr("disabled", true);
-			//$curDispOtherPOObj.attr('checked', false);
-			//$curExcelObj.attr('checked', false);
-			//$curViewObj.attr('checked', false);
 			$curViewObj.attr("disabled", false);
-			//$includeClassId.removeClass("include-filter-class");
 			$includeClassId.html("");
 		}
 	});
 	
 	$viewChckBox.on("click",function(){
 		var str =this.id.split("-").pop();
-		 $curDispOtherPOObj=$( "#dispOtherPO-"+str);
-		 $curExcelObj=$( "#excel-"+str);
-		 $includeClassId=$('#template-comp-tr-'+str);
+		var	$curforRulesObj=$( "#forRules-"+str);
+		var	$curDispOtherPOObj=$( "#dispOtherPO-"+str);
+		var	$curExcelObj=$( "#excel-"+str);
+		var	$includeClassId=$('#template-comp-tr-'+str);
 		if($(this).is(':checked')){
 			$curDispOtherPOObj.attr("disabled", false);
 			$curExcelObj.attr("disabled", false);
-			//$includeClassId.addClass("include-filter-class");
-			$includeClassId.html("1~~9");
+			$curforRulesObj.attr('checked', true);
+			$curforRulesObj.attr("disabled", true);
+			$includeClassId.html("hasSelected");
 		}else{
-			$curDispOtherPOObj.attr("disabled", true);
-			$curExcelObj.attr("disabled", true);
-			$curDispOtherPOObj.attr('checked', false);
-			$curExcelObj.attr('checked', false);
-			//$includeClassId.removeClass("include-filter-class");
+			$curforRulesObj.attr('checked', true);
+			$curforRulesObj.attr("disabled", false);
 			$includeClassId.html("");
 		}
 	});
@@ -290,6 +334,18 @@ $(document).ready(function() {
 		openModal($confirmOrgDeactivationModal);
 	});
 	
+	//Activate modal
+	$templateTable.on("click", ".activate", function(){
+		
+		var $this =  $(this);
+		var templateName = $this.closest('.template-row').find('.template-name').text();
+		var templateId = $this.closest('.template-row').find('.template-id').val();
+		$confirmOrgActivationModal.find("#templateName").text(templateName);
+		$confirmOrgActivationModal.find("#template-id").val(templateId);
+		openModal($confirmOrgActivationModal);
+		
+	});
+	
 	$templateForm.on('keypress', function(e) {
 		if (e.which == 13) {
 			$saveTemplateEdit.trigger('click');
@@ -300,22 +356,22 @@ $(document).ready(function() {
 	//deactivate execution
 	$confirmOrgDeactivationModal.on("click", ".deactivate-confirm", function(){
 		var templateId = $('#template-id').val();
-		var $deactivateorgPromise = $.post('delete-template.htm', {templateId:templateId});
-		
+		var $deactivateorgPromise = $.post('deactivate-template.htm', {templateId:templateId});
 		$deactivateorgPromise.done(function(data){
-			$('.template-id').each(function(){
-				var orgIdMatch = $(this).val();
-				var isorgIdMatch = (orgIdMatch == templateId);
-				if(isorgIdMatch){
-					var $orgRow = $(this).closest('.template-row');
-					var nRow = $orgRow[0];
-					
-					$('#template-table').dataTable().fnDeleteRow(nRow);
-				}
-			});
 			closeModal($confirmOrgDeactivationModal);
+			location.assign('./template.htm?selectedTemplateType='+templateSelection);
 		});
 	});
+	
+	//Activate execution
+	$confirmOrgActivationModal.on("click", ".activate-confirm", function(){
+		var templateId = $('#template-id').val();
+		var $activateorgPromise = $.post('activate-template.htm', {templateId:templateId});
+		$activateorgPromise.done(function(data){
+		location.assign('./template.htm?selectedTemplateType='+templateSelection);
+		});
+	});
+	
 	
 	//edit modal
 	$templateTable.on("click", ".edit-template", function(){
@@ -329,6 +385,8 @@ $(document).ready(function() {
 		 $(this).css("font-weight", "bold");
 		 $showAll.css("color", "");
 		 $showAll.css("font-weight", "normal");
+		 $showRules.css("color", "");
+		 $showRules.css("font-weight", "normal");
 		 toggleSelection="SELECTED";
 		 $templateComponenttable.fnDraw();
 	 });
@@ -338,23 +396,63 @@ $(document).ready(function() {
 		 $(this).css("font-weight", "bold");
 		 $showSelected.css("color", "");
 		 $showSelected.css("font-weight", "normal");
+		 $showRules.css("color", "");
+		 $showRules.css("font-weight", "normal");
 		 toggleSelection="ALL";
 		 $templateComponenttable.fnDraw();
 	 });
-	 $templateComponenttable.dataTableExt.afnFiltering.push(function (oSettings, aData, iDataIndex) {
-		 if(toggleSelection=="SELECTED"){
-			 var row = $($("#template-Component-table").dataTable().fnGetNodes()[iDataIndex]);
-			 var divArry=row.find('div');
-			if(divArry[0].innerHTML =='1~~9'){
-				return true;
-			}else{
-				return false;
-			}
-		}else{
-			return true;
-		}
-	});
 	 
+	 $showRules.click(function(e){
+		 $(this).css("color", "blue");
+		 $(this).css("font-weight", "bold");
+		 $showSelected.css("color", "");
+		 $showSelected.css("font-weight", "normal");
+		 $showAll.css("color", "");
+		 $showAll.css("font-weight", "normal");
+		 toggleSelection="RULES";
+		 $templateComponenttable.fnDraw();
+	 });
+	 
+	 $showAllTemplates.click(function(e){
+		 $(this).css("color", "blue");
+		 $(this).css("font-weight", "bold");
+		 $showActiveTemplates.css("color", "");
+		 $showActiveTemplates.css("font-weight", "normal");
+		 templateSelection="ALL";
+		 $templateTable.fnDraw();
+	 });
+	 
+	 $showActiveTemplates.click(function(e){
+		 $(this).css("color", "blue");
+		 $(this).css("font-weight", "bold");
+		 $showAllTemplates.css("color", "");
+		 $showAllTemplates.css("font-weight", "normal");
+		 templateSelection="ACTIVE";
+		 $templateTable.fnDraw();
+	 });
+	 
+	 $templateComponenttable.dataTableExt.afnFiltering.push(function (oSettings, aData, iDataIndex) {
+         if(toggleSelection=="SELECTED"){
+                var row = $($("#template-Component-table").dataTable().fnGetNodes(iDataIndex));
+                var val =row.find(("#template-comp-tr-"+iDataIndex));
+                if(val[0].innerHTML =='hasSelected'){
+                      return true;
+                }else {
+                      return false;
+                }
+         }else if(toggleSelection=="RULES"){// show components which are having rules
+                var row = $($("#template-Component-table").dataTable().fnGetNodes(iDataIndex));
+                var val =row.find(("#componentWithRule-"+iDataIndex));
+                if(val[0].innerHTML =='hasRule'){
+                      return true;
+                }else {
+                      return false;
+                }
+         }else{
+                return true;
+         }
+  });
+
  	if(isCreateOrEdit !=null || isCreateOrEdit !=undefined){
  		if(isCreateOrEdit==='true'){
  			$showAll.trigger( "click" );
@@ -362,40 +460,66 @@ $(document).ready(function() {
  			 $showSelected.trigger( "click" );
  		}
  	}
+ 	
+ 	$templateTable.dataTableExt.afnFiltering.push(function (oSettings, aData, iDataIndex) {
+		 if(templateSelection=="ACTIVE"){
+			 var row = $($templateTable.dataTable().fnGetNodes()[iDataIndex]);
+			 var val =row.find(("#status-"+iDataIndex)).val();
+			if(val =='A'){
+				return true;
+			}else {
+				return false;
+			}
+		}else{
+			return true;
+		}
+	});
+ 	
+ 	$('#activate-modal').on("click", ".cancel-activate", function(){
+ 		closeModal($confirmOrgActivationModal);
+ 	});
+ 	if(templateSelection=='ACTIVE'){
+        $showActiveTemplates.trigger("click");
+ 	}else{
+ 		$showAllTemplates.trigger("click");
+ 	}
+
 });
 
 function createOrUpdate(isCreate){
 	$('.error-messages-container').addClass('displayNone');
-	var checkedList=[];
 	var tempDesc=$("#templateDesc").val();
 	var poCatAssID=$("#poCatAssID").val();
 	var currentTimeStamp = new Date().getTime();
 	var checkedListJSON='';
 	var isFirst=true;
-	var i=1;
 	
 	$($("#template-Component-table").dataTable().fnGetNodes()).each(function(index) {
 		var row = $(this);
 		var checkBoxArry=row.find(':checkbox');
 		var hiddenArry=row.find('input:hidden');
 		if(checkBoxArry !=null && checkBoxArry.length >0){
-			var viewable=checkBoxArry[0].checked;
-			var editable=checkBoxArry[1].checked;
-			var required=checkBoxArry[2].checked;
-			var otherPO=checkBoxArry[3].checked;
-			var excel=checkBoxArry[4].checked;
-			if(viewable || editable || required || otherPO || excel){
+			var forRules=checkBoxArry[0].checked;
+			var viewable=checkBoxArry[1].checked;
+			var editable=checkBoxArry[2].checked;
+			var required=checkBoxArry[3].checked;
+			var otherPO=checkBoxArry[4].checked;
+			var excel=checkBoxArry[5].checked;
+			var hasTempCompId=checkBoxArry[6].checked;// to check existing component
+			
+			if(viewable || editable || required || otherPO || excel || forRules || hasTempCompId){
 				if(hiddenArry !=null && hiddenArry.length >0){
 					var componentId=hiddenArry[0].value;
 					var componentName=hiddenArry[1].value;
-					//console.log("componentName: "+componentName);
-					checkedListJSON=getComponetJSON(componentName,componentId,viewable, editable, required, otherPO, excel, checkedListJSON, isFirst);
+					var templateComponentId = hiddenArry[2].value;
+					checkedListJSON=getComponetJSON(componentName,componentId,templateComponentId,forRules, viewable, editable, required, otherPO, excel, checkedListJSON, isFirst);
 					isFirst=false;
 				}
 			}
 		}
 	});
 	if(validate($templateForm)){
+		showLoading=true;
 		var url='create-template.htm?';
 		if(!isCreate){
 			var templateId=$("#template-id").val();
@@ -406,24 +530,25 @@ function createOrUpdate(isCreate){
 			data:'['+checkedListJSON+']',
 	        processData: false,
 	        contentType: 'application/json',
-	        type: 'POST'
-		});
-		
-		$createPromise.done(function(data){
-			location.assign('./template.htm');
-		});
-		$createPromise.fail(function (jqXHR, textStatus) {
-		     if(jqXHR.responseText.indexOf('Template Already exists.')>0){
-		    	 $errMsg.text('Template Already exists.');
-		    	 $('.error-messages-container').removeClass('displayNone');
+	        type: 'POST',
+	        success: function(data){
+	        	 processingImageAndTextHandler('visible','Loading data...');
+	        	 location.assign('./create-modify-template-page.htm?isCreatePage=false&templateId=' + data);
 			  }
 		});
+		
+		$createPromise.fail(function (jqXHR, textStatus) {
+			showLoading=false;
+			$errorModal.text("Something went wrong with the request, please try again later");
+			$errorModal.dialog("option", "title", "Error");
+        	ModalUtil.openModal($errorModal);
+	    });
 	}else{
 		$('.error-messages-container').removeClass('displayNone');
 	}
 }
 
-function getComponetJSON(compName,compId,viewable,editable,required,otherPO,excel,checkedListJSON,isFirst){
+function getComponetJSON(compName,compId,templateComponentId,forRules,viewable,editable,required,otherPO,excel,checkedListJSON,isFirst){
 	var component={};
 	component.componentName=compName;
 	component.componentId=compId;
@@ -432,6 +557,8 @@ function getComponetJSON(compName,compId,viewable,editable,required,otherPO,exce
 	component.required=required;
 	component.dispOtherPO=otherPO;
 	component.excel=excel;
+	component.forRules=forRules;
+	component.templateComponentId=templateComponentId;
 	if(isFirst){
 		checkedListJSON=checkedListJSON+JSON.stringify(component);
 	}else{
@@ -456,18 +583,107 @@ function validate($editForm){
 	var flag = true;
 	if(validateFormTextFields($editForm) == false){
 		if($("#templateDesc").hasClass('errorMsgInput')){
-			$errMsg.text('Error Template Desc invalid!');
+			$errorModal.text("Error Template Desc invalid!");
+			$errorModal.dialog("option", "title", "Error");
+        	ModalUtil.openModal($errorModal);
 		}
 		if($("#poCatAssID").hasClass('errorMsgInput')){
-			$errMsg.text('Error Cat/Sub-Cat invalid!');
+			$errorModal.text("Error Cat/Sub-Cat invalid!");
+			$errorModal.dialog("option", "title", "Error");
+        	ModalUtil.openModal($errorModal);
 		}
 		flag = false;
 	}
-	else if(!$viewChckBox.is(':checked') && !$editChckBox.is(':checked') &&  !$requiredChckBox.is(':checked') && !$dispOtherPOChckBox.is(':checked')
-			&& !$excelChckBox.is(':checked')){
-		$errMsg.text('Error Component selection invalid!');
-		flag = false;
-	}
-	
 	return flag;
 }
+
+function getRulesByTemplateComponentId(templateComponentId,templateName){
+	var templateId = $("#template-id").val();
+	$("#templateComponentId").val(templateComponentId); 
+	var $getRulesByTemplateComponentId = $.get('get-rule-popup.htm', {templateComponentId:templateComponentId,templateId:templateId});
+	$getRulesByTemplateComponentId.done(function(modalContent){
+		$ruleModal.html(modalContent);
+		$ruleModal.dialog('option', 'title', "Configure Rules for "+templateName); 
+		 openModal($ruleModal);
+		 var ruleCount=$("#ruleCount").val();
+			if(ruleCount==0){
+				addNewRule();
+			}
+	}).fail(function(jqXHR, textStatus,errorThrown) {
+	 	   showLoading=false;
+	 	  	$errorModal.text('Something went wrong with the request, please try again later.');
+	 	 	$errorModal.dialog("option", "title", "Error");
+	      	ModalUtil.openModal($errorModal);
+			parent.resizeAfterPaginationChange();
+		  }
+		);		
+}
+
+function isAssociatedToRule(currentRow){
+		var row = $(currentRow).closest('#template-Component-table tbody tr');
+		var templateComponentId=row.find('#templateComponentId').val();
+		var componentName = row.find('#templateName').attr('data-fullname');
+		var $getRuleNamesByTemplateComponentId = $.get('check-iscomponent-associatedToRules.htm',{templateComponentId:templateComponentId,componentName:componentName});
+		$getRuleNamesByTemplateComponentId.done(function(modalContent){
+			$getAlertModal.html(modalContent);
+			 openModal($getAlertModal);
+		});
+}
+
+$ruleModal.dialog({
+	autoOpen: false,
+	modal: true,
+	dialogClass: 'popupModal',
+	width: 1048,
+	maxHeight:500,
+	my: "center",
+	at: "center",
+	of: window,
+	left:170,
+	resizable: false,
+	closeOnEscape: false,
+	create: function() {
+           $(this).closest('div.ui-dialog')
+                  .find('.ui-dialog-titlebar-close')
+                  .click(function(e) {
+                	  processingImageAndTextHandler('visible','Loading data...');
+                	  var templateId = $("#template-id").val();
+                	  location.assign('./create-modify-template-page.htm?isCreatePage=false&templateId=' + templateId);
+               	   	  return false;
+           });
+       }
+});
+
+
+$getAlertModal.dialog({
+	autoOpen: false,
+	modal: true,
+	dialogClass: 'popupModal',
+	width: 450,
+	minHeight: 110,
+	resizable: false,
+	closeOnEscape: false,
+	open: function(event, ui) { }
+});
+
+
+function addNewRule(){
+	var templateComponentId = $("#templateComponentId").val();
+    var templateId = $("#template-id").val();
+	var $createNewRule = $.get('load-create-rule.htm',{templateComponentId:templateComponentId,templateId:templateId});
+	$createNewRule.done(function(modalContent){
+		$(".ruleDescription").html(modalContent);
+		showLoading=false;
+	});
+}
+//for exception display on modal
+$errorModal.dialog({
+	autoOpen: false,
+	modal: true,
+	dialogClass: 'popupModal',
+	width: 500,
+	minHeight: 0,
+	resizable: false,
+	closeOnEscape: true
+});	
+

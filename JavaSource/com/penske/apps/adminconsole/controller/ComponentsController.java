@@ -10,6 +10,8 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.penske.apps.adminconsole.annotation.DefaultController;
@@ -19,10 +21,12 @@ import com.penske.apps.adminconsole.enums.LeftNav;
 import com.penske.apps.adminconsole.enums.Tab.SubTab;
 import com.penske.apps.adminconsole.model.CategoryAssociation;
 import com.penske.apps.adminconsole.model.ComponentVisibility;
+import com.penske.apps.adminconsole.model.Components;
 import com.penske.apps.adminconsole.model.HeaderUser;
 import com.penske.apps.adminconsole.model.Manufacture;
 import com.penske.apps.adminconsole.model.PoCategory;
 import com.penske.apps.adminconsole.model.SubCategory;
+import com.penske.apps.adminconsole.model.Template;
 import com.penske.apps.adminconsole.model.VendorTemplate;
 import com.penske.apps.adminconsole.model.VendorTemplateSearch;
 import com.penske.apps.adminconsole.service.CategoryManagementService;
@@ -56,7 +60,7 @@ public class ComponentsController {
     private ComponentService componentService;
     @Autowired
     private SuppliermgmtSessionBean sessionBean;
-
+   
     @RequestMapping(value = {"/navigate-components"})
     public ModelAndView navigateAppConfig(HttpServletRequest request) {
 
@@ -171,17 +175,10 @@ public class ComponentsController {
 
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_TEMPLATE)
     @RequestMapping("/template")
-    public ModelAndView getTemplatePage(HttpSession session) {
+    public ModelAndView getTemplatePage(@RequestParam(value="selectedTemplateType",required = false,defaultValue="ACTIVE") String selectedTemplateType) {
         ModelAndView mav = new ModelAndView("/admin-console/components/template");
-        HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
-        boolean isSupplier = currentUser.getUserTypeId() == ApplicationConstants.SUPPLIER_USER;
-        // If the user is a supplier.
-        if (isSupplier) {
-        }
-        else {
-        }
-        mav.addObject("hasBeenSearched", false);
         mav.addObject("templateList", componentService.getAllTemplates());
+        mav.addObject("selectedTemplateType",selectedTemplateType);
         return mav;
     }
 
@@ -192,6 +189,35 @@ public class ComponentsController {
         mav.addObject("overrideList", componentService.getAllComponentVisibilityOverrides());
         return mav;
     }
+    
 
+    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_TEMPLATE)
+    @RequestMapping(value ="/create-modify-template-page")
+    @ResponseBody
+    public ModelAndView getCreateModifyTemplatePage(@RequestParam("isCreatePage") Boolean isCreatePage,@RequestParam(value="templateId") int templateId,@RequestParam(value="tempCompId",required = false) Integer tempCompId, HttpSession session) {
+        ModelAndView mav = new ModelAndView("/admin-console/components/create-edit-template");
+        HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
+        mav.addObject("currentUser", currentUser);
+        //mav.addObject("allPoAssocList", componentService.getAllPoAssociation());
+        List<Components> comp=componentService.getAllComponent();
+        if(isCreatePage){
+            mav.addObject("allPoAssocList", componentService.getAllPoAssociationAddEdit(true, 0));
+            mav.addObject("isCreatePage",true);
+        }else{
+            Template editableTemplate=componentService.getTemplatesById(templateId);
+            if(editableTemplate !=null){
+                mav.addObject("allPoAssocList", componentService
+                        .getAllPoAssociationAddEdit(false, Integer
+                                .parseInt(editableTemplate.getPoCatAssID())));
+            }
+            mav.addObject("editableTemplate",editableTemplate);
+            comp=componentService.getTemplateComponentById(comp,templateId);
+            mav.addObject("isCreatePage",false);
+        }
+        mav.addObject("allComponent",comp);
+        mav.addObject("tempCompId",tempCompId);
+        return mav;
+    }
+    
 
 }

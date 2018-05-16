@@ -32,6 +32,8 @@ import com.penske.apps.adminconsole.model.ComponentVisibilityOverride;
 import com.penske.apps.adminconsole.model.Components;
 import com.penske.apps.adminconsole.model.HeaderUser;
 import com.penske.apps.adminconsole.model.PoCategory;
+import com.penske.apps.adminconsole.model.RuleDefinitions;
+import com.penske.apps.adminconsole.model.RuleMaster;
 import com.penske.apps.adminconsole.model.SubCategory;
 import com.penske.apps.adminconsole.model.Template;
 import com.penske.apps.adminconsole.model.TemplateComponent;
@@ -42,6 +44,7 @@ import com.penske.apps.adminconsole.service.CategoryManagementService;
 import com.penske.apps.adminconsole.service.ComponentService;
 import com.penske.apps.adminconsole.service.ComponentVendorTemplateService;
 import com.penske.apps.adminconsole.service.ComponentVisibilityService;
+import com.penske.apps.adminconsole.service.LoadSheetManagementService;
 import com.penske.apps.adminconsole.util.ApplicationConstants;
 import com.penske.apps.adminconsole.util.CommonUtils;
 
@@ -73,6 +76,9 @@ public class ComponentsRestController {
 
     @Autowired
     private ComponentService componentService;
+    
+    @Autowired
+    private LoadSheetManagementService loadsheetManagementService;
 
     // TODO SMCSEC is this even being used????
     @RequestMapping(value="get-add-visibility-modal-content")
@@ -608,36 +614,9 @@ public class ComponentsRestController {
     }
 
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_TEMPLATE)
-    @RequestMapping(value ="/create-modify-template-page")
-    @ResponseBody
-    public ModelAndView getCreateModifyTemplatePage(@RequestParam("isCreatePage") Boolean isCreatePage,@RequestParam(value="templateId") int templateId, HttpSession session) {
-        ModelAndView mav = new ModelAndView("/admin-console/components/create-edit-template");
-        HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
-        mav.addObject("currentUser", currentUser);
-        //mav.addObject("allPoAssocList", componentService.getAllPoAssociation());
-        List<Components> comp=componentService.getAllComponent();
-        if(isCreatePage){
-            mav.addObject("allPoAssocList", componentService.getAllPoAssociationAddEdit(true, 0));
-            mav.addObject("isCreatePage",true);
-        }else{
-            Template editableTemplate=componentService.getTemplatesById(templateId);
-            if(editableTemplate !=null){
-                mav.addObject("allPoAssocList", componentService
-                        .getAllPoAssociationAddEdit(false, Integer
-                                .parseInt(editableTemplate.getPoCatAssID())));
-            }
-            mav.addObject("editableTemplate",editableTemplate);
-            comp=componentService.getTemplateComponentById(comp,templateId);
-            mav.addObject("isCreatePage",false);
-        }
-        mav.addObject("allComponent",comp);
-        return mav;
-    }
-
-    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_TEMPLATE)
     @RequestMapping(value ="/create-template", method = RequestMethod.POST)
     @ResponseBody
-    public void addTemplate(@RequestParam("tempDesc") String tempDesc,@RequestParam("poCatAssID") String poCatAssID,@RequestBody List<Components> compList,HttpSession session, HttpServletResponse response) throws Exception{
+    public int addTemplate(@RequestParam("tempDesc") String tempDesc,@RequestParam("poCatAssID") String poCatAssID,@RequestBody List<Components> compList,HttpSession session, HttpServletResponse response) throws Exception{
         HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
         Template template=new Template();
         template.setTemplateDesc(tempDesc);
@@ -647,6 +626,7 @@ public class ComponentsRestController {
         template.setModifiedBy(currentUser.getSso());
         String hashCodeStr=CommonUtils.getCompnentCheckSum(compList);
         template.setTemplateHash(hashCodeStr);
+        int createdtemplateId = 0;
         List<Integer> templateId=componentService.findTemplateExist(template);
         if(templateId !=null && !templateId.isEmpty()){
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Template Already exists.");
@@ -655,33 +635,43 @@ public class ComponentsRestController {
             response.flushBuffer();
         }else{
             componentService.addTemplate(template);
+            createdtemplateId=template.getTemplateID();
         }
+        return createdtemplateId;
     }
 
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_TEMPLATE)
     @RequestMapping(value ="/update-template", method = RequestMethod.POST)
     @ResponseBody
-    public void updateTemplate(@RequestParam("templateId") int templateId,@RequestParam("tempDesc") String tempDesc,@RequestParam("poCatAssID") String poCatAssID,@RequestBody List<Components> compList,HttpSession session, HttpServletResponse response) throws Exception{
-        HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
-        Template template=new Template();
-        template.setTemplateID(templateId);
-        template.setTemplateDesc(tempDesc);
-        template.setPoCatAssID(poCatAssID);
-        template.setComponentList(compList);
-        template.setCreatedBy(currentUser.getSso());
-        template.setModifiedBy(currentUser.getSso());
-        String hashCodeStr=CommonUtils.getCompnentCheckSum(compList);
-        template.setTemplateHash(hashCodeStr);
-        List<Integer> templateTemplId=componentService.findTemplateExist(template);
-        if(templateTemplId !=null && !templateTemplId.isEmpty() &&
-                ((templateTemplId.size()==1 && templateTemplId.get(0) !=templateId)) || templateTemplId.size()>1){
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Template Already exists.");
+    public int updateTemplate(@RequestParam("templateId") int templateId,@RequestParam("tempDesc") String tempDesc,@RequestParam("poCatAssID") String poCatAssID,@RequestBody List<Components> compList,HttpSession session, HttpServletResponse response) throws Exception{
+    	try{
+	        HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
+	        Template template=new Template();
+	        template.setTemplateID(templateId);
+	        template.setTemplateDesc(tempDesc);
+	        template.setPoCatAssID(poCatAssID);
+	        template.setComponentList(compList);
+	        template.setCreatedBy(currentUser.getSso());
+	        template.setModifiedBy(currentUser.getSso());
+	        String hashCodeStr=CommonUtils.getCompnentCheckSum(compList);
+	        template.setTemplateHash(hashCodeStr);
+	        List<Integer> templateTemplId=componentService.findTemplateExist(template);
+	        if(templateTemplId !=null && !templateTemplId.isEmpty() &&
+	                ((templateTemplId.size()==1 && templateTemplId.get(0) !=templateId)) || templateTemplId.size()>1){
+	            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Template Already exists.");
+	            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+	            response.getWriter().write("Template Already exists.");
+	            response.flushBuffer();
+	        }else
+	        	componentService.updateTemplate(template);
+    	}catch(Exception e){
+    		LOGGER.error("Error during updating template: " + e);
+    		response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error during updating template.");
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.getWriter().write("Template Already exists.");
+            response.getWriter().write("Error during updating template.");
             response.flushBuffer();
-        }else{
-            componentService.updateTemplate(template);
-        }
+    	}
+    	return templateId;
     }
 
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_TEMPLATE)
@@ -696,12 +686,18 @@ public class ComponentsRestController {
     }
 
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_TEMPLATE)
-    @RequestMapping("delete-template")
+    @RequestMapping("deactivate-template")
     @ResponseBody
-    public void deleteTemplate(@RequestParam(value="templateId") int templateId, HttpSession session) {
-        componentService.deleteTemplate(templateId);
+    public void deActivateTemplate(@RequestParam(value="templateId") int templateId) {
+        componentService.deActivateTemplate(templateId);
     }
 
+    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_TEMPLATE)
+    @RequestMapping("activate-template")
+    @ResponseBody
+    public void activateTemplate(@RequestParam(value="templateId") int templateId) {
+        componentService.activateTemplate(templateId);
+    }
 
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_COMPONENT_OVERRIDE)
     @RequestMapping(value ="/create-modify-comp-visiblity-override-page")
@@ -821,4 +817,143 @@ public class ComponentsRestController {
         }
         return status;
     }
+    
+
+    /* =============== Create New Rule ==================*/
+    @RequestMapping(value={"/create-template-rule"})
+    @ResponseBody
+    public int insertRuleDetails(RuleMaster ruleMaster,HttpServletResponse response,int ruleId) throws Exception{
+    	try{
+    		ruleId = loadsheetManagementService.createNewRule(ruleMaster);
+	        
+    	}
+    	catch(Exception e){
+    		LOGGER.error("Error while creating rule: " + e);
+    		 CommonUtils.getCommonErrorAjaxResponse(response,"Error while creating rule.");
+    	}
+    	return ruleId ;
+    }
+    
+    
+    /* ================Update Rule =======================*/
+    @RequestMapping(value={"/update-template-rule"})
+    @ResponseBody
+    public int updateRuleDetails(RuleMaster ruleMaster,HttpServletResponse response) throws Exception{
+    	try{
+    	    loadsheetManagementService.updateRuleDetails(ruleMaster);
+    	}
+    	catch(Exception e){
+    		LOGGER.error("Error while updating rule: " + e);
+    		CommonUtils.getCommonErrorAjaxResponse(response,"Error while updating rule");
+    	}
+    	return ruleMaster.getRuleId();
+    }
+    
+    
+    /* ========== Check For Unique rule Name =============== */
+    @RequestMapping(value = "/check-unique-rule-name", method = RequestMethod.POST)
+    @ResponseBody
+    public boolean checkForUniqueRuleName(@RequestParam("ruleName") String ruleName, @RequestParam("ruleId") int ruleId) {
+
+        return loadsheetManagementService.checkForUniqueRuleName(ruleName, ruleId);
+    }
+    
+   
+    @RequestMapping(value = "/update-componet-rules-priority", method = RequestMethod.POST)
+    public void updateComponentRulesPriority(@RequestParam("ruleList") List<Integer> ruleList,@RequestParam("templateComponentId")int templateComponentId,HttpServletResponse response) {
+    	 try{
+    		 loadsheetManagementService.updateComponentRulesPriority(ruleList,templateComponentId);
+         }catch (Exception e) {
+             LOGGER.debug(e);
+             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+         }
+        
+    }
+    
+    @RequestMapping(value = "/check-iscomponent-associatedToRules")
+    @ResponseBody
+    public ModelAndView checkIsComponentHasRules(@RequestParam(value="templateComponentId") int templateComponentId, @RequestParam(value="componentName") String componentName) {
+        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/components/view-rules-associtaed-to-component-modal-alert");
+        List<RuleMaster> ruleMaster= new  ArrayList<RuleMaster>();
+        ruleMaster=loadsheetManagementService.getRulesByTemplateComponentId(templateComponentId);
+        mav.addObject("ruleMaster", ruleMaster);
+        mav.addObject("componentName",componentName);
+        return mav;
+    }
+    
+    /*==============Display Existing Rule===================*/
+    @RequestMapping(value={"/get-rule-popup"})
+    public ModelAndView editRuleDefinitions(@RequestParam("templateComponentId")int templateComponentId,@RequestParam("templateId") int templateId,HttpServletResponse response) throws Exception {
+
+        ModelAndView mav = new ModelAndView("/admin-console/components/template-rule");
+        List<RuleMaster> rulesList= new  ArrayList<RuleMaster>();
+        try{
+        rulesList=loadsheetManagementService.getRulesByTemplateComponentId(templateComponentId);
+        RuleMaster ruleMaster = new RuleMaster();
+        if(!rulesList.isEmpty()){
+        	String requestFrom="templateRule";
+	        RuleMaster rule=rulesList.get(0);
+	        ruleMaster=loadsheetManagementService.getRuleDetails(rule.getRuleId(),requestFrom);
+	        loadsheetManagementService.getTemplateComponentRuleVisibilty(templateComponentId,rule.getRuleId(),ruleMaster);
+        }
+        mav.addObject("componentsList", componentService.getTemplateComponentByTempId(templateId));
+        mav.addObject("pageAction","UPDATE");
+        mav.addObject("ruleMaster",ruleMaster);
+        mav.addObject("rulesList",rulesList);
+        mav.addObject("templateComponentId",templateComponentId);
+        }catch(Exception e){
+        		LOGGER.error("Error :" + e.getMessage());
+        	  CommonUtils.getCommonErrorAjaxResponse(response,"Error during fetching rule details due to bad data");
+        }
+        return mav;
+    }
+    
+    @RequestMapping(value={"/get-rule-details"})
+    public ModelAndView getRuleDetails(@RequestParam("ruleId")int ruleId,@RequestParam("templateComponentId") int templateComponentId,@RequestParam("templateId") int templateId,HttpServletResponse response) throws Exception {
+    	ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/components/ruleDetails");
+    	try{
+    	String requestFrom="templateRule";
+        RuleMaster ruleMaster=loadsheetManagementService.getRuleDetails(ruleId,requestFrom);//ruleId null check to be done
+        loadsheetManagementService.getTemplateComponentRuleVisibilty(templateComponentId,ruleId,ruleMaster);
+        mav.addObject("componentsList", componentService.getTemplateComponentByTempId(templateId));
+        mav.addObject("pageAction","UPDATE");
+        mav.addObject("ruleMaster",ruleMaster);
+        mav.addObject("templateComponentId",templateComponentId);
+        mav.addObject("templateId",templateId);
+    	}catch (Exception e) {
+            LOGGER.error("Error :" + e.getMessage());
+            CommonUtils.getCommonErrorAjaxResponse(response,"Error during fetching rule details due to bad data");
+        }
+        return mav;
+    }
+    
+    
+/*    ==============Create Rule===================*/
+    @RequestMapping("/load-create-rule")
+    public ModelAndView openCreateRule(@RequestParam("templateComponentId") int templateComponentId,@RequestParam("templateId") int templateId){
+        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/components/ruleDetails");
+        RuleMaster ruleMaster=new RuleMaster();
+        List<RuleDefinitions> ruleDefLst=new ArrayList<RuleDefinitions>();
+        RuleDefinitions ruleDef=new RuleDefinitions();
+        ruleDef.setCriteriaGroup(1);
+        ruleDef.setIsGroupHeader(true);
+        ruleDefLst.add(ruleDef);	//Creating one empty row in create rule page
+        ruleMaster.setRuleDefinitionsList(ruleDefLst);
+
+        mav.addObject("componentsList", componentService.getTemplateComponentByTempId(templateId));
+        mav.addObject("ruleMaster",ruleMaster);
+        mav.addObject("pageAction","CREATE");
+        mav.addObject("templateComponentId",templateComponentId);
+        mav.addObject("templateId",templateId);
+        return mav;
+    }
+    
+/*==============Delete Rule===================*/
+    @RequestMapping("delete-rule")
+    @ResponseBody
+    public void deleteRule(@RequestParam(value="ruleId") int ruleId) {
+    	loadsheetManagementService.DeleteRuleDetails(ruleId);
+    }
+
+    
 }

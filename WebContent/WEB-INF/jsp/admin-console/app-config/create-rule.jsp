@@ -8,12 +8,12 @@
 	    <%@ include file="../../../jsp/jsp-fragment/global/default-head-block.jsp" %>
 	    	<!-- Scripts -->
 	    	
-	    <script src="${context}/jQuery/choosen.js" type="text/javascript"></script>
+	    <script src="${context}/jQuery/chosen.jquery.min.js" type="text/javascript"></script>
+	    <script src="${context}/js/v2/jquery.dataTables.min.js" type="text/javascript"></script>
 	    <script src="${context}/js/admin-console/app-config/create-rule.js" type="text/javascript"></script>
-		<script src="${context}/js/v2/jquery.dataTables.min.js" type="text/javascript"></script>
 		<link href="${commonStaticUrl}/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
 		<link href="${context}/css/admin-console/app-config/delay-management.css" rel="stylesheet" type="text/css"/>
-		<link href="${context}/css/choosenstyle.css" rel="stylesheet" type="text/css"/>
+		<link href="${context}/css/chosen.css" rel="stylesheet" type="text/css"/>
 		<link href="${context}/css/admin-console/app-config/create-rule.css" rel="stylesheet" type="text/css"/>
 		
 		
@@ -23,7 +23,8 @@
 		<div id="mainContent" class="borderTop">
 			<%@ include file="../../../jsp/jsp-fragment/admin-console/app-config/left-nav.jsp" %>
 			<div class="leftNavAdjacentContainer">
-			<form:form method="post"  modelAttribute="ruleMaster" id="create-rule-form">	
+			<form:form method="post"  modelAttribute="ruleMaster" id="create-rule-form">
+			<form:input path="ruleType" id="ruleType" type="hidden" value="L"/>	
 				<div>
 				<div class="floatLeft"><h1>Loadsheet Rules</h1></div>
 				<div class="floatLeft marginLeft" style="margin-top:4px;margin-right:5%;">

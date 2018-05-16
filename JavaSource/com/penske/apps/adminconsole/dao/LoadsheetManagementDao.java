@@ -16,6 +16,7 @@ import com.penske.apps.adminconsole.model.LoadsheetSequenceGroupMaster;
 import com.penske.apps.adminconsole.model.LoadsheetSequenceMaster;
 import com.penske.apps.adminconsole.model.RuleDefinitions;
 import com.penske.apps.adminconsole.model.RuleMaster;
+import com.penske.apps.adminconsole.model.TemplateComponentRuleAssociation;
 import com.penske.apps.suppliermgmt.model.UserContext;
 
 public interface LoadsheetManagementDao {
@@ -69,7 +70,7 @@ public interface LoadsheetManagementDao {
     public void updateRuleDefinitions(@Param("ruleDef") RuleDefinitions ruleDef,@Param("user") UserContext user);
 
     @NonVendorQuery
-    public RuleMaster getRuleDetails(@Param("ruleId") int ruleId);
+    public RuleMaster getRuleDetails(@Param("ruleId") int ruleId,String requestFrom);
 
     @NonVendorQuery
     public void deleteRuleDefinitions(@Param("ruleDefIdList") List<Integer> ruleDefIdList);
@@ -148,4 +149,22 @@ public interface LoadsheetManagementDao {
 
     @NonVendorQuery
     public int getSequenceCount(@Param("category") String category,@Param("type") String type,@Param("mfr") String mfr,@Param("sequenceId") int sequenceId);
+    
+    @NonVendorQuery
+    public List<RuleMaster> getRulesByTemplateComponentId(@Param("templateComponentId") int templateComponentId);
+
+    @NonVendorQuery
+	public void saveTemplateComponentVisibilityRules(TemplateComponentRuleAssociation templateComponentRuleAssociation);
+
+    @NonVendorQuery
+	public void updateComponentRulePriority(@Param("templateComponentId")int templateComponentId,@Param("ruleId") Integer ruleId,@Param("priority") int priority,@Param("modifiedBy") String modifiedBy);
+    
+    @NonVendorQuery
+  	public void updateTemplateComponentVisibilityRules(TemplateComponentRuleAssociation templateComponentRuleAssociation);
+   
+    @NonVendorQuery
+	public TemplateComponentRuleAssociation getTemplateComponentRuleVisibilty(@Param("templateComponentId")int templateComponentId,@Param("ruleId")int ruleId);
+    
+    @NonVendorQuery
+    public int getRuleCountByTemplateComponentId(@Param("templateComponentId") int templateComponentId);
 }

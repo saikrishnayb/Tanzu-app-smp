@@ -403,7 +403,7 @@ public class AppConfigController {
     }
     /* =============== Create New Rule ==================*/
     @RequestMapping(value={"/create-rule"})
-    public ModelAndView insertRuleDetails(HttpServletRequest request,RuleMaster ruleMaster) {
+    public ModelAndView insertRuleDetails(HttpServletRequest request,RuleMaster ruleMaster)throws Exception {
 
         loadsheetManagementService.createNewRule(ruleMaster);
 
@@ -478,7 +478,7 @@ public class AppConfigController {
 
         ModelAndView mav = new ModelAndView("/admin-console/app-config/create-rule");
         List<LoadsheetManagement> loadSheetManagementList;
-        RuleMaster ruleMaster=loadsheetManagementService.getRuleDetails(ruleId);
+        RuleMaster ruleMaster=loadsheetManagementService.getRuleDetails(ruleId,requestedFrom);
 
 
         ruleMaster.setRequestedFrom(requestedFrom);
@@ -505,7 +505,7 @@ public class AppConfigController {
 
     /* ================Update Rule =======================*/
     @RequestMapping(value={"/update-rule"})
-    public String updateRuleDetails(RuleMaster ruleMaster) {
+    public String updateRuleDetails(RuleMaster ruleMaster)throws Exception {
 
         loadsheetManagementService.updateRuleDetails(ruleMaster);
 

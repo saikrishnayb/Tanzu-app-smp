@@ -65,6 +65,8 @@
 		LEFT JOIN
 				SMC_COMPONENT_RULE_OVERRIDES CRO
 		ON		CVRM.RULE_ID = CRO.RULE_ID
+		WHERE 
+		       CVRM.RULE_TYPE = 'L'
 		GROUP BY
 				CVRM.RULE_ID,NAME,DESCRIPTION,SUMC.FIRST_NAME||' '||SUMC.LAST_NAME,CVRM.CREATED_DATE,SUME.FIRST_NAME||' '||SUME.LAST_NAME,CVRM.MODIFIED_DATE
 	</select>
@@ -85,8 +87,8 @@
  	<insert id="insertRuleMasterDetails" useGeneratedKeys="true" keyProperty="rule.ruleId" keyColumn="RULE_ID" >
  		INSERT INTO 
  					SMC_CMP_VISIBILITY_RULES_MASTER 
- 					(NAME,			DESCRIPTION,			CREATED_BY,			MODIFIED_BY)
- 		VALUES 		(#{rule.ruleName},	#{rule.description},	#{user.userSSO},	#{user.userSSO})
+ 					(NAME,			DESCRIPTION,			CREATED_BY,			MODIFIED_BY,RULE_TYPE)
+ 		VALUES 		(#{rule.ruleName},	#{rule.description},	#{user.userSSO},	#{user.userSSO},#{rule.ruleType})
  	</insert>
  	
  	<!-- To insert the rule definition -->
@@ -179,10 +181,10 @@
  	
  	<!-- Query to fetch the rule definition details based on ruleID -->
  	<select id="getRuleDetails" resultMap="ruleDetailsMap" >
- 		SELECT 
+		SELECT 
  				TRIM(RULE_ID) AS RULE_ID,
  				TRIM(NAME) AS NAME, 
- 				DESCRIPTION 
+ 				TRIM(DESCRIPTION) AS DESCRIPTION 
  		FROM 
  		 		SMC_CMP_VISIBILITY_RULES_MASTER 
  		 WHERE 	
@@ -221,6 +223,18 @@
 	 	<result property="operand" column="OPERAND" />
 	 	<result property="value" column="COMPONENT_VALUE" />
 	 </resultMap>
+	 
+	  <select id="getTemplateComponentRuleVisibilty" resultType="com.penske.apps.adminconsole.model.TemplateComponentRuleAssociation">
+	
+		SELECT 
+		      VISIBILITY_OVERRIDE AS lsOverride
+		FROM 
+		     SMC_COMPONENT_RULE_OVERRIDES 
+		WHERE 
+				TEMP_COMP_ID = #{templateComponentId}
+			AND RULE_ID=#{ruleId}
+				 
+	</select>
 	
 	
 	<!-- To get load sheet sequences for selected category and type -->
@@ -297,7 +311,7 @@
 		SELECT 	DISTINCT RULE_ID AS 	ruleId,
                 NAME  AS	ruleName,
 		        LOWER(NAME) as Name
-		FROM SMC_CMP_VISIBILITY_RULES_MASTER ORDER BY Name
+		FROM SMC_CMP_VISIBILITY_RULES_MASTER WHERE RULE_TYPE = 'L' ORDER BY Name
 	</select>
 	
 	<!-- TO get component visibility rules-->
@@ -321,6 +335,27 @@
 		<foreach collection="rule" item="item" separator=",">
 		(#{componentVisibilityId},#{item.ruleId},#{item.priority},#{item.lsOverride},#{createdBy},current timestamp,#{createdBy},current timestamp)
 		 </foreach>
+    </insert>
+    
+     	
+ 	<!-- To associate list of rules to the component -->
+ 	<insert id="saveTemplateComponentVisibilityRules">
+		INSERT INTO SMC_COMPONENT_RULE_OVERRIDES (TEMP_COMP_ID,RULE_ID, PRIORITY,VISIBILITY_OVERRIDE,CREATED_BY,
+		CREATED_DATE, MODIFIED_BY, MODIFIED_DATE) VALUES
+		(#{templateComponentId},#{ruleId},#{priority},#{lsOverride},#{createdBy},current timestamp,#{createdBy},current timestamp)
+    </insert>
+    
+     	<!-- To associate list of rules to the component -->
+ 	<insert id="updateTemplateComponentVisibilityRules">
+		UPDATE SMC_COMPONENT_RULE_OVERRIDES
+		<set>
+		VISIBILITY_OVERRIDE = #{lsOverride},
+		CREATED_BY			= #{createdBy},
+		CREATED_DATE		= current timestamp,
+		MODIFIED_BY			= #{createdBy},
+		MODIFIED_DATE		= current timestamp
+		</set>
+		WHERE  RULE_ID = #{ruleId}
     </insert>
     
  	<!-- To get the list of components for dropwdown in create rules -->
@@ -689,5 +724,30 @@
 	</select>
 	
 	
-
+	<select id="getRulesByTemplateComponentId" resultType="com.penske.apps.adminconsole.model.RuleMaster">
+ 		SELECT SCMRM.RULE_ID AS ruleId,
+ 				SCMRM.NAME AS ruleName
+ 		from SMC_CMP_VISIBILITY_RULES_MASTER  SCMRM
+		LEFT JOIN SMC_COMPONENT_RULE_OVERRIDES SCRO  ON SCRO.RULE_ID = SCMRM.RULE_ID
+		WHERE SCRO.TEMP_COMP_ID=#{templateComponentId}
+ 	</select>
+	
+	<!-- To Update component rules priority  -->
+ 	<update id="updateComponentRulePriority">
+ 		UPDATE
+ 				SMC_COMPONENT_RULE_OVERRIDES
+ 		<set>		
+ 				PRIORITY		=	#{priority},
+ 				MODIFIED_BY		=	#{modifiedBy},
+ 				MODIFIED_DATE	=	CURRENT_TIMESTAMP
+ 		</set>
+ 		WHERE
+ 				RULE_ID		 =	#{ruleId}
+ 			AND TEMP_COMP_ID = #{templateComponentId}
+ 				
+ 	</update>
+	
+ 	<select id="getRuleCountByTemplateComponentId" resultType="int">
+ 		select count(RULE_ID) from SMC_COMPONENT_RULE_OVERRIDES where TEMP_COMP_ID=#{templateComponentId}
+ 	</select>
 </mapper>

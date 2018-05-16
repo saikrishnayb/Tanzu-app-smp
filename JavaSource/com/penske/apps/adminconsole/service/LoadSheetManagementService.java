@@ -24,9 +24,9 @@ public interface LoadSheetManagementService {
 	public boolean checkForUniqueRuleName(String newRuleName,int ruleId);
 	public void saveComponentRules(ComponentRuleAssociation componentRule);
 	public List<LoadSheetComponentDetails> getComponents();
-	public void createNewRule(RuleMaster rule);
-	public void updateRuleDetails(RuleMaster rule);
-	public RuleMaster getRuleDetails(int ruleId);
+	public int createNewRule(RuleMaster rule)throws Exception;
+	public void updateRuleDetails(RuleMaster rule) throws Exception;
+	public RuleMaster getRuleDetails(int ruleId,String requestFrom);
 	public void DeleteRuleDetails(int ruleId);
 	public List<LoadsheetManagement> getAssignedLoadsheetCategories(int ruleId);
 	public List<String> getCategoryList();
@@ -39,5 +39,7 @@ public interface LoadSheetManagementService {
 	public void deleteLoadsheetSequence(int sequenceId);
 	public boolean checkForUniqueSequenceName(String newName,int seqId);
 	public int checkForUniqueSequence(String catgeory, String type,String mfr,int seqId);
-	
+	public List<RuleMaster> getRulesByTemplateComponentId(int templateComponentId);
+	public void updateComponentRulesPriority(List<Integer> ruleList,int templateComponentId);
+	public void getTemplateComponentRuleVisibilty(int templateComponentId,int ruleId,RuleMaster ruleMaster) throws Exception;
 }

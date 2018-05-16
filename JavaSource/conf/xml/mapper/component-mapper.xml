@@ -293,7 +293,8 @@ PO_SUBCATEGORY as subCategoryName
             GROUP BY TEMPLATE_ID
           )
   
- 		  SELECT templateMaster.TEMPLATE_ID as templateID, 
+ 		  SELECT templateMaster.TEMPLATE_ID as templateID,
+ 		    CASE WHEN templateMaster.STATUS = 'A' THEN 1 ELSE 0 END AS active,
             templateMaster.TEMPLATE_HASH as templateHash, 
             templateMaster.TEMPLATE_NAME as templateName,
             templateMaster.TEMPLATE_DESC as templateDesc, 
@@ -324,20 +325,32 @@ PO_SUBCATEGORY as subCategoryName
  	<insert id="addTemplate">
  		INSERT 	INTO SMC.SMC_TEMPLATE_MASTER  
  				(TEMPLATE_HASH,TEMPLATE_DESC,TEMPLATE_NAME,
- 				CREATED_BY,MODIFIED_BY,PO_CATEGORY_ASSOC_ID) 
- 		VALUES 	(#{templateHash},#{templateDesc},#{templateDesc}, #{createdBy},#{createdBy},#{poCatAssID})
+ 				CREATED_BY,MODIFIED_BY,PO_CATEGORY_ASSOC_ID,STATUS) 
+ 		VALUES 	(#{templateHash},#{templateDesc},#{templateDesc}, #{createdBy},#{createdBy},#{poCatAssID},'A')
  		 <selectKey resultType="int" keyProperty="templateID" order="AFTER" >
            SELECT IDENTITY_VAL_LOCAL() as identity_val FROM SYSIBM.SYSDUMMY1
 		</selectKey> 
  	</insert>
  	
- 	<insert id="addTemplateComponents">
+ 	<insert id="addTemplateComponent">
  		INSERT INTO SMC.SMC_TEMPLATE_COMPONENTS
  		(TEMPLATE_ID, COMPONENT_ID, COMPONENT_ACCESS, AVAIL_TO_OTHER_PO, EXPORT_TO_EXCEL, 
  		CREATED_BY, CREATED_DATE, MODIFIED_BY, MODIFIED_DATE)
  		VALUES 	(#{templateId},#{componentId},#{editRequiredStr},#{dispOtherPOStr},#{excelStr},#{createdBy}
  		,CURRENT TIMESTAMP,#{modifiedBy},CURRENT TIMESTAMP)
  	</insert>
+	
+	<update id="updateTemplateComponent">
+ 		UPDATE SMC.SMC_TEMPLATE_COMPONENTS
+ 		SET 
+	 		 COMPONENT_ACCESS = #{editRequiredStr}, 
+	 		 AVAIL_TO_OTHER_PO = #{dispOtherPOStr},
+	 		 EXPORT_TO_EXCEL = #{excelStr}, 
+	 		 MODIFIED_BY = #{modifiedBy},
+	 		 MODIFIED_DATE = CURRENT TIMESTAMP
+ 		WHERE 
+ 		     TEMPLATE_ID = #{templateId} AND COMPONENT_ID = #{componentId}
+ 	</update>
 	
 	<update id="updateTemplate">
  		UPDATE SMC.SMC_TEMPLATE_MASTER 
@@ -346,19 +359,81 @@ PO_SUBCATEGORY as subCategoryName
  		WHERE TEMPLATE_ID = #{templateID}
  	</update>
 		
- 	<delete  id="deleteTemplate">
- 		DELETE 	FROM SMC.SMC_TEMPLATE_MASTER 
- 		WHERE 	TEMPLATE_ID = #{templateID}
+ 	<update id="deActivateTemplate">
+ 		UPDATE SMC.SMC_TEMPLATE_MASTER SET STATUS='I' WHERE TEMPLATE_ID = #{templateID}
+ 	</update>
+ 	
+ 	<update id="activateTemplate">
+ 		UPDATE SMC.SMC_TEMPLATE_MASTER SET STATUS='A' WHERE TEMPLATE_ID = #{templateID}
+ 	</update>
+ 	
+ 	<select id="isTemplateComponentExist" resultType="_boolean">
+	 SELECT CASE WHEN Count(COMPONENT_ID) > 0 THEN 1 ELSE 0 END  FROM SMC_TEMPLATE_COMPONENTS WHERE TEMPLATE_ID = #{templateId} AND COMPONENT_ID = #{componentId}
+ 	</select>
+ 	
+ 	<select id="isComponentExistInRule" resultType="_boolean">
+	 SELECT CASE WHEN Count(SCRO.RULE_ID) > 0 THEN 1 ELSE 0 END  FROM SMC.SMC_COMPONENT_RULE_OVERRIDES SCRO WHERE SCRO.RULE_ID = #{ruleId} AND SCRO.TEMP_COMP_ID = #{tempCompId}
+ 	</select>
+ 	
+ 	<select id="isComponentExistInRuleDefinitions" resultType="_boolean">
+	 SELECT CASE WHEN Count(SCVRD.RULE_ID) > 0 THEN 1 ELSE 0 END  FROM SMC.SMC_CMP_VISIBILITY_RULES_DEFINITION SCVRD WHERE SCVRD.RULE_ID = #{ruleId} AND SCRO.TEMP_COMP_ID = #{componentId}
+ 	</select>
+ 	
+ 	<delete  id="deleteComponentRuleMapping">
+ 		DELETE 	FROM SMC.SMC_COMPONENT_RULE_OVERRIDES
+ 		WHERE RULE_ID = #{ruleId} AND TEMP_COMP_ID = #{tempCompId}
  	</delete>
  	
  	<delete  id="deleteTemplateComponents">
  		DELETE 	FROM SMC.SMC_TEMPLATE_COMPONENTS
- 		WHERE 	TEMPLATE_ID = #{templateID}
+ 		WHERE TEMPLATE_ID = #{templateId} AND COMPONENT_ID IN <foreach collection="deletedTempComponents" item="ComponentId" separator="," open="(" close=")">#{ComponentId}</foreach>
  	</delete>
  	<select id="getTemplateComponentById" resultType="com.penske.apps.adminconsole.model.Components">
- 		Select TEMPLATE_ID as templateId, COMPONENT_ID as componentId, COMPONENT_ACCESS as editRequiredStr, AVAIL_TO_OTHER_PO as dispOtherPOStr, EXPORT_TO_EXCEL as excelStr
- 			FROM SMC.SMC_TEMPLATE_COMPONENTS WHERE TEMPLATE_ID=#{templateID}
+	  SELECT STM.TEMPLATE_ID as templateId, STM.TEMP_COMP_ID as templateComponentId, STM.COMPONENT_ID as componentId,
+            COUNT(SCRO.RULE_ID) AS ruleCount,STM.COMPONENT_ACCESS as editRequiredStr,STM.AVAIL_TO_OTHER_PO as dispOtherPOStr,STM.EXPORT_TO_EXCEL as excelStr
+       		FROM SMC.SMC_TEMPLATE_COMPONENTS STM LEFT OUTER JOIN SMC.SMC_COMPONENT_RULE_OVERRIDES SCRO on SCRO.TEMP_COMP_ID = STM.TEMP_COMP_ID WHERE STM.TEMPLATE_ID=#{templateID} 
+				GROUP BY STM.TEMPLATE_ID, STM.TEMP_COMP_ID,STM.COMPONENT_ID,STM.COMPONENT_ACCESS,STM.AVAIL_TO_OTHER_PO,STM.EXPORT_TO_EXCEL
  	</select>
+ 	
+ 	<select id="getTemplateComponentByTempId" resultType="com.penske.apps.adminconsole.model.LoadSheetComponentDetails">
+ 	  Select
+			STM.COMPONENT_ID AS componentId,
+			COMPONENT_TYPE AS componentType,
+			GROUP_NAME AS componentGroup,
+			DISPLAY_NAME AS  componentName
+	  FROM 
+	       SMC.SMC_TEMPLATE_COMPONENTS STM 
+	  JOIN 
+	       SMC.V_SMC_AVAILABLE_COMPONENTS SAC 
+	   ON 
+	       STM.COMPONENT_ID = SAC.COMPONENT_ID
+      WHERE 
+          TEMPLATE_ID=#{templateId}
+          ORDER BY
+				DISPLAY_NAME
+ 	</select>
+ 	<select id="getCompTempCompMapByTempId" resultType="String">
+ 	  
+       Select
+			COMPONENT_ID ||'-'|| TEMP_COMP_ID
+	  FROM 
+	       SMC.SMC_TEMPLATE_COMPONENTS
+      WHERE 
+          TEMPLATE_ID=#{templateId}
+        
+ 	</select>
+ 	
+ 	<select id="getComponetsByRuleDefIds" resultType="int">
+ 	  SELECT
+            DISTINCT SCVRD.COMPONENT_ID
+      FROM  
+            SMC_CMP_VISIBILITY_RULES_DEFINITION SCVRD
+      WHERE 
+            SCVRD.RULE_DEF_ID IN <foreach collection="ruleDefIds" item="ruleDefId" separator="," open='(' close=')'>#{ruleDefId}</foreach>
+        
+ 	</select>
+ 	
+ 	
 
  	<select id="findTemplateExist"  resultType="int">
  		Select TEMPLATE_ID from SMC.SMC_TEMPLATE_MASTER WHERE PO_CATEGORY_ASSOC_ID=#{poCatAssID}
@@ -513,67 +588,4 @@ AND OVR_TYPE=#{overrideType} AND CONTROLLING_COMPONENT_ID=#{controllingComponent
           WHERE COMPONENT_GROUP_ID = #{groupId}
   </insert>
     
-    <update id="markTemplateForRebuild">
-        UPDATE SMC.SMC_UNIT_MASTER 
-           SET IS_COMP_GENERATED = 'N', 
-               IS_DATA_CONFLICT_CHECK = 'N' 
-         WHERE MASTER_ID IN (
-              SELECT Distinct unt.MASTER_ID
-                FROM SMC.SMC_UNIT_MASTER unt 
-                     INNER JOIN SMC.SMC_UNIT_TEMPLATE tmplt 
-                        ON unt.PO_NUMBER = tmplt.PO_NUMBER AND unt.UNIT_NUMBER = tmplt.UNIT_NUMBER 
-                     INNER JOIN SMC.SMC_PURCHASING_HEADER purch 
-                        ON unt.PO_NUMBER = purch.PO_NUMBER AND unt.CORP = purch.CORP 
-                     INNER JOIN SMC.SMC_PURCHASING_DETAILS purchdtl
-                         ON unt.PO_NUMBER = purchdtl.PO_NUMBER 
-                     INNER JOIN SMC.SMC_VENDOR_MASTER vnd 
-                        ON purch.CORP = vnd.CORP AND purch.VENDOR_NUMBER = vnd.VENDOR_NUMBER 
-                     INNER JOIN smc.smc_unit_Date_info dte
-                        ON unt.master_id = dte.MASTER_ID
-                     INNER JOIN smc.smc_po_unit_map unmap 
-                        ON unt.MASTER_ID = unmap.MASTER_ID
-               WHERE tmplt.TEMPLATE_ID = #{templateId} 
-                 AND purchdtl.CO_NUMBER = 0
-                 AND purchdtl.CANCEL_SEQ = 0
-                 AND purchdtl.IS_PDF_GENERATED = 'Y'
-                 AND unt.IS_REPLACED = 'N'
-                 AND (dte.ACT_DEL_DATE = '0001-01-01' or dte.ACT_DEL_DATE is null)
-                 AND unmap.PAYABLE_STATUS NOT IN ('CLOSED', 'VOID')
-                 AND unt.unit_status not in ('CLOSED', 'VOID')
-          )
-    
-    </update>
-    
-    <insert id="insertTemplateForRegen">
-      INSERT INTO SMC.SMC_UNIT_MISSING_INFO_PROCESS (UNIT_NUMBER, PO_NUMBER, STATUS, CREATED_BY, CREATED_DATE) (
-                  SELECT Distinct unt.UNIT_NUMBER, 
-                         unt.PO_NUMBER, 
-                         'P', 
-                         CURRENT_USER, 
-                         CURRENT_TIMESTAMP
-                    FROM SMC.SMC_UNIT_MASTER unt 
-                         INNER JOIN SMC.SMC_UNIT_TEMPLATE tmplt 
-                            ON unt.PO_NUMBER = tmplt.PO_NUMBER AND unt.UNIT_NUMBER = tmplt.UNIT_NUMBER 
-                         INNER JOIN SMC.SMC_PURCHASING_HEADER purch 
-                            ON unt.PO_NUMBER = purch.PO_NUMBER AND unt.CORP = purch.CORP 
-                         INNER JOIN SMC.SMC_PURCHASING_DETAILS purchdtl
-                             ON unt.PO_NUMBER = purchdtl.PO_NUMBER 
-                         INNER JOIN SMC.SMC_VENDOR_MASTER vnd 
-                            ON purch.CORP = vnd.CORP AND purch.VENDOR_NUMBER = vnd.VENDOR_NUMBER 
-                         INNER JOIN smc.smc_unit_Date_info dte
-                            ON unt.master_id = dte.MASTER_ID
-                         INNER JOIN smc.smc_po_unit_map unmap 
-                            ON unt.MASTER_ID = unmap.MASTER_ID
-                   WHERE tmplt.TEMPLATE_ID = #{templateId} 
-                     AND purchdtl.CO_NUMBER = 0
-                     AND purchdtl.CANCEL_SEQ = 0
-                     AND purchdtl.IS_PDF_GENERATED = 'Y'
-                     AND unt.IS_REPLACED = 'N'
-                     AND (dte.ACT_DEL_DATE = '0001-01-01' or dte.ACT_DEL_DATE is null)
-                     AND unmap.PAYABLE_STATUS NOT IN ('CLOSED', 'VOID')
-                     AND unt.unit_status not in ('CLOSED', 'VOID')
-        )
-    
-    </insert>
-	
 </mapper>

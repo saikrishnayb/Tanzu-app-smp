@@ -31,7 +31,6 @@ import org.apache.log4j.Logger;
 public class DateUtililty {
 	private static final Logger logger = Logger.getLogger(DateUtililty.class);
 
-	private static final String DEFAULT_FORMAT ="dd/MM/yy";
 	private static final String DATE_FORMAT ="MM/dd/yyyy";
 	private static final String FOLDER_NAME_FORMAT ="yyyyMMdd";
 

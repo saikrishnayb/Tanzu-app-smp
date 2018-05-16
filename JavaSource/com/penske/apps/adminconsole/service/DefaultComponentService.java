@@ -1,5 +1,6 @@
 package com.penske.apps.adminconsole.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import com.penske.apps.adminconsole.domain.ComponentGroup;
 import com.penske.apps.adminconsole.model.Component;
 import com.penske.apps.adminconsole.model.ComponentVisibilityOverride;
 import com.penske.apps.adminconsole.model.Components;
+import com.penske.apps.adminconsole.model.LoadSheetComponentDetails;
 import com.penske.apps.adminconsole.model.Template;
 import com.penske.apps.adminconsole.model.TemplatePoAssociation;
 import com.penske.apps.adminconsole.util.ApplicationConstants;
@@ -53,7 +55,7 @@ public class DefaultComponentService implements ComponentService {
 
     @Override
     @Transactional
-    public void addTemplate(Template template) {
+    public void addTemplate(Template template) throws Exception {
         componentDao.addTemplate(template);
         int templateID=template.getTemplateID();
         List<Components> componentList=template.getComponentList();
@@ -63,10 +65,13 @@ public class DefaultComponentService implements ComponentService {
     }
 
     @Override
-    @Transactional
-    public void deleteTemplate(int templateID) {
-        componentDao.deleteTemplate(templateID);
-        componentDao.deleteTemplateComponents(templateID);
+    public void deActivateTemplate(int templateID) {
+        componentDao.deActivateTemplate(templateID);
+    }
+    
+    @Override
+    public void activateTemplate(int templateID) {
+        componentDao.activateTemplate(templateID);
     }
 
     @Override
@@ -83,18 +88,26 @@ public class DefaultComponentService implements ComponentService {
             for (Components availComponents : availableCompList) {
                 if(components.getComponentId() !=null && availComponents.getComponentId() !=null
                         && components.getComponentId().equalsIgnoreCase(availComponents.getComponentId())){
+                	components.setTemplateComponentId(availComponents.getTemplateComponentId());
+                	components.setRuleCount(availComponents.getRuleCount());
                     if(availComponents.getEditRequiredStr() !=null
                             && availComponents.getEditRequiredStr().equalsIgnoreCase("R")){
                         components.setViewable(true);
                         components.setEditable(true);
                         components.setRequired(true);
+                        components.setForRules(true);
                     }else if(availComponents.getEditRequiredStr() !=null
                             && availComponents.getEditRequiredStr().equalsIgnoreCase("E")){
                         components.setViewable(true);
                         components.setEditable(true);
+                        components.setForRules(true);
                     }else if(availComponents.getEditRequiredStr() !=null
                             && availComponents.getEditRequiredStr().equalsIgnoreCase("V")){
                         components.setViewable(true);
+                        components.setForRules(true);
+                    }else if(availComponents.getEditRequiredStr() !=null
+                            && availComponents.getEditRequiredStr().equalsIgnoreCase("N")){
+                        components.setForRules(true);
                     }
                     if(availComponents.getExcelStr() !=null && availComponents.getExcelStr().equalsIgnoreCase("Y")){
                         components.setExcel(true);
@@ -103,7 +116,6 @@ public class DefaultComponentService implements ComponentService {
                         components.setDispOtherPO(true);
                     }
                 }
-
             }
         }
         return compList;
@@ -111,47 +123,62 @@ public class DefaultComponentService implements ComponentService {
 
     @Override
     @Transactional
-    public void updateTemplate(Template template) {
+    public void updateTemplate(Template template) throws Exception {
         componentDao.updateTemplate(template);
         int templateID=template.getTemplateID();
-        componentDao.deleteTemplateComponents(templateID);
         List<Components> componentList=template.getComponentList();
         if(componentList !=null && !componentList.isEmpty()){
             addTemplateComponent(componentList, templateID,template);
         }
-
-        componentDao.markTemplateForRebuild(templateID);
-        componentDao.insertTemplateForRegen(templateID);
-
+      
     }
 
-    private void addTemplateComponent(List<Components> componentList,int templateID,Template template){
-        for (Components components : componentList) {
-            Components dbComponents=new Components();
-            dbComponents.setTemplateId(templateID);
-            dbComponents.setComponentId(components.getComponentId());
-            dbComponents.setEditRequiredStr("I"); //Check with Dav. //TODO
-            if(components.isRequired()){
-                dbComponents.setEditRequiredStr("R");
-            }
-            if(!components.isRequired() && components.isEditable()){
-                dbComponents.setEditRequiredStr("E");
-            }
-            if(!components.isRequired() && !components.isEditable() && components.isViewable()){
-                dbComponents.setEditRequiredStr("V");
-            }
-            if(components.isDispOtherPO()){
-                dbComponents.setDispOtherPOStr("Y");
-            }
-            if(components.isExcel()){
-                dbComponents.setExcelStr("Y");
-            }
-            dbComponents.setCreatedBy(template.getCreatedBy());
-            dbComponents.setModifiedBy(template.getModifiedBy());
-            componentDao.addTemplateComponents(dbComponents);
+    private void addTemplateComponent(List<Components> componentList,int templateID,Template template) throws Exception{
+        List<Integer> deletedTempComponents = new ArrayList<Integer>();
+    	
+    	for (Components component : componentList) {
+            Components dbComponent=new Components();
+            dbComponent.setTemplateId(templateID);
+            dbComponent.setComponentId(component.getComponentId());
+            boolean compnentExists = componentDao.isTemplateComponentExist(templateID, Integer.parseInt(component.getComponentId()));
+            boolean compnentVisibility = iscomponentVisible(component);
+	            if(component.isForRules() && !component.isRequired() && !component.isEditable() && !component.isViewable()){
+	            	dbComponent.setEditRequiredStr("N");
+	            }
+	            else if(component.isRequired()){
+	                dbComponent.setEditRequiredStr("R");
+	            }
+	            else if(!component.isRequired() && component.isEditable()){
+	                dbComponent.setEditRequiredStr("E");
+	            }
+	            else if(!component.isRequired() && !component.isEditable() && component.isViewable()){ 
+	                dbComponent.setEditRequiredStr("V");
+	            }else if(!compnentExists && !compnentVisibility){
+	            	throw new Exception("Exception occured during insert due to bad visibility code");
+	            }
+	            if(component.isDispOtherPO()){
+	                dbComponent.setDispOtherPOStr("Y");
+	            }
+	            if(component.isExcel()){
+	                dbComponent.setExcelStr("Y");
+	            }
+	            dbComponent.setCreatedBy(template.getCreatedBy());
+	            dbComponent.setModifiedBy(template.getModifiedBy());
+	            if(!compnentExists && compnentVisibility ){
+	            	componentDao.addTemplateComponent(dbComponent);
+	            }else if(compnentExists && compnentVisibility){
+	            	componentDao.updateTemplateComponent(dbComponent);
+	            }else if(compnentExists && !compnentVisibility ){
+	            	deletedTempComponents.add(Integer.parseInt(component.getComponentId()));
+	            }
         }
+    	if(!deletedTempComponents.isEmpty())
+    	componentDao.deleteTemplateComponents(deletedTempComponents,templateID);
     }
-
+    
+    private boolean iscomponentVisible(Components component){
+    	return component.isForRules() || component.isRequired() || component.isEditable() || component.isViewable() || component.isExcel() || component.isDispOtherPO();
+    }
     @Override
     public List<Integer> findTemplateExist(Template template) {
         return componentDao.findTemplateExist(template);
@@ -219,13 +246,14 @@ public class DefaultComponentService implements ComponentService {
 
     @Override
     public void copyCorpComponentRow(int componentId, int componentGroupId) {
-
         ComponentGroup componentGroup = componentDao.getComponentGroup(componentGroupId);
-
         if (componentGroup == null)
             componentDao.copyCorpComponentGroupRow(componentGroupId);
-
         componentDao.copyCorpComponentRow(componentId);
-
+    }
+    
+    @Override
+    public List<LoadSheetComponentDetails> getTemplateComponentByTempId(int templateId){
+    	return componentDao.getTemplateComponentByTempId(templateId);
     }
 }
