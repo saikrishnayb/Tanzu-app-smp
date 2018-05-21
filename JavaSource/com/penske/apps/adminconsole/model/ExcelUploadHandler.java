@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFDataFormatter;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
@@ -402,30 +403,34 @@ public abstract class ExcelUploadHandler {
 			cellNum = cell.getColumnIndex();
 
 			switch (cell.getCellType()) {
-				case Cell.CELL_TYPE_NUMERIC:
-					 if(org.apache.poi.ss.usermodel.DateUtil.isCellDateFormatted(cell)) {
-						 try{
-							 value = sdf.format(cell.getDateCellValue());
-						 } catch(Exception e) {
-							 logger.debug("Something went wrong converting excel date. --- " + e.getMessage());
-						 }
-					 } else {
-						 value = String.valueOf(cell.getNumericCellValue());						 
-					 }
-					 readRecords = populateExcelData(value, modelObject,cellNum,cell,row);
-					break;
-				case Cell.CELL_TYPE_STRING:
-					 value = String.valueOf(cell.getRichStringCellValue());
-					 readRecords = populateExcelData(value, modelObject,cellNum,cell,row);
-					break;
-				  case Cell.CELL_TYPE_BLANK:
-                     value = "";
-                     readRecords = populateExcelData(value,modelObject,cellNum,cell,row);	
-                     break;
-				  default:
-					 value = "unsuported cell type";
-					 break;
-			}			
+			case Cell.CELL_TYPE_NUMERIC:
+				if(org.apache.poi.ss.usermodel.DateUtil.isCellDateFormatted(cell)) {
+					try{
+						value = sdf.format(cell.getDateCellValue());
+					} catch(Exception e) {
+						logger.debug("Something went wrong converting excel date. --- " + e.getMessage());
+					}
+				} else {
+					if(cell.getCellStyle().getDataFormat() == 0) {
+						value = new HSSFDataFormatter().formatCellValue(cell);
+					} else {
+						value = String.valueOf(cell.getNumericCellValue());                 
+					}
+				}
+				readRecords = populateExcelData(value, modelObject,cellNum,cell,row);
+				break;
+			case Cell.CELL_TYPE_STRING:
+				value = String.valueOf(cell.getRichStringCellValue());
+				readRecords = populateExcelData(value, modelObject,cellNum,cell,row);
+				break;
+			case Cell.CELL_TYPE_BLANK:
+				value = "";
+				readRecords = populateExcelData(value,modelObject,cellNum,cell,row);      
+				break;
+			default:
+				value = "unsuported cell type";
+				break;
+			}                   
 		}
 		return readRecords;
 	}
