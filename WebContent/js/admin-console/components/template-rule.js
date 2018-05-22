@@ -234,10 +234,11 @@ function loadOperands(grpIndex,rIndex){
 			componentType=componentType.split("-");
 			componentType=componentType[1];
 			var $operandID = $('#operandsID-G_'+grpIndex+'-R_'+rIndex);
+			var $valID = $('#valueID-G_'+grpIndex+'-R_'+rIndex);
 			$operandID.empty();
 			if(!(typeof componentType === "undefined") ){
 				$operandID.removeAttr('disabled');
-				
+				$valID.removeAttr('disabled');
 				/*If component type is Y/N append operandsset*/
 				if(componentType == "N" || componentType == "Y" ){
 					$.each(operandsSet, function(val, text) {
@@ -310,7 +311,7 @@ var addRow= function(gIndex){
 		 newRowColor="whiteRow";
 	 }
 	 $("#"+preRowId).after('<tr  class="even '+newRowColor+' group'+gIndex+'" id="G_'+gIndex+'-R_'+rIndex+'"><td class="editable centerAlign"></td>'+
-			 '<td><select class="searchSelect" id="componentsDropDown-G_'+gIndex+'-R_'+rIndex+'" name="ruleDefinitionsList['+frmAryIdx+'].componentId" onchange="loadOperands('+gIndex+','+rIndex+')" style="width:400px"><option></option></select></td>'+
+			 '<td><select  id="componentsDropDown-G_'+gIndex+'-R_'+rIndex+'" name="ruleDefinitionsList['+frmAryIdx+'].componentId" onchange="loadOperands('+gIndex+','+rIndex+')"  class="searchSelect" style="width:400px"><option></option></select></td>'+
 			 '<td><select class="operandsDropDown" id="operandsID-G_'+gIndex+'-R_'+rIndex+'" name="ruleDefinitionsList['+frmAryIdx+'].operand" onChange="disableComponentValue('+gIndex+','+rIndex+')" disabled=""></select></td>'+
 			 '<td><input class="componentValue" id="valueID-G_'+gIndex+'-R_'+rIndex+'" name="ruleDefinitionsList['+frmAryIdx+'].value" maxlength="30" style="width:157px" type="text">'+
 			 '<input type="hidden" name="ruleDefinitionsList['+frmAryIdx+'].criteriaGroup" value="'+gIndex+'"></td>'+
@@ -367,7 +368,7 @@ function createGroupHeader(grpIndex){
 	
 	var rowNode=$createRuleTable.row.add( [
 	                                       '<a href="javascript:void(0)" class="rightMargin" onClick="copyGroup('+grpIndex+')">Copy</a><a href="javascript:void(0)" onClick="deleteGroup('+grpIndex+');"><img src="'+commonStaticUrl+'/images/delete.png" class="centerImage rightMargin delete-button"/></a>',
-	                	               	   '<select class="searchSelect" id="componentsDropDown-G_'+grpIndex+'-R_1" name="ruleDefinitionsList['+frmAryIdx+'].componentId" onChange="loadOperands('+grpIndex+',1)" style="width:400px"><option></option></select>',
+	                	               	   '<select  id="componentsDropDown-G_'+grpIndex+'-R_1" name="ruleDefinitionsList['+frmAryIdx+'].componentId" onChange="loadOperands('+grpIndex+',1)" class="searchSelect" style="width:400px"><option></option></select>',
 	                	            	   '<select class="operandsDropDown" id="operandsID-G_'+grpIndex+'-R_1" name="ruleDefinitionsList['+frmAryIdx+'].operand" style="width:108px" onChange="disableComponentValue('+grpIndex+',1)" disabled></select>',
 	                	            	   '<input class="componentValue" id="valueID-G_'+grpIndex+'-R_1" name="ruleDefinitionsList['+frmAryIdx+'].value" style="width:157px" maxlength="30" type="text"><input type="hidden" name="ruleDefinitionsList['+frmAryIdx+'].criteriaGroup" value="'+grpIndex+'">',
 	                	            	   '<a><img src="'+commonStaticUrl+'/images/add.png" tabindex=0 class="centerImage handCursor adder" onclick="addNewRow('+grpIndex+');" alt="Add Row"/></a>'
@@ -561,7 +562,7 @@ function getRowData(grpIndex,rIndex){
 	
 	
 	var rowData=[ '',
-    '<select class="searchSelect" id="componentsDropDown-G_'+grpIndex+'-R_'+rIndex+'" name="ruleDefinitionsList['+frmAryIdx+'].componentId" onChange="loadOperands('+grpIndex+','+rIndex+')" style="width:400px"><option></option></select>',
+    '<select  id="componentsDropDown-G_'+grpIndex+'-R_'+rIndex+'" name="ruleDefinitionsList['+frmAryIdx+'].componentId" onChange="loadOperands('+grpIndex+','+rIndex+')" class="searchSelect" style="width:400px"><option></option></select>',
     '<select  class="operandsDropDown" id="operandsID-G_'+grpIndex+'-R_'+rIndex+'" name="ruleDefinitionsList['+frmAryIdx+'].operand" onChange="disableComponentValue('+grpIndex+','+rIndex+')"  disabled></select>',
     '<input class="componentValue" id="valueID-G_'+grpIndex+'-R_'+rIndex+'" name="ruleDefinitionsList['+frmAryIdx+'].value" maxlength="30" style="width:157px" type="text"><input type="hidden" name="ruleDefinitionsList['+frmAryIdx+'].criteriaGroup" value="'+grpIndex+'">',
     '<a><img src="'+commonStaticUrl+'/images/delete.png" id="deleteRow" tabindex=0 class="centerImage handCursor"  alt="Delete Row"/></a>'];
@@ -617,35 +618,40 @@ function submitCreateRuleForm(){
 						url : url,
 						type: "POST",  
 						data: createRuleForm,
-						success : function(ruleId) {
-							processingImageAndTextHandler('visible','Loading data...');
-							if(pageAction=="CREATE"){
-								ruleName=$("#ruleName").val();
-								$("#ruleId").val(ruleId);
-								$("#pageAction").val("UPDATE");
-								 var index_row = $('#rulesTable tbody tr').length+1;
-								 $('#rulesTable').append(
-										 '<tr class="currentRow">'+
-										 '<td><img src="'+commonStaticUrl+'/images/delete.png" id="deleteRule" ruleId='+ruleId+' onclick="deleteRule('+ruleId+')" class="imageAlign handCursor rightMargin deleteRule"/></td>'+
-										 '<td class="pointer rules" onclick="getRuleDetails('+ruleId+')" ruleId='+ruleId+'>'+ruleName+'</td>'+
-										 '<td class="seq priority" onclick="getRuleDetails('+ruleId+')">'+"#"+index_row+'</td>'+'</tr>');
-								 getRuleDetails(ruleId);
-								 $(".currentRow").removeClass("highlightRule");
-								 $("td[ruleId='"+ruleId+"']").parent('tr').addClass("highlightRule");
-							 }else{
-								 var ruleName = $('#ruleName').val();
-								 $("td[ruleId='"+ruleId+"']")[0].innerText=ruleName;
-								 getRuleDetails(ruleId);
-								 $("td[ruleId='"+ruleId+"']").parent('tr').addClass("highlightRule");
-							 }
-							 showLoading=false;
-						 },
-					    error		:function(jqXHR, textStatus,errorThrown) {
-					    	   showLoading=false;
-								$("#ErrorMsg span").text(jqXHR.responseText);
+						success : function(status) {
+							
+							if($.isNumeric(status)){
+								var ruleId = status;
+								processingImageAndTextHandler('visible','Loading data...');
+									if(pageAction=="CREATE"){
+										ruleName=$("#ruleName").val();
+										$("#ruleId").val(ruleId);
+										$("#pageAction").val("UPDATE");
+										 var index_row = $('#rulesTable tbody tr').length+1;
+										 $('#rulesTable').append(
+												 '<tr class="currentRow">'+
+												 '<td><img src="'+commonStaticUrl+'/images/delete.png" id="deleteRule" ruleId='+ruleId+' onclick="deleteRule('+ruleId+')" class="imageAlign handCursor rightMargin deleteRule"/></td>'+
+												 '<td onClick="getRuleDetails('+ruleId+');"> <i class="icon icon-list"></i></td>'+
+												 '<td class="pointer rules" onclick="getRuleDetails('+ruleId+')" ruleId='+ruleId+'>'+ruleName+'</td>'+
+												 '<td class="seq priority" onclick="getRuleDetails('+ruleId+')">'+"#"+index_row+'</td>'+'</tr>');
+										 getRuleDetails(ruleId);
+										 $(".currentRow").removeClass("highlightRule");
+										 $("td[ruleId='"+ruleId+"']").parent('tr').addClass("highlightRule");
+									 }else{
+										 var ruleName = $('#ruleName').val();
+										 $("td[ruleId='"+ruleId+"']")[0].innerText=ruleName;
+										 getRuleDetails(ruleId);
+										 $("td[ruleId='"+ruleId+"']").parent('tr').addClass("highlightRule");
+									 }
+									
+							}else{
+								$("#ErrorMsg span").text(status);
 								$("#ErrorMsg").show();
 								parent.resizeAfterPaginationChange();
-							  }
+							}
+							 showLoading=false;
+						 },
+					  
 					}); 
 					  
 				  }else{
@@ -685,7 +691,7 @@ function validateFields(){
 		$("#description").removeClass("errorMsgInput");
 		//If table is empty
 		if ( ! $createRuleTable.data().count() ) {
-			$("#ErrorMsg span").text("Please add atleast one criteria group");
+			$("#ErrorMsg span").text("Please add at least one criteria group");
 			$("#ErrorMsg").show();
 			parent.resizeAfterPaginationChange();
 			return false;
@@ -701,8 +707,12 @@ function validateFields(){
 				    var compVal=$("#"+$comId).val();
 				    var ruleVal=$("#"+ruleValId).val();
 				    var operandsVal=$("#"+operandsID).val();
-				    if(compVal != "" && (operandsVal != "E" && operandsVal != "=") && ruleVal == "" ){
-				    	$("#ErrorMsg span").text("Please enter component value's for select component ID's");
+				    if(compVal == ""){
+				    	$("#ErrorMsg span").text("Please select component ID(s)");
+				    	$("#ErrorMsg").show();
+				    	rtrnFlag = false;
+				    }else if(compVal != "" && (operandsVal != "E" && operandsVal != "=") && ruleVal == ""){
+				    	$("#ErrorMsg span").text("Please enter a component value for the selected component IDs");
 						$("#ErrorMsg").show();
 						parent.resizeAfterPaginationChange();
 						$("#"+$comId).addClass("errorMsgInput");
@@ -830,7 +840,7 @@ $("#rulesTable tbody").sortable({
 
 	//Renumber table rows
 	function resetSequence(tableID) {
-	  $("#rulesTable tr").each(function() {
+	 $("#rulesTable tr").each(function() {
 	    count = $(this).parent().children().index($(this)) + 1;
 	    $(this).find('.seq').html('#'+count);
 	    $(this).find('.seq').val(count);
@@ -846,7 +856,7 @@ $("#rulesTable tbody").sortable({
 			var ruleId=$(this).attr("ruleId");
 			ruleList.push(ruleId);
 		});
-		if(ruleList.length>1){
+		if(ruleList.length>0){
 			processingImageAndTextHandler('visible','Loading data...');
 			showLoading =true;
 			$.ajax({
@@ -888,7 +898,8 @@ $("#rulesTable tbody").sortable({
 			  url: "./delete-rule.htm",
 			  cache:false,
 			  data: {ruleId:ruleId},
-			  success: function(){
+			  success: function(status){
+				  if(status =="DELETED"){
 				 	  $("td[ruleId='"+ruleId+"']").parent('tr').remove();
 					  var rowCount = $('#rulesTable tbody tr').length;
 					  if(rowCount==0){
@@ -902,13 +913,10 @@ $("#rulesTable tbody").sortable({
 						  $("td[ruleId='"+ruleId+"']").parent('tr').addClass("highlightRule");
 						 
 					  } 
-				  },
-		     error		:function(jqXHR, textStatus,errorThrown) {
-		    	   showLoading=false;
-					$("#ErrorMsg span").text("Error in deleting rule.");
-					$("#ErrorMsg").show();
-					$("#ruleName").addClass("errorMsgInput");
-					parent.resizeAfterPaginationChange();
+				  }else{
+					  $("#ErrorMsg span").text("Error in deleting rule.please check with system admin.");
+						$("#ErrorMsg").show();
+					  }
 				  }
 			});
 	}

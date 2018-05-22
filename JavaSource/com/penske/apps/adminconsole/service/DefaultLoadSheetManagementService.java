@@ -3,11 +3,9 @@ package com.penske.apps.adminconsole.service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -102,8 +100,8 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 		}
 		
 	}
-	/* this method will insert/update all the component-rule visibility mappings for selected rule.*/
-	private void createOrUpdateTemplateComponentRules(RuleMaster ruleMaster,char operationType) throws Exception {
+	/* this method will insert/update the component-rule visibility mapping for selected rule.*/
+	private void createOrUpdateTemplateComponentRules(RuleMaster ruleMaster,char operationType){
 		UserContext user = sessionBean.getUserContext();
 		TemplateComponentRuleAssociation templateComponentRuleAssociation = new TemplateComponentRuleAssociation();
 		templateComponentRuleAssociation.setTemplateComponentId(ruleMaster.getTemplateComponentId());
@@ -121,47 +119,18 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
         else if(!ruleMaster.isRequired() && !ruleMaster.isEditable() &&  ruleMaster.isViewable()){ 
             templateComponentRuleAssociation.setLsOverride('V');
         }else{
-        	throw new Exception("Atleast one checkbox must be checked");
+        	throw new IllegalArgumentException ("At least one outcome must be checked for the ruleId:"+templateComponentRuleAssociation.getRuleId());
         }
         if(operationType=='I'){
-            Map<String, Integer> compTempCompMap = getTemplateComponentMap(ruleMaster.getTemplateId());
-            	//to update rule priority for the selected component when new rule is added
-    			saveTemplateComponentVisibilityRules(ruleMaster.getRuleId(),templateComponentRuleAssociation);    			 	
-			 	for(RuleDefinitions ruleDef:ruleMaster.getNewRuleDef()){
-			 		//to update rule priority for components(one or multiple) mapped to the rule for rule name 
-			 		templateComponentRuleAssociation.setTemplateComponentId(compTempCompMap.get(ruleDef.getComponentId()));
-    				saveTemplateComponentVisibilityRules(ruleMaster.getRuleId(),templateComponentRuleAssociation);
-			 	}
-        }else{//update component visibility of all components for the selected rule
-            	loadsheetManagementDao.updateTemplateComponentVisibilityRules(templateComponentRuleAssociation);
-        }
+        	int ruleCount = getRuleCountByTempCompId(templateComponentRuleAssociation.getTemplateComponentId());
+    		templateComponentRuleAssociation.setPriority(ruleCount+1);
+    	    loadsheetManagementDao.saveTemplateComponentVisibilityRules(templateComponentRuleAssociation);	
+        }else{
+            loadsheetManagementDao.updateTemplateComponentVisibilityRules(templateComponentRuleAssociation);
+        } 
+
     }
-    	/**
-    	 * 
-    	 * @param ruleId
-    	 * @param templateComponentRuleAssociation
-    	 */
-    	private void saveTemplateComponentVisibilityRules(int ruleId, TemplateComponentRuleAssociation templateComponentRuleAssociation) {
-    		int ruleCount = 0;
-    		boolean isExistComponent = componentDao.isComponentExistInRule(ruleId,templateComponentRuleAssociation.getTemplateComponentId());
-     		if(!isExistComponent){
-	    		ruleCount= getRuleCountByTempCompId(templateComponentRuleAssociation.getTemplateComponentId());
-	    		templateComponentRuleAssociation.setPriority(ruleCount+1);
-	    	    loadsheetManagementDao.saveTemplateComponentVisibilityRules(templateComponentRuleAssociation);	
-     		 }
-    	}
 	
-	/* this method will return  component - templateComponent map for given template id .*/
-	private Map<String,Integer> getTemplateComponentMap(int templateId) {
-		List<String> compTempcomponents = componentDao.getCompTempCompMapByTempId(templateId);
-		HashMap<String,Integer>  compTempCompMap = new HashMap<String, Integer>();
-		for (String component : compTempcomponents) {
-			String CompId = component.split("-")[0];
-			Integer tempCompId = Integer.parseInt(component.split("-")[1]);
-			compTempCompMap.put(CompId, tempCompId);
-		}
-        return compTempCompMap;
-	}
 
 	@Override
 	public List<LoadSheetComponentDetails> getComponents() {
@@ -175,7 +144,7 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 	 */
 	@Override
 	@Transactional
-	public int createNewRule(RuleMaster rule) throws Exception{
+	public int createNewRule(RuleMaster rule){
 		
 		UserContext user = sessionBean.getUserContext();
 		rule.setDescription(rule.getDescription().trim());
@@ -189,8 +158,9 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 		}
 		loadsheetManagementDao.insertRuleDefinitions(rule.getRuleDefinitionsList(), user);
 		if(rule.getRuleType()==UNIT_TEMPLATE_RULE){
-			rule.setNewRuleDef(rule.getRuleDefinitionsList());
 			createOrUpdateTemplateComponentRules(rule,'I');
+		}else{
+			throw new IllegalArgumentException("Error occurred during creation of rule for the ruleId: "+rule.getRuleId());
 		}
 		
 		return rule.getRuleId();
@@ -198,7 +168,7 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 	//to Update the rule master and rule definitions
 	@Override
 	@Transactional
-	public void updateRuleDetails(RuleMaster rule) throws Exception{
+	public void updateRuleDetails(RuleMaster rule){
 		UserContext user = sessionBean.getUserContext();
 		List<RuleDefinitions> newRuleDefList=new ArrayList<RuleDefinitions> ();
 		rule.setDescription(rule.getDescription().trim());
@@ -220,28 +190,18 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 		//Insert the new RuleDefinitions
 		if(newRuleDefList.size()>0){
 			loadsheetManagementDao.insertRuleDefinitions(newRuleDefList, user);
-			if(rule.getRuleType()==UNIT_TEMPLATE_RULE){
-				rule.setNewRuleDef(newRuleDefList);
-				createOrUpdateTemplateComponentRules(rule,'I');
-			}
 		}
 		//Delete the deleted rule definitions
 		if(rule.getDeletedRuleDefIds().size()>0){
 			loadsheetManagementDao.deleteRuleDefinitions(rule.getDeletedRuleDefIds());
-			if(rule.getRuleType()==UNIT_TEMPLATE_RULE){
-			    Map<String, Integer> compTempCompMap = getTemplateComponentMap(rule.getTemplateId());
-				List<Integer> components = componentDao.getComponetsByRuleDefIds(rule.getDeletedRuleDefIds());
-				 for (Integer componentId : components) {
-					 boolean compnentExists = componentDao.isComponentExistInRuleDefinitions(rule.getRuleId(),componentId);
-						if(!compnentExists)
-							componentDao.deleteComponentRuleMapping(rule.getRuleId(),compTempCompMap.get(componentId));
-				}
-			}
-				
 		}
-		if(rule.getRuleType()==UNIT_TEMPLATE_RULE)
+		if(rule.getRuleType()==UNIT_TEMPLATE_RULE){
 		createOrUpdateTemplateComponentRules(rule,'U');
 		formTheComponentDropdownValue(rule);
+		}else{
+			throw new IllegalArgumentException("Error occurred during updating rule for the ruleId: "+rule.getRuleId());
+		}
+		
 	}
 	
 	/**
@@ -251,49 +211,52 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 	 * @throws Exception 
 	 */
 	private RuleMaster populateRuleMaster(RuleMaster rule){
-		
-		String[] componentValue;
-		Set<Integer> criteraiGrpValues=new HashSet<Integer>();
-		RuleDefinitions ruleDef;
-		int criteriaGrpCount=0;
-		
-		String requestFrom="";
-		List<RuleDefinitions> rulDefList=rule.getRuleDefinitionsList();
-		//sort list based on criteria group count
-		if (rulDefList.size() > 0) {
-			  Collections.sort(rulDefList, new Comparator<RuleDefinitions>() {
-			      @Override
-			      public int compare(final RuleDefinitions rd1, final RuleDefinitions rd2) {
-			    	  return rd1.getCriteriaGroup()>rd2.getCriteriaGroup()?+1
-			    			 :rd1.getCriteriaGroup()<rd2.getCriteriaGroup()?-1:0;
-			      }
-			  });
-			}
-		Iterator<RuleDefinitions> ruleDefIt = rulDefList.iterator();
-		//Extract Component Id from component dropdown value and set rule id
-		while (ruleDefIt.hasNext()) {
+		try{
+			String[] componentValue;
+			Set<Integer> criteraiGrpValues=new HashSet<Integer>();
+			RuleDefinitions ruleDef;
+			int criteriaGrpCount=0;
 			
-			ruleDef=ruleDefIt.next();
-			
-			if(ruleDef.getCriteriaGroup() != 0){	//if the array is not empty
-				componentValue=ruleDef.getComponentId().split("-");
-				ruleDef.setComponentId(componentValue[0]);
-				ruleDef.setComponentType(componentValue[1]);
-				ruleDef.setRuleId(rule.getRuleId());
-				if(criteraiGrpValues.add(ruleDef.getCriteriaGroup())){
-					//new Group so increase the criteriaCount and reset the value
-					criteriaGrpCount++;
-					ruleDef.setCriteriaGroup(criteriaGrpCount);
-				}else{//same old group
-					ruleDef.setCriteriaGroup(criteriaGrpCount);
+			String requestFrom="";
+			List<RuleDefinitions> rulDefList=rule.getRuleDefinitionsList();
+			//sort list based on criteria group count
+			if (rulDefList.size() > 0) {
+				  Collections.sort(rulDefList, new Comparator<RuleDefinitions>() {
+				      @Override
+				      public int compare(final RuleDefinitions rd1, final RuleDefinitions rd2) {
+				    	  return rd1.getCriteriaGroup()>rd2.getCriteriaGroup()?+1
+				    			 :rd1.getCriteriaGroup()<rd2.getCriteriaGroup()?-1:0;
+				      }
+				  });
 				}
+			Iterator<RuleDefinitions> ruleDefIt = rulDefList.iterator();
+			//Extract Component Id from component dropdown value and set rule id
+			while (ruleDefIt.hasNext()) {
 				
-			}else{
-				ruleDefIt.remove();	//remove empty values
+				ruleDef=ruleDefIt.next();
+				
+				if(ruleDef.getCriteriaGroup() != 0){	//if the array is not empty
+					componentValue=ruleDef.getComponentId().split("-");
+					ruleDef.setComponentId(componentValue[0]);
+					ruleDef.setComponentType(componentValue[1]);
+					ruleDef.setRuleId(rule.getRuleId());
+					if(criteraiGrpValues.add(ruleDef.getCriteriaGroup())){
+						//new Group so increase the criteriaCount and reset the value
+						criteriaGrpCount++;
+						ruleDef.setCriteriaGroup(criteriaGrpCount);
+					}else{//same old group
+						ruleDef.setCriteriaGroup(criteriaGrpCount);
+					}
+					
+				}else{
+					ruleDefIt.remove();	//remove empty values
+				}
 			}
+			
+			rule=getOperandsDropdownValues(rule,requestFrom);
+		}catch(ArrayIndexOutOfBoundsException e){
+			throw new ArrayIndexOutOfBoundsException("Error: Please select the componentId(s)");
 		}
-		
-		rule=getOperandsDropdownValues(rule,requestFrom);
 		return rule;
 	}
 		
@@ -305,8 +268,12 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 	@Override
 	public RuleMaster getRuleDetails(int ruleId,String requestFrom){
 		
-		RuleMaster ruleMaster=loadsheetManagementDao.getRuleDetails(ruleId, requestFrom);
-		
+		RuleMaster ruleMaster=new RuleMaster();
+		if(ruleId != 0){
+			ruleMaster=loadsheetManagementDao.getRuleDetails(ruleId);
+		}else{
+			throw new IllegalStateException("Error during fetching rule details for the ruleId: "+ruleId);
+		}
 		ruleMaster=formTheComponentDropdownValue(ruleMaster);
 		ruleMaster=getOperandsDropdownValues(ruleMaster,requestFrom);
 		return ruleMaster;
@@ -683,6 +650,10 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 		return loadsheetManagementDao.getRulesByTemplateComponentId(templateComponentId);
 	}
 	
+	@Override
+	public List<String> getRulesByComponentIdAndTemplateId(int templateId,int componentId) {
+		return loadsheetManagementDao.getRulesByComponentIdAndTemplateId(templateId,componentId);
+	}
 	/**
 	 * Method to update component rules priority
 	 * @param ruleList
@@ -700,7 +671,7 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 
 	
 	@Override
-	public void getTemplateComponentRuleVisibilty(int templateComponentId,int ruleId,RuleMaster ruleMaster) throws Exception{
+	public void getTemplateComponentRuleVisibilty(int templateComponentId,int ruleId,RuleMaster ruleMaster){
 		TemplateComponentRuleAssociation templateComponentRuleAssociation = loadsheetManagementDao.getTemplateComponentRuleVisibilty(templateComponentId,ruleId);
 		if(templateComponentRuleAssociation.getLsOverride() !=' ' 
                  && templateComponentRuleAssociation.getLsOverride()=='R'){
@@ -721,7 +692,7 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
                  && templateComponentRuleAssociation.getLsOverride() == 'N'){
         	 ruleMaster.setForRules(true);
          }else{
-        	 throw new Exception("Error during fetching rule visibilty");
+        	 throw new IllegalArgumentException("Error during fetching rule details due to bad data exists for the ruleId: "+ruleId);
          }
 		 
 	}

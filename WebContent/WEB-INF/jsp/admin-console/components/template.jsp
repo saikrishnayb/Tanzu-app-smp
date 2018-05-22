@@ -67,8 +67,8 @@
     <!-- Modals -->
     <div id="template-modal" class="modal"></div>
     <div id="deactivate-modal" class="deactivate-modal modal" title="Confirm Template Deactivation"></div>
-    <div id="activate-modal" class="activate-modal modal" title="Confirm Template activation">
-		<p>Are you sure you want to activate the Template</p>
+    <div id="activate-modal" class="activate-modal modal" title="Confirm Template Activation">
+		<p>Are you sure you want to activate the template?</p>
 		<ul>
 			<li id="templateName"></li>
 		</ul>

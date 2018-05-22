@@ -44,7 +44,7 @@
 							<tr  class="groupHeader group${ruleDefinitionsList.criteriaGroup}" id="G_${ruleDefinitionsList.criteriaGroup}-R_${rowCount}">
 								<td class="editable centerAlign"><a href="javascript:void(0)" class="rightMargin" onClick="copyGroup('${ruleDefinitionsList.criteriaGroup}')">Copy</a><a href="javascript:void(0)" onClick="deleteGroup('${ruleDefinitionsList.criteriaGroup}');"><img src="${commonStaticUrl}/images/delete.png" class="centerImage rightMargin delete-button"/></a></td>
 								<td>
-								<form:select  class="searchSelect" id="componentsDropDown-G_${ruleDefinitionsList.criteriaGroup}-R_${rowCount}" path="ruleDefinitionsList[${loopIndex.count -1}].componentId"  onChange="loadOperands(${ruleDefinitionsList.criteriaGroup},${rowCount})">
+								<form:select   id="componentsDropDown-G_${ruleDefinitionsList.criteriaGroup}-R_${rowCount}" path="ruleDefinitionsList[${loopIndex.count -1}].componentId"  class="searchSelect" onChange="loadOperands(${ruleDefinitionsList.criteriaGroup},${rowCount})">
 									<form:option value=""></form:option>
 									<c:forEach items="${componentsList}" var="component">
 				                   		<form:option value="${component.componentId}-${component.componentType}">${component.componentName} (ID: ${component.componentId})</form:option>
@@ -82,7 +82,7 @@
 							<tr  class="group${ruleDefinitionsList.criteriaGroup}" id="G_${ruleDefinitionsList.criteriaGroup}-R_${rowCount}">
 								<td class="editable centerAlign"></td>
 								<td>
-								<form:select class="searchSelect" id="componentsDropDown-G_${ruleDefinitionsList.criteriaGroup}-R_${rowCount}" path="ruleDefinitionsList[${loopIndex.count -1}].componentId"  onChange="loadOperands(${ruleDefinitionsList.criteriaGroup},${rowCount})"><%-- style="width:400px" --%>
+								<form:select  id="componentsDropDown-G_${ruleDefinitionsList.criteriaGroup}-R_${rowCount}" path="ruleDefinitionsList[${loopIndex.count -1}].componentId"  class="searchSelect" onChange="loadOperands(${ruleDefinitionsList.criteriaGroup},${rowCount})"><%-- style="width:400px" --%>
 									<form:option value=""></form:option>
 									<c:forEach items="${componentsList}" var="component">
 				                   		<form:option value="${component.componentId}-${component.componentType}">${component.componentName} (ID: ${component.componentId})</form:option><!--  -->

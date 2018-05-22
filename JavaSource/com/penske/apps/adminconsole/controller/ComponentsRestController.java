@@ -84,7 +84,7 @@ public class ComponentsRestController {
     @RequestMapping(value="get-add-visibility-modal-content")
     @ResponseBody
     public ModelAndView getAddVisibilityModalContent(){
-        LOGGER.error("getAddVisibilityModalContent is used!!!! :)");
+        LOGGER.debug("getAddVisibilityModalContent is used!!!! :)");
         List<ComponentVisibility> componentNames = componentVisibilityService.getComponentName();
         List<PoCategory> categoriesList = componentVisibilityService.getCategoryList();
         ModelAndView modelAndView = new ModelAndView("/jsp-fragment/admin-console/components/add-visibility-modal-content");
@@ -98,7 +98,7 @@ public class ComponentsRestController {
     @RequestMapping(value="get-compnent-list")
     @ResponseBody
     public List<ComponentVisibility>  getComponentList(@RequestParam("poCategoryId")int poCategoryId){
-        LOGGER.error("getComponentList is used!!!! :)");
+        LOGGER.debug("getComponentList is used!!!! :)");
         List<ComponentVisibility> componentList = componentVisibilityService.getComponentList(poCategoryId);
         return componentList;
 
@@ -109,7 +109,7 @@ public class ComponentsRestController {
     @ResponseBody
     public void postSaveVisibility(@RequestParam("isComponentVehicle") String isComponentVehicle , @RequestParam("componentId") int componentId,@RequestParam("poCategoryId") int poCategoryId,@RequestParam("subCategoryId") int subCategoryId){
 
-        LOGGER.error("postSaveVisibility is used!!!! :)");
+        LOGGER.debug("postSaveVisibility is used!!!! :)");
 
         if("Yes".equalsIgnoreCase(isComponentVehicle))
         {
@@ -125,7 +125,7 @@ public class ComponentsRestController {
     @ResponseBody
     public List<ComponentVisibility> getPoCategories(@RequestParam("isComponentVehicle") String isComponentVehicle,@RequestParam("componentId") int componentId){
 
-        LOGGER.error("getPoCategories is used!!!! :)");
+        LOGGER.debug("getPoCategories is used!!!! :)");
 
         boolean isComponent = "Yes".equalsIgnoreCase(isComponentVehicle);
         if(isComponent)
@@ -145,7 +145,7 @@ public class ComponentsRestController {
     @ResponseBody
     public List<SubCategory> getPoSubCategories(@RequestParam("poCategoryId")int poCategoryId){
 
-        LOGGER.error("getPoSubCategories is used!!!! :)");
+        LOGGER.debug("getPoSubCategories is used!!!! :)");
 
         List<SubCategory> subCategories = componentVisibilityService.getSubCategoryList(poCategoryId);
         return subCategories;
@@ -159,7 +159,7 @@ public class ComponentsRestController {
     public void deleteVisibility(@RequestParam("isComponentVehicle")int isComponentVehicle,@RequestParam("componentId")int componentId,@RequestParam("category")int category,@RequestParam("subCategory")int subCategory)
     {
 
-        LOGGER.error("deleteVisibility is used!!!! :)");
+        LOGGER.debug("deleteVisibility is used!!!! :)");
 
         boolean isComponent = isComponentVehicle==ApplicationConstants.VEHICLE_COMPONENT;
         if(isComponent) {
@@ -176,7 +176,7 @@ public class ComponentsRestController {
     public ModelAndView getDeleteModalContent(@RequestParam("isComponentVehicle")int isComponentVehicle,@RequestParam("componentId")int componentId,@RequestParam("category")int category,@RequestParam("subCategory")int subCategory)
     {
 
-        LOGGER.error("getDeleteModalContent is used!!!! :)");
+        LOGGER.debug("getDeleteModalContent is used!!!! :)");
 
         boolean isComponent = isComponentVehicle==ApplicationConstants.VEHICLE_COMPONENT;
         ComponentVisibility componentVisibility = null;
@@ -199,7 +199,7 @@ public class ComponentsRestController {
     @ResponseBody
     public ModelAndView getVendorTemplate(@RequestParam("vendorNumber") int vendorNumber,@RequestParam("corpCode")  String corpCode){
 
-        LOGGER.error("getVendorTemplate is used!!!! :)");
+        LOGGER.debug("getVendorTemplate is used!!!! :)");
 
         List<VendorTemplate> template = componentVendorTemplateService.getVendorCategories(vendorNumber,corpCode);
         ModelAndView mav =new ModelAndView("/jsp-fragment/admin-console/components/edit-template-modal-content");
@@ -213,7 +213,7 @@ public class ComponentsRestController {
     public void deleteCategory(@RequestParam("poCategoryId") int poCategoryId,@RequestParam("subCategoryId") int subCategoryId,@RequestParam("templateId") int templateId)
     {
 
-        LOGGER.error("deleteCategory is used!!!! :)");
+        LOGGER.debug("deleteCategory is used!!!! :)");
 
         componentVendorTemplateService.deleteCategory(poCategoryId, subCategoryId, templateId);
         int templateComponentcount = componentVendorTemplateService.getTemplateComponentCount(templateId);
@@ -231,7 +231,7 @@ public class ComponentsRestController {
     public ModelAndView deleteCategoryContent(@RequestParam("poCategoryId") int poCategoryId,@RequestParam("subCategoryId") int subCategoryId)
     {
 
-        LOGGER.error("deleteCategoryContent is used!!!! :)");
+        LOGGER.debug("deleteCategoryContent is used!!!! :)");
 
         ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/components/category-delete-modal-content");
         TemplatePoCategorySubCategory categories = componentVendorTemplateService.getPoCategorySubCategory(poCategoryId, subCategoryId);
@@ -246,7 +246,7 @@ public class ComponentsRestController {
     public ModelAndView deleteCategoryContentEditModal(@RequestParam("templateId") int templateId,@RequestParam("poCategoryId") int poCategoryId,@RequestParam("subCategoryId") int subCategoryId)
     {
 
-        LOGGER.error("deleteCategoryContentEditModal is used!!!! :)");
+        LOGGER.debug("deleteCategoryContentEditModal is used!!!! :)");
         ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/components/template-category-edit-delete-modal-content");
         TemplatePoCategorySubCategory categories = componentVendorTemplateService.getDeleteInEditModalContent(templateId,poCategoryId,subCategoryId);
         mav.addObject("categories",categories);
@@ -258,7 +258,7 @@ public class ComponentsRestController {
     @RequestMapping(value="get-add-po-categories")
     @ResponseBody
     public ModelAndView getCategories() {
-        LOGGER.error("getCategories is used!!!! :)");
+        LOGGER.debug("getCategories is used!!!! :)");
         List<PoCategory> categories = componentVendorTemplateService.getPoCategories();
         ModelAndView mav =new ModelAndView("/jsp-fragment/admin-console/components/add-category-modal-content");
         mav.addObject("categories",categories);
@@ -269,7 +269,7 @@ public class ComponentsRestController {
     @RequestMapping(value="get-edit-add-po-categories")
     @ResponseBody
     public ModelAndView getAddCategories() {
-        LOGGER.error("getAddCategories is used!!!! :)");
+        LOGGER.debug("getAddCategories is used!!!! :)");
         List<PoCategory> categories = componentVendorTemplateService.getPoCategories();
         ModelAndView mav =new ModelAndView("/jsp-fragment/admin-console/components/add-category-modal-content");
         mav.addObject("categories",categories);
@@ -280,7 +280,7 @@ public class ComponentsRestController {
     @RequestMapping(value="get-add-po-sub-categories")
     @ResponseBody
     public List<SubCategory> getsubCategories(@RequestParam("poCategoryId") int poCategoryId) {
-        LOGGER.error("getsubCategories is used!!!! :)");
+        LOGGER.debug("getsubCategories is used!!!! :)");
         List<SubCategory> categories = componentVendorTemplateService.getSubCategories(poCategoryId);
         return categories;
     }
@@ -289,7 +289,7 @@ public class ComponentsRestController {
     @RequestMapping(value="get-category-components")
     @ResponseBody
     public ModelAndView getCategoryComponents(@RequestParam("poCategoryId") int poCategoryId,@RequestParam("subCategoryIds[]") int [] subCategoryIds) {
-        LOGGER.error("getCategoryComponents is used!!!! :)");
+        LOGGER.debug("getCategoryComponents is used!!!! :)");
         List<TemplatePoCategorySubCategory> poCategorySubCategory =new ArrayList<TemplatePoCategorySubCategory>();
         for (int subCategoryId : subCategoryIds) {
 
@@ -308,7 +308,7 @@ public class ComponentsRestController {
     @RequestMapping(value="get-add-category-components")
     @ResponseBody
     public ModelAndView getAddCategoryComponents(@RequestParam("poCategoryId") int poCategoryId,@RequestParam("subCategoryIds[]") int [] subCategoryIds) {
-        LOGGER.error("getAddCategoryComponents is used!!!! :)");
+        LOGGER.debug("getAddCategoryComponents is used!!!! :)");
         List<TemplatePoCategorySubCategory> poCategorySubCategory =new ArrayList<TemplatePoCategorySubCategory>();
         for (int subCategoryId : subCategoryIds) {
 
@@ -326,7 +326,7 @@ public class ComponentsRestController {
     @RequestMapping(value="get-delete-template-modal-content")
     @ResponseBody
     public ModelAndView getVendorInfo(@RequestParam("templateId") int templateId) {
-        LOGGER.error("getVendorInfo is used!!!! :)");
+        LOGGER.debug("getVendorInfo is used!!!! :)");
         VendorTemplate vendorTemplate =componentVendorTemplateService.getVendorTemplate(templateId);
         ModelAndView mav =new ModelAndView("/jsp-fragment/admin-console/components/template-delete-modal-content");
         mav.addObject("vendorTemplate",vendorTemplate);
@@ -338,7 +338,7 @@ public class ComponentsRestController {
     @RequestMapping(value="delete-template-table-content")
     @ResponseBody
     public void deleteTemplateTableContent(@RequestParam("templateId") int templateId) {
-        LOGGER.error("deleteTemplateTableContent is used!!!! :)");
+        LOGGER.debug("deleteTemplateTableContent is used!!!! :)");
         componentVendorTemplateService.deleteTemplate(templateId);
     }
 
@@ -346,7 +346,7 @@ public class ComponentsRestController {
     @RequestMapping(value="add-template")
     @ResponseBody
     public int addTemplate(@RequestParam("vendorNumber") int vendorNumber,@RequestParam("corpCode") String corpCode, HttpSession session) {
-        LOGGER.error("addTemplate is used!!!! :)");
+        LOGGER.debug("addTemplate is used!!!! :)");
         HeaderUser currentUser = (HeaderUser) session.getAttribute("currentUser");
         componentVendorTemplateService.addTemplate(vendorNumber, currentUser.getSso());
 
@@ -359,7 +359,7 @@ public class ComponentsRestController {
     @RequestMapping(value="get-vendor-numbers-by-mfr")
     @ResponseBody
     public List<Integer> addTemplate(@RequestParam("MFR") String mfr) {
-        LOGGER.error("addTemplate / get-vendor-numbers-by-mfr  is used!!!! :)");
+        LOGGER.debug("addTemplate / get-vendor-numbers-by-mfr  is used!!!! :)");
         List<Integer> vendorNumbers =  componentVendorTemplateService.getVendorNumberByMfr(mfr);
         return vendorNumbers;
     }
@@ -368,7 +368,7 @@ public class ComponentsRestController {
     @RequestMapping(value="add-template-components")
     @ResponseBody
     public void addTemplate(TemplateComponents serializedObject,@RequestParam("poCategoryId")int poCategoryId,@RequestParam("subCategoryId") int subCategoryId,@RequestParam("templateId") String templateId) {
-        LOGGER.error("addTemplate / add-template-components is used!!!! :)");
+        LOGGER.debug("addTemplate / add-template-components is used!!!! :)");
         componentVendorTemplateService.addTemplateComponents(serializedObject, poCategoryId, subCategoryId);
 
     }
@@ -377,7 +377,7 @@ public class ComponentsRestController {
     @RequestMapping(value="update-template-components")
     @ResponseBody
     public void updateTemplateComponents(TemplateComponents serializedObject) {
-        LOGGER.error("updateTemplateComponents is used!!!! :)");
+        LOGGER.debug("updateTemplateComponents is used!!!! :)");
         componentVendorTemplateService.updateTemplateComponents(serializedObject);
     }
 
@@ -386,7 +386,7 @@ public class ComponentsRestController {
     @RequestMapping(value="get-edit-category-content")
     @ResponseBody
     public ModelAndView getEditCategoryContent(@RequestParam("poCategoryId") int poCategoryId) {
-        LOGGER.error("getEditCategoryContent is used!!!! :)");
+        LOGGER.debug("getEditCategoryContent is used!!!! :)");
         PoCategory poCategory =categoryManagementService.getSelectedPoCategory(poCategoryId);
         ModelAndView mav =new ModelAndView("/jsp-fragment/admin-console/components/edit-category-modal");
         mav.addObject("category", poCategory);
@@ -406,7 +406,7 @@ public class ComponentsRestController {
     @RequestMapping(value="update-po-category")
     @ResponseBody
     public ModelAndView updatePoCategory(PoCategory categoryData,HttpServletResponse response) throws Exception {
-        LOGGER.error("updatePoCategory is used!!!! :)");
+        LOGGER.debug("updatePoCategory is used!!!! :)");
         try{
             if(categoryManagementService.checkCategoryExist(categoryData, false)){
                 categoryManagementService.updatePoCategory(categoryData);
@@ -417,7 +417,7 @@ public class ComponentsRestController {
                 response.flushBuffer();
             }
         }catch (Exception e) {
-            LOGGER.error("Error while Updating PO Category: " + e);
+            LOGGER.error("Error while Updating PO Category: "+e.getMessage(),e);
             CommonUtils.getCommonErrorAjaxResponse(response,"Error Processing the Update PO Category");
         }
         return null;
@@ -444,7 +444,7 @@ public class ComponentsRestController {
                 response.flushBuffer();
             }
         }catch (Exception e) {
-            LOGGER.error("Error while adding PO Category: " + e);
+            LOGGER.error("Error while adding PO Category: "+e.getMessage(),e);
             CommonUtils.getCommonErrorAjaxResponse(response,"Error Processing the Insert PO Category");
         }
         return null;
@@ -475,7 +475,7 @@ public class ComponentsRestController {
                 response.flushBuffer();
             }
         }catch (Exception e) {
-            LOGGER.error("Error while updating Sub-Category: " + e);
+            LOGGER.error("Error while updating Sub-Category: "+e.getMessage(),e);
             CommonUtils.getCommonErrorAjaxResponse(response,"Error Processing the updating Sub-Category");
         }
         return null;
@@ -508,7 +508,7 @@ public class ComponentsRestController {
                 response.flushBuffer();
             }
         }catch (Exception e) {
-            LOGGER.error("Error while adding Sub-Category: " + e);
+            LOGGER.error("Error while adding Sub-Category: "+e.getMessage(), e);
             CommonUtils.getCommonErrorAjaxResponse(response,"Error Processing the Insert Sub-Category");
         }
         return 0;
@@ -518,7 +518,7 @@ public class ComponentsRestController {
     @RequestMapping(value="delete-po-category")
     @ResponseBody
     public void deletePoCategory(@RequestParam("poCatId") int poCatId) {
-        LOGGER.error("deletePoCategory is used!!!! :)");
+        LOGGER.debug("deletePoCategory is used!!!! :)");
         categoryManagementService.modifyPoCatStatus(poCatId);
     }
 
@@ -565,7 +565,7 @@ public class ComponentsRestController {
         try{
             categoryList = categoryManagementService.getSubCategories(poCategoryId);
         }catch (Exception e) {
-            LOGGER.debug(e);
+        	LOGGER.error("Error :" + e.getMessage(),e);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
         boolean makeModelYearReqdAsDefault = PoCategoryType.isManufacturerInfoRequired(poCategory);
@@ -600,7 +600,7 @@ public class ComponentsRestController {
         try{
             categoryManagementService.modifyAssStatus(assId,status,poCatId,subCatId);//1- Active, 0-Inactive
         }catch (Exception e) {
-            LOGGER.debug(e);
+        	LOGGER.error("Error :" + e.getMessage(),e);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
@@ -616,34 +616,36 @@ public class ComponentsRestController {
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_TEMPLATE)
     @RequestMapping(value ="/create-template", method = RequestMethod.POST)
     @ResponseBody
-    public int addTemplate(@RequestParam("tempDesc") String tempDesc,@RequestParam("poCatAssID") String poCatAssID,@RequestBody List<Components> compList,HttpSession session, HttpServletResponse response) throws Exception{
-        HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
-        Template template=new Template();
-        template.setTemplateDesc(tempDesc);
-        template.setPoCatAssID(poCatAssID);
-        template.setComponentList(compList);
-        template.setCreatedBy(currentUser.getSso());
-        template.setModifiedBy(currentUser.getSso());
-        String hashCodeStr=CommonUtils.getCompnentCheckSum(compList);
-        template.setTemplateHash(hashCodeStr);
-        int createdtemplateId = 0;
-        List<Integer> templateId=componentService.findTemplateExist(template);
-        if(templateId !=null && !templateId.isEmpty()){
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Template Already exists.");
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.getWriter().write("Template Already exists.");
-            response.flushBuffer();
-        }else{
-            componentService.addTemplate(template);
-            createdtemplateId=template.getTemplateID();
+    public String addTemplate(@RequestParam("tempDesc") String tempDesc,@RequestParam("poCatAssID") String poCatAssID,@RequestBody List<Components> compList,HttpSession session, HttpServletResponse response){
+        String status=null;
+    	try{
+	        HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
+	        Template template=new Template();
+	        template.setTemplateDesc(tempDesc);
+	        template.setPoCatAssID(poCatAssID);
+	        template.setComponentList(compList);
+	        template.setCreatedBy(currentUser.getSso());
+	        template.setModifiedBy(currentUser.getSso());
+	        String hashCodeStr=CommonUtils.getCompnentCheckSum(compList);
+	        template.setTemplateHash(hashCodeStr);
+	        List<Integer> templateId=componentService.findTemplateExist(template);
+	        if(templateId !=null && !templateId.isEmpty()){
+	        	CommonUtils.getCommonErrorAjaxResponse(response,"Template Already exists.");
+	        }else
+	            componentService.addTemplate(template);
+	        return String.valueOf(template.getTemplateID());
+        }catch(Exception e){
+        	LOGGER.error("Error during creating template: "+e.getMessage(), e);
+    		status=e.getMessage();
         }
-        return createdtemplateId;
+		return status;
     }
 
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_TEMPLATE)
     @RequestMapping(value ="/update-template", method = RequestMethod.POST)
     @ResponseBody
-    public int updateTemplate(@RequestParam("templateId") int templateId,@RequestParam("tempDesc") String tempDesc,@RequestParam("poCatAssID") String poCatAssID,@RequestBody List<Components> compList,HttpSession session, HttpServletResponse response) throws Exception{
+    public String updateTemplate(@RequestParam("templateId") int templateId,@RequestParam("tempDesc") String tempDesc,@RequestParam("poCatAssID") String poCatAssID,@RequestBody List<Components> compList,HttpSession session, HttpServletResponse response){
+    	String status=null;
     	try{
 	        HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
 	        Template template=new Template();
@@ -658,21 +660,18 @@ public class ComponentsRestController {
 	        List<Integer> templateTemplId=componentService.findTemplateExist(template);
 	        if(templateTemplId !=null && !templateTemplId.isEmpty() &&
 	                ((templateTemplId.size()==1 && templateTemplId.get(0) !=templateId)) || templateTemplId.size()>1){
-	            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Template Already exists.");
-	            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-	            response.getWriter().write("Template Already exists.");
-	            response.flushBuffer();
+	        	CommonUtils.getCommonErrorAjaxResponse(response,"Template Already exists.");
 	        }else
 	        	componentService.updateTemplate(template);
+    	
+	        return String.valueOf(templateId);
     	}catch(Exception e){
-    		LOGGER.error("Error during updating template: " + e);
-    		response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error during updating template.");
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.getWriter().write("Error during updating template.");
-            response.flushBuffer();
-    	}
-    	return templateId;
-    }
+    		LOGGER.error("Error during updating template for the templateId:"+e.getMessage(), e);
+    		status=e.getMessage();
+        }
+		return status;
+	}
+
 
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_TEMPLATE)
     @RequestMapping("get-deactivate-template-modal-content")
@@ -741,7 +740,7 @@ public class ComponentsRestController {
                 response.flushBuffer();
             }
         }catch (Exception e) {
-            LOGGER.error("Error while adding COMPONENT VISIBILITY OVERRIDES: " + e);
+            LOGGER.error("Error while adding COMPONENT VISIBILITY OVERRIDES: "+e.getMessage(),e);
             CommonUtils.getCommonErrorAjaxResponse(response,"Error Processing the Component Visibility Override");
         }
     }
@@ -760,7 +759,7 @@ public class ComponentsRestController {
                 response.flushBuffer();
             }
         }catch (Exception e) {
-            LOGGER.error("Error while updating COMPONENT VISIBILITY OVERRIDES: " + e);
+            LOGGER.error("Error while updating COMPONENT VISIBILITY OVERRIDES: "+e.getMessage(),e);
             CommonUtils.getCommonErrorAjaxResponse(response,"Error Processing the Component Visibility Override");
         }
     }
@@ -812,7 +811,7 @@ public class ComponentsRestController {
         try{
             componentVendorTemplateService.updateTemplateComponentSequence(templateComponents);
         }catch (Exception e) {
-            LOGGER.error("Error while updating TEMPLATE COMPONENT SEQUENCE: " + e);
+            LOGGER.error("Error while updating TEMPLATE COMPONENT SEQUENCE: "+e.getMessage(), e);
             CommonUtils.getCommonErrorAjaxResponse(response,"Error Processing the Component Visibility Override");
         }
         return status;
@@ -822,31 +821,34 @@ public class ComponentsRestController {
     /* =============== Create New Rule ==================*/
     @RequestMapping(value={"/create-template-rule"})
     @ResponseBody
-    public int insertRuleDetails(RuleMaster ruleMaster,HttpServletResponse response,int ruleId) throws Exception{
+    public String insertRuleDetails(RuleMaster ruleMaster,HttpServletResponse response,int ruleId){
+    	String status=null;
     	try{
     		ruleId = loadsheetManagementService.createNewRule(ruleMaster);
-	        
+    		status=String.valueOf(ruleId);
     	}
     	catch(Exception e){
-    		LOGGER.error("Error while creating rule: " + e);
-    		 CommonUtils.getCommonErrorAjaxResponse(response,"Error while creating rule.");
-    	}
-    	return ruleId ;
+    		LOGGER.error("Error while creating rule: "+e.getMessage(), e);
+    		status=e.getMessage();
+       }
+    	return status;
     }
     
     
     /* ================Update Rule =======================*/
     @RequestMapping(value={"/update-template-rule"})
     @ResponseBody
-    public int updateRuleDetails(RuleMaster ruleMaster,HttpServletResponse response) throws Exception{
+    public String updateRuleDetails(RuleMaster ruleMaster,HttpServletResponse response){
+    	String status=null;
     	try{
     	    loadsheetManagementService.updateRuleDetails(ruleMaster);
+    	    status = String.valueOf(ruleMaster.getRuleId());
     	}
     	catch(Exception e){
-    		LOGGER.error("Error while updating rule: " + e);
-    		CommonUtils.getCommonErrorAjaxResponse(response,"Error while updating rule");
+    		LOGGER.error("Error while updating rule: "+e.getMessage(),e);
+    		status=e.getMessage();
     	}
-    	return ruleMaster.getRuleId();
+    	return status;
     }
     
     
@@ -864,7 +866,7 @@ public class ComponentsRestController {
     	 try{
     		 loadsheetManagementService.updateComponentRulesPriority(ruleList,templateComponentId);
          }catch (Exception e) {
-             LOGGER.debug(e);
+        	 LOGGER.error("Error :" + e.getMessage(),e);
              response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
          }
         
@@ -872,11 +874,11 @@ public class ComponentsRestController {
     
     @RequestMapping(value = "/check-iscomponent-associatedToRules")
     @ResponseBody
-    public ModelAndView checkIsComponentHasRules(@RequestParam(value="templateComponentId") int templateComponentId, @RequestParam(value="componentName") String componentName) {
+    public ModelAndView checkIsComponentHasRules(@RequestParam(value="templateId") int templateId,@RequestParam(value="componentId") int componentId, @RequestParam(value="componentName") String componentName) {
         ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/components/view-rules-associtaed-to-component-modal-alert");
-        List<RuleMaster> ruleMaster= new  ArrayList<RuleMaster>();
-        ruleMaster=loadsheetManagementService.getRulesByTemplateComponentId(templateComponentId);
-        mav.addObject("ruleMaster", ruleMaster);
+        List<String> ruleList= new  ArrayList<String>();
+        ruleList=loadsheetManagementService.getRulesByComponentIdAndTemplateId(templateId,componentId);
+        mav.addObject("ruleList", ruleList);
         mav.addObject("componentName",componentName);
         return mav;
     }
@@ -902,8 +904,8 @@ public class ComponentsRestController {
         mav.addObject("rulesList",rulesList);
         mav.addObject("templateComponentId",templateComponentId);
         }catch(Exception e){
-        		LOGGER.error("Error :" + e.getMessage());
-        	  CommonUtils.getCommonErrorAjaxResponse(response,"Error during fetching rule details due to bad data");
+        	  LOGGER.error("Error :" + e.getMessage(),e);
+        	  CommonUtils.getCommonErrorAjaxResponse(response,e.getMessage());
         }
         return mav;
     }
@@ -921,8 +923,8 @@ public class ComponentsRestController {
         mav.addObject("templateComponentId",templateComponentId);
         mav.addObject("templateId",templateId);
     	}catch (Exception e) {
-            LOGGER.error("Error :" + e.getMessage());
-            CommonUtils.getCommonErrorAjaxResponse(response,"Error during fetching rule details due to bad data");
+            LOGGER.error("Error :" + e.getMessage(),e);
+            CommonUtils.getCommonErrorAjaxResponse(response,e.getMessage());
         }
         return mav;
     }
@@ -951,8 +953,14 @@ public class ComponentsRestController {
 /*==============Delete Rule===================*/
     @RequestMapping("delete-rule")
     @ResponseBody
-    public void deleteRule(@RequestParam(value="ruleId") int ruleId) {
-    	loadsheetManagementService.DeleteRuleDetails(ruleId);
+    public String deleteRule(@RequestParam(value="ruleId") int ruleId) {
+    	String status=null;
+    	if(ruleId!=0){
+	    	loadsheetManagementService.DeleteRuleDetails(ruleId);
+	    	status="DELETED";
+    	}
+    	return status;
+    	
     }
 
     

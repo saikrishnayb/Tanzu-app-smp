@@ -56,7 +56,7 @@
 								<input name="componentList['${status.index}'].fullName" id="componentName-${status.index}"  class="org-id" type=hidden value="${comps.fullName}"/>
 								<input name="templateComponentId" id="templateComponentId"   type=hidden value="${comps.templateComponentId}"/>
 								</td>
-								<td class="template-comp" data-tempCompId="${comps.templateComponentId}" data-fullName="${comps.fullName}" data-ruleCount="${comps.ruleCount}" id="templateName">${comps.fullName}
+								<td class="template-comp" data-compId="${comps.componentId}" data-tempCompId="${comps.templateComponentId}" data-fullName="${comps.fullName}" data-ruleCount="${comps.ruleCount}" id="templateName">${comps.fullName}
 									<c:if test="${comps.templateComponentId ne 0 and comps.forRules eq true}">
 										<a  class="secondaryLink  floatRight ruleCount" 
 											onClick="getRulesByTemplateComponentId('${comps.templateComponentId}','${comps.fullName}')">

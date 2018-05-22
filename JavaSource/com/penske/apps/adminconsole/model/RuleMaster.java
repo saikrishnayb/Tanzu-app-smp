@@ -21,7 +21,6 @@ public class RuleMaster {
 	private String requestedFrom; //To identify from where the create rule request came
 	private List<RuleDefinitions> ruleDefinitionsList;
 	private List<Integer> deletedRuleDefIds;	//to store the deleted rule definition id's
-	private List<RuleDefinitions> newRuleDef;	//to store new rule definition id's while updating rule
 	private int templateComponentId;
 	private char ruleType;
 	private int templateId;
@@ -151,12 +150,5 @@ public class RuleMaster {
 	public void setForRules(boolean forRules) {
 		this.forRules = forRules;
 	}
-	public List<RuleDefinitions> getNewRuleDef() {
-		return newRuleDef;
-	}
-	public void setNewRuleDef(List<RuleDefinitions> newRuleDef) {
-		this.newRuleDef = newRuleDef;
-	}
-
 
 }

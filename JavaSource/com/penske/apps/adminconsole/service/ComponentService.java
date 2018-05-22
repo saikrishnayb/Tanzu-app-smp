@@ -40,7 +40,7 @@ public interface ComponentService {
 	
 	public List<LookUp> getOverrideTypes();
 	
-	public List<TemplatePoAssociation> getAllPoAssociationAddEdit(boolean isAdd,int catAssocId);
+	public List<TemplatePoAssociation> getAllPoAssociationAddEdit(boolean isAdd);
 //Template page -- End
 	
 //COMPONENT VISIBILITY OVERRIDES -- start

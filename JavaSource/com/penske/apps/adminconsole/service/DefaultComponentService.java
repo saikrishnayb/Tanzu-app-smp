@@ -55,12 +55,14 @@ public class DefaultComponentService implements ComponentService {
 
     @Override
     @Transactional
-    public void addTemplate(Template template) throws Exception {
+    public void addTemplate(Template template){
         componentDao.addTemplate(template);
         int templateID=template.getTemplateID();
         List<Components> componentList=template.getComponentList();
         if(componentList !=null && !componentList.isEmpty()){
             addTemplateComponent(componentList, templateID,template);
+        }else{
+        	throw new IllegalArgumentException("Error occured during creation of template for the templateId: "+templateID);
         }
     }
 
@@ -123,17 +125,19 @@ public class DefaultComponentService implements ComponentService {
 
     @Override
     @Transactional
-    public void updateTemplate(Template template) throws Exception {
+    public void updateTemplate(Template template){
         componentDao.updateTemplate(template);
         int templateID=template.getTemplateID();
         List<Components> componentList=template.getComponentList();
         if(componentList !=null && !componentList.isEmpty()){
             addTemplateComponent(componentList, templateID,template);
+        }else{
+        	throw new IllegalArgumentException("Error occured during updation of template for the templateId: "+templateID);
         }
       
     }
 
-    private void addTemplateComponent(List<Components> componentList,int templateID,Template template) throws Exception{
+    private void addTemplateComponent(List<Components> componentList,int templateID,Template template){
         List<Integer> deletedTempComponents = new ArrayList<Integer>();
     	
     	for (Components component : componentList) {
@@ -141,7 +145,7 @@ public class DefaultComponentService implements ComponentService {
             dbComponent.setTemplateId(templateID);
             dbComponent.setComponentId(component.getComponentId());
             boolean compnentExists = componentDao.isTemplateComponentExist(templateID, Integer.parseInt(component.getComponentId()));
-            boolean compnentVisibility = iscomponentVisible(component);
+            boolean compnentVisibility = shouldBeOnTemplate(component);
 	            if(component.isForRules() && !component.isRequired() && !component.isEditable() && !component.isViewable()){
 	            	dbComponent.setEditRequiredStr("N");
 	            }
@@ -154,7 +158,7 @@ public class DefaultComponentService implements ComponentService {
 	            else if(!component.isRequired() && !component.isEditable() && component.isViewable()){ 
 	                dbComponent.setEditRequiredStr("V");
 	            }else if(!compnentExists && !compnentVisibility){
-	            	throw new Exception("Exception occured during insert due to bad visibility code");
+	            	throw new IllegalArgumentException("Error occured during insert due to bad visibility code for the componentId:"+dbComponent.getComponentId()+"in the templateId"+dbComponent.getTemplateId());
 	            }
 	            if(component.isDispOtherPO()){
 	                dbComponent.setDispOtherPOStr("Y");
@@ -176,7 +180,7 @@ public class DefaultComponentService implements ComponentService {
     	componentDao.deleteTemplateComponents(deletedTempComponents,templateID);
     }
     
-    private boolean iscomponentVisible(Components component){
+    private boolean shouldBeOnTemplate(Components component){
     	return component.isForRules() || component.isRequired() || component.isEditable() || component.isViewable() || component.isExcel() || component.isDispOtherPO();
     }
     @Override
@@ -186,7 +190,7 @@ public class DefaultComponentService implements ComponentService {
 
 
     @Override
-    public List<TemplatePoAssociation> getAllPoAssociationAddEdit(boolean isAdd,int catAssocId){
+    public List<TemplatePoAssociation> getAllPoAssociationAddEdit(boolean isAdd){
         if(isAdd){
             return componentDao.getAllPoAssociationForAdd();
         }else{

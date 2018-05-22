@@ -1,4 +1,4 @@
-<p>Are you sure you want to deactivate the template ?</p>
+<p>Are you sure you want to deactivate the template?</p>
 <ul>
 	<li>${templateName}</li>
 </ul>

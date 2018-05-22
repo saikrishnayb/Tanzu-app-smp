@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.penske.apps.adminconsole.annotation.DefaultController;
@@ -193,7 +192,6 @@ public class ComponentsController {
 
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_TEMPLATE)
     @RequestMapping(value ="/create-modify-template-page")
-    @ResponseBody
     public ModelAndView getCreateModifyTemplatePage(@RequestParam("isCreatePage") Boolean isCreatePage,@RequestParam(value="templateId") int templateId,@RequestParam(value="tempCompId",required = false) Integer tempCompId, HttpSession session) {
         ModelAndView mav = new ModelAndView("/admin-console/components/create-edit-template");
         HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
@@ -201,14 +199,12 @@ public class ComponentsController {
         //mav.addObject("allPoAssocList", componentService.getAllPoAssociation());
         List<Components> comp=componentService.getAllComponent();
         if(isCreatePage){
-            mav.addObject("allPoAssocList", componentService.getAllPoAssociationAddEdit(true, 0));
+            mav.addObject("allPoAssocList", componentService.getAllPoAssociationAddEdit(true));
             mav.addObject("isCreatePage",true);
         }else{
             Template editableTemplate=componentService.getTemplatesById(templateId);
             if(editableTemplate !=null){
-                mav.addObject("allPoAssocList", componentService
-                        .getAllPoAssociationAddEdit(false, Integer
-                                .parseInt(editableTemplate.getPoCatAssID())));
+                mav.addObject("allPoAssocList", componentService.getAllPoAssociationAddEdit(false));
             }
             mav.addObject("editableTemplate",editableTemplate);
             comp=componentService.getTemplateComponentById(comp,templateId);

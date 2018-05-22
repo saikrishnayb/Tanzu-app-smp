@@ -11,8 +11,7 @@
 }
 .ruleNameList{
 	display: inline-block;
-	
-	width:17%;
+	width:23%;
 	height:250px;
 	overflow:auto;
 	padding-left:2px;
@@ -20,10 +19,11 @@
 	min-height: 308px;
 }
 #ruleDetailsPage{
+	margin-left:9px;
 	display: inline-block;
 	height: auto;
 	float:left;
-	width:82%;
+	width:75%;
 }
 .ruleDescription{
 	display: inline-block;
@@ -66,15 +66,13 @@
 	overflow: hidden !important;
 }
 td{
-	font-size: 14px!important;
+	font-size: 15px!important;
 	
 }
 .rules{
-	padding-top: 10px;
 	width:100%!important;
 }
 .priority{
-	padding-top: 10px;
 	width:100%!important;
 }
 .checkBoxPadding{
@@ -93,7 +91,7 @@ td{
 	width:400px!important;
 }
 .operandsDropDown{
-	width: 108px;
+	width: 114px;
 }
 .componentValue{
 	width:157px;
@@ -103,8 +101,16 @@ td{
 }
 .imageAlign{
 	position: relative;
-    top: 7px;
+    top: 2px;
 }
 .adderAlign{
 float: right;
+}
+
+td .icon {
+    margin-left: -5px!important;
+    margin-right: 5px!important;
+}
+.existingRulesHeading{
+	padding-bottom: 4px;
 }

@@ -243,12 +243,7 @@ $(document).ready(function() {
 			$curDispOtherPOObj.attr('checked', false);
 			$curExcelObj.attr('checked', false);
 			$includeClassId.html("");
-			var row = $(this).closest('#template-Component-table tbody tr');
-			var ruleCount = row.find('#templateName').attr('data-rulecount');
-			if(ruleCount>0){
-				isAssociatedToRule(this);
-				$curforRulesObj.attr("checked", true);
-			}
+			isAssociatedToRule(this,$curforRulesObj);
 			
 		}
 	});
@@ -519,30 +514,29 @@ function createOrUpdate(isCreate){
 		}
 	});
 	if(validate($templateForm)){
-		showLoading=true;
 		var url='create-template.htm?';
 		if(!isCreate){
 			var templateId=$("#template-id").val();
 			url='update-template.htm?templateId='+templateId+"&";
 		}	
-		var $createPromise = $.ajax({
+		$.ajax({
 			url: url+'tempDesc='+tempDesc+ '&poCatAssID='+poCatAssID+ '&_=' + currentTimeStamp,
 			data:'['+checkedListJSON+']',
 	        processData: false,
 	        contentType: 'application/json',
 	        type: 'POST',
-	        success: function(data){
-	        	 processingImageAndTextHandler('visible','Loading data...');
-	        	 location.assign('./create-modify-template-page.htm?isCreatePage=false&templateId=' + data);
+	        success: function(status){
+			        	if($.isNumeric(status)){
+				        	 processingImageAndTextHandler('visible','Loading data...');
+				        	 location.assign('./create-modify-template-page.htm?isCreatePage=false&templateId=' + status);
+			        	}else{
+			        		$errorModal.text(status);
+							$errorModal.dialog("option", "title", "Error");
+				        	ModalUtil.openModal($errorModal);
+			        	}
 			  }
 		});
 		
-		$createPromise.fail(function (jqXHR, textStatus) {
-			showLoading=false;
-			$errorModal.text("Something went wrong with the request, please try again later");
-			$errorModal.dialog("option", "title", "Error");
-        	ModalUtil.openModal($errorModal);
-	    });
 	}else{
 		$('.error-messages-container').removeClass('displayNone');
 	}
@@ -611,7 +605,7 @@ function getRulesByTemplateComponentId(templateComponentId,templateName){
 			}
 	}).fail(function(jqXHR, textStatus,errorThrown) {
 	 	   showLoading=false;
-	 	  	$errorModal.text('Something went wrong with the request, please try again later.');
+	 	  	$errorModal.text(jqXHR.responseText);
 	 	 	$errorModal.dialog("option", "title", "Error");
 	      	ModalUtil.openModal($errorModal);
 			parent.resizeAfterPaginationChange();
@@ -619,14 +613,19 @@ function getRulesByTemplateComponentId(templateComponentId,templateName){
 		);		
 }
 
-function isAssociatedToRule(currentRow){
+function isAssociatedToRule(currentRow,$curforRulesObj){
 		var row = $(currentRow).closest('#template-Component-table tbody tr');
-		var templateComponentId=row.find('#templateComponentId').val();
+		var templateId = $("#template-id").val();
+		var componentId = row.find('#templateName').attr('data-compId');
 		var componentName = row.find('#templateName').attr('data-fullname');
-		var $getRuleNamesByTemplateComponentId = $.get('check-iscomponent-associatedToRules.htm',{templateComponentId:templateComponentId,componentName:componentName});
+		var $getRuleNamesByTemplateComponentId = $.get('check-iscomponent-associatedToRules.htm',{templateId:templateId,componentId:componentId,componentName:componentName});
 		$getRuleNamesByTemplateComponentId.done(function(modalContent){
-			$getAlertModal.html(modalContent);
-			 openModal($getAlertModal);
+			if(modalContent.indexOf("<li>") != -1){
+				$curforRulesObj.attr("checked", true);
+				$getAlertModal.html(modalContent);
+				openModal($getAlertModal);
+			}
+			
 		});
 }
 
@@ -634,12 +633,12 @@ $ruleModal.dialog({
 	autoOpen: false,
 	modal: true,
 	dialogClass: 'popupModal',
-	width: 1048,
+	width: 1200,
 	maxHeight:500,
 	my: "center",
 	at: "center",
 	of: window,
-	left:170,
+	left:120,
 	resizable: false,
 	closeOnEscape: false,
 	create: function() {

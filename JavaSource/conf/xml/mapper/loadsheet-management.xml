@@ -355,7 +355,7 @@
 		MODIFIED_BY			= #{createdBy},
 		MODIFIED_DATE		= current timestamp
 		</set>
-		WHERE  RULE_ID = #{ruleId}
+		WHERE TEMP_COMP_ID = #{templateComponentId} AND RULE_ID = #{ruleId}
     </insert>
     
  	<!-- To get the list of components for dropwdown in create rules -->
@@ -726,10 +726,22 @@
 	
 	<select id="getRulesByTemplateComponentId" resultType="com.penske.apps.adminconsole.model.RuleMaster">
  		SELECT SCMRM.RULE_ID AS ruleId,
- 				SCMRM.NAME AS ruleName
+ 				SCMRM.NAME AS ruleName,
+ 				SCRO.PRIORITY AS priority
  		from SMC_CMP_VISIBILITY_RULES_MASTER  SCMRM
 		LEFT JOIN SMC_COMPONENT_RULE_OVERRIDES SCRO  ON SCRO.RULE_ID = SCMRM.RULE_ID
-		WHERE SCRO.TEMP_COMP_ID=#{templateComponentId}
+		WHERE SCRO.TEMP_COMP_ID=#{templateComponentId} ORDER BY priority
+ 	</select>
+	<select id="getRulesByComponentIdAndTemplateId" resultType="String">	
+		SELECT compInfo.DISPLAY_NAME || ' - ' || rule.NAME
+			FROM SMC_COMPONENT_RULE_OVERRIDES outcome
+			JOIN SMC_TEMPLATE_COMPONENTS comp ON comp.TEMP_COMP_ID = outcome.TEMP_COMP_ID
+			JOIN SMC_CMP_VISIBILITY_RULES_MASTER rule ON rule.RULE_ID = outcome.RULE_ID
+			JOIN SMC_CMP_VISIBILITY_RULES_DEFINITION criteria ON criteria.RULE_ID = rule.RULE_ID
+			JOIN SMC_COMPONENT_INFO_DETAILS compInfo ON compInfo.COMPONENT_ID = comp.COMPONENT_ID
+			WHERE comp.TEMPLATE_ID = #{templateId}
+			AND (comp.COMPONENT_ID = #{componentId} OR criteria.COMPONENT_ID = #{componentId})
+		GROUP BY compInfo.DISPLAY_NAME || ' - ' || rule.NAME
  	</select>
 	
 	<!-- To Update component rules priority  -->

@@ -70,7 +70,7 @@ public interface LoadsheetManagementDao {
     public void updateRuleDefinitions(@Param("ruleDef") RuleDefinitions ruleDef,@Param("user") UserContext user);
 
     @NonVendorQuery
-    public RuleMaster getRuleDetails(@Param("ruleId") int ruleId,String requestFrom);
+    public RuleMaster getRuleDetails(@Param("ruleId") int ruleId);
 
     @NonVendorQuery
     public void deleteRuleDefinitions(@Param("ruleDefIdList") List<Integer> ruleDefIdList);
@@ -152,6 +152,9 @@ public interface LoadsheetManagementDao {
     
     @NonVendorQuery
     public List<RuleMaster> getRulesByTemplateComponentId(@Param("templateComponentId") int templateComponentId);
+    
+    @NonVendorQuery
+    public List<String> getRulesByComponentIdAndTemplateId(@Param("templateId") int templateId,@Param("componentId") int componentId);
 
     @NonVendorQuery
 	public void saveTemplateComponentVisibilityRules(TemplateComponentRuleAssociation templateComponentRuleAssociation);

@@ -108,10 +108,6 @@ public interface ComponentDao {
     public List<Integer> getComponetsByRuleDefIds(@Param("ruleDefIds") List<Integer> ruleDefIds);
     
     @NonVendorQuery
-    public List<String> getCompTempCompMapByTempId(@Param("templateId") int templateId);
-    
-    
-    @NonVendorQuery
     public void deActivateTemplate(@Param("templateID")int templateID);
     
     @NonVendorQuery

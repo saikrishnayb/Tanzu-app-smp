@@ -13,16 +13,18 @@
 		<input type="hidden" id="ruleCount" value="${fn:length(rulesList)}"/>
 		  <table id="rulesTable">
 			<thead>
-			   <div><span class="existingRulesHeading"><a onClick="addNewRule()" >Existing Rules</a></span>
+			   <div class="existingRulesHeading"><span><a onClick="addNewRule()" >Existing Rules</a></span>
 			   <img src="${commonStaticUrl}/images/add.png" onClick="addNewRule()" id="addNewRule" class="centerImage handCursor adderAlign rightMargin" /></div>
 			</thead>
 			<tbody>
-				<c:forEach items="${rulesList}" var="ruleList" varStatus="cmpIndex">
+				<c:forEach items="${rulesList}" var="rule" varStatus="cmpIndex">
 				
-				<tr class="currentRow <c:if test='${cmpIndex.index eq 0}'>highlightRule</c:if>" id="rule-${ruleList.ruleId}" >
-					<td><img src="${commonStaticUrl}/images/delete.png" id="deleteRule" ruleId="${ruleList.ruleId}" onclick="deleteRule(${ruleList.ruleId})"class="imageAlign handCursor rightMargin deleteRule"/></td>
-  					<td class="pointer rules" onClick="getRuleDetails(${ruleList.ruleId});" ruleId="${ruleList.ruleId}">${ruleList.ruleName}</td>
-	   				<td class="seq priority" onClick="getRuleDetails(${ruleList.ruleId});">#${cmpIndex.index+1}</td>
+				<tr class="handCursor currentRow <c:if test='${cmpIndex.index eq 0}'>highlightRule</c:if>" id="rule-${rule.ruleId}" >
+					
+					<td><img src="${commonStaticUrl}/images/delete.png" id="deleteRule" ruleId="${rule.ruleId}" onclick="deleteRule(${rule.ruleId})"class="imageAlign handCursor rightMargin deleteRule"/></td>
+					<td onClick="getRuleDetails(${rule.ruleId});"> <i class="icon icon-list"></i></td>
+  					<td class="pointer rules" onClick="getRuleDetails(${rule.ruleId});" ruleId="${rule.ruleId}">${rule.ruleName}</td>
+	   				<td class="seq priority" onClick="getRuleDetails(${rule.ruleId});">#${rule.priority}</td>
 	    		</tr>
 	          	</c:forEach> 
           	</tbody>
