@@ -741,7 +741,7 @@
 			JOIN SMC_COMPONENT_INFO_DETAILS compInfo ON compInfo.COMPONENT_ID = comp.COMPONENT_ID
 			WHERE comp.TEMPLATE_ID = #{templateId}
 			AND (comp.COMPONENT_ID = #{componentId} OR criteria.COMPONENT_ID = #{componentId})
-		GROUP BY compInfo.DISPLAY_NAME || ' - ' || rule.NAME
+		GROUP BY compInfo.DISPLAY_NAME || ' - ' || rule.NAME ORDER BY compInfo.DISPLAY_NAME || ' - ' || rule.NAME
  	</select>
 	
 	<!-- To Update component rules priority  -->

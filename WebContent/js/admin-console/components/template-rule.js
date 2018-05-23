@@ -631,7 +631,7 @@ function submitCreateRuleForm(){
 										 $('#rulesTable').append(
 												 '<tr class="currentRow">'+
 												 '<td><img src="'+commonStaticUrl+'/images/delete.png" id="deleteRule" ruleId='+ruleId+' onclick="deleteRule('+ruleId+')" class="imageAlign handCursor rightMargin deleteRule"/></td>'+
-												 '<td onClick="getRuleDetails('+ruleId+');"> <i class="icon icon-list"></i></td>'+
+												 '<td onClick="getRuleDetails('+ruleId+');"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></td>'+
 												 '<td class="pointer rules" onclick="getRuleDetails('+ruleId+')" ruleId='+ruleId+'>'+ruleName+'</td>'+
 												 '<td class="seq priority" onclick="getRuleDetails('+ruleId+')">'+"#"+index_row+'</td>'+'</tr>');
 										 getRuleDetails(ruleId);

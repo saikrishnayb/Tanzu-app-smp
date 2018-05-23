@@ -22,7 +22,7 @@
 				<tr class="handCursor currentRow <c:if test='${cmpIndex.index eq 0}'>highlightRule</c:if>" id="rule-${rule.ruleId}" >
 					
 					<td><img src="${commonStaticUrl}/images/delete.png" id="deleteRule" ruleId="${rule.ruleId}" onclick="deleteRule(${rule.ruleId})"class="imageAlign handCursor rightMargin deleteRule"/></td>
-					<td onClick="getRuleDetails(${rule.ruleId});"> <i class="icon icon-list"></i></td>
+					<td onClick="getRuleDetails(${rule.ruleId});"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></td>
   					<td class="pointer rules" onClick="getRuleDetails(${rule.ruleId});" ruleId="${rule.ruleId}">${rule.ruleName}</td>
 	   				<td class="seq priority" onClick="getRuleDetails(${rule.ruleId});">#${rule.priority}</td>
 	    		</tr>

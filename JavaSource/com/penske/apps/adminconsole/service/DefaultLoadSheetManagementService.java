@@ -9,11 +9,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.penske.apps.adminconsole.dao.ComponentDao;
 import com.penske.apps.adminconsole.dao.LoadsheetManagementDao;
 import com.penske.apps.adminconsole.enums.PoCategoryType;
 import com.penske.apps.adminconsole.model.ComponentRuleAssociation;
@@ -33,13 +32,12 @@ import com.penske.apps.suppliermgmt.model.UserContext;
 @Service
 public class DefaultLoadSheetManagementService implements LoadSheetManagementService {
 	
+	private static final Logger LOGGER = Logger.getLogger(DefaultLoadSheetManagementService.class);
+	
 	@Autowired
     private LoadsheetManagementDao loadsheetManagementDao;
 	@Autowired
 	private SuppliermgmtSessionBean sessionBean;
-	
-	@Autowired
-	private ComponentDao componentDao;
 	
 	private static final char UNIT_TEMPLATE_RULE='U';
 
@@ -145,22 +143,24 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 	@Override
 	@Transactional
 	public int createNewRule(RuleMaster rule){
-		
-		UserContext user = sessionBean.getUserContext();
-		rule.setDescription(rule.getDescription().trim());
-		loadsheetManagementDao.insertRuleMasterDetails(rule, user);
-		populateRuleMaster(rule);
-		for(RuleDefinitions ruleDef:rule.getRuleDefinitionsList()){
-			if(ruleDef.getOperand().equals("E") || ruleDef.getOperand().equals("=")){
-				if(ruleDef.getComponentId()!=null && ruleDef.getValue()==null)
-					ruleDef.setValue("");
+		try{
+			UserContext user = sessionBean.getUserContext();
+			rule.setDescription(rule.getDescription().trim());
+			loadsheetManagementDao.insertRuleMasterDetails(rule, user);
+			populateRuleMaster(rule);
+			for(RuleDefinitions ruleDef:rule.getRuleDefinitionsList()){
+				if(ruleDef.getOperand().equals("E") || ruleDef.getOperand().equals("=")){
+					if(ruleDef.getComponentId()!=null && ruleDef.getValue()==null)
+						ruleDef.setValue("");
+				}
 			}
-		}
-		loadsheetManagementDao.insertRuleDefinitions(rule.getRuleDefinitionsList(), user);
-		if(rule.getRuleType()==UNIT_TEMPLATE_RULE){
-			createOrUpdateTemplateComponentRules(rule,'I');
-		}else{
-			throw new IllegalArgumentException("Error occurred during creation of rule for the ruleId: "+rule.getRuleId());
+			loadsheetManagementDao.insertRuleDefinitions(rule.getRuleDefinitionsList(), user);
+			if(rule.getRuleType()==UNIT_TEMPLATE_RULE){
+				createOrUpdateTemplateComponentRules(rule,'I');
+			}
+		}catch(IllegalArgumentException e){
+			LOGGER.error("Error occurred during creation of rule for the templateComponentId: "+rule.getTemplateComponentId(),e);
+			throw new IllegalArgumentException("Error occurred during creation of rule for the templateComponentId: "+rule.getTemplateComponentId());
 		}
 		
 		return rule.getRuleId();
@@ -169,39 +169,41 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 	@Override
 	@Transactional
 	public void updateRuleDetails(RuleMaster rule){
-		UserContext user = sessionBean.getUserContext();
-		List<RuleDefinitions> newRuleDefList=new ArrayList<RuleDefinitions> ();
-		rule.setDescription(rule.getDescription().trim());
-		loadsheetManagementDao.updateRuleMasterDetails(rule, user);
-		
-		populateRuleMaster(rule);
-		for(RuleDefinitions ruleDef:rule.getRuleDefinitionsList()){
-			if(ruleDef.getOperand().equals("E") || ruleDef.getOperand().equals("=")){
-				if(ruleDef.getValue()==null)
-					ruleDef.setValue("");
+		try{
+			UserContext user = sessionBean.getUserContext();
+			List<RuleDefinitions> newRuleDefList=new ArrayList<RuleDefinitions> ();
+			rule.setDescription(rule.getDescription().trim());
+			loadsheetManagementDao.updateRuleMasterDetails(rule, user);
+			
+			populateRuleMaster(rule);
+			for(RuleDefinitions ruleDef:rule.getRuleDefinitionsList()){
+				if(ruleDef.getOperand().equals("E") || ruleDef.getOperand().equals("=")){
+					if(ruleDef.getValue()==null)
+						ruleDef.setValue("");
+				}
+				if(ruleDef.getRuleDefId() != 0){
+					loadsheetManagementDao.updateRuleDefinitions(ruleDef, user);
+				}else{
+					//New Rules Definitions 
+					newRuleDefList.add(ruleDef);
+				}
 			}
-			if(ruleDef.getRuleDefId() != 0){
-				loadsheetManagementDao.updateRuleDefinitions(ruleDef, user);
-			}else{
-				//New Rules Definitions 
-				newRuleDefList.add(ruleDef);
+			//Insert the new RuleDefinitions
+			if(newRuleDefList.size()>0){
+				loadsheetManagementDao.insertRuleDefinitions(newRuleDefList, user);
 			}
-		}
-		//Insert the new RuleDefinitions
-		if(newRuleDefList.size()>0){
-			loadsheetManagementDao.insertRuleDefinitions(newRuleDefList, user);
-		}
-		//Delete the deleted rule definitions
-		if(rule.getDeletedRuleDefIds().size()>0){
-			loadsheetManagementDao.deleteRuleDefinitions(rule.getDeletedRuleDefIds());
-		}
-		if(rule.getRuleType()==UNIT_TEMPLATE_RULE){
-		createOrUpdateTemplateComponentRules(rule,'U');
-		formTheComponentDropdownValue(rule);
-		}else{
+			//Delete the deleted rule definitions
+			if(rule.getDeletedRuleDefIds().size()>0){
+				loadsheetManagementDao.deleteRuleDefinitions(rule.getDeletedRuleDefIds());
+			}
+			if(rule.getRuleType()==UNIT_TEMPLATE_RULE){
+			createOrUpdateTemplateComponentRules(rule,'U');
+			formTheComponentDropdownValue(rule);
+			}
+		}catch(IllegalArgumentException e){
+			LOGGER.error("Error occurred during updating rule for the ruleId: "+rule.getRuleId(), e);
 			throw new IllegalArgumentException("Error occurred during updating rule for the ruleId: "+rule.getRuleId());
 		}
-		
 	}
 	
 	/**
@@ -211,7 +213,7 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 	 * @throws Exception 
 	 */
 	private RuleMaster populateRuleMaster(RuleMaster rule){
-		try{
+		
 			String[] componentValue;
 			Set<Integer> criteraiGrpValues=new HashSet<Integer>();
 			RuleDefinitions ruleDef;
@@ -237,6 +239,8 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 				
 				if(ruleDef.getCriteriaGroup() != 0){	//if the array is not empty
 					componentValue=ruleDef.getComponentId().split("-");
+					if(componentValue.length < 2)
+						throw new ArrayIndexOutOfBoundsException("Please select the componentId(s)");
 					ruleDef.setComponentId(componentValue[0]);
 					ruleDef.setComponentType(componentValue[1]);
 					ruleDef.setRuleId(rule.getRuleId());
@@ -254,9 +258,7 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 			}
 			
 			rule=getOperandsDropdownValues(rule,requestFrom);
-		}catch(ArrayIndexOutOfBoundsException e){
-			throw new ArrayIndexOutOfBoundsException("Error: Please select the componentId(s)");
-		}
+		
 		return rule;
 	}
 		
