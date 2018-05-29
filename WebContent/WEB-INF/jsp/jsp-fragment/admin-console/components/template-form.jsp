@@ -77,10 +77,10 @@
 								<c:if test="${comps.required eq true}">checked="checked"</c:if>/></td>
 								<td><input type="checkbox" id="dispOtherPO-${status.index}" name="componentList['${status.index}'].dispOtherPO" 
 								<c:if test="${comps.dispOtherPO eq true}">checked="checked"</c:if>  
-								<c:if test="${comps.viewable ne true}">  disabled </c:if> /></td>
+								<c:if test="${comps.forRules ne true}">  disabled </c:if> /></td>
 								<td><input type="checkbox" id="excel-${status.index}" name="componentList['${status.index}'].excel" 
 								<c:if test="${comps.excel eq true}">checked="checked"</c:if>
-								<c:if test="${comps.viewable ne true}">  disabled </c:if> />
+								<c:if test="${comps.forRules ne true}">  disabled </c:if> />
 								<input class="hidden" type="checkbox" id="templateComponentId-${status.index}" name="templateComponentId['${status.index}']" 
 								<c:if test="${comps.templateComponentId ne 0}">checked="checked"</c:if>/>
 								</td>
