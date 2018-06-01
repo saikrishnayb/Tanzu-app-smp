@@ -62,7 +62,7 @@ public class DefaultComponentService implements ComponentService {
         if(componentList !=null && !componentList.isEmpty()){
             addTemplateComponent(componentList, templateID,template);
         }else{
-        	throw new IllegalArgumentException("Error occured during creation of template for the templateId: "+templateID);
+        	throw new IllegalArgumentException("Please select at least one component before saving the unit template.");
         }
     }
 
