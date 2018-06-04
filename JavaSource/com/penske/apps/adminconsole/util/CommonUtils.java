@@ -161,4 +161,13 @@ public class CommonUtils {
 			user.setOrgId(83);
 		}
 	}
+	
+	public static String padLeftSpace( String unitNum, int len) {
+		StringBuffer sb = new StringBuffer(10);
+		sb.append(unitNum.trim());
+		while ( sb.length() < len) {
+		sb.insert( 0,' ');
+		}
+		return sb.toString();
+	}
 }

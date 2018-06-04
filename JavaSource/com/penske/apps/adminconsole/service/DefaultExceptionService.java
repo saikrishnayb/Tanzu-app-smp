@@ -64,49 +64,29 @@ public class DefaultExceptionService implements ExceptionService {
 	}
 	
 	@Override
-	public void modifyGlobalException(int exceptionId, String provider, String subProvider){
-		
-		exceptionDao.modifyGlobalException( exceptionId, provider, subProvider );
+	public void modifyGlobalException(int exceptionId, int providervendorId, int poCategoryAssociationId,String modifiedBy){
+		exceptionDao.modifyGlobalException( exceptionId, providervendorId, poCategoryAssociationId,modifiedBy);
 	}
 	
 	@Override
 	@Transactional
 	public void deleteGlobalException(int exceptionId){
-		
-		exceptionDao.deleteGlobalExceptionPOCatGrp(exceptionId);
 		exceptionDao.deleteGlobalException(exceptionId);
-		
 	}
 
 	@Override
-	public GlobalException getException(int exceptionId) {
-
-		// get the Exception through SQL, then check table name in PRIVATE checkTableName()
-		// to get the component name needed to populate exception.componentName
-	    
-	    List<GlobalException> exceptions = exceptionDao.getGlobalExceptions(exceptionId);
-	    
-		//exception = getComponentName(exception);
-		return exceptions.size() > 0? exceptions.get(0): null;
+	public List<GlobalException> getException(int exceptionId) {
+		return  exceptionDao.getGlobalExceptions(exceptionId,null, null);
 	}
 	
 	@Override
 	public List<GlobalException> getGlobalExceptions(){
-		
-		List<GlobalException> exceptions = exceptionDao.getGlobalExceptions(null);
-	/*	
-	 	Iterator<GlobalException> iter = exceptions.iterator();
-		
-		List<GlobalException> completeExceptions = new ArrayList<GlobalException>();
-		while(iter.hasNext()){
-			
-			GlobalException exc = iter.next();
-			exc = getComponentName(exc);
-			exc = getCreator(exc);
-			completeExceptions.add(exc);
-		}
-	*/
-		return exceptions;
+		return  exceptionDao.getGlobalExceptions(null,null,null);
+	}
+	
+	@Override
+	public List<GlobalException> getGlobalExceptionSearch(String unitNumber,Integer poNumber){
+		return exceptionDao.getGlobalExceptions(null,unitNumber,poNumber);
 	}
 	@Override
 	public List<String> getSubGroups(String primaryGroup){
@@ -136,29 +116,6 @@ public class DefaultExceptionService implements ExceptionService {
 		
 		return splitItems;
 	}
-	/**
-	 * This helper methods fetches either the component name or vehicle info
-	 * dependent on what the DATA_TYPE field was from the prior SQL query results
-	 * @param exception - the exception to fetch a componentName for
-	 * @return exception - after setting the new componentName, return the whole Exception
-	 * @author 600132441 M.Leis
-	 */
-	private GlobalException getComponentName(GlobalException exception){
-		
-		int id = exception.getDataId();
-		String componentName = "";
-		
-		if( exception.getDataType().equals( "smc_component_info" ) ){
-			
-			componentName = exceptionDao.getComponent( id );
-		}
-		else if( exception.getDataType().equals( "smc_vehicle_info" ) ){
-			
-			componentName = exceptionDao.getVehicle( id );
-		}
-		exception.setComponentName(componentName);
-		return exception;
-	}
 	private UnitException getComponentName(UnitException exception){
 		
 		int id = exception.getDataId();
@@ -175,22 +132,7 @@ public class DefaultExceptionService implements ExceptionService {
 		exception.setComponentName(componentName);
 		return exception;
 	}
-	/**
-	 * This method will fetch the First and Last name from user_info based
-	 * on the creator_id in the SMC_GLOBAL_EXCEPTIONS table.
-	 * @param exception - Global Exception model that will be having the name added
-	 * @return exception - Returning the same Global Exception that was passed, but with the added name
-	 * @author 600132441 M.Leis
-	 */
-	private GlobalException getCreator(GlobalException exception){
-		
-		int id = exception.getCreatedById();
-		String creatorFirst = exceptionDao.getCreatorFirstName( id );
-		String creatorLast = exceptionDao.getCreatorLastName( id );
-		String creator = creatorFirst + " " + creatorLast;
-		exception.setCreatedByName(creator);
-		return exception;
-	}
+
 	private UnitException getCreator(UnitException exception){
 		
 		int id = exception.getCreatorId();
@@ -200,4 +142,5 @@ public class DefaultExceptionService implements ExceptionService {
 		exception.setCreatedBy(creator);
 		return exception;
 	}
+	
 }

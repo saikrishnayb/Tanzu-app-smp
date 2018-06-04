@@ -1,39 +1,52 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <form id="edit-global-exception-form" action="edit-global-exception" method="post">
-	<div class="line">
-		<label class="wide-label">Component Name:</label>
-		<label>${exception.componentName}</label>
-	</div>
-	<div class="blank"></div>
+<c:forEach items="${exception}" var="exception">
 	<div class="line">
 		<div id="list-div">
-		<label class="wide-label">PO Group</label>
-		<ul id="po-group-items">
-			<c:forEach items="${poGroup}" var="poGroup">
-			<li>
-				<label>${poGroup}</label>
-			</li>
-			</c:forEach>
-		</ul>
+		<input type="hidden" id="exception-id-modal" value="${exception.exceptionId}"/>
+			<table class='dataTable'>
+				<thead>
+					<tr>
+						<th>PO Category-Sub Category</th>
+						<th>Vendor Name</th>
+						<th class="addressHeader" colspan="3" style="text-align: center;">Address</th>
+					</tr>
+					
+				</thead>
+				<tbody>
+                     <c:forEach items="${exception.poCategoryGroups}" var="poCategoryGroup" varStatus="rowIndex">
+                     <tr class="${rowIndex.index  % 2 == 0 ? 'odd' : 'even'}">
+                       	<td>${poCategoryGroup.poCategorySubcategory}</td>
+                       	<td>${poCategoryGroup.vendor.vendorName}</td>
+                       	<td>${poCategoryGroup.vendor.city}</td>
+                    	<td>${poCategoryGroup.vendor.state}</td>
+                    	<td>${poCategoryGroup.vendor.zipCode}</td>
+                      </tr>
+                   
+                     </c:forEach>
+				</tbody>
+			</table>
 		</div>
 	</div>
-	<div class="blank"></div>
-	<div class="line">
-		<label class="wide130">To be Provided By:</label>
-		<select id="provided-by-list" class="wide-select input alpha alpha-numeric" name="provider">
-			<option value=""></option>
-			<c:forEach items="${poGroup}" var="provider">
-			<option value="${provider}">${provider}</option>
-			</c:forEach>
-		</select>
-	</div>
-	<div class="line">
-		<label class="wide130">Provider Sub Group:</label>
-		<select id="provided-by-sub" class="wide-select input alpha alpha-numeric optional" name="providerSub">
-			<option value="default"></option>
-		</select>
-	</div>
-	<input type="hidden" id="exception-id-modal" value="${exception.exceptionId}"/>
+	<fieldset>
+		<div class="line">
+			<label>Component :</label>
+			<label>${exception.componentName}</label>
+		</div>
+		
+		<div class="blank"></div>
+		<div class="line">
+			<label>Responsible Vendor: </label>
+			<select id="provider-vendor" class="wide-select input alpha alpha-numeric" >
+				<option value=""></option>
+				<c:forEach items="${exception.poCategoryGroups}" var="poCategoryGroup">
+					<option value="${poCategoryGroup.poCategoryAssociationId}-${poCategoryGroup.vendor.vendorId}"
+					<c:if test="${exception.providerVendor.vendorName eq poCategoryGroup.vendor.vendorName}">selected</c:if> name="${poCategoryGroup.vendor.vendorName}">${poCategoryGroup.vendor.vendorNumber} - ${poCategoryGroup.vendor.vendorName}</option>
+				</c:forEach>
+			</select>
+		</div>
+	</fieldset>
+</c:forEach>
 </form>
 <div class="blank"></div>
 <div class="buttonLine">
@@ -43,6 +56,6 @@
 	</div>
 	<div class="float-right">
 		<a class="cancel">Cancel</a>
-		<a class="buttonPrimary edit-global-exception-confirm">Save</a>
+		<a class="buttonPrimary edit-global-exception-confirm buttonDisabled" id='updateButton'>Update</a>
 	</div>
 </div>

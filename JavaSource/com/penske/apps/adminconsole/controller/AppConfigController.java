@@ -32,6 +32,7 @@ import com.penske.apps.adminconsole.model.LoadsheetSequenceMaster;
 import com.penske.apps.adminconsole.model.Notification;
 import com.penske.apps.adminconsole.model.RuleDefinitions;
 import com.penske.apps.adminconsole.model.RuleMaster;
+import com.penske.apps.adminconsole.model.SearchGlobalException;
 import com.penske.apps.adminconsole.model.TransportUploadHandler;
 import com.penske.apps.adminconsole.model.UnitException;
 import com.penske.apps.adminconsole.model.VendorUploadHandler;
@@ -195,7 +196,6 @@ public class AppConfigController {
 
 
     /* ================== Notifications ================== */
-    // TODO SMCSEC is this even used?????
     @RequestMapping("/notifications")
     public ModelAndView getNotificationsPage(){
 
@@ -258,14 +258,26 @@ public class AppConfigController {
     public ModelAndView getGlobalExceptionsPage(){
         ModelAndView mav = new ModelAndView("/admin-console/app-config/global-exceptions");
         List<GlobalException> exceptions = exceptionService.getGlobalExceptions();
-
         mav.addObject("exceptions", exceptions);
-
         return mav;
     }
+    
+    
+    @SmcSecurity(securityFunction = SecurityFunction.GLOBAL_EXCEPTIONS_MANAGEMENT)
+    @RequestMapping("/exception-search")
+    public ModelAndView getSearchExceptionsResult(SearchGlobalException searchedData){
+        ModelAndView mav = new ModelAndView("/admin-console/app-config/global-exceptions");
+        String formattedUnitNumber=null;
+        if(StringUtils.isNotEmpty(searchedData.getUnitNumberSearch()))
+        	formattedUnitNumber = CommonUtils.padLeftSpace(searchedData.getUnitNumberSearch(), 10);
+        List<GlobalException> exceptions = exceptionService.getGlobalExceptionSearch(formattedUnitNumber,searchedData.getPoNumberSearch());
+        mav.addObject("searchedData",searchedData);
+        mav.addObject("exceptions", exceptions);
+        return mav;
+    }
+    
 
     /* ================== Unit Exceptions ================== */
-    // TODO SMCSEC is this even used?????
     @RequestMapping("/unit-exceptions")
     @Deprecated
     public ModelAndView getUnitExcpetionsPage(){
@@ -284,7 +296,6 @@ public class AppConfigController {
     }
 
     /* ================== Delay ================== */
-    // TODO SMCSEC is this even used?????
     @RequestMapping("/delay-management")
     public ModelAndView getDelayManagementPage(){
 

@@ -26,10 +26,10 @@ public interface ExceptionDao {
     @NonVendorQuery
     public String getVehicle(int dataId);
 
-    public List<GlobalException> getGlobalExceptions(@Param("exceptionId") Integer exceptionId);
+    public List<GlobalException> getGlobalExceptions(@Param("exceptionId") Integer exceptionId,@Param("unitNumber")String unitNumber,@Param("poNumber")Integer poNumber);
 
     @NonVendorQuery
-    public void deleteGlobalException(int id);
+    public void deleteGlobalException(int exceptionId);
 
     @NonVendorQuery
     public String getCreatorFirstName(int id);
@@ -41,7 +41,7 @@ public interface ExceptionDao {
     public List<String> getSubGroup(String primaryGroup);
 
     @NonVendorQuery
-    public void modifyGlobalException(@Param("id")int id, @Param("provider")String providerPo, @Param("subProvider")String subProviderPo);
+    public void modifyGlobalException(@Param("exceptionId")int exceptionId, @Param("providervendorId")int providervendorId, @Param("poCategoryAssociationId")int poCategoryAssociationId,@Param("modifiedBy")String modifiedBy);
 
     // Unit Exception Dao Methods
     @NonVendorQuery
@@ -54,11 +54,12 @@ public interface ExceptionDao {
     public void deleteUnitException(@Param("id")int id);
 
     @NonVendorQuery
-    public void  deleteGlobalExceptionPOCatGrp(@Param("id")int id);
+    public void  deleteGlobalExceptionPOCatGrp(int exceptionId);
 
     @NonVendorQuery
     public void modifyUnitException(@Param("id")int id, @Param("provider")String providerPo, @Param("subProvider")String subProviderPo);
 
     @NonVendorQuery
     public void addGlobalException(UnitException exception);
+    
 }

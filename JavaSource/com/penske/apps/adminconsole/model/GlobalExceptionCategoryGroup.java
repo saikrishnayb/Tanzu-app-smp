@@ -5,6 +5,7 @@ public class GlobalExceptionCategoryGroup {
     
     private String poCategorySubcategory;
     private Vendor vendor;
+    private int poCategoryAssociationId;
 
     //Mybatis only
     protected GlobalExceptionCategoryGroup () {}
@@ -14,6 +15,14 @@ public class GlobalExceptionCategoryGroup {
     }
     public Vendor getVendor() {
         return vendor;
-    };
-    
+    }
+
+	public int getPoCategoryAssociationId() {
+		return poCategoryAssociationId;
+	}
+
+	public void setPoCategoryAssociationId(int poCategoryAssociationId) {
+		this.poCategoryAssociationId = poCategoryAssociationId;
+	}
+
 }

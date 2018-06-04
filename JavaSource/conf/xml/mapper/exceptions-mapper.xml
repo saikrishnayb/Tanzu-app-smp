@@ -48,6 +48,7 @@
  
    <resultMap type="com.penske.apps.adminconsole.model.GlobalExceptionCategoryGroup" id="globalExceptionCategoryGroupMap">
       <result property="poCategorySubcategory"   column="poCategorySubcategory"/>
+      <result property="poCategoryAssociationId" column="poCategoryAssociationId"/>
       <association property="vendor" javaType="com.penske.apps.adminconsole.model.Vendor" column="VENDOR_ID" select="com.penske.apps.adminconsole.dao.VendorDao.getViewVendorInformation" />
    </resultMap>
  
@@ -58,7 +59,7 @@
       <result property="componentName" column="componentName"/>
       <result property="poGroup"       column="POGROUP"/>
       <result property="exceptionId"   column="exceptionId"/>
-      
+      <result property="createdDate"   column="createdDate"/>		
       <association property="providerVendor" javaType="com.penske.apps.adminconsole.model.Vendor" column="PROVIDER_VENDOR_ID" select="com.penske.apps.adminconsole.dao.VendorDao.getViewVendorInformation" />
       <collection property="poCategoryGroups" column="exceptionId" select="getGlobalExceptionCategoryGroups" />
     
@@ -66,70 +67,63 @@
     
     <select id="getGlobalExceptionCategoryGroups" resultMap="globalExceptionCategoryGroupMap">
          SELECT POC.PO_CATEGORY ||'-'|| SUBC.PO_SUBCATEGORY AS poCategorySubcategory,
-                grp.VENDOR_ID
+         USD.PO_CATEGORY_ASSOC_ID AS poCategoryAssociationId,
+                USD.VENDOR_ID
          
-           FROM SMC.SMC_GLOBAL_EXCEPTIONS_PO_CAT_GRP grp 
+           FROM SMC.SMC_UNIT_SIGNATURE_DEFINITION USD 
            JOIN SMC.SMC_PO_CATEGORY_ASSOC asoc 
-                ON grp.PO_CATEGORY_ASSOC_ID = asoc.PO_CATEGORY_ASSOC_ID
+                ON USD.PO_CATEGORY_ASSOC_ID = asoc.PO_CATEGORY_ASSOC_ID
       LEFT JOIN SMC.SMC_PO_CATEGORY POC 
                 ON POC.PO_CATEGORY_ID = asoc.PO_CATEGORY_ID
       LEFT JOIN SMC.SMC_PO_SUBCATEGORY SUBC
                 ON SUBC.PO_SUBCATEGORY_ID = asoc.PO_SUBCATEGORY_ID
-          WHERE grp.GLOBAL_EXCEPTION_ID = #{id}
+      LEFT JOIN SMC.SMC_GLOBAL_EXCEPTIONS excp 
+      			ON USD.UNIT_SIGNATURE=excp.UNIT_SIGNATURE
+          WHERE excp.GLOBAL_EXCEPTION_ID = #{id}
     
     </select>
 	
 	<select id="getGlobalExceptions" resultMap="globalExceptionMap">
-		<!-- 	SELECT	GLOBAL_EXCEPTION_ID as exceptionId,
-				DATA_ID as dataId,
-				DATA_TYPE as dataType,
-				TO_BE_PROVIDED_BY_PO as providerPo,
-				TO_BE_PROVIDED_BY_PO_SUB as providerPoSub,
-				CREATED_BY as createdByName,
-				PO_GROUP as poGroup
-				
-		FROM	SMC.SMC_GLOBAL_EXCEPTIONS -->
-		SELECT excp.GLOBAL_EXCEPTION_ID as exceptionId, 
-               excp.NEW_EXCEPTION as isNew,
-               comps.FULL_NAME as componentName,
-		       POC.PO_CATEGORY ||'-'|| SUBC.PO_SUBCATEGORY as providerPo,
-         	   (SELECT SUBSTR(xmlserialize(xmlagg(xmltext(CONCAT( ', ',POC.PO_CATEGORY ||'-'|| SUBC.PO_SUBCATEGORY))) as VARCHAR(1024)), 3)
-         		FROM SMC.SMC_GLOBAL_EXCEPTIONS_PO_CAT_GRP grp 
-         		JOIN SMC.SMC_PO_CATEGORY_ASSOC asoc ON grp.PO_CATEGORY_ASSOC_ID = asoc.PO_CATEGORY_ASSOC_ID
-         		LEFT JOIN 
-         		SMC.SMC_PO_CATEGORY POC 
-         		ON POC.PO_CATEGORY_ID = asoc.PO_CATEGORY_ID
-         		LEFT JOIN SMC.SMC_PO_SUBCATEGORY SUBC
-         		ON SUBC.PO_SUBCATEGORY_ID = asoc.PO_SUBCATEGORY_ID
-         		WHERE grp.GLOBAL_EXCEPTION_ID=excp.GLOBAL_EXCEPTION_ID
-         	   ) as POGROUP,
-              excp.PROVIDER_VENDOR_ID,
-              excp.PROVIDER_VENDOR_ID AS VENDOR_ID
-             
-		
-		  FROM SMC.SMC_GLOBAL_EXCEPTIONS excp 
-		  JOIN SMC.V_SMC_AVAILABLE_COMPONENTS as comps 
-               ON comps.COMPONENT_ID= excp.COMPONENT_ID
-		  JOIN SMC.SMC_PO_CATEGORY_ASSOC asoc 
-               ON excp.PROVIDER_PO_CATEGORY_ASSOC_ID = asoc.PO_CATEGORY_ASSOC_ID
-     LEFT JOIN SMC.SMC_PO_CATEGORY POC 
-		       ON POC.PO_CATEGORY_ID = asoc.PO_CATEGORY_ID
-     LEFT JOIN SMC.SMC_PO_SUBCATEGORY SUBC
-		       ON SUBC.PO_SUBCATEGORY_ID = asoc.PO_SUBCATEGORY_ID
-         
-         <if test="exceptionId != null">
-           WHERE excp.GLOBAL_EXCEPTION_ID = #{exceptionId}
-         </if>
+		SELECT DISTINCT
+		excp.GLOBAL_EXCEPTION_ID as exceptionId,
+		excp.NEW_EXCEPTION as isNew,
+		comps.DISPLAY_NAME as componentName,
+		excp.UNIT_SIGNATURE as unitSignature,DATE(excp.CREATED_DATE) as createdDate,
+		excp.COMPONENT_ID,excp.PROVIDER_PO_CATEGORY_ASSOC_ID,excp.PROVIDER_VENDOR_ID,
+		POC.PO_CATEGORY ||'-'|| SUBC.PO_SUBCATEGORY as providerPo,
+          (SELECT SUBSTR(xmlserialize(xmlagg(xmltext(CONCAT( ', ',POC.PO_CATEGORY ||'-'|| SUBC.PO_SUBCATEGORY))) as VARCHAR(1024)), 3) 
+          FROM SMC.SMC_UNIT_SIGNATURE_DEFINITION USD 
+          JOIN SMC.SMC_PO_CATEGORY_ASSOC asoc ON USD.PO_CATEGORY_ASSOC_ID = asoc.PO_CATEGORY_ASSOC_ID 
+          LEFT JOIN SMC.SMC_PO_CATEGORY POC ON POC.PO_CATEGORY_ID = asoc.PO_CATEGORY_ID 
+          LEFT JOIN SMC.SMC_PO_SUBCATEGORY SUBC ON SUBC.PO_SUBCATEGORY_ID = asoc.PO_SUBCATEGORY_ID 
+          WHERE USD.UNIT_SIGNATURE=excp.UNIT_SIGNATURE ) as POGROUP,
+		excp.PROVIDER_VENDOR_ID,
+		excp.PROVIDER_VENDOR_ID AS VENDOR_ID
+		FROM SMC.SMC_GLOBAL_EXCEPTIONS excp
+		JOIN SMC.SMC_COMPONENT_INFO_DETAILS as comps ON comps.COMPONENT_ID= excp.COMPONENT_ID
+		JOIN SMC.SMC_PO_CATEGORY_ASSOC asoc ON excp.PROVIDER_PO_CATEGORY_ASSOC_ID = asoc.PO_CATEGORY_ASSOC_ID
+		LEFT JOIN SMC.SMC_PO_CATEGORY POC ON POC.PO_CATEGORY_ID = asoc.PO_CATEGORY_ID
+		LEFT JOIN SMC.SMC_PO_SUBCATEGORY SUBC ON SUBC.PO_SUBCATEGORY_ID = asoc.PO_SUBCATEGORY_ID
+		LEFT JOIN SMC.SMC_UNIT_MASTER UM ON UM.UNIT_SIGNATURE = excp.UNIT_SIGNATURE
+		LEFT JOIN SMC.SMC_UNIT_COMPONENT SUC ON SUC.COMPONENT_ID = excp.COMPONENT_ID
+              AND SUC.CONFLICT_STATUS='G'
+              AND UM.MASTER_ID=SUC.MASTER_ID 
+        <where>
+	        <if test="exceptionId != null ">
+	           excp.GLOBAL_EXCEPTION_ID = #{exceptionId}
+	        </if>
+	        <if test="unitNumber != '' and unitNumber != null">
+	        	 AND UM.UNIT_NUMBER = #{unitNumber}
+	        </if>
+	        <if test="poNumber != '' and poNumber != null ">
+	        	 AND UM.PO_NUMBER = #{poNumber}
+	        </if>
+        </where>            
 	</select>
 	
 	<delete id="deleteGlobalException">
 		DELETE FROM	SMC.SMC_GLOBAL_EXCEPTIONS		
-		WHERE GLOBAL_EXCEPTION_ID = #{id}
-	</delete>
-	
-	<delete id="deleteGlobalExceptionPOCatGrp">
-		DELETE FROM	SMC.SMC_GLOBAL_EXCEPTIONS_PO_CAT_GRP 		
-		WHERE GLOBAL_EXCEPTION_ID = #{id}
+		WHERE GLOBAL_EXCEPTION_ID = #{exceptionId}
 	</delete>
 	
 	<select id="getUnitExceptions" resultType="com.penske.apps.adminconsole.model.UnitException">
@@ -149,10 +143,11 @@
 	<update id="modifyGlobalException">
 		UPDATE	SMC.SMC_GLOBAL_EXCEPTIONS
 		
-		SET		TO_BE_PROVIDED_BY_PO = #{provider},
-				TO_BE_PROVIDED_BY_PO_SUB = #{subProvider}
-				
-		WHERE	GLOBAL_EXCEPTION_ID = #{id}
+		SET		PROVIDER_VENDOR_ID = #{providervendorId},
+				PROVIDER_PO_CATEGORY_ASSOC_ID = #{poCategoryAssociationId},
+				MODIFIED_BY = #{modifiedBy},
+				MODIFIED_DATE = current timestamp
+		WHERE	GLOBAL_EXCEPTION_ID = #{exceptionId}
 	</update>
 	
 	<update id="modifyUnitException">
@@ -190,4 +185,5 @@
 		( DATA_TYPE, DATA_ID, TO_BE_PROVIDED_BY_PO, TO_BE_PROVIDED_BY_PO_SUB, CREATED_BY, PO_GROUP )
 		VALUES( #{dataType}, #{dataId}, #{providerPo}, #{providerSubPo}, #{creatorId}, #{poGroup} )
 	</insert>
+	
 </mapper>

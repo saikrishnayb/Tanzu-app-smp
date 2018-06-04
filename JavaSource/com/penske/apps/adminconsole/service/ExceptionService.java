@@ -15,9 +15,10 @@ import com.penske.apps.adminconsole.model.UnitException;
 public interface ExceptionService {
 
 	// Global Exception Management service methods
-	public GlobalException getException(int exceptionId);
+	public List<GlobalException> getException(int exceptionId);
 	public List<GlobalException> getGlobalExceptions();
-	public void modifyGlobalException(int exceptionId, String provider, String subProvider);
+	public void modifyGlobalException(int exceptionId,int providervendorId,int poCategoryAssociationId,String createdBy);
+	public List<GlobalException> getGlobalExceptionSearch(String unitNumber,Integer poNumber);
 	public void deleteGlobalException(int exceptionId);
 	// Unit Exception Management service methods
 	public List<UnitException> getUnitExceptions();

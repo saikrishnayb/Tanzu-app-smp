@@ -1,6 +1,9 @@
 package com.penske.apps.adminconsole.model;
 
+import java.util.Date;
 import java.util.List;
+
+import org.apache.commons.lang3.time.DateFormatUtils;
 
 /**
  * This is the basic model object for a Global Exception, which is
@@ -11,15 +14,11 @@ import java.util.List;
 public class GlobalException {
 
 	private int exceptionId;		// exception ID
-	private int dataId;				// data ID
 	private String dataType;		// data type
 	private String componentName; 	// component name
-	private String providerPo;		// provider PO category
-	private String providerPoSub;	// provider PO Sub-category
-	private int createdById;		// ID of user/group that created the exception
-	private String createdByName;	// name of user/group that created the exception
 	private String poGroup;			// PO Group
 	private String isNew;
+	private Date createdDate;
 	
 	private Vendor providerVendor;
 	private List<GlobalExceptionCategoryGroup> poCategoryGroups;
@@ -29,12 +28,6 @@ public class GlobalException {
     }
     public void setExceptionId(int exceptionId) {
         this.exceptionId = exceptionId;
-    }
-    public int getDataId() {
-        return dataId;
-    }
-    public void setDataId(int dataId) {
-        this.dataId = dataId;
     }
     public String getDataType() {
         return dataType;
@@ -48,31 +41,7 @@ public class GlobalException {
     public void setComponentName(String componentName) {
         this.componentName = componentName;
     }
-    public String getProviderPo() {
-        return providerPo;
-    }
-    public void setProviderPo(String providerPo) {
-        this.providerPo = providerPo;
-    }
-    public String getProviderPoSub() {
-        return providerPoSub;
-    }
-    public void setProviderPoSub(String providerPoSub) {
-        this.providerPoSub = providerPoSub;
-    }
-    public int getCreatedById() {
-        return createdById;
-    }
-    public void setCreatedById(int createdById) {
-        this.createdById = createdById;
-    }
-    public String getCreatedByName() {
-        return createdByName;
-    }
-    public void setCreatedByName(String createdByName) {
-        this.createdByName = createdByName;
-    }
-    public String getPoGroup() {
+	public String getPoGroup() {
         return poGroup;
     }
     public void setPoGroup(String poGroup) {
@@ -95,6 +64,15 @@ public class GlobalException {
     }
     public void setPoCategoryGroups(List<GlobalExceptionCategoryGroup> poCategoryGroups) {
         this.poCategoryGroups = poCategoryGroups;
-    } 
+    }
+    
+    public String getCreatedDate() {
+		return DateFormatUtils.format(createdDate, "MM/dd/yyyy");
+	}
+    
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
 	
 }

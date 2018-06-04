@@ -4,7 +4,7 @@
 }
 .wide-select{
 	
-	width:200px;
+	width:300px;
 }
 .blank{
 	
@@ -39,7 +39,7 @@
 	margin-left: 25px;
 }
 #list-div{
-	
+	width:100%;
 	display:inline-block;
 }
 #list-div label.wide-label{
@@ -47,11 +47,84 @@
 	vertical-align:top;
 }
 .wide130{
-	
 	display:inline-block;
 	width:130px;
 }
 .right-buttons{
 	
 	float:right;
+}
+.customSearch{
+	width:100%;
+	float: right;
+}
+#poSearch{
+	width:50%;
+}
+#unitNumSearch{
+	width:50%;
+}
+.searchAlignNumber{
+	width:22%;
+	display: inline-block;
+	float: right;
+	margin-bottom: 5px;
+	padding-top: 5px;
+}
+.searchPONumber{
+	width:19.5%;
+	display: inline-block;
+	float: right;
+	margin-bottom: 5px;
+	padding-top: 5px;
+}
+.searchUnitNumber{
+	width:28.1%;
+	display: inline-block;
+	float: right;
+	margin-bottom: 5px;
+	padding-top: 5px;
+}
+.search{
+	margin-left: 10px;
+}
+.searchAlignText{
+	width:30%;
+	display: inline-block;
+	float: right;
+}
+.addressHeader:{
+	colspan:3 ;
+	text-align: center;
+}
+.viewCol{
+	width:5%;
+}
+.componentNameHeader{
+	width:25%;
+}
+.vendorHeader{
+	width:40%;
+}
+.providedByHeader{
+	width:20%;
+}
+.dateModifiedHeader{
+	width:10%;
+}
+.unitPOHeader{
+	float: right;
+	display: inline-block;
+}
+.popUpPONum{
+	float: right;
+	display: inline-block;
+	margin-left: 15px;
+}
+.popUpUnitNum{
+	float: right;
+	display: inline-block;
+}
+.unitPoSearch{
+	width:15%
 }

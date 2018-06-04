@@ -86,8 +86,6 @@ public class AppConfigRestController {
     @Autowired
     private LoadSheetManagementService loadsheetManagementService;
 
-    private static Logger logger = Logger.getLogger(AppConfigRestController.class);
-
     /* ================== Subject Management ================== */
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_SUBJECTS)
     @RequestMapping(value="/modify-subject")
@@ -171,19 +169,14 @@ public class AppConfigRestController {
     }
 
     /* ================== Global Exceptions ================== */
-    // TODO SMCSEC is this even used?????
     @RequestMapping("get-global-exceptions-edit-modal")
     @ResponseBody
     public ModelAndView getGlobalExceptionsEditModal(@RequestParam(value = "exceptionId") int exceptionId) {
 
-        LOGGER.error("getGlobalExceptionsEditModal is used!!!! :)");
-
         ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/app-config/edit-global-exceptions-modal");
-
-        GlobalException exception = exceptionService.getException(exceptionId);
-        List<String> poGroup = exceptionService.splitGroup(exception.getPoGroup());
-        mav.addObject("poGroup", poGroup);
+        List<GlobalException> exception = exceptionService.getException(exceptionId);
         mav.addObject("exception", exception);
+        
         return mav;
     }
 
@@ -192,32 +185,26 @@ public class AppConfigRestController {
     @ResponseBody
     public List<String> getSubGroups(@RequestParam(value = "selectedOption") String selectedOption) {
 
-        LOGGER.error("getSubGroups is used!!!! :)");
 
         List<String> subGroups = exceptionService.getSubGroups(selectedOption);
         return subGroups;
     }
 
-    // TODO SMCSEC is this even used?????
     @RequestMapping("edit-global-exception")
     @ResponseBody
-    public void modifyGlobalException(@RequestParam(value = "exceptionId") int exceptionId, @RequestParam(value = "provider") String provider, @RequestParam(value = "subProvider") String subProvider) {
+    public void modifyGlobalException(@RequestParam(value = "exceptionId") int exceptionId, @RequestParam(value = "providervendorId") int providervendorId, @RequestParam(value = "poCategoryAssociationId") int poCategoryAssociationId,HttpSession session) {
 
-        LOGGER.error("modifyGlobalException is used!!!! :)");
-
-        exceptionService.modifyGlobalException(exceptionId, provider, subProvider);
+        HeaderUser currentUser = (HeaderUser) session.getAttribute("currentUser");
+        String createdBy = currentUser.getSso();
+        exceptionService.modifyGlobalException(exceptionId, providervendorId, poCategoryAssociationId,createdBy);
     }
 
     @SmcSecurity(securityFunction = SecurityFunction.GLOBAL_EXCEPTIONS_MANAGEMENT)
     @RequestMapping("get-global-exceptions-delete-modal")
     @ResponseBody
     public ModelAndView getGlobalExceptionsDeleteModal(@RequestParam(value = "exceptionId") int exceptionId) {
-
         ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/app-config/delete-global-exception-modal");
-
-        GlobalException exception = exceptionService.getException(exceptionId);
-        // List<String> poGroup = exceptionService.splitGroup( exception.getPoGroup() );
-        // mav.addObject("poGroup", poGroup);
+        List<GlobalException> exception = exceptionService.getException(exceptionId);
         mav.addObject("exception", exception);
         return mav;
     }
@@ -278,7 +265,7 @@ public class AppConfigRestController {
                 response.flushBuffer();
                 // throw dpe;
             } catch (IOException e) {
-                logger.error(e.getMessage());
+            	LOGGER.error(e.getMessage());
             }
         }
     }
@@ -299,7 +286,7 @@ public class AppConfigRestController {
                 response.flushBuffer();
                 // throw dpe;
             } catch (IOException e) {
-                logger.error(e.getMessage());
+            	LOGGER.error(e.getMessage());
             }
         }
     }
@@ -851,7 +838,7 @@ public class AppConfigRestController {
             Integer.parseInt(frequencyDays);
         } catch (Exception e) {
             // Frequency was not a number, what to do here?
-            logger.debug(e);
+        	LOGGER.debug(e);
 
             return;
         }
@@ -900,7 +887,7 @@ public class AppConfigRestController {
         try {
             loadsheetManagementService.saveComponentRules(componentRule);
         } catch (Exception e) {
-            logger.info(e);
+        	LOGGER.info(e);
             CommonUtils.getCommonErrorAjaxResponse(response, "Error ocuured while adding the rules, please contact system admin.");
         }
     }
@@ -913,7 +900,7 @@ public class AppConfigRestController {
         try {
             loadsheetManagementService.DeleteRuleDetails(ruleId);
         } catch (Exception e) {
-            logger.info(e);
+        	LOGGER.info(e);
             CommonUtils.getCommonErrorAjaxResponse(response, "");
         }
     }
@@ -934,7 +921,7 @@ public class AppConfigRestController {
         try {
             loadsheetManagementService.deleteLoadsheetSequence(sequenceId);
         } catch (Exception e) {
-            logger.info(e);
+        	LOGGER.info(e);
             CommonUtils.getCommonErrorAjaxResponse(response, "");
         }
     }
