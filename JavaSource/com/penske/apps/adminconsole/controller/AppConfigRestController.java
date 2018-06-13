@@ -169,14 +169,22 @@ public class AppConfigRestController {
     }
 
     /* ================== Global Exceptions ================== */
+    /*    * 
+    * @param exceptionId
+    * 
+    * @param unitNumber - To display in edit modal light box
+    * 
+    * @param poNumber	- To display in  edit modal light box
+    */
     @RequestMapping("get-global-exceptions-edit-modal")
     @ResponseBody
-    public ModelAndView getGlobalExceptionsEditModal(@RequestParam(value = "exceptionId") int exceptionId) {
+    public ModelAndView getGlobalExceptionsEditModal(@RequestParam(value = "exceptionId") int exceptionId,@RequestParam(value="unitNumber", required=false) String unitNumber,@RequestParam(value="poNumber",required=false) int poNumber) {
 
         ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/app-config/edit-global-exceptions-modal");
         List<GlobalException> exception = exceptionService.getException(exceptionId);
+        mav.addObject("poNumber", poNumber);
+        mav.addObject("unitNumber", unitNumber);
         mav.addObject("exception", exception);
-        
         return mav;
     }
 

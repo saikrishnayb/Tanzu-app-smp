@@ -4,6 +4,9 @@ $(document).ready(function() {
 	initDataTable($exceptionTable);
 	var $editExceptionModal = $("#modal-edit-global-exception");
 	var $deleteExceptionModal = $("#modal-delete-global-exception");
+	var showLoading = false;
+	$exceptionTable.fnDraw();
+	toggleClear();
 	
 	$editExceptionModal.dialog({
 		
@@ -13,11 +16,11 @@ $(document).ready(function() {
 		width: 700,
 		minHeight: 235,
 		resizable: false,
+		position: { my: "center", at: "center", of: window },
 		title: 'Edit Global Exception',
 		closeOnEscape: false,
-		open: function(event, ui) { },
 		close:function(event,ui){
-			$('.provided-by').removeClass('selectedProvider');
+			$('#edit-global-exception-modal').remove(); 
 		}
 	});
 	$deleteExceptionModal.dialog({
@@ -29,22 +32,27 @@ $(document).ready(function() {
 		minHeight: 235,
 		resizable: false,
 		title: 'Delete Global Exception',
+		position: { my: "center", at: "center", of: window },
 		closeOnEscape: false,
-		open: function(event, ui) { }
+		close:function(event,ui){
+			$('#deleteModal').remove();
+		}
 	});
 	
 	$exceptionTable.on("click", ".edit-exception", function(){
 		
 		var $thisRow = $(this).closest("tr");
+		var unitNumber = $("#searchException").attr("unitNumSearch");
+		var poNumber =$("#searchException").attr("poSearch");
 		var exceptionId = $thisRow.find(".global-exception-id").val();
 		$thisRow.closest("tr").find('.provided-by').addClass('selectedProvider');
-		var unitNumber	= $('#unitNumSearch').val();
-		var poNumber	= $("#poSearch").val();
-		var $editGlobalExceptionModalPromise = $.get("get-global-exceptions-edit-modal.htm", {exceptionId:exceptionId});
+		$thisRow.closest("tr").find('.modified-date').addClass('currentModifiedDate');
+		var $editGlobalExceptionModalPromise = $.get("get-global-exceptions-edit-modal.htm", {exceptionId:exceptionId,unitNumber:unitNumber,poNumber:poNumber});
 		$editGlobalExceptionModalPromise.done( function(data){
 			
 			$editExceptionModal.html(data);
 			openModal($editExceptionModal);
+			showLoading = false;
 		});
 	});
 	$exceptionTable.on("click", ".delete-exception", function(){
@@ -52,6 +60,7 @@ $(document).ready(function() {
 		var $thisRow = $(this).closest("tr");
 		var exceptionId = $thisRow.find(".global-exception-id").val();
 		var $deleteGlobalExceptionModalPromise = $.get("get-global-exceptions-delete-modal.htm", {exceptionId:exceptionId});
+		processingImageAndTextHandler('visible','Loading data...');
 		$deleteGlobalExceptionModalPromise.done( function(data){
 			$deleteExceptionModal.html(data);
 			openModal($deleteExceptionModal);
@@ -84,18 +93,20 @@ $(document).ready(function() {
 		var $errorDiv = $('#error-message');
 		$errorDiv.addClass("hidden");
 		var validated = validateFormTextFields($globalForm);
-		
 		if(validated){
 			
-			var $getEditGlobalExceptionPromise = $.get("edit-global-exception.htm", {exceptionId:exceptionId, providervendorId:providervendorId,poCategoryAssociationId:poCategoryAssociationId});
-			$getEditGlobalExceptionPromise.done( function(){
-					var selectedProviderVendorName = $('#provider-vendor').find('option:selected').attr('name');
-					$('.selectedProvider').text(selectedProviderVendorName);
-					closeModal($editExceptionModal);
-			});
+			$.ajax({
+				url : "edit-global-exception.htm",
+				type: "GET",  
+				data: {exceptionId:exceptionId, providervendorId:providervendorId,poCategoryAssociationId:poCategoryAssociationId},
+				success : function() {
+					 closeModal($editExceptionModal);
+					 reload();
+				}
+			}); 
 		}
 		else{
-			
+			showLoading = false;
 			var $errorSpan = $('#message-span');
 			// check each form field for error class
 			if( $('#provider-vendor').hasClass('errorMsgInput') ){
@@ -105,6 +116,14 @@ $(document).ready(function() {
 			}
 		}
 	});
+	$(document).ajaxComplete(function() {
+		if(showLoading){
+			processingImageAndTextHandler('visible','Processing...');
+		}else{
+			processingImageAndTextHandler('hidden');
+		}
+	});
+	
 	$deleteExceptionModal.on("click", ".delete-global-exception-confirm", function(){
 		
 		var exceptionId = $('#exception-id-modal').val();
@@ -121,73 +140,27 @@ $(document).ready(function() {
 					$exceptionTable.fnDeleteRow( $row[0] );
 				}
 			});
-			$deleteExceptionModal.dialog('close').empty();
+			$deleteExceptionModal.dialog('close');
 		});
 	});
 	
-	//search for  componentName
-	$("#componentNameSearch").keyup(function() {
-			$this = this;
-		   // Show only matching TR and to hide rest
-		   $.each($("#exceptionTable tbody tr"), function() {
-		     //Implementing smart search 
-		     var searchKeys = new Array();
-		     searchKeys = $($this).val().toLowerCase().split(" ");
-		     var recFound = true;
-		     for (var index = 0; index < searchKeys.length; index++) {
-		       if (recFound) {
-		         if ($(this).find('.component-name').text().toLowerCase().indexOf(searchKeys[index]) === -1) {
-		           recFound = false;
-		           $(this).hide();
-		         } else {
-		           recFound = true;
-		           $(this).show();
-		         }
-		       }
-		     }
-
-		   });
+	//search for  componentName & vendorName
+	$(".fuzzySearch").on('input',function(){
+		$exceptionTable.fnDraw();
 	 });
 
-		//search for  vendorName
-	$("#vendorNameSearch").keyup(function() {
-			debugger;
-			 $this = this;
-		   // Show only matching TR, hide rest of them
-		   $.each($("#exceptionTable tbody tr"), function() {
-		     //Implementing smart search 
-		     var searchKeys = new Array();
-		     searchKeys = $($this).val().toLowerCase().split(" ");
-		     var recFound = true;
-		     for (var index = 0; index < searchKeys.length; index++) {
-		       if (recFound) {
-		         if ($(this).find('.po-group .vendor-name').text().toLowerCase().indexOf(searchKeys[index]) === -1) {
-		           recFound = false;
-		           $(this).hide();
-		         } else {
-		           recFound = true;
-		           $(this).show();
-		         }
-		       }
-		     }
-
-		   });
-	   });
-	
-	//to trigger fuzzy-search after form-submit
-	var compName = $("#componentNameSearch").val();
-	var vendorName = $("#vendorNameSearch").val();
-	var unitNumber = $("#unitNumSearch").val();
-	var poNumber =$("#poSearch").val();
-		if(compName != '')
-			$("#componentNameSearch").keyup();
-		if(vendorName != '')
-			$("#vendorNameSearch").keyup();
-		if(unitNumber!='' || poNumber!=''){
-		 $("#advancedSearch").removeClass('collapsedImage').addClass('expandedImage');
-	  	 $("#search-content").removeClass("displayNone").addClass("displayBlock");
-	   	 $("#advancedSearch").text('Hide Adavanced Search');
+	function toggleClear(){
+		var compName = $("#componentNameSearch").val();
+		var vendorName = $("#vendorNameSearch").val();
+		var unitNum = $("#unitNumSearch").val();
+		var poNum = $("#poSearch").val();
+		if(compName != '' || vendorName != '' || unitNum != '' || poNum != ''){
+			 $(".reset").removeClass("buttonDisabled");
+		}else{
+			 $(".reset").addClass("buttonDisabled");
 		}
+		
+	}
 	
 $editExceptionModal.on("change", "#provider-vendor", function(){
 	  var changeDowndown=new Array();
@@ -218,6 +191,30 @@ $("#searchException").on('click', function(e){
 $("input").on('click', function(e){
 	hideErrorMessages();
 });
+
+function reload(){
+	showLoading = true;
+	$('#search-exception-form').submit();
+}
+
+
+//reset to refresh the page
+$(".reset").on('click', function(){
+	if($('.reset').hasClass('buttonDisabled') )
+		return false;
+	hideErrorMessages();
+	$("#unitNumSearch").val('');
+	$("#poSearch").val('');
+	$("#componentNameSearch").val('');
+	$("#vendorNameSearch").val('');
+	processingImageAndTextHandler('visible','Loading data...');
+	window.location.href = 'global-exceptions.htm';
+});
+
+$('#search-exception-form input').on('input',function(){
+	toggleClear();
+});
+
 });
 
 function initDataTable($exceptionTable){
@@ -226,47 +223,54 @@ function initDataTable($exceptionTable){
 		"aaSorting": [[ 4, "desc" ]], //default sort column
 		"bPaginate": false, //enable pagination
 		"bStateSave": true,
+		"sScrollY"  : "435px",//enable scroll 
+		"sScrollX"  : "100%", 
 		"bLengthChange": false, //enable change of records per page, not recommended
-		"bFilter": false, //Allows dynamic filtering of results, do not enable if using ajax for pagination
-		"bSort": false, //Allow sorting by column header
-		"bInfo": true, //Showing 1 to 10 of 11 entries
-		"aoColumnDefs": [{"bSortable": false, "aTargets": [ 0 ]}],
-	//	"sPaginationType": "full_numbers", //Shows first/previous 1,2,3,4 next/last buttons
-	//	"iDisplayLength": 10 , //number of records per page for pagination
-		"oLanguage": {"sEmptyTable": "&nbsp;"}, //Message displayed when no records are found
+		"bFilter": true, //Allows dynamic filtering of results, do not enable if using ajax for pagination
+		"bSort": true, //Allow sorting by column header
+		"bInfo": false, //Showing 1 to 10 of 11 entries
+		"aoColumnDefs": [{"bSortable": false, "aTargets": [ 0,1,2,3 ]}],
+		"oLanguage": {"sEmptyTable": "No matching records found"}, //Message displayed when no records are found
+		"fnDrawCallback": function() { 
+			//This change would allow the data table 
+        	//to adjust with dynamically after the page has been loaded
+        	$(".dataTables_scrollHead").css("width","99.8%");
+        	$(".dataTables_scrollHeadInner").css("width","98.5%");
+        	$(".dataTable").css("width","99.8%");
+        	$(".dataTables_scrollBody").css("width","100%"); 
+		}
 	});
+		
+	$('#exceptionTable_filter').hide();
+	$exceptionTable.dataTableExt.afnFiltering.push(function (oSettings, aData, iDataIndex) {
+		
+		var  compSearch = $("#componentNameSearch").val().toLowerCase();
+		var  vendorSearch= $("#vendorNameSearch").val().toLowerCase();
+		 var row = $($exceptionTable.dataTable().fnGetNodes()[iDataIndex]);
+		 var componentName =row.find('.component-name').text().toLowerCase();
+		 var  vendorName= row.find('.po-group .vendor-name').text().toLowerCase();
+		 if(compSearch == "" && vendorSearch == ""){
+			 return true;
+		 }
+		 else if(compSearch != "" && vendorSearch == ""){
+			 if(componentName.indexOf(compSearch) > -1){
+				 return true;
+			 }
+		 }else if(compSearch == "" && vendorSearch != ""){
+			 if(vendorName.indexOf(vendorSearch) > -1){
+				 return true;
+			 }
+		 }else{
+			 if(vendorName.indexOf(vendorSearch) > -1 && componentName.indexOf(compSearch) > -1){
+				 return true;
+			 }
+		 }
+		return false;	 
+		
+		});
 }
 
 
-
-
-//reset to refresh the page
-$(".reset").on('click', function(){
-	 hideErrorMessages();
-	$("#unitNumSearch").val('');
-	$("#poSearch").val('');
-	processingImageAndTextHandler('visible','Loading data...');
-	window.location.href = 'global-exceptions.htm';
-	
-});
-
-function toggleContent(contentId,spanId){
-	
-	if($("#" + contentId).is(":visible")){
-		//Currently Expanded
-		$("#" + spanId).removeClass('expandedImage').addClass('collapsedImage');
-		$("#" + contentId).removeClass("displayBlock").addClass("displayNone");
-		$("#" + spanId).text('Show Advanced Search');
-
-	}
-	else{
-		//Currently Collapsed
-	   $("#" + spanId).removeClass('collapsedImage').addClass('expandedImage');
-	   $("#" + contentId).removeClass("displayNone").addClass("displayBlock");
-	   $("#" + spanId).text('Hide Adavanced Search');
-
-	}
-}
 
 function validateSearchFields()
 {
@@ -310,6 +314,4 @@ function validateNumbers(inputValue)
 
 
 }
-
-
 

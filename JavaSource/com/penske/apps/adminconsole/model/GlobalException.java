@@ -14,11 +14,10 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 public class GlobalException {
 
 	private int exceptionId;		// exception ID
-	private String dataType;		// data type
 	private String componentName; 	// component name
 	private String poGroup;			// PO Group
 	private String isNew;
-	private Date createdDate;
+	private Date modifiedDate;
 	
 	private Vendor providerVendor;
 	private List<GlobalExceptionCategoryGroup> poCategoryGroups;
@@ -28,12 +27,6 @@ public class GlobalException {
     }
     public void setExceptionId(int exceptionId) {
         this.exceptionId = exceptionId;
-    }
-    public String getDataType() {
-        return dataType;
-    }
-    public void setDataType(String dataType) {
-        this.dataType = dataType;
     }
     public String getComponentName() {
         return componentName;
@@ -66,12 +59,12 @@ public class GlobalException {
         this.poCategoryGroups = poCategoryGroups;
     }
     
-    public String getCreatedDate() {
-		return DateFormatUtils.format(createdDate, "MM/dd/yyyy");
+    public String getModifiedDate() {
+		return DateFormatUtils.format(modifiedDate, "MM/dd/yyyy");
 	}
     
-	public void setCreatedDate(Date createdDate) {
-		this.createdDate = createdDate;
+	public void setModifiedDate(Date createdDate) {
+		this.modifiedDate = createdDate;
 	}
 
 	

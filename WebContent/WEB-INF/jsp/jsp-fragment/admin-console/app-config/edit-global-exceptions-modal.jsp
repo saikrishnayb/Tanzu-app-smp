@@ -1,6 +1,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<div id="edit-global-exception-modal"> 
 <form id="edit-global-exception-form" action="edit-global-exception" method="post">
 <c:forEach items="${exception}" var="exception">
+	<div class="unitPOHeader">
+	<div class="popUpPONum"><c:if test="${poNumber != 0}"><h1>PO: ${poNumber}</h1></c:if></div>
+	<div class="popUpUnitNum"><c:if test="${not empty unitNumber}"><h1>Unit: ${unitNumber}</h1></c:if></div>
+	</div>
 	<div class="line">
 		<div id="list-div">
 		<input type="hidden" id="exception-id-modal" value="${exception.exceptionId}"/>
@@ -58,4 +63,5 @@
 		<a class="cancel">Cancel</a>
 		<a class="buttonPrimary edit-global-exception-confirm buttonDisabled" id='updateButton'>Update</a>
 	</div>
+</div>
 </div>

@@ -59,7 +59,7 @@
       <result property="componentName" column="componentName"/>
       <result property="poGroup"       column="POGROUP"/>
       <result property="exceptionId"   column="exceptionId"/>
-      <result property="createdDate"   column="createdDate"/>		
+      <result property="modifiedDate"   column="modifiedDate"/>		
       <association property="providerVendor" javaType="com.penske.apps.adminconsole.model.Vendor" column="PROVIDER_VENDOR_ID" select="com.penske.apps.adminconsole.dao.VendorDao.getViewVendorInformation" />
       <collection property="poCategoryGroups" column="exceptionId" select="getGlobalExceptionCategoryGroups" />
     
@@ -88,7 +88,7 @@
 		excp.GLOBAL_EXCEPTION_ID as exceptionId,
 		excp.NEW_EXCEPTION as isNew,
 		comps.DISPLAY_NAME as componentName,
-		excp.UNIT_SIGNATURE as unitSignature,DATE(excp.CREATED_DATE) as createdDate,
+		excp.UNIT_SIGNATURE as unitSignature,DATE(excp.MODIFIED_DATE) as modifiedDate,
 		excp.COMPONENT_ID,excp.PROVIDER_PO_CATEGORY_ASSOC_ID,excp.PROVIDER_VENDOR_ID,
 		POC.PO_CATEGORY ||'-'|| SUBC.PO_SUBCATEGORY as providerPo,
           (SELECT SUBSTR(xmlserialize(xmlagg(xmltext(CONCAT( ', ',POC.PO_CATEGORY ||'-'|| SUBC.PO_SUBCATEGORY))) as VARCHAR(1024)), 3) 
@@ -118,8 +118,9 @@
 	        <if test="poNumber != '' and poNumber != null ">
 	        	 AND UM.PO_NUMBER = #{poNumber}
 	        </if>
-        </where>            
-	</select>
+        </where> 
+        ORDER BY modifiedDate desc  
+      </select>
 	
 	<delete id="deleteGlobalException">
 		DELETE FROM	SMC.SMC_GLOBAL_EXCEPTIONS		

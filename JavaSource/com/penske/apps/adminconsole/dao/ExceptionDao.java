@@ -54,9 +54,6 @@ public interface ExceptionDao {
     public void deleteUnitException(@Param("id")int id);
 
     @NonVendorQuery
-    public void  deleteGlobalExceptionPOCatGrp(int exceptionId);
-
-    @NonVendorQuery
     public void modifyUnitException(@Param("id")int id, @Param("provider")String providerPo, @Param("subProvider")String subProviderPo);
 
     @NonVendorQuery

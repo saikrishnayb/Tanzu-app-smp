@@ -17,70 +17,54 @@
 			<%@ include file="../../../jsp/jsp-fragment/admin-console/app-config/left-nav.jsp" %>
 			
 			<div class="leftNavAdjacentContainer">
-			<form id="search-exception-form" action="exception-search.htm" method="GET">
-				<div class="customSearch" style="margin-bottom: 5px">
-					<span id="advancedSearch" class="expandableContent handCursor collapsedImage
-						 floatRight margin-bottom unitPoSearch"
-						onclick="toggleContent('search-content','advancedSearch');">Show Advanced Search
-					</span>
-					<div class="searchAlignText">
-						<label>Vendor Name:</label>
-						<input name="vendorNameSearch" id="vendorNameSearch" value="<c:out value="${searchedData.vendorNameSearch}"/>"  tabindex="2"></input>
-					</div>
-					<div class="searchAlignText">
-						<label>Component Name:</label>
-						<input name="componentNameSearch" id="componentNameSearch" value="<c:out value="${searchedData.componentNameSearch}"/>" tabindex="1"></input>
-					</div>
-				</div>
-				<div id="search-content" class="customSearch  displayNone" >
-					<div  class="searchAlignNumber">
-						<a class="buttonSecondary  reset"  href="#" tabindex="5">Clear</a>
-						<a class="buttonSecondary edit-alert" id="searchException" tabindex="6">Search</a>
-						<div class="basicValidation displayNone">
-							<img src="${commonStaticUrl}/images/warning.png"></img>
-							<span class=errorMsg>Please enter any one/valid search criteria</span>
-						</div>
-					</div>
-					<div class="searchPONumber" >
-						<label>PO #:</label>
-						<input  name="poNumberSearch" id="poSearch" 
+				 <form id="search-exception-form" action="exception-search.htm" method="GET">
+					<div class="customSearch">
+						<label class="labelName CustomLabel" >Component Name:</label>
+						<input name="componentNameSearch"  class="fuzzySearch" id="componentNameSearch" value="<c:out value="${searchedData.componentNameSearch}"/>" tabindex="1"></input>
+						<label class="labelName CustomLabel" >Vendor Name:</label>
+						<input name="vendorNameSearch" class="fuzzySearch" id="vendorNameSearch" value="<c:out value="${searchedData.vendorNameSearch}"/>"  tabindex="2"></input>
+						<label class="labelName  CustomLabel">Unit #: </label>
+						<input name="unitNumberSearch" maxlength="10" id="unitNumSearch" value="<c:out value="${searchedData.unitNumberSearch}"/>" tabindex="3"></input>
+						<label class="labelName CustomLabel">PO #:</label>
+						<input  name="poNumberSearch" maxlength="7" id="poSearch" 
 						<c:if test="${searchedData.poNumberSearch ne 0}">	
 						value="<c:out value="${searchedData.poNumberSearch}"/>"
 						</c:if> tabindex="4"/>
-							<div class="basicPoNum displayNone">
-							<img src="${commonStaticUrl}/images/warning.png"></img>
-							<span class=errorMsg>Please enter numbers</span>
-						</div>
+						<a class="buttonSecondary  reset buttonSize buttonDisabled" href="#" tabindex="5">Clear</a>&nbsp;
+						<a class="buttonPrimary edit-alert buttonSize" unitNumSearch="${searchedData.unitNumberSearch}" poSearch= "${searchedData.poNumberSearch}" id="searchException" tabindex="6">Search</a>
 					</div>
-					<div class="searchUnitNumber" >
-						<label>Unit #: </label>
-						<input name="unitNumberSearch"  id="unitNumSearch" value="<c:out value="${searchedData.unitNumberSearch}"/>" tabindex="3"></input>
-					</div>
-				</div>
+					 <div class="basicValidation displayNone floatRight errorText errorDisplay">
+						<img src="${commonStaticUrl}/images/warning.png"></img>
+						<span class=errorMsg>Please enter Unit or PO number</span>
+					 </div>
+					 <div class="basicPoNum displayNone floatRight errorDisplay">
+						<img src="${commonStaticUrl}/images/warning.png"></img>
+						<span class=errorMsg>Enter a valid PO number</span>
+					 </div>
 				</form>
-				<table id="exceptionTable" >
+				<table id="exceptionTable">
 					<thead>
 						<tr>
-							<th class="viewCol"></th>
-							<th class="componentNameHeader">Component Name</th>
-							<th class="vendorHeader">PO &#38; Vendor Association</th>
-							<th class="providedByHeader">To be Provided By</th>
-							<th class="dateModifiedHeader">Date Created</th>
+							<th></th>
+							<th>Component Name</th>
+							<th>PO &#38; Vendor Association</th>
+							<th>To be Provided By</th>
+							<th class="dateHeader">Date Modified</th>
 						</tr>
 					</thead>
 					<tbody>
 						<c:forEach items="${exceptions}" var="exception">
 						<tr>
 							<td class="editable centerAlign width">
-								<a class="rightMargin edit-exception">Edit</a>
 								<a><img src="${commonStaticUrl}/images/delete.png" class="centerImage rightMargin delete-exception"/></a>
+								<a class="rightMargin edit-exception">Edit</a>
 								<input type="hidden" class="global-exception-id" value="${exception.exceptionId}"/>
 							</td>
 							<td class="component-name">${exception.componentName}</td>
 							<td class="po-group">
                               <c:forEach items="${exception.poCategoryGroups}" var="poCategoryGroup">
                                 <label>${poCategoryGroup.poCategorySubcategory} -</label>
-                                <span class="vendor-name">${poCategoryGroup.vendor.vendorName}</span>
+                                <span class="vendor-name">${poCategoryGroup.vendor.vendorName},</span>
                                 <span>${poCategoryGroup.vendor.city},</span>
                                 <span>${poCategoryGroup.vendor.state}</span>
                                 <span>${poCategoryGroup.vendor.zipCode}</span>
@@ -90,19 +74,19 @@
 							<td class="provided-by">
 							${exception.providerVendor.vendorName}
 							</td>
-							<td>
-								<span value="${exception.createdDate}">${exception.createdDate}</span>
+							<td class="modified-date">
+								<span value="${exception.modifiedDate}">${exception.modifiedDate}</span>
 							</td>
 						</tr>
 						</c:forEach>
 					</tbody>
 				</table>
+				</div>
 				<div class="modal" id="modal-edit-global-exception">
 				</div>
 				<div class="modal" id="modal-delete-global-exception">
 				</div>
 			</div>
-		</div> 
 		
 	</body>
 	<!-- Scripts -->

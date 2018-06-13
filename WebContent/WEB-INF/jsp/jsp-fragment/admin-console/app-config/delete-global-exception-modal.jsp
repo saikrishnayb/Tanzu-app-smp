@@ -1,4 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<div id="deleteModal">
 <c:forEach items="${exception}" var="exception">
 	<div class="line">
 		<label>Component Name:</label><label>${exception.componentName}</label>
@@ -35,7 +36,6 @@
 	<div class="line">
 		<label>To be Provided By:</label>${exception.providerVendor.vendorName}
 	</div>
-	<input type="hidden" id="exception-id-modal" value="${exception.exceptionId}"/>
 </c:forEach>
 <div class="blank"></div>
 <div class="buttonLine">
@@ -43,4 +43,5 @@
 		<a class="cancel">Cancel</a>
 		<a class="buttonPrimary delete-global-exception-confirm">Yes, Delete</a>
 	</div>
+</div>
 </div>
