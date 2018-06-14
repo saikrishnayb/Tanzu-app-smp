@@ -357,7 +357,7 @@ public class AppConfigController {
         return mav;
     }
 
-
+    @SmcSecurity(securityFunction = {SecurityFunction.LOADSHEET_MANAGEMENT})
     @RequestMapping("/loadsheet-management")
     public ModelAndView getLoadsheetManagementDetails(){
         ModelAndView mav = new ModelAndView("/admin-console/app-config/loadsheet-management");
@@ -367,6 +367,7 @@ public class AppConfigController {
         return mav;
     }
 
+    @SmcSecurity(securityFunction = {SecurityFunction.LOADSHEET_RULES})
     @RequestMapping("/loadsheet-rule")
     public ModelAndView getLoadsheetRuleDetails(){
         ModelAndView mav = new ModelAndView("/admin-console/app-config/loadsheet-rule");
@@ -375,6 +376,8 @@ public class AppConfigController {
 
         return mav;
     }
+    
+    @SmcSecurity(securityFunction = {SecurityFunction.LOADSHEET_SEQUENCES})
     @RequestMapping("/loadsheet-sequence")
     public ModelAndView getLoadsheetSequences(){
         ModelAndView mav = new ModelAndView("/admin-console/app-config/loadsheet-sequence");
@@ -387,6 +390,7 @@ public class AppConfigController {
 
 
     /*==============Create Rule===================*/
+    @SmcSecurity(securityFunction = {SecurityFunction.LOADSHEET_RULES})
     @RequestMapping("/load-create-rule")
     public ModelAndView getComponents(@RequestParam("requestedFrom") String requestedFrom){
         ModelAndView mav = new ModelAndView("/admin-console/app-config/create-rule");
@@ -407,12 +411,15 @@ public class AppConfigController {
     }
 
     /*=========Go back From Create Rule screen to Rules screen or configure rule screen*=======*/
+    @SmcSecurity(securityFunction = {SecurityFunction.LOADSHEET_RULES})
     @RequestMapping("/goBack-createRule")
     public ModelAndView goBackFromCreateRule(HttpServletRequest request,@RequestParam(value="requestedFrom",required=false) String requestedFrom,@RequestParam(value="componentId",required=false) String componentId){
 
         return redirectFromCreateRule(request, requestedFrom,componentId);
     }
+    
     /* =============== Create New Rule ==================*/
+    @SmcSecurity(securityFunction = {SecurityFunction.LOADSHEET_RULES})
     @RequestMapping(value={"/create-rule"})
     public ModelAndView insertRuleDetails(HttpServletRequest request,RuleMaster ruleMaster){
 
@@ -484,6 +491,7 @@ public class AppConfigController {
     }
 
     /* ================Edit Rule =======================*/
+    @SmcSecurity(securityFunction = {SecurityFunction.LOADSHEET_RULES})
     @RequestMapping(value={"/edit-rule"})
     public ModelAndView getRuleDefinitions(HttpServletRequest request,int ruleId,@RequestParam("requestedFrom") String requestedFrom) {
 
@@ -515,6 +523,7 @@ public class AppConfigController {
     }
 
     /* ================Update Rule =======================*/
+    @SmcSecurity(securityFunction = {SecurityFunction.LOADSHEET_RULES})
     @RequestMapping(value={"/update-rule"})
     public String updateRuleDetails(RuleMaster ruleMaster){
 
@@ -558,6 +567,7 @@ public class AppConfigController {
     }
 
     /* ================== load sheet sequence ================== */
+    @SmcSecurity(securityFunction = {SecurityFunction.LOADSHEET_SEQUENCES})
     @RequestMapping(value={"/get-loadsheet-sequence"})
     public ModelAndView getLoadsheetSequencePage(@RequestParam("categoryId") String categoryId,@RequestParam("category") String category,@RequestParam(value="type") String type,@RequestParam(value="viewMode") String viewMode) {
         ModelAndView mav = new ModelAndView("/admin-console/app-config/loadsheet-sequence");
@@ -585,6 +595,7 @@ public class AppConfigController {
     }
 
     /* ================ Create New Loadsheet Sequence ===============*/
+    @SmcSecurity(securityFunction = {SecurityFunction.LOADSHEET_SEQUENCES})
     @RequestMapping(value={"/open-create-sequence"})
     public ModelAndView loadCreateLoadSheetSequence(LoadsheetSequenceMaster seqMaster,HttpServletRequest request){
         ModelAndView mav=new ModelAndView("/admin-console/app-config/create-loadsheet-sequence");
@@ -624,6 +635,7 @@ public class AppConfigController {
     }
 
     /* ================= Save Loadsheet Sequence ==================*/
+    @SmcSecurity(securityFunction = {SecurityFunction.LOADSHEET_SEQUENCES})
     @RequestMapping(value={"/create-sequence"})
     public ModelAndView saveLoadSheetSequence(LoadsheetSequenceMaster seqMaster){
 
@@ -632,6 +644,7 @@ public class AppConfigController {
     }
 
     /* ==================== to open the Edit loadsheet sequence page==================*/
+    @SmcSecurity(securityFunction = {SecurityFunction.LOADSHEET_SEQUENCES})
     @RequestMapping(value={"/open-edit-sequence"})
     public ModelAndView editLoadSheetSequence(@RequestParam(value="seqMasterId") int seqMasterId,@RequestParam(value="action") String action,@RequestParam(value="category") String category,@RequestParam(value="type") String type,
             @RequestParam(value="viewMode") String viewMode,HttpServletRequest request){
@@ -662,6 +675,7 @@ public class AppConfigController {
     }
 
     /* ================= Update the loadsheet seqeuncing details =================*/
+    @SmcSecurity(securityFunction = {SecurityFunction.LOADSHEET_SEQUENCES})
     @RequestMapping(value={"/update-sequence"})
     public ModelAndView updateLoadsheetSequencingDetails(LoadsheetSequenceMaster seqMaster,HttpServletRequest request){
 

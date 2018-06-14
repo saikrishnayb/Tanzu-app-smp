@@ -22,8 +22,6 @@ public @interface SmcSecurity {
      * exhaustive list.
      */
     public static enum SecurityFunction {
-
-
         ADMIN_CONSOLE_TAB,
 
         MANAGE_USERS,
@@ -46,8 +44,10 @@ public @interface SmcSecurity {
         MANAGE_DELAY_REASONS,
         MANAGE_TC,
         UPLOAD_EXCEL,
-
-        VENDOR_FILTER;
+        VENDOR_FILTER,
+        LOADSHEET_MANAGEMENT, 
+        LOADSHEET_RULES, 
+        LOADSHEET_SEQUENCES;
 
         public static SecurityFunction findByName(String name) {
             for (SecurityFunction securityFunction : values())
