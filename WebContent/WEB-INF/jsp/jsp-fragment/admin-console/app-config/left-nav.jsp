@@ -5,10 +5,16 @@
 	 <div class="leftNavGroup"><a href="${pageContext.request.contextPath}/admin-console/app-config/subject-management.htm" id="left-nav-subject-management" onclick="javascript:loadProcessImage();">Subject Management</a></div>
 	</tl:isAuthorized>
 	
-	<tl:isAuthorized tabName="Admin Console" secFunction="MANAGE_LOADSHEET_RULES">
+	<tl:isAuthorized tabName="Admin Console" secFunction="LOADSHEET_MANAGEMENT">
 		<div class="leftNavGroup"><a href="${pageContext.request.contextPath}/admin-console/app-config/loadsheet-management.htm" id="left-nav-loadsheet-management" onclick="javascript:loadProcessImage();">Loadsheet Management</a></div>
-		<!-- This link will be removed once load sheet mangement page is ready -->
+	</tl:isAuthorized>
+	
+	<!-- This link will be removed once load sheet mangement page is ready -->
+	<tl:isAuthorized tabName="Admin Console" secFunction="LOADSHEET_RULES">
 		<div ><a href="${pageContext.request.contextPath}/admin-console/app-config/loadsheet-rule.htm" id="left-nav-loadsheet-rules" onclick="javascript:loadProcessImage();">Loadsheet Rules</a></div>
+	</tl:isAuthorized>
+	
+	<tl:isAuthorized tabName="Admin Console" secFunction="LOADSHEET_SEQUENCES">
 		<div ><a href="${pageContext.request.contextPath}/admin-console/app-config/loadsheet-sequence.htm" id="left-nav-loadsheet-sequence" onclick="javascript:loadProcessImage();">Loadsheet Sequences</a></div>
 	</tl:isAuthorized>	
 	

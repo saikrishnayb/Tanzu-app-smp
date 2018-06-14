@@ -7,7 +7,26 @@
 	<ul style="margin-top:4px">
 		<li style ="display: table-cell;">
 			<ul>
-				<li><a id="tab-security" href="${pageContext.request.contextPath}/admin-console/security/navigate-security.htm" onclick="javascript:loadProcessImage();">Security</a></li>
+			
+				<c:set var="hasSecurityTab" value="0"></c:set>
+				<tl:isAuthorized tabName="Admin Console" secFunction="PENSKE_USERS">
+					<c:set var="hasSecurityTab" value="1"></c:set>
+				</tl:isAuthorized>
+				<tl:isAuthorized tabName="Admin Console" secFunction="VENDOR_USERS">
+					<c:set var="hasSecurityTab" value="1"></c:set>
+				</tl:isAuthorized>				
+				<tl:isAuthorized tabName="Admin Console" secFunction="MANAGE_ROLES">
+					<c:set var="hasSecurityTab" value="1"></c:set>
+				</tl:isAuthorized>		
+				<tl:isAuthorized tabName="Admin Console" secFunction="MANAGE_VENDORS">
+					<c:set var="hasSecurityTab" value="1"></c:set>
+				</tl:isAuthorized>		
+				<tl:isAuthorized tabName="Admin Console" secFunction="MANAGE_ORG">
+					<c:set var="hasSecurityTab" value="1"></c:set>
+				</tl:isAuthorized>		
+				<c:if test="${hasSecurityTab == '1'}">
+					<li><a id="tab-security" href="${pageContext.request.contextPath}/admin-console/security/navigate-security.htm" onclick="javascript:loadProcessImage();">Security</a></li>
+				</c:if>				
 				
 				<!--  Check if user has access to at least one lef nav inside Components -->
 				<c:set var="hasComponents" value="0"></c:set>
