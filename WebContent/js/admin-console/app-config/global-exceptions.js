@@ -148,6 +148,11 @@ $(document).ready(function() {
 	$(".fuzzySearch").on('input',function(){
 		$exceptionTable.fnDraw();
 	 });
+	
+	$(".querySearch").keypress(function(e) {
+		  if(e.which === 13 && !$('.reset').hasClass('buttonDisabled'))
+			  $("#searchException").trigger('click');
+	});
 
 	function toggleClear(){
 		var compName = $("#componentNameSearch").val();

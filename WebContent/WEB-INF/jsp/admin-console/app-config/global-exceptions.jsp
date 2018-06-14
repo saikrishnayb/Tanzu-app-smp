@@ -24,14 +24,14 @@
 						<label class="labelName CustomLabel" >Vendor Name:</label>
 						<input name="vendorNameSearch" class="fuzzySearch" id="vendorNameSearch" value="<c:out value="${searchedData.vendorNameSearch}"/>"  tabindex="2"></input>
 						<label class="labelName  CustomLabel">Unit #: </label>
-						<input name="unitNumberSearch" maxlength="10" id="unitNumSearch" value="<c:out value="${searchedData.unitNumberSearch}"/>" tabindex="3"></input>
+						<input name="unitNumberSearch" maxlength="10" class="querySearch" id="unitNumSearch" value="<c:out value="${searchedData.unitNumberSearch}"/>" tabindex="3"></input>
 						<label class="labelName CustomLabel">PO #:</label>
-						<input  name="poNumberSearch" maxlength="7" id="poSearch" 
+						<input  name="poNumberSearch" class="querySearch" maxlength="7" id="poSearch" 
 						<c:if test="${searchedData.poNumberSearch ne 0}">	
 						value="<c:out value="${searchedData.poNumberSearch}"/>"
 						</c:if> tabindex="4"/>
 						<a class="buttonSecondary  reset buttonSize buttonDisabled" href="#" tabindex="5">Clear</a>&nbsp;
-						<a class="buttonPrimary edit-alert buttonSize" unitNumSearch="${searchedData.unitNumberSearch}" poSearch= "${searchedData.poNumberSearch}" id="searchException" tabindex="6">Search</a>
+						<a class="buttonPrimary edit-alert buttonSize querySearch" unitNumSearch="${searchedData.unitNumberSearch}" poSearch= "${searchedData.poNumberSearch}" id="searchException" tabindex="6">Search</a>
 					</div>
 					 <div class="basicValidation displayNone floatRight errorText errorDisplay">
 						<img src="${commonStaticUrl}/images/warning.png"></img>
