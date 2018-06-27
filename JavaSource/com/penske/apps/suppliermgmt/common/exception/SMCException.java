@@ -45,7 +45,7 @@ public class SMCException extends Exception{
 	 */
 	public SMCException(int errorCode,
 			final String errorMessage, final Exception exception) {
-		super();
+		super(errorMessage, exception);
 		errorDetails = new ErrorModel(errorCode, errorMessage, exception);
 	}
 
