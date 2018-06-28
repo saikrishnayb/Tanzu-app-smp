@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -192,7 +193,8 @@ public class ComponentsController {
 
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_TEMPLATE)
     @RequestMapping(value ="/create-modify-template-page")
-    public ModelAndView getCreateModifyTemplatePage(@RequestParam("isCreatePage") Boolean isCreatePage,@RequestParam(value="templateId") int templateId,@RequestParam(value="tempCompId",required = false) Integer tempCompId, HttpSession session) {
+    public ModelAndView getCreateModifyTemplatePage(@RequestParam("isCreatePage") Boolean isCreatePage,@RequestParam(value="templateId") int templateId,
+    		@RequestParam(value="tempCompId",required = false) Integer tempCompId,@RequestParam(value="toggleSelection",required = false) String toggleSelection, HttpSession session) {
         ModelAndView mav = new ModelAndView("/admin-console/components/create-edit-template");
         HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
         mav.addObject("currentUser", currentUser);
@@ -210,8 +212,10 @@ public class ComponentsController {
             comp=componentService.getTemplateComponentById(comp,templateId);
             mav.addObject("isCreatePage",false);
         }
+        toggleSelection = StringUtils.isNotEmpty(toggleSelection)?toggleSelection:"SELECTED";
         mav.addObject("allComponent",comp);
         mav.addObject("tempCompId",tempCompId);
+        mav.addObject("toggleSelection",toggleSelection);
         return mav;
     }
     

@@ -4,6 +4,7 @@ var $templateTable = $("#template-table");
 var $templateModal = $("#template-modal");
 var $ruleModal = $('#component-rule-popup');
 var $selectedTemplateType =  $('#selectedTemplateType'); // Either Active OR ALL templates
+var $toggleSelection =  $('#toggleSelection'); // components display criteria
 var $getAlertModal = $('#component-associatedToRules-alert-popup'); //Alert popup when component unchecked Available for Rules 
 var $errorModal=$('#error-modal');
 ModalUtil.initializeModal($templateModal);
@@ -38,7 +39,7 @@ $('#poCatAssID').on('change', function(event, forceContinue) {
   $('.save').addClass('buttonDisabled');
   processingImageAndTextHandler('visible','Loading data...');
   
-  window.location.href = './create-modify-template-page.htm?isCreatePage=false&templateId=' + selectedTemplate;
+  window.location.href = './create-modify-template-page.htm?isCreatePage=false&templateId='+selectedTemplate+'&toggleSelection='+toggleSelection;
   
 });
 
@@ -73,7 +74,7 @@ $templateTable.on('click', '.sequence-edit', function() {
   
 });
 
-var toggleSelection="ALL";
+var toggleSelection=$toggleSelection.val();
 var templateSelection=$selectedTemplateType.val();
 $(document).ready(function() {
 	selectCurrentNavigation("tab-components", "left-nav-template");
@@ -447,14 +448,14 @@ $(document).ready(function() {
                 return true;
          }
   });
-
- 	if(isCreateOrEdit !=null || isCreateOrEdit !=undefined){
- 		if(isCreateOrEdit==='true'){
- 			$showAll.trigger( "click" );
- 		}else{
- 			 $showSelected.trigger( "click" );
- 		}
- 	}
+    // To retain the filtered criteria
+	if(toggleSelection == "ALL" || isCreateOrEdit == "true"){
+		$showAll.trigger( "click" );
+	 }else if(toggleSelection == "SELECTED"){
+		$showSelected.trigger( "click" );
+	 }else{
+		$showRules.trigger( "click" );
+	 }
  	
  	$templateTable.dataTableExt.afnFiltering.push(function (oSettings, aData, iDataIndex) {
 		 if(templateSelection=="ACTIVE"){
@@ -527,8 +528,8 @@ function createOrUpdate(isCreate){
 	        type: 'POST',
 	        success: function(status){
 			        	if($.isNumeric(status)){
-				        	 processingImageAndTextHandler('visible','Loading data...');
-				        	 location.assign('./create-modify-template-page.htm?isCreatePage=false&templateId=' + status);
+			        		 processingImageAndTextHandler('visible','Loading data...');
+				        	 location.assign('./create-modify-template-page.htm?isCreatePage=false&templateId='+status+'&toggleSelection='+toggleSelection);
 			        	}else{
 			        		$errorModal.text(status);
 							$errorModal.dialog("option", "title", "Error");
@@ -647,7 +648,7 @@ $ruleModal.dialog({
                   .click(function(e) {
                 	  processingImageAndTextHandler('visible','Loading data...');
                 	  var templateId = $("#template-id").val();
-                	  location.assign('./create-modify-template-page.htm?isCreatePage=false&templateId=' + templateId);
+                	  location.assign('./create-modify-template-page.htm?isCreatePage=false&templateId='+templateId+'&toggleSelection='+toggleSelection);
                	   	  return false;
            });
        }

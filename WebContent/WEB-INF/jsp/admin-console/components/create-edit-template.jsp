@@ -53,6 +53,7 @@
 	</div>
 	<input type="hidden" id="common-static-url" value="${commonStaticUrl}"/>
 	<input type="hidden" id="tempCompId" value="${tempCompId}"/>
+	<input type="hidden" id="toggleSelection" value="${toggleSelection}"/>
 </body>
 <!-- Scripts -->
 <script src="${context}/js/global/modal-util.js" type="text/javascript"></script>
