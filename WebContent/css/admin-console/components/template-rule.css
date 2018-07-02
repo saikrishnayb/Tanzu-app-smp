@@ -125,3 +125,27 @@ td .icon {
   margin-top: 3px;
   margin-right: 3px;
 }
+.paging_full_numbers a.paginate_button.current {
+    background-color: #FFFFFF !important;
+    font-weight: bold !important;
+}
+.paging_full_numbers a.paginate_button, .paging_full_numbers a.paginate_button.current {
+    border: 0px solid #aaa;
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    border-radius: 0px;
+    padding: 2px 5px;
+    margin: 0 3px;
+    color: #333 !important;
+}
+a.paginate_button.previous.disabled, a.paginate_button.first.disabled, a.paginate_button.next.disabled, a.paginate_button.last.disabled {
+    text-decoration: none !important;
+    color: black !important;
+    cursor: auto !important;
+}
+.paging_full_numbers a.paginate_button {
+    background-color: #FFFFFF;
+    cursor: pointer;
+    text-decoration: underline;
+    color: #2D73CF !important;
+}
