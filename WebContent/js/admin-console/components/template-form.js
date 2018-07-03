@@ -38,7 +38,7 @@ $('#poCatAssID').on('change', function(event, forceContinue) {
   
   $('.save').addClass('buttonDisabled');
   processingImageAndTextHandler('visible','Loading data...');
-  
+  localStorage.setItem("retainPagination", "NO");
   window.location.href = './create-modify-template-page.htm?isCreatePage=false&templateId='+selectedTemplate+'&toggleSelection='+toggleSelection;
   
 });
@@ -148,7 +148,7 @@ $(document).ready(function() {
 		"aaSorting": [[ 1, "asc" ]], //default sort column
 		"bPaginate": true, //enable pagination
 		"bAutoWidth": false, //cray cray
-		//"bStateSave": true,
+		"bStateSave": true,
 		"bLengthChange": false, //enable change of records per page, not recommended
 		"bFilter": true, //Allows dynamic filtering of results, do not enable if using ajax for pagination
 		"bSort": true, //Allow sorting by column header
@@ -223,6 +223,7 @@ $(document).ready(function() {
 	});
 	
 	$saveTemplateEdit.on("click",function(){
+		 localStorage.setItem("retainPagination", "YES");
 		createOrUpdate(false);
 	});
 	
@@ -372,6 +373,7 @@ $(document).ready(function() {
 	//edit modal
 	$templateTable.on("click", ".edit-template", function(){
 		var $this =  $(this);
+		 localStorage.setItem("retainPagination", "NO");
 		var templateID = $this.closest('.template-row').find('.template-id').val();
 		location.assign('./create-modify-template-page.htm?isCreatePage=false&templateId=' + templateID);
 	});
@@ -384,7 +386,8 @@ $(document).ready(function() {
 		 $showRules.css("color", "");
 		 $showRules.css("font-weight", "normal");
 		 toggleSelection="SELECTED";
-		 $templateComponenttable.fnDraw();
+		 //false value for fnDraw function will retain pagination.
+		 $templateComponenttable.fnDraw(localStorage.getItem("retainPagination")=='NO'); 
 	 });
 	 
 	 $showAll.click(function(e){
@@ -395,7 +398,7 @@ $(document).ready(function() {
 		 $showRules.css("color", "");
 		 $showRules.css("font-weight", "normal");
 		 toggleSelection="ALL";
-		 $templateComponenttable.fnDraw();
+		 $templateComponenttable.fnDraw(localStorage.getItem("retainPagination")=='NO');
 	 });
 	 
 	 $showRules.click(function(e){
@@ -406,7 +409,7 @@ $(document).ready(function() {
 		 $showAll.css("color", "");
 		 $showAll.css("font-weight", "normal");
 		 toggleSelection="RULES";
-		 $templateComponenttable.fnDraw();
+		 $templateComponenttable.fnDraw(localStorage.getItem("retainPagination")=='NO');
 	 });
 	 
 	 $showAllTemplates.click(function(e){
@@ -646,6 +649,7 @@ $ruleModal.dialog({
            $(this).closest('div.ui-dialog')
                   .find('.ui-dialog-titlebar-close')
                   .click(function(e) {
+                	  localStorage.setItem("retainPagination", "YES");
                 	  processingImageAndTextHandler('visible','Loading data...');
                 	  var templateId = $("#template-id").val();
                 	  location.assign('./create-modify-template-page.htm?isCreatePage=false&templateId='+templateId+'&toggleSelection='+toggleSelection);
