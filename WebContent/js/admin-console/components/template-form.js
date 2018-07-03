@@ -391,6 +391,10 @@ $(document).ready(function() {
 	 });
 	 
 	 $showAll.click(function(e){
+	     //if event is manual click don't retain pagination.
+		 if (!(e.originalEvent === undefined )) {
+			 localStorage.setItem("retainPagination", "NO");
+		  }
 		 $(this).css("color", "blue");
 		 $(this).css("font-weight", "bold");
 		 $showSelected.css("color", "");
@@ -402,6 +406,9 @@ $(document).ready(function() {
 	 });
 	 
 	 $showRules.click(function(e){
+		 if (!(e.originalEvent === undefined )) {
+			 localStorage.setItem("retainPagination", "NO");
+		  }
 		 $(this).css("color", "blue");
 		 $(this).css("font-weight", "bold");
 		 $showSelected.css("color", "");
@@ -413,6 +420,9 @@ $(document).ready(function() {
 	 });
 	 
 	 $showAllTemplates.click(function(e){
+		 if (!(e.originalEvent === undefined )) {
+			 localStorage.setItem("retainPagination", "NO");
+		  }
 		 $(this).css("color", "blue");
 		 $(this).css("font-weight", "bold");
 		 $showActiveTemplates.css("color", "");
@@ -459,7 +469,7 @@ $(document).ready(function() {
 	 }else{
 		$showRules.trigger( "click" );
 	 }
- 	
+	localStorage.setItem("retainPagination", "NO");
  	$templateTable.dataTableExt.afnFiltering.push(function (oSettings, aData, iDataIndex) {
 		 if(templateSelection=="ACTIVE"){
 			 var row = $($templateTable.dataTable().fnGetNodes()[iDataIndex]);
