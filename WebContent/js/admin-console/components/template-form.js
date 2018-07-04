@@ -38,7 +38,6 @@ $('#poCatAssID').on('change', function(event, forceContinue) {
   
   $('.save').addClass('buttonDisabled');
   processingImageAndTextHandler('visible','Loading data...');
-  localStorage.setItem("retainPagination", "NO");
   window.location.href = './create-modify-template-page.htm?isCreatePage=false&templateId='+selectedTemplate+'&toggleSelection='+toggleSelection;
   
 });
@@ -223,7 +222,6 @@ $(document).ready(function() {
 	});
 	
 	$saveTemplateEdit.on("click",function(){
-		 localStorage.setItem("retainPagination", "YES");
 		createOrUpdate(false);
 	});
 	
@@ -373,7 +371,6 @@ $(document).ready(function() {
 	//edit modal
 	$templateTable.on("click", ".edit-template", function(){
 		var $this =  $(this);
-		 localStorage.setItem("retainPagination", "NO");
 		var templateID = $this.closest('.template-row').find('.template-id').val();
 		location.assign('./create-modify-template-page.htm?isCreatePage=false&templateId=' + templateID);
 	});
@@ -391,10 +388,6 @@ $(document).ready(function() {
 	 });
 	 
 	 $showAll.click(function(e){
-	     //if event is manual click don't retain pagination.
-		 if (!(e.originalEvent === undefined )) {
-			 localStorage.setItem("retainPagination", "NO");
-		  }
 		 $(this).css("color", "blue");
 		 $(this).css("font-weight", "bold");
 		 $showSelected.css("color", "");
@@ -406,9 +399,6 @@ $(document).ready(function() {
 	 });
 	 
 	 $showRules.click(function(e){
-		 if (!(e.originalEvent === undefined )) {
-			 localStorage.setItem("retainPagination", "NO");
-		  }
 		 $(this).css("color", "blue");
 		 $(this).css("font-weight", "bold");
 		 $showSelected.css("color", "");
@@ -420,9 +410,6 @@ $(document).ready(function() {
 	 });
 	 
 	 $showAllTemplates.click(function(e){
-		 if (!(e.originalEvent === undefined )) {
-			 localStorage.setItem("retainPagination", "NO");
-		  }
 		 $(this).css("color", "blue");
 		 $(this).css("font-weight", "bold");
 		 $showActiveTemplates.css("color", "");
@@ -541,6 +528,7 @@ function createOrUpdate(isCreate){
 	        type: 'POST',
 	        success: function(status){
 			        	if($.isNumeric(status)){
+			        	     localStorage.setItem("retainPagination", "YES");
 			        		 processingImageAndTextHandler('visible','Loading data...');
 				        	 location.assign('./create-modify-template-page.htm?isCreatePage=false&templateId='+status+'&toggleSelection='+toggleSelection);
 			        	}else{
