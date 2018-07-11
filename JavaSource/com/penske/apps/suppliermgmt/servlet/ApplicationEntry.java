@@ -1,6 +1,7 @@
 package com.penske.apps.suppliermgmt.servlet;
 
 import java.io.IOException;
+import java.util.Enumeration;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -60,6 +61,7 @@ public class ApplicationEntry extends HttpServlet {
 	/**
 	 * Destruction of the servlet. <br>
 	 */
+	@Override
 	public void destroy() {
 		super.destroy(); // Just puts "destroy" string in log
 		// Put your code here
@@ -67,18 +69,34 @@ public class ApplicationEntry extends HttpServlet {
 
 	private static final Logger LOGGER = Logger.getLogger(ApplicationEntry.class);
 
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		this.doPost(request, response);
 	}
  
 
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
 	IOException {
 		String strSSO = null;
 		String forwardPage 	= null;		
-		CPBLDAPSessionInfo oLdapSession = null;	
+		CPBLDAPSessionInfo oLdapSession = null;
 		try
 		{
+
+			LOGGER.info("Request Headers:");
+		    Enumeration names = request.getHeaderNames();
+		    while (names.hasMoreElements()) {
+		      String name = (String) names.nextElement();
+		      Enumeration values = request.getHeaders(name);
+		      if (values != null) {
+		        while (values.hasMoreElements()) {
+		          String value = (String) values.nextElement();
+		          LOGGER.info(name + ": " + value);
+		        }
+		      }
+		    }
+			
 			//Get the session associated with this request
 			HttpSession session = request.getSession( false );
 			
@@ -127,6 +145,7 @@ public class ApplicationEntry extends HttpServlet {
 	 *
 	 * @throws ServletException if an error occurs
 	 */
+	@Override
 	public void init() throws ServletException {
 		// Put your code here
 	}
