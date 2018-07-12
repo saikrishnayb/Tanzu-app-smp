@@ -41,6 +41,7 @@ public class CommonUtils {
 				 key.append(components.isRequired());
 				 key.append(components.isDispOtherPO());
 				 key.append(components.isExcel());
+				 key.append(components.isForRules());
 				componentNameList.add(key.toString());
 			}
 			Collections.sort(componentNameList);
