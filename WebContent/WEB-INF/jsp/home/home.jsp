@@ -101,6 +101,12 @@
 													<c:set var="isValidAlert" value="Y"/>
 												</tl:isAuthorized>
 											</c:when>
+											<c:when test="${alert.alertKey eq 'ALRT_PROD_MISSING_INFO' or alert.alertKey eq 'ALRT_PROD_DELV_MISSING_INFO'}">
+												<c:set var="isValidAlert" value="N"/>						
+												<tl:isAuthorized tabName="Production" secFunction="PROVIDE_MISSING_INFORMATION">
+													<c:set var="isValidAlert" value="Y"/>
+												</tl:isAuthorized>
+											</c:when>
 											<c:otherwise>
 												<c:set var="isValidAlert" value="Y"/>
 											</c:otherwise>
