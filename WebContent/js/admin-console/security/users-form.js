@@ -842,6 +842,7 @@ $('#signature-add').on('click', function(){
 		$("#first-name").val($("#fnameM").val());
 		$("#last-name").val($("#lnameM").val());
 		$("#phone").val($("#phoneM").val());
+		$("#email").val($("#emailM").val());
 		closeModal($ldapUserinfoModal);
 	});
 	
