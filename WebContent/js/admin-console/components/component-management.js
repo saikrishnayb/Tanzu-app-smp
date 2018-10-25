@@ -6,17 +6,22 @@ $componentManagementTable.on('click', '.visible-component-check', function() {
   var checkbox = this;
   var componentId = $(checkbox).closest('tr').attr('data-component-id');
   var componentGroupId = $(checkbox).closest('tr').attr('data-component-group-id');
-
-  //window.parent.showLoading();
-
   var $copyCorpComponentPromise = $.post('copy-corp-component.htm', {componentId : componentId, componentGroupId: componentGroupId});
 
   $copyCorpComponentPromise.done(function() {
-    checkbox.disabled = true;
-  }).always(function() {
-    //window.parent.hideLoading();
+    var allowDuplicateCheckBox = $(checkbox).closest('tr').has('.allow-duplicate-check').find(':checkbox');
+    allowDuplicateCheckBox.prop('disabled',false);
+    $(checkbox).prop('disabled',true);
   });
+});
 
+
+$componentManagementTable.on('click', '.allow-duplicate-check', function() {
+	  var checkbox = this;
+	  var isAllowDuplicateChecked = $(checkbox).prop('checked');
+	  var componentId = $(checkbox).closest('tr').attr('data-component-id');
+	  var componentGroupId = $(checkbox).closest('tr').attr('data-component-group-id');
+	  var $allowDuplictaeComponentPromise = $.post('allow-duplicate-components.htm', {componentId : componentId, componentGroupId: componentGroupId,allowDuplicates:isAllowDuplicateChecked});
 });
 
 /******* Initialization *******************************************************/

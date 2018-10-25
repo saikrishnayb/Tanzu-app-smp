@@ -510,7 +510,8 @@ AND OVR_TYPE=#{overrideType} AND CONTROLLING_COMPONENT_ID=#{controllingComponent
   		   SGF.COMPONENT_GROUP_ID,
                SGF.COMPONENT_TYPE, 
                SGF.DISPLAY_SEQUENCE, 
-               CASE WHEN CID.COMPONENT_ID IS NULL THEN 'FALSE' ELSE 'TRUE' END AS VISIBLE 
+               CASE WHEN CID.COMPONENT_ID IS NULL THEN 'FALSE' ELSE 'TRUE' END AS VISIBLE,
+               CASE WHEN CID.ALLOW_DUPLICATES = 'Y' THEN 'TRUE' ELSE 'FALSE' END AS allowDuplicates 
           FROM CORP.VEHCMPSGF SGF
      LEFT JOIN SMC.SMC_COMPONENT_INFO_DETAILS CID
   		   ON SGF.COMPONENT_ID = CID.COMPONENT_ID
@@ -577,5 +578,17 @@ AND OVR_TYPE=#{overrideType} AND CONTROLLING_COMPONENT_ID=#{controllingComponent
            FROM CORP.VEHCMPGRF
           WHERE COMPONENT_GROUP_ID = #{groupId}
   </insert>
+  
+   <update id="allowDuplicateComponents" >
+		UPDATE SMC.SMC_COMPONENT_INFO_DETAILS CID 
+		SET 
+		<choose>
+			<when test="allowDuplicates == true">CID.ALLOW_DUPLICATES = 'Y'</when>
+			<otherwise>CID.ALLOW_DUPLICATES = 'N'</otherwise>
+	          </choose> 
+		WHERE 
+		CID.COMPONENT_ID= #{componentId} AND 
+		CID.COMP_GROUP_ID = #{componentGroupId}
+	</update>
     
 </mapper>

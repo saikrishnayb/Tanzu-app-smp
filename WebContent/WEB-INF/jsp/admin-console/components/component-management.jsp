@@ -25,6 +25,7 @@
                 <th>Sub-Group</th>
                 <th>Sub Component</th>
                 <th>Visible</th>
+                <th>Allow Duplicates</th>
               </tr>
             </thead>
             <tbody>
@@ -35,6 +36,9 @@
                   <td>${component.subComponentName}</td>
                   <td>
                     <input type="checkbox" class="visible-component-check" <c:if test="${component.visible}">checked disabled</c:if>>
+                  </td>
+                  <td>
+                    <input type="checkbox" class="allow-duplicate-check" <c:if test="${component.allowDuplicates}">checked</c:if> <c:if test="${component.visible == false}">disabled</c:if>>
                   </td>
                 </tr>
               </c:forEach>

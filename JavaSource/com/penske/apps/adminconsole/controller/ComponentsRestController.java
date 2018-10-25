@@ -609,8 +609,15 @@ public class ComponentsRestController {
     @RequestMapping(value = "copy-corp-component")
     @ResponseBody
     public void copyCorpComponent(@RequestParam("componentId") int componentId, @RequestParam("componentGroupId") int componentGroupId) {
-
-        componentService.copyCorpComponentRow(componentId, componentGroupId);
+    		componentService.copyCorpComponentRow(componentId, componentGroupId);
+    }
+    
+    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_COMPONENTS)
+    @RequestMapping(value = "allow-duplicate-components")
+    @ResponseBody
+    public void allowDuplicateComponents(@RequestParam("componentId") int componentId, @RequestParam("componentGroupId") int componentGroupId,
+    		@RequestParam("allowDuplicates") boolean allowDuplicates) {
+    		componentService.allowDuplicateComponents(componentId, componentGroupId,allowDuplicates);
     }
 
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_TEMPLATE)

@@ -10,6 +10,7 @@ public class Component {
 	private String componentType;
 	private Integer displaySequence;
 	private boolean visible;
+	private boolean allowDuplicates;
 	 
 	public String getComponentGroup() {
 		return componentGroup;
@@ -59,6 +60,12 @@ public class Component {
 	}
 	public void setVisible(boolean visible) {
 		this.visible = visible;
+	}
+	public boolean isAllowDuplicates() {
+		return allowDuplicates;
+	}
+	public void setAllowDuplicates(boolean allowDuplicates) {
+		this.allowDuplicates = allowDuplicates;
 	}
 	@Override
 	public String toString() {

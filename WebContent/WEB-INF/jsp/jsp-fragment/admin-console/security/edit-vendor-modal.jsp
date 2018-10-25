@@ -108,8 +108,8 @@
 	</select>
 	
 	<div class="floatRight button-div clear-both">
-		<a tabindex=16 class="buttonPrimary floatRight clear-left save">Save</a>
-		<a tabindex=15 class="secondaryLink floatRight cancel">Cancel</a>
+		<a tabindex=15 class="secondaryLink  cancel">Cancel</a>
+		<a tabindex=16 class="buttonPrimary  save">Save</a>
 		<div class="error floatRight hidden">
 			<img src="${commonStaticUrl}/images/warning.png">
 			<span class="errorMsg"></span>

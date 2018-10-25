@@ -61,6 +61,8 @@ public interface ComponentService {
     public void copyCorpComponentRow(int componentId, int componentGroupId);
 
 	public List<LoadSheetComponentDetails> getTemplateComponentByTempId(int templateId);
+	
+	public void allowDuplicateComponents(int componentId,int componentGroupId,boolean allowDuplicates);
 
 //COMPONENT VISIBILITY OVERRIDES -- End
 		

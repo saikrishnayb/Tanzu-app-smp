@@ -260,4 +260,10 @@ public class DefaultComponentService implements ComponentService {
     public List<LoadSheetComponentDetails> getTemplateComponentByTempId(int templateId){
     	return componentDao.getTemplateComponentByTempId(templateId);
     }
+    
+    @Override
+    public void allowDuplicateComponents(int componentId,int componentGroupId,boolean allowDuplicates){
+       
+        componentDao.allowDuplicateComponents(componentId,componentGroupId,allowDuplicates);
+    }
 }
