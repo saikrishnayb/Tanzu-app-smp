@@ -28,10 +28,10 @@
 			<div class="row">
 				<div class="col-xs-6">
 					<h1>Po Category</h1>
-					<span class="floatRight addRow" style="display: none"> <a
-						class="add-category">Add PoCategory</a> <img
-						src="${commonStaticUrl}/images/add.png"
-						class="centerImage handCursor" alt="Add Row" />
+					<span class="floatRight addRow" style="display: none"> 
+						<a class="add-category">Add PoCategory
+							<img src="${commonStaticUrl}/images/add.png" class="centerImage handCursor" alt="Add Row" />
+						</a>
 					</span>
 					<table class="category-table" id="po-category-table">
 						<thead>
@@ -76,9 +76,10 @@
 				<div class="col-xs-6">
 					<h1>Sub Category</h1>
 
-					<span class="floatRight addRow"> <a class="add-sub-category">Add
-							Sub-Category</a> <img src="${commonStaticUrl}/images/add.png"
-						class="centerImage handCursor" alt="Add Row" />
+					<span class="floatRight addRow"> 
+						<a class="add-sub-category">Add Sub-Category
+							<img src="${commonStaticUrl}/images/add.png" class="centerImage handCursor" alt="Add Row" /> 
+						</a> 
 					</span>
 
 					<table class="category-table" id="sub-category-table">

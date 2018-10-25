@@ -23,8 +23,9 @@
 					<div class="table-div" >
 						
 						<span class="floatRight addRow">
-							<a  class="add-category-association">Add Association</a>
-							<img src="${commonStaticUrl}/images/add.png" class="centerImage handCursor" alt="Add Row"/>
+							<a  class="add-category-association">Add Association
+								<img src="${commonStaticUrl}/images/add.png" class="centerImage handCursor" alt="Add Row"/>
+							</a>
 						</span>
 						<table id="category-association-table" >
 							<thead>

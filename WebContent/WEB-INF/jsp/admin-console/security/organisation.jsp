@@ -61,8 +61,9 @@
 			</div>
 			<div class="full-width">
 				<span class="floatRight addRow">
-					<a href="${pageContext.request.contextPath}/admin-console/security/create-org-page.htm">Create Org</a>
-					<img src="${commonStaticUrl}/images/add.png" class="centerImage handCursor" alt="Add Row"/>
+					<a href="${pageContext.request.contextPath}/admin-console/security/create-org-page.htm">Create Org
+						<img src="${commonStaticUrl}/images/add.png" class="centerImage handCursor" alt="Add Row"/>
+					</a>
 				</span>
 				<table id="org-table" >
 					<thead>

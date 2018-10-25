@@ -15,7 +15,7 @@
 						'None' AS alertName,
 						1 AS visibilityPenske,
 						1 AS visibilityVendor,
-						0 AS templateKey,
+						0 AS templateId,
 						'None' AS templateName,
 						ah.HELP_TEXT AS helpText
 				
@@ -37,7 +37,7 @@
 						a.ALERT_NAME AS alertName,
 						a.VISIBILITY_PENSKE AS visibilityPenske,
 						a.VISIBILITY_VENDOR AS visibilityVendor,
-						a.TEMPLATE_ID AS templateKey,
+						a.TEMPLATE_ID AS templateId,
 						st.TEMPLATE_NAME AS templateName,
 						a.HELP_TEXT AS helpText
 				
@@ -55,7 +55,7 @@
  	</select>
  	
  	<select id="getAllTemplateNames" resultType="com.penske.apps.adminconsole.model.SearchTemplate">
- 		SELECT	TEMPLATE_ID AS templateKey,
+ 		SELECT	TEMPLATE_ID AS templateId,
 				TEMPLATE_NAME AS templateName
 		
 		FROM	SMC.SMC_SEARCH_TEMPLATES
@@ -86,7 +86,7 @@
  		UPDATE 	SMC.SMC_ALERTS
  		
  		SET		ALERT_NAME = #{alertName},
- 				TEMPLATE_ID = #{templateID},
+ 				TEMPLATE_ID = #{templateId},
  				HELP_TEXT = #{helpText},
  				DISPLAY_SEQUENCE = #{displaySequence},
  				VISIBILITY_PENSKE = #{visibilityPenske},

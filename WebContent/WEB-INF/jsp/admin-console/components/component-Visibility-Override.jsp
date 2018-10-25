@@ -17,8 +17,9 @@
 				<div class="table_div" >
 						<span class="clear-both floatRight addRow">
 							<!--  <a  class="add-template">Create Template</a>-->
-							<a href="${pageContext.request.contextPath}/admin-console/components/create-modify-comp-visiblity-override-page.htm?isCreatePage=true&overrideId=0">Create Component Visibility Override</a>
-							<img src="${commonStaticUrl}/images/add.png" class="centerImage handCursor" alt="Add Row"/>
+							<a href="${pageContext.request.contextPath}/admin-console/components/create-modify-comp-visiblity-override-page.htm?isCreatePage=true&overrideId=0">Create Component Visibility Override
+								<img src="${commonStaticUrl}/images/add.png" class="centerImage handCursor" alt="Add Row"/>
+							</a>
 						</span>
 						<table  id="visiblity-override-table" >
 							<thead>

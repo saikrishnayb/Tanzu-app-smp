@@ -862,11 +862,11 @@
 		WITH result (Org_id , name, parent_org_id,description)
 		AS
 		(
-		SELECT Org_id , name, parent_org_id,description from
+		SELECT Org_id , UPPER(name), parent_org_id,description from
 		SMC.SMC_ORG_MASTER
 		WHERE Org_id = #{orgId}
 		UNION ALL
-		SELECT a.Org_id,a.name,a.parent_org_id,a.description
+		SELECT a.Org_id,UPPER(a.name),a.parent_org_id,a.description
 		FROM SMC.SMC_ORG_MASTER a 
 		INNER JOIN result s ON a.parent_org_id = s.Org_id)
 		SELECT r.Org_id as orgId, r.name as orgName, r.description as orgDescription,(select name from
@@ -880,6 +880,7 @@
 	  	 	AND r.parent_org_id=#{parentOrgId}
 	  	 </if>
   	 </where>
+  	  ORDER BY name
 	</select>
 	
 	

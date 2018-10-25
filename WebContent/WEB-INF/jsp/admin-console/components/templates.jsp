@@ -76,8 +76,9 @@
 				<div class="table_div" >
 						<span class="clear-both floatRight addRow">
 							<!--  <a  class="add-template">Create Template</a>-->
-							<a href="./create-template.htm" class="add-template">Create Template</a>
-							<img src="${commonStaticUrl}/images/add.png" class="centerImage handCursor" alt="Add Row"/>
+							<a href="./create-template.htm" class="add-template">Create Template
+								<img src="${commonStaticUrl}/images/add.png" class="centerImage handCursor" alt="Add Row"/>
+							</a>
 						</span>
 						<table  id="vendor-table" >
 							<thead>
