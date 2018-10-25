@@ -548,6 +548,7 @@ AND OVR_TYPE=#{overrideType} AND CONTROLLING_COMPONENT_ID=#{controllingComponent
                   COMPONENT_TYPE,
                   IS_VEHICLE_COMP,
                   VISIBILITY,
+                  ALLOW_DUPLICATES,
                   COMPONENT_SEQUENCE,
                   GEN_MISSING_COUNT
                 )
@@ -557,6 +558,7 @@ AND OVR_TYPE=#{overrideType} AND CONTROLLING_COMPONENT_ID=#{controllingComponent
                 COMPONENT_TYPE,
                 'N' AS IS_VEHICLE_COMP,
                 'Y' AS VISIBILITY,
+                'N' AS ALLOW_DUPLICATES,
                 DISPLAY_SEQUENCE, 
                 'Y' AS GEN_MISSING_COUNT
            FROM CORP.VEHCMPSGF
