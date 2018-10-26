@@ -20,8 +20,7 @@ $componentManagementTable.on('click', '.allow-duplicate-check', function() {
 	  var checkbox = this;
 	  var isAllowDuplicateChecked = $(checkbox).prop('checked');
 	  var componentId = $(checkbox).closest('tr').attr('data-component-id');
-	  var componentGroupId = $(checkbox).closest('tr').attr('data-component-group-id');
-	  var $allowDuplictaeComponentPromise = $.post('allow-duplicate-components.htm', {componentId : componentId, componentGroupId: componentGroupId,allowDuplicates:isAllowDuplicateChecked});
+	  var $allowDuplictaeComponentPromise = $.post('allow-duplicate-components.htm', {componentId : componentId,allowDuplicates:isAllowDuplicateChecked});
 });
 
 /******* Initialization *******************************************************/

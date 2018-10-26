@@ -172,7 +172,7 @@ public interface ComponentDao {
 	public List<LoadSheetComponentDetails> getTemplateComponentByTempId(@Param("templateId")int templateId);
     
     @NonVendorQuery
-    public void allowDuplicateComponents(@Param("componentId") int componentId,@Param("componentGroupId")int componentGroupId,@Param("allowDuplicates")boolean allowDuplicates);
+    public void allowDuplicateComponents(@Param("componentId") int componentId,@Param("allowDuplicates")boolean allowDuplicates);
 
     
 }

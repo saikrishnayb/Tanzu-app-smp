@@ -262,8 +262,8 @@ public class DefaultComponentService implements ComponentService {
     }
     
     @Override
-    public void allowDuplicateComponents(int componentId,int componentGroupId,boolean allowDuplicates){
+    public void allowDuplicateComponents(int componentId,boolean allowDuplicates){
        
-        componentDao.allowDuplicateComponents(componentId,componentGroupId,allowDuplicates);
+        componentDao.allowDuplicateComponents(componentId,allowDuplicates);
     }
 }

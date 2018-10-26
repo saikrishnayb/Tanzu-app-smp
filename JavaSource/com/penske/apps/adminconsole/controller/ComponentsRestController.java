@@ -615,9 +615,8 @@ public class ComponentsRestController {
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_COMPONENTS)
     @RequestMapping(value = "allow-duplicate-components")
     @ResponseBody
-    public void allowDuplicateComponents(@RequestParam("componentId") int componentId, @RequestParam("componentGroupId") int componentGroupId,
-    		@RequestParam("allowDuplicates") boolean allowDuplicates) {
-    		componentService.allowDuplicateComponents(componentId, componentGroupId,allowDuplicates);
+    public void allowDuplicateComponents(@RequestParam("componentId") int componentId,@RequestParam("allowDuplicates") boolean allowDuplicates) {
+    		componentService.allowDuplicateComponents(componentId,allowDuplicates);
     }
 
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_TEMPLATE)

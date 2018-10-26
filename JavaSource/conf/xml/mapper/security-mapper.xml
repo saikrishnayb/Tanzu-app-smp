@@ -850,7 +850,7 @@
  	
  	<select id="getVendorOrg"  resultType="com.penske.apps.adminconsole.model.Org">
  		 SELECT   ORG_ID as orgId,
-         NAME as orgName,
+         UPPER(NAME) as orgName,
          PARENT_ORG_ID as parentOrgId
 		 FROM     SMC.SMC_ORG_MASTER WHERE ORG_ID <![CDATA[<>]]> 1
 	 	 START 	WITH ORG_ID = #{orgId}

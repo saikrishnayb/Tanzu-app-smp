@@ -62,7 +62,7 @@ public interface ComponentService {
 
 	public List<LoadSheetComponentDetails> getTemplateComponentByTempId(int templateId);
 	
-	public void allowDuplicateComponents(int componentId,int componentGroupId,boolean allowDuplicates);
+	public void allowDuplicateComponents(int componentId,boolean allowDuplicates);
 
 //COMPONENT VISIBILITY OVERRIDES -- End
 		

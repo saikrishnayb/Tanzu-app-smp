@@ -589,8 +589,7 @@ AND OVR_TYPE=#{overrideType} AND CONTROLLING_COMPONENT_ID=#{controllingComponent
 			<otherwise>CID.ALLOW_DUPLICATES = 'N'</otherwise>
 	          </choose> 
 		WHERE 
-		CID.COMPONENT_ID= #{componentId} AND 
-		CID.COMP_GROUP_ID = #{componentGroupId}
+		CID.COMPONENT_ID= #{componentId}
 	</update>
     
 </mapper>
