@@ -243,28 +243,27 @@
  		SELECT 	USER_DEPT AS userDept, DESCRIPTION as description,
  				DEPT_ID AS userDeptId 
 		FROM 	SMC.SMC_USER_DEPT
+		ORDER BY description
  	</select>
  	
  	<select id="getAllUserRoles" resultType="com.penske.apps.adminconsole.model.Role">
- 		<!-- SELECT 	ROLE_NAME AS roleName,
- 				ROLE_ID AS roleId
- 		FROM 	SMC.smc_user_roles 
- 		WHERE 	STATUS = 'A' -->
- 		SELECT ROLE_NAME AS roleName,
- 				ROLE_ID AS roleId
-	 		FROM 	SMC.smc_user_roles 
+ 			SELECT ROLE_NAME AS roleName,
+ 			ROLE_ID AS roleId
+	 		FROM 	SMC.SMC_USER_ROLES 
 	 		WHERE	STATUS = 'A'
 	 		START 	WITH ROLE_ID = 1
 	 		CONNECT BY BASE_ROLE_ID = PRIOR ROLE_ID
+	 		ORDER BY roleName
  	</select>
  	
  	<select id="getPenskeRoles" resultType="com.penske.apps.adminconsole.model.Role">
  		SELECT 	ROLE_ID AS roleId, 
  				ROLE_NAME AS roleName
- 		FROM 	SMC.smc_user_roles 
+ 		FROM 	SMC.SMC_USER_ROLES 
  		WHERE	STATUS = 'A'
  		START 	WITH ROLE_ID = #{value}
  		CONNECT BY BASE_ROLE_ID = PRIOR ROLE_ID
+ 		ORDER BY roleName
  	</select>
  	
  	<select id="getSupplierAdminRole" resultType="com.penske.apps.adminconsole.model.Role">
@@ -450,16 +449,17 @@
 		WHERE ORG_ID = #{orgId}
 	</update>
  	<select id="getPenskeUserOrgList" resultType="com.penske.apps.adminconsole.model.Org">
- 	select orgMaster.ORG_ID as orgId,
-	orgMaster.NAME as orgName,
-	orgMaster1.name as parentOrgName,
-	orgMaster.DESCRIPTION as orgDescription,
-	orgMaster.CREATED_BY as createdBy
-	from SMC.SMC_ORG_MASTER
-	orgMaster
-	Left OUTER Join SMC.SMC_ORG_MASTER orgMaster1
-	on
-	orgMaster.PARENT_ORG_ID = orgMaster1.ORG_ID
+ 		SELECT ORGMASTER.ORG_ID AS orgId,
+		UPPER(ORGMASTER.NAME) AS orgName,
+		ORGMASTER1.name AS parentOrgName,
+		ORGMASTER.DESCRIPTION AS orgDescription,
+		ORGMASTER.CREATED_BY AS createdBy
+		FROM SMC.SMC_ORG_MASTER
+		ORGMASTER
+		LEFT OUTER JOIN SMC.SMC_ORG_MASTER orgMaster1
+		on
+		ORGMASTER.PARENT_ORG_ID = ORGMASTER1.ORG_ID
+		ORDER BY orgName
  	</select>
  	<!-- ***********************************editing users********************************** -->
  	<update id="modifyUserStatus">
@@ -839,7 +839,7 @@
  		FROM 	SMC.smc_user_roles
  		WHERE 	STATUS = 'A' and
  		ROLE_ID = #{roleId} and ROLE_ID >= 16
-
+ 		ORDER BY roleName
  	</select>
  	<select id="getVendorUserTypes" resultType="com.penske.apps.adminconsole.model.UserType">
  		SELECT 	DESCRIPTION AS description,
@@ -849,12 +849,13 @@
  	</select>
  	
  	<select id="getVendorOrg"  resultType="com.penske.apps.adminconsole.model.Org">
- 		SELECT   ORG_ID as orgId,
+ 		 SELECT   ORG_ID as orgId,
          NAME as orgName,
          PARENT_ORG_ID as parentOrgId
 		 FROM     SMC.SMC_ORG_MASTER WHERE ORG_ID <![CDATA[<>]]> 1
-	 		START 	WITH ORG_ID = #{orgId}
-		 	CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID
+	 	 START 	WITH ORG_ID = #{orgId}
+		 CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID
+		 ORDER BY orgName
  	</select>
  	
  	
