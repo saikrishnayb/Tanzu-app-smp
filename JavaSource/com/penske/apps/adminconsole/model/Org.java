@@ -1,8 +1,12 @@
 package com.penske.apps.adminconsole.model;
 
+import java.util.Comparator;
 import java.util.List;
 
 public class Org {
+	
+	public static final Comparator<Org> ORG_NAME_ASC = new OrgNameComparator();
+	
 	private String orgName;
 	private String orgDescription;
 	private int orgId;
@@ -84,7 +88,19 @@ public class Org {
 		this.vendorStr = vendorStr;
 	}
 	
-	
+	private static class OrgNameComparator implements Comparator<Org> {
+
+	        @Override
+	        public int compare(Org org, Org otherOrg) {
+
+	            String orgName = org.getOrgName();
+	            String otherOrgName = otherOrg.getOrgName();
+	            
+	            if (orgName == otherOrgName) return 0;// This takes care of nulls
+	            return orgName == null ? 1 : orgName.compareToIgnoreCase(otherOrgName);
+
+	        }
+	}
 	
 	
 }

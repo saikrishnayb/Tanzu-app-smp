@@ -396,7 +396,9 @@ public class SecurityRestController {
             mav.addObject("vendorNames", securityService.getVendorNames());
             mav.addObject("userDepts", securityService.getUserDepts());
         }
-        mav.addObject("orgList", securityService.getPenskeUserOrgList(currentUser));
+        List<Org> orgList = securityService.getPenskeUserOrgList(currentUser);
+        Collections.sort(orgList, Org.ORG_NAME_ASC);
+        mav.addObject("orgList", orgList);
         // If the page is an error page.
         mav.addObject("isCreatePage", true);
 
@@ -414,7 +416,9 @@ public class SecurityRestController {
         boolean isVendor = currentUser.getUserTypeId() == ApplicationConstants.SUPPLIER_USER;
         mav.addObject("userTypes", securityService.getVendorUserTypes());
         mav.addObject("userRoles", securityService.getVendorRoles(isVendor, currentUser.getRoleId(),currentUser.getOrgId()));
-        mav.addObject("orgList", securityService.getVendorOrg(isVendor, currentUser.getOrgId()));
+        List<Org> orgList = securityService.getVendorOrg(isVendor, currentUser.getOrgId());
+        Collections.sort(orgList, Org.ORG_NAME_ASC);
+        mav.addObject("orgList", orgList);
         // If the page is an error page.
         mav.addObject("isCreatePage", true);
 

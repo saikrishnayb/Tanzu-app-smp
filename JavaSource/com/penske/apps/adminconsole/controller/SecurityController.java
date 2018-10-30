@@ -270,7 +270,8 @@ public class SecurityController {
         boolean isSupplier = currentUser.getUserTypeId() == ApplicationConstants.SUPPLIER_USER;
         // If the user is a supplier.
         if (isSupplier) {
-            List<Org> orgList=securityService.getOrgList(currentUser);
+        	List<Org> orgList=securityService.getOrgList(currentUser);
+            Collections.sort(orgList, Org.ORG_NAME_ASC);
             mav.addObject("orgList", orgList);
             mav.addObject("orgListDrop", orgList);
         }
@@ -279,6 +280,7 @@ public class SecurityController {
             HeaderUser userSearchForm = new HeaderUser();
             userSearchForm.setUserTypeId(ApplicationConstants.PENSKE_USER);
             List<Org> orgList=securityService.getOrgList(currentUser);
+            Collections.sort(orgList, Org.ORG_NAME_ASC);
             mav.addObject("orgList", orgList);
             mav.addObject("orgListDrop", orgList);
         }

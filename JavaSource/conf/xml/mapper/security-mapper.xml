@@ -450,7 +450,7 @@
 	</update>
  	<select id="getPenskeUserOrgList" resultType="com.penske.apps.adminconsole.model.Org">
  		SELECT ORGMASTER.ORG_ID AS orgId,
-		UPPER(ORGMASTER.NAME) AS orgName,
+		ORGMASTER.NAME AS orgName,
 		ORGMASTER1.name AS parentOrgName,
 		ORGMASTER.DESCRIPTION AS orgDescription,
 		ORGMASTER.CREATED_BY AS createdBy
@@ -459,7 +459,6 @@
 		LEFT OUTER JOIN SMC.SMC_ORG_MASTER orgMaster1
 		on
 		ORGMASTER.PARENT_ORG_ID = ORGMASTER1.ORG_ID
-		ORDER BY orgName
  	</select>
  	<!-- ***********************************editing users********************************** -->
  	<update id="modifyUserStatus">
@@ -850,12 +849,11 @@
  	
  	<select id="getVendorOrg"  resultType="com.penske.apps.adminconsole.model.Org">
  		 SELECT   ORG_ID as orgId,
-         UPPER(NAME) as orgName,
+         NAME as orgName,
          PARENT_ORG_ID as parentOrgId
 		 FROM     SMC.SMC_ORG_MASTER WHERE ORG_ID <![CDATA[<>]]> 1
 	 	 START 	WITH ORG_ID = #{orgId}
 		 CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID
-		 ORDER BY orgName
  	</select>
  	
  	
@@ -863,11 +861,11 @@
 		WITH result (Org_id , name, parent_org_id,description)
 		AS
 		(
-		SELECT Org_id , UPPER(name), parent_org_id,description from
+		SELECT Org_id , name, parent_org_id,description from
 		SMC.SMC_ORG_MASTER
 		WHERE Org_id = #{orgId}
 		UNION ALL
-		SELECT a.Org_id,UPPER(a.name),a.parent_org_id,a.description
+		SELECT a.Org_id,a.name,a.parent_org_id,a.description
 		FROM SMC.SMC_ORG_MASTER a 
 		INNER JOIN result s ON a.parent_org_id = s.Org_id)
 		SELECT r.Org_id as orgId, r.name as orgName, r.description as orgDescription,(select name from
@@ -881,7 +879,6 @@
 	  	 	AND r.parent_org_id=#{parentOrgId}
 	  	 </if>
   	 </where>
-  	  ORDER BY name
 	</select>
 	
 	
