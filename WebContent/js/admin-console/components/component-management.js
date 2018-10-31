@@ -10,7 +10,7 @@ $componentManagementTable.on('click', '.visible-component-check', function() {
 
   $copyCorpComponentPromise.done(function() {
     var allowDuplicateCheckBox = $(checkbox).closest('tr').has('.allow-duplicate-check').find(':checkbox');
-    allowDuplicateCheckBox.prop('disabled',false);
+    allowDuplicateCheckBox.prop('disabled',false).prop('checked', true);
     $(checkbox).prop('disabled',true);
   });
 });
