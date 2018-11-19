@@ -81,7 +81,10 @@ public class SecurityRestController {
             mav.addObject("vendorNames", securityService.getVendorNames());
             mav.addObject("userDepts", securityService.getUserDepts());
         }
-        mav.addObject("orgList", securityService.getPenskeUserOrgList(currentUser));
+        
+    	List<Org> orgList=securityService.getPenskeUserOrgList(currentUser);
+        Collections.sort(orgList, Org.ORG_NAME_ASC);
+        mav.addObject("orgList", orgList);
         mav.addObject("editableUser", editableUser);
         mav.addObject("tabPermissionsMap", securityService.getPermissions(roleId));
 
