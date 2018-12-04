@@ -1,5 +1,5 @@
 <project name="suppliermgmtdist" default="prePackageHook">
-	<import file="${env.bamboo_buildscript_dir}/compileBatch.xml"/>
+	<import file="${env.bamboo_buildscript_dir}/compileWeb.xml"/>
 	
 	<target name="prePackageHook" depends="setClassPath">
 		
