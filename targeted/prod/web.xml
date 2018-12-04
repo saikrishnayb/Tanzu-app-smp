@@ -78,6 +78,7 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
+	<!-- Servlets -->
 	<servlet>
 		<servlet-name>ApplicationEntry</servlet-name>
 		<servlet-class>com.penske.apps.suppliermgmt.servlet.ApplicationEntry</servlet-class>
