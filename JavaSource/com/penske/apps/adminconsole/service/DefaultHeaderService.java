@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.penske.apps.adminconsole.dao.HeaderDao;
-import com.penske.apps.adminconsole.model.HeaderUser;
 import com.penske.apps.adminconsole.model.Permission;
 
 @Service
