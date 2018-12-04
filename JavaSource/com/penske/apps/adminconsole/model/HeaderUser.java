@@ -1,6 +1,5 @@
 package com.penske.apps.adminconsole.model;
 
-import java.io.Serializable;
 
 /**
  * This class is the model object for the user of the application to store the header information.
@@ -9,8 +8,8 @@ import java.io.Serializable;
  *
  */
 
-public class HeaderUser implements Serializable {
-
+public class HeaderUser {
+	
 	private int userId;				// user ID
 	private String ssoId;				// SSO (for Penske users only)
 	private String email;			// email

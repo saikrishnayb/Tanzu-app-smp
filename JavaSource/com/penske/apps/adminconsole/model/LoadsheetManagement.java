@@ -1,6 +1,7 @@
 package com.penske.apps.adminconsole.model;
 
 import java.util.Date;
+import com.penske.apps.smccore.base.util.DateUtil;
 
 public class LoadsheetManagement {
 
@@ -57,7 +58,7 @@ public class LoadsheetManagement {
 	}
 	
 	public String getFmtEditedDate() {
-		return DateUtil.formatDate(this.editedDate,DateUtil.MM_dd_yy_HH_mm_a);
+		return DateUtil.formatDateTimeUS(this.editedDate);
 	}
 	public String getComponentGroup() {
 		return componentGroup;

@@ -3,7 +3,6 @@ package com.penske.apps.suppliermgmt.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
@@ -15,16 +14,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.penske.apps.adminconsole.annotation.VendorAllowed;
+import com.penske.apps.suppliermgmt.annotation.VendorAllowed;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
-import com.penske.apps.suppliermgmt.common.constants.ApplicationConstants;
-import com.penske.apps.suppliermgmt.common.util.LookupManager;
 import com.penske.apps.suppliermgmt.model.AlertHeader;
 import com.penske.apps.suppliermgmt.model.LookUp;
 import com.penske.apps.suppliermgmt.model.Tab;
-import com.penske.apps.suppliermgmt.model.UpstreamVendor;
 import com.penske.apps.suppliermgmt.model.UserContext;
 import com.penske.apps.suppliermgmt.service.HomeDashboardService;
+import com.penske.apps.suppliermgmt.util.ApplicationConstants;
+import com.penske.apps.suppliermgmt.util.LookupManager;
 
 
 /************************************************************************************
@@ -64,7 +62,7 @@ public class HomeController extends BaseController{
         // String helpLink=null;
         try{
             UserContext userModel = sessionBean.getUserContext();
-            modelandView=new ModelAndView("appContainer");
+            modelandView=new ModelAndView("app-container/appContainer");
             //getting support num from lookup
             LookupManager lookupManger=new LookupManager();
             List<LookUp> suppNumlist=lookupManger.getLookUpListByName(ApplicationConstants.SUPP_NUM);
@@ -149,11 +147,6 @@ public class HomeController extends BaseController{
         }
 
         return modelandView;
-    }
-
-    public List<UpstreamVendor> displayUpstreamVendor(HttpServletRequest request,int vendorNo){
-        return null;
-
     }
 
 

@@ -46,5 +46,5 @@
 		
 	</body>
 	<!-- Scripts -->
-	<script src="${context}/js/admin-console/components/create-template.js" type="text/javascript"></script>
+	<script src="${baseUrl}/js/admin-console/components/create-template.js" type="text/javascript"></script>
 </html>

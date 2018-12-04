@@ -17,9 +17,9 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
-import com.penske.apps.suppliermgmt.common.constants.ApplicationConstants;
 import com.penske.apps.suppliermgmt.model.UserContext;
 import com.penske.apps.suppliermgmt.servlet.SMCLogOff;
+import com.penske.apps.suppliermgmt.util.ApplicationConstants;
 import com.penske.business.ldap.CPBLDAPSessionInfo;
 
 /**

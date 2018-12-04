@@ -24,8 +24,9 @@ import com.penske.apps.adminconsole.model.UserType;
 import com.penske.apps.adminconsole.model.VendorLocation;
 import com.penske.apps.adminconsole.model.VendorTree;
 import com.penske.apps.adminconsole.util.ApplicationConstants;
-import com.penske.apps.suppliermgmt.common.exception.SMCException;
+import com.penske.apps.suppliermgmt.exception.SMCException;
 import com.penske.apps.suppliermgmt.model.ErrorModel;
+import com.penske.apps.suppliermgmt.model.UserContext;
 import com.penske.business.ldap.sso.CPBGESSOUser;
 import com.penske.util.security.priv.CPTSso;
 
@@ -76,10 +77,10 @@ public class DefaultSecurityService implements SecurityService{
 	}
 
 	@Override
-	public void modifyUserStatus(int userId, HeaderUser currentUser) {
+	public void modifyUserStatus(int userId, UserContext currentUser) {
 		
 		String userSSO="";
-		if(currentUser.getUserTypeId() == ApplicationConstants.SUPPLIER_USER){
+		if(currentUser.isVendorUser()){
 		List<VendorLocation> currentUserVendorLoc = securityDao.getVendorUserLocations(currentUser.getUserId());
 		List<VendorLocation> searchUserVendorLoc = securityDao.getVendorUserLocations(userId);
 		boolean deactivatible = true;
@@ -98,8 +99,7 @@ public class DefaultSecurityService implements SecurityService{
 		}
 		if(!deactivatible)
 			return;
-		} else if(currentUser.getUserTypeId() == ApplicationConstants.PENSKE_USER){
-			//List<Role> roleList = getUserRoles(currentUser.getRoleId());
+		} else if(currentUser.isVisibleToPenske()){
 			List<Role> myRoleList = securityDao.getPenskeRoles(currentUser.getRoleId());
 			User user = securityDao.getUser(userId);
 			userSSO = user.getUserName();
@@ -113,7 +113,7 @@ public class DefaultSecurityService implements SecurityService{
 			if(!deactivatible)
 				return;
 		}
-		securityDao.modifyUserStatus(userId,currentUser.getSso());
+		securityDao.modifyUserStatus(userId,currentUser.getUserSSO());
 		securityDao.deleteUserFromBuddy(userSSO);
 	}
 
@@ -203,7 +203,7 @@ public class DefaultSecurityService implements SecurityService{
 	}
 
 	@Override
-	public void modifyUserInfo(User user, int[] vendorIds, HeaderUser currentUser) {
+	public void modifyUserInfo(User user, int[] vendorIds, UserContext currentUser) {
 		//check edit information
 		boolean validUser = !user.validateUserInfo();
 		
@@ -213,20 +213,9 @@ public class DefaultSecurityService implements SecurityService{
 		int userId = user.getUserId();
 		int userTypeId = user.getUserType().getUserTypeId();
 		
-		//check that current user has permission to edit
-		//List<Role> roleList = getUserRoles(currentUser.getRoleId());
-		//User userInfo = securityDao.getUser(user.getUserId());
-		/*boolean editable = false;
-		for(Role role: roleList){
-			if(role.getRoleId() == userInfo.getRole().getRoleId())
-				editable = true;
-		}
-		if(!editable)
-			return;
-		*/
 		boolean isPenskeUser = (ApplicationConstants.PENSKE_USER == userTypeId);
 		boolean isSupplierUser = (ApplicationConstants.SUPPLIER_USER == userTypeId);
-		user.setModifiedBy(currentUser.getSso());
+		user.setModifiedBy(currentUser.getUserSSO());
 		//make edit changes
 		//updated for adding comments to the base64 changes
 		if (isPenskeUser) {
@@ -254,7 +243,7 @@ public class DefaultSecurityService implements SecurityService{
 				}
 			}
 			if(signatureInitial== null){
-				user.setCreatedBy(currentUser.getSso());
+				user.setCreatedBy(currentUser.getUserSSO());
 				securityDao.addUserInitials(user);
 			}else{
 				securityDao.modifyPenskeUser(user);
@@ -263,9 +252,9 @@ public class DefaultSecurityService implements SecurityService{
 			boolean isEmptyVendorList = vendorIds.length == 0;
 			if (isEmptyVendorList)
 				return;
-			if (currentUser.getUserTypeId() == ApplicationConstants.SUPPLIER_USER) {
+			if (currentUser.isVendorUser()) {
 				
-			} else if (currentUser.getUserTypeId() == ApplicationConstants.PENSKE_USER) {
+			} else if (currentUser.isVisibleToPenske()) {
 				List<VendorLocation> editUserOld = securityDao.getVendorUserLocations(userId);
 				for (VendorLocation vendLoc : editUserOld) {
 					boolean chuckIt = true;
@@ -357,8 +346,8 @@ public class DefaultSecurityService implements SecurityService{
 	}
 
 	@Override
-	public void addUser(User user, int[] vendorIds, HeaderUser currentUser) {
-		user.setCreatedBy(currentUser.getSso());
+	public void addUser(User user, int[] vendorIds, UserContext currentUser) {
+		user.setCreatedBy(currentUser.getUserSSO());
 		//user.setGessouid(user.getSsoId()); // If it is pensker
 		securityDao.addUser(user);
 		user.setUserId(securityDao.getNewUserId());
@@ -395,9 +384,9 @@ public class DefaultSecurityService implements SecurityService{
 	}
 
 	@Override
-	public List<Role> getSupplierRoles(String manufacturer, HeaderUser currentUser) {
+	public List<Role> getSupplierRoles(String manufacturer, UserContext currentUser) {
 		
-		if(currentUser.getUserTypeId() == ApplicationConstants.PENSKE_USER){
+		if(currentUser.isVisibleToPenske()){
 			return securityDao.getPenskeUserSupplierRoles(manufacturer);
 		} else {
 			return securityDao.getVendorUserSpecificRoles( currentUser.getRoleId());
@@ -445,7 +434,7 @@ public class DefaultSecurityService implements SecurityService{
 	}*/
 
 	@Override
-	public List<User> getSearchUserList(HeaderUser userSearchForm, HeaderUser currentUser) {
+	public List<User> getSearchUserList(HeaderUser userSearchForm, UserContext currentUser) {
 		
 		HeaderUser sqlSearchForm = new HeaderUser();
 		
@@ -509,25 +498,7 @@ public class DefaultSecurityService implements SecurityService{
 					userIt.remove();
 				}
 			}
-			/*	List<VendorLocation> currentUserVendorLoc = securityDao.getVendorUserLocations(currentUser.getUserId());
-			for(User user: userList){
-				user.setDeactivatible(true);
-				List<VendorLocation> searchUserVendorLoc = securityDao.getVendorUserLocations(user.getUserId());
-				for(VendorLocation vendLocTwo: searchUserVendorLoc){
-					boolean match = false;
-					for(VendorLocation vendLocOne: currentUserVendorLoc){
-						if(vendLocOne.getVendorId() == vendLocTwo.getVendorId()){
-							match = true;
-							break;
-						}
-					}
-					if(!match){
-						user.setDeactivatible(false);
-					}
-				}
-			}
-			
-		*/}
+		}
 		return userList;
 	}
 
@@ -660,27 +631,18 @@ public class DefaultSecurityService implements SecurityService{
 	}
 
 	@Override
-	public List<Org> getOrgList(HeaderUser currentUser) {
-		List<Org> orgList=securityDao.getOrgList(currentUser);
-	/*	if(currentUser.getUserTypeId() != ApplicationConstants.SUPPLIER_USER){
-			orgList.addAll(securityDao.getAllVendorOrg(currentUser));
-		}
-	*/
+	public List<Org> getOrgList(Org orgSearch, UserContext currentUser) {
+		int orgId = currentUser.getOrgId();
+		String orgName = orgSearch == null ? null : orgSearch.getOrgName();
+		Integer parentOrgId = orgSearch == null ? null : orgSearch.getParentOrgId();
+		List<Org> orgList=securityDao.getOrgList(orgId, orgName, parentOrgId);
 		return orgList;
 	}
 
 	@Override
-	public List<Org> getPenskeUserOrgList(HeaderUser currentUser) {
-		// TODO Auto-generated method stub
-		return securityDao.getPenskeUserOrgList(currentUser);
+	public List<Org> getPenskeUserOrgList() {
+		return securityDao.getPenskeUserOrgList();
 	}
-	
-	@Override
-	public List<Org> getPenskeUserOrgSearch(HeaderUser currentUser) {
-		// TODO Auto-generated method stub
-		return securityDao.getPenskeUserOrgSearch(currentUser);
-	}
-	
 
 	@Override
 	@Transactional
@@ -764,7 +726,7 @@ public class DefaultSecurityService implements SecurityService{
 	}
 
 	@Override
-	public List<User> getVendorUserList(HeaderUser currentUser) {
+	public List<User> getVendorUserList(UserContext currentUser) {
 		List<User> userList=securityDao.getVendorUserList(currentUser);
 	//	if(currentUser.getUserTypeId()==ApplicationConstants.SUPPLIER_USER){
 			List<Role> roleList = securityDao.getVendorRoles(true,currentUser.getRoleId(),currentUser.getOrgId());

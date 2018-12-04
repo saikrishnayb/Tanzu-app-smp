@@ -2,6 +2,7 @@ package com.penske.apps.adminconsole.model;
 
 import java.util.Date;
 import java.util.List;
+import com.penske.apps.smccore.base.util.DateUtil;
 
 /**
  * 
@@ -72,7 +73,7 @@ public class LoadsheetSequenceMaster {
 		this.editedDate = editedDate;
 	}
 	public String getFmtEditedDate() {
-		return DateUtil.formatDate(this.editedDate,DateUtil.MM_dd_yy_HH_mm_a);
+		return DateUtil.formatDateTimeUS(this.editedDate);
 	}
 	public List<LoadsheetSequenceGroupMaster> getGroupMasterList() {
 		return groupMasterList;

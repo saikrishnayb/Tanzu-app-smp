@@ -8,13 +8,13 @@
 	    <%@ include file="../../../jsp/jsp-fragment/global/default-head-block.jsp" %>
 	    	<!-- Scripts -->
 	    	
-	    <script src="${context}/jQuery/chosen.jquery.min.js" type="text/javascript"></script>
-	    <script src="${context}/js/v2/jquery.dataTables.min.js" type="text/javascript"></script>
-	    <script src="${context}/js/admin-console/app-config/create-rule.js" type="text/javascript"></script>
+	    <script src="${baseUrl}/jQuery/chosen.jquery.min.js" type="text/javascript"></script>
+	    <script src="${baseUrl}/js/v2/jquery.dataTables.min.js" type="text/javascript"></script>
+	    <script src="${baseUrl}/js/admin-console/app-config/create-rule.js" type="text/javascript"></script>
 		<link href="${commonStaticUrl}/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
-		<link href="${context}/css/admin-console/app-config/delay-management.css" rel="stylesheet" type="text/css"/>
-		<link href="${context}/css/chosen.css" rel="stylesheet" type="text/css"/>
-		<link href="${context}/css/admin-console/app-config/create-rule.css" rel="stylesheet" type="text/css"/>
+		<link href="${baseUrl}/css/admin-console/app-config/delay-management.css" rel="stylesheet" type="text/css"/>
+		<link href="${baseUrl}/css/chosen.css" rel="stylesheet" type="text/css"/>
+		<link href="${baseUrl}/css/admin-console/app-config/create-rule.css" rel="stylesheet" type="text/css"/>
 		
 		
 	</head>
@@ -184,6 +184,5 @@
 		                   		<option value="${component.componentId}-${component.componentType}">${component.componentGroup}<c:if test="${not empty  component.subGroup}"> ${component.subGroup}</c:if> - ${component.componentName} (ID: ${component.componentId})</option>
 		                   	</c:forEach>
 		</select>
-		<input type="hidden" id="common-static-url" value="${commonStaticUrl}"/>
 	</body>
 </html>

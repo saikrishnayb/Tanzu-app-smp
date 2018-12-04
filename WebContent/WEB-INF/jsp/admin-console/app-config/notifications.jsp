@@ -10,7 +10,7 @@
 		<link href="${commonStaticUrl}/css/jQueryUI/jquery-ui-1.8.21.custom.css" rel="stylesheet" type="text/css"/>
 		<link href="${commonStaticUrl}/css/fixedMenu_style1.css" rel="stylesheet" type="text/css"/>
 		<link href="${commonStaticUrl}/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
-		<link href="${context}/css/admin-console/app-config/notifications.css" rel="stylesheet" type="text/css" />
+		<link href="${baseUrl}/css/admin-console/app-config/notifications.css" rel="stylesheet" type="text/css" />
 	</head>
 	<body>
 		<%@ include file="../../../jsp/jsp-fragment/global/header.jsp" %>
@@ -195,13 +195,11 @@
 			
 		</div>
 		
-		<input type="hidden" id="common-url" value="${commonStaticUrl}"/>
-			 
 		<%@ include file="../../../jsp/jsp-fragment/global/footer.jsp" %>
 	</body>
 	
 	<!-- Javascript Files -->
-	<script src="${context}/js/admin-console/app-config/notifications.js" type="text/javascript"></script>
+	<script src="${baseUrl}/js/admin-console/app-config/notifications.js" type="text/javascript"></script>
 	<script src="${commonStaticUrl}/js/jquery-1.7.2.min.js" type="text/javascript"></script>
 	<script src="${commonStaticUrl}/js/jquery-ui-1.8.21.custom.min.js" type="text/javascript"></script>
 	<script src="${commonStaticUrl}/js/jquery.fixedMenu.js" type="text/javascript"></script>

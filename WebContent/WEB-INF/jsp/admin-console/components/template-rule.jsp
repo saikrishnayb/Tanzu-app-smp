@@ -5,7 +5,6 @@
 	    <title>SMC Loadsheet Rule</title>
 	    <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 	    <%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
-	    <c:set var="context" value="${pageContext.request.contextPath}" scope="page" />
 	</head>
 	<body>
 	<div id="rulePopupDiv">
@@ -34,6 +33,5 @@
 			<%@ include file="../../../jsp/jsp-fragment/admin-console/components/ruleDetails.jsp"%>
 		</div>
 	</div>
-		 <input type="hidden" id="common-static-url" value="${commonStaticUrl}"/>
 	</body>
 </html>

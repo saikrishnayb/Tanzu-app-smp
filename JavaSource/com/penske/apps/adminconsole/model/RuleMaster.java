@@ -2,6 +2,7 @@ package com.penske.apps.adminconsole.model;
 
 import java.util.Date;
 import java.util.List;
+import com.penske.apps.smccore.base.util.DateUtil;
 
 /**
  * 
@@ -67,7 +68,7 @@ public class RuleMaster {
 		this.editDate = editDate;
 	}
 	public String getFmtEditedDate() {
-		return DateUtil.formatDate(this.editDate,DateUtil.MM_dd_yy_HH_mm_a);
+		return DateUtil.formatDateTimeUS(this.editDate);
 	}
 	public String getCreatedBy() {
 		return createdBy;
@@ -82,7 +83,7 @@ public class RuleMaster {
 		this.createdDate = createdDate;
 	}
 	public String getFmtCreatedDate() {
-		return DateUtil.formatDate(this.createdDate,DateUtil.MM_dd_yy_HH_mm_a);
+		return DateUtil.formatDateTimeUS(this.createdDate);
 	}
 	public List<RuleDefinitions> getRuleDefinitionsList() {
 		return ruleDefinitionsList;

@@ -3,10 +3,7 @@ package com.penske.apps.adminconsole.controller;
 import java.util.List;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -14,15 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.penske.apps.adminconsole.annotation.DefaultController;
-import com.penske.apps.adminconsole.annotation.SmcSecurity;
-import com.penske.apps.adminconsole.annotation.SmcSecurity.SecurityFunction;
 import com.penske.apps.adminconsole.enums.LeftNav;
 import com.penske.apps.adminconsole.enums.Tab.SubTab;
 import com.penske.apps.adminconsole.model.CategoryAssociation;
 import com.penske.apps.adminconsole.model.ComponentVisibility;
 import com.penske.apps.adminconsole.model.Components;
-import com.penske.apps.adminconsole.model.HeaderUser;
 import com.penske.apps.adminconsole.model.Manufacture;
 import com.penske.apps.adminconsole.model.PoCategory;
 import com.penske.apps.adminconsole.model.SubCategory;
@@ -35,6 +28,9 @@ import com.penske.apps.adminconsole.service.ComponentVendorTemplateService;
 import com.penske.apps.adminconsole.service.ComponentVisibilityService;
 import com.penske.apps.adminconsole.util.ApplicationConstants;
 import com.penske.apps.adminconsole.util.CommonUtils;
+import com.penske.apps.suppliermgmt.annotation.DefaultController;
+import com.penske.apps.suppliermgmt.annotation.SmcSecurity;
+import com.penske.apps.suppliermgmt.annotation.SmcSecurity.SecurityFunction;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.model.UserContext;
 
@@ -62,7 +58,7 @@ public class ComponentsController {
     private SuppliermgmtSessionBean sessionBean;
    
     @RequestMapping(value = {"/navigate-components"})
-    public ModelAndView navigateAppConfig(HttpServletRequest request) {
+    public ModelAndView navigateAppConfig() {
 
         Set<SecurityFunction> securityFunctions = sessionBean.getUserContext().getSecurityFunctions();
 
@@ -75,7 +71,7 @@ public class ComponentsController {
             boolean noAccess = securityFunction != null && !securityFunctions.contains(securityFunction);
             if (noAccess) continue;
 
-            return new ModelAndView("redirect:/" + leftNav.getUrlEntry());
+            return new ModelAndView("redirect:/app/" + leftNav.getUrlEntry());
         }
 
         return new ModelAndView("/admin-console/security/noAccess");
@@ -194,10 +190,8 @@ public class ComponentsController {
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_TEMPLATE)
     @RequestMapping(value ="/create-modify-template-page")
     public ModelAndView getCreateModifyTemplatePage(@RequestParam("isCreatePage") Boolean isCreatePage,@RequestParam(value="templateId") int templateId,
-    		@RequestParam(value="tempCompId",required = false) Integer tempCompId,@RequestParam(value="toggleSelection",required = false) String toggleSelection, HttpSession session) {
+    		@RequestParam(value="tempCompId",required = false) Integer tempCompId,@RequestParam(value="toggleSelection",required = false) String toggleSelection) {
         ModelAndView mav = new ModelAndView("/admin-console/components/create-edit-template");
-        HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
-        mav.addObject("currentUser", currentUser);
         //mav.addObject("allPoAssocList", componentService.getAllPoAssociation());
         List<Components> comp=componentService.getAllComponent();
         if(isCreatePage){

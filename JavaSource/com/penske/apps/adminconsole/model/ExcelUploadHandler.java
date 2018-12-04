@@ -17,11 +17,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFDataFormatter;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -42,44 +42,18 @@ import com.penske.apps.adminconsole.service.UploadService;
  *Added to suppliermgmt on 4/19/16 to 
  *handle the uploading of excel docs.
  *
- *@author 600139251 
+ *@author 600139251
+ *@author 600139252
  */
-public abstract class ExcelUploadHandler {
+public abstract class ExcelUploadHandler<T> {
 
 	/**
 	 * Declare Variables
 	 */
-	// Declare logger
-	static Logger logger = null;
+	private static final Logger logger = Logger.getLogger("ExcelUploadHandler");
 
-	// Declare workbook
-	Workbook workBook = null;
+	private String userId = "";
 
-	// Declare sheet
-	Sheet workSheet = null;
-
-	// Declare sheet
-	CellStyle cellStyle = null;
-
-	// Declare font
-	Font cellFont = null;
-
-	List transports = new ArrayList();
-
-	List excelBookList = new ArrayList();
-	
-	String userId = new String();
-	
-	public static String FORWARD = "FORWARD";
-
-	/**
-	 * Constructors to create ExcelUploadHandler object
-	 * 
-	 */
-	public ExcelUploadHandler() {
-		logger = Logger.getLogger("ExcelUploadHandler");
-	}
-	
 	/**
 	 * Method to Create the Model object. This object will vary based on the excel sheet uploaded.
 	 * Eg., Transporter Excel sheet data is populated into Transporter Model object.
@@ -88,7 +62,7 @@ public abstract class ExcelUploadHandler {
 	 * @author Johnson Jayaraj 
 	 * @return java.lang.Object
 	 */
-	protected abstract Object createModelObject(boolean pilot);
+	protected abstract T createModelObject(boolean pilot);
 
 	/**
 	 * Method to Populate the Excel Data into the Model objects
@@ -96,25 +70,15 @@ public abstract class ExcelUploadHandler {
 	 * @author Johnson Jayaraj 
 	 * @return boolean
 	 */
-	protected abstract boolean populateExcelData(String value,
-			Object transportObj, int cellNum, Cell cell,Row row) throws Exception;
+	protected abstract boolean populateExcelData(String value, T transportObj, int cellNum, Row row) throws Exception;
 
 	/**
 	 * Method to add each and every Model object into a Collection
 	 * 
 	 * @author Johnson Jayaraj 
 	 */
-	protected abstract void collectExcelDataList(boolean isReadable,
-			List transportList, Object modelObject) throws Exception;
+	protected abstract void collectExcelDataList(boolean isReadable, List<T> transportList, T modelObject) throws Exception;
 
-	/**
-	 * Method to upload the Excel Data
-	 * 
-	 * @author Johnson Jayaraj 
-	 */
-	protected abstract String uploadExcelDataList(List excelDataList,
-			UploadService objUploadService) throws Exception;
-	
 	/**
 	 * Method to get the starting Row Number from which the data needs to be read.
 	 * 
@@ -133,8 +97,7 @@ public abstract class ExcelUploadHandler {
 	 * @return java.lang.String
 	 * @throws java.lang.Exception
 	 */
-	public String saveDocument(String fileName, MultipartFile fileToUpload, UploadService objUploadService, boolean pilot)
-	throws Exception {	
+	public String saveDocument(String fileName, MultipartFile fileToUpload, UploadService<T> objUploadService, boolean pilot) throws Exception {	
 		
 		//This message is to be sent back to the screen.
 		String message ="";
@@ -147,7 +110,7 @@ public abstract class ExcelUploadHandler {
 					//To validate the uploaded file; returned message is an error
 					message = validateFile(fileName, is, objUploadService, pilot); 
 
-				if(DataUtil.isEmpty(message))
+				if(StringUtils.isBlank(message))
 				{
 					try {
 						logger.debug("is " + is);
@@ -184,7 +147,7 @@ public abstract class ExcelUploadHandler {
 				}
 			} catch (Exception e) {
 				logger.error("Exception in  ExcelUploadHandler for "+fileName +". Exception is "+e.getMessage());
-				message = FORWARD;
+				message = "FORWARD";
 			}
 		}else {
 			message = "File has no data or does not exist:" + fileName;
@@ -222,7 +185,7 @@ public abstract class ExcelUploadHandler {
 	 * @param uploadService com.penske.apps.vsportal.service.IUploadService
 	 * @return java.lang.String
 	 */
-	 protected abstract String validateFile(String fileName, InputStream input, UploadService uploadService, boolean pilot);
+	 protected abstract String validateFile(String fileName, InputStream input, UploadService<T> uploadService, boolean pilot);
 
 	/**
 	 * Method to check the Extension of the uploaded file
@@ -233,7 +196,7 @@ public abstract class ExcelUploadHandler {
 	 * @return int
 	 * @throws java.lang.Exception
 	 */
-	protected int checkExtension(String fileName, List mimeTypeList) throws Exception {
+	protected int checkExtension(String fileName, List<MimeTypeModel> mimeTypeList) throws Exception {
 
 		int retVal = 2;
 		try {
@@ -246,9 +209,7 @@ public abstract class ExcelUploadHandler {
 				/*
 				 * Checking the extension of input file equals the allowed extension
 				 */
-
-				String contentType = getContentType(fileName,
-						mimeTypeList);
+				String contentType = getContentType(fileName, mimeTypeList);
 
 				// Some content type found against the extension of the file
 				if (!contentType.equals(""))
@@ -263,7 +224,7 @@ public abstract class ExcelUploadHandler {
 		return retVal;
 	}
 
-	private static String getContentType(String fileName, List mimeTypeList) {
+	private static String getContentType(String fileName, List<MimeTypeModel> mimeTypeList) {
 		String retVal = "";
 		int size = 0;
 		if (mimeTypeList != null) {
@@ -273,7 +234,7 @@ public abstract class ExcelUploadHandler {
 		String extn = getExtn(fileName);
 
 		for (int i = 0; i < size; i++) {
-			objModel = (MimeTypeModel) mimeTypeList.get(i);
+			objModel = mimeTypeList.get(i);
 			if (objModel.getExtn().trim().equalsIgnoreCase(extn)) {
 				retVal = objModel.getMimeType();
 				break;
@@ -294,7 +255,6 @@ public abstract class ExcelUploadHandler {
 		return retVal;
 	}
 	
-	
 	/**
 	 * Method to upload Excel sheet
 	 * 
@@ -303,15 +263,13 @@ public abstract class ExcelUploadHandler {
 	 *            java.io.InputStream
 	 * @throws java.lang.Exception
 	 */
-	private String upload(InputStream input,
-			UploadService objUploadService,
-			boolean pilot) throws Exception {
-		List modelObjectList = new ArrayList();
+	private String upload(InputStream input, UploadService<T> objUploadService, boolean pilot) throws Exception {
+		List<T> modelObjectList = new ArrayList<T>();
 		String message = "";
 		try {			
 			Workbook wb = WorkbookFactory.create(input);
 			Sheet sheet = wb.getSheetAt(0);
-			Iterator rows = sheet.rowIterator();
+			Iterator<Row> rows = sheet.rowIterator();
 			int totalrows = sheet.getLastRowNum();
 			/**
 			 * Adding limit to number of rows uploaded using Vendor exception
@@ -360,14 +318,14 @@ public abstract class ExcelUploadHandler {
 	 * @param modelObjectList java.util.List
 	 * @throws Exception java.lang.Exception
 	 */
-	private void populateRecords(Iterator rows,List modelObjectList, boolean pilot) throws Exception{
+	private void populateRecords(Iterator<Row> rows,List<T> modelObjectList, boolean pilot) throws Exception{
 		
 		boolean readRecords = true;
 		int rowNum = 0;
 	
-		Object modelObject = null;
+		T modelObject = null;
 		while (rows.hasNext()&& readRecords == true) {
-			Row row = (Row) rows.next();
+			Row row = rows.next();
 			
 			rowNum = row.getRowNum();
 
@@ -393,17 +351,24 @@ public abstract class ExcelUploadHandler {
 	 * @param readRecords boolean
 	 * @param modelObject java.lang.Object
 	 */
-	private boolean populateCell(Row row,boolean readRecords,Object modelObject) throws Exception{
-		Iterator cells = row.cellIterator();
+	private boolean populateCell(Row row,boolean readRecords, T modelObject) throws Exception{
+		Iterator<Cell> cells = row.cellIterator();
 		int cellNum = 0;
 		String value = "";
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 		while (cells.hasNext() && readRecords == true) {
-			Cell cell = (Cell) cells.next();
+			Cell cell = cells.next();
 			cellNum = cell.getColumnIndex();
 
-			switch (cell.getCellType()) {
-			case Cell.CELL_TYPE_NUMERIC:
+	        // POI 3.15 deprecated both getCellType() and getCellTypeEnum() in preparation for transitioning to
+	        // making getCellType() return an enum in 4.0.
+	        // As of 2018-11-28, we are using 3.15. If we upgrade to 4.0, this should be switched to use the
+	        // getCellType() method which returns an enum and is not deprecated.
+	        @SuppressWarnings("deprecation")
+			CellType cellType = cell.getCellTypeEnum();
+			
+			switch (cellType) {
+			case NUMERIC:
 				if(org.apache.poi.ss.usermodel.DateUtil.isCellDateFormatted(cell)) {
 					try{
 						value = sdf.format(cell.getDateCellValue());
@@ -417,15 +382,15 @@ public abstract class ExcelUploadHandler {
 						value = String.valueOf(cell.getNumericCellValue());                 
 					}
 				}
-				readRecords = populateExcelData(value, modelObject,cellNum,cell,row);
+				readRecords = populateExcelData(value, modelObject,cellNum,row);
 				break;
-			case Cell.CELL_TYPE_STRING:
+			case STRING:
 				value = String.valueOf(cell.getRichStringCellValue());
-				readRecords = populateExcelData(value, modelObject,cellNum,cell,row);
+				readRecords = populateExcelData(value, modelObject,cellNum,row);
 				break;
-			case Cell.CELL_TYPE_BLANK:
+			case BLANK:
 				value = "";
-				readRecords = populateExcelData(value,modelObject,cellNum,cell,row);      
+				readRecords = populateExcelData(value,modelObject,cellNum,row);      
 				break;
 			default:
 				value = "unsuported cell type";

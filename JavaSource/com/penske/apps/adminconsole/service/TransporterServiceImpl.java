@@ -8,10 +8,10 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.penske.apps.adminconsole.dao.batch.TransporterDao;
+import com.penske.apps.adminconsole.batch.dao.TransporterDao;
 import com.penske.apps.adminconsole.model.MimeTypeModel;
 import com.penske.apps.adminconsole.model.Transport;
-import com.penske.apps.adminconsole.model.VendorReportResults;
+import com.penske.apps.suppliermgmt.annotation.TransporterUploadService;
 
 /**
  * This class will handle the uploading of excel transport docs.
@@ -19,7 +19,8 @@ import com.penske.apps.adminconsole.model.VendorReportResults;
  *
  */
 @Service
-public class TransporterServiceImpl  implements UploadService{
+@TransporterUploadService
+public class TransporterServiceImpl  implements UploadService<Transport>{
 
     private static Logger logger = Logger.getLogger(TransporterServiceImpl.class);
 
@@ -50,9 +51,8 @@ public class TransporterServiceImpl  implements UploadService{
      * @exception java.lang.Exception
      */
     @Override
-    public void insert(Object obj) throws Exception
+    public void insert(Transport transporter) throws Exception
     {
-        Transport transporter = (Transport)obj;
         try
         {
             objDao.insertTransporter(transporter);
@@ -73,7 +73,7 @@ public class TransporterServiceImpl  implements UploadService{
      * @exception java.lang.Exception
      */
     @Override
-    public String uploadExcelDataList(List transportList) throws Exception {
+    public String uploadExcelDataList(List<Transport> transportList) throws Exception {
 
         Transport transport = null;
         String message = "";
@@ -92,15 +92,6 @@ public class TransporterServiceImpl  implements UploadService{
         }
         return message;
 
-    }
-
-    /* (non-Javadoc)
-     * @see com.penske.apps.vsportal.service.IUploadService#processVendorReportStoredProc(com.penske.apps.vsportal.model.VendorReportResults)
-     */
-    @Override
-    public List processVendorReportStoredProc(VendorReportResults vendorReportResults) throws Exception {
-        // not requried!
-        return null;
     }
 
     /*

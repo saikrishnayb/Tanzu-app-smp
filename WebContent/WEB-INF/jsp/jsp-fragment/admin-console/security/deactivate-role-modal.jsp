@@ -1,5 +1,4 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<c:set var="context" value="${pageContext.request.contextPath}" scope="page" />
 
 <input type="hidden" name="role-id" value="${role.roleId}" />
 
@@ -26,4 +25,4 @@
 	<a class="secondaryLink floatRight cancel">Cancel</a>
 </div>
 
-<script src="${context}/js/admin-console/security/deactivate-role-modal.js" type="text/javascript"></script>
+<script src="${baseUrl}/js/admin-console/security/deactivate-role-modal.js" type="text/javascript"></script>

@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.penske.apps.adminconsole.annotation.SmcSecurity;
-import com.penske.apps.adminconsole.annotation.SmcSecurity.SecurityFunction;
-import com.penske.apps.adminconsole.annotation.VendorAllowed;
 import com.penske.apps.adminconsole.exceptions.UserServiceException;
-import com.penske.apps.adminconsole.model.HeaderUser;
 import com.penske.apps.adminconsole.model.ImageFile;
 import com.penske.apps.adminconsole.model.Org;
 import com.penske.apps.adminconsole.model.Role;
@@ -33,15 +28,22 @@ import com.penske.apps.adminconsole.service.RoleService;
 import com.penske.apps.adminconsole.service.SecurityService;
 import com.penske.apps.adminconsole.service.UserCreationService;
 import com.penske.apps.adminconsole.service.VendorService;
-import com.penske.apps.adminconsole.util.ApplicationConstants;
 import com.penske.apps.adminconsole.util.CommonUtils;
 import com.penske.apps.adminconsole.util.IUserConstants;
-import com.penske.apps.suppliermgmt.common.exception.SMCException;
+import com.penske.apps.suppliermgmt.annotation.SmcSecurity;
+import com.penske.apps.suppliermgmt.annotation.SmcSecurity.SecurityFunction;
+import com.penske.apps.suppliermgmt.annotation.VendorAllowed;
+import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
+import com.penske.apps.suppliermgmt.exception.SMCException;
+import com.penske.apps.suppliermgmt.model.UserContext;
 
 @Controller
 @RequestMapping("/admin-console/security")
 public class SecurityRestController {
 
+	@Autowired
+	private SuppliermgmtSessionBean sessionBean;
+	
     @Autowired
     private SecurityService securityService;
     @Autowired
@@ -57,9 +59,9 @@ public class SecurityRestController {
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_USERS)
     @RequestMapping(value ="get-edit-user-modal-content")
     @ResponseBody
-    public ModelAndView getEditInfo(@RequestParam(value="userId") String userId, @RequestParam(value="userType") String userType, @RequestParam(value="roleId") String roleId, HttpSession session) {
+    public ModelAndView getEditInfo(@RequestParam(value="userId") String userId, @RequestParam(value="userType") String userType, @RequestParam(value="roleId") String roleId) {
         ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/security/edit-user-modal-content");
-        HeaderUser currentUser = (HeaderUser) session.getAttribute("currentUser");
+        UserContext userContext = sessionBean.getUserContext();
         User editableUser = securityService.getEditInfo(userId, userType);
 
         mav.addObject("isCreatePage", false);
@@ -68,12 +70,12 @@ public class SecurityRestController {
 
         }
         else {
-            List<Role> penskeRoles = securityService.getPenskeRoles(currentUser.getRoleId());
+            List<Role> penskeRoles = securityService.getPenskeRoles(userContext.getRoleId());
             Collections.sort(penskeRoles, Role.ROLE_NAME_ASC);
             mav.addObject("userRoles", penskeRoles);
         }
 
-        if(currentUser.getUserTypeId() == 2) {
+        if(userContext.isVendorUser()) {
 
         }
         else {
@@ -82,8 +84,9 @@ public class SecurityRestController {
             mav.addObject("userDepts", securityService.getUserDepts());
         }
         
-    	List<Org> orgList=securityService.getPenskeUserOrgList(currentUser);
+    	List<Org> orgList=securityService.getPenskeUserOrgList();
         Collections.sort(orgList, Org.ORG_NAME_ASC);
+        mav.addObject("currentUser", userContext);
         mav.addObject("orgList", orgList);
         mav.addObject("editableUser", editableUser);
         mav.addObject("tabPermissionsMap", securityService.getPermissions(roleId));
@@ -95,20 +98,21 @@ public class SecurityRestController {
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
     @RequestMapping(value ="get-edit-vendor-user-modal-content")
     @ResponseBody
-    public ModelAndView getEditVendorInfo(@RequestParam(value="userId") String userId, @RequestParam(value="userType") String userType, @RequestParam(value="roleId") String roleId, HttpSession session) {
+    public ModelAndView getEditVendorInfo(@RequestParam(value="userId") String userId, @RequestParam(value="userType") String userType, @RequestParam(value="roleId") String roleId) {
         ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/security/edit-vendor-user-modal-content");
-        HeaderUser currentUser = (HeaderUser) session.getAttribute("currentUser");
-        boolean isVendor = currentUser.getUserTypeId() == ApplicationConstants.SUPPLIER_USER;
+        UserContext userContext = sessionBean.getUserContext();
+        boolean isVendor = userContext.isVendorUser();
         User editableUser = securityService.getEditInfo(userId, userType);
         mav.addObject("isCreatePage", false);
         mav.addObject("userTypes", securityService.getVendorUserTypes());
+        mav.addObject("currentUser", userContext);
 
-        List<Role> vendorRoles = securityService.getVendorRoles(isVendor, currentUser.getRoleId(), currentUser.getOrgId());
+        List<Role> vendorRoles = securityService.getVendorRoles(isVendor, userContext.getRoleId(), userContext.getOrgId());
         Collections.sort(vendorRoles, Role.ROLE_NAME_ASC);
 
         mav.addObject("userRoles", vendorRoles);
 
-        mav.addObject("orgList", securityService.getVendorOrg(isVendor, currentUser.getOrgId()));
+        mav.addObject("orgList", securityService.getVendorOrg(isVendor, userContext.getOrgId()));
         mav.addObject("editableUser", editableUser);
         mav.addObject("tabPermissionsMap", securityService.getPermissions(roleId));
         return mav;
@@ -129,26 +133,24 @@ public class SecurityRestController {
     // TODO SMCSEC Maybe deprecated?
     @RequestMapping("get-vendor-locations-content")
     @ResponseBody
-    public List<VendorLocation> getVendorLocations(@RequestParam(value="vendorName") String vendorName, HttpSession session) {
+    public List<VendorLocation> getVendorLocations(@RequestParam(value="vendorName") String vendorName) {
         LOGGER.error("getVendorLocations is used!!!! :)");
-        HeaderUser currentUser = (HeaderUser) session.getAttribute("currentUser");
+        UserContext userContext = sessionBean.getUserContext();
 
-        return securityService.getVendorLocations(vendorName, currentUser.getUserId(), currentUser.getUserTypeId());
+        return securityService.getVendorLocations(vendorName, userContext.getUserId(), userContext.getUserType());
     }
 
     @VendorAllowed
     @SmcSecurity(securityFunction = {SecurityFunction.MANAGE_USERS, SecurityFunction.MANAGE_VENDOR_USERS})
     @RequestMapping("deactivate-user")
     @ResponseBody
-    public void modifyUserStatus(@RequestParam(value="userId") int userId,@RequestParam(value="isVendorUser") boolean isVendorUserFlow,
-            HttpSession session,HttpServletResponse response) throws Exception {
+    public void modifyUserStatus(@RequestParam(value="userId") int userId,@RequestParam(value="isVendorUser") boolean isVendorUserFlow, HttpServletResponse response) throws Exception {
         try{
-            HeaderUser currentUser = (HeaderUser) session.getAttribute("currentUser");
-            //boolean isVendor = currentUser.getUserTypeId() == ApplicationConstants.SUPPLIER_USER;
+        	UserContext userContext = sessionBean.getUserContext();
             if(isVendorUserFlow){//going to vendor user deactivation flow
-                userCreationService.isEligibleToDeactivate(userId, isVendorUserFlow,currentUser.getSso());
+                userCreationService.isEligibleToDeactivate(userId, isVendorUserFlow,userContext.getUserSSO());
             }else{
-                securityService.modifyUserStatus(userId, currentUser);
+                securityService.modifyUserStatus(userId, userContext);
             }
         }catch (Exception e) {
             LOGGER.error("Error while deactivation user: " + e);
@@ -195,10 +197,11 @@ public class SecurityRestController {
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_ORG)
     @RequestMapping("delete-org")
     @ResponseBody
-    public void modifyOrgStatus(@RequestParam(value="orgId") int orgId, HttpSession session,HttpServletResponse response) throws Exception {
+    public void modifyOrgStatus(@RequestParam(value="orgId") int orgId, HttpServletResponse response) throws Exception {
         try{
-            HeaderUser currentUser = (HeaderUser) session.getAttribute("currentUser");
-            securityService.deleteOrg(orgId, currentUser.getSso());
+        	UserContext userContext = sessionBean.getUserContext();
+        	String userSSO = userContext.getUserSSO();
+            securityService.deleteOrg(orgId, userSSO);
         }catch (Exception e) {
             LOGGER.error("Error while deactivation ORG: " + e);
             CommonUtils.getCommonErrorAjaxResponse(response,"");
@@ -239,24 +242,24 @@ public class SecurityRestController {
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_ROLES)
     @RequestMapping(value ="get-role-list")
     @ResponseBody
-    public List<Role> getRoles(@RequestParam("userTypeId") int userTypeId, @RequestParam(value="manufacturer", required=false) String manufacturer, HttpSession session) {
-        HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
+    public List<Role> getRoles(@RequestParam("userTypeId") int userTypeId, @RequestParam(value="manufacturer", required=false) String manufacturer) {
+    	UserContext userContext = sessionBean.getUserContext();
 
         //Not A Supplier
-        if(currentUser.getUserTypeId() != 2) {
+        if(!userContext.isVendorUser()) {
             // Penske User
             if(userTypeId == 1) {
-                return securityService.getPenskeRoles(currentUser.getRoleId());
+                return securityService.getPenskeRoles(userContext.getRoleId());
             }
         }
 
-        return securityService.getSupplierRoles(manufacturer, currentUser);
+        return securityService.getSupplierRoles(manufacturer, userContext);
     }
 
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_USERS)
     @RequestMapping(value ="edit-user-static")
     @ResponseBody
-    public User modifyUserInfoStatic(User user, @RequestParam("vendorIds") int[] vendorIds, HttpSession session, @RequestParam(value="signatureImage", required=false)MultipartFile signatureImage,
+    public User modifyUserInfoStatic(User user, @RequestParam("vendorIds") int[] vendorIds, @RequestParam(value="signatureImage", required=false)MultipartFile signatureImage,
             @RequestParam(value="initialsImage", required=false)MultipartFile initialsImage){
 
         boolean initialsEmpty = initialsImage == null || initialsImage.getSize() == 0;
@@ -272,9 +275,9 @@ public class SecurityRestController {
             user.setSignFile(signFile);
         }
 
-        HeaderUser currentUser = (HeaderUser) session.getAttribute("currentUser");
+        UserContext userContext = sessionBean.getUserContext();
 
-        securityService.modifyUserInfo(user, vendorIds, currentUser);
+        securityService.modifyUserInfo(user, vendorIds, userContext);
         User userInfo = securityService.getUser(user.getUserId());
 
         return userInfo;
@@ -284,11 +287,11 @@ public class SecurityRestController {
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
     @RequestMapping(value ="edit-vendor-user-static")
     @ResponseBody
-    public User modifyVendorUserInfoStatic(User user, HttpSession session,HttpServletResponse response) throws Exception{
+    public User modifyVendorUserInfoStatic(User user, HttpServletResponse response) throws Exception{
 
         try{
-            HeaderUser currentUser = (HeaderUser) session.getAttribute("currentUser");
-            user.setModifiedBy(currentUser.getSso());
+            UserContext userContext = sessionBean.getUserContext();
+            user.setModifiedBy(userContext.getUserSSO());
             userCreationService.updateUserInfo(user, false);
             User userInfo = securityService.getUser(user.getUserId());
             return userInfo;
@@ -321,7 +324,7 @@ public class SecurityRestController {
     // TODO SMCSEC is this even used
     @RequestMapping(value ="edit-user-submit")
     @ResponseBody
-    public ModelAndView modifyUserInfoSubmit(User user, int[] vendorIds, HttpSession session, @RequestParam(value="signatureFile", required=false)MultipartFile signatureImage,
+    public ModelAndView modifyUserInfoSubmit(User user, int[] vendorIds, @RequestParam(value="signatureFile", required=false)MultipartFile signatureImage,
             @RequestParam(value="initialsFile", required=false)MultipartFile initialsImage){
 
         LOGGER.error("modifyUserInfoSubmit is used!!!! :)");
@@ -339,10 +342,10 @@ public class SecurityRestController {
             user.setSignFile(signFile);
         }
 
-        HeaderUser currentUser = (HeaderUser) session.getAttribute("currentUser");
+        UserContext userContext = sessionBean.getUserContext();
 
-        securityService.modifyUserInfo(user, vendorIds, currentUser);
-        ModelAndView mav = new ModelAndView("redirect:/admin-console/security/users");
+        securityService.modifyUserInfo(user, vendorIds, userContext);
+        ModelAndView mav = new ModelAndView("redirect:/app/admin-console/security/users");
         return mav;
     }
 
@@ -387,19 +390,19 @@ public class SecurityRestController {
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_USERS)
     @RequestMapping(value ="/create-user-page")
     @ResponseBody
-    public ModelAndView getCreateUSerPage(HttpSession session) {
+    public ModelAndView getCreateUSerPage() {
         ModelAndView mav = new ModelAndView("/admin-console/security/create-user");
-        HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
-        mav.addObject("currentUser", currentUser);
-        if(currentUser.getUserTypeId() == 2) {
+        UserContext userContext = sessionBean.getUserContext();
+        mav.addObject("currentUser", userContext);
+        if(userContext.isVendorUser()) {
 
         }
-        else if(currentUser.getUserTypeId() == 1) {
+        else if(userContext.isVisibleToPenske()) {
             mav.addObject("userTypes", securityService.getUserTypes());
             mav.addObject("vendorNames", securityService.getVendorNames());
             mav.addObject("userDepts", securityService.getUserDepts());
         }
-        List<Org> orgList = securityService.getPenskeUserOrgList(currentUser);
+        List<Org> orgList = securityService.getPenskeUserOrgList();
         Collections.sort(orgList, Org.ORG_NAME_ASC);
         mav.addObject("orgList", orgList);
         // If the page is an error page.
@@ -412,14 +415,14 @@ public class SecurityRestController {
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
     @RequestMapping(value ="/create-vendor-user-page")
     @ResponseBody
-    public ModelAndView getCreateVendorUserPage(HttpSession session) {
+    public ModelAndView getCreateVendorUserPage() {
         ModelAndView mav = new ModelAndView("/admin-console/security/create-vendor-user");
-        HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
-        mav.addObject("currentUser", currentUser);
-        boolean isVendor = currentUser.getUserTypeId() == ApplicationConstants.SUPPLIER_USER;
+        UserContext userContext = sessionBean.getUserContext();
+        mav.addObject("currentUser", userContext);
+        boolean isVendor = userContext.isVendorUser();
         mav.addObject("userTypes", securityService.getVendorUserTypes());
-        mav.addObject("userRoles", securityService.getVendorRoles(isVendor, currentUser.getRoleId(),currentUser.getOrgId()));
-        List<Org> orgList = securityService.getVendorOrg(isVendor, currentUser.getOrgId());
+        mav.addObject("userRoles", securityService.getVendorRoles(isVendor, userContext.getRoleId(), userContext.getOrgId()));
+        List<Org> orgList = securityService.getVendorOrg(isVendor, userContext.getOrgId());
         Collections.sort(orgList, Org.ORG_NAME_ASC);
         mav.addObject("orgList", orgList);
         // If the page is an error page.
@@ -431,7 +434,7 @@ public class SecurityRestController {
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_USERS)
     @RequestMapping(value ="/create-user", method = RequestMethod.POST)
     @ResponseBody
-    public void addUser(User user, @RequestParam("vendorIds")int[] vendorIds, HttpSession session, @RequestParam(value="signatureImage", required=false)MultipartFile signatureImage,
+    public void addUser(User user, @RequestParam("vendorIds")int[] vendorIds, @RequestParam(value="signatureImage", required=false)MultipartFile signatureImage,
             @RequestParam(value="initialsImage", required=false)MultipartFile initialsImage,HttpServletResponse response) throws Exception{
         try{
             boolean initialsEmpty = initialsImage == null;
@@ -446,8 +449,8 @@ public class SecurityRestController {
                 ImageFile signFile = new ImageFile(signatureImage);
                 user.setSignFile(signFile);
             }
-            HeaderUser currentUser = (HeaderUser) session.getAttribute("currentUser");
-            securityService.addUser(user, vendorIds, currentUser);
+            UserContext userContext = sessionBean.getUserContext();
+            securityService.addUser(user, vendorIds, userContext);
         }catch (Exception e) {
             LOGGER.error("Error while creating user: " + e);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while creating user.");
@@ -462,11 +465,11 @@ public class SecurityRestController {
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
     @RequestMapping(value ="/create-vendor-user", method = RequestMethod.POST)
     @ResponseBody
-    public void addVendorUser(User user, HttpSession session,HttpServletResponse response) throws Exception{
+    public void addVendorUser(User user, HttpServletResponse response) throws Exception{
         try{
 
-            HeaderUser currentUser = (HeaderUser) session.getAttribute("currentUser");
-            user.setCreatedBy(currentUser.getSso());
+            UserContext userContext = sessionBean.getUserContext();
+            user.setCreatedBy(userContext.getUserSSO());
             userCreationService.insertUserInfo(user);
         }
         catch (UserServiceException e) {
@@ -498,11 +501,11 @@ public class SecurityRestController {
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_ROLES)
     @RequestMapping("get-create-role-hierarchy")
     @ResponseBody
-    public ModelAndView getCreateRoleHierarchy(@RequestParam("roleId") int roleId, HttpSession session) {
+    public ModelAndView getCreateRoleHierarchy(@RequestParam("roleId") int roleId) {
         ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/security/role-hierarchy");
-        HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
+        UserContext userContext = sessionBean.getUserContext();
         if (roleId != 0) {
-            mav.addObject("role", roleService.getCreateRoleHierarchy(roleId,currentUser.getOrgId()));
+            mav.addObject("role", roleService.getCreateRoleHierarchy(roleId,userContext.getOrgId()));
         }
 
         return mav;
@@ -512,10 +515,10 @@ public class SecurityRestController {
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_ROLES)
     @RequestMapping("get-edit-role-hierarchy")
     @ResponseBody
-    public ModelAndView getEditRoleHierarchy(@RequestParam("roleId") int roleId, @RequestParam("flag") int flag, HttpSession session) {
+    public ModelAndView getEditRoleHierarchy(@RequestParam("roleId") int roleId, @RequestParam("flag") int flag) {
         ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/security/role-hierarchy");
-        HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
-        mav.addObject("role", roleService.getEditRoleHierarchy(roleId,flag,currentUser.getOrgId()));
+        UserContext userContext = sessionBean.getUserContext();
+        mav.addObject("role", roleService.getEditRoleHierarchy(roleId, flag, userContext.getOrgId()));
 
         return mav;
     }
@@ -548,10 +551,10 @@ public class SecurityRestController {
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_ROLES)
     @RequestMapping("insert-role")
     @ResponseBody
-    public void insertRole(Role role, @RequestParam("functionIds") int[] functionIds, HttpSession session,HttpServletResponse response) throws Exception {
-        HeaderUser user = (HeaderUser)session.getAttribute("currentUser");
-        role.setCreatedBy(user.getSso());
-        role.setOem(String.valueOf(user.getOrgId()));
+    public void insertRole(Role role, @RequestParam("functionIds") int[] functionIds, HttpServletResponse response) throws Exception {
+    	UserContext userContext = sessionBean.getUserContext();
+        role.setCreatedBy(userContext.getUserSSO());
+        role.setOem(String.valueOf(userContext.getOrgId()));
         if(roleService.checkRoleExist(role,true)) {
             try {
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An active role already exists with the role name "+role.getBaseRoleName()+".");
@@ -563,7 +566,7 @@ public class SecurityRestController {
                 throw e;
             }
         }else{
-            roleService.addRole(role, functionIds, user.getManufacturer());
+            roleService.addRole(role, functionIds);
         }
     }
 
@@ -571,10 +574,9 @@ public class SecurityRestController {
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_ROLES)
     @RequestMapping("modify-role-submit")
     @ResponseBody
-    public void modifyRole(Role role, @RequestParam("functionIds") int[] functionIds, HttpSession session,HttpServletResponse response) throws Exception {
-        HeaderUser user = (HeaderUser)session.getAttribute("currentUser");
-        role.setModifiedBy(user.getSso());
-        role.setOem(user.getManufacturer());
+    public void modifyRole(Role role, @RequestParam("functionIds") int[] functionIds,HttpServletResponse response) throws Exception {
+    	UserContext userContext = sessionBean.getUserContext();
+        role.setModifiedBy(userContext.getUserSSO());
         if(roleService.checkRoleExist(role,false)) {
             try {
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An active role already exists with the role name "+role.getBaseRoleName()+".");
@@ -595,16 +597,16 @@ public class SecurityRestController {
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_ROLES)
     @RequestMapping("deactivate-role")
     @ResponseBody
-    public ModelAndView deactivateRole(@RequestParam("roleId") int roleId, HttpSession session) {
+    public ModelAndView deactivateRole(@RequestParam("roleId") int roleId) {
         ModelAndView mav = new ModelAndView();
-        HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
+        UserContext userContext = sessionBean.getUserContext();
         // If any users are found with the role.
         if (roleService.checkForUsers(roleId)) {
             mav.setViewName("/jsp-fragment/admin-console/security/deactivate-role-error-modal");
         }
         else {
             mav.setViewName("/jsp-fragment/admin-console/security/deactivate-role-modal");
-            List<Role> subRoles=roleService.getMyDescendRoleByRoleIdOrgId(roleId,currentUser.getOrgId());
+            List<Role> subRoles=roleService.getMyDescendRoleByRoleIdOrgId(roleId, userContext.getOrgId());
             if(subRoles !=null && !subRoles.isEmpty()){
                 Role baseRole=subRoles.get(0);
                 if(baseRole.getRoleId() == roleId){
@@ -623,10 +625,10 @@ public class SecurityRestController {
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_ROLES)
     @RequestMapping("deactivate-role-confirm")
     @ResponseBody
-    public void confirmRoleDeactivation(@RequestParam("roleId") int roleId, HttpSession session) {
-        HeaderUser user = (HeaderUser)session.getAttribute("currentUser");
+    public void confirmRoleDeactivation(@RequestParam("roleId") int roleId) {
+        UserContext userContext = sessionBean.getUserContext();
 
-        roleService.modifyRoleStatus(roleId,user.getSso());
+        roleService.modifyRoleStatus(roleId,userContext.getUserSSO());
     }
 
     /* ================== Vendors ================== */
@@ -669,10 +671,10 @@ public class SecurityRestController {
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDORS)
     @RequestMapping("modify-vendor-info")
     @ResponseBody
-    public Vendor modifyVendorInfo(Vendor vendor, HttpSession session) {
-        HeaderUser user = (HeaderUser)session.getAttribute("currentUser");
-        vendorService.modifyVendorInformation(vendor,user);
-        List<Vendor> updatedVendors = vendorService.getAllVendors( user.getOrgId() );
+    public Vendor modifyVendorInfo(Vendor vendor) {
+        UserContext userContext = sessionBean.getUserContext();
+        vendorService.modifyVendorInformation(vendor,userContext);
+        List<Vendor> updatedVendors = vendorService.getAllVendors( userContext.getOrgId() );
         for(Vendor updatedVendor: updatedVendors){
             if(updatedVendor.getVendorId() == vendor.getVendorId())
                 return updatedVendor;
@@ -723,7 +725,7 @@ public class SecurityRestController {
     @SmcSecurity(securityFunction = {SecurityFunction.MANAGE_USERS, SecurityFunction.MANAGE_VENDOR_USERS})
     @RequestMapping("get-signature-preview")
     @ResponseBody
-    public String getSignatureImagePreview(@RequestParam(value="userId") int userId, HttpServletResponse response) {
+    public String getSignatureImagePreview(@RequestParam(value="userId") int userId) {
         String signFile = securityService.getSignatureImage(userId);
 
 
@@ -734,7 +736,7 @@ public class SecurityRestController {
     @SmcSecurity(securityFunction = {SecurityFunction.MANAGE_USERS, SecurityFunction.MANAGE_VENDOR_USERS})
     @RequestMapping("get-intials-preview")
     @ResponseBody
-    public String getInitialsImagePreview(@RequestParam(value="userId") int userId, HttpServletResponse response) {
+    public String getInitialsImagePreview(@RequestParam(value="userId") int userId) {
         String initFile = securityService.getInitialsImage(userId);
 
 
@@ -745,7 +747,7 @@ public class SecurityRestController {
     @SmcSecurity(securityFunction = {SecurityFunction.MANAGE_USERS, SecurityFunction.MANAGE_VENDOR_USERS})
     @RequestMapping("delete-intials")
     @ResponseBody
-    public String deleteInitialsImage(@RequestParam(value="userId") int userId,@RequestParam(value="ssoId") String ssoId, HttpServletResponse response) {
+    public String deleteInitialsImage(@RequestParam(value="userId") int userId,@RequestParam(value="ssoId") String ssoId) {
         boolean deleted = securityService.deleteInitialsImage(userId,ssoId);
 
 
@@ -757,7 +759,7 @@ public class SecurityRestController {
     @SmcSecurity(securityFunction = {SecurityFunction.MANAGE_USERS, SecurityFunction.MANAGE_VENDOR_USERS})
     @RequestMapping("delete-signature")
     @ResponseBody
-    public String deleteSignatureImage(@RequestParam(value="userId") int userId,@RequestParam(value="ssoId") String ssoId, HttpServletResponse response) {
+    public String deleteSignatureImage(@RequestParam(value="userId") int userId,@RequestParam(value="ssoId") String ssoId) {
         boolean  deleted = securityService.deleteSignatureImage(userId,ssoId);
 
 
@@ -852,10 +854,10 @@ public class SecurityRestController {
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_ORG)
     @RequestMapping(value ="/update-org", method = RequestMethod.POST)
     @ResponseBody
-    public void updateOrg(Org org,HttpSession session,HttpServletResponse response) throws Exception{
+    public void updateOrg(Org org, HttpServletResponse response) throws Exception{
         try{
-            HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
-            org.setModifiedBy(currentUser.getSso());
+            UserContext userContext = sessionBean.getUserContext();
+            org.setModifiedBy(userContext.getUserSSO());
             securityService.updateOrg(org);
         }catch (Exception e) {
             LOGGER.error("Error Processing the Org: " + e);
@@ -871,18 +873,17 @@ public class SecurityRestController {
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_ORG)
     @RequestMapping(value ="/create-org-page")
     @ResponseBody
-    public ModelAndView getCreateOrgPage(HttpSession session) {
+    public ModelAndView getCreateOrgPage() {
         ModelAndView mav = new ModelAndView("/admin-console/security/create-org");
-        HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
-        mav.addObject("currentUser", currentUser);
-        if(currentUser.getUserTypeId() == 2) {
-            mav.addObject("orgList", securityService.getOrgList(currentUser));
+        UserContext userContext = sessionBean.getUserContext();
+        if(userContext.isVendorUser()) {
+            mav.addObject("orgList", securityService.getOrgList(null, userContext));
         }
-        else if(currentUser.getUserTypeId() == 1) {
+        else if(userContext.isVisibleToPenske()) {
             mav.addObject("userTypes", securityService.getUserTypes());
             mav.addObject("vendorNames", securityService.getVendorNames());
             mav.addObject("userDepts", securityService.getUserDepts());
-            mav.addObject("orgList", securityService.getOrgList(currentUser));
+            mav.addObject("orgList", securityService.getOrgList(null, userContext));
         }
         // If the page is an error page.
         mav.addObject("isCreatePage", true);
@@ -894,10 +895,10 @@ public class SecurityRestController {
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_ORG)
     @RequestMapping(value ="/create-org", method = RequestMethod.POST)
     @ResponseBody
-    public void addOrg(Org org,HttpSession session,HttpServletResponse response) throws Exception{
+    public void addOrg(Org org, HttpServletResponse response) throws Exception{
         try{
-            HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
-            org.setCreatedBy(currentUser.getSso());
+            UserContext userContext = sessionBean.getUserContext();
+            org.setCreatedBy(userContext.getUserSSO());
             securityService.addOrg(org);
         }catch (Exception e) {
             LOGGER.error("Error Processing the Org: " + e);
@@ -912,10 +913,8 @@ public class SecurityRestController {
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_ORG)
     @RequestMapping(value ="/get-vendor-hierarchy-page")
     @ResponseBody
-    public ModelAndView getVendorHierarchyPage(@RequestParam(value="parentOrg") int parentOrg,HttpSession session) {
+    public ModelAndView getVendorHierarchyPage(@RequestParam(value="parentOrg") int parentOrg) {
         ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/security/vendor-hierarchy");
-        HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
-        mav.addObject("currentUser", currentUser);
         mav.addObject("vendorList", securityService.getVendorList("","",parentOrg));
         return mav;
     }
@@ -933,9 +932,9 @@ public class SecurityRestController {
     @VendorAllowed
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_ORG)
     @RequestMapping("modify-org")
-    public ModelAndView getEditOrgInfo(@RequestParam(value="orgId") int orgId, HttpSession session) {
+    public ModelAndView getEditOrgInfo(@RequestParam(value="orgId") int orgId) {
         ModelAndView mav = new ModelAndView("/admin-console/security/create-org");
-        HeaderUser currentUser = (HeaderUser) session.getAttribute("currentUser");
+        UserContext userContext = sessionBean.getUserContext();
         Org editableOrg = securityService.getEditOrgInfo(orgId);
         List<Integer> vendorList=securityService.getOrgVendor(editableOrg.getOrgId());
         if(vendorList !=null && !vendorList.isEmpty()){
@@ -945,11 +944,11 @@ public class SecurityRestController {
         mav.addObject("isCreatePage", false);
 
         List<Org> myOrgList=null;
-        if(currentUser.getUserTypeId() == 2) {
-            myOrgList=securityService.getOrgList(currentUser);
+        if(userContext.isVendorUser()) {
+            myOrgList=securityService.getOrgList(null, userContext);
         }
-        else if(currentUser.getUserTypeId() == 1) {
-            myOrgList=securityService.getOrgList(currentUser);
+        else if(userContext.isVisibleToPenske()) {
+            myOrgList=securityService.getOrgList(null, userContext);
         }
         mav.addObject("orgList", securityService.removeCurrentOrgAndChild(orgId, myOrgList));
         mav.addObject("vendorList", securityService.getVendorList("","",editableOrg.getParentOrgId()));

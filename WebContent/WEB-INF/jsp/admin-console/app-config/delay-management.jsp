@@ -4,11 +4,11 @@
 	    <title>SMC Delay Management</title>
 	    <%@ include file="../../../jsp/jsp-fragment/global/default-head-block.jsp" %>
 	    	<!-- Scripts -->
-		<script src="${context}/js/admin-console/app-config/delay-management.js" type="text/javascript"></script>
+		<script src="${baseUrl}/js/admin-console/app-config/delay-management.js" type="text/javascript"></script>
 		<link href="${commonStaticUrl}/css/jQueryUI/jquery-ui-1.8.21.custom.css" rel="stylesheet" type="text/css"/>
 		<script src="${commonStaticUrl}/js/jquery.dataTables.min.js" type="text/javascript"></script>
 		<link href="${commonStaticUrl}/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
-		<link href="${context}/css/admin-console/app-config/delay-management.css" rel="stylesheet" type="text/css"/>
+		<link href="${baseUrl}/css/admin-console/app-config/delay-management.css" rel="stylesheet" type="text/css"/>
 	</head>
 	<body>
 		<%@ include file="../../../jsp/jsp-fragment/global/header.jsp" %>
@@ -61,6 +61,5 @@
 					</div>
 			</div>		
 		</div> 
-		<input type="hidden" id="common-url" value="${commonStaticUrl}"/>
 	</body>
 </html>

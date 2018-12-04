@@ -13,7 +13,10 @@
 package com.penske.apps.suppliermgmt.servlet;
 
 import java.io.IOException;
+import java.net.URL;
 
+import javax.naming.InitialContext;
+import javax.naming.NameNotFoundException;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
@@ -23,10 +26,8 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.penske.apps.suppliermgmt.common.constants.ApplicationConstants;
+import com.penske.apps.suppliermgmt.util.ApplicationConstants;
 import com.penske.util.CPTBaseServlet;
 
 
@@ -58,8 +59,6 @@ public class SMCLogOff extends HttpServlet {
 		
 		logoff(req, resp);
 	}
-
-	
 		
 	public static void logoff(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
 		String realPath = null;
@@ -74,13 +73,19 @@ public class SMCLogOff extends HttpServlet {
 				 LOGGER.debug("Setting Dev environment Logoffpath");
 				
 			}
-			else{
-				
+			else
+			{
+				 //Use JNDI to get the logout URL, since this is a servlet, not a Spring-accessible bean
+				InitialContext jndiContext = new InitialContext();
+	            URL logoutUrl;
+	            try {
+	                logoutUrl = (URL) jndiContext.lookup("url/url_ssologout");	// Websphere
+	            } catch (NameNotFoundException exception) {
+	                exception.toString();
+	                logoutUrl = (URL) jndiContext.lookup("java:comp/env/url/url_ssologout"); // Tomcat
+	            }
+	            realPath = logoutUrl == null ? "" : logoutUrl.toString();
 			}
-			 WebApplicationContext applicationContext = WebApplicationContextUtils.getRequiredWebApplicationContext(
-					 req.getSession().getServletContext());
-			 realPath = (String)applicationContext.getBean("ssoLogoutUrl");
-			 
         }
         catch (Exception nex)
         {
@@ -105,7 +110,7 @@ public class SMCLogOff extends HttpServlet {
 		                cookie.setDomain(cookieDomain);
 		                cookie.setPath("/");
 		                LOGGER.debug("SMSESSION cookie cleared.");
-		                resp.addCookie(cookie);
+		                resp.addCookie(cookie); // parasoft-suppress BD.SECURITY.TDRESP "The cookie has most of its important fields cleared before being set on the response."
 		            }
 		        }
 		    }
@@ -120,7 +125,7 @@ public class SMCLogOff extends HttpServlet {
 		
 		LOGGER.debug("Logout url to be forwarded while logging off-->"+url);
 		//Set next screen to be displayed - Logout URL 
-		resp.sendRedirect(url);
+		resp.sendRedirect(url); // parasoft-suppress BD.SECURITY.TDRESP "The only portions derived from user input are being set in query string parameters, which are safe in the given URL."
 	}
 	
 	public static String getCookieDomain(String strDomain ){

@@ -6,7 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Param;
 
-import com.penske.apps.adminconsole.annotation.NonVendorQuery;
+import com.penske.apps.smccore.base.annotation.NonVendorQuery;
 import com.penske.apps.suppliermgmt.domain.AlertCount;
 import com.penske.apps.suppliermgmt.model.Alert;
 import com.penske.apps.suppliermgmt.model.AlertHeader;

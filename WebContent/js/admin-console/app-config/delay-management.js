@@ -1,7 +1,7 @@
 $(document).ready(function() {
 	selectCurrentNavigation("tab-app-config", "left-nav-delay-management");
 	// cache selector
-	var commonStaticUrl = $('#common-url').val();
+	var commonStaticUrl = sessionStorage.getItem('commonStaticUrl');
 	var $addDelayModal = $('#add-delay-modal');
 	var $editDelayModal = $('#edit-delay-modal');
 	var $deleteDelayModal = $('#delete-delay-modal');

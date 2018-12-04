@@ -8,7 +8,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.penske.apps.adminconsole.annotation.SmcSecurity.SecurityFunction;
+import com.penske.apps.suppliermgmt.annotation.SmcSecurity.SecurityFunction;
 
 /*******************************************************************************
  *

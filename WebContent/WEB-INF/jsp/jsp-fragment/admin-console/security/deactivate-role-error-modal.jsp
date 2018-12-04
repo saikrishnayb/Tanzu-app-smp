@@ -1,5 +1,4 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<c:set var="context" value="${pageContext.request.contextPath}" scope="page" />
 
 <div id="message-text" class="floatLeft clear-left">
 	<h3 class="floatLeft clear-left errorMsg">This role cannot be deactivated.</h3>

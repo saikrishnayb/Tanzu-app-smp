@@ -2,7 +2,7 @@
 <html>
   <head>
     <link href="${commonStaticUrl}/css/common.css" rel="stylesheet" type="text/css"/>      
-    <link href="${pageContext.request.contextPath}/css/global/global.css" rel="stylesheet" type="text/css"/>
+    <link href="${baseUrl}/css/global/global.css" rel="stylesheet" type="text/css"/>
     <title>Global Error Page</title>
   </head>
   <body>

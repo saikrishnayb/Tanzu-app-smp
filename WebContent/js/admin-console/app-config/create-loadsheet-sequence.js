@@ -8,7 +8,6 @@ var groupCount=1; //get this value based on max group count
 
 j2(document).ready(function() {
 	selectCurrentNavigation("tab-app-config", "left-nav-loadsheet-sequence");
-	//var commonStaticUrl =j2('#common-static-url').val();
 	
 	groupCount=j2("#numberOfGroups").val();
 	

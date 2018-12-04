@@ -1,10 +1,12 @@
 package com.penske.apps.suppliermgmt.beans;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.penske.apps.suppliermgmt.domain.UserLoginHistory;
+import org.apache.commons.lang3.StringUtils;
+
+import com.penske.apps.smccore.base.util.DateUtil;
+import com.penske.apps.suppliermgmt.model.AppConfigSessionData;
 import com.penske.apps.suppliermgmt.model.UserContext;
 
 public class DefaultSuppliermgmtSessionBean implements SuppliermgmtSessionBean, Serializable {
@@ -12,17 +14,30 @@ public class DefaultSuppliermgmtSessionBean implements SuppliermgmtSessionBean, 
     private static final long serialVersionUID = -1472826879151363042L;
 
     private UserContext userContext;
+    private String baseUrl;
     private Date lastUserLoginDate;
-
-    private final SimpleDateFormat loginDateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
+    private boolean buddyListApplied;
+    private boolean vendorFilterApplied;
+    
+    private AppConfigSessionData appConfigSessionData = new AppConfigSessionData();
 
     /** {@inheritDoc} */
     @Override
-    public void setUserContext(UserContext userContext)
+    public void initialize(UserContext userContext, String baseUrl, Date lastUserLoginDate, boolean buddyListApplied, boolean vendorFilterApplied)
     {
-        this.userContext = userContext;
+       	if(userContext == null)
+    		throw new IllegalArgumentException("Can not initialize user session without a logged-in user.");
+    	if(StringUtils.isBlank(baseUrl))
+    		throw new IllegalArgumentException("Can not initialize user session without a base URL.");
+    	
+    	this.userContext = userContext;
+    	this.baseUrl = baseUrl;
+    	this.lastUserLoginDate = lastUserLoginDate;
+    	this.appConfigSessionData = new AppConfigSessionData();
+    	this.buddyListApplied = buddyListApplied;
+    	this.vendorFilterApplied = vendorFilterApplied;
     }
-
+    
     /** {@inheritDoc} */
     @Override
     public UserContext getUserContext()
@@ -30,16 +45,37 @@ public class DefaultSuppliermgmtSessionBean implements SuppliermgmtSessionBean, 
         return userContext;
     }
 
-    @Override
-    public void setLastUserLoginDate(UserLoginHistory loginHistory) {
-
-        if (loginHistory == null) return;
-
-        this.lastUserLoginDate = loginHistory.getLastLoginDate();
-    }
-
+    /** {@inheritDoc} */
     @Override
     public String getFormattedUserLoginDate() {
-        return lastUserLoginDate == null? null : "Last Logged In On " + loginDateFormat.format(lastUserLoginDate);
+        return lastUserLoginDate == null? null : "Last Logged In On " + DateUtil.formatDateTimeUS(lastUserLoginDate);
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public String getBaseUrl()
+    {
+    	return baseUrl;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isBuddyListApplied()
+    {
+    	return buddyListApplied;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public boolean isVendorFilterApplied()
+    {
+    	return vendorFilterApplied;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public AppConfigSessionData getAppConfigSessionData()
+    {
+    	return appConfigSessionData;
     }
 }

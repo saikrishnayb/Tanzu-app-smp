@@ -8,7 +8,7 @@
 	<script src="${commonStaticUrl}/js/jquery.dataTables.min.js" type="text/javascript"></script>
 	<link href="${commonStaticUrl}/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
 	<script src="${commonStaticUrl}/js/jquery.maskedinput-1.3.min.js" type="text/javascript"></script>
-	<link href="${context}/css/admin-console/security/users.css" rel="stylesheet" type="text/css"/>
+	<link href="${baseUrl}/css/admin-console/security/users.css" rel="stylesheet" type="text/css"/>
 </head>
 <!-- ******************************edit modal******************************** -->
 <div id="edit-modal" class="modal edit-user-modal" title="Edit User Information"></div>
@@ -78,7 +78,7 @@
 			</div>
 			<div class="full-width">
 				<span class="floatRight addRow">
-					<a href="${pageContext.request.contextPath}/admin-console/security/create-user-page.htm">Create User
+					<a href="${baseAppUrl}/admin-console/security/create-user-page.htm">Create User
 						<img src="${commonStaticUrl}/images/add.png" class="centerImage handCursor" alt="Add Row"/>
 					</a>
 				</span>
@@ -130,5 +130,5 @@
 	<input type="hidden" id="tabNavUser" value="left-nav-users">
 </body>
 <!-- Scripts -->
-<script src="${context}/js/admin-console/security/users.js" type="text/javascript"></script>
+<script src="${baseUrl}/js/admin-console/security/users.js" type="text/javascript"></script>
 </html>

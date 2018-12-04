@@ -1,0 +1,56 @@
+<project name="suppliermgmt-tests">
+	
+	<import file="${buildScriptDir}/compileWeb.xml" />
+
+	<!--
+		Running this target deletes the build and source directories, which the "test" target depends upon to function properly.
+		The only reason you would want to do this is if those directories have gotten polluted with junk files from a previous plan configuration that put things in different places than they are in now.
+		To use this target, alter the ANT task in the plan to run this target, run the build once (it will fail), and then put the ANT task back the way it was.
+	-->
+	<target name="full-clean">
+		<delete dir="${workDir}/build" />
+		<delete dir="${workDir}/source" />
+	</target>
+	
+	<target name="clean">
+		<delete dir="${workDir}/test-results" />
+		<delete dir="${workDir}/build_script" />
+	</target>
+	
+	<target name="test" depends="init-defaults,setClassPath">
+		<property name="build.test.dir" value="${build}/test" />
+		
+		<mkdir dir="${workDir}/test-results"/>
+		<!-- Makes an empty test lib directory in case one doesn't already exist from building the application -->
+		<mkdir dir="${build.test.dir}/lib" />
+		
+		<!--
+			The classpath to run the tests consists of:
+			  * The build classpath for the main application classes
+			  * The compiled main application class files
+			  * The additional JARs needed to run tests (ex: mockito, hsqldb, junit)
+			  * The compiled test class files
+		-->
+		<path id="test.classpath">
+			<path refid="project.classpath" />
+			
+			<!-- Compiled classes and library JARs from main webapp code -->
+			<fileset dir="${build.lib}" includes="*.jar" />
+			<pathelement location="${build.webinf.classes}" />
+			
+			<!-- Compiled test classes and library JARs -->
+			<fileset dir="${build.test.dir}/lib" includes="*.jar" />
+			<pathelement location="${build.test.dir}/classes" />
+		</path>
+		<property name="testClasspath" refid="test.classpath" />
+		<echo message="Test classpath: ${testClasspath}" />
+		
+		<!-- Actually run JUnit and emit results to both the screen and to an XML file. This XML file will get picked up by a next step. -->
+		<junit>
+			<classpath refid="test.classpath" />
+			<formatter type="plain" usefile="false"/>
+			<formatter type="xml" />
+			<test name="com.penske.apps.suppliermgmt.AllTests" todir="${workDir}/test-results" haltonerror="false" haltonfailure="false" outfile="unit-test-results" />
+		</junit>
+	</target>
+</project>

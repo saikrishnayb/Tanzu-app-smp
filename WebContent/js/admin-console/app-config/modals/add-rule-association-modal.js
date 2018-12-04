@@ -1,4 +1,4 @@
-var commonStaticUrl =$('#common-static-url').val();
+var commonStaticUrl = sessionStorage.getItem('commonStaticUrl');
 $addRuleAssociationModal=$('#rule-association-modal');
 var $error = $addRuleAssociationModal.find('.error');
 var rowCount=1;

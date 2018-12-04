@@ -6,7 +6,6 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
  <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<c:set var="context" value="${pageContext.request.contextPath}" scope="page" />
 <title>SMC Home</title>
 	<%@ include file="../../../jsp/jsp-fragment/global/default-head-block.jsp"%>
 	
@@ -16,8 +15,8 @@
 	<link href="${commonStaticUrl}/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
 	<script src="${commonStaticUrl}/js/jquery.maskedinput-1.3.min.js" type="text/javascript"></script>
 	<link href="${commonStaticUrl}/css/jquery.dataTables.css"rel="stylesheet" type="text/css" />
-	<link href="${context}/css/admin-console/security/org.css"rel="stylesheet" type="text/css" />
-	<link href="${context}/css/admin-console/components/comp-overrid.css"rel="stylesheet" type="text/css" />
+	<link href="${baseUrl}/css/admin-console/security/org.css"rel="stylesheet" type="text/css" />
+	<link href="${baseUrl}/css/admin-console/components/comp-overrid.css"rel="stylesheet" type="text/css" />
 
 
 <Script>
@@ -50,5 +49,5 @@
 	</div>
 </body>
 <!-- Scripts -->
-<script src="${context}/js/admin-console/components/comp-visiblity-override.js" type="text/javascript"></script>
+<script src="${baseUrl}/js/admin-console/components/comp-visiblity-override.js" type="text/javascript"></script>
 </html>

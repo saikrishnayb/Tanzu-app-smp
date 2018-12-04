@@ -1,6 +1,4 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<c:set var="context" value="${pageContext.request.contextPath}"
-	scope="page" />
 		<c:forEach items="${vendorTemplates}" var="location">
 							<div class="width-half initial-accordion templates-accordion accordion-headers">
 								<h3>
@@ -49,4 +47,4 @@
 						</div>
 						</div>
 					</c:forEach>
-<script src="${context}/js/admin-console/security/templates-accordion.js" type="text/javascript"></script>
+<script src="${baseUrl}/js/admin-console/security/templates-accordion.js" type="text/javascript"></script>

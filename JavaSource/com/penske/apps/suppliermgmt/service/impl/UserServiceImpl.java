@@ -31,11 +31,10 @@ import org.springframework.stereotype.Service;
 
 import com.penske.apps.adminconsole.model.Vendor;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
-import com.penske.apps.suppliermgmt.common.constants.ApplicationConstants;
-import com.penske.apps.suppliermgmt.common.exception.SMCException;
 import com.penske.apps.suppliermgmt.dao.UserDAO;
 import com.penske.apps.suppliermgmt.domain.Organization;
 import com.penske.apps.suppliermgmt.domain.UserVendorFilterSelection;
+import com.penske.apps.suppliermgmt.exception.SMCException;
 import com.penske.apps.suppliermgmt.model.Buddies;
 import com.penske.apps.suppliermgmt.model.LabelValue;
 import com.penske.apps.suppliermgmt.model.OrgFilter;
@@ -43,6 +42,7 @@ import com.penske.apps.suppliermgmt.model.User;
 import com.penske.apps.suppliermgmt.model.UserContext;
 import com.penske.apps.suppliermgmt.model.VendorFilter;
 import com.penske.apps.suppliermgmt.service.UserService;
+import com.penske.apps.suppliermgmt.util.ApplicationConstants;
 
 
 

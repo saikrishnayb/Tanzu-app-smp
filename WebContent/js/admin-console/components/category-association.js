@@ -4,7 +4,7 @@ $(document).ready(function() {
 	var $categoryAssociationTable = $('#category-association-table');
 	var $addAssociationModal =$('#add-association-modal');
 	var $addCategoryAssociation = $('.add-category-association');
-	var commonStaticUrl =$('#common-static-url').val();
+	var commonStaticUrl = sessionStorage.getItem('commonStaticUrl');
 	var iDisplayLength = 10;// tableRowLengthCalc();
 	
 	$categoryAssociationTable.dataTable( { //All of the below are optional

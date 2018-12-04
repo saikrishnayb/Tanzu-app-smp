@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-import com.penske.apps.adminconsole.annotation.NonVendorQuery;
 import com.penske.apps.adminconsole.model.TermsAndConditions;
+import com.penske.apps.smccore.base.annotation.NonVendorQuery;
 
 
 /**

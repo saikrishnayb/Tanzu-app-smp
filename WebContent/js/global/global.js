@@ -38,7 +38,6 @@ $(document).ready(function() {
 	var $ajaxErrorModal = $('#ajax-error-modal');
 	var $spinnerModal = $('#spinner-modal');
 	var $roleModal = $('#role-modal');
-	var $roleName = $('#role-info');
 	var $customizedAjaxErrorModal = $('#customized-ajax-error');
 	
 	//Turns the AJAX cache off
@@ -117,21 +116,7 @@ $(document).ready(function() {
 	
 	$document.ajaxComplete(function(){
 		closeModal($spinnerModal);
-	});
-	
-	//role modal listener
-	$roleName.on('click', function(){
-		var roleId = $('#application-user-role-id').val();
-		var roleName = $roleName.text();
-		var $roleModalContentPromise = $.get('/suppliermgmt/get-role-modal-content.htm', {roleId:roleId, roleName:roleName});
-		
-		$roleModalContentPromise.done(function(data){
-			$roleModal.html(data);
-			openModal($roleModal);
-		});
-			
-	});
-	
+	});	
 });
 
 //validation

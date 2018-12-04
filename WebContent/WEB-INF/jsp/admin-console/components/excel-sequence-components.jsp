@@ -2,9 +2,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
-<c:set var="context" value="${pageContext.request.contextPath}"  scope="page" />
 
-<link href="${context}/css/admin-console/components/excel-sequence-components.css" rel="stylesheet" type="text/css"/>
+<link href="${baseUrl}/css/admin-console/components/excel-sequence-components.css" rel="stylesheet" type="text/css"/>
 
 <div class="modal-content row" data-modal-title="Modify Excel Sequence For ${template.templateName}" data-modal-width="700" data-modal-max-height="500">
 
@@ -63,4 +62,4 @@
   
 </div>
 
-<script src="${context}/js/admin-console/components/excel-sequence-components.js" type="text/javascript"></script>
+<script src="${baseUrl}/js/admin-console/components/excel-sequence-components.js" type="text/javascript"></script>

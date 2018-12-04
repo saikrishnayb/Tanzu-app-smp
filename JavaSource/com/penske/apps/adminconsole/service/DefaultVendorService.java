@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 
 import com.penske.apps.adminconsole.dao.VendorDao;
 import com.penske.apps.adminconsole.model.Alert;
-import com.penske.apps.adminconsole.model.HeaderUser;
 import com.penske.apps.adminconsole.model.User;
 import com.penske.apps.adminconsole.model.Vendor;
 import com.penske.apps.adminconsole.model.VendorContact;
+import com.penske.apps.suppliermgmt.model.UserContext;
 
 @Service
 public class DefaultVendorService implements VendorService {
@@ -75,10 +75,10 @@ public class DefaultVendorService implements VendorService {
 	}
 	
 	@Override
-	public void modifyVendorInformation(Vendor vendor,HeaderUser user) {
+	public void modifyVendorInformation(Vendor vendor,UserContext user) {
 		VendorContact primary = vendor.getPrimaryContact();
 		VendorContact secondary = vendor.getSecondaryContact();
-		String currentUser=user.getSso();
+		String currentUser=user.getUserSSO();
 		boolean primaryExists = false;
 		boolean secondaryExists = false;
 		

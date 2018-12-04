@@ -1,6 +1,6 @@
 package com.penske.apps.adminconsole.enums;
 
-import com.penske.apps.adminconsole.annotation.SmcSecurity.SecurityFunction;
+import com.penske.apps.suppliermgmt.annotation.SmcSecurity.SecurityFunction;
 
 /**
  * All left navigation link in Supplier Management

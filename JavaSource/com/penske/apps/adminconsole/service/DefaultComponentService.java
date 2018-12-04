@@ -16,8 +16,8 @@ import com.penske.apps.adminconsole.model.LoadSheetComponentDetails;
 import com.penske.apps.adminconsole.model.Template;
 import com.penske.apps.adminconsole.model.TemplatePoAssociation;
 import com.penske.apps.adminconsole.util.ApplicationConstants;
-import com.penske.apps.suppliermgmt.common.util.LookupManager;
 import com.penske.apps.suppliermgmt.model.LookUp;
+import com.penske.apps.suppliermgmt.util.LookupManager;
 
 /**
  * 

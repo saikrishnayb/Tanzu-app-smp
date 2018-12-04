@@ -4,11 +4,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,8 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.penske.apps.adminconsole.annotation.SmcSecurity;
-import com.penske.apps.adminconsole.annotation.SmcSecurity.SecurityFunction;
 import com.penske.apps.adminconsole.exceptions.DynamicRulePriorityException;
 import com.penske.apps.adminconsole.exceptions.TemplateNameAlreadyExistsException;
 import com.penske.apps.adminconsole.model.Alert;
@@ -33,8 +29,6 @@ import com.penske.apps.adminconsole.model.DelayTypeModel;
 import com.penske.apps.adminconsole.model.DelayTypeReason;
 import com.penske.apps.adminconsole.model.DynamicRule;
 import com.penske.apps.adminconsole.model.GlobalException;
-import com.penske.apps.adminconsole.model.HeaderUser;
-import com.penske.apps.adminconsole.model.LoadSheetCategoryDetails;
 import com.penske.apps.adminconsole.model.Notification;
 import com.penske.apps.adminconsole.model.NotificationForm;
 import com.penske.apps.adminconsole.model.SearchTemplate;
@@ -52,6 +46,12 @@ import com.penske.apps.adminconsole.service.SubjectService;
 import com.penske.apps.adminconsole.service.TabService;
 import com.penske.apps.adminconsole.service.TermsAndConditionsService;
 import com.penske.apps.adminconsole.util.CommonUtils;
+import com.penske.apps.suppliermgmt.annotation.SmcSecurity;
+import com.penske.apps.suppliermgmt.annotation.SmcSecurity.SecurityFunction;
+import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
+import com.penske.apps.suppliermgmt.model.AppConfigSessionData;
+import com.penske.apps.suppliermgmt.model.AppConfigSessionData.LoadSheetCategoryDetails;
+import com.penske.apps.suppliermgmt.model.UserContext;
 
 /**
  * This Controller class contains all of the AJAX request methods for any
@@ -65,6 +65,9 @@ public class AppConfigRestController {
 
     private static final Logger LOGGER = Logger.getLogger(AppConfigRestController.class);
 
+    @Autowired
+    private SuppliermgmtSessionBean sessionBean;
+    
     @Autowired
     private ExceptionService exceptionService;
     @Autowired
@@ -200,11 +203,11 @@ public class AppConfigRestController {
 
     @RequestMapping("edit-global-exception")
     @ResponseBody
-    public void modifyGlobalException(@RequestParam(value = "exceptionId") int exceptionId, @RequestParam(value = "providervendorId") int providervendorId, @RequestParam(value = "poCategoryAssociationId") int poCategoryAssociationId,HttpSession session) {
+    public void modifyGlobalException(@RequestParam(value = "exceptionId") int exceptionId, @RequestParam(value = "providervendorId") int providervendorId, @RequestParam(value = "poCategoryAssociationId") int poCategoryAssociationId) {
 
-        HeaderUser currentUser = (HeaderUser) session.getAttribute("currentUser");
-        String createdBy = currentUser.getSso();
-        exceptionService.modifyGlobalException(exceptionId, providervendorId, poCategoryAssociationId,createdBy);
+    	UserContext userContext = sessionBean.getUserContext();
+        String userSSO = userContext.getUserSSO();
+        exceptionService.modifyGlobalException(exceptionId, providervendorId, poCategoryAssociationId,userSSO);
     }
 
     @SmcSecurity(securityFunction = SecurityFunction.GLOBAL_EXCEPTIONS_MANAGEMENT)
@@ -229,7 +232,7 @@ public class AppConfigRestController {
     @SmcSecurity(securityFunction = SecurityFunction.DYNAMIC_RULES_MANAGEMENT)
     @RequestMapping(value = "/get-rule-modal-data", method = RequestMethod.POST)
     @ResponseBody
-    public ModelAndView getModalData(@RequestParam("make") String make, @RequestParam("modalName") String modalName, @RequestParam("status") String status) {
+    public ModelAndView getModalData(@RequestParam("make") String make, @RequestParam("modalName") String modalName) {
         ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/app-config/" + modalName + "-rule-modal");
 
         mav.addObject("corpCodes", dynamicRuleService.getAllCorpCodes());
@@ -259,10 +262,11 @@ public class AppConfigRestController {
     @SmcSecurity(securityFunction = SecurityFunction.GLOBAL_EXCEPTIONS_MANAGEMENT)
     @RequestMapping(value = "/add-dynamic-rule", method = RequestMethod.POST)
     @ResponseBody
-    public void addDynamicRule(DynamicRule rule, HttpSession session, HttpServletResponse response) {
-        HeaderUser currentUser = (HeaderUser) session.getAttribute("currentUser");
-        rule.setCreatedBy(currentUser.getSso());
-        rule.setModifiedBy(currentUser.getSso());
+    public void addDynamicRule(DynamicRule rule, HttpServletResponse response) {
+    	UserContext userContext = sessionBean.getUserContext();
+        String userSSO = userContext.getUserSSO();
+        rule.setCreatedBy(userSSO);
+        rule.setModifiedBy(userSSO);
         try {
             dynamicRuleService.addDynamicRule(rule);
         } catch (DynamicRulePriorityException dpe) {
@@ -281,10 +285,11 @@ public class AppConfigRestController {
     @SmcSecurity(securityFunction = SecurityFunction.GLOBAL_EXCEPTIONS_MANAGEMENT)
     @RequestMapping(value = "/modify-dynamic-rule", method = RequestMethod.POST)
     @ResponseBody
-    public void modifyDynamicRule(DynamicRule rule, HttpServletResponse response, HttpSession session) {
+    public void modifyDynamicRule(DynamicRule rule, HttpServletResponse response) {
         try {
-            HeaderUser currentUser = (HeaderUser) session.getAttribute("currentUser");
-            rule.setModifiedBy(currentUser.getSso());
+        	UserContext userContext = sessionBean.getUserContext();
+            String userSSO = userContext.getUserSSO();
+            rule.setModifiedBy(userSSO);
             dynamicRuleService.modifyDynamicRule(rule);
         } catch (DynamicRulePriorityException dpe) {
             try {
@@ -302,10 +307,7 @@ public class AppConfigRestController {
     @SmcSecurity(securityFunction = SecurityFunction.GLOBAL_EXCEPTIONS_MANAGEMENT)
     @RequestMapping(value = "/delete-dynamic-rule", method = RequestMethod.POST)
     @ResponseBody
-    public void modifyDynamicRuleStatus(@RequestParam("dynamicRuleId") int dynamicRuleId, HttpSession session) {
-        // HeaderUser currentUser = (HeaderUser) session.getAttribute("currentUser");
-
-        // dynamicRuleService.modifyDynamicRuleStatus(dynamicRuleId, priority,currentUser.getSso());
+    public void modifyDynamicRuleStatus(@RequestParam("dynamicRuleId") int dynamicRuleId) {
         dynamicRuleService.deleteDynamicRule(dynamicRuleId);
     }
 
@@ -864,7 +866,7 @@ public class AppConfigRestController {
     /* ================== Get Rule Association model ================== */
     @RequestMapping(value = "/get-rule-association-modal-data", method = RequestMethod.POST)
     @ResponseBody
-    public ModelAndView getRuleAssociationModalData(HttpServletRequest request, @ModelAttribute("componentRule") ComponentRuleAssociation componentRule, @RequestParam("componentId") int componentId, @RequestParam("componentVisibleId") int componentVisibleId, @RequestParam(value = "viewMode") String viewMode, @RequestParam(value = "displayName") String displayName) {
+    public ModelAndView getRuleAssociationModalData(@ModelAttribute("componentRule") ComponentRuleAssociation componentRule, @RequestParam("componentId") int componentId, @RequestParam("componentVisibleId") int componentVisibleId, @RequestParam(value = "viewMode") String viewMode, @RequestParam(value = "displayName") String displayName) {
         ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/app-config/add-rule-association-modal");
         componentRule.setRule(loadsheetManagementService.getComponentVisibilityRules(componentVisibleId));
         componentRule.setComponentVisibilityId(componentVisibleId);
@@ -874,14 +876,10 @@ public class AppConfigRestController {
         mav.addObject("viewMode", viewMode);
 
         // Adding details to session for create rule back button
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            // Adding component ID and Visibility ID to session category object
-            LoadSheetCategoryDetails catDetails = (LoadSheetCategoryDetails) session.getAttribute("CATEGORY_DETAILS");
-            catDetails.setComponentId(componentId);
-            catDetails.setVisibilityId(componentVisibleId);
-            session.setAttribute("CATEGORY_DETAILS", catDetails);
-        }
+        AppConfigSessionData appConfigData = sessionBean.getAppConfigSessionData();
+        LoadSheetCategoryDetails catDetails = appConfigData.getCategoryDetails();
+        if (catDetails != null)
+        	catDetails.updateComponentVisibleId(componentId, componentVisibleId);
 
         return mav;
     }
@@ -889,9 +887,10 @@ public class AppConfigRestController {
     /* ================== Save Rule Association ================== */
     @RequestMapping(value = "/save-rule-association-modal-data", method = RequestMethod.POST)
     @ResponseBody
-    public void saveRuleAssociationModalData(@ModelAttribute("componentRule") ComponentRuleAssociation componentRule, HttpSession session, HttpServletResponse response) throws Exception {
-        HeaderUser currentUser = (HeaderUser) session.getAttribute("currentUser");
-        componentRule.setCreatedBy(currentUser.getSso());
+    public void saveRuleAssociationModalData(@ModelAttribute("componentRule") ComponentRuleAssociation componentRule, HttpServletResponse response) throws Exception {
+    	UserContext userContext = sessionBean.getUserContext();
+        String userSSO = userContext.getUserSSO();
+        componentRule.setCreatedBy(userSSO);
         try {
             loadsheetManagementService.saveComponentRules(componentRule);
         } catch (Exception e) {

@@ -6,7 +6,7 @@
 	    
 	    <script src="${commonStaticUrl}/js/jquery.dataTables.min.js" type="text/javascript"></script>
 		<link href="${commonStaticUrl}/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
-	     <link href="${pageContext.request.contextPath}/css/admin-console/components/vendor-templates.css" rel="stylesheet" type="text/css"/> 
+	     <link href="${baseUrl}/css/admin-console/components/vendor-templates.css" rel="stylesheet" type="text/css"/> 
 	</head>
 	<body>
 		<%@ include file="../../../jsp/jsp-fragment/global/header.jsp" %>
@@ -17,7 +17,7 @@
 				<div class="table_div" >
 						<span class="clear-both floatRight addRow">
 							<!--  <a  class="add-template">Create Template</a>-->
-							<a href="${pageContext.request.contextPath}/admin-console/components/create-modify-comp-visiblity-override-page.htm?isCreatePage=true&overrideId=0">Create Component Visibility Override
+							<a href="${baseUrl}/admin-console/components/create-modify-comp-visiblity-override-page.htm?isCreatePage=true&overrideId=0">Create Component Visibility Override
 								<img src="${commonStaticUrl}/images/add.png" class="centerImage handCursor" alt="Add Row"/>
 							</a>
 						</span>
@@ -57,6 +57,6 @@
 		
 	</body>
 	<!-- Scripts -->
-	<script src="${context}/js/admin-console/components/comp-visiblity-override.js" type="text/javascript"></script>
+	<script src="${baseUrl}/js/admin-console/components/comp-visiblity-override.js" type="text/javascript"></script>
 	
 </html>

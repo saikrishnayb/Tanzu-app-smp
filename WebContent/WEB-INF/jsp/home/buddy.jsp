@@ -8,9 +8,6 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 	<meta http-equiv="pragma" content="no-cache" />
-	<c:set var="context" scope="request">
-		<c:out value="${pageContext.request.contextPath}" />
-	</c:set>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">	
 <style type="text/css">
 
@@ -19,7 +16,7 @@
 
   </style>				
 		
-<script src="<c:out value='${context}'/>/js/buddy.js" type="text/javascript"></script>		
+<script src="<c:out value='${baseUrl}'/>/js/buddy.js" type="text/javascript"></script>		
 
 <body>
 <div id="buddyPopup">

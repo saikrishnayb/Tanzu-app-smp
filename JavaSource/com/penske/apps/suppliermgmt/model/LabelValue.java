@@ -18,10 +18,6 @@ package com.penske.apps.suppliermgmt.model;
  */
 public class LabelValue{
 	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 5911309572205062356L;
 	private int labelId;
 	private String labelValue;
 	

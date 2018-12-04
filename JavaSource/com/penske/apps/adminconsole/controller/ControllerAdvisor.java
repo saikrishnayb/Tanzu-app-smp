@@ -1,16 +1,14 @@
 package com.penske.apps.adminconsole.controller;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.File;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.UUID;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,29 +18,32 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import com.penske.apps.adminconsole.annotation.SmcSecurity.SecurityFunction;
 import com.penske.apps.adminconsole.exceptions.UnauthorizedSecurityFunctionException;
+import com.penske.apps.smccore.base.exception.HumanReadableException;
+import com.penske.apps.suppliermgmt.annotation.CommonStaticUrl;
+import com.penske.apps.suppliermgmt.annotation.SmcSecurity.SecurityFunction;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
-import com.penske.apps.suppliermgmt.common.exception.HumanReadableException;
+import com.penske.apps.suppliermgmt.interceptor.CommonModelAttributesHandlerInterceptor;
 import com.penske.apps.suppliermgmt.model.ErrorModel;
 import com.penske.apps.suppliermgmt.model.UserContext;
 
 @ControllerAdvice
-@EnableWebMvc
 public class ControllerAdvisor {
 
-    @Autowired
+    @Autowired(required=false)
     private ServletContext servletContext;
     @Autowired
     private SuppliermgmtSessionBean sessionBean;
+    @Autowired
+    @CommonStaticUrl
+    private URL commonStaticUrl;
 
     private static Logger logger = Logger.getLogger(ControllerAdvisor.class);
 
     @ExceptionHandler(UnauthorizedSecurityFunctionException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ModelAndView handleUnauthorizedSecurityFunctionException(UnauthorizedSecurityFunctionException exception) {
+    public ModelAndView handleUnauthorizedSecurityFunctionException(HttpServletRequest request, UnauthorizedSecurityFunctionException exception) {
 
         ModelAndView modelAndView = new ModelAndView("error/global-error-page");
 
@@ -89,6 +90,7 @@ public class ControllerAdvisor {
         model.setMessage("You do not have authorization for the requested resource.");
 
         modelAndView.addObject(model);
+        CommonModelAttributesHandlerInterceptor.addMissingRequestAttributes(request, sessionBean, commonStaticUrl, modelAndView);
         return modelAndView;
     }
 
@@ -135,29 +137,22 @@ public class ControllerAdvisor {
             }
         }
 
-        String pathInfo = request.getServletPath();
+        String pathInfo = request.getPathInfo();
         String leftNavDirectory = StringUtils.substringBeforeLast(pathInfo,  "/");
 
-        String realPath = servletContext.getRealPath("WEB-INF/jsp/jsp-fragment" + leftNavDirectory + "/left-nav.jsp");
-
-        boolean sidebarExist = true;
-        InputStream is = null;
-        try{
-            is = new FileInputStream(realPath);
-        } catch(FileNotFoundException e1){
-            logger.debug(e1);
-            sidebarExist = false;
-        } finally{
-            try {
-                is.close();
-            } catch (IOException e1) {
-                logger.error(e1.getMessage());
-            }
+        boolean sidebarExists = false;
+        if(servletContext != null)
+        {
+        	String realPath = servletContext.getRealPath("WEB-INF/jsp/jsp-fragment" + leftNavDirectory + "/left-nav.jsp");
+            File leftNavFile = new File(realPath);
+            sidebarExists = leftNavFile.isFile();
         }
+        
         logger.error("exception in application>>>",e);
         ModelAndView mav = new ModelAndView("/error/error");
         mav.addObject("leftNavDirectory", leftNavDirectory);
-        mav.addObject("sidebarExists", sidebarExist);
+        mav.addObject("sidebarExists", sidebarExists);
+        CommonModelAttributesHandlerInterceptor.addMissingRequestAttributes(request, sessionBean, commonStaticUrl, mav);
         return mav;
     }
 }

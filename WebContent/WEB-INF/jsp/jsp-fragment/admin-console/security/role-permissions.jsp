@@ -1,5 +1,4 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<c:set var="context" value="${pageContext.request.contextPath}"  scope="page" />
 
 <c:forEach var="tab" items="${tabs}">
    <c:if test="${tab.permissionsCount > 0}">
@@ -26,4 +25,4 @@
    </c:if>
 </c:forEach>
 
-<script src="${context}/js/admin-console/security/role-permissions.js" type="text/javascript"></script>
+<script src="${baseUrl}/js/admin-console/security/role-permissions.js" type="text/javascript"></script>

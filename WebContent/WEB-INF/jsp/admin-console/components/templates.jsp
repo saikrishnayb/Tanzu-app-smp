@@ -6,7 +6,7 @@
 	    
 	    <script src="${commonStaticUrl}/js/jquery.dataTables.min.js" type="text/javascript"></script>
 		<link href="${commonStaticUrl}/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
-	     <link href="${pageContext.request.contextPath}/css/admin-console/components/vendor-templates.css" rel="stylesheet" type="text/css"/> 
+	     <link href="${baseUrl}/css/admin-console/components/vendor-templates.css" rel="stylesheet" type="text/css"/> 
 	</head>
 	<body>
 		<%@ include file="../../../jsp/jsp-fragment/global/header.jsp" %>
@@ -128,6 +128,6 @@
 		
 	</body>
 	<!-- Scripts -->
-	<script src="${context}/js/admin-console/components/templates.js" type="text/javascript"></script>
+	<script src="${baseUrl}/js/admin-console/components/templates.js" type="text/javascript"></script>
 	
 </html>

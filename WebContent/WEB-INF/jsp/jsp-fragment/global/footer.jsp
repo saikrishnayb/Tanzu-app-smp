@@ -9,7 +9,6 @@
 <div id="spinner-modal" class="modal">
 	<img id="spinnerBig" src="${commonStaticUrl}/images/spinner-big.gif"/>
 </div>
-<input type="hidden" id="application-user-role-id" value="${currentUser.roleId}" />
 <div id="role-modal" class="modal role-modal" title="Application Permissions For User"></div>
 <div id="customized-ajax-error" class="modal ajax-error-modal"><div class="custom-ajax-error-div"><img src="${commonStaticUrl}/images/warning.png"><p></p></div></div>
 <!-- Status Alert -->

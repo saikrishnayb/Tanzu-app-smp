@@ -1,7 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="/WEB-INF/tld/taglib.tld" prefix="tl"%>
-<c:set var="context" value="${pageContext.request.contextPath}"  scope="page" />
-<script src="${context}/js/overlay/globaloverlay.js" type="text/javascript"></script>
+<script src="${baseUrl}/js/overlay/globaloverlay.js" type="text/javascript"></script>
 <nav>
 	
 	<ul style="margin-top:4px">
@@ -25,7 +24,7 @@
 					<c:set var="hasSecurityTab" value="1"></c:set>
 				</tl:isAuthorized>		
 				<c:if test="${hasSecurityTab == '1'}">
-					<li><a id="tab-security" href="${pageContext.request.contextPath}/admin-console/security/navigate-security.htm" onclick="javascript:loadProcessImage();">Security</a></li>
+					<li><a id="tab-security" href="${baseAppUrl}/admin-console/security/navigate-security.htm" onclick="javascript:loadProcessImage();">Security</a></li>
 				</c:if>				
 				
 				<!--  Check if user has access to at least one lef nav inside Components -->
@@ -45,7 +44,7 @@
 				<!-- Include Components only if user has access to at least one left nav inside Components -->
 				<c:if test="${hasComponents == '1'}">
                   <tl:penskeOnly>
-					<li><a id="tab-components"  href="${pageContext.request.contextPath}/admin-console/components/navigate-components.htm" onclick="javascript:loadProcessImage();">Components</a></li>
+					<li><a id="tab-components"  href="${baseAppUrl}/admin-console/components/navigate-components.htm" onclick="javascript:loadProcessImage();">Components</a></li>
                   </tl:penskeOnly>
 				</c:if>
 				
@@ -80,7 +79,7 @@
 				<!-- Include app config if user has access to at least one left nav inside app config -->
 				<c:if test="${hasAppConfig == '1'}">
                   <tl:penskeOnly>
-					<li><a id="tab-app-config" href="${pageContext.request.contextPath}/admin-console/app-config/navigate-app-config.htm" onclick="javascript:loadProcessImage();">App Config</a></li>
+					<li><a id="tab-app-config" href="${baseAppUrl}/admin-console/app-config/navigate-app-config.htm" onclick="javascript:loadProcessImage();">App Config</a></li>
                   </tl:penskeOnly>
 				</c:if>
 			</ul>

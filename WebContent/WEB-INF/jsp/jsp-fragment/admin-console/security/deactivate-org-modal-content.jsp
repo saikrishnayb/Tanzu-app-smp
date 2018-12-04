@@ -1,5 +1,4 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<c:set var="context" value="${pageContext.request.contextPath}" scope="page" />
 <c:choose>
 	<c:when test="${canDelete eq false}">
 		<div id="message-text" class="floatLeft clear-left">

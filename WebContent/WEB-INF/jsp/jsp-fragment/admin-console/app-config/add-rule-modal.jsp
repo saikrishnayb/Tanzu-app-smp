@@ -1,6 +1,4 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<c:set var="context" value="${pageContext.request.contextPath}" scope="page" />
-
 <form id="add-rule-form">
 	<span class="floatLeft clear-left errorMsg">* indicates a required field.</span>
 <label class="floatLeft clear-left">In addition to Status and Priority please choose at least one other field from the options below </label>
@@ -53,4 +51,4 @@
 	</div>
 </form>
 
-<script src="${context}/js/admin-console/app-config/modals/add-rule-modal.js" type="text/javascript"></script>
+<script src="${baseUrl}/js/admin-console/app-config/modals/add-rule-modal.js" type="text/javascript"></script>

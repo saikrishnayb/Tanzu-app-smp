@@ -4,9 +4,6 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 	<meta http-equiv="pragma" content="no-cache" />
-	<c:set var="context" scope="request">
-		<c:out value="${pageContext.request.contextPath}" />
-	</c:set>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">		
 
 <body>

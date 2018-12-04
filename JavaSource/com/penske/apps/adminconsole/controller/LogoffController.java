@@ -2,12 +2,11 @@ package com.penske.apps.adminconsole.controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.penske.apps.adminconsole.annotation.VendorAllowed;
+import com.penske.apps.suppliermgmt.annotation.VendorAllowed;
 import com.penske.util.CPTBaseServlet;
 
 /**
@@ -20,7 +19,7 @@ public class LogoffController {
 
     @VendorAllowed
     @RequestMapping(value = {"/exit", "/logoff"})
-    public void loadWelcome(HttpServletRequest request, HttpServletResponse response, HttpSession session){
+    public void loadWelcome(HttpServletRequest request, HttpServletResponse response){
 
         CPTBaseServlet.logoff(request,response);
     }

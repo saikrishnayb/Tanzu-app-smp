@@ -42,7 +42,7 @@ WHERE
 INSERT 
 into 
 SMC.SMC_PO_CATEGORY (PO_CATEGORY,  DESCRIPTION,  STATUS,created_by,created_date) 
-values(#{categoryName} ,#{description},#{status},#{createdBy},CURRENT TIMESTAMP)
+values(#{categoryName} ,#{description},#{status},#{createdBy},CURRENT_TIMESTAMP)
 </insert>
 
 <!-- subCategory -->
@@ -77,7 +77,7 @@ WHERE
 INSERT 
 into 
 SMC.SMC_PO_SUBCATEGORY (PO_SUBCATEGORY,  DESCRIPTION,  STATUS,created_by,created_date) 
-values(#{subCategoryName} ,#{description},#{status},#{createdBy},CURRENT TIMESTAMP)
+values(#{subCategoryName} ,#{description},#{status},#{createdBy},CURRENT_TIMESTAMP)
 </insert>
 
 
@@ -136,14 +136,14 @@ VALUES (#{poCategoryId},#{subCategoryId},
 
 <select id="getMaxCategoryId" resultType="com.penske.apps.adminconsole.model.PoCategory"> 
 SELECT 
-	max(PO_CATEGORY_ID) as categoryId
+	COALESCE(max(PO_CATEGORY_ID), 0) as categoryId
 FROM SMC.SMC_PO_CATEGORY
 
 </select >
 <select id="getMaxSubCategoryId" resultType="Integer">
 
 SELECT
-	MAX(PO_SUBCATEGORY_ID)
+	COALESCE(MAX(PO_SUBCATEGORY_ID), 0) AS categoryId
 FROM
 	SMC.SMC_PO_SUBCATEGORY
 </select>

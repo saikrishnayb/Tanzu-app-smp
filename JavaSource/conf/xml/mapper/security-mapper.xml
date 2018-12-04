@@ -674,26 +674,6 @@
  		DELETE FROM SMC.SMC_ORG_VENDOR_ASSOC WHERE ORG_ID=#{orgId}
  	</delete>
 
-	<select id="getPenskeUserOrgSearch" resultType="com.penske.apps.adminconsole.model.Org">
- 	select orgMaster.ORG_ID as orgId,
-	orgMaster.NAME as orgName,
-	orgMaster1.name as parentOrgName,
-	orgMaster.DESCRIPTION as orgDescription,
-	orgMaster.CREATED_BY as createdBy
-	from SMC.SMC_ORG_MASTER
-	orgMaster
-	Left OUTER Join SMC.SMC_ORG_MASTER orgMaster1
-	on
-	orgMaster.PARENT_ORG_ID = orgMaster1.ORG_ID
- 	<where>
-		  <if test="orgName != null">
-		  	orgMaster.NAME=#{orgName}
-		  </if>
-	  	 <if test="parentOrgId != null">
-	  	 	AND orgMaster.ORG_ID=#{parentOrgId}
-	  	 </if>
-  	 </where>
- 	</select>
  	<select id="getOrgVendor"  resultType="int">
  		SELECT VENDOR_ID FROM SMC.SMC_ORG_VENDOR_ASSOC WHERE ORG_ID=#{orgId}
  	</select>
@@ -875,43 +855,16 @@
 		  <if test="orgName != null">
 		  	r.name=#{orgName}
 		  </if>
-	  	 <if test="parentOrgId != null">
+	  	 <if test="parentOrgId != null and parentOrgId != 0">
 	  	 	AND r.parent_org_id=#{parentOrgId}
 	  	 </if>
   	 </where>
 	</select>
 	
-	
-	
- 	<select id="getAllVendorOrg"  resultType="com.penske.apps.adminconsole.model.Org">
- 		SELECT   ORG_ID as orgId,
-         NAME as orgName,
-         DESCRIPTION as orgDescription,
-         PARENT_ORG_ID as parentOrgId,
-        (select name from
-		SMC.SMC_ORG_MASTER WHERE ORG_ID=orgMaster.PARENT_ORG_ID) as parentOrgName
-		FROM     SMC.SMC_ORG_MASTER as orgMaster
-		WHERE    ORG_ID NOT IN
-		( 
-		SELECT ORG_ID FROM SMC.SMC_ORG_MASTER
-		    START WITH ORG_ID=1 CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID ORDER BY ORG_ID 
-		)
-		<if test="orgName != null">
-		  	AND NAME=#{orgName}
-		  </if>
-	  	 <if test="parentOrgId != null">
-	  	 	AND PARENT_ORG_ID=#{parentOrgId}
-	  	 </if>
- 		START 	WITH ORG_ID IN(
-	   			SELECT ORG_ID FROM SMC.SMC_ORG_MASTER WHERE PARENT_ORG_ID IS NULL AND ORG_ID !=1
- 		)
-	 	CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID
- 	</select>
-	
 	<insert id="addEmailSent">
 		Insert into SMC.SMC_EMAIL (USER_SSO, TO_ADDRESS,EMAIL_BODY, EMAIL_SUBJECT, CREATED_DATE,
 		CREATED_BY, IS_PROCESSED) VALUES(#{userId},
-		#{toList}, #{messageContent}, #{subject}, CURRENT TIMESTAMP,#{userId}, 'N')
+		#{toList}, #{messageContent}, #{subject}, CURRENT_TIMESTAMP, #{userId}, 'N')
 		  <selectKey resultType="int" keyProperty="emailAuditId" order="AFTER" >
           	 SELECT IDENTITY_VAL_LOCAL() as identity_val FROM SYSIBM.SYSDUMMY1
 		</selectKey> 

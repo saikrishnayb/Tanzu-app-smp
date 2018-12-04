@@ -1,10 +1,8 @@
 package com.penske.apps.suppliermgmt.servlet;
 
 import java.io.IOException;
-import java.util.Enumeration;
 
 import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -14,89 +12,36 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
-import com.penske.apps.suppliermgmt.common.constants.ApplicationConstants;
 import com.penske.business.ldap.CPBLDAPSessionInfo;
 
-
-
-
-
-
-/*******************************************************************************
- *
- * @Author 		: 502299699
- * @Version 	: 1.0
- * @Date Created: Feb 10, 2015
- * @Date Modified : Feb 10, 2015
- * @Modified By : 502299699
- * @Contact 	:
- * @Description : This is the entry servlet to the application. Here all the User 
- * 				  related details and security rules are restored to the User Context 
- * 				  for the logged in User
- * @History		:
- *
- ******************************************************************************/
-public class ApplicationEntry extends HttpServlet {
-	ServletContext smcContext = null;
-
-	/**
-	 * 
-	 */
+/**
+ * This is the entry servlet to the application. Here all the User 
+ * related details and security rules are restored to the User Context 
+ * for the logged in User
+ */
+public class ApplicationEntry extends HttpServlet
+{
 	private static final long serialVersionUID = 1L;
-
-	/**
-	 * Constructor of the object.
-	 */
-	public ApplicationEntry() {
-		super();
-	}
-
-	@Override
-	public void init(ServletConfig config) throws ServletException {
-		// TODO Auto-generated method stub
-		super.init(config);
-		smcContext = config.getServletContext();
-	}
-
-	/**
-	 * Destruction of the servlet. <br>
-	 */
-	@Override
-	public void destroy() {
-		super.destroy(); // Just puts "destroy" string in log
-		// Put your code here
-	}
-
 	private static final Logger LOGGER = Logger.getLogger(ApplicationEntry.class);
+	
+	/**
+	 * The name of the session variable that holds the user's SSOID.
+	 * Only used during the login and authentication process, so it's not included in ApplicationConstants.
+	 */
+	public static final String USER_SSO = "userSSO";
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		this.doPost(request, response);
 	}
- 
 
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-	IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String strSSO = null;
 		String forwardPage 	= null;		
 		CPBLDAPSessionInfo oLdapSession = null;
 		try
 		{
-
-			LOGGER.info("Request Headers:");
-		    Enumeration names = request.getHeaderNames();
-		    while (names.hasMoreElements()) {
-		      String name = (String) names.nextElement();
-		      Enumeration values = request.getHeaders(name);
-		      if (values != null) {
-		        while (values.hasMoreElements()) {
-		          String value = (String) values.nextElement();
-		          LOGGER.info(name + ": " + value);
-		        }
-		      }
-		    }
-			
 			//Get the session associated with this request
 			HttpSession session = request.getSession( false );
 			
@@ -113,8 +58,8 @@ public class ApplicationEntry extends HttpServlet {
 				if( oLdapSession != null ){
 					LOGGER.info("SSO from LDAP in Suppliermgmt::"+oLdapSession.getLoginUserID());
 					LOGGER.info("First Name + Last Name "+oLdapSession.getFirstName()+ " "+oLdapSession.getLastName());
-					session.setAttribute(ApplicationConstants.USER_SSO, oLdapSession.getLoginUserID());
-					forwardPage = "/login/validate.htm";	
+					session.setAttribute(USER_SSO, oLdapSession.getLoginUserID());
+					forwardPage = "/app/login/validate.htm";	
 				}else
 				{
 					LOGGER.info( " LDAP information not obtained for user in Suppliermgmt"+strSSO);
@@ -140,14 +85,4 @@ public class ApplicationEntry extends HttpServlet {
 		}
 
 	}
-	/**
-	 * Initialization of the servlet. <br>
-	 *
-	 * @throws ServletException if an error occurs
-	 */
-	@Override
-	public void init() throws ServletException {
-		// Put your code here
-	}
-
 }

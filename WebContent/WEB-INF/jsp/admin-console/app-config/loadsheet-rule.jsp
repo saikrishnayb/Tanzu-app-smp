@@ -4,11 +4,11 @@
 	    <title>SMC Loadsheet Rule</title>
 	    <%@ include file="../../../jsp/jsp-fragment/global/default-head-block.jsp" %>
 	    	<!-- Scripts -->
-		<script src="${context}/js/admin-console/app-config/loadsheet-rule.js" type="text/javascript"></script>
+		<script src="${baseUrl}/js/admin-console/app-config/loadsheet-rule.js" type="text/javascript"></script>
 		<link href="${commonStaticUrl}/css/jQueryUI/jquery-ui-1.8.21.custom.css" rel="stylesheet" type="text/css"/>
 		<script src="${commonStaticUrl}/js/jquery.dataTables.min.js" type="text/javascript"></script>
 		<link href="${commonStaticUrl}/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
-		<link href="${context}/css/admin-console/app-config/delay-management.css" rel="stylesheet" type="text/css"/>
+		<link href="${baseUrl}/css/admin-console/app-config/delay-management.css" rel="stylesheet" type="text/css"/>
 	</head>
 	<body>
 		<%@ include file="../../../jsp/jsp-fragment/global/header.jsp" %>
@@ -57,7 +57,6 @@
 				<a class="buttonPrimary " href="load-create-rule.htm?requestedFrom=CREATE_RULE" >Create Rule</a>
 			</div>		
 		</div> 
-		<input type="hidden" id="common-url" value="${commonStaticUrl}"/>
 		<!-- Delete Rule Confirmation Popup -->
 		<div id="confirmDeleteModal">
 			<p id="deleteMessage"></p>

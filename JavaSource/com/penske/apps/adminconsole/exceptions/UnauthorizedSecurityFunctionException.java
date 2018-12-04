@@ -2,7 +2,7 @@ package com.penske.apps.adminconsole.exceptions;
 
 import org.springframework.web.method.HandlerMethod;
 
-import com.penske.apps.adminconsole.annotation.SmcSecurity.SecurityFunction;
+import com.penske.apps.suppliermgmt.annotation.SmcSecurity.SecurityFunction;
 
 /**
  * Custom runtime exception to be thrown when a user tries to access a method he or she does not

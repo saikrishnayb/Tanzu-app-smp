@@ -16,11 +16,6 @@ public class DefaultHeaderService implements HeaderService{
 
 	@Autowired
 	private HeaderDao headerDao;
-	
-	@Override
-	public HeaderUser getApplicationUserInfo(int userId) {
-		return headerDao.getApplicationUser(userId);
-	}
 
 	@Override
 	public HashMap<String, List<Permission>> getRoleInformation(int roleId) {

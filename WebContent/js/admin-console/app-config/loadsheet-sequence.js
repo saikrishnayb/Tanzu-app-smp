@@ -1,6 +1,6 @@
 $(document).ready(function() {
 	selectCurrentNavigation("tab-app-config", "left-nav-loadsheet-sequence");
-	var commonStaticUrl =$('#common-static-url').val();
+	var commonStaticUrl = sessionStorage.getItem('commonStaticUrl');
 	$sequenceTable=$("#sequence-table");
 	var iDisplayLength = -1;//tableRowLengthCalc();
 	//sequence table

@@ -51,11 +51,10 @@
   
     </div>
   
-    <input type="hidden" id="common-static-url" value="${commonStaticUrl}"/>
     
     <!-- Scripts -->
     <script src="${commonStaticUrl}/js/jquery.dataTables.min.js" type="text/javascript"></script>
-    <script src="${context}/js/admin-console/components/component-management.js" type="text/javascript"></script>
+    <script src="${baseUrl}/js/admin-console/components/component-management.js" type="text/javascript"></script>
   
   
   </body>

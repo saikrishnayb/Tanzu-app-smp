@@ -3,7 +3,7 @@ package com.penske.apps.suppliermgmt.service;
 import java.util.Collection;
 import java.util.List;
 
-import com.penske.apps.suppliermgmt.common.exception.SMCException;
+import com.penske.apps.suppliermgmt.exception.SMCException;
 import com.penske.apps.suppliermgmt.model.Buddies;
 import com.penske.apps.suppliermgmt.model.LabelValue;
 import com.penske.apps.suppliermgmt.model.OrgFilter;

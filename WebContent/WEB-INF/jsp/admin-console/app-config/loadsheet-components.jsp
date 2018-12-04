@@ -4,18 +4,15 @@
 	<title>Loadsheet Components</title>
 	<%@ include file="../../../jsp/jsp-fragment/global/default-head-block.jsp"%>
 	<link href="${commonStaticUrl}/css/jQueryUI/jquery-ui-1.8.21.custom.css" rel="stylesheet" type="text/css"/>
-    <script src="${context}/js/admin-console/app-config/loadsheet-components.js"	type="text/javascript"></script>
+    <script src="${baseUrl}/js/admin-console/app-config/loadsheet-components.js"	type="text/javascript"></script>
 	<script src="${commonStaticUrl}/js/jquery.dataTables.min.js" type="text/javascript"></script>
 	
 	<link href="${commonStaticUrl}/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
 	<script src="${commonStaticUrl}/js/jquery.maskedinput-1.3.min.js" type="text/javascript"></script>
-	<link href="${context}/css/admin-console/security/org.css" rel="stylesheet" type="text/css"/>
-	<link href="${context}/css/admin-console/app-config/delay-management.css" rel="stylesheet" type="text/css"/>
+	<link href="${baseUrl}/css/admin-console/security/org.css" rel="stylesheet" type="text/css"/>
+	<link href="${baseUrl}/css/admin-console/app-config/delay-management.css" rel="stylesheet" type="text/css"/>
 	<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
     <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
-	<Script>
-	var hostUrl='${context}';
-	</Script>
 </head>
 
 <!-- ***************************deactivate modal********************************** -->
@@ -26,7 +23,6 @@
 	<div id="mainContent" class="borderTop">
 		<%@ include file="../../../jsp/jsp-fragment/admin-console/app-config/left-nav.jsp"%>
 		<div class="leftNavAdjacentContainer">
-		<input type="hidden" id="common-static-url" value="${commonStaticUrl}"/>
 		<h1 style="display: inline-block;">Loadsheet Management - ${category} - ${type}</h1>
 			<div class="full-width">
 				<table id="component-table">

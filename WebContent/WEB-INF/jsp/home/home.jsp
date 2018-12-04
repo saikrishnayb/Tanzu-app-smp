@@ -6,15 +6,13 @@
 	    <title>SMC Home</title>
 	    <%@ include file="../../jsp/jsp-fragment/global/default-head-block.jsp" %>
 	    
-	    <link href="${context}/css/home/home.css" rel="stylesheet" type="text/css" />
+	    <link href="${baseUrl}/css/home/home.css" rel="stylesheet" type="text/css" />
 		<script src="${commonStaticUrl}/js/jquery.tooltip.js" type="text/javascript"></script>
 		<link href="${commonStaticUrl}/css/jquery.tooltip.css" rel="stylesheet" type="text/css"/>
-		<script src="<c:out value='${context}'/>/jQuery/jquery.blockUI.js" type="text/javascript"></script>
-		<script src="${context}/js/home/home.js" type="text/javascript"></script>
+		<script src="<c:out value='${baseUrl}'/>/jQuery/jquery.blockUI.js" type="text/javascript"></script>
+		<script src="${baseUrl}/js/home/home.js" type="text/javascript"></script>
 	</head>
 	<body style="overflow-y:hidden;">
-		<input class = "hidden" value = "${commonStaticUrl}" id = "commonStaticUrl"/>
-		<input type="hidden" name="contextRoot" id="contextRoot" value="${context }"/>
 		<c:set var = "flag" value = "Y"></c:set>
 		<div id="homePage"></div> <!-- div for identifying the page while unblocking the screen -->
 		<div id="mainContent" class="borderTop">		
@@ -57,7 +55,7 @@
 							<div class="tab-name-display">
 								<span class="tab-name">${tab.tabName}</span>
 							</div>
-							<div class="tab-image-display" id="link${tab.tabKey}"><img class="tab-image" src="${context}/${tab.imageUrl}" /></div>
+							<div class="tab-image-display" id="link${tab.tabKey}"><img class="tab-image" src="${baseUrl}/${tab.imageUrl}" /></div>
 						</li>
 						</c:if>
 					</c:forEach>

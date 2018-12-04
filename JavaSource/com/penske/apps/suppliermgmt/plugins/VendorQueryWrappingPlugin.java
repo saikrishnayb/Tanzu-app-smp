@@ -37,10 +37,10 @@ import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.type.SimpleTypeRegistry;
 import org.apache.log4j.Logger;
 
-import com.penske.apps.adminconsole.annotation.NonVendorQuery;
-import com.penske.apps.suppliermgmt.common.exception.HumanReadableException;
-import com.penske.apps.suppliermgmt.common.util.SpringBeanHelper;
+import com.penske.apps.smccore.base.annotation.NonVendorQuery;
+import com.penske.apps.smccore.base.exception.HumanReadableException;
 import com.penske.apps.suppliermgmt.model.UserContext;
+import com.penske.apps.suppliermgmt.util.SpringBeanHelper;
 
 /**
  * MyBatis plugin that wraps all queries with SQL that filters the results by vendor ID.

@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-import com.penske.apps.adminconsole.annotation.NonVendorQuery;
+import com.penske.apps.smccore.base.annotation.NonVendorQuery;
 import com.penske.apps.suppliermgmt.domain.Organization;
 import com.penske.apps.suppliermgmt.domain.UserVendorFilterSelection;
 import com.penske.apps.suppliermgmt.model.Buddies;

@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-import com.penske.apps.adminconsole.annotation.NonVendorQuery;
 import com.penske.apps.adminconsole.model.HeaderUser;
 import com.penske.apps.adminconsole.model.Org;
 import com.penske.apps.adminconsole.model.Permission;
@@ -18,6 +17,8 @@ import com.penske.apps.adminconsole.model.UserType;
 import com.penske.apps.adminconsole.model.VendorLocation;
 import com.penske.apps.adminconsole.model.VendorTree;
 import com.penske.apps.adminconsole.service.MailRequest;
+import com.penske.apps.smccore.base.annotation.NonVendorQuery;
+import com.penske.apps.suppliermgmt.model.UserContext;
 
 /**
  * dao methods for security-mapper.
@@ -155,10 +156,10 @@ public interface SecurityDao {
     public List<String> getAllVendorFullNames();
 
     @NonVendorQuery
-    public List<Org> getOrgList(HeaderUser currentUser);
+    public List<Org> getOrgList(@Param("orgId") int orgId, @Param("orgName") String orgName, @Param("parentOrgId") Integer parentOrgId);
 
     @NonVendorQuery
-    public List<Org> getPenskeUserOrgList(HeaderUser currentUser);
+    public List<Org> getPenskeUserOrgList();
 
     @NonVendorQuery
     public void addOrg(Org org);
@@ -189,9 +190,6 @@ public interface SecurityDao {
     public List<Integer> getOrgVendor(@Param("orgId")int orgId);
 
     @NonVendorQuery
-    public List<Org> getPenskeUserOrgSearch(HeaderUser currentUser);
-
-    @NonVendorQuery
     public SignatureInitial getSignatureInitialByUserId(int userId);
 
     @NonVendorQuery
@@ -217,7 +215,7 @@ public interface SecurityDao {
 
     //Vendor User Change - 03/02/16
     @NonVendorQuery
-    public List<User> getVendorUserList(HeaderUser currentUser);
+    public List<User> getVendorUserList(UserContext currentUser);
 
     @NonVendorQuery
     public List<Role> getVendorRoles(@Param("isVendor") boolean isVendor,@Param("roleId") int roleId,@Param("orgId") int orgId);
@@ -227,9 +225,6 @@ public interface SecurityDao {
 
     @NonVendorQuery
     public List<Org> getVendorOrg(@Param("isVendor") boolean isVendor,@Param("orgId") int orgId);
-
-    @NonVendorQuery
-    public List<Org> getAllVendorOrg(HeaderUser currentUser);
 
     @NonVendorQuery
     public void addEmailSent(MailRequest emailData);

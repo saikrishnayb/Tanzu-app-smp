@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-import com.penske.apps.adminconsole.annotation.NonVendorQuery;
 import com.penske.apps.adminconsole.model.CategoryAssociation;
 import com.penske.apps.adminconsole.model.PoCategory;
 import com.penske.apps.adminconsole.model.SubCategory;
+import com.penske.apps.smccore.base.annotation.NonVendorQuery;
 /**
  * 
  * @author 600144005
@@ -85,6 +85,4 @@ public interface CategoryManagementDao {
 
     @NonVendorQuery
 	public void updateCategoryAssociation(CategoryAssociation addAssociationForm);
-
-	
 }

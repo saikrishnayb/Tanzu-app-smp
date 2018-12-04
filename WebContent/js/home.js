@@ -19,13 +19,6 @@ $(document).ready(function(){
 					$('#modalPopup').dialog('open');
 				});
 		
-				$('.actionCount').on('click', function() {
-					$this = $(this).attr('id');
-					$('#itemDetail').load("${context}/jsp/confirmation/"+$this+".jsp");
-					$("[id$='summary'] > [id$='Container']").removeClass('selectedItem');
-					$("#"+$this+" > [id$='Container']").addClass('selectedItem');
-				});
- 
 				$('#accordionMain').accordion({					
 					activate: 0,
 					collapsible: true							
@@ -45,11 +38,6 @@ $(document).ready(function(){
 				});				
 				
 				
-				$.get("${context}/src/accordion.html", function(data) {	
-						$("#viewSource").append(data);	
-					},"html");
-			
- 
 				$('.menu').fixedMenu();
 				  $('#Clear').click( function (e) {	                         
 	                          

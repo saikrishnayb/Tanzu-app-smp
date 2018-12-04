@@ -1,5 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%-- <script src="${context}/js/admin-console/components/add-visibility.js" type="text/javascript"></script> --%>
+<%-- <script src="${baseUrl}/js/admin-console/components/add-visibility.js" type="text/javascript"></script> --%>
 <div class="add-visibility-outer-div">
 							
 						<form id="add-visibility-form">

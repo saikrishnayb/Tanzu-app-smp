@@ -33,9 +33,7 @@ public class ErrorModel {
 	 * @param message
 	 * @param exceptionDetails
 	 */
-	public ErrorModel(int errorCode, String message,
-			Exception exceptionDetails) {
-		super();
+	public ErrorModel(int errorCode, String message, Exception exceptionDetails) {
 		this.errorCode = errorCode;
 		this.message = message;
 		this.exceptionDetails = exceptionDetails;
@@ -46,11 +44,15 @@ public class ErrorModel {
 	 * @param message
 	 */
 	public ErrorModel(int errorCode, String message) {
-		super();
 		this.errorCode = errorCode;
 		this.message = message;
 	}
 
+	public ErrorModel(String message)
+	{
+		this.message = message;
+	}
+	
 	/**
 	 * @return the errorCode
 	 */

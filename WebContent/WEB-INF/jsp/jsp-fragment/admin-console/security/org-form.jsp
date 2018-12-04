@@ -35,8 +35,8 @@
 </div>
 <fieldset id="user-fieldset" class="user-fieldset user-fieldset-height">
 				<div class="org-form-container">
-						<form id="org-form"   method="POST" 	<c:if test="${isCreatePage eq true}"> action="${pageContext.request.contextPath}/admin-console/security/create-org.htm" </c:if>
-						<c:if test="${isCreatePage eq false}"> action="${pageContext.request.contextPath}/admin-console/security/update-org.htm" </c:if>> 
+						<form id="org-form"   method="POST" 	<c:if test="${isCreatePage eq true}"> action="${baseAppUrl}/admin-console/security/create-org.htm" </c:if>
+						<c:if test="${isCreatePage eq false}"> action="${baseAppUrl}/admin-console/security/update-org.htm" </c:if>> 
 						<input id="org-id" name="orgId" type="text" class="displayNone" class="input" value="${editableOrg.orgId}"/>
 					<div id="org-components" class="org-component">
 						<div id="org-id-div" class="single-line-content">

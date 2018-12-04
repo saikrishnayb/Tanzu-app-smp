@@ -1,5 +1,4 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<c:set var="context" value="${pageContext.request.contextPath}"  scope="page" />
 <div>
 
 	<div class="add-categories">
@@ -27,5 +26,5 @@
 	<a href="#" class="buttonPrimary save-category" tabIndex="-1">Add</a>
 </div>
 </div>
-<script src="${context}\js\admin-console\components\po-cat-modal.js" type="text/javascript"></script>
+<script src="${baseUrl}\js\admin-console\components\po-cat-modal.js" type="text/javascript"></script>
 

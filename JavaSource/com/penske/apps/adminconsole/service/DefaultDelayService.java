@@ -16,8 +16,8 @@ import com.penske.apps.adminconsole.model.DelayReasonModel;
 import com.penske.apps.adminconsole.model.DelayTypeModel;
 import com.penske.apps.adminconsole.model.DelayTypeReason;
 import com.penske.apps.adminconsole.util.ApplicationConstants;
-import com.penske.apps.suppliermgmt.common.util.LookupManager;
 import com.penske.apps.suppliermgmt.model.LookUp;
+import com.penske.apps.suppliermgmt.util.LookupManager;
 
 /**
  * This is the Defauly Delay Service class that implements

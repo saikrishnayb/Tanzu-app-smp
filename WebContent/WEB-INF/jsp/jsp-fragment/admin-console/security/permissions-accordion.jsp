@@ -1,6 +1,4 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<c:set var="context" value="${pageContext.request.contextPath}"
-	scope="page" />
 		<c:if test="${isHeaderRoleInfo eq true}">
 			<div class="role-modal-blurb">
 				<p>Based on the current role of <i>${roleName}</i> you have access to the following application functionality</p>
@@ -28,4 +26,4 @@
 				<h3><center>No permission attached to this Role</center></h3>
 			</c:otherwise>
 	</c:choose>
-<script src="${context}/js/admin-console/security/permissions-accordion.js" type="text/javascript"></script>
+<script src="${baseUrl}/js/admin-console/security/permissions-accordion.js" type="text/javascript"></script>

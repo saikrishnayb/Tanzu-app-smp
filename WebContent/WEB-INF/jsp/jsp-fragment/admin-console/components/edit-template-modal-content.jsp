@@ -1,5 +1,4 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<c:set var="context" value="${pageContext.request.contextPath}" scope="page" />
 	<span class="floatRight addRow add-category">
 		<a >Add Category</a>
 		<img src="${commonStaticUrl}/images/add.png" class="centerImage handCursor" alt="Add Row"/>

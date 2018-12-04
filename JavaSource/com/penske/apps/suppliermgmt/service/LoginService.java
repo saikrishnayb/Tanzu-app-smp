@@ -23,7 +23,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.ibatis.annotations.Param;
 
-import com.penske.apps.adminconsole.annotation.SmcSecurity.SecurityFunction;
+import com.penske.apps.suppliermgmt.annotation.SmcSecurity.SecurityFunction;
+import com.penske.apps.suppliermgmt.domain.UserLoginHistory;
 import com.penske.apps.suppliermgmt.domain.UserVendorFilterSelection;
 import com.penske.apps.suppliermgmt.model.User;
 import com.penske.apps.suppliermgmt.model.UserContext;
@@ -40,8 +41,12 @@ public interface LoginService {
     public Set<SecurityFunction> getAllUserSecurityFunctions(UserContext userContext);
     public List<UserVendorFilterSelection> getUserVendorFilterSelections(@Param("userId") int userId);
 
-    public void recordUserLogin(HttpServletRequest request, UserContext userContext);
+    /**
+     * Records the fact that the user logged in, and returns an object representing the PREVIOUS time they logged in.
+     * @param request The request, to get the server name from
+     * @param userContext The user that is logging in
+     * @return The user's previous login history. This does not include the current login.
+     */
+    public UserLoginHistory recordUserLogin(HttpServletRequest request, UserContext userContext);
 
 }
-
-

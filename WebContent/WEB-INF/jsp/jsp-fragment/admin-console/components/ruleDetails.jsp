@@ -1,8 +1,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
-<c:set var="context" value="${pageContext.request.contextPath}" scope="page" />
-<script src="${context}/js/admin-console/components/template-rule.js" type="text/javascript"></script>
+<script src="${baseUrl}/js/admin-console/components/template-rule.js" type="text/javascript"></script>
 
 <div class="ruleDescription">
 	<form:form method="post"  modelAttribute="ruleMaster" id="create-rule-form">	

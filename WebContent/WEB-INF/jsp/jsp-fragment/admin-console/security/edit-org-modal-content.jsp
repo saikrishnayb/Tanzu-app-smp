@@ -2,7 +2,6 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
  <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <div id="edit-org-html">
-<c:set var="context" value="${pageContext.request.contextPath}" scope="page" />
 <%@ include file="org-form.jsp"%>
 <div class="edit-buttons">
 	<a class="secondaryLink cancel" tabIndex="-1">Cancel</a> 

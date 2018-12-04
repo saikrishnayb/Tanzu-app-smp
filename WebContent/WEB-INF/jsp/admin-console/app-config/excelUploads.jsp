@@ -4,7 +4,7 @@
 	    <title>SMC Dynamic Rules</title>
 	    <%@ include file="../../../jsp/jsp-fragment/global/default-head-block.jsp" %>
 	    
-		<link href="${context}/css/admin-console/app-config/dynamic-rules.css" rel="stylesheet" type="text/css"/>
+		<link href="${baseUrl}/css/admin-console/app-config/dynamic-rules.css" rel="stylesheet" type="text/css"/>
 		<link href="${commonStaticUrl}/css/jQueryUI/jquery-ui-1.8.21.custom.css" rel="stylesheet" type="text/css"/>
 	</head>
 	<body>
@@ -57,5 +57,5 @@
 			</div>
 		</div>
 	</body>
-	<script src="${context}/js/admin-console/app-config/excel-uploads.js" type="text/javascript"></script>
+	<script src="${baseUrl}/js/admin-console/app-config/excel-uploads.js" type="text/javascript"></script>
 </html>

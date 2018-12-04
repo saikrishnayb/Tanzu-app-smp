@@ -3,7 +3,6 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-import com.penske.apps.adminconsole.annotation.NonVendorQuery;
 import com.penske.apps.adminconsole.model.ComponentSequence;
 import com.penske.apps.adminconsole.model.CorpCode;
 import com.penske.apps.adminconsole.model.Manufacture;
@@ -15,6 +14,7 @@ import com.penske.apps.adminconsole.model.TemplatePoCategorySubCategory;
 import com.penske.apps.adminconsole.model.VendorLocation;
 import com.penske.apps.adminconsole.model.VendorTemplate;
 import com.penske.apps.adminconsole.model.VendorTemplateSearch;
+import com.penske.apps.smccore.base.annotation.NonVendorQuery;
 /**
  * 
  * @author 600144005

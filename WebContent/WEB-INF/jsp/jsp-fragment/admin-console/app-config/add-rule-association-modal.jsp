@@ -2,13 +2,11 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
-<c:set var="context" value="${pageContext.request.contextPath}" scope="page" />
-<link href="${context}/css/admin-console/app-config/add-rule-association.css" rel="stylesheet" type="text/css"/>
+<link href="${baseUrl}/css/admin-console/app-config/add-rule-association.css" rel="stylesheet" type="text/css"/>
 <form:form id="add-rule-association-form" name="add-rule-association-form" modelAttribute="componentRule" method="POST">
 		
 	<form:hidden path="componentVisibilityId" id="componentVisibilityId"></form:hidden>
 	<input id="ruleCount" type="hidden" name="ruleCount"  value="${fn:length(componentRule.rule)}"/>
-	<input type="hidden" id="common-static-url" value="${commonStaticUrl}"/>
 	<!-- hidden fields to populate option values for added select boxes -->
 	<select   id="ruleId" style="display: none">
 	         <option value=" "></option>
@@ -116,4 +114,4 @@
 	
 </form:form>
 
-<script src="${context}/js/admin-console/app-config/modals/add-rule-association-modal.js" type="text/javascript"></script>
+<script src="${baseUrl}/js/admin-console/app-config/modals/add-rule-association-modal.js" type="text/javascript"></script>

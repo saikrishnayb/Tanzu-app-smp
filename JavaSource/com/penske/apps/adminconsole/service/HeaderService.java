@@ -7,7 +7,5 @@ import com.penske.apps.adminconsole.model.HeaderUser;
 import com.penske.apps.adminconsole.model.Permission;
 
 public interface HeaderService {
-	public HeaderUser getApplicationUserInfo(int userId);
-
 	public HashMap<String, List<Permission>> getRoleInformation(int roleId);
 }

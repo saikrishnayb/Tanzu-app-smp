@@ -11,7 +11,7 @@ $(document).ready(function() {
 	var $addSubCategory =$('.add-sub-category');
 	var $poCategoryTable =$('#po-category-table');
 	var $subCategoryTable = $('#sub-category-table');
-	var commonStaticUrl =$('#common-static-url').val();
+	var commonStaticUrl = sessionStorage.getItem('commonStaticUrl');
 	var iDisplayLength = 10;//tableRowLengthCalc();
 	
 	$poCategoryTable.dataTable( { //All of the below are optional

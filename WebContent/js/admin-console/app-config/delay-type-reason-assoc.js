@@ -7,7 +7,7 @@ $(document).ready(function() {
 	var $editDelayTypeReasonModal = $('#edit-delay-type-reason-modal');
 	var $addDelayTypeReasonModal = $('#add-delay-type-reason-modal');
 	var $customErrorModal = $('#customized-ajax-error');
-	var commonStaticUrl = $('#common-url').val();
+	var commonStaticUrl = sessionStorage.getItem('commonStaticUrl');
 	
 	$addDelayTypeReasonModal.dialog({
 		

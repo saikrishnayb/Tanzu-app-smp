@@ -17,7 +17,7 @@ package com.penske.apps.suppliermgmt.dao;
  */
 import java.util.List;
 
-import com.penske.apps.adminconsole.annotation.NonVendorQuery;
+import com.penske.apps.smccore.base.annotation.NonVendorQuery;
 import com.penske.apps.suppliermgmt.model.LookUp;
 
 public interface LookUpDAO {

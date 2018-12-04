@@ -6,7 +6,6 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
  <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<c:set var="context" value="${pageContext.request.contextPath}" scope="page" />
 <title>SMC Home</title>
 	<%@ include file="../../../jsp/jsp-fragment/global/default-head-block.jsp"%>
 	
@@ -16,8 +15,8 @@
 	<link href="${commonStaticUrl}/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
 	<script src="${commonStaticUrl}/js/jquery.maskedinput-1.3.min.js" type="text/javascript"></script>
 	<link href="${commonStaticUrl}/css/jquery.dataTables.css"rel="stylesheet" type="text/css" />
-	<link href="${context}/css/admin-console/security/org.css"rel="stylesheet" type="text/css" />
-	<link href="${context}/css/admin-console/security/create-user.css"rel="stylesheet" type="text/css" />
+	<link href="${baseUrl}/css/admin-console/security/org.css"rel="stylesheet" type="text/css" />
+	<link href="${baseUrl}/css/admin-console/security/create-user.css"rel="stylesheet" type="text/css" />
 
 <Script>
 	var isCreatePage='${isCreatePage}';
@@ -50,14 +49,14 @@
 <!-- Scripts -->
 <script src="${commonStaticUrl}/js/jquery.dataTables.min.js"type="text/javascript"></script>
 <script src="${commonStaticUrl}/js/jquery.maskedinput-1.3.min.js" type="text/javascript"></script>
-<script src="${context}/js/admin-console/security/create-org.js" type="text/javascript"></script>
-<script src="${context}/js/jstree/jquery-1.10.2.min.js" type="text/javascript"></script>
+<script src="${baseUrl}/js/admin-console/security/create-org.js" type="text/javascript"></script>
+<script src="${baseUrl}/js/jstree/jquery-1.10.2.min.js" type="text/javascript"></script>
 <Script>
 var j = jQuery.noConflict();
 </Script>
 <script src="//code.jquery.com/jquery-migrate-1.2.1.js"></script>
-<link href="${context}/js/jstree/css/style.min.css" rel="stylesheet" type="text/css"/>
-<script src="${context}/js/jstree/jstree.min.js" type="text/javascript"></script>
-<script src="${context}/js/admin-console/security/vendor-hierarchy.js" type="text/javascript"></script>
-<script src="${context}/js/admin-console/security/org-form.js" type="text/javascript"></script>
+<link href="${baseUrl}/js/jstree/css/style.min.css" rel="stylesheet" type="text/css"/>
+<script src="${baseUrl}/js/jstree/jstree.min.js" type="text/javascript"></script>
+<script src="${baseUrl}/js/admin-console/security/vendor-hierarchy.js" type="text/javascript"></script>
+<script src="${baseUrl}/js/admin-console/security/org-form.js" type="text/javascript"></script>
 </html>

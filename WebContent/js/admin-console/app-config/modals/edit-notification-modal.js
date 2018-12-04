@@ -80,7 +80,7 @@ $(document).ready(function() {
 	//When a user selects an option from the dropdown, adds it to the list
 	$addlUsersSelect.on("change", function() {
 		var $addlUsersDropdown = $(this);
-		var commonUrl = $('#common-url').val();
+		var commonUrl = sessionStorage.getItem('commonStaticUrl');
 		
 		var $addlUsersSpan = $addlUsersDropdown.closest('.escalation-column').find('.addl-smc-users');
 		var np = $addlUsersSpan.attr("id");

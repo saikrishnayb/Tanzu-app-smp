@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,8 +16,8 @@ import com.penske.apps.adminconsole.model.User;
 import com.penske.apps.adminconsole.util.ApplicationConstants;
 import com.penske.apps.adminconsole.util.CommonUtils;
 import com.penske.apps.adminconsole.util.IUserConstants;
-import com.penske.apps.suppliermgmt.common.util.LookupManager;
 import com.penske.apps.suppliermgmt.model.LookUp;
+import com.penske.apps.suppliermgmt.util.LookupManager;
 import com.penske.apps.ucsc.exception.UsrCreationSvcException;
 import com.penske.apps.ucsc.model.CreatedUser;
 import com.penske.apps.ucsc.model.LDAPAttributes;
@@ -35,9 +35,6 @@ public class UserCreationServiceImpl implements UserCreationService {
 	
 	@Autowired
 	private UserInfoService remoteCreationService;
-	
-	@Autowired
-	private IMailService mailService;
 	
 	@Autowired
 	private LookupManager lookupManager;
@@ -81,11 +78,7 @@ public class UserCreationServiceImpl implements UserCreationService {
 								.substring(1,mailRequest.getToRecipientsList().toString().length() - 1)
 								.replace(", ", ","));
 						}
-						securityDao.addEmailSent(mailRequest);//Email Content to SMC_EMAIL-- Start.
-						int emailAuditId=mailRequest.getEmailAuditId();
-						mailService.sendEmail(mailRequest);
-						//Email Content to SMC_EMAIL-- update after email sent. Need to remove when moved to EBS.
-						securityDao.updateEmailSent(emailAuditId);
+						securityDao.addEmailSent(mailRequest);//Email Content to SMC_EMAIL - uses EBS
 				}catch (Exception e) {
 					logger.error("Mail Sending failed for user [ "+userObj.getUserName()+" ]",e);
 				}

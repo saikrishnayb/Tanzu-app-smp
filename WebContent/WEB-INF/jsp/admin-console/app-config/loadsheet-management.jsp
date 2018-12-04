@@ -5,10 +5,10 @@
 	   <%@ include file="../../../jsp/jsp-fragment/global/default-head-block.jsp" %>  
 	    	<!-- Scripts -->	
 	    <%@ include file="../../../jsp/jsp-fragment/global/global-scripts.jsp" %> 	  	
-		<script src="${context}/js/admin-console/app-config/loadsheet-management.js" type="text/javascript"></script>
+		<script src="${baseUrl}/js/admin-console/app-config/loadsheet-management.js" type="text/javascript"></script>
 		<script src="${commonStaticUrl}/js/jquery.dataTables.min.js" type="text/javascript"></script>
 		<link href="${commonStaticUrl}/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
-		<link href="${context}/css/admin-console/app-config/delay-management.css" rel="stylesheet" type="text/css"/>
+		<link href="${baseUrl}/css/admin-console/app-config/delay-management.css" rel="stylesheet" type="text/css"/>
 	</head>
 	<body>
 		<%@ include file="../../../jsp/jsp-fragment/global/header.jsp" %>
@@ -72,6 +72,5 @@
 				</table>
 			</div>		
 		</div> 
-		<input type="hidden" id="common-url" value="${commonStaticUrl}"/>
 	</body>
 </html>

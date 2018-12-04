@@ -10,7 +10,7 @@
 
   <tag>
     <name>isAuthorized</name>
-    <tagclass>com.penske.apps.suppliermgmt.common.util.IsAuthorized</tagclass>
+    <tagclass>com.penske.apps.suppliermgmt.taglib.IsAuthorized</tagclass>
     <bodycontent>JSP</bodycontent>
     <attribute>
       <name>tabName</name>
@@ -26,7 +26,7 @@
   
   <tag>
     <name>penskeOnly</name>
-    <tagclass>com.penske.apps.suppliermgmt.common.util.PenskeOnly</tagclass>
+    <tagclass>com.penske.apps.suppliermgmt.taglib.PenskeOnly</tagclass>
     <bodycontent>JSP</bodycontent>
   </tag>
   

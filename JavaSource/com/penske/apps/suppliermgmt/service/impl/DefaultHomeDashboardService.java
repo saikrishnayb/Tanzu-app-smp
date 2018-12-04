@@ -8,7 +8,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.penske.apps.suppliermgmt.common.constants.ApplicationConstants;
 import com.penske.apps.suppliermgmt.dao.HomeDashboardDao;
 import com.penske.apps.suppliermgmt.domain.AlertCount;
 import com.penske.apps.suppliermgmt.model.Alert;
@@ -16,6 +15,7 @@ import com.penske.apps.suppliermgmt.model.AlertHeader;
 import com.penske.apps.suppliermgmt.model.Tab;
 import com.penske.apps.suppliermgmt.model.UserContext;
 import com.penske.apps.suppliermgmt.service.HomeDashboardService;
+import com.penske.apps.suppliermgmt.util.ApplicationConstants;
 
 
 /**

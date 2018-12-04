@@ -3,16 +3,22 @@
  */
 package com.penske.apps.suppliermgmt.interceptor;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import com.penske.apps.smccore.base.plugins.CoreTimingType;
+import com.penske.apps.smccore.base.plugins.TimingBean;
+import com.penske.apps.smccore.base.plugins.TimingType;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.model.UserContext;
 
@@ -25,10 +31,20 @@ public class RequestLoggingHandlerInterceptor extends HandlerInterceptorAdapter
 {
 	private static final Logger logger = Logger.getLogger(RequestLoggingHandlerInterceptor.class);
 	private static final Logger splunk = Logger.getLogger("splunk");
+	/** True if detailed request timing information should be written to TRACE-level logs. */
+	private boolean logTimings = false;
 	
 	@Autowired
 	private SuppliermgmtSessionBean sessionBean;
 
+	/**
+	 * Holds detailed timing information on various parts of the request processing.
+	 * This is marked "required=false" because the TimingSessionBean may not be registered with
+	 * Spring in some targeted deployment environments (like production, for instance), to improve performance.
+	 */
+	@Autowired(required=false)
+	private TimingBean timingBean;
+	
 	/**
 	 * Override: @see org.springframework.web.servlet.handler.HandlerInterceptorAdapter#preHandle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.Object)
 	 */
@@ -87,6 +103,7 @@ public class RequestLoggingHandlerInterceptor extends HandlerInterceptorAdapter
 			
 			logger.info("Finished Request: " + logMsg);
 			splunk.info(logMsg);
+			logTimings(requestUrl, executeTime);
 		} catch(RuntimeException ex2) {
 			//Just log an error message, and keep going, as this is a non-critical function.
 			String msg = new StringBuilder("Failed to log performance information due to exception in postHandle: ")
@@ -116,5 +133,59 @@ public class RequestLoggingHandlerInterceptor extends HandlerInterceptorAdapter
 	private String getModuleSpecificInformation()
 	{
 		return "";
+	}
+
+	/**
+	 * Writes detailed timing information to the TRACE-level logs.
+	 * @param requestUrl The URL that the user requested.
+	 * @param overallRequestLength The amount of time the entire request took to execute.
+	 */
+	private void logTimings(String requestUrl, long overallRequestLength)
+	{
+		if(!logTimings || timingBean == null)
+			return;
+		
+		if(requestUrl.contains("getSaveStatus"))
+			return;
+		
+		Map<TimingType, Pair<Long, Long>> timings = timingBean.getAllTimings();
+		
+		if(splunk.isTraceEnabled())
+		{
+			Pair<Long, Long> queryInfo = timings.get(CoreTimingType.SMC_CORE_QUERY);
+			Long queryTime = queryInfo == null ? null : queryInfo.getLeft();
+			String splunkString = new StringBuilder("TIMINGS - ")
+				.append(CoreTimingType.SMC_CORE_QUERY.getDescription())
+				.append(": ")
+				.append(queryTime == null ? 0 : queryTime)
+				.toString();
+			splunk.trace(splunkString);
+		}
+		
+		if(logger.isTraceEnabled())
+		{
+			StringBuilder loggerSb = new StringBuilder("\n== TIMINGS ==\n");
+			loggerSb.append("  Overall: ").append(overallRequestLength);
+			for(TimingType timingType : timings.keySet())
+			{
+				Pair<Long, Long> queryInfo = timings.get(timingType);
+				Long elapsedTime = queryInfo.getLeft();
+				loggerSb.append("\n  ")
+					.append(timingType.getDescription())
+					.append(": ")
+					.append(elapsedTime);
+			}
+			logger.trace(loggerSb.toString());
+		}
+	}
+	
+	/**
+	 * Setter so the Spring container can inject a flag for whether to log detailed timing information.
+	 * @param logTimings True to log detailed timing information. False to omit it.
+	 * 	If this is true, the {@link TimingRequestBean} must be registered as a session bean with Spring.
+	 */
+	public void setLogTimings(boolean logTimings)
+	{
+		this.logTimings = logTimings;
 	}
 }

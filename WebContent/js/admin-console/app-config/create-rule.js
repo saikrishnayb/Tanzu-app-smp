@@ -11,7 +11,7 @@ var deletedRowIdArray =new Array(); //to store the deleted rowdef id's
 $(document).ready(function() {
 	 $("#ruleName").focus();
 	selectCurrentNavigation("tab-app-config", "left-nav-loadsheet-rules");
-	commonStaticUrl =$('#common-static-url').val();
+	commonStaticUrl = window.sessionStorage.getItem('commonStaticUrl');
 	var $loadsheetRuleTable = $('#createRule-Table');
 	var $assigendTable=$('#Assigned-Table');
 	

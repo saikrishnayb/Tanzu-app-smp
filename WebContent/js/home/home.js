@@ -123,7 +123,7 @@ function redirectToTab(subTabName){
 
 
 function getContextRoot() {
-	return $("#contextRoot").val();
+	return window.sessionStorage.getItem('baseAppUrl');
 }
 
 function showLoading()

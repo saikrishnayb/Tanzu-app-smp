@@ -1,6 +1,8 @@
 package com.penske.apps.adminconsole.exceptions;
 
 public class UserServiceException extends Exception {
+	private static final long serialVersionUID = 8566150549037195353L;
+	
 	private int errorCode;
 	private String message;
 	

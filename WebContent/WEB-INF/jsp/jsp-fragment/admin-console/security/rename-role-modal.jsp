@@ -11,4 +11,4 @@
 </div>
 
 
-<script src="${context}/js/admin-console/security/rename-role-modal.js" type="text/javascript"></script>
+<script src="${baseUrl}/js/admin-console/security/rename-role-modal.js" type="text/javascript"></script>

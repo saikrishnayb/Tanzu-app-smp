@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.penske.apps.adminconsole.annotation.DefaultController;
-import com.penske.apps.adminconsole.annotation.VendorAllowed;
+import com.penske.apps.suppliermgmt.annotation.DefaultController;
+import com.penske.apps.suppliermgmt.annotation.VendorAllowed;
 
 @DefaultController
 public class WebErrorCodeController {

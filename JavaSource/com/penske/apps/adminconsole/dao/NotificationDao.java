@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-import com.penske.apps.adminconsole.annotation.NonVendorQuery;
 import com.penske.apps.adminconsole.model.Notification;
 import com.penske.apps.adminconsole.model.NotificationForm;
 import com.penske.apps.adminconsole.model.NotificationParty;
+import com.penske.apps.smccore.base.annotation.NonVendorQuery;
 
 /**
  * Uses SQL statements defined in notification-mapper.xml to obtain relevant information related to notifications. Some of these may need to be deleted.

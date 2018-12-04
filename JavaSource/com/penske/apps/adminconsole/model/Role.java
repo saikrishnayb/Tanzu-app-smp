@@ -22,7 +22,6 @@ public class Role {
     private String createdBy;
     private String  modifiedBy;
     private String roleDescription;
-    private String baseRoleDisplayText;
     private String orgName;
 
     public String getOem() {
@@ -121,14 +120,6 @@ public class Role {
 
     public void setSubRoles(List<Role> subRoles) {
         this.subRoles = subRoles;
-    }
-
-    public String getBaseRoleDisplayText() {
-        return this.baseRoleDisplayText = this.orgName+"-"+this.baseRoleName+"-"+this.roleName;
-    }
-
-    public void setBaseRoleDisplayText(String baseRoleDisplayText) {
-        this.baseRoleDisplayText = baseRoleDisplayText;
     }
 
     public String getOrgName() {

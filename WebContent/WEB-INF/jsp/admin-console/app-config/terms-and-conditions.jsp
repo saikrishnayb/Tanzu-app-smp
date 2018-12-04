@@ -7,7 +7,7 @@
 	    <%@ include file="../../../jsp/jsp-fragment/global/default-head-block.jsp" %>
 	    
 		<link href="${commonStaticUrl}/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
-		<link href="${context}/css/admin-console/app-config/terms-and-conditions.css" rel="stylesheet" type="text/css" />
+		<link href="${baseUrl}/css/admin-console/app-config/terms-and-conditions.css" rel="stylesheet" type="text/css" />
 	</head>
 	<body>
 		<%@ include file="../../../jsp/jsp-fragment/global/header.jsp" %>
@@ -74,5 +74,5 @@
 	
 	<!-- Scripts -->
 	<script src="${commonStaticUrl}/js/jquery.dataTables.min.js" type="text/javascript"></script>
-	<script src="${context}/js/admin-console/app-config/terms-and-conditions.js" type="text/javascript"></script>
+	<script src="${baseUrl}/js/admin-console/app-config/terms-and-conditions.js" type="text/javascript"></script>
 </html>

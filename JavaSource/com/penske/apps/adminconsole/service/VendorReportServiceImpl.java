@@ -14,11 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.penske.apps.adminconsole.dao.batch.VendorReportDao;
+import com.penske.apps.adminconsole.batch.dao.VendorReportDao;
 import com.penske.apps.adminconsole.model.MimeTypeModel;
 import com.penske.apps.adminconsole.model.VendorReport;
 import com.penske.apps.adminconsole.model.VendorReportResults;
 import com.penske.apps.adminconsole.util.VsportalConstants;
+import com.penske.apps.suppliermgmt.annotation.VendorUploadService;
 
 /**
  * This class will implement the excel upload service.
@@ -26,7 +27,8 @@ import com.penske.apps.adminconsole.util.VsportalConstants;
  *
  */
 @Service
-public class VendorReportServiceImpl implements UploadService
+@VendorUploadService
+public class VendorReportServiceImpl implements UploadService<VendorReport>
 {
     private static Logger logger = Logger.getLogger(VendorReportServiceImpl.class);
 
@@ -34,8 +36,7 @@ public class VendorReportServiceImpl implements UploadService
     VendorReportDao objDao;
     String reportId = "";
 
-    @Override
-    public List<VendorReportResults> processVendorReportStoredProc(VendorReportResults aVendorReportResults) throws Exception
+    private List<VendorReportResults> processVendorReportStoredProc(VendorReportResults aVendorReportResults) throws Exception
     {
         objDao.processVendorReportStoredProc(aVendorReportResults);
         ArrayList<VendorReportResults> list = new ArrayList<VendorReportResults>();
@@ -65,9 +66,8 @@ public class VendorReportServiceImpl implements UploadService
      * @see com.penske.apps.vsportal.service.IUploadService#insert(java.lang.Object)
      */
     @Override
-    public void insert(Object modelObject) throws Exception
+    public void insert(VendorReport vendorReport) throws Exception
     {
-        VendorReport vendorReport = (VendorReport)modelObject;
         try
         {
             objDao.insertVendorReport(vendorReport);
@@ -84,7 +84,7 @@ public class VendorReportServiceImpl implements UploadService
      */
     @Transactional
     @Override
-    public String uploadExcelDataList(List vendorReportList) throws Exception
+    public String uploadExcelDataList(List<VendorReport> vendorReportList) throws Exception
     {
         VendorReport vendorReport = null;
         String message = "";

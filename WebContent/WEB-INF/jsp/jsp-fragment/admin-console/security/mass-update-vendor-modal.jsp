@@ -1,5 +1,4 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<c:set var="context" value="${pageContext.request.contextPath}" scope="page" />
 
 <form id="mass-update-form">
 	<span class="floatLeft clear-left errorMsg">* indicates a required field.</span>
@@ -37,4 +36,4 @@
 	</div>
 </form>
 
-<script src="${context}/js/admin-console/security/mass-update-vendor-modal.js" type="text/javascript"></script>
+<script src="${baseUrl}/js/admin-console/security/mass-update-vendor-modal.js" type="text/javascript"></script>

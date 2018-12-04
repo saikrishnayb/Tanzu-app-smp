@@ -1,5 +1,4 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<c:set var="context" value="${pageContext.request.contextPath}" scope="page" />
 
 <div id="add-subject-modal" class="modal">
 	<form id="add-subject-form">
@@ -35,4 +34,4 @@
 	</form>
 </div>
 
-<script src="${context}/js/admin-console/app-config/modals/add-subject-modal.js" type="text/javascript"></script>
+<script src="${baseUrl}/js/admin-console/app-config/modals/add-subject-modal.js" type="text/javascript"></script>

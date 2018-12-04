@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import com.penske.apps.adminconsole.annotation.SmcSecurity;
-import com.penske.apps.adminconsole.annotation.SmcSecurity.SecurityFunction;
-import com.penske.apps.adminconsole.annotation.VendorAllowed;
 import com.penske.apps.adminconsole.exceptions.UnauthorizedSecurityFunctionException;
+import com.penske.apps.suppliermgmt.annotation.SmcSecurity;
+import com.penske.apps.suppliermgmt.annotation.VendorAllowed;
+import com.penske.apps.suppliermgmt.annotation.SmcSecurity.SecurityFunction;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.model.UserContext;
 

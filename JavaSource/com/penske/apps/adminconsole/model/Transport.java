@@ -4,6 +4,8 @@ import java.text.DateFormat;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
+
+import com.penske.apps.smccore.base.util.DateUtil;
 /**
  * This class will hold all necessary data
  * on a transport object.  This is to be used
@@ -295,7 +297,7 @@ public class Transport{
 	}
 	public void setRequestedPickupDate(Date requestedPickupDate) {
 		if (requestedPickupDate == null)
-			this.requestedPickupDate = new Date(-1899,0,1);
+			this.requestedPickupDate = getAS400DefaultDate();
 		else
 			this.requestedPickupDate = requestedPickupDate;
 	}
@@ -304,7 +306,7 @@ public class Transport{
 	}
 	public void setTransitDateDelivered(Date transitDateDelivered) {
 		if (transitDateDelivered == null)
-			this.transitDateDelivered = new Date(-1899,0,1);
+			this.transitDateDelivered = getAS400DefaultDate();
 		else
 			this.transitDateDelivered = transitDateDelivered;
 	}
@@ -314,7 +316,7 @@ public class Transport{
 	public void setActDelvry(Date actDelvry) {
 		try{
 			if (actDelvry == null){
-				this.actDelvry = new Date(-1899,0,1);
+				this.actDelvry = getAS400DefaultDate();
 				setStrActDelvry(" ");
 			}else{
 				this.actDelvry = actDelvry;
@@ -354,7 +356,7 @@ public class Transport{
 	}
 	public void setHoldNotificationDate(Date holdNotificationDate) {
 		if (holdNotificationDate == null)
-			this.holdNotificationDate = new Date(-1899,0,1);
+			this.holdNotificationDate = getAS400DefaultDate();
 		else
 			this.holdNotificationDate = holdNotificationDate;
 	}
@@ -569,4 +571,8 @@ public class Transport{
 		this.liftgateModel = liftgateModel;
 	}
 
+	private Date getAS400DefaultDate()
+	{
+		return DateUtil.parseDate("0001-01-01");
+	}
 }

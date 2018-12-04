@@ -10,7 +10,7 @@ var maxGroupsCount=10; //Max number of Groups can be added
 var deletedRowIdArray =new Array(); //to store the deleted rowdef id's
 $(document).ready(function() {
 	 $("#ruleName").focus();
-	commonStaticUrl =$('#common-static-url').val();
+	commonStaticUrl = sessionStorage.getItem('commonStaticUrl');
 	var $loadsheetRuleTable = $('#createRule-Table');
 	var $assigendTable=$('#Assigned-Table');
 	var $editChckBox=$("#editCheckBox");

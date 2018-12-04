@@ -28,13 +28,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.penske.apps.smccore.base.exception.HumanReadableException;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
-import com.penske.apps.suppliermgmt.common.constants.ApplicationConstants;
-import com.penske.apps.suppliermgmt.common.exception.HumanReadableException;
-import com.penske.apps.suppliermgmt.common.util.LookupManager;
 import com.penske.apps.suppliermgmt.model.ErrorModel;
 import com.penske.apps.suppliermgmt.model.LookUp;
 import com.penske.apps.suppliermgmt.model.UserContext;
+import com.penske.apps.suppliermgmt.util.ApplicationConstants;
+import com.penske.apps.suppliermgmt.util.LookupManager;
 
 @Controller
 public class BaseController {
@@ -88,7 +88,6 @@ public class BaseController {
 			return mv;
 		}
 		mv.addObject(model);
-		mv.addObject("isNavigationExists",true);
 		return mv;
 	}
 
@@ -131,7 +130,6 @@ public class BaseController {
 			return mv;
 		}
 		mv.addObject(model);
-		mv.addObject("isNavigationExists",true);
 		return mv;
 
 	}

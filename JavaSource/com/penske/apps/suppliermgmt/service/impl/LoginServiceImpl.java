@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.penske.apps.adminconsole.annotation.SmcSecurity.SecurityFunction;
+import com.penske.apps.suppliermgmt.annotation.SmcSecurity.SecurityFunction;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.dao.LoginDAO;
 import com.penske.apps.suppliermgmt.domain.UserLoginHistory;
@@ -111,10 +111,9 @@ public class LoginServiceImpl implements LoginService{
 
 
     @Override
-    public void recordUserLogin(HttpServletRequest request, UserContext userContext) {
+    public UserLoginHistory recordUserLogin(HttpServletRequest request, UserContext userContext) {
 
         UserLoginHistory userLoginHistory = loginDao.getUserLoginHistory(userContext);
-        sessionBean.setLastUserLoginDate(userLoginHistory);
 
         int loginCount = userLoginHistory.getLoginCount();
         String serverName = request.getServerName();
@@ -126,6 +125,7 @@ public class LoginServiceImpl implements LoginService{
          */
         loginDao.putUserLogin(userContext, serverName, loginCount > 29? userLoginHistory.getFirstLoginDate() : null);
 
+        return userLoginHistory;
     }
 
 }

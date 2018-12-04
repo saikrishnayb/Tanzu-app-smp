@@ -4,9 +4,9 @@
   	<%@ include file="../../../jsp/jsp-fragment/global/default-head-block.jsp"%>
   	<link href="${commonStaticUrl}/css/jQueryUI/jquery-ui-1.8.21.custom.css" rel="stylesheet" type="text/css"/>
   	<link href="${commonStaticUrl}/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
-  	<link href="${context}/css/admin-console/security/org.css" rel="stylesheet" type="text/css"/>
+  	<link href="${baseUrl}/css/admin-console/security/org.css" rel="stylesheet" type="text/css"/>
     
-    <link href="${context}/css/admin-console/components/template.css" rel="stylesheet" type="text/css"/>
+    <link href="${baseUrl}/css/admin-console/components/template.css" rel="stylesheet" type="text/css"/>
   </head>
 
   <body>
@@ -20,7 +20,7 @@
       <div class="leftNavAdjacentContainer">
         <div class="full-width">
           <span class="floatRight addRow"> 
-            <a href="${context}/admin-console/components/create-modify-template-page.htm?isCreatePage=true &templateId=0">
+            <a href="${baseAppUrl}/admin-console/components/create-modify-template-page.htm?isCreatePage=true &templateId=0">
               <span>Create Template</span>
               <img src="${commonStaticUrl}/images/add.png" class="centerImage handCursor" alt="Add Row"/>
             </a>
@@ -79,12 +79,10 @@
 		</div>
 </div>
     <!-- Scripts -->
-    <script>var hostUrl='${context}';</script>
-    
-    <script src="${context}/js/global/modal-util.js" type="text/javascript"></script>
+    <script src="${baseUrl}/js/global/modal-util.js" type="text/javascript"></script>
     <script src="${commonStaticUrl}/js/jquery.dataTables.min.js" type="text/javascript"></script>
     <script src="${commonStaticUrl}/js/jquery.maskedinput-1.3.min.js" type="text/javascript"></script>
-    <script src="${context}/js/admin-console/components/template-form.js"   type="text/javascript"></script>
+    <script src="${baseUrl}/js/admin-console/components/template-form.js"   type="text/javascript"></script>
   </body>
 
 </html>

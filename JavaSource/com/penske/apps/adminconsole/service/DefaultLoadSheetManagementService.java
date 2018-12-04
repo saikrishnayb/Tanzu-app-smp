@@ -8,11 +8,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.penske.apps.adminconsole.dao.LoadsheetManagementDao;
 import com.penske.apps.adminconsole.enums.PoCategoryType;
 import com.penske.apps.adminconsole.model.ComponentRuleAssociation;

@@ -4,12 +4,12 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-import com.penske.apps.adminconsole.annotation.NonVendorQuery;
 import com.penske.apps.adminconsole.model.DelayModel;
 import com.penske.apps.adminconsole.model.DelayPoModel;
 import com.penske.apps.adminconsole.model.DelayReasonModel;
 import com.penske.apps.adminconsole.model.DelayTypeModel;
 import com.penske.apps.adminconsole.model.DelayTypeReason;
+import com.penske.apps.smccore.base.annotation.NonVendorQuery;
 
 /**
  * This is the Dao interface for method calls to the database

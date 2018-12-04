@@ -7,7 +7,7 @@
 	<script src="${commonStaticUrl}/js/jquery.dataTables.min.js" type="text/javascript"></script>
 	<link href="${commonStaticUrl}/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
 	<script src="${commonStaticUrl}/js/jquery.maskedinput-1.3.min.js" type="text/javascript"></script>
-	<link href="${context}/css/admin-console/security/users.css" rel="stylesheet" type="text/css"/>
+	<link href="${baseUrl}/css/admin-console/security/users.css" rel="stylesheet" type="text/css"/>
 </head>
 
 <!-- ******************************edit modal******************************** -->
@@ -30,5 +30,5 @@
 	<input type="hidden" id="tabNavUser" value="left-nav-vendor-users">
 </body>
 <!-- Scripts -->
-<script src="${context}/js/admin-console/security/users.js" type="text/javascript"></script>
+<script src="${baseUrl}/js/admin-console/security/users.js" type="text/javascript"></script>
 </html>

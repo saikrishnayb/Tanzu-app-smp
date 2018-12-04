@@ -200,46 +200,40 @@ public class DefaultRoleService implements RoleService {
 	
 	@Override
 	@Transactional
-	public void addRole(Role role, int[] functionIds, String manufacturer) throws Exception {
+	public void addRole(Role role, int[] functionIds) throws Exception {
 		int newRoleId = 0;
-		/*int isRoleExist=roleDao.checkRoleExist(role);
-		if(isRoleExist==0){*/
-			//role.setVendor(manufacturer);
-			
-			// Role name cannot be null or blank.
-			if (StringUtils.isEmpty(role.getRoleName())) {
-				return;
-			}
-			// Base Role ID cannot be negative.
-			else if (role.getBaseRoleId() < 0) {
-				return;
-			}
-			// The role must have permissions
-			else if (functionIds.length == 0) {
-				return;
-			}
-			try{
-					roleDao.addRole(role);
-			}catch(Exception e){
-				throw e;
-			}	
-			newRoleId = roleDao.getNewRoleId();
-			
-			// The just-created role ID cannot be negative or 0.
-			if (newRoleId <= 0) {
-				return;
-			}
-			else {
-				for (int i = 0; i < functionIds.length; i++) {
-					// The security function ID cannot be negative or 0.
-					if (functionIds[i] > 0) {
-						roleDao.addRoleSecurityFunction(newRoleId, functionIds[i]);
-					}
+		
+		// Role name cannot be null or blank.
+		if (StringUtils.isEmpty(role.getRoleName())) {
+			return;
+		}
+		// Base Role ID cannot be negative.
+		else if (role.getBaseRoleId() < 0) {
+			return;
+		}
+		// The role must have permissions
+		else if (functionIds.length == 0) {
+			return;
+		}
+		try{
+				roleDao.addRole(role);
+		}catch(Exception e){
+			throw e;
+		}	
+		newRoleId = roleDao.getNewRoleId();
+		
+		// The just-created role ID cannot be negative or 0.
+		if (newRoleId <= 0) {
+			return;
+		}
+		else {
+			for (int i = 0; i < functionIds.length; i++) {
+				// The security function ID cannot be negative or 0.
+				if (functionIds[i] > 0) {
+					roleDao.addRoleSecurityFunction(newRoleId, functionIds[i]);
 				}
 			}
-		/*}else{
-			throw new Exception("An active role already exists with the role name "+role.getBaseRoleName());
-		}*/
+		}
 	}
 	
 	@Override

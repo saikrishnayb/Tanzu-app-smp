@@ -418,10 +418,11 @@ function hideLoadingOnIframeLoad(){
 }
 
 function getContextRoot() {
-	return $("#contextRoot").val();
+	//This gets the base url for the SMC container app, not the individual app running inside the iframe
+	return window.sessionStorage.getItem('baseContainerAppUrl');
 }
 
-var commonStaticUrl = $("#commonStaticUrl").val();
+var commonStaticUrl = window.sessionStorage.getItem('commonStaticContainerUrl');
 
 function getDateFormat(inputDate)
 {

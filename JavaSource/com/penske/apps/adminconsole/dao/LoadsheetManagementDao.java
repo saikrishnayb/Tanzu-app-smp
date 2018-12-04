@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-import com.penske.apps.adminconsole.annotation.NonVendorQuery;
 import com.penske.apps.adminconsole.enums.PoCategoryType;
 import com.penske.apps.adminconsole.model.ComponentRuleAssociation;
 import com.penske.apps.adminconsole.model.ComponentVisibilityModel;
@@ -17,6 +16,7 @@ import com.penske.apps.adminconsole.model.LoadsheetSequenceMaster;
 import com.penske.apps.adminconsole.model.RuleDefinitions;
 import com.penske.apps.adminconsole.model.RuleMaster;
 import com.penske.apps.adminconsole.model.TemplateComponentRuleAssociation;
+import com.penske.apps.smccore.base.annotation.NonVendorQuery;
 import com.penske.apps.suppliermgmt.model.UserContext;
 
 public interface LoadsheetManagementDao {

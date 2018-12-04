@@ -1,7 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<c:set var="context" value="${pageContext.request.contextPath}"/>
 
-<link href="${context}/css/global/vendor-filter.css" rel="stylesheet" type="text/css"/>    
+<link href="${baseUrl}/css/global/vendor-filter.css" rel="stylesheet" type="text/css"/>    
 
 <div class="modal-content" data-modal-title="Vendor Filter" data-modal-width="500">
 
@@ -47,4 +46,4 @@
   
 </div>
 
-<script src="${context}/js/global/vendor-filter.js" type="text/javascript"></script>
+<script src="${baseUrl}/js/global/vendor-filter.js" type="text/javascript"></script>

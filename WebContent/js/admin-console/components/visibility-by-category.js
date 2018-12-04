@@ -6,7 +6,7 @@ $(document).ready(function() {
 	var $visibilityModal =$('#visibility-modal');
 	var $componentTable = $('#component-table');
 	var $deleteComponentModal = $('#delete-component-modal');
-	var commonStaticUrl =$('#common-static-url').val();
+	var commonStaticUrl = sessionStorage.getItem('commonStaticUrl');
 	var iDisplayLength = tableRowLengthCalc();
 	    
 		//datatable

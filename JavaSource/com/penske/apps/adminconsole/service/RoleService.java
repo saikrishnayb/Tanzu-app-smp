@@ -23,7 +23,7 @@ public interface RoleService {
 	
 	public boolean checkForUsers(int roleId);
 	
-	public void addRole(Role role, int[] functionIds, String manufacturer) throws Exception;
+	public void addRole(Role role, int[] functionIds) throws Exception;
 	
 	public void modifyRole(Role role, int[] functionIds);
 	

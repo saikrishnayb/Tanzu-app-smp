@@ -5,10 +5,10 @@ import java.util.Set;
 
 import org.apache.ibatis.annotations.Param;
 
-import com.penske.apps.adminconsole.annotation.NonVendorQuery;
 import com.penske.apps.adminconsole.model.Permission;
 import com.penske.apps.adminconsole.model.Role;
 import com.penske.apps.adminconsole.model.Tab;
+import com.penske.apps.smccore.base.annotation.NonVendorQuery;
 
 
 public interface RoleDao {

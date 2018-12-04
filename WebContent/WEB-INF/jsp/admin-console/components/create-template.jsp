@@ -3,7 +3,7 @@
 	<head> 
 	    <title>SMC Home</title>
 	    <%@ include file="../../../jsp/jsp-fragment/global/default-head-block.jsp" %>
-	    <link href="${pageContext.request.contextPath}/css/admin-console/components/create-template.css" rel="stylesheet" type="text/css"/> 
+	    <link href="${baseUrl}/css/admin-console/components/create-template.css" rel="stylesheet" type="text/css"/> 
 	 	 <script src="${commonStaticUrl}/js/jquery.dataTables.min.js" type="text/javascript"></script>
 		 <link href="${commonStaticUrl}/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
 	</head>
@@ -57,5 +57,5 @@
 	</body>
   <!-- Scripts -->
   <script src="${commonStaticUrl}/js/jquery.jstree.js" type="text/javascript"></script>
-  <script src="${context}/js/admin-console/components/create-template.js" type="text/javascript"></script>
+  <script src="${baseUrl}/js/admin-console/components/create-template.js" type="text/javascript"></script>
 </html>

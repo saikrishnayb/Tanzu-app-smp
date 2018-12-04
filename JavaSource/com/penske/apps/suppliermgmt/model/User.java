@@ -27,10 +27,6 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class User{
 	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 	private int userId;
 	private String sso;
 	private String firstName;

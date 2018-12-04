@@ -6,21 +6,23 @@
 <body>
 	<%@ include file="../../jsp/jsp-fragment/global/header.jsp" %>
 	<div id="mainContent">
-	<c:if test="${sidebarExists}">
-		<c:import url="../../jsp/jsp-fragment${leftNavDirectory}/left-nav.jsp"/>
-		<div class="leftNavAdjacentContainer">
-	</c:if>
+		<%-- Provide a default value for the error message --%>
+		<c:if test="${empty errorMessage}">
+			<c:set var="errorMessage" value="Hmm, something went wrong.  See if you could try again." />
+		</c:if>
+		
+		<%-- Either include the sidebar or not, depending on whether we're on a page that has one. --%>
 		<c:choose>
-			<c:when test="${empty errorMessage}">
-				<h1 class="pageTitle">Hmm, something went wrong.  See if you could try again.</h1>
+			<c:when test="${sidebarExists}">
+				<c:import url="../../jsp/jsp-fragment${leftNavDirectory}/left-nav.jsp"/>
+				<div class="leftNavAdjacentContainer">
+					<h1 class="pageTitle">${errorMessage}</h1>
+				</div>
 			</c:when>
 			<c:otherwise>
 				<h1 class="pageTitle">${errorMessage}</h1>
 			</c:otherwise>
 		</c:choose>
-	<c:if test="${sidebarExists}">
-	</div>
-	</c:if>
 	</div>
 	<%@ include file="../../jsp/jsp-fragment/global/footer.jsp" %>
 </body>

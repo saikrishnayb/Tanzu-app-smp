@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 
 import com.penske.apps.adminconsole.service.UploadService;
@@ -24,30 +25,29 @@ import com.penske.apps.adminconsole.util.VsportalConstants;
  *
  *@author 600139251 
  */
-public class VendorUploadHandler extends ExcelUploadHandler{
-
-	public static String EOR = "Report Completed!";	
+public class VendorUploadHandler extends ExcelUploadHandler<VendorReport>{
 	
-	Logger logger = Logger.getLogger("VendorUploadHandler");
-	int penkseIdColNum = 0;
-	boolean isValidFile = false;
-	List vendorReportLst = new ArrayList();
-	String reportId = new String();
+	private static final Logger logger = Logger.getLogger(VendorUploadHandler.class);
+	private static final String EOR = "Report Completed!";
+	
+	private int penkseIdColNum = 0;
+	private boolean isValidFile = false;
+	private List<VendorReport> vendorReportLst = new ArrayList<VendorReport>();
+	private String reportId = new String();
 	
 	/* (non-Javadoc)
 	 * @see com.penske.apps.vsportal.excel.handler.ExcelUploadHandler#collectExcelDataList(boolean, java.util.List, java.lang.Object)
 	 */
 	@Override
-	protected void collectExcelDataList(boolean isReadable, List vendorReportList,
-			Object modelObject) throws Exception {
+	protected void collectExcelDataList(boolean isReadable, List<VendorReport> vendorReportList, VendorReport modelObject) throws Exception {
 		if (isReadable == true) {
 			if (isValidFile){
 				vendorReportList.addAll(vendorReportLst);
-				vendorReportLst = new ArrayList(); //clear the old list
+				vendorReportLst = new ArrayList<VendorReport>(); //clear the old list
 				
 				//assign PENSKE REPORT ID to all the records (incl header)
 				VendorReport vr = new VendorReport();
-				Iterator itr = vendorReportList.iterator();
+				Iterator<VendorReport> itr = vendorReportList.iterator();
 				while(itr.hasNext()){
 					vr = (VendorReport) itr.next();
 					vr.setReportId(reportId);
@@ -65,7 +65,7 @@ public class VendorUploadHandler extends ExcelUploadHandler{
 	 * @see com.penske.apps.vsportal.excel.handler.ExcelUploadHandler#createModelObject()
 	 */
 	@Override
-	protected Object createModelObject(boolean pilot) {
+	protected VendorReport createModelObject(boolean pilot) {
 		return new VendorReport();
 	}
 
@@ -82,8 +82,7 @@ public class VendorUploadHandler extends ExcelUploadHandler{
 	 * @see com.penske.apps.vsportal.excel.handler.ExcelUploadHandler#populateExcelData(java.lang.String, java.lang.Object, int, org.apache.poi.ss.usermodel.Cell)
 	 */
 	@Override
-	protected boolean populateExcelData(String value, Object vendorReportObj,
-			int cellNum, Cell cell, Row row) throws Exception {
+	protected boolean populateExcelData(String value, VendorReport vendorReportObj, int cellNum, Row row) throws Exception {
 		//VendorReport vendorReport = (VendorReport)vendorReportObj;
 		VendorReport vendorReport = new VendorReport();
 		boolean readRecords = true;
@@ -95,10 +94,13 @@ public class VendorUploadHandler extends ExcelUploadHandler{
     			readRecords = false;
     		}else{	
     			if(rowNum==0 && !isValidFile){
-    				Iterator colItr = row.cellIterator();
+    				Iterator<Cell> colItr = row.cellIterator();
     				while(colItr.hasNext()){
-    					Cell nextCell = (Cell)colItr.next();
-    					if(nextCell.getCellType()==Cell.CELL_TYPE_STRING   
+    					Cell nextCell = colItr.next();
+    					//We are using POI 3.15 - once we upgrade to POI 4.0, this will need to be changed.
+    			        @SuppressWarnings("deprecation")
+    					CellType nextCellType = nextCell.getCellTypeEnum();
+    					if(nextCellType == CellType.STRING   
     						&& VsportalConstants.PENSKE_REPORT_ID.equalsIgnoreCase(String.valueOf(nextCell.getRichStringCellValue()).trim())){
     						penkseIdColNum = nextCell.getColumnIndex();
     						isValidFile = true;
@@ -139,15 +141,6 @@ public class VendorUploadHandler extends ExcelUploadHandler{
     	}
     	return readRecords;
 	}
-
-	/* (non-Javadoc)
-	 * @see com.penske.apps.vsportal.excel.handler.ExcelUploadHandler#uploadExcelDataList(java.util.List, com.penske.apps.vsportal.service.IUploadService)
-	 */
-	@Override
-	protected String uploadExcelDataList(List excelDataList, UploadService objUploadService) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
     /**
 	 * Method to validate , if the Excel file is valid or not.
@@ -157,12 +150,12 @@ public class VendorUploadHandler extends ExcelUploadHandler{
 	 * @return java.lang.String
 	 */
 	 @Override
-	public String validateFile(String fileName, InputStream input, UploadService uploadService, boolean pilot){
+	public String validateFile(String fileName, InputStream input, UploadService<VendorReport> uploadService, boolean pilot){
 		String message = "";
 
 		int extensionCheck = 3;
 		try {
-		List mimeTypeList = uploadService.getMimeTypeList(); //To get the list of Mimetype so that the uploaded file type can be compared with the list
+		List<MimeTypeModel> mimeTypeList = uploadService.getMimeTypeList(); //To get the list of Mimetype so that the uploaded file type can be compared with the list
 		
 		if (fileName != null){
 				extensionCheck = checkExtension(fileName, mimeTypeList);

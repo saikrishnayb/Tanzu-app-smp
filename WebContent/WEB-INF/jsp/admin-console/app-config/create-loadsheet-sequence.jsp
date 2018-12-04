@@ -5,11 +5,10 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
-<%@ include
-	file="../../../jsp/jsp-fragment/global/default-head-block.jsp"%>
+<%@ include file="../../../jsp/jsp-fragment/global/default-head-block.jsp"%>
 
-<link href="${context}/css/admin-console/app-config/create-loadsheet-sequence.css" rel="stylesheet" type="text/css" />
-<script src="${context}/js/admin-console/components/excel-sequence-components.js" type="text/javascript"></script>
+<link href="${baseUrl}/css/admin-console/app-config/create-loadsheet-sequence.css" rel="stylesheet" type="text/css" />
+<script src="${baseUrl}/js/admin-console/components/excel-sequence-components.js" type="text/javascript"></script>
 
 </head>
 <body>
@@ -99,7 +98,7 @@
 
 			<div class="floatRight" style="width:10%">
 				<div class="floatRight">
-					<a class="buttonSecondary" href="get-loadsheet-sequence.htm?categoryId=&category=${selectedCategoryinListPage}&type=${selectedTypeinListPage}&viewMode=${selectedViewMode}"
+					<a class="buttonSecondary" href="get-loadsheet-sequence.htm?categoryId=&category=${seqMaster.category}&type=${seqMaster.type}&viewMode=${viewMode}"
 						onclick="javascript:loadProcessImage();">Back</a>
 				</div>
 			</div>
@@ -280,15 +279,15 @@
 			</div>
 		</div>
 	<input type="hidden" id="numberOfGroups" value="${fn:length(seqMaster.groupMasterList)}"/>
-	<script src="${context}/js/v2/jquery-2.2.4.min.js"></script>
+	<script src="${baseUrl}/js/v2/jquery-2.2.4.min.js"></script>
 	<Script>
 		var j2 = jQuery.noConflict();
 	</Script>
-	<script src="${context}/js/v2/jquery-ui.min.js"></script>
+	<script src="${baseUrl}/js/v2/jquery-ui.min.js"></script>
 	<Script>
 		var j1 = jQuery.noConflict();
 	</Script>
-	<script src="${context}/js/admin-console/app-config/create-loadsheet-sequence.js" type="text/javascript"></script>
+	<script src="${baseUrl}/js/admin-console/app-config/create-loadsheet-sequence.js" type="text/javascript"></script>
 
 
 </body>

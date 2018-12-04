@@ -12,11 +12,12 @@ package com.penske.apps.adminconsole.model;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -24,9 +25,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import com.penske.apps.adminconsole.service.UploadService;
 import com.penske.apps.adminconsole.util.VsportalConstants;
-
-
-
+import com.penske.apps.smccore.base.util.DateUtil;
 
 /**
  * Class used to handle the process of uploading the Transporter Excel Data
@@ -38,11 +37,12 @@ import com.penske.apps.adminconsole.util.VsportalConstants;
  *handle the uploading of excel docs.
  *
  *@author 600139251
+ *@author 600139252
  */
-public class TransportUploadHandler extends ExcelUploadHandler{
+public class TransportUploadHandler extends ExcelUploadHandler<Transport>{
 
-    private static Logger logger = Logger.getLogger(TransportUploadHandler.class);
-    public static String EOR = "Report Completed!";
+    private static final Logger logger = Logger.getLogger(TransportUploadHandler.class);
+    private static final String EOR = "Report Completed!";
 
     /**
      * Method to Create the Model object.
@@ -51,7 +51,7 @@ public class TransportUploadHandler extends ExcelUploadHandler{
      * @return java.lang.Object
      */
     @Override
-    public Object createModelObject(boolean pilot){
+    public Transport createModelObject(boolean pilot){
         return new Transport(pilot);
     }
 
@@ -62,14 +62,13 @@ public class TransportUploadHandler extends ExcelUploadHandler{
      * @return boolean
      */
     @Override
-    public boolean populateExcelData(String value,Object transportObj,int cellNum, Cell cell, Row row){
-        Transport transport = (Transport)transportObj;
+    public boolean populateExcelData(String value, Transport transport,int cellNum, Row row){
         boolean readRecords = true;
         if(null != value){
             if(value.equals(EOR)){
                 readRecords = false;
             }else{
-                populateTransport(transport,value,cellNum, cell);
+                populateTransport(transport,value,cellNum);
             }
         }
         return readRecords;
@@ -82,11 +81,11 @@ public class TransportUploadHandler extends ExcelUploadHandler{
      * @author Johnson Jayaraj
      */
     @Override
-    public void collectExcelDataList(boolean readRecords,List transportList, Object modelObject) throws Exception{
+    public void collectExcelDataList(boolean readRecords,List<Transport> transportList, Transport modelObject) throws Exception{
 
         if (readRecords == true) {
-            if (  ((Transport)modelObject).getUnitNo() != null 			  &&  ((Transport)modelObject).getCat() != null &&
-                    !((Transport)modelObject).getUnitNo().trim().equals("0") && !((Transport)modelObject).getCat().equals(" ") ){
+            if (  (modelObject).getUnitNo() != null 			  &&  (modelObject).getCat() != null &&
+                    !(modelObject).getUnitNo().trim().equals("0") && !(modelObject).getCat().equals(" ") ){
                 transportList.add(modelObject);
             }else{
                 Exception e = new Exception("Row does not contain the Unit and Category primary keys");
@@ -105,7 +104,7 @@ public class TransportUploadHandler extends ExcelUploadHandler{
      * @return java.lang.String
      */
     @Override
-    public String validateFile(String fileName, InputStream input, UploadService uploadService, boolean pilot){
+    public String validateFile(String fileName, InputStream input, UploadService<Transport> uploadService, boolean pilot){
         String message = "";
 
         Sheet sheet = null;
@@ -114,9 +113,9 @@ public class TransportUploadHandler extends ExcelUploadHandler{
 
             sheet = wb.getSheetAt(0);
 
-            Iterator rows = sheet.rowIterator();
+            Iterator<Row> rows = sheet.rowIterator();
             if(rows.hasNext()) {
-                Row row = (Row) rows.next();
+                Row row = rows.next();
 
                 String estDelDateText = row.getCell(VsportalConstants.TRANSPORTER_EST_DEL_DATE).getStringCellValue();
                 if(estDelDateText.compareToIgnoreCase("Estimated Delivery Date") != 0) {
@@ -138,7 +137,7 @@ public class TransportUploadHandler extends ExcelUploadHandler{
 
         int extensionCheck = 3;
         try {
-            List mimeTypeList = uploadService.getMimeTypeList(); //To get the list of Mimetype so that the uploaded file type can be compared with the list
+            List<MimeTypeModel> mimeTypeList = uploadService.getMimeTypeList(); //To get the list of Mimetype so that the uploaded file type can be compared with the list
 
             if (fileName != null){
                 extensionCheck = checkExtension(fileName, mimeTypeList);
@@ -155,34 +154,6 @@ public class TransportUploadHandler extends ExcelUploadHandler{
 				}
         }catch(Exception exp){
             logger.debug("Error in ExcelUploadHandler.upload "	+ exp.getMessage());
-        }
-        return message;
-    }
-
-
-    /**
-     * Method to upload the Excel Data
-     * 
-     * @author Johnson Jayaraj
-     */
-    @Override
-    public String uploadExcelDataList(List transportList, UploadService objUploadService) throws Exception{
-
-        Transport transport = null;
-        String message = "";
-        Iterator It = transportList.iterator();
-        try {
-            while ( It.hasNext() )
-            {
-
-                transport = (Transport)It.next();
-                objUploadService.insert( transport);
-
-            }
-        } catch (Exception e) {
-            logger.debug(" ERROR while trying to insert the records " + e.getMessage());
-
-            throw e;
         }
         return message;
     }
@@ -204,15 +175,14 @@ public class TransportUploadHandler extends ExcelUploadHandler{
      * @param value java.lang.String
      * @param cellNum int
      */
-
-    public void populateTransport(Transport transport ,String value, int cellNum, Cell cell){
+    public void populateTransport(Transport transport ,String value, int cellNum){
 
         if(null != value && !value.equals(EOR)){
-            populateTransporterCells(transport ,value, cellNum, cell);
+            populateTransporterCells(transport ,value, cellNum);
         }
     }
 
-    private void populateTransporterCells(Transport transport ,String value, int cellNum, Cell cell) {
+    private void populateTransporterCells(Transport transport ,String value, int cellNum) {
         switch ( cellNum ) {
             case VsportalConstants.TRANSPORTER_PICKUP_VENDOR:
                 transport.setPickupVendor(value);
@@ -225,7 +195,7 @@ public class TransportUploadHandler extends ExcelUploadHandler{
                 break;
             case VsportalConstants.TRANSPORTER_PICKUP_DATE:
                 try{
-                    transport.setRequestedPickupDate(POIUtil.getDate(value, cell, DateUtil.MM_DD_YY));
+                    transport.setRequestedPickupDate(getDate(value));
                 }catch(Exception e){
                     logger.debug("Error Occured while Setting the Requested Pickup Date", e);
                     transport.setRequestedPickupDate(null);
@@ -233,7 +203,7 @@ public class TransportUploadHandler extends ExcelUploadHandler{
                 break;
             case VsportalConstants.TRANSPORTER_PROD_DATE:
                 try{
-                    transport.setProductionDate(POIUtil.getDate(value, cell, DateUtil.MM_DD_YY));
+                    transport.setProductionDate(getDate(value));
                 }catch(Exception e){
                     logger.debug("Error Occured while Setting the Production Date", e);
                     transport.setProductionDate(null);
@@ -241,7 +211,7 @@ public class TransportUploadHandler extends ExcelUploadHandler{
                 break;
             case VsportalConstants.TRANSPORTER_EST_DEL_DATE:
                 try{
-                    transport.setEstimatedDeliveryDate(POIUtil.getDate(value, cell, DateUtil.MM_DD_YY));
+                    transport.setEstimatedDeliveryDate(getDate(value));
                 }catch(Exception e){
                     logger.debug("Error Occured while Setting the Estimated Delivery Date", e);
                     transport.setEstimatedDeliveryDate(null);
@@ -249,7 +219,7 @@ public class TransportUploadHandler extends ExcelUploadHandler{
                 break;
             case VsportalConstants.TRANSPORTER_HOLD_DATE:
                 try{
-                    transport.setHoldNotificationDate(POIUtil.getDate(value, cell, DateUtil.MM_DD_YY));
+                    transport.setHoldNotificationDate(getDate(value));
                 }catch(Exception e){
                     logger.debug("Error Occured while Setting the Hold Notification Date", e);
                     transport.setHoldNotificationDate(null);
@@ -257,7 +227,7 @@ public class TransportUploadHandler extends ExcelUploadHandler{
                 break;
             case VsportalConstants.TRANSPORTER_CANCEL_DATE:
                 try{
-                    transport.setAdvanceNoticeCancelDate(POIUtil.getDate(value, cell, DateUtil.MM_DD_YY));
+                    transport.setAdvanceNoticeCancelDate(getDate(value));
                 }catch(Exception e){
                     logger.debug("Error Occured while Setting the Cancel Date", e);
                     transport.setAdvanceNoticeCancelDate(null);
@@ -373,7 +343,7 @@ public class TransportUploadHandler extends ExcelUploadHandler{
                 break;
             case VsportalConstants.TRANSPORTER_TRNST_PO_DATE:
                 try{
-                    transport.setTransitPoDate(POIUtil.getDate(value, cell, DateUtil.MM_DD_YY));
+                    transport.setTransitPoDate(getDate(value));
                 }catch(Exception e){
                     logger.debug("Error Occured while Setting the Transit PO Date", e);
                     transport.setTransitPoDate(null);
@@ -381,7 +351,7 @@ public class TransportUploadHandler extends ExcelUploadHandler{
                 break;
             case VsportalConstants.TRANSPORTER_UNIT_DLV_DATE:
                 try{
-                    transport.setActDelvry(POIUtil.getDate(value, cell, DateUtil.MM_DD_YY));
+                    transport.setActDelvry(getDate(value));
                 }catch(Exception e){
                     logger.debug("Error Occured while Setting the Act Delivery Date", e);
                     transport.setActDelvry(null);
@@ -389,7 +359,7 @@ public class TransportUploadHandler extends ExcelUploadHandler{
                 break;
             case VsportalConstants.TRANSPORTER_ACT_DELVRY:
                 try{
-                    transport.setActualDeliveryReported(POIUtil.getDate(value, cell, DateUtil.MM_DD_YY));
+                    transport.setActualDeliveryReported(getDate(value));
                 }catch(Exception e){
                     logger.debug("Error Occured while Setting the Delivery Date Reported", e);
                     transport.setActualDeliveryReported(null);
@@ -421,7 +391,7 @@ public class TransportUploadHandler extends ExcelUploadHandler{
                 break;
             case VsportalConstants.TRANSPORTER_ASSIGN_DATE:
                 try {
-                    transport.setTransporterAssignDate(POIUtil.getDate(value, cell, DateUtil.MM_DD_YY));
+                    transport.setTransporterAssignDate(getDate(value));
                 }catch(Exception e){
                     logger.debug("Error Occured while Setting the Last Changed Date", e);
                     transport.setLastChangedDate(null);
@@ -429,7 +399,7 @@ public class TransportUploadHandler extends ExcelUploadHandler{
                 break;
             case VsportalConstants.TRANSPORTER_LAST_UPDATED:
                 try{
-                    transport.setLastChangedDate(POIUtil.getDate(value, cell, DateUtil.MM_DD_YY));
+                    transport.setLastChangedDate(getDate(value));
                 }catch(Exception e){
                     logger.debug("Error Occured while Setting the Last Changed Date", e);
                     transport.setLastChangedDate(null);
@@ -459,31 +429,65 @@ public class TransportUploadHandler extends ExcelUploadHandler{
         }
     }
 
-    private static boolean isNumber(String s) {
-        try {
-            Double.parseDouble(s);
-        }
-        catch (NumberFormatException nfe) {
-            logger.debug(nfe);
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * converts string to double
-     * 
-     */
     private double toDouble(String source) {
         double targetValue = 0;
-        if (!DataUtil.isEmpty(source)) {
+        if (StringUtils.isNotBlank(source)) {
             targetValue = Double.parseDouble(source);
         }
 
         return targetValue;
     }
 
-
+    /**
+     * Method to ge the Date as java.util.Date 
+     * 
+     * @author 600104283
+     * @param value java.lang.String
+     * @return java.util.Date
+     * @throws java.lang.Exception
+     */
+    /*
+     * NOTE: 2018-11-28 - JS - this method was tested with the following unit test code, and it conforms to the way POIUtil.getDate() behaved.
+     * 
+     	String format = "MM/dd/yy";
+		Date defaultDate = DateUtil.parseDate("0001-01-01");
+		Date augNinth = DateUtil.parseDate("1989-08-09");
+		Date augNinth2 = DateUtil.parseDate("2009-08-09");
+		Date firstCentury = DateUtil.parseDate("0089-08-09");
+		Date firstCentury2 = DateUtil.parseDate("0009-08-09");
+		
+		assertThat(POIUtil.getDate(null), is(defaultDate));
+		assertThat(POIUtil.getDate("40123.4"), is(nullValue()));		//Excel number formatted as a date
+		assertThat(POIUtil.getDate("foobar"), is(nullValue()));
+		assertThat(POIUtil.getDate("1989-08-09"), is(augNinth));
+		assertThat(POIUtil.getDate("1989-8-9"), is(augNinth));
+		assertThat(POIUtil.getDate("89-8-9"), is(firstCentury));
+		assertThat(POIUtil.getDate("8/9/89"), is(augNinth));
+		assertThat(POIUtil.getDate("08/09/89"), is(augNinth));
+		assertThat(POIUtil.getDate("8/9/1989"), is(augNinth));
+		assertThat(POIUtil.getDate("08/09/2009"), is(augNinth2));
+		assertThat(POIUtil.getDate("8/9/9"), is(firstCentury2));
+		assertThat(POIUtil.getDate("8/9/09"), is(augNinth2));
+		assertThat(POIUtil.getDate("7/40/09"), is(augNinth2));		//Improper date - should roll over to next month
+     */
+    private Date getDate(String value ) throws Exception {
+    	
+    	Date date = null;
+    	if(StringUtils.isNotBlank(value)){
+    		try{
+    			date = DateUtil.parseDate(value);
+    		}catch(Exception e){
+    			logger.error(e.getMessage());
+    		}
+    		
+    	} else {
+    		
+    		date = DateUtil.parseDate("0001-01-01");
+    		
+    	}
+    	
+    	return date;
+    }
 }
 
 

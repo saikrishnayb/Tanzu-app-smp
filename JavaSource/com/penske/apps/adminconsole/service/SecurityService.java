@@ -12,7 +12,8 @@ import com.penske.apps.adminconsole.model.UserDept;
 import com.penske.apps.adminconsole.model.UserType;
 import com.penske.apps.adminconsole.model.VendorLocation;
 import com.penske.apps.adminconsole.model.VendorTree;
-import com.penske.apps.suppliermgmt.common.exception.SMCException;
+import com.penske.apps.suppliermgmt.exception.SMCException;
+import com.penske.apps.suppliermgmt.model.UserContext;
 
 public interface SecurityService {
 	public User getUser(int userId);
@@ -21,19 +22,19 @@ public interface SecurityService {
 	public List<UserDept> getUserDepts();
 	public List<Role> getUserRoles(int roleId);
 	public List<UserType> getUserTypes();
-	public void modifyUserStatus(int userId, HeaderUser currentUser);
+	public void modifyUserStatus(int userId, UserContext currentUser);
 	public HashMap<String, List<Permission>> getPermissions(String roleId);
 	public List<VendorLocation> getVendorLocations(String vendorName, int i, int userTypeId);
-	public void modifyUserInfo(User user, int[] vendorIds, HeaderUser currentUser);
+	public void modifyUserInfo(User user, int[] vendorIds, UserContext currentUser);
 	public List<VendorLocation> getVendorTemplates(List<VendorLocation> vendorLocations);
 	public String getSignatureImage(int userId);
 	public String getInitialsImage(int userId);
-	public void addUser(User user, int[] vendorIds, HeaderUser currentUser);
+	public void addUser(User user, int[] vendorIds, UserContext currentUser);
 	public List<Role> getPenskeRoles(int roleId);
 	public List<Role> getSupplierAdminRole();
-	public List<Role> getSupplierRoles(String manufacturer, HeaderUser currentUser);
+	public List<Role> getSupplierRoles(String manufacturer, UserContext currentUser);
 	//public List<User> getSupplierUsers(HeaderUser currentUser);
-	public List<User> getSearchUserList(HeaderUser userSearchForm, HeaderUser currentUser);
+	public List<User> getSearchUserList(HeaderUser userSearchForm, UserContext currentUser);
 	public List<Role> getVendorUserSpecificRoles(String manufacturer, int roleId);
 	public boolean doesUserExist(String userName, int userId);
 	public User doesUserExistInPenske(String ssoId) throws SMCException;
@@ -41,20 +42,19 @@ public interface SecurityService {
 	public boolean deleteInitialsImage(int userId, String ssoId);
 	public boolean deleteSignatureImage(int userId, String ssoId);
 	public List<String> getAllVendorFullNames();
-	public List<Org> getOrgList(HeaderUser currentUser);
-	public  List<Org> getPenskeUserOrgList(HeaderUser currentUser);
+	public List<Org> getOrgList(Org orgSearch, UserContext currentUser);
+	public  List<Org> getPenskeUserOrgList();
 	public void addOrg(Org org);
 	public void deleteOrg(int orgId, String modifiedBy);
 	public Org getEditOrgInfo(int orgId);
 	public void updateOrg(Org org);
 	public List<VendorTree> getVendorList(String corp,String vendor,int orgId);
 	public List<Integer> getOrgVendor(int orgId);
-	public List<Org> getPenskeUserOrgSearch(HeaderUser currentUser);
 	public boolean checkForUsers(int orgId);
 	public List<Org> getOrgChild(int orgId);
 	
 	//Vendor User Change - 03/02/16
-	public List<User> getVendorUserList(HeaderUser currentUser);
+	public List<User> getVendorUserList(UserContext currentUser);
 	public List<Role> getVendorRoles(boolean isVendor, int roleId,int orgId);
 	public List<UserType> getVendorUserTypes();
 	public List<Org> getVendorOrg(boolean isVendor,int orgId);

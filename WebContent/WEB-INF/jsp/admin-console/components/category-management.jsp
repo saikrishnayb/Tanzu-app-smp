@@ -13,7 +13,7 @@
 	rel="stylesheet" type="text/css" />
 
 <link
-	href="${pageContext.request.contextPath}/css/admin-console/components/category-management.css"
+	href="${baseUrl}/css/admin-console/components/category-management.css"
 	rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -144,10 +144,9 @@
 	</div>
 	</div>
 
-	<input type="hidden" id="common-static-url" value="${commonStaticUrl}" />
 </body>
 <!-- Scripts -->
 <script
-	src="${context}/js/admin-console/components/category-management.js"
+	src="${baseUrl}/js/admin-console/components/category-management.js"
 	type="text/javascript"></script>
 </html>

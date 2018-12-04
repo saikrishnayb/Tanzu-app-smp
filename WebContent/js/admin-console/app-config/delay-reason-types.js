@@ -5,7 +5,7 @@ $(document).ready(function() {
 	var $addDelayTypeModal = $('#add-delay-type-modal');
 	var $deleteDelayTypeModal = $('#delete-delay-type-modal');
 	var $editDelayTypeModal = $("#edit-delay-type-modal");
-	var commonStaticUrl = $('#common-url').val();
+	var commonStaticUrl = sessionStorage.getItem('commonStaticUrl');
 	var $customErrorModal = $("#customized-ajax-error");
 	// initializers
 	initializeDelayTypeTable($delayTypeTable);

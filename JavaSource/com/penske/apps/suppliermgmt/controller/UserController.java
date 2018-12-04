@@ -1,7 +1,9 @@
 package com.penske.apps.suppliermgmt.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -14,12 +16,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.penske.apps.adminconsole.annotation.SmcSecurity;
-import com.penske.apps.adminconsole.annotation.SmcSecurity.SecurityFunction;
-import com.penske.apps.adminconsole.annotation.VendorAllowed;
+import com.penske.apps.suppliermgmt.annotation.SmcSecurity;
+import com.penske.apps.suppliermgmt.annotation.VendorAllowed;
+import com.penske.apps.suppliermgmt.annotation.SmcSecurity.SecurityFunction;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
-import com.penske.apps.suppliermgmt.common.constants.ApplicationConstants;
-import com.penske.apps.suppliermgmt.handler.UserHandler;
 import com.penske.apps.suppliermgmt.model.Buddies;
 import com.penske.apps.suppliermgmt.model.LabelValue;
 import com.penske.apps.suppliermgmt.model.OrgFilter;
@@ -27,6 +27,7 @@ import com.penske.apps.suppliermgmt.model.User;
 import com.penske.apps.suppliermgmt.model.UserContext;
 import com.penske.apps.suppliermgmt.model.VendorFilter;
 import com.penske.apps.suppliermgmt.service.UserService;
+import com.penske.apps.suppliermgmt.util.ApplicationConstants;
 
 @Controller
 @RequestMapping(value = "/userController")
@@ -50,12 +51,12 @@ public class UserController extends BaseController {
             userList=userService.getUserDetails();
             List<User> purchasingUsersList=new ArrayList<User>();
             List<User> planningUsersList=new ArrayList<User>();
-            UserHandler.populateUserLists(userList,planningUsersList,purchasingUsersList);
+            populateUserLists(userList,planningUsersList,purchasingUsersList);
 
             List<Buddies> existingBuddyList=userService.getExistingBuddiesList(userContext.getUserName());
             List<String> existingBuddySsoList=new ArrayList<String>();
 
-            UserHandler.populateExistingBuddyUserList(existingBuddySsoList,existingBuddyList);
+            populateExistingBuddyUserList(existingBuddySsoList,existingBuddyList);
 
             model.addObject("loggedInUserSso",userContext.getUserSSO());
             model.addObject("existingBuddySsoList",existingBuddySsoList);
@@ -162,7 +163,7 @@ public class UserController extends BaseController {
             }
             List<LabelValue> deptDetailList=userService.getDeptDetailList();
             List<User> usersList=userService.getUserDetails();
-            UserHandler.populateNewBuddyUserList(newBuddyList,usersList,deptDetailList,loggedInUserSso,newBuddyArray);
+            populateNewBuddyUserList(newBuddyList,usersList,deptDetailList,loggedInUserSso,newBuddyArray);
 
             addBuddyList(newBuddyList,loggedInUserSso);
             existingBuddies =userService.getExistingBuddiesList(userContext.getUserName());
@@ -215,4 +216,118 @@ public class UserController extends BaseController {
         return vendorIds.size()>0?"inline-block":"none";
     }
 
+    //***** HELPER METHODS *****//
+    private void populateNewBuddyUserList(List<Buddies> newBuddyList,List<User> usersList,List<LabelValue> deptDetailList, String loggedInUserSso, List<String> newBuddyArray) 
+	{
+		
+		Map<Integer,String> userDeptMap=new HashMap<Integer,String>();
+		for(LabelValue value:deptDetailList)
+		{
+			userDeptMap.put(value.getLabelId(), value.getLabelValue());
+		}
+		boolean allBuyerCheckBoxSelected=false,allPlanningCheckBoxSelected=false,randomCheckBoxesSelected=false;
+		
+		for(String buddyValue:newBuddyArray)
+		{
+			if(buddyValue.equalsIgnoreCase(ApplicationConstants.ALL_CHECKBOX_ID))
+			{
+				
+				for(User u:usersList)
+				{
+					Buddies buddy=new Buddies();
+					buddy.setBuddySso(u.getSso());
+					buddy.setUserDept(userDeptMap.get(u.getUserDept()));
+					buddy.setSso(loggedInUserSso);
+					buddy.setSelectionType(ApplicationConstants.ALL_SELECTION_TYPE);
+					newBuddyList.add(buddy);
+				}
+				break;
+			}
+			else if(buddyValue.equalsIgnoreCase(ApplicationConstants.ALL_PLANNING_CHECKBOX_ID))
+			{
+				allPlanningCheckBoxSelected=true;
+				randomCheckBoxesSelected=false;
+			}
+			else if(buddyValue.equalsIgnoreCase(ApplicationConstants.ALL_BUYER_CHECKBOX_ID))
+			{
+				allBuyerCheckBoxSelected=true;
+				randomCheckBoxesSelected=false;
+			}
+			else if(buddyValue.equalsIgnoreCase(ApplicationConstants.ALL_RANDOM_CHECKBOX_ID)){
+				randomCheckBoxesSelected=true;
+				allPlanningCheckBoxSelected=false;
+				allBuyerCheckBoxSelected=false;
+			}
+			else 
+			{
+				Buddies buddy=new Buddies();
+				buddy.setBuddySso(buddyValue.split("/")[0]);
+				buddy.setUserDept(userDeptMap.get(Integer.parseInt(buddyValue.split("/")[1])));
+				buddy.setSso(loggedInUserSso);
+				
+				//the below if/else is to add selection_type value if all planning /all buyers(purchasing) is selected
+				if(allPlanningCheckBoxSelected)
+				{
+					buddy.setSelectionType(ApplicationConstants.ALL_PLANNING_SELECTION_TYPE);
+				}
+				else if(allBuyerCheckBoxSelected)
+				{
+					buddy.setSelectionType(ApplicationConstants.ALL_BUYER_SELECTION_TYPE);
+				}
+				else if(randomCheckBoxesSelected){
+					buddy.setSelectionType(null);
+				}
+				
+				newBuddyList.add(buddy);
+			}
+		}
+		
+	}
+
+    private void populateUserLists(List<User> userList, List<User> planningUsersList, List<User> purchasingUsersList) 
+	{
+		for(User u:userList)
+		{
+			if(u.getUserDept()==ApplicationConstants.PURCHASE_DEPT_ID&&!purchasingUsersList.contains(u))
+			{
+				purchasingUsersList.add(u);
+			}
+			if(u.getUserDept()==ApplicationConstants.PLAN_DEPT_ID&&!planningUsersList.contains(u))
+			{
+				planningUsersList.add(u);
+			}
+		}
+	}
+
+	private void populateExistingBuddyUserList(List<String> existingBuddySsoList,List<Buddies> existingBuddyList) 
+	{
+		if(existingBuddyList!=null&&!existingBuddyList.isEmpty())
+		{
+			for(Buddies b:existingBuddyList)
+			{
+				if(StringUtils.isNotBlank(b.getBuddySso()))
+				{
+					if(StringUtils.equalsIgnoreCase(b.getSelectionType(),ApplicationConstants.ALL_SELECTION_TYPE))
+					{
+						existingBuddySsoList.add(ApplicationConstants.ALL_CHECKBOX_ID);
+						break;
+					}
+					else
+					{
+						if(!existingBuddySsoList.contains(ApplicationConstants.ALL_PLANNING_CHECKBOX_ID)
+								&& StringUtils.equalsIgnoreCase(b.getSelectionType(),ApplicationConstants.ALL_PLANNING_SELECTION_TYPE))
+						{
+							existingBuddySsoList.add(ApplicationConstants.ALL_PLANNING_CHECKBOX_ID);
+						}
+						else if(!existingBuddySsoList.contains(ApplicationConstants.ALL_BUYER_CHECKBOX_ID)
+								&&StringUtils.equalsIgnoreCase(b.getSelectionType(),ApplicationConstants.ALL_BUYER_SELECTION_TYPE))
+						{
+							existingBuddySsoList.add(ApplicationConstants.ALL_BUYER_CHECKBOX_ID);
+						}
+						existingBuddySsoList.add(b.getBuddySso());
+					}
+				}
+			}
+		}
+	}    
 }

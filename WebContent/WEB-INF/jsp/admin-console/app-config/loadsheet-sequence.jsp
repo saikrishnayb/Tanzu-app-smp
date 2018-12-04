@@ -7,10 +7,7 @@
 	<script src="${commonStaticUrl}/js/jquery.dataTables.min.js" type="text/javascript"></script>
 	<link href="${commonStaticUrl}/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
 	<script src="${commonStaticUrl}/js/jquery.maskedinput-1.3.min.js" type="text/javascript"></script>
-	<link href="${context}/css/admin-console/security/org.css" rel="stylesheet" type="text/css"/>
-	<Script>
-	var hostUrl='${context}';
-	</Script>
+	<link href="${baseUrl}/css/admin-console/security/org.css" rel="stylesheet" type="text/css"/>
 </head>
 
 <!-- ***************************deactivate modal********************************** -->
@@ -21,7 +18,6 @@
 	<div id="mainContent" class="borderTop">
 		<%@ include file="../../../jsp/jsp-fragment/admin-console/app-config/left-nav.jsp"%>
 		<div class="leftNavAdjacentContainer">
-		<input type="hidden" id="common-static-url" value="${commonStaticUrl}"/>
 			<div class="full-width">
 			<h1 style="display: inline-block;">Loadsheet Sequencing</h1>
 			<!-- show back button only if the page is opened from load sheet management View/Set Load sheet links. -->
@@ -97,5 +93,5 @@
 		</div>
 </body>
 <!-- Scripts -->		
-<script src="${context}/js/admin-console/app-config/loadsheet-sequence.js"	type="text/javascript"></script>
+<script src="${baseUrl}/js/admin-console/app-config/loadsheet-sequence.js"	type="text/javascript"></script>
 </html>

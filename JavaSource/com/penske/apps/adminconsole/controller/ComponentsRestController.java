@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,15 +21,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.penske.apps.adminconsole.annotation.SmcSecurity;
-import com.penske.apps.adminconsole.annotation.SmcSecurity.SecurityFunction;
 import com.penske.apps.adminconsole.enums.PoCategoryType;
 import com.penske.apps.adminconsole.model.CategoryAssociation;
 import com.penske.apps.adminconsole.model.ComponentSequence;
 import com.penske.apps.adminconsole.model.ComponentVisibility;
 import com.penske.apps.adminconsole.model.ComponentVisibilityOverride;
 import com.penske.apps.adminconsole.model.Components;
-import com.penske.apps.adminconsole.model.HeaderUser;
 import com.penske.apps.adminconsole.model.PoCategory;
 import com.penske.apps.adminconsole.model.RuleDefinitions;
 import com.penske.apps.adminconsole.model.RuleMaster;
@@ -47,6 +43,10 @@ import com.penske.apps.adminconsole.service.ComponentVisibilityService;
 import com.penske.apps.adminconsole.service.LoadSheetManagementService;
 import com.penske.apps.adminconsole.util.ApplicationConstants;
 import com.penske.apps.adminconsole.util.CommonUtils;
+import com.penske.apps.suppliermgmt.annotation.SmcSecurity;
+import com.penske.apps.suppliermgmt.annotation.SmcSecurity.SecurityFunction;
+import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
+import com.penske.apps.suppliermgmt.model.UserContext;
 
 /**
  * 
@@ -63,6 +63,9 @@ public class ComponentsRestController {
 
     private static final Logger LOGGER = Logger.getLogger(ComponentsRestController.class);
 
+    @Autowired
+    private SuppliermgmtSessionBean sessionBean;
+    
     //////////////////////////////////////////////////////////////////////
     // Service Members
     @Autowired
@@ -345,10 +348,11 @@ public class ComponentsRestController {
     // TODO SMCSEC is this even used
     @RequestMapping(value="add-template")
     @ResponseBody
-    public int addTemplate(@RequestParam("vendorNumber") int vendorNumber,@RequestParam("corpCode") String corpCode, HttpSession session) {
+    public int addTemplate(@RequestParam("vendorNumber") int vendorNumber,@RequestParam("corpCode") String corpCode) {
         LOGGER.debug("addTemplate is used!!!! :)");
-        HeaderUser currentUser = (HeaderUser) session.getAttribute("currentUser");
-        componentVendorTemplateService.addTemplate(vendorNumber, currentUser.getSso());
+    	UserContext userContext = sessionBean.getUserContext();
+        String userSSO = userContext.getUserSSO();
+        componentVendorTemplateService.addTemplate(vendorNumber, userSSO);
 
         VendorTemplate template =  componentVendorTemplateService.getTemplateId(vendorNumber, corpCode);
         int templateId =template.getTemplateId();
@@ -367,7 +371,7 @@ public class ComponentsRestController {
     // TODO SMCSEC is this even used
     @RequestMapping(value="add-template-components")
     @ResponseBody
-    public void addTemplate(TemplateComponents serializedObject,@RequestParam("poCategoryId")int poCategoryId,@RequestParam("subCategoryId") int subCategoryId,@RequestParam("templateId") String templateId) {
+    public void addTemplate(TemplateComponents serializedObject,@RequestParam("poCategoryId")int poCategoryId,@RequestParam("subCategoryId") int subCategoryId) {
         LOGGER.debug("addTemplate / add-template-components is used!!!! :)");
         componentVendorTemplateService.addTemplateComponents(serializedObject, poCategoryId, subCategoryId);
 
@@ -426,13 +430,14 @@ public class ComponentsRestController {
     // TODO SMCSEC is this even used
     @RequestMapping(value="insert-po-category")
     @ResponseBody
-    public PoCategory insertPoCategory(PoCategory categoryData,HttpSession session,HttpServletResponse response) throws Exception {
+    public PoCategory insertPoCategory(PoCategory categoryData,HttpServletResponse response) throws Exception {
 
         LOGGER.error("insertPoCategory is used!!!! :)");
 
         try{
-            HeaderUser currentUser = (HeaderUser) session.getAttribute("currentUser");
-            categoryData.setCreatedBy(currentUser.getSso());
+        	UserContext userContext = sessionBean.getUserContext();
+            String userSSO = userContext.getUserSSO();
+            categoryData.setCreatedBy(userSSO);
             if(categoryManagementService.checkCategoryExist(categoryData, true)){
                 categoryManagementService.insertPoCategory(categoryData);
                 PoCategory category =categoryManagementService.getMaxCategoryId();
@@ -493,10 +498,11 @@ public class ComponentsRestController {
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_CATEGORY)
     @RequestMapping(value="insert-sub-category")
     @ResponseBody
-    public int insertSubCategory(SubCategory categoryData,HttpSession session,HttpServletResponse response) throws Exception {
+    public int insertSubCategory(SubCategory categoryData,HttpServletResponse response) throws Exception {
         try{
-            HeaderUser currentUser = (HeaderUser) session.getAttribute("currentUser");
-            categoryData.setCreatedBy(currentUser.getSso());
+        	UserContext userContext = sessionBean.getUserContext();
+            String userSSO = userContext.getUserSSO();
+            categoryData.setCreatedBy(userSSO);
             if(categoryManagementService.checkSubCategoryExist(categoryData, true)){
                 categoryManagementService.insertSubCategory(categoryData);
                 int subCategoryId=categoryManagementService.getMaxSubCategoryId();
@@ -581,14 +587,14 @@ public class ComponentsRestController {
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_CATEGORY_ASSOCIATION)
     @RequestMapping(value="add-category-association")
     @ResponseBody
-    public void addCategoryAssociation(@ModelAttribute("addAssociationForm") CategoryAssociation addAssociationForm,HttpServletResponse response) throws Exception  {
+    public void addCategoryAssociation(@ModelAttribute("addAssociationForm") CategoryAssociation addAssociationForm) throws Exception  {
         categoryManagementService.addCategoryAssociation(addAssociationForm);
     }
 
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_CATEGORY_ASSOCIATION)
     @RequestMapping(value="update-category-association")
     @ResponseBody
-    public void updateCategoryAssociation(@ModelAttribute("addAssociationForm") CategoryAssociation addAssociationForm,HttpServletResponse response) throws Exception  {
+    public void updateCategoryAssociation(@ModelAttribute("addAssociationForm") CategoryAssociation addAssociationForm) throws Exception  {
         categoryManagementService.updateCategoryAssociation(addAssociationForm);
     }
 
@@ -622,16 +628,17 @@ public class ComponentsRestController {
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_TEMPLATE)
     @RequestMapping(value ="/create-template", method = RequestMethod.POST)
     @ResponseBody
-    public String addTemplate(@RequestParam("tempDesc") String tempDesc,@RequestParam("poCatAssID") String poCatAssID,@RequestBody List<Components> compList,HttpSession session, HttpServletResponse response){
+    public String addTemplate(@RequestParam("tempDesc") String tempDesc,@RequestParam("poCatAssID") String poCatAssID,@RequestBody List<Components> compList, HttpServletResponse response){
         String status=null;
     	try{
-	        HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
+        	UserContext userContext = sessionBean.getUserContext();
+            String userSSO = userContext.getUserSSO();
 	        Template template=new Template();
 	        template.setTemplateDesc(tempDesc);
 	        template.setPoCatAssID(poCatAssID);
 	        template.setComponentList(compList);
-	        template.setCreatedBy(currentUser.getSso());
-	        template.setModifiedBy(currentUser.getSso());
+	        template.setCreatedBy(userSSO);
+	        template.setModifiedBy(userSSO);
 	        String hashCodeStr=CommonUtils.getCompnentCheckSum(compList);
 	        template.setTemplateHash(hashCodeStr);
 	        List<Integer> templateId=componentService.findTemplateExist(template);
@@ -650,17 +657,18 @@ public class ComponentsRestController {
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_TEMPLATE)
     @RequestMapping(value ="/update-template", method = RequestMethod.POST)
     @ResponseBody
-    public String updateTemplate(@RequestParam("templateId") int templateId,@RequestParam("tempDesc") String tempDesc,@RequestParam("poCatAssID") String poCatAssID,@RequestBody List<Components> compList,HttpSession session, HttpServletResponse response){
+    public String updateTemplate(@RequestParam("templateId") int templateId,@RequestParam("tempDesc") String tempDesc,@RequestParam("poCatAssID") String poCatAssID,@RequestBody List<Components> compList, HttpServletResponse response){
     	String status=null;
     	try{
-	        HeaderUser currentUser = (HeaderUser)session.getAttribute("currentUser");
+        	UserContext userContext = sessionBean.getUserContext();
+            String userSSO = userContext.getUserSSO();
 	        Template template=new Template();
 	        template.setTemplateID(templateId);
 	        template.setTemplateDesc(tempDesc);
 	        template.setPoCatAssID(poCatAssID);
 	        template.setComponentList(compList);
-	        template.setCreatedBy(currentUser.getSso());
-	        template.setModifiedBy(currentUser.getSso());
+	        template.setCreatedBy(userSSO);
+	        template.setModifiedBy(userSSO);
 	        String hashCodeStr=CommonUtils.getCompnentCheckSum(compList);
 	        template.setTemplateHash(hashCodeStr);
 	        List<Integer> templateTemplId=componentService.findTemplateExist(template);
@@ -708,7 +716,7 @@ public class ComponentsRestController {
     @RequestMapping(value ="/create-modify-comp-visiblity-override-page")
     @ResponseBody
     public ModelAndView getCreateModifyCompVisiblityOverridePage(@RequestParam("isCreatePage") Boolean isCreatePage,
-            @RequestParam("overrideId") int overrideId,HttpSession session) {
+            @RequestParam("overrideId") int overrideId) {
         ModelAndView mav = new ModelAndView("/admin-console/components/create-edit-comp-visiblity-override");
         mav.addObject("allPoAssocList", componentService.getAllPoAssociation());
         mav.addObject("overrideTypes", componentService.getOverrideTypes());
@@ -783,7 +791,7 @@ public class ComponentsRestController {
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_COMPONENT_OVERRIDE)
     @RequestMapping("delete-visiblity-override")
     @ResponseBody
-    public void deleteComponentVisibilityOverrides(@RequestParam(value="overrideId") int overrideId, HttpSession session) {
+    public void deleteComponentVisibilityOverrides(@RequestParam(value="overrideId") int overrideId) {
         componentService.deleteComponentVisibilityOverrides(overrideId);
     }
 
@@ -827,7 +835,7 @@ public class ComponentsRestController {
     /* =============== Create New Rule ==================*/
     @RequestMapping(value={"/create-template-rule"})
     @ResponseBody
-    public String insertRuleDetails(RuleMaster ruleMaster,HttpServletResponse response,int ruleId){
+    public String insertRuleDetails(RuleMaster ruleMaster, int ruleId){
     	String status=null;
     	try{
     		ruleId = loadsheetManagementService.createNewRule(ruleMaster);
@@ -844,7 +852,7 @@ public class ComponentsRestController {
     /* ================Update Rule =======================*/
     @RequestMapping(value={"/update-template-rule"})
     @ResponseBody
-    public String updateRuleDetails(RuleMaster ruleMaster,HttpServletResponse response){
+    public String updateRuleDetails(RuleMaster ruleMaster){
     	String status=null;
     	try{
     	    loadsheetManagementService.updateRuleDetails(ruleMaster);
