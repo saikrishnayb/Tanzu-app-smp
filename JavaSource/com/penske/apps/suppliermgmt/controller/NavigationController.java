@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
@@ -23,8 +22,8 @@ import com.penske.apps.adminconsole.enums.LeftNav;
 import com.penske.apps.adminconsole.enums.Tab;
 import com.penske.apps.adminconsole.enums.Tab.SubTab;
 import com.penske.apps.smccore.base.configuration.ProfileType;
-import com.penske.apps.suppliermgmt.annotation.VendorAllowed;
 import com.penske.apps.suppliermgmt.annotation.SmcSecurity.SecurityFunction;
+import com.penske.apps.suppliermgmt.annotation.VendorAllowed;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.model.UserContext;
 import com.penske.apps.suppliermgmt.service.HelpService;
@@ -49,8 +48,6 @@ public class NavigationController extends BaseController {
     private HelpService helpService;
     @Autowired
     private Environment springEnvironment;
-    @Autowired(required=false)	//This isn't required because we won't have a servlet context in the test configuration
-    private ServletContext servletContext;
     @Autowired
     private SuppliermgmtSessionBean sessionBean;
 
@@ -178,10 +175,7 @@ public class NavigationController extends BaseController {
     	if(!profiles.contains(ProfileType.QA))
     		return false;
     	
-    	if(servletContext == null)
-    		return false;
-    	
-    	String qa2Parameter = servletContext.getInitParameter("isQA2");
+    	String qa2Parameter = springEnvironment.getProperty("isQA2");
     	if(StringUtils.equals(qa2Parameter, "true"))
     		return true;
     	else
