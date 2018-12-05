@@ -498,7 +498,8 @@ function validateDate(input){
 //logg off code
 function logOut(){
 	
-	location.href=getContextRoot()+"/SMCLogOff";
+	var baseUrl = sessionStorage.getItem('baseContainerUrl');
+	location.href = baseUrl+"/SMCLogOff";
 }
 //for diaplaying the alert message while page is reloading
 function displayAlertModal(successMsg){

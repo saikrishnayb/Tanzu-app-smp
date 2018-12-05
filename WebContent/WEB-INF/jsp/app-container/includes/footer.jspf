@@ -11,7 +11,7 @@
 
 	<ul id="rightFooter" class="utility-list">
 		<li>Questions? Call ${supportNum}</li>
-		<li><a class="exit" href="#" onclick="logOut(); return flase;">Log off</a></li>
+		<li><a class="exit" href="#" onclick="logOut(); return false;">Log off</a></li>
 	</ul>
 	<div id="termsAndConditionPopup" style="display: none;">
 		<div id="getTermsAndCondition" style="overflow-y: auto;height: 450px;	width: 100%;" ></div>
