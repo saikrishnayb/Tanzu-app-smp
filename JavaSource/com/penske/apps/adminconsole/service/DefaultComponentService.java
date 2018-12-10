@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.penske.apps.adminconsole.dao.ComponentDao;
 import com.penske.apps.adminconsole.domain.ComponentGroup;
 import com.penske.apps.adminconsole.model.Component;
-import com.penske.apps.adminconsole.model.ComponentVisibilityOverride;
 import com.penske.apps.adminconsole.model.Components;
 import com.penske.apps.adminconsole.model.LoadSheetComponentDetails;
 import com.penske.apps.adminconsole.model.Template;
@@ -201,46 +200,6 @@ public class DefaultComponentService implements ComponentService {
     @Override
     public List<LookUp> getOverrideTypes() {
         return lookupManager.getLookUpListByName(ApplicationConstants.EXCEPTIONS_TYPES);
-    }
-    @Override
-    public List<ComponentVisibilityOverride> getAllComponentVisibilityOverrides() {
-        return componentDao.getAllComponentVisibilityOverrides();
-    }
-    @Override
-    public void addComponentVisibilityOverrides(
-            ComponentVisibilityOverride componentVisibilityOverride) {
-        componentDao.addComponentVisibilityOverrides(componentVisibilityOverride);
-    }
-    @Override
-    public void updateComponentVisibilityOverrides(
-            ComponentVisibilityOverride componentVisibilityOverride) {
-        componentDao.updateComponentVisibilityOverrides(componentVisibilityOverride);
-
-    }
-    @Override
-    public void deleteComponentVisibilityOverrides(int visiblityOverrideId) {
-        componentDao.deleteComponentVisibilityOverrides(visiblityOverrideId);
-    }
-
-    @Override
-    public ComponentVisibilityOverride getComponentVisibilityOverridesById(int visiblityOverrideId){
-        return componentDao.getComponentVisibilityOverridesById(visiblityOverrideId);
-    }
-    @Override
-    public boolean checkComponentVisibilityOverrideExist(
-            ComponentVisibilityOverride componentVisibilityOverride,boolean isCreate) {
-        ComponentVisibilityOverride overrideObj=componentDao.checkComponentVisibilityOverrideExist(componentVisibilityOverride);
-        boolean returnFlg=true;
-        if(overrideObj !=null){
-            if(isCreate){
-                returnFlg= false;
-            }else{
-                if(overrideObj.getVisiblityOverrideId() !=componentVisibilityOverride.getVisiblityOverrideId()){
-                    returnFlg= false;
-                }
-            }
-        }
-        return returnFlg;
     }
 
     @Override

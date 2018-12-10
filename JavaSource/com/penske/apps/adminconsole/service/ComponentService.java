@@ -3,7 +3,6 @@ package com.penske.apps.adminconsole.service;
 import java.util.List;
 
 import com.penske.apps.adminconsole.model.Component;
-import com.penske.apps.adminconsole.model.ComponentVisibilityOverride;
 import com.penske.apps.adminconsole.model.Components;
 import com.penske.apps.adminconsole.model.LoadSheetComponentDetails;
 import com.penske.apps.adminconsole.model.Template;
@@ -44,18 +43,6 @@ public interface ComponentService {
 //Template page -- End
 	
 //COMPONENT VISIBILITY OVERRIDES -- start
-	public List<ComponentVisibilityOverride> getAllComponentVisibilityOverrides();
-	
-	public void addComponentVisibilityOverrides(ComponentVisibilityOverride componentVisibilityOverride);
-	
-	public void updateComponentVisibilityOverrides(ComponentVisibilityOverride componentVisibilityOverride);
-	
-	public void deleteComponentVisibilityOverrides(int visiblityOverrideId);
-	
-	public ComponentVisibilityOverride getComponentVisibilityOverridesById(int visiblityOverrideId);
-	
-	public boolean  checkComponentVisibilityOverrideExist(ComponentVisibilityOverride componentVisibilityOverride,boolean isCreate);
-	
 	public List<Component> loadAllAvailableComponents();
 
     public void copyCorpComponentRow(int componentId, int componentGroupId);

@@ -8,7 +8,6 @@ import com.penske.apps.adminconsole.domain.ComponentGroup;
 import com.penske.apps.adminconsole.domain.ComponentInfoDetail;
 import com.penske.apps.adminconsole.model.Component;
 import com.penske.apps.adminconsole.model.ComponentVisibility;
-import com.penske.apps.adminconsole.model.ComponentVisibilityOverride;
 import com.penske.apps.adminconsole.model.Components;
 import com.penske.apps.adminconsole.model.LoadSheetComponentDetails;
 import com.penske.apps.adminconsole.model.PoCategory;
@@ -132,26 +131,6 @@ public interface ComponentDao {
     @NonVendorQuery
     public List<TemplatePoAssociation> getAllPoAssociationForEdit();
     //Template Page --- End
-    //COMPONENT VISIBILITY OVERRIDES -- start
-
-    @NonVendorQuery
-    public List<ComponentVisibilityOverride> getAllComponentVisibilityOverrides();
-
-    @NonVendorQuery
-    public void addComponentVisibilityOverrides(ComponentVisibilityOverride componentVisibilityOverride);
-
-    @NonVendorQuery
-    public void updateComponentVisibilityOverrides(ComponentVisibilityOverride componentVisibilityOverride);
-
-    @NonVendorQuery
-    public void deleteComponentVisibilityOverrides(@Param("visiblityOverrideId") int visiblityOverrideId);
-
-    @NonVendorQuery
-    public ComponentVisibilityOverride getComponentVisibilityOverridesById(@Param("visiblityOverrideId") int visiblityOverrideId);
-
-    @NonVendorQuery
-    public ComponentVisibilityOverride  checkComponentVisibilityOverrideExist(ComponentVisibilityOverride componentVisibilityOverride);
-    //COMPONENT VISIBILITY OVERRIDES -- End
 
     @NonVendorQuery
     public List<Component> loadAllAvailableComponents();

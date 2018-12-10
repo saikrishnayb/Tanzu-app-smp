@@ -25,7 +25,6 @@ import com.penske.apps.adminconsole.enums.PoCategoryType;
 import com.penske.apps.adminconsole.model.CategoryAssociation;
 import com.penske.apps.adminconsole.model.ComponentSequence;
 import com.penske.apps.adminconsole.model.ComponentVisibility;
-import com.penske.apps.adminconsole.model.ComponentVisibilityOverride;
 import com.penske.apps.adminconsole.model.Components;
 import com.penske.apps.adminconsole.model.PoCategory;
 import com.penske.apps.adminconsole.model.RuleDefinitions;
@@ -713,23 +712,6 @@ public class ComponentsRestController {
     }
 
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_COMPONENT_OVERRIDE)
-    @RequestMapping(value ="/create-modify-comp-visiblity-override-page")
-    @ResponseBody
-    public ModelAndView getCreateModifyCompVisiblityOverridePage(@RequestParam("isCreatePage") Boolean isCreatePage,
-            @RequestParam("overrideId") int overrideId) {
-        ModelAndView mav = new ModelAndView("/admin-console/components/create-edit-comp-visiblity-override");
-        mav.addObject("allPoAssocList", componentService.getAllPoAssociation());
-        mav.addObject("overrideTypes", componentService.getOverrideTypes());
-        if(isCreatePage){
-            mav.addObject("isCreatePage",true);
-        }else{
-            mav.addObject("editOverride",componentService.getComponentVisibilityOverridesById(overrideId));
-            mav.addObject("isCreatePage",false);
-        }
-        return mav;
-    }
-
-    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_COMPONENT_OVERRIDE)
     @RequestMapping("get-component-search-page")
     @ResponseBody
     public ModelAndView getComponentSearchPage(@RequestParam(value="val") int val) {
@@ -738,61 +720,6 @@ public class ComponentsRestController {
         mav.addObject("allComponent",comp);
         mav.addObject("val", val);
         return mav;
-    }
-
-    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_COMPONENT_OVERRIDE)
-    @RequestMapping(value ="/create-comp-visiblity-override", method = RequestMethod.POST)
-    @ResponseBody
-    public void addCompVisiblityOverride(ComponentVisibilityOverride overrideObj, HttpServletResponse response) throws Exception{
-        try{
-            if(componentService.checkComponentVisibilityOverrideExist(overrideObj, true)){
-                componentService.addComponentVisibilityOverrides(overrideObj);
-            }else{
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Component Visibility Override Already exists.");
-                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                response.getWriter().write("Component Visibility Override Already exists.");
-                response.flushBuffer();
-            }
-        }catch (Exception e) {
-            LOGGER.error("Error while adding COMPONENT VISIBILITY OVERRIDES: "+e.getMessage(),e);
-            CommonUtils.getCommonErrorAjaxResponse(response,"Error Processing the Component Visibility Override");
-        }
-    }
-
-    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_COMPONENT_OVERRIDE)
-    @RequestMapping(value ="/update-comp-visiblity-override", method = RequestMethod.POST)
-    @ResponseBody
-    public void updateCompVisiblityOverride(ComponentVisibilityOverride overrideObj, HttpServletResponse response) throws Exception{
-        try{
-            if(componentService.checkComponentVisibilityOverrideExist(overrideObj, false)){
-                componentService.updateComponentVisibilityOverrides(overrideObj);
-            }else{
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Component Visibility Override Already exists.");
-                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                response.getWriter().write("Component Visibility Override Already exists.");
-                response.flushBuffer();
-            }
-        }catch (Exception e) {
-            LOGGER.error("Error while updating COMPONENT VISIBILITY OVERRIDES: "+e.getMessage(),e);
-            CommonUtils.getCommonErrorAjaxResponse(response,"Error Processing the Component Visibility Override");
-        }
-    }
-
-    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_COMPONENT_OVERRIDE)
-    @RequestMapping("get-deactivate-visiblity-override-modal-content")
-    @ResponseBody
-    public ModelAndView getDeactivateVisiblityOverride(@RequestParam("overrideId") int overrideId) {
-        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/components/deactivate-visibility-override-modal-content");
-        mav.addObject("overrideId", overrideId);
-
-        return mav;
-    }
-
-    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_COMPONENT_OVERRIDE)
-    @RequestMapping("delete-visiblity-override")
-    @ResponseBody
-    public void deleteComponentVisibilityOverrides(@RequestParam(value="overrideId") int overrideId) {
-        componentService.deleteComponentVisibilityOverrides(overrideId);
     }
 
     /*==============Load template component sequence===================*/

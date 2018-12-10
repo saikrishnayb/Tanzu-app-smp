@@ -444,62 +444,6 @@ PO_SUBCATEGORY as subCategoryName
  	</select>
 <!-- Template Page End -->	
 		
-<!--  Override changes starts -->
-
-<insert id="addComponentVisibilityOverrides">
-Insert into SMC.SMC_COMPONENT_VISIBILITY_OVERRIDES (PO_CATEGORY_ASSOC_ID, DEPENDENT_COMPONENT_ID, OVR_TYPE, CONTROLLING_COMPONENT_ID, CONTROLLING_VALUE) 
-VALUES(#{poCategoryAssocId}, #{dependentComponentId}, #{overrideType}, #{controllingComponentId}, #{controllingValue})
-</insert>
-
-<select id="getAllComponentVisibilityOverrides"  resultType="com.penske.apps.adminconsole.model.ComponentVisibilityOverride">
-SELECT   VISIBILITY_OVR_ID as visiblityOverrideId, OVR_TYPE as overrideType, CONTROLLING_VALUE as controllingValue,
-		 DEPENDENT_COMPONENT_ID as dependentComponentId,
-         CONTROLLING_COMPONENT_ID as controllingComponentId,  (CATEGORY || '/' || SUBCATEGORY) as poCategoryAssocName,
-         (SELECT   FULL_NAME
-          FROM     SMC.V_SMC_AVAILABLE_COMPONENTS
-          WHERE    COMPONENT_ID= a.DEPENDENT_COMPONENT_ID) as dependentComponentName,
-         (SELECT   FULL_NAME
-          FROM     SMC.V_SMC_AVAILABLE_COMPONENTS
-          WHERE    COMPONENT_ID= a.CONTROLLING_COMPONENT_ID) as controllingComponentName
-FROM   SMC.SMC_COMPONENT_VISIBILITY_OVERRIDES a 
-JOIN SMC.V_SMC_PO_CATEGORY_COMBINATIONS c ON a.PO_CATEGORY_ASSOC_ID=c.ASSOC_ID
-</select>
-
-<select id="getComponentVisibilityOverridesById"  resultType="com.penske.apps.adminconsole.model.ComponentVisibilityOverride">
-SELECT 
- VISIBILITY_OVR_ID as visiblityOverrideId, OVR_TYPE as overrideType, CONTROLLING_VALUE as controllingValue, PO_CATEGORY_ASSOC_ID as poCategoryAssocId, 
-		 DEPENDENT_COMPONENT_ID as dependentComponentId,
-         CONTROLLING_COMPONENT_ID as controllingComponentId,
-         (SELECT   FULL_NAME
-          FROM     SMC.V_SMC_AVAILABLE_COMPONENTS
-          WHERE    COMPONENT_ID= DEPENDENT_COMPONENT_ID) as dependentComponentName,
-         (SELECT   FULL_NAME
-          FROM     SMC.V_SMC_AVAILABLE_COMPONENTS
-          WHERE    COMPONENT_ID= CONTROLLING_COMPONENT_ID) as controllingComponentName
- FROM SMC.SMC_COMPONENT_VISIBILITY_OVERRIDES  WHERE VISIBILITY_OVR_ID=#{visiblityOverrideId}
-</select>
-<update id="updateComponentVisibilityOverrides">
-Update SMC.SMC_COMPONENT_VISIBILITY_OVERRIDES Set PO_CATEGORY_ASSOC_ID=#{poCategoryAssocId}, 
-DEPENDENT_COMPONENT_ID=#{dependentComponentId}, OVR_TYPE=#{overrideType},
-CONTROLLING_COMPONENT_ID=#{controllingComponentId}, CONTROLLING_VALUE=#{controllingValue}
- where VISIBILITY_OVR_ID=#{visiblityOverrideId}
-</update>
-
-<delete  id="deleteComponentVisibilityOverrides">
-Delete from SMC.SMC_COMPONENT_VISIBILITY_OVERRIDES where VISIBILITY_OVR_ID=#{visiblityOverrideId}
-</delete>
-
-<select id="checkComponentVisibilityOverrideExist" resultType="com.penske.apps.adminconsole.model.ComponentVisibilityOverride">
-SELECT VISIBILITY_OVR_ID as visiblityOverrideId, OVR_TYPE as overrideType, CONTROLLING_VALUE as controllingValue, PO_CATEGORY_ASSOC_ID, 
-		 DEPENDENT_COMPONENT_ID as dependentComponentId,
-         CONTROLLING_COMPONENT_ID as controllingComponentId FROM  SMC.SMC_COMPONENT_VISIBILITY_OVERRIDES  WHERE
-PO_CATEGORY_ASSOC_ID=#{poCategoryAssocId} AND DEPENDENT_COMPONENT_ID=#{dependentComponentId}
-AND OVR_TYPE=#{overrideType} AND CONTROLLING_COMPONENT_ID=#{controllingComponentId} AND CONTROLLING_VALUE=#{controllingValue}
-</select>
-<!-- Override change ends -->
-	
-	
-  
   
   <!-- Component Management *****************************************************************************************-->
   <select id="loadAllAvailableComponents"  resultType="com.penske.apps.adminconsole.model.Component">

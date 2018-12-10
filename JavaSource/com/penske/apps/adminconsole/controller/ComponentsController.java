@@ -178,15 +178,6 @@ public class ComponentsController {
         return mav;
     }
 
-    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_COMPONENT_OVERRIDE)
-    @RequestMapping(value ={"/component-Visibility-Override"})
-    public ModelAndView getComponentVisibilityOverrides() {
-        ModelAndView mav = new ModelAndView("/admin-console/components/component-Visibility-Override");
-        mav.addObject("overrideList", componentService.getAllComponentVisibilityOverrides());
-        return mav;
-    }
-    
-
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_TEMPLATE)
     @RequestMapping(value ="/create-modify-template-page")
     public ModelAndView getCreateModifyTemplatePage(@RequestParam("isCreatePage") Boolean isCreatePage,@RequestParam(value="templateId") int templateId,
