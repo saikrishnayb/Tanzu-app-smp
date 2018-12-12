@@ -36,7 +36,6 @@ public enum Tab {
                 LeftNav.SEARCH_TEMPLATES,
                 LeftNav.ALERTS,
                 LeftNav.GLOBAL_EXCEPTIONS,
-                LeftNav.DELAY_REASON_CODES,
                 LeftNav.T_AND_C_MANAGEMENT,
                 LeftNav.EXCEL_UPLOADS));
 

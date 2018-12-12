@@ -29,7 +29,6 @@ public enum LeftNav {
     SEARCH_TEMPLATES(SecurityFunction.SEARCH_TEMPLATES, "admin-console/app-config/search-template-management.htm"),
     ALERTS(SecurityFunction.ALERT_MANAGEMENT, "admin-console/app-config/alerts.htm"),
     GLOBAL_EXCEPTIONS(SecurityFunction.GLOBAL_EXCEPTIONS_MANAGEMENT, "admin-console/app-config/global-exceptions.htm"),
-    DELAY_REASON_CODES(SecurityFunction.MANAGE_DELAY_REASONS, "admin-console/app-config/delay-reason-codes.htm"),
     T_AND_C_MANAGEMENT(SecurityFunction.MANAGE_TC, "admin-console/app-config/terms-and-conditions.htm"),
     EXCEL_UPLOADS(SecurityFunction.UPLOAD_EXCEL, "admin-console/app-config/excelUploads.htm");
 

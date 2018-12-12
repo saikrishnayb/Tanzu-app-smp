@@ -62,11 +62,6 @@
 				<tl:isAuthorized tabName="Admin Console" secFunction="GLOBAL_EXCEPTIONS_MANAGEMENT">
 					<c:set var="hasAppConfig" value="1"></c:set>
 				</tl:isAuthorized>
-				<tl:isAuthorized tabName="Admin Console" secFunction="DELAY_ASSOCIATION">
-					<tl:isAuthorized tabName="Admin Console" secFunction="MANAGE_DELAY_REASONS">
-						<c:set var="hasAppConfig" value="1"></c:set>
-					</tl:isAuthorized>
-				</tl:isAuthorized>
 				<tl:isAuthorized tabName="Admin Console" secFunction="MANAGE_TC">
 					<c:set var="hasAppConfig" value="1"></c:set>
 				</tl:isAuthorized> 

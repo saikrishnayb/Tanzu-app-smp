@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import com.penske.apps.adminconsole.exceptions.DelayReasonAlreadyExistsException;
 import com.penske.apps.adminconsole.exceptions.TemplateNameAlreadyExistsException;
 import com.penske.apps.adminconsole.exceptions.UserAlreadyExistsException;
 import com.penske.apps.adminconsole.model.AjaxError;
@@ -16,22 +15,6 @@ import com.penske.apps.adminconsole.model.AjaxError;
 public class RestControllerAdvisor {
 
     private static Logger logger = Logger.getLogger(RestControllerAdvisor.class);
-
-
-    @ResponseStatus(value=HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(DelayReasonAlreadyExistsException.class)
-    @ResponseBody
-    public AjaxError handleDelayReasonAlreadyExistsException(DelayReasonAlreadyExistsException ex){
-
-        logger.error(ex);
-
-        AjaxError error = new AjaxError();
-
-        String errorMessage = ex.getErrorMessage();
-        error.setErrorDescription( errorMessage );
-
-        return error;
-    }
 
     @ResponseStatus(value=HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(UserAlreadyExistsException.class)

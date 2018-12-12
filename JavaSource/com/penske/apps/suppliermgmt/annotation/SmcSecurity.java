@@ -40,7 +40,6 @@ public @interface SmcSecurity {
         SEARCH_TEMPLATES,
         ALERT_MANAGEMENT,
         GLOBAL_EXCEPTIONS_MANAGEMENT,
-        MANAGE_DELAY_REASONS,
         MANAGE_TC,
         UPLOAD_EXCEL,
         VENDOR_FILTER,

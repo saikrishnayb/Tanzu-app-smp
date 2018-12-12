@@ -30,9 +30,6 @@
 	<tl:isAuthorized tabName="Admin Console" secFunction="GLOBAL_EXCEPTIONS_MANAGEMENT">
 		<div class="leftNavGroup"><a href="${baseAppUrl}/admin-console/app-config/global-exceptions.htm" id="left-nav-global-exceptions" onclick="javascript:loadProcessImage();">Global Exceptions</a></div>
 	</tl:isAuthorized>
-	<tl:isAuthorized tabName="Admin Console" secFunction="MANAGE_DELAY_REASONS">
-		<div class="leftNavGroup"><a href="${baseAppUrl}/admin-console/app-config/delay-reason-codes.htm" id="left-nav-reason-codes" onclick="javascript:loadProcessImage();">Delay Reason Codes</a></div>
-	</tl:isAuthorized>
 
 	<tl:isAuthorized tabName="Admin Console" secFunction="MANAGE_TC">
 		<div class="leftNavGroup"><a href="${baseAppUrl}/admin-console/app-config/terms-and-conditions.htm" id="left-nav-terms-and-conditions" onclick="javascript:loadProcessImage();">T &#38; C Management</a></div>

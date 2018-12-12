@@ -33,7 +33,6 @@ import com.penske.apps.adminconsole.model.VendorReport;
 import com.penske.apps.adminconsole.model.VendorUploadHandler;
 import com.penske.apps.adminconsole.service.AlertService;
 import com.penske.apps.adminconsole.service.DefaultSubjectService;
-import com.penske.apps.adminconsole.service.DelayService;
 import com.penske.apps.adminconsole.service.DynamicRuleService;
 import com.penske.apps.adminconsole.service.ExceptionService;
 import com.penske.apps.adminconsole.service.LoadSheetManagementService;
@@ -68,8 +67,6 @@ public class AppConfigController {
 
     @Autowired
     private ExceptionService exceptionService;
-    @Autowired
-    private DelayService delayService;
     @Autowired
     private DefaultSubjectService subjectService;
     @Autowired
@@ -294,56 +291,6 @@ public class AppConfigController {
         //		Commented code here was used to test the Error Page only
         //		String x = null;
         //		x.equals("cool");
-
-        return mav;
-    }
-
-    /* ================== Delay ================== */
-    @RequestMapping("/delay-management")
-    public ModelAndView getDelayManagementPage(){
-
-        LOGGER.error("getDelayManagementPage is used!!!! :)");
-
-        ModelAndView mav = new ModelAndView("/admin-console/app-config/delay-management");
-
-        mav.addObject("delays", delayService.getDelays());
-
-        return mav;
-    }
-
-    /* ================== Delay Reasons ================== */
-    // TODO SMCSEC is this even used?????
-    @RequestMapping("/delay-reason-types")
-    public ModelAndView getReasonTypesPage(){
-
-        LOGGER.error("getReasonTypesPage is used!!!! :)");
-
-        ModelAndView mav = new ModelAndView("/admin-console/app-config/delay-reason-types");
-
-        mav.addObject("types", delayService.getTypes());
-
-        return mav;
-    }
-
-    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_DELAY_REASONS)
-    @RequestMapping("/delay-reason-codes")
-    public ModelAndView getReasonCodesPage(){
-        ModelAndView mav = new ModelAndView("/admin-console/app-config/delay-reason-codes");
-
-        mav.addObject("delays", delayService.getReasons());
-
-        return mav;
-    }
-
-    // TODO SMCSEC is this even used?????
-    @RequestMapping("/delay-type-reason-assoc")
-    public ModelAndView getTypeReasonassocPage(){
-
-        LOGGER.error("getTypeReasonassocPage is used!!!! :)");
-
-        ModelAndView mav = new ModelAndView("/admin-console/app-config/delay-type-reason-assoc");
-
-        mav.addObject("delays", delayService.getAssociations());
 
         return mav;
     }
