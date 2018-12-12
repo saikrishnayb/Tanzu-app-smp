@@ -34,7 +34,6 @@ public @interface SmcSecurity {
         MANAGE_CATEGORY,
         MANAGE_COMPONENTS,
         MANAGE_TEMPLATE,
-        MANAGE_COMPONENT_OVERRIDE,
 
         MANAGE_SUBJECTS,
         DYNAMIC_RULES_MANAGEMENT,

@@ -19,8 +19,6 @@ public enum LeftNav {
     CATEGORY_MANAGEMENT(SecurityFunction.MANAGE_CATEGORY, "admin-console/components/category-management.htm"),
     COMPONENT_MANAGEMENT(SecurityFunction.MANAGE_COMPONENTS, "admin-console/components/component-management.htm"),
     TEMPLATE_MANAGEMENT(SecurityFunction.MANAGE_TEMPLATE, "admin-console/components/template.htm"),
-    EXCEL_SEQUENCE(SecurityFunction.MANAGE_TEMPLATE, "admin-console/components/load-excel-seq-templates.htm"),
-    COMPONENT_VISIBILITY_OVERRIDE(SecurityFunction.MANAGE_COMPONENT_OVERRIDE, "admin-console/components/component-Visibility-Override.htm"),
 
     /** App Config **/
     SUBJECT_MANAGEMENT(SecurityFunction.MANAGE_SUBJECTS, "admin-console/app-config/subject-management.htm"),

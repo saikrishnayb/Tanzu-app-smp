@@ -38,9 +38,6 @@
 				<tl:isAuthorized tabName="Admin Console" secFunction="MANAGE_TEMPLATE"> 
 					<c:set var="hasComponents" value="1"></c:set> 
 			 	</tl:isAuthorized>
-			 	<tl:isAuthorized tabName="Admin Console" secFunction="MANAGE_COMPONENT_OVERRIDE"> 
-					<c:set var="hasComponents" value="1"></c:set>
-				</tl:isAuthorized> 
 				<!-- Include Components only if user has access to at least one left nav inside Components -->
 				<c:if test="${hasComponents == '1'}">
                   <tl:penskeOnly>

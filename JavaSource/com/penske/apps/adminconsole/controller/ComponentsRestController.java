@@ -711,17 +711,6 @@ public class ComponentsRestController {
         componentService.activateTemplate(templateId);
     }
 
-    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_COMPONENT_OVERRIDE)
-    @RequestMapping("get-component-search-page")
-    @ResponseBody
-    public ModelAndView getComponentSearchPage(@RequestParam(value="val") int val) {
-        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/components/component-search-page");
-        List<Components> comp=componentService.getAllComponent();
-        mav.addObject("allComponent",comp);
-        mav.addObject("val", val);
-        return mav;
-    }
-
     /*==============Load template component sequence===================*/
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_TEMPLATE)
     @RequestMapping("/get-template-component-sequence")

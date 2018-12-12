@@ -26,9 +26,7 @@ public enum Tab {
         COMPONENTS(Arrays.asList(LeftNav.CATEGORY_ASSOCIATION,
                 LeftNav.CATEGORY_MANAGEMENT,
                 LeftNav.COMPONENT_MANAGEMENT,
-                LeftNav.TEMPLATE_MANAGEMENT,
-                LeftNav.EXCEL_SEQUENCE,
-                LeftNav.COMPONENT_VISIBILITY_OVERRIDE)),
+                LeftNav.TEMPLATE_MANAGEMENT)),
 
         APP_CONFIG(Arrays.asList(LeftNav.SUBJECT_MANAGEMENT,
                 LeftNav.LOADSHEET_MANAGEMENT,
