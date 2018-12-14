@@ -5,7 +5,6 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.penske.apps.adminconsole.model.CategoryAssociation;
-import com.penske.apps.adminconsole.model.PoCategory;
 import com.penske.apps.adminconsole.model.SubCategory;
 import com.penske.apps.smccore.base.annotation.NonVendorQuery;
 /**
@@ -37,9 +36,6 @@ public interface CategoryManagementDao {
 
     @NonVendorQuery
     public void addCategoryAssociation(CategoryAssociation addAssociationForm);
-
-    @NonVendorQuery
-    public PoCategory getMaxCategoryId();
 
     @NonVendorQuery
     public int getMaxSubCategoryId();

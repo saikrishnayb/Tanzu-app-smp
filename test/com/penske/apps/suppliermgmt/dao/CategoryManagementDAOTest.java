@@ -99,12 +99,6 @@ public class CategoryManagementDAOTest extends MyBatisDaoTest
 	}
 	
 	@Test
-	public void shouldGetMaxCategoryId()
-	{
-		dao.getMaxCategoryId();
-	}
-	
-	@Test
 	public void shouldGetMaxSubcategoryId()
 	{
 		dao.getMaxSubCategoryId();
