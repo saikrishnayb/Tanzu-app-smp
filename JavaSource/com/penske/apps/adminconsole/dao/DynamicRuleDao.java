@@ -44,12 +44,6 @@ public interface DynamicRuleDao {
     public void modifyDynamicRule(DynamicRule rule);
 
     @NonVendorQuery
-    public void modifyDynamicRuleStatus(@Param("dynamicRuleId") int dynamicRuleId,@Param("modifiedBy") String modifiedBy);
-
-    @NonVendorQuery
-    public void modifyDynamicRulesByPriority(@Param("priority") int priority, @Param("increment") int increment);
-
-    @NonVendorQuery
     public List<String> getAvailableStatus();
 
     @NonVendorQuery

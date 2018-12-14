@@ -22,17 +22,13 @@ import com.penske.apps.adminconsole.model.Alert;
 import com.penske.apps.adminconsole.model.ComponentRuleAssociation;
 import com.penske.apps.adminconsole.model.DynamicRule;
 import com.penske.apps.adminconsole.model.GlobalException;
-import com.penske.apps.adminconsole.model.Notification;
-import com.penske.apps.adminconsole.model.NotificationForm;
 import com.penske.apps.adminconsole.model.SearchTemplate;
 import com.penske.apps.adminconsole.model.SearchTemplateForm;
 import com.penske.apps.adminconsole.model.Subject;
-import com.penske.apps.adminconsole.model.UnitException;
 import com.penske.apps.adminconsole.service.AlertService;
 import com.penske.apps.adminconsole.service.DynamicRuleService;
 import com.penske.apps.adminconsole.service.ExceptionService;
 import com.penske.apps.adminconsole.service.LoadSheetManagementService;
-import com.penske.apps.adminconsole.service.NotificationService;
 import com.penske.apps.adminconsole.service.SearchTemplateService;
 import com.penske.apps.adminconsole.service.SubjectService;
 import com.penske.apps.adminconsole.service.TabService;
@@ -62,8 +58,6 @@ public class AppConfigRestController {
     
     @Autowired
     private ExceptionService exceptionService;
-    @Autowired
-    private NotificationService notificationService;
     @Autowired
     private DynamicRuleService dynamicRuleService;
     @Autowired
@@ -101,66 +95,6 @@ public class AppConfigRestController {
         subjectService.addSubject(subject);
     }
 
-    /* ================== Notifications ================== */
-    // TODO SMCSEC is this even used?????
-    @RequestMapping("get-notification-modal-content")
-    @ResponseBody
-    public ModelAndView getNotificationModalContent(@RequestParam(value="notificationId") int notificationId) {
-
-        LOGGER.error("getNotificationModalContent is used!!!! :)");
-
-        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/app-config/notification-modal-content");
-
-        Notification notification = notificationService.getNotification(notificationId);
-        notificationService.getSortedNotificationParties(notification);
-        mav.addObject("notification", notification);
-
-        List<String> userEmails = notificationService.getUserEmails();
-        mav.addObject("userEmails", userEmails);
-
-        return mav;
-    }
-
-    // TODO SMCSEC is this even used?????
-    @RequestMapping("get-user-emails")
-    @ResponseBody
-    public String getUserEmails() {
-
-        LOGGER.error("getUserEmails is used!!!! :)");
-
-        StringBuilder emails = new StringBuilder();
-        List<String> userEmails = notificationService.getUserEmails();
-
-        if (userEmails == null) {
-            // List of user emails was null, what to do here?
-
-            return null;
-        }
-
-        for (String email : userEmails) {
-            emails.append(email);
-            emails.append(";");
-        }
-
-        return emails.toString();
-    }
-
-    // TODO SMCSEC is this even used?????
-    @RequestMapping("update-notification")
-    @ResponseBody
-    public Notification updateNotification(NotificationForm notificationForm) {
-
-        LOGGER.error("updateNotification is used!!!! :)");
-
-        notificationService.updateNotification(notificationForm);
-        notificationService.updateNotificationParty(notificationForm);
-
-        Notification notification = notificationService.getNotification(notificationForm.getNotificationId());
-        notificationService.getSortedNotificationParties(notification);
-
-        return notification;
-    }
-
     /* ================== Global Exceptions ================== */
     /*    * 
     * @param exceptionId
@@ -179,16 +113,6 @@ public class AppConfigRestController {
         mav.addObject("unitNumber", unitNumber);
         mav.addObject("exception", exception);
         return mav;
-    }
-
-    // TODO SMCSEC is this even used?????
-    @RequestMapping("get-sub-groups")
-    @ResponseBody
-    public List<String> getSubGroups(@RequestParam(value = "selectedOption") String selectedOption) {
-
-
-        List<String> subGroups = exceptionService.getSubGroups(selectedOption);
-        return subGroups;
     }
 
     @RequestMapping("edit-global-exception")
@@ -370,98 +294,11 @@ public class AppConfigRestController {
         alertService.modifyAlertDetail(alert);
     }
 
-    /* ================== Unit Exceptions ================== */
-    // TODO SMCSEC is this even used?????
-    @RequestMapping("get-delete-unit-exception-modal")
-    @ResponseBody
-    public ModelAndView getUnitExceptionsDeleteModal(@RequestParam(value = "exceptionId") int exceptionId) {
-
-        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/app-config/delete-unit-exception-modal");
-        UnitException exception = exceptionService.getUnitException(exceptionId);
-        List<String> poGroup = exceptionService.splitGroup(exception.getPoGroup());
-        mav.addObject("poGroup", poGroup);
-        mav.addObject("exception", exception);
-        return mav;
-    }
-
-    // TODO SMCSEC is this even used?????
-    @RequestMapping("delete-unit-exception")
-    @ResponseBody
-    public void deleteUnitException(@RequestParam(value = "exceptionId") int exceptionId) {
-
-        LOGGER.error("deleteUnitException is used!!!! :)");
-
-        exceptionService.deleteUnitException(exceptionId);
-    }
-
-    // TODO SMCSEC is this even used?????
-    @RequestMapping("get-unit-exceptions-edit-modal")
-    @ResponseBody
-    public ModelAndView getUnitExceptionsEditModal(@RequestParam(value = "exceptionId") int exceptionId) {
-
-        LOGGER.error("getUnitExceptionsEditModal is used!!!! :)");
-
-        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/app-config/edit-unit-exceptions-modal");
-
-        UnitException exception = exceptionService.getUnitException(exceptionId);
-        List<String> poGroup = exceptionService.splitGroup(exception.getPoGroup());
-        mav.addObject("poGroup", poGroup);
-        mav.addObject("exception", exception);
-        return mav;
-    }
-
-    // TODO SMCSEC is this even used?????
-    @RequestMapping("edit-unit-exception")
-    @ResponseBody
-    public void editUnitException(@RequestParam(value = "exceptionId") int exceptionId, @RequestParam(value = "provider") String provider, @RequestParam(value = "subProvider") String subProvider, @RequestParam(value = "globalFlag") boolean globalFlag) {
-
-        LOGGER.error("editUnitException is used!!!! :)");
-
-        if (globalFlag) {
-            // get Unit Exception by passed id, delete unit exception, then add new global exception
-            UnitException exception = exceptionService.getUnitException(exceptionId);
-            exceptionService.deleteUnitException(exceptionId);
-            exceptionService.addGlobalException(exception);
-        } else {
-
-            exceptionService.modifyUnitException(exceptionId, provider, subProvider);
-        }
-    }
-
-    /* ================== Delays ================== */
-    // TODO SMCSEC is this even used?????
-    // TODO SMCSEC is this even used?????
-    // TODO SMCSEC is this even used?????
-    // TODO SMCSEC is this even used?????
-
-    // TODO SMCSEC is this even used?????
-
-    // TODO SMCSEC is this even used?????
-
-
-
-    // TODO SMCSEC is this even used?????
-
-    // TODO SMCSEC is this even used?????
-
-
-    // TODO SMCSEC is this even used?????
-    // TODO SMCSEC is this even used?????
-
-    // TODO SMCSEC is this even used?????
-    @RequestMapping("get-add-delay-type-modal-page")
-    @ResponseBody
-    public ModelAndView getAddDelayTypeModal() {
-        LOGGER.error("getAddDelayTypeModal is used!!!! :)");
-        return new ModelAndView("/jsp-fragment/admin-console/app-config/add-delay-type-modal");
-    }
-
     /* ================== Terms And Conditions ================== */
-    // TODO SMCSEC is this even used?????
+    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_TC)
     @RequestMapping("update-t-and-c-frequency")
     @ResponseBody
     public void updateTermsAndConditionsFrequency(@RequestParam(value = "frequencyDays") String frequencyDays) {
-        LOGGER.error("updateTermsAndConditionsFrequency is used!!!! :)");
         try {
             Integer.parseInt(frequencyDays);
         } catch (Exception e) {

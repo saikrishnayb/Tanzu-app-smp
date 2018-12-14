@@ -9,12 +9,9 @@ import com.penske.apps.adminconsole.model.Org;
 import com.penske.apps.adminconsole.model.Permission;
 import com.penske.apps.adminconsole.model.Role;
 import com.penske.apps.adminconsole.model.SignatureInitial;
-import com.penske.apps.adminconsole.model.TemplateComponents;
-import com.penske.apps.adminconsole.model.TemplatePoCategorySubCategory;
 import com.penske.apps.adminconsole.model.User;
 import com.penske.apps.adminconsole.model.UserDept;
 import com.penske.apps.adminconsole.model.UserType;
-import com.penske.apps.adminconsole.model.VendorLocation;
 import com.penske.apps.adminconsole.model.VendorTree;
 import com.penske.apps.adminconsole.service.MailRequest;
 import com.penske.apps.smccore.base.annotation.NonVendorQuery;
@@ -26,9 +23,6 @@ import com.penske.apps.suppliermgmt.model.UserContext;
  * @author kenneth.french
  *
  */
-
-
-
 public interface SecurityDao {
 
     @NonVendorQuery
@@ -41,9 +35,6 @@ public interface SecurityDao {
     @NonVendorQuery
     public User getUser(int userId);
 
-    @NonVendorQuery
-    public Role getRole(int roleId);
-
     //vendor
     @NonVendorQuery
     public List<String> getAllVendorNames();
@@ -52,34 +43,10 @@ public interface SecurityDao {
     public List<Role> getPenskeUserSupplierRoles(String manufacturer);
 
     @NonVendorQuery
-    public List<Role> getSupplierAdminRole();
-
-    @NonVendorQuery
-    public List<Role> getSupplierRoles(@Param("roleId")int roleId);
-
-    @NonVendorQuery
     public List<Permission> getPermissions(int roleId);
 
     @NonVendorQuery
     public List<String> getAllTabNames();
-
-    public List<VendorLocation> getVendorLocations(String vendorName);
-
-    public List<VendorLocation> getVendorUserLocations(int userId);
-
-    public VendorLocation getVendorUserLocationInfo(int vendorId);
-
-    @NonVendorQuery
-    public String getRegularComponentName(int componentId);
-
-    @NonVendorQuery
-    public String getVehicleComponentName(int componentId);
-
-    @NonVendorQuery
-    public List<TemplateComponents> getTemplateComponent(TemplatePoCategorySubCategory temp);
-
-    @NonVendorQuery
-    public List<TemplatePoCategorySubCategory> getVendorTemplates(int vendorId);
 
     //penske
     @NonVendorQuery
@@ -98,7 +65,6 @@ public interface SecurityDao {
     public String getSignatureImage(int userId);
 
     //user summary page
-    //public List<User> getSupplierUsers(String manufacturer);
     @NonVendorQuery
     public List<Role> getVendorUserSpecificRoles( @Param("roleId")int roleId);
 
@@ -117,22 +83,10 @@ public interface SecurityDao {
 
     //table modifications
     @NonVendorQuery
-    public void addVendorUserAssoc(int userId, int vendorId);
-
-    @NonVendorQuery
-    public void removeVendorUserAssoc(@Param("userId")int userId, @Param("vendorId")int vendorId);
-
-    @NonVendorQuery
     public void modifyUserInfo(User user);
 
     @NonVendorQuery
     public void modifyPenskeUser(User user);
-
-    @NonVendorQuery
-    public void addPenskeUser(User user);
-
-    @NonVendorQuery
-    public void removePenskeUserAssoc(int userId);
 
     @NonVendorQuery
     public boolean addUser(User user);
@@ -153,9 +107,6 @@ public interface SecurityDao {
     public void deleteSignatureImage(@Param("userId")int userId,@Param("ssoId")String ssoId);
 
     @NonVendorQuery
-    public List<String> getAllVendorFullNames();
-
-    @NonVendorQuery
     public List<Org> getOrgList(@Param("orgId") int orgId, @Param("orgName") String orgName, @Param("parentOrgId") Integer parentOrgId);
 
     @NonVendorQuery
@@ -174,9 +125,6 @@ public interface SecurityDao {
     public void updateOrg(Org org);
 
     public List<VendorTree> getVendorList(@Param("corp") String corp,@Param("vendor") String vendor,@Param("orgId") int orgId);
-
-    @NonVendorQuery
-    public int getOrgId();
 
     @NonVendorQuery
     public void addOrgVendor(@Param("orgId")int orgId,@Param("vendorNumber")String vendorNumber);
@@ -228,9 +176,6 @@ public interface SecurityDao {
 
     @NonVendorQuery
     public void addEmailSent(MailRequest emailData);
-
-    @NonVendorQuery
-    public void updateEmailSent(@Param("emailAuditId") int emailAuditId);
 
     @NonVendorQuery
     public void deleteUserFromBuddy(@Param("userSSO") String userSSO);

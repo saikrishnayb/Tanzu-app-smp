@@ -19,30 +19,11 @@ import com.penske.apps.adminconsole.model.Tab;
 import com.penske.apps.adminconsole.util.CommonUtils;
 
 @Service
-public class DefaultRoleService implements RoleService {
+public class DefaultRoleService implements RoleService
+{
 	@Autowired
-	RoleDao roleDao;
+	private RoleDao roleDao;
 	
-	@Override
-	public List<Role> getAllRoles(String status) {
-		return roleDao.getAllRoles(status);
-	}
-	
-	@Override
-	public List<Role> getRolesBySearchContent(Role role) {
-		// Base Role ID cannot be negative.
-		if (role.getBaseRoleId() < 0 && role.getBaseRoleId() != -1) {
-			return null;
-		}
-		
-		// Status can only be 1 (Active) or 0 (Inactive).
-		if (role.getStatus() == null ) {
-			return null;
-		}
-		
-		return roleDao.getRolesBySearchContent(role);
-	}
-
 	@Override
 	public List<Tab> getCreateRolePermissions(int roleId) {
 		List<Tab> tabs = roleDao.getSecurityFunctionTabs(roleId);
@@ -160,9 +141,6 @@ public class DefaultRoleService implements RoleService {
 		return topRole;
 	}
 	
-	
-	
-	
 	@Override
 	public Role getEditRoleHierarchy(int roleId,int  flag,int orgId) {
 		int baseRoleId=roleId;
@@ -170,19 +148,6 @@ public class DefaultRoleService implements RoleService {
 			Role rootRole = roleDao.getBaseRoleId(roleId);
 			baseRoleId=rootRole.getBaseRoleId();
 		}
-	/*	// Recurse back up through roles by the base role ID until the root role is reached (one without a base role).
-		while (rootRole.getBaseRoleId() != 0) {
-			Role baseRole = roleDao.getBaseRoleId(rootRole.getBaseRoleId());
-
-			// Add the current role to the list of sub-roles of the base role.
-			List<Role> subRoles = new ArrayList<Role>(1);
-			subRoles.add(rootRole);
-			baseRole.setSubRoles(subRoles);
-
-			rootRole = baseRole;
-		}
-		
-		return rootRole;*/
 		
 		List<Role> roleList=roleDao.getMyDescendRoleWithParentOthOrg(baseRoleId,orgId);
 		//List<Role> roleList=roleDao.getMyDescendRoleByRoleIdOrgId(roleId,orgId);
@@ -322,33 +287,15 @@ public class DefaultRoleService implements RoleService {
 	}
 
 	@Override
-	public  List<Role>  getAllRolesForVendor(int roleId) {
-		// TODO Auto-generated method stub
-		return roleDao.getAllRolesForVendor(roleId);
-	}
-
-	@Override
 	public List<Role> getMyRoleDescend(int roleId,int currOrgId,boolean isSupplier) {
-	//	List<Role> myRoles =  roleDao.getMyRoleDescend(roleId,currOrgId);
 		List<Role> myRoles =  roleDao.getMyDescendRoleWithParentOthOrg(roleId, currOrgId);
-		/*if(!isSupplier){
-			myRoles.addAll(roleDao.getAllVendorRoles( 0,null));
-		}*/
+		
 		return myRoles;
 	}
-	
-
-	//@Override
-	//public List<Role> getMyDescendRoleWithParentOthOrg(int roleId,int orgId) {
-	//	List<Role> roleList=roleDao.getMyDescendRoleWithParentOthOrg(baseRoleId,orgId);
-	//}
 	
 	@Override
 	public List<Role> getMyRoles(int currUserRoleId,int currOrgId, int baseRoleId,String roleName,boolean isSupplier){
 		List<Role> myRoles = roleDao.getMyRoles(currUserRoleId,currOrgId,baseRoleId,roleName);
-		/*if(!isSupplier){
-			myRoles.addAll(roleDao.getAllVendorRoles(baseRoleId,roleName));
-		}*/
 		return myRoles;
 	}
 
@@ -398,9 +345,4 @@ public class DefaultRoleService implements RoleService {
 		}
 		return roles;
 	}
-
-	//@Override
-	//public List<Role> getAllVendorRoles() {
-	//	return roleDao.getAllVendorRoles();
-	//}
 }

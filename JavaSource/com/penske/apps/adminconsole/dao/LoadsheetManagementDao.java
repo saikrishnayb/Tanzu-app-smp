@@ -127,9 +127,6 @@ public interface LoadsheetManagementDao {
     public void updateCmpGrpSeqDeatils(@Param("cmpGrpSeq") LoadsheetCompGrpSeq cmpGrpSeq,@Param("user") UserContext user);
 
     @NonVendorQuery
-    public void deleteCmpGrpSeqDetailsUsingGrpId(@Param("groupMasterIdList") List<Integer> groupMasterIdList);
-
-    @NonVendorQuery
     public void deleteCmpGrpSeqDetails(@Param("compGrpSeqIdList") List<Integer> compGrpSeqIdList,@Param("grpMasterId") int grpMasterId);
 
     @NonVendorQuery

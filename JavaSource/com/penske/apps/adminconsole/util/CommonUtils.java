@@ -6,7 +6,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
 import com.penske.apps.adminconsole.model.Components;
-import com.penske.apps.adminconsole.model.DateType;
 import com.penske.apps.adminconsole.model.Role;
 import com.penske.apps.suppliermgmt.model.UserContext;
 
@@ -134,14 +132,5 @@ public class CommonUtils {
 				}    
 		}
 			return false;
-	}
-	
-	public static void sortDateType(List<DateType> dateType){
-		Collections.sort(dateType, new Comparator<DateType>() {
-		    @Override
-		    public int compare(DateType lhs, DateType rhs) {
-		        return lhs.getDateTypeDesc().compareTo(rhs.getDateTypeDesc());
-		    }
-		});
 	}
 }

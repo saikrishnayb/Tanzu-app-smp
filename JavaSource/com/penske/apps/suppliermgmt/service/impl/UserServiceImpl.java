@@ -66,8 +66,6 @@ public class UserServiceImpl implements UserService {
 			throw new SMCException(0,e.getMessage(),e);
 		}
 	}    		 
-		 
-
 
 	@Override
 	public void addBuddyList(List<Buddies> newBuddyList) throws SMCException {
@@ -192,8 +190,6 @@ public class UserServiceImpl implements UserService {
         
         return vendorFilters;
     }
-
-
 
     @Override
     public void saveUserVendorFilterSelections(Collection<Integer> vendorIds) {

@@ -39,7 +39,6 @@ public class UserCreationServiceImpl implements UserCreationService {
 	@Autowired
 	private LookupManager lookupManager;
 
-	
 	@Override
 	@Transactional
 	public User insertUserInfo(User userObj) throws UserServiceException {
@@ -94,7 +93,6 @@ public class UserCreationServiceImpl implements UserCreationService {
 		
 		return userObj;
 	}
-
 
 	private User insertUserToLDAP(User userObj) throws UserServiceException, UsrCreationSvcException {
 		if(!CommonUtils.validUserID(userObj.getUserName())){
@@ -221,7 +219,6 @@ public class UserCreationServiceImpl implements UserCreationService {
 		}
 		return mailRequest;
 	}
-	
 	
 	private String buildMailBodyNewUser(User userObject)
 	{

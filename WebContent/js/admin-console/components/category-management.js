@@ -5,7 +5,6 @@ $(document).ready(function() {
 	//var $categorytables = $('.category-table');
 	var $editCategoryModal =$('#edit-category-modal');
 	var $addCategoryModal =$('#add-category-modal');
-	var $addCategory = $('.add-category');
 	var $addSubCategoryModal =$('#add-sub-category-modal');
 	var $editSubCategoryModal =$('#edit-sub-category-modal');
 	var $addSubCategory =$('.add-sub-category');
@@ -158,20 +157,6 @@ $(document).ready(function() {
 		open: function(event, ui) { }
 	});
 	
-	//deleting PO CAT
-	$poCategoryTable.on("click",'.delete-category',function(){
-		$('#delete-pocategory-modal').empty();
-		var $this =  $(this);
-		var poCategoryId = $this.closest('.category-row').find('.editable').find('.category-id').val();
-		var catName = $this.closest('.category-row').find('.po-cat-name').text();
-		
-		$('#delete-pocategory-modal').prepend('<p>Are you sure you want to delete this PO Category</p><ul><li>' + catName + '<input type="input" class="displayNone" id="cat-id" value="' + poCategoryId + '"/></li></ul>'
-				+ '<p> <h3><u>Note:</u> By Deactivating POCategory, Its Category Association will be deactivated.</h3></p>'
-				+'<div style="position:absolute;bottom:3px;right:5px;"><a class="secondaryLink cancel" tabIndex="-1">No, Cancel</a><a class="buttonPrimary delete" tabIndex="-1">Yes, Delete</a></div>');
-		
-		openModal($('#delete-pocategory-modal'));
-	 });
-	
 	//deleting PO CAT MODAL
 	$('#delete-pocategory-modal').on("click",'.delete',function(){
 		var poCatId = $(this).closest('.modal').find('#cat-id').val();
@@ -231,138 +216,6 @@ $(document).ready(function() {
 		
 	});
 	
-	$('#po-category-table').on("click",'.edit-category',function(){
-		
-		var $this =$(this);
-		var poCategoryId = $this.closest('.category-row').find('.category-id').val();
-		var $getEditCategoryContentPromise =$.get("get-edit-category-content.htm",{poCategoryId:poCategoryId});
-		
-		$getEditCategoryContentPromise.done(function(data){
-			$editCategoryModal.html(data);
-			openModal($editCategoryModal);
-		});
-		
-	});
-	
-	
-	$editCategoryModal.on("click",'.save-category-edited',function(){
-	
-		var $form = $('#editCategory');
-		$('#status').removeAttr('disabled');
-		var categoryData =$form.serialize();
-		var categoryName =$form.find('.category-name').val();
-		var description = $form.find('.category-description').val();
-		
-		var $selectedStatus = $('#status').find('option:selected');
-		var statusText =$selectedStatus.text();
-			
-		var categoryId = $form.find('.po-category-id').val();
-		var isValid =validate($form);
-		
-		if(isValid){
-			$('.error-messages-container').addClass('displayNone');
-			//var $updatePoCategoryPromise =$.post("update-po-category.htm",categoryData);
-			var $updatePoCategoryPromise = $.ajax({
-				type: "POST",
-				url:'./update-po-category.htm',
-				global: false,
-				data: categoryData
-			});
-			
-			
-			$updatePoCategoryPromise.done(function(data){
-				
-				$poCategoryTable.find('.category-id').each(function(){
-					
-					var categoryIdCheck = $(this).val();
-					var categoryIdMatch = (categoryIdCheck ==categoryId) ;
-				
-					if(categoryIdMatch){
-						
-						var $categoryRow = $(this).closest('tr');
-						var nRow = $categoryRow[0];
-						$poCategoryTable.dataTable().fnUpdate( categoryName, nRow, 1, false);
-						$poCategoryTable.dataTable().fnUpdate( description, nRow, 2, false);
-						$poCategoryTable.dataTable().fnUpdate( statusText, nRow, 3, false);
-						
-					}
-				});
-				closeModal($editCategoryModal);
-			});
-			$updatePoCategoryPromise.fail(function(xhr, ajaxOptions, thrownError) {
-				 if(xhr.responseText.indexOf('PO Category Already exists.')>0){
-					 $('.errorMsg').text("PO Category Already exists.");
-					 $('.error').show();
-				  }
-				 else  if(xhr.responseText.indexOf('Error Processing the Insert PO Category')>0){
-					  $('.errorMsg').text('Error Processing the Update PO Category.');
-						 $('.error').show();
-				  }
-			});
-	    }
-	});
-	
-	
-	$addCategory.on("click",function(){
-		var $addPoCategoryContentPromise =$.get("add-category-modal-content.htm");
-		$addPoCategoryContentPromise.done(function(data){
-			$addCategoryModal.html(data);
-		});
-		openModal($addCategoryModal);
-		
-	});
-	
-	
-	
-	$addCategoryModal.on("click",'.save-category',function(e){
-		
-		$('#status').removeAttr('disabled');
-		var $form = $addCategoryModal.find('#editCategory');
-		var categoryData =$form.serialize();
-		var categoryName = $form.find('.category-name').val();
-		var description = $form.find('.category-description').val();
-		
-		var $selectedStatus = $('#status').find('option:selected');
-		var status= $selectedStatus.val();
-		if(status != 'A' && status != 'I')
-			return;
-		var statusText =$selectedStatus.text();
-		var isValid =validate($form);
-		
-		if(isValid){
-			
-			var $insertPoCategoryPromise = $.ajax({
-				type: "POST",
-				url:'./insert-po-category.htm',
-				global: false,
-				data: categoryData
-			});
-			$insertPoCategoryPromise.done(function(data){
-				
-				var firstColoumn = "<a class='rightMargin edit-category'>Edit</a>"
-					+'<a><img src=' +commonStaticUrl+'/images/delete.png class="centerImage rightMargin delete-category" ></a>'
-					+ '<input type ="hidden" class="category-id" value="' +data.categoryId+'"/>';
-				
-				var rowIndex = $('#po-category-table').dataTable().fnAddData([firstColoumn,categoryName,description,statusText],false);
-				var newRow = $('#po-category-table').dataTable().fnGetNodes(rowIndex[0]);
-				$(newRow).addClass("category-row");
-				$(newRow).find("td:first-child").addClass("editable centerAlign");
-				closeModal($addCategoryModal);
-			});
-			$insertPoCategoryPromise.fail(function(xhr, ajaxOptions, thrownError) {
-				 if(xhr.responseText.indexOf('PO Category Already exists.')>0){
-					 $('.errorMsg').text("PO Category Already exists.");
-					 $('.error').show();
-				  }
-				 else  if(xhr.responseText.indexOf('Error Processing the Insert PO Category')>0){
-					  $('.errorMsg').text('Error Processing the Insert PO Category.');
-						 $('.error').show();
-				  }
-			});
-		}
-		
-		
-	});
 	
 	$('#sub-category-table').on("click",'.edit-category',function(){
 		

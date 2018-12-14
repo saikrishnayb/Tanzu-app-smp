@@ -4,9 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -14,18 +12,13 @@ import org.springframework.web.servlet.ModelAndView;
 import com.penske.apps.adminconsole.enums.LeftNav;
 import com.penske.apps.adminconsole.enums.Tab.SubTab;
 import com.penske.apps.adminconsole.model.CategoryAssociation;
-import com.penske.apps.adminconsole.model.ComponentVisibility;
 import com.penske.apps.adminconsole.model.Components;
-import com.penske.apps.adminconsole.model.Manufacture;
 import com.penske.apps.adminconsole.model.PoCategory;
 import com.penske.apps.adminconsole.model.SubCategory;
 import com.penske.apps.adminconsole.model.Template;
-import com.penske.apps.adminconsole.model.VendorTemplate;
-import com.penske.apps.adminconsole.model.VendorTemplateSearch;
 import com.penske.apps.adminconsole.service.CategoryManagementService;
 import com.penske.apps.adminconsole.service.ComponentService;
 import com.penske.apps.adminconsole.service.ComponentVendorTemplateService;
-import com.penske.apps.adminconsole.service.ComponentVisibilityService;
 import com.penske.apps.adminconsole.util.ApplicationConstants;
 import com.penske.apps.adminconsole.util.CommonUtils;
 import com.penske.apps.suppliermgmt.annotation.DefaultController;
@@ -44,10 +37,6 @@ import com.penske.apps.suppliermgmt.model.UserContext;
 @RequestMapping("/admin-console/components")
 public class ComponentsController {
 
-    private static final Logger LOGGER = Logger.getLogger(ComponentsController.class);
-
-    @Autowired
-    private ComponentVisibilityService componentVisibilityService;
     @Autowired
     private ComponentVendorTemplateService componentVendorTemplateService;
     @Autowired
@@ -77,39 +66,12 @@ public class ComponentsController {
         return new ModelAndView("/admin-console/security/noAccess");
     }
 
-    // TODO SMCSEC is this even used
-    @Deprecated
-    @RequestMapping(value={"/visibility-by-category"})
-    public ModelAndView getVisisbilityByCategoryPage(){
-        LOGGER.error("getVisisbilityByCategoryPage is used!!!! :)");
-        List<ComponentVisibility> componentList = componentVisibilityService.getComponent();
-        ModelAndView modelAndView = new ModelAndView("/admin-console/components/visibility-by-category");
-        modelAndView.addObject("componentList",componentList);
-        return modelAndView;
-
-    }
-
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_COMPONENTS)
     @RequestMapping(value={"/component-management"})
     public ModelAndView getComponentManagementPage(){
 
         ModelAndView mav = new ModelAndView("/admin-console/components/component-management");
         mav.addObject("componentList", componentService.loadAllAvailableComponents());
-        return mav;
-    }
-
-    // TODO SMCSEC is this even used
-    @RequestMapping("/templates")
-    public ModelAndView getTemplatesPage(){
-        LOGGER.error("getTemplatesPage is used!!!! :)");
-        List<VendorTemplate> templates = componentVendorTemplateService.getVendorTemplates();
-        List<String> manufactures = componentVendorTemplateService.getAllTemplateManufactures();
-        List<PoCategory> categories = componentVendorTemplateService.getTemplatePoCategory();
-
-        ModelAndView mav =new ModelAndView("/admin-console/components/templates");
-        mav.addObject("vendorTemplate",templates);
-        mav.addObject("manufactures",manufactures);
-        mav.addObject("categories",categories);
         return mav;
     }
 
@@ -138,35 +100,6 @@ public class ComponentsController {
         modelAndView.addObject("access",CommonUtils.hasAccess(ApplicationConstants.COMPONENTS, userContext));
         return modelAndView;
 
-    }
-
-    // TODO SMCSEC is this even used
-    @RequestMapping(value="vendor-template-search")
-    public ModelAndView vendorTemplateSearch(@ModelAttribute("command") VendorTemplateSearch template) {
-
-        LOGGER.error("vendorTemplateSearch is used!!!! :)");
-        List<VendorTemplate> templates = componentVendorTemplateService.selectVenderBySearchCriteria(template);
-        List<String> manufactures = componentVendorTemplateService.getAllTemplateManufactures();
-        List<PoCategory> categories = componentVendorTemplateService.getTemplatePoCategory();
-        ModelAndView mav =new ModelAndView("/admin-console/components/templates");
-
-        mav.addObject("searchForm", template);
-        mav.addObject("vendorTemplate",templates);
-        mav.addObject("manufactures",manufactures);
-        mav.addObject("categories",categories);
-
-        return mav;
-
-    }
-
-    // TODO SMCSEC is this even used. This is also repeated in the rest controller....
-    @RequestMapping("/create-template")
-    public ModelAndView getCreateTemplatePage(){
-        LOGGER.error("getCreateTemplatePage is used!!!! :)");
-        List<Manufacture> manufacture = componentVendorTemplateService.getManufacture();
-        ModelAndView mav =new ModelAndView("/admin-console/components/create-template");
-        mav.addObject("manufacture",manufacture);
-        return mav;
     }
 
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_TEMPLATE)
@@ -203,6 +136,4 @@ public class ComponentsController {
         mav.addObject("toggleSelection",toggleSelection);
         return mav;
     }
-    
-
 }

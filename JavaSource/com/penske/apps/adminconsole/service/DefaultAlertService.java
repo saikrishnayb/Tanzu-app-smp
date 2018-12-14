@@ -78,14 +78,4 @@ public class DefaultAlertService implements AlertService {
 
 		alertDao.modifyAlertDetail(alert);
 	}
-	
-	public boolean checkForTemplateAssociation(int alertId, int templateId) {
-		int count = alertDao.checkForTemplateId(alertId, templateId);
-		
-		if (count == 1) {
-			return true;
-		}
-		
-		return false;
-	}
 }

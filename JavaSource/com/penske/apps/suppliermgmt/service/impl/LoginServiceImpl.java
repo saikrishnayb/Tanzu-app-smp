@@ -51,7 +51,6 @@ public class LoginServiceImpl implements LoginService{
         return loginDao.getUserDetails(userModel);
     }
 
-
     @Override
     public List<VendorLocation> getAssociatedVendors(int orgId)
     {
@@ -61,7 +60,6 @@ public class LoginServiceImpl implements LoginService{
 
         return vendorLocationList;
     }
-
 
     @Override
     public Map<String, Map<String,String>> getTabs(int roleId)
@@ -101,14 +99,12 @@ public class LoginServiceImpl implements LoginService{
         return userSecurityFunctions;
     }
 
-
     @Override
     public List<UserVendorFilterSelection> getUserVendorFilterSelections(
             int userId) {
         List<UserVendorFilterSelection> userVendorFilterSelections = loginDao.getUserVendorFilterSelections(userId);
         return userVendorFilterSelections;
     }
-
 
     @Override
     public UserLoginHistory recordUserLogin(HttpServletRequest request, UserContext userContext) {

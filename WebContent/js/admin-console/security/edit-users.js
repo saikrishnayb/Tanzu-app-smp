@@ -350,29 +350,6 @@ $(document).ready(function() {
 		});
 		openModal($('#init-file-modal'));
 	});
-	
-	//load templates
-	$('#edit-location').on('click', '.vendor-location-box', function(e){
-		var vendorIds = [];
-
-		$templatesDiv.children().remove();
-		$('.vendor-location-box').each(function(){
-			if($(this).is(":checked")){
-				vendorIds.push($(this).val());
-			}
-		});
-
-		if(vendorIds.length == 0){
-			vendorIds.push("empty");
-		}
-
-		var $templatesAccordionPromise = $.get('vendor-templates.htm', {vendorIds:vendorIds});
-
-		$templatesAccordionPromise.done(function(data){
-			$templatesDiv.html(data);
-		});
-		e.stopPropagation();
-	});
 
 });
 

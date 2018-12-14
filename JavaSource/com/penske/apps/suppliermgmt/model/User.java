@@ -1,7 +1,6 @@
 package com.penske.apps.suppliermgmt.model;
 
 import java.util.Date;
-import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -40,8 +39,6 @@ public class User{
 	private int userDept;
 	private String userDeptName;
 	private int orgId;
-	private List<SecurityFunction> secFuncList;
-	private List<SecurityFunction> tabList;
 	private int tcVersion;
 	private Date tcConfirmedDate;
 	
@@ -116,18 +113,6 @@ public class User{
 	}
 	public void setOrgId(int orgId) {
 		this.orgId = orgId;
-	}
-	public List<SecurityFunction> getSecFuncList() {
-		return secFuncList;
-	}
-	public void setSecFuncList(List<SecurityFunction> secFuncList) {
-		this.secFuncList = secFuncList;
-	}
-	public List<SecurityFunction> getTabList() {
-		return tabList;
-	}
-	public void setTabList(List<SecurityFunction> tabList) {
-		this.tabList = tabList;
 	}
 	public int getUserType() {
 		return userType;

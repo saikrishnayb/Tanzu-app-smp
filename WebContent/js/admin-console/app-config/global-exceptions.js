@@ -66,22 +66,6 @@ $(document).ready(function() {
 			openModal($deleteExceptionModal);
 		});
 	});
-	$editExceptionModal.on("change", "#provided-by-list", function(){
-		
-		var $dropdown = $('#provided-by-list');
-		var $subDropdown = $('#provided-by-sub');
-		var selectedOption = $dropdown.val();
-		var $getSubGroupPromise = $.get("get-sub-groups.htm", {selectedOption:selectedOption});
-		$getSubGroupPromise.done( function(data){
-			
-			$subDropdown.children().remove();
-			var list = data;
-			$subDropdown.append("<option value='default'></option>");
-			for(var i = 0; i < list.length; i++){
-				$subDropdown.append("<option value='" + list[i] + "'>" + list[i] + "</option>");
-			}
-		});
-	});
 	$editExceptionModal.on("click", ".edit-global-exception-confirm", function(){
 		if($(".edit-global-exception-confirm").hasClass('buttonDisabled'))
 			return false;

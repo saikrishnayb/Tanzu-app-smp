@@ -58,39 +58,6 @@
 				)
  	</select>
  	
- <!--  	<select id="getSupplierUsers" resultType="com.penske.apps.adminconsole.model.User">
- 		SELECT 	DISTINCT U.USER_ID AS userId,
- 				SSO AS userName,
-				EMAIL AS email,
-				FIRST_NAME AS firstName,
-				LAST_NAME AS lastName,
-				PHONE AS phone,
-				EXTENSION AS extension,
-				U.STATUS AS status,
-				SSO as ssoId,
-				T.USER_TYPE AS "userType.userType",
-				U.ROLE_ID AS "role.roleId",
-				ROLE_NAME AS "role.roleName",
-				V.MFR	AS "vendor.vendorName",
-				sso as ssoId
-		FROM	SMC.SMC_USER_MASTER U
-		LEFT	OUTER JOIN
-					(SELECT USER_ID,
-							MFR
-					 FROM 	SMC.SMC_VENDOR_USER_ASSOC  V,
-					 		SMC.SMC_VENDOR_MASTER L 
-					 WHERE 	L.VENDOR_ID = V.VENDOR_ID ) V
-				ON V.USER_ID = U.USER_ID,
-				SMC.smc_user_roles R, 
-				SMC.SMC_USER_TYPES T
-		WHERE 	U.ROLE_ID = R.ROLE_ID
-				AND U.TYPE_ID = T.TYPE_ID
-				AND U.STATUS = 'A'
-				AND R.STATUS = 'A'
-				AND U.TYPE_ID = 2
-				AND V.MFR = #{value}
- 	</select>
- 	-->
  	<select id="getUser" resultType="com.penske.apps.adminconsole.model.User">  
  		SELECT 	USER_ID AS userId,
  				SSO AS userName,
@@ -179,12 +146,6 @@
 		AND      U.USER_ID = #{userId}
 	</select>
  	
- 	<select id="getVendorUserLocations" resultType="com.penske.apps.adminconsole.model.VendorLocation">
- 		SELECT 	VENDOR_ID AS vendorId
- 		FROM 	SMC.SMC_VENDOR_USER_ASSOC
- 		WHERE 	USER_ID = #{value}
- 	</select>
- 	
  	<select id="getPenskeUserSupplierRoles" resultType="com.penske.apps.adminconsole.model.Role">
  		SELECT 	ROLE_ID AS roleId, 
  				ROLE_NAME AS roleName
@@ -227,12 +188,6 @@
 		WHERE   MFR is not null
 		GROUP 	BY MFR
  	</select>
- 		<select id="getAllVendorFullNames" resultType="String">
- 		SELECT 	VENDOR_NAME AS vendorName
-		FROM 	SMC.SMC_VENDOR_MASTER
-		WHERE   VENDOR_NAME is not null
-		GROUP 	BY VENDOR_NAME
- 	</select>
  	<select id="getAllTabNames" resultType="string">
  		SELECT 	TABNAME
 		FROM 	SMC.SMC_TAB_MASTER T
@@ -266,60 +221,10 @@
  		ORDER BY roleName
  	</select>
  	
- 	<select id="getSupplierAdminRole" resultType="com.penske.apps.adminconsole.model.Role">
- 		SELECT 	ROLE_ID AS roleId, 
- 				ROLE_NAME AS roleName
- 		FROM 	SMC.smc_user_roles 
- 		WHERE 	ROLE_NAME='Vendor Admin'
- 	</select>
- 	
- 	<select id="getSupplierRoles" resultType="com.penske.apps.adminconsole.model.Role">
- 		WITH result (ROLE_ID , ROLE_NAME, BASE_ROLE_ID,STATUS)
-	AS
-	(
-	SELECT role.ROLE_ID AS roleId,
-	role.ROLE_NAME AS roleName,
-	role.BASE_ROLE_ID AS baseRoleId,
-	role.STATUS AS status
-
-	FROM SMC.smc_user_roles role
-	WHERE role.BASE_ROLE_ID = #{roleId}
-	and role.STATUS = 'A'
-	
-	UNION ALL
-	
-	SELECT a.ROLE_ID,a.ROLE_NAME,a.BASE_ROLE_ID,a.STATUS
-	FROM SMC.smc_user_roles a
-	INNER JOIN result s ON a.BASE_ROLE_ID = s.ROLE_ID
-	and a.STATUS = 'A')
-	SELECT r.ROLE_ID as roleId, r.ROLE_NAME as roleName,(select ROLE_NAME from
-	SMC.smc_user_roles where ROLE_ID=r.BASE_ROLE_ID) as
-	baseRoleName,r.status as status FROM result r
- 	</select>
- 	
  	<select id="getAllUserTypes" resultType="com.penske.apps.adminconsole.model.UserType">
  		SELECT 	DESCRIPTION AS description,
  				TYPE_ID AS userTypeId
  		FROM 	SMC.SMC_USER_TYPES
- 	</select>
- 	
- 	<select id="getVendorLocations" resultType="com.penske.apps.adminconsole.model.VendorLocation">
- 		SELECT 	CASE WHEN pur.PVSCTY IS NULL or pur.PVSCTY = '' THEN pur.PVOCTY ELSE pur.PVSCTY END as city,
-				CASE WHEN pur.PVSST IS NULL or pur.PVSST = '' THEN pur.PVOST ELSE pur.PVSST END  as state,
-				l.MFR as manufacturer,
-				l.vendor_number as vendorNumber,
-				l.vendor_id as vendorId,
-                l.vendor_id,
-				l.corp as corpCode
-				from smc.SMC_VENDOR_MASTER l,
-				CORP.FPURVND pur,corp.NVOEDIVND edi 
-		WHERE 	pur.PVCORP = edi.EDI_CORP and 
-				pur.PVNBR = edi.EDI_VENDOR and 
-				l.vendor_number=pur.PVNBR and 
-				l.MFR = edi.edi_mfr and
-				l.corp=pur.PVCORP and
-				l.vendor_number = pur.PVNBR and
-				l.MFR = #{value}
  	</select>
  	
  	<select id="getPermissions" resultType="com.penske.apps.adminconsole.model.Permission">
@@ -333,47 +238,7 @@
  				AND S.TAB_ID = T.TAB_ID 
  				AND ROLE_ID = #{value}
  	</select>
- 	
- 	<select id="getVendorTemplates" resultType="com.penske.apps.adminconsole.model.TemplatePoCategorySubCategory">
- 		SELECT 	DISTINCT P.PO_CATEGORY AS "poCategory.categoryName",
-				PO_SUBCATEGORY AS "subCategory.subCategoryName",
-				T.PO_CATEGORY_ID AS "poCategory.categoryId",
-				PO_SUBCATEGORY_ID AS "subCategory.subCategoryId",
-				T.TEMPLATE_ID AS templateId
- 		FROM 	SMC.SMC_TEMPLATE_COMPONENTS T, 
- 				SMC.SMC_PO_CATEGORY P,
- 				SMC.SMC_PO_SUBCATEGORY
- 		WHERE 	T.TEMPLATE_ID = #{value}
- 				AND P.PO_CATEGORY_ID = T.PO_CATEGORY_ID
- 				AND PO_SUBCATEGORY_ID = SUB_CATEGORY_ID  
- 	</select>
- 	
- 	<select id="getTemplateComponent" resultType="com.penske.apps.adminconsole.model.TemplateComponents" parameterType="com.penske.apps.adminconsole.model.TemplatePoCategorySubCategory">
- 		SELECT  TEMP_COMP_ID AS tempCompId,
-				TEMPLATE_ID AS templateId,
-				DATA_ID AS componentId,
-				VISIBLE AS visible,
-				EDITABLE AS editable,
-				REQUIRED AS required,
-				DATA_TYPE AS dataType
-		FROM 	SMC.SMC_TEMPLATE_COMPONENTS TCOM
-		WHERE	TCOM.PO_CATEGORY_ID = #{poCategory.categoryId} 
-				AND TCOM.SUB_CATEGORY_ID = #{subCategory.subCategoryId} 
-				AND TCOM.TEMPLATE_ID = #{templateId}
- 	</select>
- 	
- 	<select id="getRegularComponentName" resultType="string">
- 		SELECT 	COMPONENT_NAME 
- 		FROM 	SMC.SMC_COMPONENT_INFO 
- 		WHERE 	COMPONENT_ID = #{value}
- 	</select>
- 	
- 	<select id="getVehicleComponentName" resultType="string">
- 		SELECT 	DESCRIPTION 
- 		FROM 	SMC.SMC_VEHICLE_INFO 
- 		WHERE 	VEHICLE_INFO_ID = #{value}
- 	</select>
- 	
+	
  	<select id="getUserName" resultType="string">
  		SELECT 	sso 
  		FROM 	SMC.SMC_USER_MASTER 
@@ -382,33 +247,6 @@
  				AND USER_ID != #{userId}
  				</if>
  			<!--  	AND STATUS = 'A' -->
- 	</select>
- 	
- 	<select id="getVendorUserLocationInfo" resultType="com.penske.apps.adminconsole.model.VendorLocation">
- 		SELECT 	CASE WHEN vmaster.city IS NULL or vmaster.city  = '' THEN vmaster.city  ELSE vmaster.city  END as city,
-				CASE WHEN vmaster.state  IS NULL or vmaster.state  = '' THEN vmaster.state  ELSE vmaster.state  END  as state,
-			
-				vmaster.MFR as manufacturer,
-				vmaster.vendor_number as vendorNumber,
-				vmaster.corp as corpCode,
-				vtemp.template_id as templateId,
-                vmaster.vendor_id
-		FROM 
-				smc.SMC_VENDOR_MASTER vmaster
-				left outer join smc.smc_vendor_template vtemp
-			    on vmaster.vendor_id = vtemp.vendor_id 
-			    left outer join smc.smc_template_components tcomp
-			    on tcomp.template_id = vtemp.template_id
-		WHERE 
-				vmaster.vendor_id = #{value}
- 	</select>
- 	
- 	<select id="getRole" resultType="com.penske.apps.adminconsole.model.Role">
- 		SELECT 	ROLE_NAME AS roleName,
- 				BASE_ROLE_ID AS baseRoleId
- 		FROM 	SMC.smc_user_roles
- 		WHERE 	ROLE_ID = #{value}
- 				AND STATUS = 'A'
  	</select>
  	
  	<select id="getSignatureImage" resultType="string">
@@ -566,17 +404,6 @@
 		FROM 	SMC.SMC_USER_MASTER
  	</select>
  	<!-- modified -->
- 	<insert id="addPenskeUser">
- 		INSERT 	INTO SMC.SMC_USER_INITIALS
- 				(USER_ID,
- 					INIT_FILE ,
- 					SIGN_FILE
- 				)
-		VALUES 	(#{userId},
-					#{initString} ,   
-					#{signString})  
- 	</insert>
- 	
  	<update id="modifyPenskeUser">
  		UPDATE 	SMC.SMC_USER_INITIALS
 		SET  	
@@ -603,11 +430,6 @@
  				MODIFIED_DATE = CURRENT TIMESTAMP  
 		WHERE 	USER_ID = #{userId}
  	</update>
- 	<delete id="removePenskeUserAssoc">
- 		DELETE 	FROM SMC.SMC_USER_INITIALS 
- 		WHERE 	USER_ID = #{value}
- 	</delete>
- 	
  	
  	<delete id="deleteOrg">
  		DELETE 	FROM SMC.SMC_ORG_MASTER 
@@ -616,12 +438,6 @@
 			START  WITH ORG_ID =#{value}
 		 	CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID ORDER BY ORG_ID
 		)
- 	</delete>
- 	
- 	<delete  id="removeVendorUserAssoc">
- 		DELETE 	FROM SMC.SMC_VENDOR_USER_ASSOC
- 		WHERE 	USER_ID = #{userId}
- 		AND 	VENDOR_ID = #{vendorId}
  	</delete>
  	
  	<select id="getVendorList" resultMap="VendorTreeMap">
@@ -654,10 +470,6 @@
  	</select>
  	
  	
- 	<select id="getOrgId" resultType="int">
- 		SELECT 	MAX(ORG_ID)
-		FROM 	SMC.SMC_ORG_MASTER
- 	</select>
  	<insert id="addOrgVendor">
  	Insert into SMC.SMC_ORG_VENDOR_ASSOC (ORG_ID, VENDOR_ID) VALUES(#{orgId} ,
  					#{vendorNumber})
@@ -870,10 +682,6 @@
 		</selectKey> 
 	</insert>
 	
-	<insert id="updateEmailSent">
-		Update SMC.SMC_EMAIL Set IS_PROCESSED='Y', PROCESSED_DATE=CURRENT TIMESTAMP
-		 where EMAIL_AUDIT_ID=#{emailAuditId}
-	</insert>
 	<delete id="deleteUserFromBuddy">
 		DELETE FROM SMC.SMC_BUDDIES WHERE BUDDY_SSO=#{userSSO}
 		AND SSO !=#{userSSO}

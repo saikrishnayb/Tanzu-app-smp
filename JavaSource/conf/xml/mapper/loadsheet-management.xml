@@ -632,16 +632,6 @@
 				COMPONENT_ID 	= 	#{cmpGrpSeq.componentId}
 	</update>
 	
-	<delete id="deleteCmpGrpSeqDetailsUsingGrpId">
-		DELETE FROM
-				SMC_LOADSHEET_CMP_GROUP_SEQ
-		WHERE
-				GRP_MASTER_ID NOT IN
-				<foreach item="grpMasterId"  collection="groupMasterIdList" open="(" separator="," close=")">
- 					#{grpMasterId}
- 				</foreach>	 
- 	</delete>
-	
 	<delete id="deleteCmpGrpSeqDetails">
 		DELETE FROM
 				SMC_LOADSHEET_CMP_GROUP_SEQ

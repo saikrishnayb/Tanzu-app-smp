@@ -21,15 +21,6 @@ public interface CategoryManagementDao {
     public List<SubCategory> getAllSubCategories();
 
     @NonVendorQuery
-    public PoCategory getSelectedPoCategory(int poCategoryId);
-
-    @NonVendorQuery
-    public void updatePoCategory(PoCategory category);
-
-    @NonVendorQuery
-    public void insertPoCategory(PoCategory category);
-
-    @NonVendorQuery
     public SubCategory getSelectedSubCategory(int subCategoryId);
 
     @NonVendorQuery
@@ -54,12 +45,6 @@ public interface CategoryManagementDao {
     public int getMaxSubCategoryId();
 
     @NonVendorQuery
-    public void modifyPoCatStatus(@Param("poCatId")  int poCatId,@Param("status") String status);
-
-    @NonVendorQuery
-    public void modifyPoCatAssocStatus(@Param("poCatId")  int poCatId,@Param("status") String status);
-
-    @NonVendorQuery
     public void modifySubCatStatus(@Param("subCatId") int subCatId,@Param("status") String status);
 
     @NonVendorQuery
@@ -69,13 +54,7 @@ public interface CategoryManagementDao {
     public void modifyAssociationStatus(@Param("assId") int assId,@Param("status") String status);
 
     @NonVendorQuery
-    public int getAssociationExist(@Param("poCategoryId") int poCategoryId,@Param("subCategoryId") int subCategoryId);
-
-    @NonVendorQuery
     public int getAnyOtherAssociationExist(@Param("poCatId")  int poCatId,@Param("subCatId") int subCatId,@Param("assId") int assId);
-
-    @NonVendorQuery
-    public PoCategory getPoCategoryByName(PoCategory category);
 
     @NonVendorQuery
     public SubCategory getSubCategoryByName(SubCategory subCategory);

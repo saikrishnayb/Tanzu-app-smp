@@ -87,7 +87,6 @@ public class DefaultHomeDashboardService implements HomeDashboardService {
 	 * @param current SSOId,tabKey
 	 * @return List<AlertHeader>
 	 */
-	
 	public List<AlertHeader> getAlerts(String sso,String tabKey,int userType) {
 	    
 		LOGGER.debug("Inside getAlerts()");
@@ -136,7 +135,6 @@ public class DefaultHomeDashboardService implements HomeDashboardService {
 		}
 		return headers;
 	}
-	
 	
 	/**
 	 * enum method to provide tabKey values to check

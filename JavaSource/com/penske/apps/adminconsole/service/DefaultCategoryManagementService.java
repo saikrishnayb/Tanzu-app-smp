@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import com.penske.apps.adminconsole.dao.CategoryManagementDao;
 import com.penske.apps.adminconsole.model.CategoryAssociation;
-import com.penske.apps.adminconsole.model.PoCategory;
 import com.penske.apps.adminconsole.model.SubCategory;
 /**
  * 
@@ -25,27 +24,6 @@ public class DefaultCategoryManagementService implements CategoryManagementServi
 		return subCategoryList;
 	}
 	
-	@Override
-	public PoCategory getSelectedPoCategory(int poCategoryId) {
-		PoCategory category = categoryDao.getSelectedPoCategory(poCategoryId);
-		return category;
-	}
-	
-	@Override
-	public void updatePoCategory(PoCategory category) {
-		String associateStatus="1";
-		if(category !=null && category.getStatus() !=null && category.getStatus().equalsIgnoreCase("I")){
-			associateStatus="0";
-		}
-		categoryDao.updatePoCategory(category);
-		categoryDao.modifyPoCatAssocStatus(category.getCategoryId(),associateStatus);
-	}
-
-	@Override
-	public void insertPoCategory(PoCategory category) {
-		categoryDao.insertPoCategory(category);
-	}
-
 	@Override
 	public SubCategory getSelectedSubCategory(int subCategoryId) {
 		
@@ -94,21 +72,9 @@ public class DefaultCategoryManagementService implements CategoryManagementServi
 	}
 
 	@Override
-	public PoCategory getMaxCategoryId() {
-		PoCategory category =categoryDao.getMaxCategoryId(); 
-		return category;
-	}
-
-	@Override
 	public int getMaxSubCategoryId() {
 		int subCategoryId =categoryDao.getMaxSubCategoryId();
 		return subCategoryId;
-	}
-
-	@Override
-	public void modifyPoCatStatus(int poCatId) {
-		categoryDao.modifyPoCatStatus(poCatId,"I");
-		categoryDao.modifyPoCatAssocStatus(poCatId,"0");
 	}
 
 	@Override
@@ -136,28 +102,6 @@ public class DefaultCategoryManagementService implements CategoryManagementServi
 			categoryDao.modifyAssociationStatus(assId,status);
 		}*/
 		categoryDao.modifyAssociationStatus(assId,status);
-	}
-
-	@Override
-	public int getAssociationExist(int poCategoryId, int subCategoryId) {
-		return categoryDao.getAssociationExist(poCategoryId, subCategoryId);
-	}
-
-
-	@Override
-	public boolean checkCategoryExist(PoCategory category,boolean isCreate) {
-		PoCategory selCategory=categoryDao.getPoCategoryByName(category);
-		boolean returnFlg=true;
-		if(selCategory !=null){
-			if(isCreate){
-				returnFlg= false;
-			}else{
-				if(selCategory.getCategoryId() !=category.getCategoryId()){
-					returnFlg= false;
-				}
-			}
-		}
-		return returnFlg;
 	}
 
 	@Override

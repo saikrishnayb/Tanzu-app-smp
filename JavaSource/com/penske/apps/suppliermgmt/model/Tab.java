@@ -30,11 +30,9 @@ public class Tab{
 	private String tabName;
 	private Integer displaySequence;
 	private String imageUrl;
-	//private Integer defaultTemplateId;
 	private String defaultTemplateKey;
 	private Integer dashboardTab;
 	private List<AlertHeader> alertHeaders;	  // the list of alert headers for the tab
-	private List<Permission> permissions;
 	
 	public String getTabName() {
 		return tabName;
@@ -49,12 +47,6 @@ public class Tab{
 		this.displaySequence = displaySequence;
 	}
 
-//	public Integer getDefaultTemplateId() {
-//		return defaultTemplateId;
-//	}
-//	public void setDefaultTemplateId(Integer defaultTemplateId) {
-//		this.defaultTemplateId = defaultTemplateId;
-//	}
 	public String getDefaultTemplateKey() {
 		return defaultTemplateKey;
 	}
@@ -73,15 +65,6 @@ public class Tab{
 	
 	public void setAlertHeaders(List<AlertHeader> alertHeaders) {
 		this.alertHeaders = alertHeaders;
-	}
-	
-	
-	public List<Permission> getPermissions() {
-		return permissions;
-	}
-	
-	public void setPermissions(List<Permission> permissions) {
-		this.permissions = permissions;
 	}
 	
 	public String getImageUrl() {

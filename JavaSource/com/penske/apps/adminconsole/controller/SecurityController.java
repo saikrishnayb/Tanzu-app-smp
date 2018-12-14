@@ -38,7 +38,6 @@ import com.penske.apps.suppliermgmt.model.UserContext;
 @RequestMapping("/admin-console/security")
 public class SecurityController {
 
-
     @Autowired
     private VendorService vendorService;
     @Autowired
@@ -140,8 +139,6 @@ public class SecurityController {
 
         return mav;
     }
-
-
 
     /* ================== Roles ================== */
     @VendorAllowed

@@ -91,49 +91,6 @@ public class BaseController {
 		return mv;
 	}
 
-	/**
-	 * Global exception handler for all other exceptions.
-	 * @param ex the caught exception.
-	 * @return
-	 */
-	public ModelAndView handleException(RuntimeException ex) {
-		//Check if this exception has a human-readable exception somewhere in its stack trace.
-    	int humanReadableExceptionIndex = ExceptionUtils.indexOfType(ex, HumanReadableException.class);
-    	if(humanReadableExceptionIndex != -1)
-    	{
-    		Throwable[] chain = ExceptionUtils.getThrowables(ex);
-    		if(chain != null && chain.length > humanReadableExceptionIndex)
-    		{
-    			Throwable th = chain[humanReadableExceptionIndex];
-    			if(HumanReadableException.class.isAssignableFrom(th.getClass()))
-    				return handleHumanReadableException((HumanReadableException) th);
-    		}
-    	}
-		
-		ModelAndView mv = new ModelAndView("error/GlobalErrorPage");
-		ErrorModel model = new ErrorModel();
-		try{
-			UserContext userContext = sessionBean.getUserContext();
-			String userSSO = userContext == null ? "" : userContext.getUserSSO();
-		String randomNumber=getRandomNumber();
-		LOGGER.error("Caught Unhandled Exception.  Reference Number is :"+randomNumber+" And Logged in User is:"+userSSO+" and Exception is::"+ex.toString(),ex);
-		model.setMessage("There was an unexcepted problem. Reference Number is "+randomNumber+".");
-		//getting support num from lookup
-		LookupManager lookupManger=new LookupManager();
-		List<LookUp> suppNumlist=lookupManger.getLookUpListByName(ApplicationConstants.SUPP_NUM);
-		LookUp lookUp=suppNumlist.get(0);
-		mv.addObject("supportNum",lookUp.getLookUpValue());
-		}
-		catch(Exception e){
-			LOGGER.error("Exception occured in handleException method of BaseController"+e.toString(),e);
-			mv.addObject("supportNum","1-866-926-7240");
-			return mv;
-		}
-		mv.addObject(model);
-		return mv;
-
-	}
-	
     public ModelAndView handleHumanReadableException(HumanReadableException ex)
     {    	
     	ModelAndView mv = new ModelAndView("error/GlobalErrorPage");
@@ -180,12 +137,6 @@ public class BaseController {
 	 * Method to generate secure random number
 	 * @return
 	 */
-	/*private int getRandomNumber(){
-		SecureRandom randomGenerator = new SecureRandom();
-		return randomGenerator.nextInt();
-		
-
-	}*/
 	private String getRandomNumber(){
 		UUID uuid = UUID.randomUUID();
         String randomUUIDString = uuid.toString();

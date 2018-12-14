@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,18 +47,10 @@ public class HomeController extends BaseController{
     @Autowired
     private SuppliermgmtSessionBean sessionBean;
 
-    private static final Logger LOGGER = Logger.getLogger(HomeController.class);
-
-    /**
-     * @param request
-     * @return
-     */
     @VendorAllowed
     @RequestMapping("/displayHome")
     public ModelAndView displayHome(){
-        LOGGER.debug("Inside displayHome()");
         ModelAndView modelandView = null;
-        // String helpLink=null;
         try{
             UserContext userModel = sessionBean.getUserContext();
             modelandView=new ModelAndView("app-container/appContainer");
@@ -69,22 +60,8 @@ public class HomeController extends BaseController{
             LookUp lookUp=null;
             if(suppNumlist!=null){
                 lookUp=suppNumlist.get(0);
-                LOGGER.debug("Suport Num :"+lookUp.getLookUpValue());
                 modelandView.addObject("supportNum",lookUp.getLookUpValue());
             }
-
-            /* Help Info will be loaded from Database as HTML going forward
-
-			if(userModel.getUserType()==ApplicationConstants.PENSKE_USER_TYPE){
-				helpLink=lookupManger.getLookUpListByValue(ApplicationConstants.HELP_LINK,ApplicationConstants.INT_ONE);
-				LOGGER.debug("HELP_LINK :"+helpLink);
-			}
-			else{
-				helpLink=lookupManger.getLookUpListByValue(ApplicationConstants.HELP_LINK,ApplicationConstants.INT_TWO);
-				LOGGER.debug("HELP_LINK :"+helpLink);
-			}
-			modelandView.addObject("helpLink",helpLink);
-             */
 
             modelandView.addObject("userDetails",userModel);
         }catch(Exception e){
@@ -103,7 +80,6 @@ public class HomeController extends BaseController{
     @VendorAllowed
     @RequestMapping(value = "/homePage", method = {RequestMethod.GET})
     public ModelAndView getHomePage(@RequestParam("tabId") String tabId){
-        LOGGER.debug("Inside getHomePage()");
         ModelAndView modelandView = new ModelAndView("/home/home");
         String defaultTab="";
         List<String> tabIdList=new ArrayList<String>();
@@ -136,7 +112,6 @@ public class HomeController extends BaseController{
             LookUp lookUp=null;
             if(suppNumlist!=null){
                 lookUp=suppNumlist.get(0);
-                LOGGER.debug("Suport Num :"+lookUp.getLookUpValue());
                 modelandView.addObject("supportNum",lookUp.getLookUpValue());
             }
             modelandView.addObject("tabs",tabs);
@@ -155,18 +130,15 @@ public class HomeController extends BaseController{
      * Input : current tabId
      * Output : String contains alertid and count corresponding to tabid
      */
-
     @VendorAllowed
     @RequestMapping(value = "/getAlerts", method = {RequestMethod.GET})
     public @ResponseBody ModelAndView getAlerts(HttpServletResponse response,@RequestParam("tabKey") String tabKey){
-        LOGGER.debug("Inside getAlerts()");
         ModelAndView model = new ModelAndView("/home/home");
         try{
             UserContext userModel = sessionBean.getUserContext();
             model.addObject("TabKey", tabKey);
             model.addObject("alertHeaders", homeService.getAlerts(userModel.getUserSSO(), tabKey,userModel.getUserType()));
         }catch(Exception e ){
-            LOGGER.debug("Error while excecuting method");
             handleAjaxException(e, response);
         }
         return model;

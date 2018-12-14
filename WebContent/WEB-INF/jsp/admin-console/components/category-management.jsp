@@ -28,11 +28,6 @@
 			<div class="row">
 				<div class="col-xs-6">
 					<h1>Po Category</h1>
-					<span class="floatRight addRow" style="display: none"> 
-						<a class="add-category">Add PoCategory
-							<img src="${commonStaticUrl}/images/add.png" class="centerImage handCursor" alt="Add Row" />
-						</a>
-					</span>
 					<table class="category-table" id="po-category-table">
 						<thead>
 							<tr>
@@ -47,14 +42,9 @@
 							<c:forEach items="${categoryList}" var="category"
 								varStatus="count">
 								<tr class="category-row">
-									<td class="editable centerAlign po-cat-id"
-										style="display: none"><a
-										class="rightMargin edit-category">Edit</a> <a> <img
-											src="${commonStaticUrl}/images/delete.png"
-											class="centerImage rightMargin delete-category" />
-									</a> <input type="hidden" class="category-id"
-										value="${category.categoryId}" /></td>
-
+									<td class="editable centerAlign po-cat-id" style="display: none">
+										<input type="hidden" class="category-id" value="${category.categoryId}" />
+									</td>
 									<td class="po-cat-name">${category.categoryName}</td>
 									<td>${category.description}</td>
 									<td><c:choose>

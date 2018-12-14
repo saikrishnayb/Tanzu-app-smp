@@ -56,24 +56,6 @@ public class CategoryManagementDAOTest extends MyBatisDaoTest
 	}
 	
 	@Test
-	public void shouldGetSelectedPoCategory()
-	{
-		dao.getSelectedPoCategory(1);
-	}
-	
-	@Test
-	public void shouldUpdatePoCategory()
-	{
-		dao.updatePoCategory(data.categoryTruck);
-	}
-	
-	@Test
-	public void shouldInsertPoCategory()
-	{
-		dao.insertPoCategory(data.categoryTruck);
-	}
-	
-	@Test
 	public void shouldSelectedSubCategory()
 	{
 		dao.getSelectedSubCategory(12);
@@ -129,18 +111,6 @@ public class CategoryManagementDAOTest extends MyBatisDaoTest
 	}
 	
 	@Test
-	public void shouldModifyPoCatStatus()
-	{
-		dao.modifyPoCatStatus(1, "A");
-	}
-	
-	@Test
-	public void shouldModifyPoCatAssocStatus()
-	{
-		dao.modifyPoCatAssocStatus(2, "A");
-	}
-	
-	@Test
 	public void shouldModifySubCatStatus()
 	{
 		dao.modifySubCatStatus(2, "A");
@@ -157,23 +127,11 @@ public class CategoryManagementDAOTest extends MyBatisDaoTest
 	{
 		dao.modifyAssociationStatus(5, "A");
 	}
-	
-	@Test
-	public void shouldGetAssociationExist()
-	{
-		dao.getAssociationExist(1, 2);
-	}
-	
+
 	@Test
 	public void shouldGetAnyOtherAssociationExist()
 	{
 		dao.getAnyOtherAssociationExist(1, 2, 5);
-	}
-	
-	@Test
-	public void shouldGetPoCategoryByName()
-	{
-		dao.getPoCategoryByName(data.categoryTruck);
 	}
 	
 	@Test

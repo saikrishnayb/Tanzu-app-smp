@@ -23,8 +23,6 @@ public interface DynamicRuleService {
 	
 	public void modifyDynamicRule(DynamicRule rule);
 	
-	public void modifyDynamicRuleStatus(int dynamicRuleId, int priority, String modifiedBy);
-
 	public List<String> getAvailableStatus();
 	
 	public void deleteDynamicRule(int dynamicRuleId);

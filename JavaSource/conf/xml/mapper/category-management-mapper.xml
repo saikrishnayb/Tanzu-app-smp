@@ -14,37 +14,6 @@
 
 </select>
 
-<select id="getSelectedPoCategory" resultType="com.penske.apps.adminconsole.model.PoCategory">
-SELECT 
-	PO_CATEGORY as categoryName,
-	PO_CATEGORY_ID as categoryId,
-	DESCRIPTION as description,
-	STATUS as status
-FROM 
-	SMC.SMC_PO_CATEGORY
-WHERE
-	PO_CATEGORY_ID=#{poCategoryId}
-
-</select>
-<update id="updatePoCategory">
-
-UPDATE 
-SMC.SMC_PO_CATEGORY 
-SET 
-	PO_CATEGORY =#{categoryName},
-	DESCRIPTION =#{description},
-	STATUS =#{status}
-WHERE
-	PO_CATEGORY_ID=#{categoryId}
-	
-</update>
-<insert id="insertPoCategory">
-INSERT 
-into 
-SMC.SMC_PO_CATEGORY (PO_CATEGORY,  DESCRIPTION,  STATUS,created_by,created_date) 
-values(#{categoryName} ,#{description},#{status},#{createdBy},CURRENT_TIMESTAMP)
-</insert>
-
 <!-- subCategory -->
 
 
@@ -134,12 +103,6 @@ VALUES (#{poCategoryId},#{subCategoryId},
 
 </insert>
 
-<select id="getMaxCategoryId" resultType="com.penske.apps.adminconsole.model.PoCategory"> 
-SELECT 
-	COALESCE(max(PO_CATEGORY_ID), 0) as categoryId
-FROM SMC.SMC_PO_CATEGORY
-
-</select >
 <select id="getMaxSubCategoryId" resultType="Integer">
 
 SELECT
@@ -147,18 +110,6 @@ SELECT
 FROM
 	SMC.SMC_PO_SUBCATEGORY
 </select>
-
-<update id="modifyPoCatStatus">
-	UPDATE 	SMC.SMC_PO_CATEGORY
-	SET		STATUS = #{status}
-	WHERE	PO_CATEGORY_ID = #{poCatId}
-</update>
-
-<update id="modifyPoCatAssocStatus">
-	UPDATE 	SMC.SMC_PO_CATEGORY_ASSOC 
-	SET 	ACTIVE =  #{status} 
-	WHERE 	PO_CATEGORY_ID = #{poCatId}
-</update>
 
 <update id="modifySubCatStatus">
 	UPDATE 	SMC.SMC_PO_SUBCATEGORY
@@ -178,30 +129,10 @@ FROM
 	WHERE 	PO_CATEGORY_ASSOC_ID = #{assId}
 </update>
 
-<select id="getAssociationExist" resultType="Integer"> 
-SELECT COALESCE(COUNT(1),0) as cnt
-FROM SMC.SMC_PO_CATEGORY_ASSOC WHERE
-	PO_CATEGORY_ID =#{poCategoryId} AND
-	PO_SUBCATEGORY_ID =#{subCategoryId}
-</select >
-
 <select id="getAnyOtherAssociationExist" resultType="Integer"> 
 	SELECT COALESCE(COUNT(1),0) as cnt FROM SMC.SMC_PO_CATEGORY_ASSOC
 	 where (PO_CATEGORY_ID=#{poCatId} OR PO_SUBCATEGORY_ID=#{subCatId}) AND PO_CATEGORY_ASSOC_ID !=#{assId}
 </select >
-
-<select id="getPoCategoryByName" resultType="com.penske.apps.adminconsole.model.PoCategory">
-SELECT 
-	PO_CATEGORY as categoryName,
-	PO_CATEGORY_ID as categoryId,
-	DESCRIPTION as description,
-	STATUS as status
-FROM 
-	SMC.SMC_PO_CATEGORY
-WHERE
-	UPPER(PO_CATEGORY)=UPPER(#{categoryName})
-
-</select>
 
 <select id="getSubCategoryByName" resultType="com.penske.apps.adminconsole.model.SubCategory">
 SELECT 

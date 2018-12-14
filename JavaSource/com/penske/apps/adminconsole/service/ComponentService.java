@@ -7,7 +7,6 @@ import com.penske.apps.adminconsole.model.Components;
 import com.penske.apps.adminconsole.model.LoadSheetComponentDetails;
 import com.penske.apps.adminconsole.model.Template;
 import com.penske.apps.adminconsole.model.TemplatePoAssociation;
-import com.penske.apps.suppliermgmt.model.LookUp;
 
 /**
  * 
@@ -18,8 +17,6 @@ public interface ComponentService {
 	
 //Template page -- Start
 	public List<Template> getAllTemplates();
-	
-	public List<TemplatePoAssociation> getAllPoAssociation();
 	
 	public Template getTemplatesById(int templateID);
 	
@@ -37,8 +34,6 @@ public interface ComponentService {
 	
 	public List<Integer> findTemplateExist(Template template);
 	
-	public List<LookUp> getOverrideTypes();
-	
 	public List<TemplatePoAssociation> getAllPoAssociationAddEdit(boolean isAdd);
 //Template page -- End
 	
@@ -52,5 +47,4 @@ public interface ComponentService {
 	public void allowDuplicateComponents(int componentId,boolean allowDuplicates);
 
 //COMPONENT VISIBILITY OVERRIDES -- End
-		
 }

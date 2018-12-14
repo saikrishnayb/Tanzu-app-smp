@@ -121,17 +121,6 @@ public class DefaultDynamicRuleService implements DynamicRuleService {
 	}
 
 	@Override
-	public void modifyDynamicRuleStatus(int dynamicRuleId, int priority,String modifiedBy) {
-		// The rule ID cannot be negative or 0.
-		if (dynamicRuleId > 0) {
-			//TODO - Check with dav to set -1 / 0 , We can't set NULL
-			dynamicRuleDao.modifyDynamicRuleStatus(dynamicRuleId,modifiedBy);
-			
-			//dynamicRuleDao.modifyDynamicRulesByPriority(priority, -1);
-		}
-	}
-
-	@Override
 	public void deleteDynamicRule(int dynamicRuleId){
 		// The rule ID cannot be negative or 0.
 		if (dynamicRuleId > 0) {
@@ -166,7 +155,7 @@ public class DefaultDynamicRuleService implements DynamicRuleService {
 		return models;
 	}
 	
-	public boolean validateRule(DynamicRule rule) {
+	private boolean validateRule(DynamicRule rule) {
 		// Corp Code, Manufacturer, and Model cannot be null or blank.
 		if (StringUtils.isBlank(rule.getCorpCode()) && StringUtils.isBlank(rule.getManufacturer()) && StringUtils.isBlank(rule.getModel())) {
 			if (rule.getModelYear() < 0)

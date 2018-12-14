@@ -19,6 +19,4 @@ public interface AlertService {
 	public void modifyAlertHeader(Alert alert);
 
 	public void modifyAlertDetail(Alert alert);
-	
-	public boolean checkForTemplateAssociation(int alertId, int templateId);
 }

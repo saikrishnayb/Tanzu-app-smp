@@ -14,9 +14,6 @@ import com.penske.apps.adminconsole.model.Components;
 import com.penske.apps.adminconsole.model.LoadSheetComponentDetails;
 import com.penske.apps.adminconsole.model.Template;
 import com.penske.apps.adminconsole.model.TemplatePoAssociation;
-import com.penske.apps.adminconsole.util.ApplicationConstants;
-import com.penske.apps.suppliermgmt.model.LookUp;
-import com.penske.apps.suppliermgmt.util.LookupManager;
 
 /**
  * 
@@ -30,18 +27,9 @@ public class DefaultComponentService implements ComponentService {
     @Autowired
     private ComponentDao componentDao;
 
-    @Autowired
-    private LookupManager lookupManager;
-
-    //Template Page -- start
-
     @Override
     public List<Template> getAllTemplates(){
         return componentDao.getAllTemplates();
-    }
-    @Override
-    public List<TemplatePoAssociation> getAllPoAssociation(){
-        return componentDao.getAllPoAssociation();
     }
     @Override
     public Template getTemplatesById(int templateID){
@@ -195,11 +183,6 @@ public class DefaultComponentService implements ComponentService {
         }else{
             return componentDao.getAllPoAssociationForEdit();
         }
-    }
-
-    @Override
-    public List<LookUp> getOverrideTypes() {
-        return lookupManager.getLookUpListByName(ApplicationConstants.EXCEPTIONS_TYPES);
     }
 
     @Override

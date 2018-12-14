@@ -262,7 +262,6 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 		
 		return rule;
 	}
-		
 
 	/**
 	 * Method to get the rule details On click of Edit
@@ -700,7 +699,7 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 		 
 	}
 	
-	public int getRuleCountByTempCompId(int templateComponentId){
+	private int getRuleCountByTempCompId(int templateComponentId){
 		return loadsheetManagementDao.getRuleCountByTemplateComponentId(templateComponentId);
 	}
 

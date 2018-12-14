@@ -1,6 +1,5 @@
 package com.penske.apps.adminconsole.model;
 
-import java.util.List;
 
 public class Vendor {
 
@@ -40,8 +39,6 @@ public class Vendor {
 	private String shippingState;				// the shipping state
 	private String shippingZipCode;				// the shipping zip code
 
-	private List<VendorLocation> vendorLocations;	// list of vendor locations
-	
 	private String alertType;	
 
 	// Getters
@@ -162,10 +159,6 @@ public class Vendor {
 		return shippingZipCode;
 	}
 
-	public List<VendorLocation> getVendorLocations() {
-		return vendorLocations;
-	}
-
 	// Setters
 	public void setVendorId(int vendorId) {
 		this.vendorId = vendorId;
@@ -284,10 +277,6 @@ public class Vendor {
 		this.shippingZipCode = shippingZipCode;
 	}
 
-	public void setVendorLocations(List<VendorLocation> vendorLocations) {
-		this.vendorLocations = vendorLocations;
-	}
-
 	@Override
 	public String toString() {
 		return "Vendor [vendorId=" + vendorId + ", vendorName=" + vendorName
@@ -307,8 +296,7 @@ public class Vendor {
 				+ mailingZipCode + ", shippingAddress1=" + shippingAddress1
 				+ ", shippingAddress2=" + shippingAddress2 + ", shippingCity="
 				+ shippingCity + ", shippingState=" + shippingState
-				+ ", shippingZipCode=" + shippingZipCode + ", vendorLocations="
-				+ vendorLocations + "]";
+				+ ", shippingZipCode=" + shippingZipCode + "]";
 	}
 
 	public String getAlertType() {

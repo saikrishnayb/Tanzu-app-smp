@@ -93,24 +93,6 @@
  		WHERE	DYNAMIC_RULE_ID = #{dynamicRuleId}
  	</update>
  	
- 	<update id="modifyDynamicRuleStatus">
- 		UPDATE	SMC.SMC_DYNAMIC_RULES
- 		
- 		SET		STATUS = 'I',
- 				MODIFIED_BY =#{modifiedBy},
- 				MODIFIED_DATE = CURRENT TIMESTAMP
- 		WHERE	DYNAMIC_RULE_ID = #{dynamicRuleId}
- 	</update>
- 	
- 	<update id="modifyDynamicRulesByPriority">
- 		UPDATE	SMC.SMC_DYNAMIC_RULES
- 		
- 		SET		PRIORITY = PRIORITY + #{increment},
- 				MODIFIED_BY =#{modifiedBy},
- 				MODIFIED_DATE = CURRENT TIMESTAMP
- 		WHERE	PRIORITY >= #{priority}
- 		AND		STATUS = 'A'
- 	</update>
  <update id="reOrderPriority">
  	UPDATE SMC.SMC_DYNAMIC_RULES
 	SET PRIORITY = PRIORITY + 1

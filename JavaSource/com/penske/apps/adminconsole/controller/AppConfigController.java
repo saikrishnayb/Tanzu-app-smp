@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,13 +21,11 @@ import com.penske.apps.adminconsole.model.LoadSheetComponentDetails;
 import com.penske.apps.adminconsole.model.LoadsheetManagement;
 import com.penske.apps.adminconsole.model.LoadsheetSequenceGroupMaster;
 import com.penske.apps.adminconsole.model.LoadsheetSequenceMaster;
-import com.penske.apps.adminconsole.model.Notification;
 import com.penske.apps.adminconsole.model.RuleDefinitions;
 import com.penske.apps.adminconsole.model.RuleMaster;
 import com.penske.apps.adminconsole.model.SearchGlobalException;
 import com.penske.apps.adminconsole.model.Transport;
 import com.penske.apps.adminconsole.model.TransportUploadHandler;
-import com.penske.apps.adminconsole.model.UnitException;
 import com.penske.apps.adminconsole.model.VendorReport;
 import com.penske.apps.adminconsole.model.VendorUploadHandler;
 import com.penske.apps.adminconsole.service.AlertService;
@@ -36,7 +33,6 @@ import com.penske.apps.adminconsole.service.DefaultSubjectService;
 import com.penske.apps.adminconsole.service.DynamicRuleService;
 import com.penske.apps.adminconsole.service.ExceptionService;
 import com.penske.apps.adminconsole.service.LoadSheetManagementService;
-import com.penske.apps.adminconsole.service.NotificationService;
 import com.penske.apps.adminconsole.service.SearchTemplateService;
 import com.penske.apps.adminconsole.service.TermsAndConditionsService;
 import com.penske.apps.adminconsole.service.UploadService;
@@ -63,14 +59,10 @@ import com.penske.apps.suppliermgmt.model.UserContext;
 @RequestMapping("/admin-console/app-config")
 public class AppConfigController {
 
-    private static final Logger LOGGER = Logger.getLogger(AppConfigController.class);
-
     @Autowired
     private ExceptionService exceptionService;
     @Autowired
     private DefaultSubjectService subjectService;
-    @Autowired
-    private NotificationService notificationService;
     @Autowired
     private DynamicRuleService dynamicRuleService;
     @Autowired
@@ -194,25 +186,6 @@ public class AppConfigController {
 
     }
 
-
-    /* ================== Notifications ================== */
-    @RequestMapping("/notifications")
-    public ModelAndView getNotificationsPage(){
-
-        LOGGER.error("getNotificationsPage is used!!!! :)");
-
-        ModelAndView mav = new ModelAndView("/admin-console/app-config/notifications");
-        List<Notification> notificationList = notificationService.getNotifications();
-
-        for (Notification notification : notificationList) {
-            notificationService.getSortedNotificationParties(notification);
-        }
-
-        mav.addObject("notificationsList", notificationList);
-
-        return mav;
-    }
-
     /* ================== Dynamic Rules ================== */
     @SmcSecurity(securityFunction = SecurityFunction.DYNAMIC_RULES_MANAGEMENT)
     @RequestMapping("/dynamic-rules")
@@ -273,25 +246,6 @@ public class AppConfigController {
         List<GlobalException> exceptions = exceptionService.getGlobalExceptionSearch(formattedUnitNumber,searchedData.getPoNumberSearch());
         mav.addObject("searchedData",searchedData);
         mav.addObject("exceptions", exceptions);
-        return mav;
-    }
-    
-
-    /* ================== Unit Exceptions ================== */
-    @RequestMapping("/unit-exceptions")
-    @Deprecated
-    public ModelAndView getUnitExcpetionsPage(){
-
-        LOGGER.error("getUnitExcpetionsPage is used!!!! :)");
-
-        ModelAndView mav = new ModelAndView("/admin-console/app-config/unit-exceptions");
-        List<UnitException> exceptions = exceptionService.getUnitExceptions();
-
-        mav.addObject("exceptions", exceptions);
-        //		Commented code here was used to test the Error Page only
-        //		String x = null;
-        //		x.equals("cool");
-
         return mav;
     }
 

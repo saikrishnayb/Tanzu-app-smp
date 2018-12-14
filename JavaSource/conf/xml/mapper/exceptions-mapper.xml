@@ -2,50 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.2//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.penske.apps.adminconsole.dao.ExceptionDao">
 
-	<select id="getComponent" resultType="String">
-		SELECT	COMPONENT_NAME
-		
-		FROM	SMC.SMC_COMPONENT_INFO
-		
-		WHERE	COMPONENT_ID = #{dataId}
-	</select>
-	
-	<select id="getVehicle" resultType="String">
-		SELECT	DESCRIPTION
-		
-		FROM	SMC.SMC_VEHICLE_INFO
-		
-		WHERE	VEHICLE_INFO_ID = #{dataId}
-	</select>
-	
-	<select id="getCreatorFirstName" resultType="String">
-		SELECT	FIRST_NAME
-		
-		FROM	SMC.SMC_USER_MASTER
-		
-		WHERE	USER_ID = #{id}
-	</select>
-	
-	<select id="getCreatorLastName" resultType="String">
-		SELECT	LAST_NAME
-		
-		FROM	SMC.SMC_USER_MASTER
-		
-		WHERE	USER_ID = #{id}
-	</select>
-	
-	<select id="getSubGroup" resultType="String">
-		SELECT	sub.PO_SUBCATEGORY
-		
-		FROM	SMC.SMC_PO_CATEGORY poc,
-				SMC.SMC_PO_CATEGORY_ASSOC poa,
-				SMC.SMC_PO_SUBCATEGORY sub
-				
-		WHERE	poc.PO_CATEGORY = #{primaryGroup}
-		AND		poa.PO_CATEGORY_ID = poc.PO_CATEGORY_ID
-		AND		sub.PO_SUBCATEGORY_ID = poa.PO_SUBCATEGORY_ID
-	</select>
- 
    <resultMap type="com.penske.apps.adminconsole.model.GlobalExceptionCategoryGroup" id="globalExceptionCategoryGroupMap">
       <result property="poCategorySubcategory"   column="poCategorySubcategory"/>
       <result property="poCategoryAssociationId" column="poCategoryAssociationId"/>
@@ -127,20 +83,6 @@
 		WHERE GLOBAL_EXCEPTION_ID = #{exceptionId}
 	</delete>
 	
-	<select id="getUnitExceptions" resultType="com.penske.apps.adminconsole.model.UnitException">
-		SELECT	UNIT_EXCEPTION_ID as exceptionId,
-				DATA_TYPE as dataType,
-				DATA_ID as dataId,
-				UNIT_NUMBER as unitNumber,
-				TO_BE_PROVIDED_BY_PO as providerPo,
-				TO_BE_PROVIDED_BY_PO_SUB as providerSubPo,
-				CREATED_BY as creatorId,
-				PO_GROUP as poGroup
-				
-		FROM	SMC.SMC_UNIT_EXCEPTIONS
-			
-	</select>
-	
 	<update id="modifyGlobalException">
 		UPDATE	SMC.SMC_GLOBAL_EXCEPTIONS
 		
@@ -150,41 +92,4 @@
 				MODIFIED_DATE = current timestamp
 		WHERE	GLOBAL_EXCEPTION_ID = #{exceptionId}
 	</update>
-	
-	<update id="modifyUnitException">
-		UPDATE	SMC.SMC_UNIT_EXCEPTIONS
-		
-		SET		TO_BE_PROVIDED_BY_PO = #{provider},
-				TO_BE_PROVIDED_BY_PO_SUB = #{subProvider}
-				
-		WHERE	UNIT_EXCEPTION_ID = #{id}
-	</update>
-	
-	<select id="getUnitException" resultType="com.penske.apps.adminconsole.model.UnitException">
-		SELECT	UNIT_EXCEPTION_ID as exceptionId,
-				DATA_ID as dataId,
-				DATA_TYPE as dataType,
-				UNIT_NUMBER as unitNumber,
-				TO_BE_PROVIDED_BY_PO as providerPo,
-				TO_BE_PROVIDED_BY_PO_SUB as providerSubPo,
-				CREATED_BY as creatorId,
-				PO_GROUP as poGroup
-				
-		FROM	SMC.SMC_UNIT_EXCEPTIONS
-		
-		WHERE	UNIT_EXCEPTION_ID = #{id}
-	</select>
-	
-	<delete id="deleteUnitException">
-		DELETE FROM	SMC.SMC_UNIT_EXCEPTIONS
-		
-		WHERE	UNIT_EXCEPTION_ID = #{id}
-	</delete>
-	
-	<insert id="addGlobalException">
-		INSERT INTO	SMC.SMC_GLOBAL_EXCEPTIONS
-		( DATA_TYPE, DATA_ID, TO_BE_PROVIDED_BY_PO, TO_BE_PROVIDED_BY_PO_SUB, CREATED_BY, PO_GROUP )
-		VALUES( #{dataType}, #{dataId}, #{providerPo}, #{providerSubPo}, #{creatorId}, #{poGroup} )
-	</insert>
-	
 </mapper>

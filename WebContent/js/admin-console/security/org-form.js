@@ -360,7 +360,6 @@ $(document).ready(function() {
 		var userId = $('#user-id').val();
 		var userType = $('#user-type').val();
 		var currentTimeStamp = new Date().getTime();
-		//var $ssoUserLookup = $.get('sso-user-lookup.htm', {ssoId: ssoId});
 		$.ajax({
 			  type: "GET",
 			  url: "./sso-user-lookup-refresh.htm?userId="+ userId + '&userType='+userType+ '&_=' + currentTimeStamp, 
@@ -496,52 +495,9 @@ $('#signature-add').on('click', function(){
 		    }
 		});
 	});
-	//load templates and roles
-	$('#location').on('click', '.vendor-location-box', function(e){
-		var vendorIds = [];
-		$templatesDiv.children().remove();
-		$('.vendor-location-box').each(function(){
-			if($(this).is(":checked")){
-				vendorIds.push($(this).val());
-			}
-		});
-
-		if(vendorIds.length == 0){
-			$userRole.attr("disabled", "true");
-			vendorIds.push("empty");
-		} else {
-			$userRole.removeAttr("disabled");
-			var manufacturer = $('#vendor').val();
-			
-			var userTypeId = $userType.val();
-			var hasDisabledAttr = $('#user-type').attr('disabled') != undefined;
-			if(!hasDisabledAttr){
-				var $getPenskeUserRolesPromise = $.get('get-role-list.htm', {userTypeId:userTypeId, manufacturer:manufacturer});
-				
-				$getPenskeUserRolesPromise.done(function(data){
-					$userRole.children().remove();
-					var roleList = data;
-					$userRole.append("<option selected>Select Role</option>");
-					$.each(roleList, function(key, value){
-						var role = value;
-						$userRole.append("<option value=" + role.roleId + ">" + role.roleName + "</option>");
-					});
-				});
-			}
-		}
-
-		var $templatesAccordionPromise = $.get('vendor-templates.htm', {vendorIds:vendorIds});
-
-		$templatesAccordionPromise.done(function(data){
-			$templatesDiv.html(data);
-		});
-		e.stopPropagation();
-	});
-	
 	
 	$('.ssolookup').on("click", function(){
 		var ssoId = $('#sso-id').val();
-		//var $ssoUserLookup = $.get('sso-user-lookup.htm', {ssoId: ssoId});
 		$.ajax({
 			  type: "GET",
 			  url: "./sso-user-lookup.htm",

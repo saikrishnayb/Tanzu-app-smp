@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,13 +17,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.penske.apps.adminconsole.enums.PoCategoryType;
 import com.penske.apps.adminconsole.model.CategoryAssociation;
 import com.penske.apps.adminconsole.model.ComponentSequence;
-import com.penske.apps.adminconsole.model.ComponentVisibility;
 import com.penske.apps.adminconsole.model.Components;
 import com.penske.apps.adminconsole.model.PoCategory;
 import com.penske.apps.adminconsole.model.RuleDefinitions;
@@ -32,15 +29,10 @@ import com.penske.apps.adminconsole.model.RuleMaster;
 import com.penske.apps.adminconsole.model.SubCategory;
 import com.penske.apps.adminconsole.model.Template;
 import com.penske.apps.adminconsole.model.TemplateComponent;
-import com.penske.apps.adminconsole.model.TemplateComponents;
-import com.penske.apps.adminconsole.model.TemplatePoCategorySubCategory;
-import com.penske.apps.adminconsole.model.VendorTemplate;
 import com.penske.apps.adminconsole.service.CategoryManagementService;
 import com.penske.apps.adminconsole.service.ComponentService;
 import com.penske.apps.adminconsole.service.ComponentVendorTemplateService;
-import com.penske.apps.adminconsole.service.ComponentVisibilityService;
 import com.penske.apps.adminconsole.service.LoadSheetManagementService;
-import com.penske.apps.adminconsole.util.ApplicationConstants;
 import com.penske.apps.adminconsole.util.CommonUtils;
 import com.penske.apps.suppliermgmt.annotation.SmcSecurity;
 import com.penske.apps.suppliermgmt.annotation.SmcSecurity.SecurityFunction;
@@ -68,8 +60,6 @@ public class ComponentsRestController {
     //////////////////////////////////////////////////////////////////////
     // Service Members
     @Autowired
-    private ComponentVisibilityService componentVisibilityService;
-    @Autowired
     private ComponentVendorTemplateService componentVendorTemplateService;
     //////////////////////////////////////////////////////////////////////
 
@@ -82,378 +72,7 @@ public class ComponentsRestController {
     @Autowired
     private LoadSheetManagementService loadsheetManagementService;
 
-    // TODO SMCSEC is this even being used????
-    @RequestMapping(value="get-add-visibility-modal-content")
-    @ResponseBody
-    public ModelAndView getAddVisibilityModalContent(){
-        LOGGER.debug("getAddVisibilityModalContent is used!!!! :)");
-        List<ComponentVisibility> componentNames = componentVisibilityService.getComponentName();
-        List<PoCategory> categoriesList = componentVisibilityService.getCategoryList();
-        ModelAndView modelAndView = new ModelAndView("/jsp-fragment/admin-console/components/add-visibility-modal-content");
-        modelAndView.addObject("categoriesList",categoriesList);
-        modelAndView.addObject("componentNames",componentNames);
-        return modelAndView;
-
-    }
-
-    // TODO SMCSEC is this even being used????
-    @RequestMapping(value="get-compnent-list")
-    @ResponseBody
-    public List<ComponentVisibility>  getComponentList(@RequestParam("poCategoryId")int poCategoryId){
-        LOGGER.debug("getComponentList is used!!!! :)");
-        List<ComponentVisibility> componentList = componentVisibilityService.getComponentList(poCategoryId);
-        return componentList;
-
-    }
-
-    // TODO SMCSEC is this even being used????
-    @RequestMapping(value="post-save-visibility")
-    @ResponseBody
-    public void postSaveVisibility(@RequestParam("isComponentVehicle") String isComponentVehicle , @RequestParam("componentId") int componentId,@RequestParam("poCategoryId") int poCategoryId,@RequestParam("subCategoryId") int subCategoryId){
-
-        LOGGER.debug("postSaveVisibility is used!!!! :)");
-
-        if("Yes".equalsIgnoreCase(isComponentVehicle))
-        {
-            componentVisibilityService.addComponentVisibility(componentId, poCategoryId, subCategoryId);
-        }
-        else {
-            componentVisibilityService.addVehicleVisibility(componentId, poCategoryId, subCategoryId);
-        }
-    }
-
-    // TODO SMCSEC is this even being used????
-    @RequestMapping(value="get-po-categories")
-    @ResponseBody
-    public List<ComponentVisibility> getPoCategories(@RequestParam("isComponentVehicle") String isComponentVehicle,@RequestParam("componentId") int componentId){
-
-        LOGGER.debug("getPoCategories is used!!!! :)");
-
-        boolean isComponent = "Yes".equalsIgnoreCase(isComponentVehicle);
-        if(isComponent)
-        {
-
-            List<ComponentVisibility> poCategories = componentVisibilityService.getCategory(componentId);
-            return poCategories;
-        }
-        else {
-            List<ComponentVisibility> poCategories = componentVisibilityService.getVehicleCategory(componentId) ;
-            return poCategories;
-        }
-    }
-
-    // TODO SMCSEC is this even being used????
-    @RequestMapping(value="get-po-sub-categories")
-    @ResponseBody
-    public List<SubCategory> getPoSubCategories(@RequestParam("poCategoryId")int poCategoryId){
-
-        LOGGER.debug("getPoSubCategories is used!!!! :)");
-
-        List<SubCategory> subCategories = componentVisibilityService.getSubCategoryList(poCategoryId);
-        return subCategories;
-
-    }
-
-    // TODO SMCSEC is this even being used????
-    @RequestMapping(value="delete-table-component")
-    @ResponseBody
-    @ResponseStatus(value=HttpStatus.OK)
-    public void deleteVisibility(@RequestParam("isComponentVehicle")int isComponentVehicle,@RequestParam("componentId")int componentId,@RequestParam("category")int category,@RequestParam("subCategory")int subCategory)
-    {
-
-        LOGGER.debug("deleteVisibility is used!!!! :)");
-
-        boolean isComponent = isComponentVehicle==ApplicationConstants.VEHICLE_COMPONENT;
-        if(isComponent) {
-            componentVisibilityService.deleteComponentVisibility(componentId, category, subCategory);
-        }
-        else {
-            componentVisibilityService.deleteVehicleVisibility(componentId, category, subCategory);
-        }
-    }
-
-    // TODO SMCSEC is this even being used????
-    @RequestMapping(value="get-delete-modal-content")
-    @ResponseBody
-    public ModelAndView getDeleteModalContent(@RequestParam("isComponentVehicle")int isComponentVehicle,@RequestParam("componentId")int componentId,@RequestParam("category")int category,@RequestParam("subCategory")int subCategory)
-    {
-
-        LOGGER.debug("getDeleteModalContent is used!!!! :)");
-
-        boolean isComponent = isComponentVehicle==ApplicationConstants.VEHICLE_COMPONENT;
-        ComponentVisibility componentVisibility = null;
-
-        if(isComponent) {
-            componentVisibility = componentVisibilityService.getComponentDetails(componentId, category, subCategory);
-        }
-        else {
-            componentVisibility = componentVisibilityService.getVehicleComponentDetails(componentId, category, subCategory);
-        }
-
-        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/components/component-delete-modal-content");
-        mav.addObject("componentVisibility",componentVisibility);
-        return mav;
-    }
-
-    //templates
-    // TODO SMCSEC is this even used
-    @RequestMapping(value="get-vendor-template")
-    @ResponseBody
-    public ModelAndView getVendorTemplate(@RequestParam("vendorNumber") int vendorNumber,@RequestParam("corpCode")  String corpCode){
-
-        LOGGER.debug("getVendorTemplate is used!!!! :)");
-
-        List<VendorTemplate> template = componentVendorTemplateService.getVendorCategories(vendorNumber,corpCode);
-        ModelAndView mav =new ModelAndView("/jsp-fragment/admin-console/components/edit-template-modal-content");
-        mav.addObject("template",template);
-        return mav;
-    }
-
-    // TODO SMCSEC is this even used
-    @RequestMapping(value="delete-accordion-category")
-    @ResponseBody
-    public void deleteCategory(@RequestParam("poCategoryId") int poCategoryId,@RequestParam("subCategoryId") int subCategoryId,@RequestParam("templateId") int templateId)
-    {
-
-        LOGGER.debug("deleteCategory is used!!!! :)");
-
-        componentVendorTemplateService.deleteCategory(poCategoryId, subCategoryId, templateId);
-        int templateComponentcount = componentVendorTemplateService.getTemplateComponentCount(templateId);
-
-        if(templateComponentcount<1) {
-            componentVendorTemplateService.deleteVendorTemplate(templateId);
-        }
-
-
-    }
-
-    // TODO SMCSEC is this even used
-    @RequestMapping(value="delete-category-content")
-    @ResponseBody
-    public ModelAndView deleteCategoryContent(@RequestParam("poCategoryId") int poCategoryId,@RequestParam("subCategoryId") int subCategoryId)
-    {
-
-        LOGGER.debug("deleteCategoryContent is used!!!! :)");
-
-        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/components/category-delete-modal-content");
-        TemplatePoCategorySubCategory categories = componentVendorTemplateService.getPoCategorySubCategory(poCategoryId, subCategoryId);
-        mav.addObject("categories",categories);
-        return mav;
-
-    }
-
-    // TODO SMCSEC is this even used
-    @RequestMapping(value="delete-category-content-edit")
-    @ResponseBody
-    public ModelAndView deleteCategoryContentEditModal(@RequestParam("templateId") int templateId,@RequestParam("poCategoryId") int poCategoryId,@RequestParam("subCategoryId") int subCategoryId)
-    {
-
-        LOGGER.debug("deleteCategoryContentEditModal is used!!!! :)");
-        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/components/template-category-edit-delete-modal-content");
-        TemplatePoCategorySubCategory categories = componentVendorTemplateService.getDeleteInEditModalContent(templateId,poCategoryId,subCategoryId);
-        mav.addObject("categories",categories);
-        return mav;
-
-    }
-
-    // TODO SMCSEC is this even used
-    @RequestMapping(value="get-add-po-categories")
-    @ResponseBody
-    public ModelAndView getCategories() {
-        LOGGER.debug("getCategories is used!!!! :)");
-        List<PoCategory> categories = componentVendorTemplateService.getPoCategories();
-        ModelAndView mav =new ModelAndView("/jsp-fragment/admin-console/components/add-category-modal-content");
-        mav.addObject("categories",categories);
-        return mav;
-    }
-
-    // TODO SMCSEC is this even used
-    @RequestMapping(value="get-edit-add-po-categories")
-    @ResponseBody
-    public ModelAndView getAddCategories() {
-        LOGGER.debug("getAddCategories is used!!!! :)");
-        List<PoCategory> categories = componentVendorTemplateService.getPoCategories();
-        ModelAndView mav =new ModelAndView("/jsp-fragment/admin-console/components/add-category-modal-content");
-        mav.addObject("categories",categories);
-        return mav;
-    }
-
-    // TODO SMCSEC is this even used
-    @RequestMapping(value="get-add-po-sub-categories")
-    @ResponseBody
-    public List<SubCategory> getsubCategories(@RequestParam("poCategoryId") int poCategoryId) {
-        LOGGER.debug("getsubCategories is used!!!! :)");
-        List<SubCategory> categories = componentVendorTemplateService.getSubCategories(poCategoryId);
-        return categories;
-    }
-
-    // TODO SMCSEC is this even used
-    @RequestMapping(value="get-category-components")
-    @ResponseBody
-    public ModelAndView getCategoryComponents(@RequestParam("poCategoryId") int poCategoryId,@RequestParam("subCategoryIds[]") int [] subCategoryIds) {
-        LOGGER.debug("getCategoryComponents is used!!!! :)");
-        List<TemplatePoCategorySubCategory> poCategorySubCategory =new ArrayList<TemplatePoCategorySubCategory>();
-        for (int subCategoryId : subCategoryIds) {
-
-            TemplatePoCategorySubCategory poCategorySubCategories = componentVendorTemplateService.getPoCategorySubCategory(poCategoryId, subCategoryId);
-            poCategorySubCategory.add(poCategorySubCategories);
-        }
-
-
-        ModelAndView mav =new ModelAndView("/jsp-fragment/admin-console/components/add-category-accordion-content");
-        mav.addObject("category",poCategorySubCategory);
-        return mav;
-
-    }
-
-    // TODO SMCSEC is this even used
-    @RequestMapping(value="get-add-category-components")
-    @ResponseBody
-    public ModelAndView getAddCategoryComponents(@RequestParam("poCategoryId") int poCategoryId,@RequestParam("subCategoryIds[]") int [] subCategoryIds) {
-        LOGGER.debug("getAddCategoryComponents is used!!!! :)");
-        List<TemplatePoCategorySubCategory> poCategorySubCategory =new ArrayList<TemplatePoCategorySubCategory>();
-        for (int subCategoryId : subCategoryIds) {
-
-            TemplatePoCategorySubCategory poCategorySubCategories = componentVendorTemplateService.getPoCategorySubCategory(poCategoryId, subCategoryId);
-            poCategorySubCategory.add(poCategorySubCategories);
-        }
-
-        ModelAndView mav =new ModelAndView("/jsp-fragment/admin-console/components/add-category-accordion-content");
-        mav.addObject("category",poCategorySubCategory);
-        return mav;
-
-    }
-
-    // TODO SMCSEC is this even used
-    @RequestMapping(value="get-delete-template-modal-content")
-    @ResponseBody
-    public ModelAndView getVendorInfo(@RequestParam("templateId") int templateId) {
-        LOGGER.debug("getVendorInfo is used!!!! :)");
-        VendorTemplate vendorTemplate =componentVendorTemplateService.getVendorTemplate(templateId);
-        ModelAndView mav =new ModelAndView("/jsp-fragment/admin-console/components/template-delete-modal-content");
-        mav.addObject("vendorTemplate",vendorTemplate);
-        return mav;
-
-    }
-
-    // TODO SMCSEC is this even used
-    @RequestMapping(value="delete-template-table-content")
-    @ResponseBody
-    public void deleteTemplateTableContent(@RequestParam("templateId") int templateId) {
-        LOGGER.debug("deleteTemplateTableContent is used!!!! :)");
-        componentVendorTemplateService.deleteTemplate(templateId);
-    }
-
-    // TODO SMCSEC is this even used
-    @RequestMapping(value="add-template")
-    @ResponseBody
-    public int addTemplate(@RequestParam("vendorNumber") int vendorNumber,@RequestParam("corpCode") String corpCode) {
-        LOGGER.debug("addTemplate is used!!!! :)");
-    	UserContext userContext = sessionBean.getUserContext();
-        String userSSO = userContext.getUserSSO();
-        componentVendorTemplateService.addTemplate(vendorNumber, userSSO);
-
-        VendorTemplate template =  componentVendorTemplateService.getTemplateId(vendorNumber, corpCode);
-        int templateId =template.getTemplateId();
-        return templateId;
-    }
-
-    // TODO SMCSEC is this even used
-    @RequestMapping(value="get-vendor-numbers-by-mfr")
-    @ResponseBody
-    public List<Integer> addTemplate(@RequestParam("MFR") String mfr) {
-        LOGGER.debug("addTemplate / get-vendor-numbers-by-mfr  is used!!!! :)");
-        List<Integer> vendorNumbers =  componentVendorTemplateService.getVendorNumberByMfr(mfr);
-        return vendorNumbers;
-    }
-
-    // TODO SMCSEC is this even used
-    @RequestMapping(value="add-template-components")
-    @ResponseBody
-    public void addTemplate(TemplateComponents serializedObject,@RequestParam("poCategoryId")int poCategoryId,@RequestParam("subCategoryId") int subCategoryId) {
-        LOGGER.debug("addTemplate / add-template-components is used!!!! :)");
-        componentVendorTemplateService.addTemplateComponents(serializedObject, poCategoryId, subCategoryId);
-
-    }
-
-    // TODO SMCSEC is this even used
-    @RequestMapping(value="update-template-components")
-    @ResponseBody
-    public void updateTemplateComponents(TemplateComponents serializedObject) {
-        LOGGER.debug("updateTemplateComponents is used!!!! :)");
-        componentVendorTemplateService.updateTemplateComponents(serializedObject);
-    }
-
     //CATEGORY MANAGEMENT//
-    // TODO SMCSEC is this even used
-    @RequestMapping(value="get-edit-category-content")
-    @ResponseBody
-    public ModelAndView getEditCategoryContent(@RequestParam("poCategoryId") int poCategoryId) {
-        LOGGER.debug("getEditCategoryContent is used!!!! :)");
-        PoCategory poCategory =categoryManagementService.getSelectedPoCategory(poCategoryId);
-        ModelAndView mav =new ModelAndView("/jsp-fragment/admin-console/components/edit-category-modal");
-        mav.addObject("category", poCategory);
-        return mav;
-    }
-
-    // TODO SMCSEC is this even used
-    @RequestMapping(value="add-category-modal-content")
-    @ResponseBody
-    public ModelAndView addCategoryContent() {
-
-        ModelAndView mav =new ModelAndView("/jsp-fragment/admin-console/components/category-management-add-po-category-modal");
-        return mav;
-    }
-
-    // TODO SMCSEC is this even used
-    @RequestMapping(value="update-po-category")
-    @ResponseBody
-    public ModelAndView updatePoCategory(PoCategory categoryData,HttpServletResponse response) throws Exception {
-        LOGGER.debug("updatePoCategory is used!!!! :)");
-        try{
-            if(categoryManagementService.checkCategoryExist(categoryData, false)){
-                categoryManagementService.updatePoCategory(categoryData);
-            }else{
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "PO Category Already exists.");
-                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                response.getWriter().write("PO Category Already exists.");
-                response.flushBuffer();
-            }
-        }catch (Exception e) {
-            LOGGER.error("Error while Updating PO Category: "+e.getMessage(),e);
-            CommonUtils.getCommonErrorAjaxResponse(response,"Error Processing the Update PO Category");
-        }
-        return null;
-    }
-
-    // TODO SMCSEC is this even used
-    @RequestMapping(value="insert-po-category")
-    @ResponseBody
-    public PoCategory insertPoCategory(PoCategory categoryData,HttpServletResponse response) throws Exception {
-
-        LOGGER.error("insertPoCategory is used!!!! :)");
-
-        try{
-        	UserContext userContext = sessionBean.getUserContext();
-            String userSSO = userContext.getUserSSO();
-            categoryData.setCreatedBy(userSSO);
-            if(categoryManagementService.checkCategoryExist(categoryData, true)){
-                categoryManagementService.insertPoCategory(categoryData);
-                PoCategory category =categoryManagementService.getMaxCategoryId();
-                return category;
-            }else{
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "PO Category Already exists.");
-                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                response.getWriter().write("PO Category Already exists.");
-                response.flushBuffer();
-            }
-        }catch (Exception e) {
-            LOGGER.error("Error while adding PO Category: "+e.getMessage(),e);
-            CommonUtils.getCommonErrorAjaxResponse(response,"Error Processing the Insert PO Category");
-        }
-        return null;
-    }
-
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_CATEGORY)
     @RequestMapping(value="get-edit-sub-category-content")
     @ResponseBody
@@ -519,14 +138,6 @@ public class ComponentsRestController {
         return 0;
     }
 
-    // TODO SMCSEC is this even used
-    @RequestMapping(value="delete-po-category")
-    @ResponseBody
-    public void deletePoCategory(@RequestParam("poCatId") int poCatId) {
-        LOGGER.debug("deletePoCategory is used!!!! :)");
-        categoryManagementService.modifyPoCatStatus(poCatId);
-    }
-
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_CATEGORY)
     @RequestMapping(value="delete-sub-category")
     @ResponseBody
@@ -535,7 +146,6 @@ public class ComponentsRestController {
     }
 
     //category association//
-
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_CATEGORY_ASSOCIATION)
     @RequestMapping(value="get-add-category-association-modal-content")
     @ResponseBody
@@ -892,6 +502,4 @@ public class ComponentsRestController {
     	return status;
     	
     }
-
-    
 }

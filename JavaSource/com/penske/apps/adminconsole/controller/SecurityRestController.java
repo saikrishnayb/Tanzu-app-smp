@@ -1,7 +1,6 @@
 package com.penske.apps.adminconsole.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,7 +22,6 @@ import com.penske.apps.adminconsole.model.Org;
 import com.penske.apps.adminconsole.model.Role;
 import com.penske.apps.adminconsole.model.User;
 import com.penske.apps.adminconsole.model.Vendor;
-import com.penske.apps.adminconsole.model.VendorLocation;
 import com.penske.apps.adminconsole.service.RoleService;
 import com.penske.apps.adminconsole.service.SecurityService;
 import com.penske.apps.adminconsole.service.UserCreationService;
@@ -130,16 +128,6 @@ public class SecurityRestController {
         return mav;
     }
 
-    // TODO SMCSEC Maybe deprecated?
-    @RequestMapping("get-vendor-locations-content")
-    @ResponseBody
-    public List<VendorLocation> getVendorLocations(@RequestParam(value="vendorName") String vendorName) {
-        LOGGER.error("getVendorLocations is used!!!! :)");
-        UserContext userContext = sessionBean.getUserContext();
-
-        return securityService.getVendorLocations(vendorName, userContext.getUserId(), userContext.getUserType());
-    }
-
     @VendorAllowed
     @SmcSecurity(securityFunction = {SecurityFunction.MANAGE_USERS, SecurityFunction.MANAGE_VENDOR_USERS})
     @RequestMapping("deactivate-user")
@@ -206,36 +194,6 @@ public class SecurityRestController {
             LOGGER.error("Error while deactivation ORG: " + e);
             CommonUtils.getCommonErrorAjaxResponse(response,"");
         }
-    }
-
-    // TODO SMCSEC deprecated maybe
-    @RequestMapping("vendor-templates")
-    @ResponseBody
-    public ModelAndView getVendorTemplateInfo(@RequestParam(value="vendorIds[]") String[] vendorIds) {
-
-        LOGGER.error("getVendorTemplateInfo is used!!!! :)");
-
-        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/security/templates-accordion");
-
-        if(vendorIds[0].equalsIgnoreCase("empty")) {
-            return null;
-        }
-
-        List<VendorLocation> vendorIdList = new ArrayList<VendorLocation>(vendorIds.length);
-
-        for (String vendorId : vendorIds) {
-            VendorLocation vendLoc = new VendorLocation();
-            vendLoc.setVendorId(Integer.parseInt(vendorId));
-
-            vendorIdList.add(vendLoc);
-        }
-
-        List<VendorLocation> vendorTemplateList = securityService.getVendorTemplates(vendorIdList);
-
-
-        mav.addObject("vendorTemplates", vendorTemplateList);
-
-        return mav;
     }
 
     @VendorAllowed
@@ -319,34 +277,6 @@ public class SecurityRestController {
             response.flushBuffer();
         }
         return null;
-    }
-
-    // TODO SMCSEC is this even used
-    @RequestMapping(value ="edit-user-submit")
-    @ResponseBody
-    public ModelAndView modifyUserInfoSubmit(User user, int[] vendorIds, @RequestParam(value="signatureFile", required=false)MultipartFile signatureImage,
-            @RequestParam(value="initialsFile", required=false)MultipartFile initialsImage){
-
-        LOGGER.error("modifyUserInfoSubmit is used!!!! :)");
-
-        boolean initialsEmpty = initialsImage == null || initialsImage.getSize() == 0;
-        boolean signatureEmpty = signatureImage == null || signatureImage.getSize() == 0;
-
-        if(!initialsEmpty){
-            ImageFile initFile = new ImageFile(initialsImage);
-            user.setInitFile(initFile);
-        }
-
-        if(!signatureEmpty){
-            ImageFile signFile = new ImageFile(signatureImage);
-            user.setSignFile(signFile);
-        }
-
-        UserContext userContext = sessionBean.getUserContext();
-
-        securityService.modifyUserInfo(user, vendorIds, userContext);
-        ModelAndView mav = new ModelAndView("redirect:/app/admin-console/security/users");
-        return mav;
     }
 
     @VendorAllowed
@@ -522,7 +452,6 @@ public class SecurityRestController {
 
         return mav;
     }
-
 
     @VendorAllowed
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_ROLES)
@@ -867,7 +796,6 @@ public class SecurityRestController {
             response.flushBuffer();
         }
     }
-
 
     @VendorAllowed
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_ORG)

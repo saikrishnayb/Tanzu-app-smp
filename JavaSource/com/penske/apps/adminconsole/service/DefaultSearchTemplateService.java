@@ -48,7 +48,6 @@ public class DefaultSearchTemplateService implements SearchTemplateService {
 		return true;
 	}
 
-
 	@Override
 	public void updateSearchTemplate(SearchTemplateForm searchTemplateForm) {
 		if (searchTemplateForm == null) {
@@ -63,6 +62,4 @@ public class DefaultSearchTemplateService implements SearchTemplateService {
 		
 		searchTemplateDao.updateSearchTemplate(searchTemplateForm);
 	}
-
-	
 }

@@ -42,5 +42,5 @@ public interface LoadSheetManagementService {
 	public List<RuleMaster> getRulesByTemplateComponentId(int templateComponentId);
 	public List<String> getRulesByComponentIdAndTemplateId(int templateId,int componentId);
 	public void updateComponentRulesPriority(List<Integer> ruleList,int templateComponentId);
-	public void getTemplateComponentRuleVisibilty(int templateComponentId,int ruleId,RuleMaster ruleMaster) throws IllegalArgumentException;
+	public void getTemplateComponentRuleVisibilty(int templateComponentId,int ruleId,RuleMaster ruleMaster);
 }

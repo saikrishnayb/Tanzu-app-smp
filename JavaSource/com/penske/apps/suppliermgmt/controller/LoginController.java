@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.penske.apps.adminconsole.service.HeaderService;
 import com.penske.apps.suppliermgmt.annotation.VendorAllowed;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.domain.UserLoginHistory;
@@ -52,8 +51,6 @@ public class LoginController extends BaseController {
 
     @Autowired
     private LoginService loginService;
-    @Autowired
-    private HeaderService headerService;
     @Autowired
     private LookupManager lookUpManager;
     @Autowired

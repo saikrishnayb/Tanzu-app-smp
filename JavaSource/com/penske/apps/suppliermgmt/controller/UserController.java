@@ -70,77 +70,6 @@ public class UserController extends BaseController {
         return model;
     }
 
-
-    /**
-     * Controller to add buddyList
-     * @Params buddyId
-     * @return void
-     * @Excepton Exception
-     */
-    public void addBuddyList(List<Buddies> newBuddyList,String loggedInUserSso) {
-        try {
-            String selectionType=null;
-            List<Buddies> newRandomBuddyList=new ArrayList<Buddies>();
-            Buddies loggedInUser=new Buddies();
-            Buddies buddy=null;
-            if(newBuddyList!=null){
-
-                for(Buddies buddylst:newBuddyList){
-
-
-                    buddy=new Buddies();
-                    buddy.setSso(loggedInUserSso);
-                    buddy.setBuddySso(buddylst.getBuddySso());
-                    buddy.setUserDept(buddylst.getUserDept());
-                    //if selection type is ALL
-                    if(StringUtils.equalsIgnoreCase(buddylst.getSelectionType(),ApplicationConstants.ALL_SELECTION_TYPE)){
-
-                        selectionType=ApplicationConstants.ALL_SELECTION_TYPE;
-                        buddy.setSelectionType(selectionType);
-
-                    }else if(StringUtils.equalsIgnoreCase(buddylst.getSelectionType(),ApplicationConstants.ALL_BUYER_SELECTION_TYPE)){
-                        //if selection type is based on depratment
-                        selectionType=ApplicationConstants.ALL_BUYER_SELECTION_TYPE;
-                        buddy.setSelectionType(selectionType);
-                    }else if(StringUtils.equalsIgnoreCase(buddylst.getSelectionType(),ApplicationConstants.ALL_PLANNING_SELECTION_TYPE)){
-                        selectionType=ApplicationConstants.ALL_PLANNING_SELECTION_TYPE;
-                        buddy.setSelectionType(selectionType);
-                    }else {	//if it is random
-                        //except the logged in user if we have selection Type
-                        if(buddylst.getBuddySso() != null && !buddylst.getBuddySso().contains(loggedInUserSso)){
-                            buddy.setSelectionType(null);
-                            newRandomBuddyList.add(buddy);
-                        }
-                    }
-
-                    //inserting logged in user with selection type
-                    if(buddylst.getBuddySso().contains(loggedInUserSso)){
-                        //buddy.setSelectionType(selectionType);
-                        loggedInUser=buddy;
-                    }
-
-
-                }
-
-            }
-
-            if(StringUtils.equalsIgnoreCase(selectionType, ApplicationConstants.ALL_SELECTION_TYPE)||
-                    StringUtils.equalsIgnoreCase(selectionType, ApplicationConstants.ALL_BUYER_SELECTION_TYPE)||
-                    StringUtils.equalsIgnoreCase(selectionType, ApplicationConstants.ALL_PLANNING_SELECTION_TYPE)){
-                loggedInUser.setSelectionType(selectionType);
-                userService.addBuddyBasedOnselectionType(loggedInUser);
-                if(!newRandomBuddyList.isEmpty()){
-                    userService.addBuddyList(newRandomBuddyList);
-                }
-
-            }else{
-                userService.addBuddyList(newBuddyList);
-            }
-        }catch(Exception e){
-            handleException(e);
-        }
-    }
-
     /**
      * Controller to delete selected workflow requests
      * @Params buddyId
@@ -149,7 +78,7 @@ public class UserController extends BaseController {
      */
     @RequestMapping(value = "/deleteBuddyList", method = {RequestMethod.GET, RequestMethod.POST })
     public @ResponseBody String deleteBuddyList(@RequestParam("newBuddies")List<String> newBuddyArray,@RequestParam("existingBuddyList")List<String> existingBuddyList,HttpServletResponse response) throws Exception
-    {	//
+    {
 
         UserContext userContext= sessionBean.getUserContext();
         List<Buddies> newBuddyList=new ArrayList<Buddies>();
@@ -330,4 +259,74 @@ public class UserController extends BaseController {
 			}
 		}
 	}    
+
+	  /**
+     * Controller to add buddyList
+     * @Params buddyId
+     * @return void
+     * @Excepton Exception
+     */
+    private void addBuddyList(List<Buddies> newBuddyList,String loggedInUserSso) {
+        try {
+            String selectionType=null;
+            List<Buddies> newRandomBuddyList=new ArrayList<Buddies>();
+            Buddies loggedInUser=new Buddies();
+            Buddies buddy=null;
+            if(newBuddyList!=null){
+
+                for(Buddies buddylst:newBuddyList){
+
+
+                    buddy=new Buddies();
+                    buddy.setSso(loggedInUserSso);
+                    buddy.setBuddySso(buddylst.getBuddySso());
+                    buddy.setUserDept(buddylst.getUserDept());
+                    //if selection type is ALL
+                    if(StringUtils.equalsIgnoreCase(buddylst.getSelectionType(),ApplicationConstants.ALL_SELECTION_TYPE)){
+
+                        selectionType=ApplicationConstants.ALL_SELECTION_TYPE;
+                        buddy.setSelectionType(selectionType);
+
+                    }else if(StringUtils.equalsIgnoreCase(buddylst.getSelectionType(),ApplicationConstants.ALL_BUYER_SELECTION_TYPE)){
+                        //if selection type is based on depratment
+                        selectionType=ApplicationConstants.ALL_BUYER_SELECTION_TYPE;
+                        buddy.setSelectionType(selectionType);
+                    }else if(StringUtils.equalsIgnoreCase(buddylst.getSelectionType(),ApplicationConstants.ALL_PLANNING_SELECTION_TYPE)){
+                        selectionType=ApplicationConstants.ALL_PLANNING_SELECTION_TYPE;
+                        buddy.setSelectionType(selectionType);
+                    }else {	//if it is random
+                        //except the logged in user if we have selection Type
+                        if(buddylst.getBuddySso() != null && !buddylst.getBuddySso().contains(loggedInUserSso)){
+                            buddy.setSelectionType(null);
+                            newRandomBuddyList.add(buddy);
+                        }
+                    }
+
+                    //inserting logged in user with selection type
+                    if(buddylst.getBuddySso().contains(loggedInUserSso)){
+                        //buddy.setSelectionType(selectionType);
+                        loggedInUser=buddy;
+                    }
+
+
+                }
+
+            }
+
+            if(StringUtils.equalsIgnoreCase(selectionType, ApplicationConstants.ALL_SELECTION_TYPE)||
+                    StringUtils.equalsIgnoreCase(selectionType, ApplicationConstants.ALL_BUYER_SELECTION_TYPE)||
+                    StringUtils.equalsIgnoreCase(selectionType, ApplicationConstants.ALL_PLANNING_SELECTION_TYPE)){
+                loggedInUser.setSelectionType(selectionType);
+                userService.addBuddyBasedOnselectionType(loggedInUser);
+                if(!newRandomBuddyList.isEmpty()){
+                    userService.addBuddyList(newRandomBuddyList);
+                }
+
+            }else{
+                userService.addBuddyList(newBuddyList);
+            }
+        }catch(Exception e){
+            handleException(e);
+        }
+    }
 }
