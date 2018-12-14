@@ -29,7 +29,6 @@ import com.penske.apps.adminconsole.model.TransportUploadHandler;
 import com.penske.apps.adminconsole.model.VendorReport;
 import com.penske.apps.adminconsole.model.VendorUploadHandler;
 import com.penske.apps.adminconsole.service.AlertService;
-import com.penske.apps.adminconsole.service.DefaultSubjectService;
 import com.penske.apps.adminconsole.service.DynamicRuleService;
 import com.penske.apps.adminconsole.service.ExceptionService;
 import com.penske.apps.adminconsole.service.LoadSheetManagementService;
@@ -61,8 +60,6 @@ public class AppConfigController {
 
     @Autowired
     private ExceptionService exceptionService;
-    @Autowired
-    private DefaultSubjectService subjectService;
     @Autowired
     private DynamicRuleService dynamicRuleService;
     @Autowired
@@ -100,17 +97,6 @@ public class AppConfigController {
         }
 
         return new ModelAndView("/admin-console/security/noAccess");
-    }
-
-    /* ================== Subject Management ================== */
-    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_SUBJECTS)
-    @RequestMapping(value={"/subject-management"})
-    public ModelAndView getSubjectManagementPage() {
-        ModelAndView mav = new ModelAndView("/admin-console/app-config/subject-management");
-
-        mav.addObject("subjects", subjectService.getAllSubjects());
-
-        return mav;
     }
 
     /* ================== Excel Uploads    ================== */

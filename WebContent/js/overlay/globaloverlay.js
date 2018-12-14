@@ -76,7 +76,7 @@ function getDivStatus(){
 
 function isInHideList($this){
 	// Special Case
-	if($this.hasClass('edit-subject') || $this.hasClass('add-subject') ||  $this.hasClass('edit-alert')){
+	if($this.hasClass('edit-alert')){
 		return false;
 	}else{
 		return true;

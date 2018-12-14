@@ -24,13 +24,11 @@ import com.penske.apps.adminconsole.model.DynamicRule;
 import com.penske.apps.adminconsole.model.GlobalException;
 import com.penske.apps.adminconsole.model.SearchTemplate;
 import com.penske.apps.adminconsole.model.SearchTemplateForm;
-import com.penske.apps.adminconsole.model.Subject;
 import com.penske.apps.adminconsole.service.AlertService;
 import com.penske.apps.adminconsole.service.DynamicRuleService;
 import com.penske.apps.adminconsole.service.ExceptionService;
 import com.penske.apps.adminconsole.service.LoadSheetManagementService;
 import com.penske.apps.adminconsole.service.SearchTemplateService;
-import com.penske.apps.adminconsole.service.SubjectService;
 import com.penske.apps.adminconsole.service.TabService;
 import com.penske.apps.adminconsole.service.TermsAndConditionsService;
 import com.penske.apps.adminconsole.util.CommonUtils;
@@ -69,31 +67,7 @@ public class AppConfigRestController {
     @Autowired
     private TermsAndConditionsService termsAndConditionsService;
     @Autowired
-    private SubjectService subjectService;
-    @Autowired
     private LoadSheetManagementService loadsheetManagementService;
-
-    /* ================== Subject Management ================== */
-    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_SUBJECTS)
-    @RequestMapping(value="/modify-subject")
-    @ResponseBody
-    public void modifySubject(Subject subject) {
-        subjectService.modifySubject(subject);
-    }
-
-    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_SUBJECTS)
-    @RequestMapping(value="/modify-subject-status")
-    @ResponseBody
-    public void modifySubjectStatus(@RequestParam(value="subjectId") int subjectId) {
-        subjectService.modifySubjectStatus(subjectId);
-    }
-
-    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_SUBJECTS)
-    @RequestMapping(value="/add-subject")
-    @ResponseBody
-    public void addSubject(Subject subject) {
-        subjectService.addSubject(subject);
-    }
 
     /* ================== Global Exceptions ================== */
     /*    * 

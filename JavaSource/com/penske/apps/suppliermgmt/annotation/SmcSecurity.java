@@ -35,7 +35,6 @@ public @interface SmcSecurity {
         MANAGE_COMPONENTS,
         MANAGE_TEMPLATE,
 
-        MANAGE_SUBJECTS,
         DYNAMIC_RULES_MANAGEMENT,
         SEARCH_TEMPLATES,
         ALERT_MANAGEMENT,

@@ -47,9 +47,6 @@
 				
 				<!-- Check if user has access to at least one left nav inside App Config -->
 				<c:set var="hasAppConfig" value="0"></c:set>
-				<tl:isAuthorized tabName="Admin Console" secFunction="MANAGE_SUBJECTS">
-					<c:set var="hasAppConfig" value="1"></c:set>
-				</tl:isAuthorized>
 				<tl:isAuthorized tabName="Admin Console" secFunction="DYNAMIC_RULES_MANAGEMENT">
 					<c:set var="hasAppConfig" value="1"></c:set>
 				</tl:isAuthorized>

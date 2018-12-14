@@ -21,7 +21,6 @@ public enum LeftNav {
     TEMPLATE_MANAGEMENT(SecurityFunction.MANAGE_TEMPLATE, "admin-console/components/template.htm"),
 
     /** App Config **/
-    SUBJECT_MANAGEMENT(SecurityFunction.MANAGE_SUBJECTS, "admin-console/app-config/subject-management.htm"),
     LOADSHEET_MANAGEMENT(SecurityFunction.LOADSHEET_MANAGEMENT, "admin-console/app-config/loadsheet-management.htm"),
     LOADSHEET_RULES(SecurityFunction.LOADSHEET_RULES, "admin-console/app-config/loadsheet-rule.htm"),
     LOADSHEET_SEQUENCES(SecurityFunction.LOADSHEET_SEQUENCES, "admin-console/app-config/loadsheet-sequence.htm"),

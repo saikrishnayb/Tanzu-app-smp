@@ -28,7 +28,7 @@ public enum Tab {
                 LeftNav.COMPONENT_MANAGEMENT,
                 LeftNav.TEMPLATE_MANAGEMENT)),
 
-        APP_CONFIG(Arrays.asList(LeftNav.SUBJECT_MANAGEMENT,
+        APP_CONFIG(Arrays.asList(
                 LeftNav.LOADSHEET_MANAGEMENT,
                 LeftNav.LOADSHEET_RULES,
                 LeftNav.LOADSHEET_SEQUENCES,

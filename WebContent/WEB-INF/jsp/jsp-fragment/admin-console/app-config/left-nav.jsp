@@ -1,10 +1,6 @@
 <div class="leftNav">
 <%@ taglib uri="/WEB-INF/tld/taglib.tld" prefix="tl"%>
 
-	<tl:isAuthorized tabName="Admin Console" secFunction="MANAGE_SUBJECTS">
-	 <div class="leftNavGroup"><a href="${baseAppUrl}/admin-console/app-config/subject-management.htm" id="left-nav-subject-management" onclick="javascript:loadProcessImage();">Subject Management</a></div>
-	</tl:isAuthorized>
-	
 	<tl:isAuthorized tabName="Admin Console" secFunction="LOADSHEET_MANAGEMENT">
 		<div class="leftNavGroup"><a href="${baseAppUrl}/admin-console/app-config/loadsheet-management.htm" id="left-nav-loadsheet-management" onclick="javascript:loadProcessImage();">Loadsheet Management</a></div>
 	</tl:isAuthorized>
