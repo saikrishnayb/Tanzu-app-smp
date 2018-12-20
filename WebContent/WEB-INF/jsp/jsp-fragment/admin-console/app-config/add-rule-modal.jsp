@@ -32,7 +32,7 @@
 	<label class="floatLeft clear-left width-60">Status<span class="errorMsg">*</span></label>
 	<select class="floatLeft width-100" tabindex=5 name="status">
 		<option value="A">Active</option>
-			<option value="I">InActive</option>
+			<option value="I">Inactive</option>
 	</select>
 	<label class="floatLeft clear-left width-60">Priority <span class="errorMsg">*</span></label>
 	<input class="floatLeft width-100" type="text" tabindex=6 name="priority" value="${maxPriority}" autocomplete="off" />

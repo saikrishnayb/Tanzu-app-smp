@@ -31,7 +31,7 @@
 	<label class="floatLeft clear-left width-60">Status</label>
 	<select class="floatLeft width-300" tabindex=4 name="status">
 		<option value="A">Active</option>
-			<option value="I">InActive</option>
+			<option value="I">Inactive</option>
 	</select>
 	<label class="floatLeft clear-left width-60">Year <span class="errorMsg">*</span></label>
 	<input class="floatLeft width-100" type="text" tabindex=5 name="modelYear" maxlength="4" autocomplete="off" />
