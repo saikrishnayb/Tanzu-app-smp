@@ -110,7 +110,9 @@ public class SecurityRestController {
 
         mav.addObject("userRoles", vendorRoles);
 
-        mav.addObject("orgList", securityService.getVendorOrg(isVendor, userContext.getOrgId()));
+        List<Org> vendorOrg = securityService.getVendorOrg(isVendor, userContext.getOrgId());
+        Collections.sort(vendorOrg, Org.ORG_NAME_ASC);
+        mav.addObject("orgList", vendorOrg);
         mav.addObject("editableUser", editableUser);
         mav.addObject("tabPermissionsMap", securityService.getPermissions(roleId));
         return mav;
