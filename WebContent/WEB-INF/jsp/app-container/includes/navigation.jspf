@@ -41,7 +41,17 @@
 						       <li><a href="#" id="dataConflict" onmousedown="redirectToTab('dataConflict')">Data Conflicts</a></li>
                              </tl:penskeOnly>
 						     </tl:isAuthorized>
-						     <li><a href="#" id="upStreamVendor" onmousedown="linkRequest('button'); redirectToTab('upStreamVendor');">Upstream Change</a></li>
+						     
+						     
+						     <!-- THIS IS TO BE REMOVED IN FUTURE REVISION COMPLETELY BUT UNTIL CODE
+						     	  CLEANUP OCCURS JUST HIDE THE LINK SINCE IT APPARENTLY ISN'T BOUND 
+						     	  TO ANY SECURITY FUNCTIONS
+						     	
+						       <li><a href="#" id="upStreamVendor" onmousedown="linkRequest('button'); redirectToTab('upStreamVendor');">Upstream Change</a></li>
+						     
+						     -->
+						     
+						     
 						     <tl:isAuthorized tabName="Production" secFunction="UPDATE_DATES">
 						 		<li><a href="#" id="dateValidation" onmousedown="linkRequest('button'); redirectToTab('dateValidation');">Update Date/Delay</a></li>
 							 </tl:isAuthorized>
