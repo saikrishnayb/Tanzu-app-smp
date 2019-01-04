@@ -82,8 +82,9 @@ $(document).ready(function() {
 
 // Functions ************************************************************
 
-function refreshFrameWithoutWarnings(){
-	showLoading();
+function refreshFrameWithoutWarnings(dontShowLoading){
+  
+  if(dontShowLoading === undefined) showLoading();
   document.querySelector('#mainFrame').contentWindow.location.href += ''; 
 }
 function openHelpSelector()
