@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.sql.DataSource;
@@ -32,7 +33,6 @@ import com.penske.apps.smccore.base.configuration.ProfileType;
 import com.penske.apps.smccore.base.plugins.QueryLoggingPlugin;
 import com.penske.apps.smccore.base.plugins.TimingBean;
 import com.penske.apps.smccore.base.util.SpringConfigUtil;
-import com.penske.apps.suppliermgmt.domain.TypeAliasMarker;
 import com.penske.apps.suppliermgmt.plugins.VendorQueryWrappingPlugin;
 
 /**
@@ -65,7 +65,8 @@ public class BaseMapperConfiguration
 		
 		//***** TYPE ALIASES *****//
 		Set<String> typeAliasPackages = SpringConfigUtil.getPackageNames(
-			TypeAliasMarker.class
+			com.penske.apps.suppliermgmt.domain.TypeAliasMarker.class,
+			com.penske.apps.adminconsole.domain.TypeAliasMarker2.class
 		);
 		
 		//***** GLOBAL TYPE HANDLERS *****//
@@ -88,6 +89,7 @@ public class BaseMapperConfiguration
 		List<Class<?>> mappedTypes = SpringConfigUtil.getMappedEnumTypes(
 			CoreMapperConfiguration.class
 		);
+		
 		
 		//***** GENERAL CONFIG *****//
 		sessionFactory.setTypeAliasesPackage(StringUtils.join(typeAliasPackages, ","));

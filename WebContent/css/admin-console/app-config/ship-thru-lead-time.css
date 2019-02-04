@@ -1,0 +1,10 @@
+.leftNav {
+  width: 180px;
+}
+.leftNavGroup {
+  width: 170px;  
+}
+
+.dataTables_filter label {
+  margin: 0;
+}

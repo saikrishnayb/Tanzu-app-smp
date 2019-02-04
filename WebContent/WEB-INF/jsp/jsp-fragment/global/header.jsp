@@ -1,5 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="/WEB-INF/tld/taglib.tld" prefix="tl"%>
+<%-- TODO: Look into removing this script from here --%>
 <script src="${baseUrl}/js/overlay/globaloverlay.js" type="text/javascript"></script>
 <nav>
 	

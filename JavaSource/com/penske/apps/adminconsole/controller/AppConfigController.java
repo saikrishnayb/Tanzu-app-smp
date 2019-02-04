@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.penske.apps.adminconsole.domain.ShipThruLeadTime;
 import com.penske.apps.adminconsole.enums.LeftNav;
 import com.penske.apps.adminconsole.enums.PoCategoryType;
 import com.penske.apps.adminconsole.enums.Tab.SubTab;
@@ -33,6 +34,7 @@ import com.penske.apps.adminconsole.service.DynamicRuleService;
 import com.penske.apps.adminconsole.service.ExceptionService;
 import com.penske.apps.adminconsole.service.LoadSheetManagementService;
 import com.penske.apps.adminconsole.service.SearchTemplateService;
+import com.penske.apps.adminconsole.service.ShipThruLeadTimeService;
 import com.penske.apps.adminconsole.service.TermsAndConditionsService;
 import com.penske.apps.adminconsole.service.UploadService;
 import com.penske.apps.adminconsole.util.ApplicationConstants;
@@ -76,6 +78,8 @@ public class AppConfigController {
     private UploadService<VendorReport> objVendorService;
     @Autowired
     private LoadSheetManagementService loadsheetManagementService;
+    @Autowired
+    private ShipThruLeadTimeService shipThruLeadTimeService;
     @Autowired
     private SuppliermgmtSessionBean sessionBean;
 
@@ -563,6 +567,18 @@ public class AppConfigController {
         return new ModelAndView("redirect:/app/admin-console/app-config/open-edit-sequence.htm?seqMasterId="+seqMaster.getId()+"&action="+seqMaster.getPageAction()+
                 "&category="+category+"&type="+type+"&viewMode="+viewMode);
     }
-
+    
+    
+    @SmcSecurity(securityFunction = {SecurityFunction.SHIP_THRU_LEAD_TIME})
+    @RequestMapping("/ship-thru-lead-time")
+    public ModelAndView getShipThruLeadTimePage(){
+        
+        List<ShipThruLeadTime> shipThruLeadTimes = shipThruLeadTimeService.getShipThruLeadTimes();
+        
+        ModelAndView modelAndView = new ModelAndView("/admin-console/app-config/ship-thru-lead-time");
+        modelAndView.addObject("shipThruLeadTimes", shipThruLeadTimes);
+        
+        return modelAndView;
+    }
 
 }
