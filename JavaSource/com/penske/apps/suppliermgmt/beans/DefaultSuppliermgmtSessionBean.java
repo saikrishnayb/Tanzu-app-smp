@@ -18,12 +18,13 @@ public class DefaultSuppliermgmtSessionBean implements SuppliermgmtSessionBean, 
     private Date lastUserLoginDate;
     private boolean buddyListApplied;
     private boolean vendorFilterApplied;
+    private boolean vendorFilterActive;
     
     private AppConfigSessionData appConfigSessionData = new AppConfigSessionData();
 
     /** {@inheritDoc} */
     @Override
-    public void initialize(UserContext userContext, String baseUrl, Date lastUserLoginDate, boolean buddyListApplied, boolean vendorFilterApplied)
+    public void initialize(UserContext userContext, String baseUrl, Date lastUserLoginDate, boolean buddyListApplied, boolean vendorFilterApplied, boolean vendorFilterActive)
     {
        	if(userContext == null)
     		throw new IllegalArgumentException("Can not initialize user session without a logged-in user.");
@@ -36,6 +37,7 @@ public class DefaultSuppliermgmtSessionBean implements SuppliermgmtSessionBean, 
     	this.appConfigSessionData = new AppConfigSessionData();
     	this.buddyListApplied = buddyListApplied;
     	this.vendorFilterApplied = vendorFilterApplied;
+    	this.vendorFilterActive = vendorFilterActive;
     }
     
     /** {@inheritDoc} */
@@ -70,6 +72,11 @@ public class DefaultSuppliermgmtSessionBean implements SuppliermgmtSessionBean, 
     public boolean isVendorFilterApplied()
     {
     	return vendorFilterApplied;
+    }
+    @Override
+    public boolean isVendorFilterActive()
+    {
+    	return vendorFilterActive;
     }
     
     /** {@inheritDoc} */

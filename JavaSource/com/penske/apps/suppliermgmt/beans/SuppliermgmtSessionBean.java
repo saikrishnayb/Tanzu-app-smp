@@ -16,7 +16,7 @@ public interface SuppliermgmtSessionBean {
 	 * @param buddyFilterApplied True if the user has buddies selected in their buddy list; false if they do not, or are not allowed to
 	 * @param vendorFilterApplied True if the user has a vendor filter applied; false if they do not, or are not allowed to
 	 */
-	public void initialize(UserContext userContext, String baseUrl, Date lastUserLoginDate, boolean buddyFilterApplied, boolean vendorFilterApplied);
+	public void initialize(UserContext userContext, String baseUrl, Date lastUserLoginDate, boolean buddyFilterApplied, boolean vendorFilterApplied, boolean vendorFilterActive);
 
 	/**
      * Gets an object for the currently logged in user.
@@ -52,4 +52,6 @@ public interface SuppliermgmtSessionBean {
      * Gets parameters used by the App Config tab pages.
      */
     public AppConfigSessionData getAppConfigSessionData();
+
+	boolean isVendorFilterActive();
 }

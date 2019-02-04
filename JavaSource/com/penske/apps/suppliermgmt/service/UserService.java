@@ -32,4 +32,6 @@ public interface UserService {
 	public List<VendorFilter> getAllVendorFilters(int organizationId);
 	public void saveUserVendorFilterSelections(Collection<Integer> vendorIds);
 
+	public void toggleVendorFilter();
+
 }

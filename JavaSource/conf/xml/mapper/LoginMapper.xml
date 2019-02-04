@@ -114,7 +114,8 @@ SELECT
     
     <select id="getUserVendorFilterSelections" resultType="com.penske.apps.suppliermgmt.domain.UserVendorFilterSelection">
          SELECT orgMaster.ORG_ID,
-                vendorFilter.VENDOR_ID
+                vendorFilter.VENDOR_ID,
+                vendorFilter.IS_ACTIVE
           FROM SMC_VENDOR_FILTER vendorFilter
                INNER JOIN SMC_ORG_VENDOR_ASSOC vendorAssoc
                ON vendorAssoc.VENDOR_ID = vendorFilter.VENDOR_ID

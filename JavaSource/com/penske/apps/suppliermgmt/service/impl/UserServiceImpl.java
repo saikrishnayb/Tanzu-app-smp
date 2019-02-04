@@ -205,5 +205,14 @@ public class UserServiceImpl implements UserService {
         userDao.saveUserVendorFilterSelections(vendorIds, userId);
         
     }
+    
+    @Override
+    public void toggleVendorFilter() {
+    	UserContext userContext = sessionBean.getUserContext();
+    	Integer userId = userContext.getUserId();
+    	
+    	userDao.toggleVendorFilter(userId);
+    	
+    }
 	
 }

@@ -118,11 +118,14 @@ public class LoginController extends BaseController {
                     
                     boolean hasBuddies = false;
                     boolean hasVendors = false;
+                    boolean hasVendorFilterActivated =false;
                     if(userContext.getUserType()==ApplicationConstants.PENSKE_USER_TYPE){
                         List<Buddies> existingBuddies=userService.getExistingBuddiesList(userContext.getUserName());
                         List<UserVendorFilterSelection> userVendorFilterSelection = loginService.getUserVendorFilterSelections(usermodel.getUserId());
                         hasBuddies = existingBuddies.size() > 1;
                         hasVendors = !userVendorFilterSelection.isEmpty();
+                        if(hasVendors)
+                        	hasVendorFilterActivated = userVendorFilterSelection.get(0).getIsActive();
                     }
                     /*if logged in user is vendor user checking for associated vendors*/
                     if(userContext.getTabSecFunctionMap() == null || userContext.getTabSecFunctionMap().isEmpty())
@@ -146,7 +149,7 @@ public class LoginController extends BaseController {
                     Date lastLoginDate = previousLoginHistory == null ? null : previousLoginHistory.getLastLoginDate();
                     
                     String contextPath = request.getContextPath();
-                    sessionBean.initialize(userContext, contextPath, lastLoginDate, hasBuddies, hasVendors);
+                    sessionBean.initialize(userContext, contextPath, lastLoginDate, hasBuddies, hasVendors, hasVendorFilterActivated);
                 }
                 else
                 {

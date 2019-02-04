@@ -25,9 +25,11 @@
       
                 <tl:isAuthorized tabName="Admin Console" secFunction="VENDOR_FILTER">
                   <li><tl:penskeOnly>
-                      <a class="vendor-filter">Vendor Filter</a>
-                      <img id="hasVendors" src="${commonStaticUrl}/images/status_green.png"
-                        style="padding-left:3px;display: ${hasVendors ? 'inline-block' : 'none'}" />
+                      <a id ="vendor-filter-toggle" class="vendor-filter">Vendor Filter</a>
+                      <a style="display: ${hasVendors ? 'inline-block' : 'none'}"><img id="hasVendors" src="${commonStaticUrl}/images/status_green.png"
+                        style="padding-left:3px;display: ${hasVendors and hasVendorFilterActivated ? '' : 'none'}" />
+                      <img id="hasVendorsOff" src="../images/vendor-filter-off.png"
+                        style="padding-left:3px;display: ${hasVendors and !hasVendorFilterActivated ? '' : 'none'}"/></a>
                     </tl:penskeOnly></li>
                 </tl:isAuthorized>
       

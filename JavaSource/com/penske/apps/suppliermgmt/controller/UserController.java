@@ -144,6 +144,14 @@ public class UserController extends BaseController {
         userService.saveUserVendorFilterSelections(vendorIds);
         return vendorIds.size()>0?"inline-block":"none";
     }
+    
+    @SmcSecurity(securityFunction = SecurityFunction.VENDOR_FILTER)
+    @RequestMapping(value = "/toggle-vendor-filter", method = {RequestMethod.POST })
+    @ResponseBody
+    public void toggleVendorFilter() {
+        userService.toggleVendorFilter();
+        
+    }
 
     //***** HELPER METHODS *****//
     private void populateNewBuddyUserList(List<Buddies> newBuddyList,List<User> usersList,List<LabelValue> deptDetailList, String loggedInUserSso, List<String> newBuddyArray) 

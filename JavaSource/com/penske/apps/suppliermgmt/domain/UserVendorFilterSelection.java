@@ -5,6 +5,7 @@ public class UserVendorFilterSelection {
 
     private int orgId;
     private int vendorId;
+    private boolean isActive;
     
     //MyBatis only
     protected UserVendorFilterSelection () {}
@@ -14,6 +15,9 @@ public class UserVendorFilterSelection {
     }
     public int getVendorId() {
         return vendorId;
+    }
+    public boolean getIsActive() {
+        return isActive;
     }
 
     @Override

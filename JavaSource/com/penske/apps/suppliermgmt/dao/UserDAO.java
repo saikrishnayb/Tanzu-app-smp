@@ -74,4 +74,7 @@ public interface UserDAO {
     @NonVendorQuery
     public void saveUserVendorFilterSelections(@Param("vendorIds") Collection<Integer> vendorIds, @Param("userId") int userId);
 
+    @NonVendorQuery
+	public void toggleVendorFilter(@Param("userId") Integer userId);
+
 }

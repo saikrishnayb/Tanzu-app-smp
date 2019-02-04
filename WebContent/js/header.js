@@ -77,6 +77,18 @@ $(document).ready(function() {
     });
     
   });
+  
+  $utilityList.on('click', '#vendor-filter-toggle', function() {
+    showLoading();
+    var $toggleVendorFilterPromise = $.get(getContextRoot() + "/userController/toggle-vendor-filter.htm");
+    
+    $getOrgAssociationModalContentPromise.done(function(){
+      
+    }).always(function(){
+      hideLoading();
+    })
+    
+  });
 
 });
 

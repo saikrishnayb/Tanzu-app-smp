@@ -54,6 +54,8 @@ public class CommonModelAttributesHandlerInterceptor extends HandlerInterceptorA
 			addAttributeIfAbsent(request, modelAndView, "formattedUserLoginDate", sessionBean.getFormattedUserLoginDate());
 			addAttributeIfAbsent(request, modelAndView, "hasBuddies", sessionBean.isBuddyListApplied());
 			addAttributeIfAbsent(request, modelAndView, "hasVendors", sessionBean.isVendorFilterApplied());
+			if(sessionBean.isVendorFilterApplied())
+				addAttributeIfAbsent(request, modelAndView, "hasVendorFilterActivated", sessionBean.isVendorFilterActive());
 		}
 	}
 	
