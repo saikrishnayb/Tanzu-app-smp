@@ -94,7 +94,7 @@ public abstract class MyBatisDaoTest
 		vendor.setVendorId(1);
 		associatedVendorList.add(vendor);
 		userContext.setAssociatedVendorList(associatedVendorList);
-		sessionBean.initialize(userContext, "penske.com", new Date(), false, false);
+		sessionBean.initialize(userContext, "penske.com", new Date(), false, false, false);
 	}
 	
 	protected void setVendorUser()
@@ -107,7 +107,7 @@ public abstract class MyBatisDaoTest
 		vendor.setVendorId(1);
 		associatedVendorList.add(vendor);
 		userContext.setAssociatedVendorList(associatedVendorList);
-		sessionBean.initialize(userContext, "penske.com", new Date(), false, false);
+		sessionBean.initialize(userContext, "penske.com", new Date(), false, false, false);
 	}	
 	
 	@AfterClass
