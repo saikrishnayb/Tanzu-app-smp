@@ -140,9 +140,9 @@ public class UserController extends BaseController {
     @SmcSecurity(securityFunction = SecurityFunction.VENDOR_FILTER)
     @RequestMapping(value = "/save-user-vendor-selections", method = {RequestMethod.POST })
     @ResponseBody
-    public String saveUserVendorFilters(@RequestParam("vendorIds") List<Integer> vendorIds) {
+    public boolean saveUserVendorFilters(@RequestParam("vendorIds") List<Integer> vendorIds) {
         userService.saveUserVendorFilterSelections(vendorIds);
-        return vendorIds.size()>0?"inline-block":"none";
+        return vendorIds.size() > 0;
     }
     
     @SmcSecurity(securityFunction = SecurityFunction.VENDOR_FILTER)

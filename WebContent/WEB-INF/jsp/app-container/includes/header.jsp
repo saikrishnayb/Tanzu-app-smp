@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="/WEB-INF/tld/taglib.tld" prefix="tl"%>
 
 	<div id="header">
@@ -24,13 +25,15 @@
                	</li>
       
                 <tl:isAuthorized tabName="Admin Console" secFunction="VENDOR_FILTER">
-                  <li><tl:penskeOnly>
-                      <a id ="vendor-filter-toggle" class="vendor-filter">Vendor Filter</a>
-                      <a style="display: ${hasVendors ? 'inline-block' : 'none'}"><img id="hasVendors" src="${commonStaticUrl}/images/status_green.png"
-                        style="padding-left:3px;display: ${hasVendors and hasVendorFilterActivated ? '' : 'none'}" />
-                      <img id="hasVendorsOff" src="../images/vendor-filter-off.png"
-                        style="padding-left:3px;display: ${hasVendors and !hasVendorFilterActivated ? '' : 'none'}"/></a>
-                    </tl:penskeOnly></li>
+                  <li>
+                    <tl:penskeOnly>
+                      <a class="vendor-filter">Vendor Filter</a>
+                      <span class="vendor-filter-toggle-container ${hasVendors? '' : 'hidden'} ${hasVendorFilterActivated? 'on' : 'off'}">
+                        <img class="vendor-filter-toggle vendor-filter-toggle-on" src="${commonStaticUrl}/images/status_green.png" style="padding-left:3px;" />
+                        <img class="vendor-filter-toggle vendor-filter-toggle-off" src="../images/vendor-filter-off.png" style="padding-left:3px;"/>
+                      </span>
+                    </tl:penskeOnly>
+                  </li>
                 </tl:isAuthorized>
       
               </c:if>

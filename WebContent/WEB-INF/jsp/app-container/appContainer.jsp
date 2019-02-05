@@ -6,7 +6,7 @@
 	</head>
 </head>
 <body style="margin:4px;" >
-	<%@ include file="includes/header.jspf"%>
+	<%@ include file="includes/header.jsp"%>
 	
 	<div class="overlayadmin" style="visibility:hidden;"></div>
   	<div class="processingImg" style="visibility:hidden;">

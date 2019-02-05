@@ -9,7 +9,7 @@
 	</head>
 </head>
 <body onload="hideLoading();" style="margin:4px;" >
-	<%@ include file="includes/header.jspf"%>
+	<%@ include file="includes/header.jsp"%>
 	<%@ include file="includes/navigation.jspf"%>   
 	<div id="mainContent">
 		<form:form  method="post" modelAttribute="errorModel">

@@ -78,13 +78,15 @@ $(document).ready(function() {
     
   });
   
-  $utilityList.on('click', '#vendor-filter-toggle', function() {
-    showLoading();
-    var $toggleVendorFilterPromise = $.get(getContextRoot() + "/userController/toggle-vendor-filter.htm");
+  $utilityList.on('click', '.vendor-filter-toggle', function() {
     
-    $getOrgAssociationModalContentPromise.done(function(){
-      
-    }).always(function(){
+    showLoading();
+    var $toggleVendorFilterPromise = $.post(getContextRoot() + "/userController/toggle-vendor-filter");
+    
+    $toggleVendorFilterPromise.done(function(){
+      $(".vendor-filter-toggle-container").toggleClass('on');
+      document.getElementById('mainFrame').contentWindow.location.reload(true);
+    }).error(function(){
       hideLoading();
     })
     

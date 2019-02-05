@@ -79,10 +79,15 @@ $('.btn-save-vendor-filter').on('click', function() {
 	  //commented out so that the loading spinner stays visible until page refresh
 	  //hideLoading();
     ModalUtil.closeModal($('.modal-utility'));
-    $("#hasVendors").css("display",data);
+    
+    if(data === true) 
+      $(".vendor-filter-toggle-container").removeClass('hidden');
+    else
+      $(".vendor-filter-toggle-container").addClass('hidden');
+    
     //refreshes the page, without "resend data" warning
     document.querySelector('#mainFrame').contentWindow.location.href = document.querySelector('#mainFrame').contentWindow.location.href 
-    });
+  });
 });
 
 $('.btn-clear-vendors').on('click', function() {

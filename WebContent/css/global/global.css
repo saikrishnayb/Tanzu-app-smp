@@ -50,9 +50,33 @@ i{
 	font-style: italic;
 }
 
+#utility .utility-list li > *,
+#utility .utility-list li .vendor-filter-toggle-container > * {
+  vertical-align: middle;
+}
+
+#utility .utility-list li .vendor-filter-toggle-container {
+  vertical-align: bottom;
+}
+
 #utility .settings > img{
 	height: 13px;
-	vertical-align: bottom;
+}
+#utility .vendor-filter-toggle-container {
+  cursor: pointer;
+}
+#utility .vendor-filter-toggle-container .vendor-filter-toggle-on {
+  display: none;
+}
+#utility .vendor-filter-toggle-container .vendor-filter-toggle-off {
+  display: inline-block;
+}
+
+#utility .vendor-filter-toggle-container.on .vendor-filter-toggle-on {
+  display: inline-block;
+}
+#utility .vendor-filter-toggle-container.on .vendor-filter-toggle-off {
+  display: none;
 }
 
 #title .app-name-acronym{
