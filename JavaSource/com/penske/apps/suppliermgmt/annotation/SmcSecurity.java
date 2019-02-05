@@ -44,8 +44,7 @@ public @interface SmcSecurity {
         VENDOR_FILTER,
         LOADSHEET_MANAGEMENT, 
         LOADSHEET_RULES, 
-        LOADSHEET_SEQUENCES,
-        SHIP_THRU_LEAD_TIME;
+        LOADSHEET_SEQUENCES;
 
         public static SecurityFunction findByName(String name) {
             for (SecurityFunction securityFunction : values())

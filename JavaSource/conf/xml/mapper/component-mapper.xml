@@ -152,7 +152,7 @@
   		   ON SGF.COMPONENT_ID = CID.COMPONENT_ID
   </select>	
   
-   <select id="getComponentGroup" resultType="com.penske.apps.suppliermgmt.domain.ComponentGroup">
+   <select id="getComponentGroup" resultType="com.penske.apps.adminconsole.domain.ComponentGroup">
     SELECT  COMP_GROUP_ID AS groupId,
             GROUP_NAME,
             GROUP_SEQUENCE,

@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.sql.DataSource;
@@ -89,7 +88,6 @@ public class BaseMapperConfiguration
 		List<Class<?>> mappedTypes = SpringConfigUtil.getMappedEnumTypes(
 			CoreMapperConfiguration.class
 		);
-		
 		
 		//***** GENERAL CONFIG *****//
 		sessionFactory.setTypeAliasesPackage(StringUtils.join(typeAliasPackages, ","));
