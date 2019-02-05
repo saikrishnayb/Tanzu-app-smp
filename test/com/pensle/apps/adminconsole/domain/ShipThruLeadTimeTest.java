@@ -4,8 +4,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import com.penske.apps.adminconsole.domain.ShipThruLeadTime;
 import com.penske.apps.adminconsole.enums.PoCategoryType;
+import com.penske.apps.suppliermgmt.domain.ShipThruLeadTime;
 
 public class ShipThruLeadTimeTest {
 

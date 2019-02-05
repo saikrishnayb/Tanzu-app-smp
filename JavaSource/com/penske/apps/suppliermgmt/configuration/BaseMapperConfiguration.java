@@ -33,6 +33,7 @@ import com.penske.apps.smccore.base.configuration.ProfileType;
 import com.penske.apps.smccore.base.plugins.QueryLoggingPlugin;
 import com.penske.apps.smccore.base.plugins.TimingBean;
 import com.penske.apps.smccore.base.util.SpringConfigUtil;
+import com.penske.apps.suppliermgmt.domain.TypeAliasMarker;
 import com.penske.apps.suppliermgmt.plugins.VendorQueryWrappingPlugin;
 
 /**
@@ -65,8 +66,7 @@ public class BaseMapperConfiguration
 		
 		//***** TYPE ALIASES *****//
 		Set<String> typeAliasPackages = SpringConfigUtil.getPackageNames(
-			com.penske.apps.suppliermgmt.domain.TypeAliasMarker.class,
-			com.penske.apps.adminconsole.domain.TypeAliasMarker2.class
+			TypeAliasMarker.class
 		);
 		
 		//***** GLOBAL TYPE HANDLERS *****//

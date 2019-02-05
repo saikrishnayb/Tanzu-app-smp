@@ -1,4 +1,4 @@
-package com.penske.apps.adminconsole.domain;
+package com.penske.apps.suppliermgmt.domain;
 
 
 public class ComponentGroup {

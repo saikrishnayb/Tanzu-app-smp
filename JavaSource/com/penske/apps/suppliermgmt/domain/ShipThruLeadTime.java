@@ -1,4 +1,4 @@
-package com.penske.apps.adminconsole.domain;
+package com.penske.apps.suppliermgmt.domain;
 
 import com.penske.apps.adminconsole.enums.PoCategoryType;
 

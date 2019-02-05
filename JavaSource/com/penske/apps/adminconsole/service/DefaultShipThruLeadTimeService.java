@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.penske.apps.adminconsole.dao.ShipThruLeadTimeDAO;
-import com.penske.apps.adminconsole.domain.ShipThruLeadTime;
+import com.penske.apps.suppliermgmt.domain.ShipThruLeadTime;
 
 @Service
 public class DefaultShipThruLeadTimeService implements ShipThruLeadTimeService {

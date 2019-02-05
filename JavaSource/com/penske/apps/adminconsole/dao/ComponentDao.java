@@ -4,13 +4,13 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-import com.penske.apps.adminconsole.domain.ComponentGroup;
 import com.penske.apps.adminconsole.model.Component;
 import com.penske.apps.adminconsole.model.Components;
 import com.penske.apps.adminconsole.model.LoadSheetComponentDetails;
 import com.penske.apps.adminconsole.model.Template;
 import com.penske.apps.adminconsole.model.TemplatePoAssociation;
 import com.penske.apps.smccore.base.annotation.NonVendorQuery;
+import com.penske.apps.suppliermgmt.domain.ComponentGroup;
 /**
  * 
  * @author 600144005

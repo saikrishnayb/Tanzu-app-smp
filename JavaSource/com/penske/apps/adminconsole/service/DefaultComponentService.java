@@ -8,12 +8,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.penske.apps.adminconsole.dao.ComponentDao;
-import com.penske.apps.adminconsole.domain.ComponentGroup;
 import com.penske.apps.adminconsole.model.Component;
 import com.penske.apps.adminconsole.model.Components;
 import com.penske.apps.adminconsole.model.LoadSheetComponentDetails;
 import com.penske.apps.adminconsole.model.Template;
 import com.penske.apps.adminconsole.model.TemplatePoAssociation;
+import com.penske.apps.suppliermgmt.domain.ComponentGroup;
 
 /**
  * 
