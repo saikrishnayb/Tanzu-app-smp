@@ -324,16 +324,21 @@ p.tandc-paragraph { padding-bottom: 10px; }
 }
 
 /* Icons **********************************************/
-.icon {
+.icon,
+.row-options i {
   vertical-align: middle;
   display: inline-block;
   cursor: pointer;
 }
-td .icon {
+td .icon,
+td i {
   margin-left: 3px;
 }
 .icon.icon-list::before {
   content: url("../../images/list.png");
+}
+.fa-lg {
+  font-size: 20px;
 }
 
 /** Main Page Styles ****************************************/
@@ -353,3 +358,10 @@ td .icon {
 .modal .modal-content .modal-footer {
   text-align: right;
 }
+
+.row-options > * {
+  vertical-align: middle;
+}
+
+
+

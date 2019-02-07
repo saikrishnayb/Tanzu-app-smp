@@ -33,6 +33,7 @@ import com.penske.apps.adminconsole.service.DynamicRuleService;
 import com.penske.apps.adminconsole.service.ExceptionService;
 import com.penske.apps.adminconsole.service.LoadSheetManagementService;
 import com.penske.apps.adminconsole.service.SearchTemplateService;
+import com.penske.apps.adminconsole.service.ShipThruLeadTimeService;
 import com.penske.apps.adminconsole.service.TermsAndConditionsService;
 import com.penske.apps.adminconsole.service.UploadService;
 import com.penske.apps.adminconsole.util.ApplicationConstants;
@@ -44,6 +45,7 @@ import com.penske.apps.suppliermgmt.annotation.SmcSecurity.SecurityFunction;
 import com.penske.apps.suppliermgmt.annotation.TransporterUploadService;
 import com.penske.apps.suppliermgmt.annotation.VendorUploadService;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
+import com.penske.apps.suppliermgmt.domain.ShipThruLeadTime;
 import com.penske.apps.suppliermgmt.model.AppConfigSessionData;
 import com.penske.apps.suppliermgmt.model.AppConfigSessionData.LoadSheetCategoryDetails;
 import com.penske.apps.suppliermgmt.model.UserContext;
@@ -76,6 +78,8 @@ public class AppConfigController {
     private UploadService<VendorReport> objVendorService;
     @Autowired
     private LoadSheetManagementService loadsheetManagementService;
+    @Autowired
+    private ShipThruLeadTimeService shipThruLeadTimeService;
     @Autowired
     private SuppliermgmtSessionBean sessionBean;
 
@@ -563,6 +567,18 @@ public class AppConfigController {
         return new ModelAndView("redirect:/app/admin-console/app-config/open-edit-sequence.htm?seqMasterId="+seqMaster.getId()+"&action="+seqMaster.getPageAction()+
                 "&category="+category+"&type="+type+"&viewMode="+viewMode);
     }
-
+    
+    
+    @SmcSecurity(securityFunction = {SecurityFunction.SHIP_THRU_LEAD_TIME})
+    @RequestMapping("/ship-thru-lead-time")
+    public ModelAndView getShipThruLeadTimePage(){
+        
+        List<ShipThruLeadTime> shipThruLeadTimes = shipThruLeadTimeService.getShipThruLeadTimes();
+        
+        ModelAndView modelAndView = new ModelAndView("/admin-console/app-config/ship-thru-lead-time");
+        modelAndView.addObject("shipThruLeadTimes", shipThruLeadTimes);
+        
+        return modelAndView;
+    }
 
 }

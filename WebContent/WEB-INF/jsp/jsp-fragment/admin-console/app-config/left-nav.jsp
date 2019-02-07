@@ -33,5 +33,9 @@
 	<tl:isAuthorized tabName="Admin Console" secFunction="UPLOAD_EXCEL">
 		<div class="leftNavGroup"><a href="${baseAppUrl}/admin-console/app-config/excelUploads.htm" id="left-nav-excel-uploads" onclick="javascript:loadProcessImage();">Excel Uploads</a></div>
 	</tl:isAuthorized>	
+  
+  <tl:isAuthorized tabName="Admin Console" secFunction="SHIP_THRU_LEAD_TIME">
+    <div class="leftNavGroup"><a href="${baseAppUrl}/admin-console/app-config/ship-thru-lead-time" id="left-nav-ship-thru-lead-time" onclick="javascript:loadProcessImage();">Lead Time Management</a></div>
+  </tl:isAuthorized>  
 	
 </div>
