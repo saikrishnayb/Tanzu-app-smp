@@ -29,11 +29,11 @@
               <thead>
                 <tr>
                   <th></th>
-                  <th>Po Category</th>
+                  <th>PO Category</th>
                   <th>OEM</th>
                   <th>Model</th>
-                  <th>Ship Thru UpFitter</th>
-                  <th>Destination Satet</th>
+                  <th>Ship Thru Upfitter</th>
+                  <th>Destination State</th>
                   <th>Lead Days</th>
                 </tr>
               </thead>
