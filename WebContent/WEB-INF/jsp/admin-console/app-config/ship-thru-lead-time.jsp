@@ -34,7 +34,7 @@
                   <th>Model</th>
                   <th>Ship Thru Upfitter</th>
                   <th>Destination State</th>
-                  <th>Lead Days</th>
+                  <th>Days</th>
                 </tr>
               </thead>
               <tbody>
