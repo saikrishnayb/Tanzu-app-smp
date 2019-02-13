@@ -4,7 +4,7 @@
 <script src="${baseUrl}/js/overlay/globaloverlay.js" type="text/javascript"></script>
 <nav>
 	
-	<ul style="margin-top:4px">
+	<ul>
 		<li style ="display: table-cell;">
 			<ul>
 			

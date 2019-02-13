@@ -1,3 +1,7 @@
+body {
+  height: calc(100% - 4px); /*IDK what this is for but it is needed for 100 rows */
+}
+
 .clear-right {
 	clear:right;
 	padding-top: 10px;
@@ -67,8 +71,7 @@
 }
 
 #mainContent{
-	min-width:1020px;
-	float:left;
+	min-width: 1020px;
 }
 
 .location-label {

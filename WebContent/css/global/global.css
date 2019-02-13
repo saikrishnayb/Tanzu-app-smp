@@ -1,3 +1,6 @@
+body {
+  margin: 0 !important;
+}
 /** Header **************************************************/
 #title h1.qa:after{
     content: " (QA)";
@@ -113,8 +116,15 @@ i{
   margin-top: 0px;
 }
 /** Penske Common Overwrites *********************************/
+html {
+  height: 100%;
+}
+body {
+  height: 100%;
+}
 #mainContent{
 	display: inline-block;
+	min-height: 100%;
 }
 #utility .user, #title {
 	width: auto;

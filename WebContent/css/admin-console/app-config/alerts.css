@@ -1,3 +1,7 @@
+body {
+  overflow-y: hidden;
+}
+
 .modal label {
 	margin-bottom: 15px;
 }

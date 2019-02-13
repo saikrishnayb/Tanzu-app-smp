@@ -1,3 +1,7 @@
+body {
+  height: calc(100% - 4px); /*IDK what this is for but it is needed for 100 rows */
+}
+
 .add-association label{
 	width:140px;
 	display:inline-block;	

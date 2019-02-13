@@ -12,15 +12,15 @@ $(document).ready(function() {
 				"aaSorting": [[ 2, "asc" ]], 	//default sort column
 				"bPaginate": true, 				//enable pagination
 				"bStateSave": true,
-				"bLengthChange": false, 		//enable change of records per page, not recommended
-				"bFilter": false, 				//Allows dynamic filtering of results, do not enable if using ajax for pagination
+				"bLengthChange": true, 		//enable change of records per page, not recommended
+				"bFilter": true, 				//Allows dynamic filtering of results, do not enable if using ajax for pagination
 				"bSort": false, 				//Allow sorting by column header
 				"bInfo": true, 					//Showing 1 to 10 of 11 entries
 				"bAutoWidth": false,
 				"aoColumnDefs": [{"bSortable": false, "aTargets": [ 0 ]},
 				                 {"sWidth": "50px", "aTargets": [ 0 ]}],
 				"sPaginationType": "full_numbers", //Shows first/previous 1,2,3,4 next/last buttons
-				"iDisplayLength": iDisplayLength , 			//number of records per page for pagination
+				"iDisplayLength": 100 , 			//number of records per page for pagination
 				"oLanguage": {"sEmptyTable": "No alerts or alert headers were found."}, //Message displayed when no records are found
 				"fnDrawCallback": function() { 	//This will hide the pagination menu if we only have 1 page.
 											var paginateRow = $(this).parent().children('div.dataTables_paginate');
@@ -41,6 +41,9 @@ $(document).ready(function() {
 											else{
 												infoRow.css("display", "none");
 											}
+											
+										  if(window.parent.resizeAfterPaginationChange)
+                        window.parent.resizeAfterPaginationChange();
 										}
 	});
 	

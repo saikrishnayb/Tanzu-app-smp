@@ -39,6 +39,10 @@ $(document).ready(function() {
 		$("#linkTAB_PROD").removeClass("selected-tab");
 	}
 	
+  
+  if(window.parent.resizeAfterPaginationChange)
+    window.parent.resizeAfterPaginationChange();
+	
 });
 
 function initializePage() {

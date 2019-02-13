@@ -12,7 +12,7 @@
 	<body>
 		<%@ include file="../../../jsp/jsp-fragment/global/header.jsp" %>
 		
-		<div id="mainContent" class="borderTop floatLeft">
+		<div id="mainContent" class="borderTop">
 			<%@ include file="../../../jsp/jsp-fragment/admin-console/security/left-nav.jsp" %>
 			
 			<div class="leftNavAdjacentContainer">

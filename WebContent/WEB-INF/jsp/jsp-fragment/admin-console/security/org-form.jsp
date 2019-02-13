@@ -33,7 +33,7 @@
 		</div>
 	</form>
 </div>
-<fieldset id="user-fieldset" class="user-fieldset user-fieldset-height">
+<fieldset id="user-fieldset" class="user-fieldset-height">
 				<div class="org-form-container">
 						<form id="org-form"   method="POST" 	<c:if test="${isCreatePage eq true}"> action="${baseAppUrl}/admin-console/security/create-org.htm" </c:if>
 						<c:if test="${isCreatePage eq false}"> action="${baseAppUrl}/admin-console/security/update-org.htm" </c:if>> 

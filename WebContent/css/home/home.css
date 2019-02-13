@@ -75,14 +75,6 @@ To set compliance flag column width
 	border: 2px solid #fff;
 }
 
-
-/*for increasing the min-height
-	overriding common.css style
-*/
-#mainContent {
-	min-height:692px;
-}
-
 /***************************
 To set alert table position 
 */

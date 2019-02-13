@@ -16,7 +16,7 @@
 	<div>
 		<%@ include file="includes/navigation.jspf"%>
 	</div> 
-	<div style="position:relative;top:-4px;">
+	<div style="position:relative;">
 		<iframe id="mainFrame" src="" style='width: 100%; height: 700px;'  id="iframe" onload="resizeIframe(this);"   >Frames Are Not Supported In Your Browser.</iframe>
 	</div>
 	<%@ include file="includes/footer.jspf"%>

@@ -1,3 +1,6 @@
+body {
+  height: calc(100% - 4px); /*IDK what this is for but it is needed for 100 rows */
+}
 .leftNav {
   width: 180px;
 }
