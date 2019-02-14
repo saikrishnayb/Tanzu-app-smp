@@ -7,7 +7,8 @@
 		</script>
 
 	</span>
-	<a href="#" style="font-size: 11px;" onclick="showTermsAndCondition();return false;">Terms and Conditions</a>
+  
+	<a style="font-size: 11px; float: left;" onclick="showTermsAndCondition();return false;">Terms and Conditions</a>
 
 	<ul id="rightFooter" class="utility-list">
 		<li>Questions? Call ${supportNum}</li>
