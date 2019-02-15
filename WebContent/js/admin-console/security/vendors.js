@@ -279,6 +279,10 @@ function toggleContent(contentId,spanId){
 	   $('#advanced-search-form').find('[name="vendorName"]').focus();
 	   $("#" + spanId).text('Hide Search Criteria');
 	}
+	
+	if(window.parent.resizeAfterPaginationChange)
+    window.parent.resizeAfterPaginationChange();
+	
 }
 
 function submitAdvancedSearch() {

@@ -168,6 +168,10 @@ function toggleContent(contentId,spanId){
 	   $('#advanced-search-form').find('[name="roleName"]').focus();
 	   $("#" + spanId).text('Hide Search Criteria');
 	}
+	
+	if(window.parent.resizeAfterPaginationChange)
+    window.parent.resizeAfterPaginationChange();
+	
 }
 
 function sortBaseRoles($dropdown) {

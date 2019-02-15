@@ -216,6 +216,10 @@ function toggleContent(contentId,spanId){
 	   $("#" + contentId).removeClass("displayNone").addClass("displayBlock");
 	   $("#" + spanId).text('Hide Search Criteria');
 	}
+	
+	if(window.parent.resizeAfterPaginationChange)
+    window.parent.resizeAfterPaginationChange();
+	
 }
 
 function validateSearchForm($searchForm){
