@@ -183,7 +183,8 @@
 							FROM     SMC.SMC_ORG_MASTER START WITH ORG_ID =#{currOrgId} 
 						    CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID	)
 				<if test="roleName != null">
-				AND r.roleName = #{roleName}
+				  <bind name="pattern" value="'%' + roleName + '%'" />
+				  AND LOWER(r.roleName) like LOWER(#{pattern})
 				</if>
 				<choose>
 					<when test="baseRoleId == -1">
