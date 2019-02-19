@@ -1,5 +1,8 @@
 package com.penske.apps.adminconsole.model;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.apache.commons.lang3.StringUtils;
 
 public class User {
@@ -35,6 +38,7 @@ public class User {
 	private String supportNumber;
 	private String org;
 	private boolean dailyOptIn;
+	private Date lastLoginDate;
 
 	public String getOrg() {
 		return org;
@@ -495,5 +499,19 @@ public class User {
 	public String getDailyOptInChar() {
 		return this.dailyOptIn ? "Y" : "N";
 	}		
+	
+	public Date getLastLoginDate() {
+		return lastLoginDate;
+	}
+	
+	public void setLastLoginDate(Date lastLoginDate) {
+		this.lastLoginDate = lastLoginDate;
+	}
+	
+	public String getFormattedLastLoginDate() {
+		SimpleDateFormat dt = new SimpleDateFormat("MM/dd/yyyy hh:mm a"); 
+		String formattedLastLoginDate = dt.format(lastLoginDate);
+		return formattedLastLoginDate;
+	}
 	
 }

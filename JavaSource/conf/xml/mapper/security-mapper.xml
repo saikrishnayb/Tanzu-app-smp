@@ -18,23 +18,30 @@
 	 </resultMap>
 	
  	<select id="getUserSearchList" resultType="com.penske.apps.adminconsole.model.User">
- 		SELECT 	USER_ID AS userId,
- 				SSO AS userName,
-				EMAIL AS email,
-				FIRST_NAME AS firstName,
-				LAST_NAME AS lastName,
-				PHONE AS phone,
-				EXTENSION AS extension,
-				SSO as ssoId,
+ 		With L as (Select SSO, MAX(LOGIN_TIME) as LAST_LOGIN
+               FROM SMC.SMC_USER_LOGIN
+               GROUP BY SSO)
+ 		SELECT 	U.USER_ID AS userId,
+ 				U.SSO AS userName,
+				U.EMAIL AS email,
+				U.FIRST_NAME AS firstName,
+				U.LAST_NAME AS lastName,
+				U.PHONE AS phone,
+				U.EXTENSION AS extension,
+				U.SSO as ssoId,
 				U.STATUS AS status,
 				T.USER_TYPE AS "userType.userType",
 				U.ROLE_ID AS "role.roleId",
-				ROLE_NAME AS "role.roleName"
-		FROM	SMC.SMC_USER_MASTER U, 
-				SMC.smc_user_roles R, 
-				SMC.SMC_USER_TYPES T
-		WHERE 	U.ROLE_ID = R.ROLE_ID AND 
-				U.TYPE_ID = T.TYPE_ID AND
+				R.ROLE_NAME AS "role.roleName",
+				L.LAST_LOGIN AS lastLoginDate
+	  FROM SMC.SMC_USER_MASTER U
+    LEFT JOIN  L
+    ON U.SSO = L.SSO
+    JOIN SMC.smc_user_roles R
+    ON U.ROLE_ID = R.ROLE_ID
+    JOIN SMC.SMC_USER_TYPES T
+    ON U.TYPE_ID = T.TYPE_ID
+		WHERE
 				<if test="email != ''">
 					UPPER(U.EMAIL) LIKE #{email} AND
 				</if>
@@ -56,6 +63,7 @@
 					SELECT ORG_ID FROM  SMC.SMC_ORG_MASTER
 	 					START WITH ORG_ID = #{orgId} 	CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID
 				)
+				
  	</select>
  	
  	<select id="getUser" resultType="com.penske.apps.adminconsole.model.User">  
@@ -582,26 +590,34 @@
 	<!--  Vendor  User Change  - 03/02/16-->
 	
 	<select id="getVendorUserList" resultType="com.penske.apps.adminconsole.model.User">
- 		SELECT 	USER_ID AS userId,
- 				SSO AS userName,
-				EMAIL AS email,
-				FIRST_NAME AS firstName,
-				LAST_NAME AS lastName,
-				PHONE AS phone,
-				EXTENSION AS extension,
-				SSO as ssoId,
+ 		With L as (Select SSO, MAX(LOGIN_TIME) as LAST_LOGIN
+               FROM SMC.SMC_USER_LOGIN
+               GROUP BY SSO)
+ 		SELECT 	U.USER_ID AS userId,
+ 				U.SSO AS userName,
+				U.EMAIL AS email,
+				U.FIRST_NAME AS firstName,
+				U.LAST_NAME AS lastName,
+				U.PHONE AS phone,
+				U.EXTENSION AS extension,
+				U.SSO as ssoId,
 				U.STATUS AS status,
 				T.USER_TYPE AS "userType.userType",
 				U.ROLE_ID AS "role.roleId",
-				ROLE_NAME AS "role.roleName",
-				O.NAME as "org"
-		FROM	SMC.SMC_USER_MASTER U, 
-				SMC.smc_user_roles R, 
-				SMC.SMC_USER_TYPES T,
-				SMC.SMC_ORG_MASTER O
-		WHERE 	U.ROLE_ID = R.ROLE_ID AND 
-				U.TYPE_ID = T.TYPE_ID AND
-				U.ORG_ID = O.ORG_ID AND
+				R.ROLE_NAME AS "role.roleName",
+				O.NAME as "org",
+				L.LAST_LOGIN AS lastLoginDate
+				
+		FROM SMC.SMC_USER_MASTER U
+    LEFT JOIN  L
+    ON U.SSO = L.SSO
+    JOIN SMC.smc_user_roles R
+    ON U.ROLE_ID = R.ROLE_ID
+    JOIN SMC.SMC_USER_TYPES T
+    ON U.TYPE_ID = T.TYPE_ID
+		JOIN SMC.SMC_ORG_MASTER O
+		ON U.ORG_ID = O.ORG_ID		
+		WHERE
 				T.USER_TYPE ='VENDOR' AND
 				U.STATUS = 'A' AND
 				R.STATUS = 'A'

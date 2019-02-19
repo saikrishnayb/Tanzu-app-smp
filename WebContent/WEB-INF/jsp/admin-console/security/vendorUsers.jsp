@@ -90,6 +90,7 @@
 							<th>Type</th>
 							<th>Role</th>
 							<th>Org</th>
+							<th class="lastLogin">Last Login</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -111,6 +112,14 @@
 							<td class="user-type">${user.userType.userType}</td>
 							<td>${user.role.roleName} <input class="role-id" type=hidden value="${user.role.roleId}"/></td>
 							<td>${user.org}</td>
+							<c:choose>
+                <c:when test= "${user.lastLoginDate eq null}">
+                  <td>(Never)</td>
+                </c:when>
+                <c:otherwise>
+                  <td>${user.getFormattedLastLoginDate()}</td>
+                </c:otherwise>
+              </c:choose>
 						</tr>
 						</c:forEach>
 					</tbody>
