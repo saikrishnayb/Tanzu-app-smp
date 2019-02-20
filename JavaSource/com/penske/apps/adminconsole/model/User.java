@@ -1,9 +1,10 @@
 package com.penske.apps.adminconsole.model;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
+
+import com.penske.apps.smccore.base.util.DateUtil;
 
 public class User {
 	private int userId;
@@ -509,8 +510,7 @@ public class User {
 	}
 	
 	public String getFormattedLastLoginDate() {
-		SimpleDateFormat dt = new SimpleDateFormat("MM/dd/yyyy hh:mm a"); 
-		String formattedLastLoginDate = dt.format(lastLoginDate);
+		String formattedLastLoginDate = DateUtil.formatDateTimeUS(lastLoginDate);
 		return formattedLastLoginDate;
 	}
 	
