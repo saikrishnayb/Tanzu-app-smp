@@ -121,6 +121,7 @@ $(document).ready(function() {
 		$advancedForm.find('select[name="baseRoleId"]').val('');
 		$advancedForm.find('input[name="statusCheck"]').attr('checked', false);
 		$advancedForm.find('input[name="status"]').val('0');
+		$searchButtonsContainer.find('.search').trigger('click');
 	});
 	
 	/* ------------ Table Controls ------------ */
