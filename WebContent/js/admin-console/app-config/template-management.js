@@ -11,7 +11,8 @@ $(document).ready(function() {
 				"bFilter": false, //Allows dynamic filtering of results, do not enable if using ajax for pagination
 				"bSort": false, //Allow sorting by column header
 				"bInfo": true, //Showing 1 to 10 of 11 entries
-				"aoColumnDefs": [{"bSortable": false, "aTargets": [ 0 ]}],
+				"aoColumnDefs": [{"bSortable": false, "aTargets": [ 0 ]},
+				                {"bSearchable": false, "aTargets": [0]}],
 				"sPaginationType": "full_numbers", //Shows first/previous 1,2,3,4 next/last buttons
 				"iDisplayLength": 10 , //number of records per page for pagination
 				"oLanguage": {"sEmptyTable": "&nbsp;"}, //Message displayed when no records are found

@@ -24,7 +24,8 @@ $(document).ready(function() {
         "bInfo": true, //Showing 1 to 10 of 11 entries
         "aoColumnDefs": [
                          {"bSortable": false, "aTargets": [ 0 ]}, //stops first column from being sortable
-		                 { "sWidth": "100px", "aTargets": [ 0 ] }
+		                 { "sWidth": "100px", "aTargets": [ 0 ] },
+		                 
                          ],
         "sPaginationType": "full_numbers", //Shows first/previous 1,2,3,4 next/last buttons
         "iDisplayLength": iDisplayLength , //number of records per page for pagination
@@ -60,7 +61,8 @@ $(document).ready(function() {
         "bInfo": true, //Showing 1 to 10 of 11 entries
         "aoColumnDefs": [
                          {"bSortable": false, "aTargets": [ 0 ]}, //stops first column from being sortable
-		                 { "sWidth": "100px", "aTargets": [ 0 ] }
+		                 { "sWidth": "100px", "aTargets": [ 0 ] },
+		                 {"bSearchable": false, "aTargets": [0]}
                          ],
         "sPaginationType": "full_numbers", //Shows first/previous 1,2,3,4 next/last buttons
         "iDisplayLength": iDisplayLength , //number of records per page for pagination

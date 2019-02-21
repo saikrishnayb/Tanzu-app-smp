@@ -58,7 +58,8 @@ $(document).ready(function() {
 		"aoColumnDefs": [
 		                 {"bSortable": false, "aTargets": [ 0 ]}, //stops first column from being sortable
 		                 { "sWidth": "100px", "aTargets": [ 0 ] },
-		                 { "sType": "date", "aTargets": [ "lastLogin" ] }
+		                 { "sType": "date", "aTargets": [ "lastLogin" ] },
+						 {"bSearchable": false, "aTargets": [0]}
 		                 ],
 		"sPaginationType": "full_numbers", //Shows first/previous 1,2,3,4 next/last buttons
 		"iDisplayLength": 100 , //number of records per page for pagination

@@ -218,7 +218,8 @@ function initDataTable($exceptionTable){
 		"bFilter": true, //Allows dynamic filtering of results, do not enable if using ajax for pagination
 		"bSort": true, //Allow sorting by column header
 		"bInfo": false, //Showing 1 to 10 of 11 entries
-		"aoColumnDefs": [{"bSortable": false, "aTargets": [ 0,1,2,3 ]}],
+		"aoColumnDefs": [{"bSortable": false, "aTargets": [ 0,1,2,3 ]},
+		                  { "bSearchable": false, "aTargets": [0]}],
 		"oLanguage": {"sEmptyTable": "No matching records found"}, //Message displayed when no records are found
 		"fnDrawCallback": function() { 
 			//This change would allow the data table 

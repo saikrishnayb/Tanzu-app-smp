@@ -41,7 +41,8 @@ function initializeRuleTable($loadsheetRuleTable){
 		"bLengthChange"		: true, //enable change of records per page, not recommended
 		"bFilter"			: true, //Allows dynamic filtering of results, do not enable if using ajax for pagination
 		"bSort"				: true, //Allow sorting by column header
-		"aoColumnDefs"		: [{ 'bSortable': false, 'aTargets': [0] } ],//disable sorting for specific column indexes
+		"aoColumnDefs"		: [{ 'bSortable': false, 'aTargets': [0] }, 
+		                    {"bSearchable": false, "aTargets": [0]} ],//disable sorting for specific column indexes
 		"bInfo"				: true, //Showing 1 to 10 of 11 entries
 		"sPaginationType"	: "full_numbers", //Shows first/previous 1,2,3,4 next/last buttons
 		"iDisplayLength"	: -1 , //number of records per page for pagination

@@ -7,7 +7,8 @@ $(document).ready(function() {
 	$('#templateTable').dataTable({ //All of the below are optional
 		"aoColumnDefs": [
 		                 { 'sWidth':"100px", "aTargets":[0]},
-		                 { 'bSortable': false, 'aTargets':[0]}
+		                 { 'bSortable': false, 'aTargets':[0]},
+		                 { "bSearchable": false, "aTargets": [0]}
 		                ],
 		"bAutoWidth": false,
 		"aaSorting": [[ 1, "desc" ]], //default sort column

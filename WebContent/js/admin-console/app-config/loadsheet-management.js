@@ -22,7 +22,8 @@ function initializeloadSheetTable($loadsheetTable){
 		"aaSorting"			: [[ 1, "asc" ]], //default sort column
 		"bPaginate"			: true, //enable pagination
 		"bStateSave"		: true,	//To retrieve the data on click of back button
-		"aoColumnDefs"		: [{ 'bSortable': false, 'aTargets': [0] } ],//disable sorting for specific column indexes
+		"aoColumnDefs"		: [{ 'bSortable': false, 'aTargets': [0] },
+		                      {"bSearchable": false, "aTargets": [0]}],//disable sorting for specific column indexes
 		"bLengthChange"		: true, //enable change of records per page, not recommended
 		"bFilter"			: true, //Allows dynamic filtering of results, do not enable if using ajax for pagination
 		"bSort"				: true, //Allow sorting by column header
