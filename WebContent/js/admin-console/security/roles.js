@@ -22,7 +22,8 @@ $(document).ready(function() {
 				"bInfo": true, 					//Showing 1 to 10 of 11 entries
 				"bAutoWidth": false,
 				"aoColumnDefs": [{"bSortable": false, "aTargets": [ 0 ]},
-				                 {"sWidth": "70px", "aTargets": [ 0 ]}],
+				                 {"sWidth": "70px", "aTargets": [ 0 ]},
+				                 {"bSearchable": false, "aTargets": [0]}],
 				"sPaginationType": "full_numbers", //Shows first/previous 1,2,3,4 next/last buttons
 				"iDisplayLength": 100 , 			//number of records per page for pagination
 				"oLanguage": {"sEmptyTable": "No roles were found."}, //Message displayed when no records are found
