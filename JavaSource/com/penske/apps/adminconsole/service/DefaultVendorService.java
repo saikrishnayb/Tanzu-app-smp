@@ -1,6 +1,7 @@
 package com.penske.apps.adminconsole.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -24,7 +25,8 @@ public class DefaultVendorService implements VendorService {
 	
 	@Override
 	public List<Vendor> getAllVendors(int orgId) {
-		return vendorDao.getAllVendors(orgId);
+	    List<Vendor> allVendors = vendorDao.getAllVendors(orgId);
+		return allVendors;
 	}
 
 	@Override

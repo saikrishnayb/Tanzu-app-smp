@@ -1,4 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <form id="edit-vendor-form">
 	<input name="vendorId" type="hidden" value="${vendor.vendorId}" />
@@ -8,7 +9,15 @@
 		<span class="floatLeft" id="corpCode">${vendor.corpCode}</span>
 		
 		<label class="floatLeft width-125">MFR Code:</label>
-		<span class="floatLeft" id="manufacturerCode">${vendor.manufacturerCode}</span>
+		<span class="floatLeft" id="manufacturerCode">
+      <c:forEach items="${vendor.mfrCodes}" var="mfrCode" varStatus="loopTagStatus">
+                  ${mfrCode} 
+                  
+                  <c:if test="${fn:length(vendor.mfrCodes) != loopTagStatus.count}">
+                    <br>
+                  </c:if>
+                </c:forEach>
+               </span>
 	</div>
 	
 	<div class="column secondColumn floatLeft width-250">

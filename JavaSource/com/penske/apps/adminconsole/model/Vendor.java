@@ -1,5 +1,9 @@
 package com.penske.apps.adminconsole.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 
 public class Vendor {
 
@@ -11,7 +15,8 @@ public class Vendor {
 	private String annualAgreement;				// annual agreement [1 = yes, 0 = no]
 	private User planningAnalyst;				// the user designated as the planning analyst
 	private User supplySpecialist;				// the user designated as the supply specialist
-	private String manufacturerCode;			// the manufacturer code
+	private String searchMfrCode;
+	private List<String> mfrCodes;			// the manufacturer code
 	private String companyName;					// the company name (related to the corp code)
 
 	/* Vendor Contacts */
@@ -75,9 +80,6 @@ public class Vendor {
 		return supplySpecialist;
 	}
 
-	public String getManufacturerCode() {
-		return manufacturerCode;
-	}
 
 	public String getCompanyName() {
 		return companyName;
@@ -158,6 +160,9 @@ public class Vendor {
 	public String getShippingZipCode() {
 		return shippingZipCode;
 	}
+    public String getNotificationException() {
+        return notificationException;
+    }
 
 	// Setters
 	public void setVendorId(int vendorId) {
@@ -176,11 +181,6 @@ public class Vendor {
 		this.corpCode = corpCode;
 	}
 
-	
-	public String getNotificationException() {
-		return notificationException;
-	}
-
 	public void setNotificationException(String notificationException) {
 		this.notificationException = notificationException;
 	}
@@ -193,9 +193,6 @@ public class Vendor {
 		this.supplySpecialist = supplySpecialist;
 	}
 
-	public void setManufacturerCode(String manufacturerCode) {
-		this.manufacturerCode = manufacturerCode;
-	}
 
 	public void setCompanyName(String companyName) {
 		this.companyName = companyName;
@@ -252,8 +249,38 @@ public class Vendor {
 	public void setMailingState(String mailingState) {
 		this.mailingState = mailingState;
 	}
+	
+    public List<String> getMfrCodes() {
+        return mfrCodes;
+    }
+    
+    public String getFirstMfrCodes() {
+        return mfrCodes == null? "" : mfrCodes.get(0);
+    }
+    
+    //***** MODIFIED ACCESSORS *****//
+    /**
+     * Package-private setter - MyBatis only.
+     * Business logic should not call this method.
+     * This is because the result set from the query contains dependent components as a
+     *  comma-separated string, but we need to split it here into separate mfr codes.
+     */
+    void setMfrCodes(String commaSeperatedMfrCodes) {
+        
+        ArrayList<String> mfrCodes = new ArrayList<String>();
+        
+        String[] parts = StringUtils.split(commaSeperatedMfrCodes, ",");
+        
+        for(String part : parts) {
+            boolean noneBlank = StringUtils.isNoneBlank(part);
+            if(noneBlank) mfrCodes.add(part);
+        }
+        
+        this.mfrCodes = mfrCodes;
+        
+    }
 
-	public void setMailingZipCode(String mailingZipCode) {
+    public void setMailingZipCode(String mailingZipCode) {
 		this.mailingZipCode = mailingZipCode;
 	}
 
@@ -278,26 +305,19 @@ public class Vendor {
 	}
 
 	@Override
-	public String toString() {
-		return "Vendor [vendorId=" + vendorId + ", vendorName=" + vendorName
-				+ ", vendorNumber=" + vendorNumber + ", corpCode=" + corpCode
-				+ ", notificationException=" + notificationException
-				+ ", annualAgreement=" + annualAgreement + ", planningAnalyst="
-				+ planningAnalyst + ", supplySpecialist=" + supplySpecialist
-				+ ", manufacturerCode=" + manufacturerCode + ", companyName="
-				+ companyName + ", primaryContact=" + primaryContact
-				+ ", secondaryContact=" + secondaryContact + ", vendorAddress="
-				+ vendorAddress + ", attention=" + attention + ", city=" + city
-				+ ", state=" + state + ", zipCode=" + zipCode
-				+ ", paymentTerms=" + paymentTerms + ", orderName=" + orderName
-				+ ", mailingAddress1=" + mailingAddress1 + ", mailingAddress2="
-				+ mailingAddress2 + ", mailingCity=" + mailingCity
-				+ ", mailingState=" + mailingState + ", mailingZipCode="
-				+ mailingZipCode + ", shippingAddress1=" + shippingAddress1
-				+ ", shippingAddress2=" + shippingAddress2 + ", shippingCity="
-				+ shippingCity + ", shippingState=" + shippingState
-				+ ", shippingZipCode=" + shippingZipCode + "]";
-	}
+    public String toString() {
+        return "Vendor [vendorId=" + vendorId + ", vendorName=" + vendorName + ", vendorNumber=" + vendorNumber
+               + ", corpCode=" + corpCode + ", notificationException=" + notificationException + ", annualAgreement="
+               + annualAgreement + ", planningAnalyst=" + planningAnalyst + ", supplySpecialist=" + supplySpecialist
+               + ", mfrCodes=" + mfrCodes + ", companyName=" + companyName + ", primaryContact=" + primaryContact
+               + ", secondaryContact=" + secondaryContact + ", vendorAddress=" + vendorAddress + ", attention="
+               + attention + ", city=" + city + ", state=" + state + ", zipCode=" + zipCode + ", paymentTerms="
+               + paymentTerms + ", orderName=" + orderName + ", mailingAddress1=" + mailingAddress1
+               + ", mailingAddress2=" + mailingAddress2 + ", mailingCity=" + mailingCity + ", mailingState="
+               + mailingState + ", mailingZipCode=" + mailingZipCode + ", shippingAddress1=" + shippingAddress1
+               + ", shippingAddress2=" + shippingAddress2 + ", shippingCity=" + shippingCity + ", shippingState="
+               + shippingState + ", shippingZipCode=" + shippingZipCode + ", alertType=" + alertType + "]";
+    }
 
 	public String getAlertType() {
 		return alertType;
@@ -306,4 +326,12 @@ public class Vendor {
 	public void setAlertType(String alertType) {
 		this.alertType = alertType;
 	}
+
+    public String getSearchMfrCode() {
+        return searchMfrCode;
+    }
+
+    public void setSearchMfrCode(String searchMfrCode) {
+        this.searchMfrCode = searchMfrCode;
+    }
 }

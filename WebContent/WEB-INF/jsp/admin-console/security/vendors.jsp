@@ -1,3 +1,4 @@
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html>
 	<head> 
@@ -39,7 +40,7 @@
 								<input class="floatLeft" name="corpCode" tabindex=5 type="text" value="<c:out value="${searchedVendor.corpCode}"/>" autocomplete="off" maxlength="4" />
 								
 								<label class="floatLeft clear-left leftLbl">MFR Code</label>
-								<input class="floatLeft" tabindex=8 name="manufacturerCode" type="text" value="<c:out value="${searchedVendor.manufacturerCode}"/>" autocomplete="off" maxlength="4" />
+								<input class="floatLeft" tabindex=8 name="searchMfrCode" type="text" value="<c:out value="${searchedVendor.searchMfrCode}"/>" autocomplete="off" maxlength="4" />
 								<c:if test="${isPenskeUser}">
 									<label class="floatLeft clear-left leftLbl" >Alerts</label>
 									<select class="floatLeft" tabindex=9 name="alertType">
@@ -124,7 +125,15 @@
 							<td class="corp-code">${vendor.corpCode}</td>
 							<td class="vendor-name">${vendor.vendorName}</td>
 							<td class="vendor-number">${vendor.vendorNumber}</td>
-							<td class="mfr-code">${vendor.manufacturerCode}</td>
+							<td class="mfr-code">
+                <c:forEach items="${vendor.mfrCodes}" var="mfrCode" varStatus="loopTagStatus">
+                  ${mfrCode} 
+                  
+                  <c:if test="${fn:length(vendor.mfrCodes) != loopTagStatus.count}">
+                    <br>
+                  </c:if>
+                </c:forEach>
+              </td>
 							<td class="annual-agreement">
 								<c:if test="${vendor.annualAgreement eq 'Y'}">Yes</c:if>
 								<c:if test="${vendor.annualAgreement eq 'N'}">No</c:if>

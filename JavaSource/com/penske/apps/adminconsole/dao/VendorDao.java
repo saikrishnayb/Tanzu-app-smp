@@ -1,7 +1,9 @@
 package com.penske.apps.adminconsole.dao;
 
 import java.util.List;
+import java.util.Map;
 
+import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Param;
 
 import com.penske.apps.adminconsole.model.Alert;
@@ -13,9 +15,8 @@ import com.penske.apps.smccore.base.annotation.NonVendorQuery;
 
 public interface VendorDao {
     public List<Vendor> getAllVendors(@Param("orgId")int orgId);
-
     public List<Vendor> getVendorsBySearchConditions(@Param("orgId")int orgId,@Param("vendor") Vendor vendor);
-
+    
     @NonVendorQuery
     public List<User> getAllPlanningAnalysts();
 
