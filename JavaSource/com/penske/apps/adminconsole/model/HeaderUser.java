@@ -1,5 +1,6 @@
 package com.penske.apps.adminconsole.model;
 
+import java.util.List;
 
 /**
  * This class is the model object for the user of the application to store the header information.
@@ -24,6 +25,7 @@ public class HeaderUser {
 	private String orgName;
 	private Integer parentOrgId;
 	private boolean vendorSearch=false;
+	private List<Integer> orgIds;
 	
 	public String getSsoId() {
 		return ssoId;
@@ -154,6 +156,12 @@ public class HeaderUser {
 
 	public void setVendorSearch(boolean vendorSearch) {
 		this.vendorSearch = vendorSearch;
+	}
+	public List<Integer> getOrgIds() {
+		return orgIds;
+	}
+	public void setOrgIds(List<Integer> orgIds) {
+		this.orgIds = orgIds;
 	}
 
 }

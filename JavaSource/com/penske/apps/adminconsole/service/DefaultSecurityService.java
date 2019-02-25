@@ -309,6 +309,7 @@ public class DefaultSecurityService implements SecurityService{
 			sqlSearchForm.setUserTypeId(userSearchForm.getUserTypeId());
 		
 		sqlSearchForm.setOrgId(currentUser.getOrgId());
+		sqlSearchForm.setOrgIds(userSearchForm.getOrgIds());
 		List<User> userList = securityDao.getUserSearchList(sqlSearchForm);
 		List<Role> roleList = securityDao.getPenskeRoles(currentUser.getRoleId());
 		

@@ -6,8 +6,16 @@ var $searchuserType = $('#search-user-type');
 var $searchUserForm = $('#search-user-form');
 var $inputs = $('#search-first-name','#search-last-name','#search-role','#search-email');
 $(document).ready(function() {
+  
 	var $tabNavUser=$('#tabNavUser').val();
 	selectCurrentNavigation("tab-security",$tabNavUser);
+	
+	
+	
+	$('#search-org').multiselect({
+    minWidth:305,
+    noneSelectedText:"",
+    }).multiselectfilter({width : 57});
 	
 	//cache selector
 	var $usersTable = $('#users-table');
@@ -89,6 +97,8 @@ $(document).ready(function() {
 		}
 	} );
 	
+	
+	
 	//---------------------------------------Listeners----------------------------------------
 	//reset search fields
 	$searchButtonsContainer.on('click', '.reset', function(){
@@ -102,9 +112,13 @@ $(document).ready(function() {
 		$searchEmail.removeClass('errorMsgInput');
 		$searchFName.removeClass('errorMsgInput');
 		$searchLName.removeClass('errorMsgInput');
-		$searchRole.removeClass('errorMsgInput');;
+		$searchRole.removeClass('errorMsgInput');
 		$searchuserType.removeClass('errorMsgInput');
 		$('.error-messages-container').addClass('displayNone');
+		$('#search-org').multiselect("widget").find(':checkbox').removeAttr('checked');
+		$('#search-org').val([]);
+		$('#search-org').multiselect("widget").find(':checkbox').removeAttr('aria-selected');
+		$('#search-org').multiselect('update');
 	});
 	
 	//search for user accounts
@@ -203,7 +217,8 @@ $(document).ready(function() {
 		var $searchUserForm = $('#search-vendor-user-form');
 	//Show the advanced search form if the user had just used it.
 	if( ($searchUserForm.find('[name="firstName"]').val().length > 0) || ($searchUserForm.find('[name="lastName"]').val().length > 0) ||
-	($searchUserForm.find('[name="email"]').val().length > 0) || ($searchUserForm.find('[name="roleId"]').val().length > 0)){
+	($searchUserForm.find('[name="email"]').val().length > 0) || ($searchUserForm.find('[name="roleId"]').val().length > 0) ||
+	($('#search-vendor-user-form').find('[name=orgIds]').multiselect("widget").find(':checkbox:checked').length > 0)){
 			if (e.which == 13) {
 				$searchButtonsContainer.find('.vendorSearch').trigger('click');
 				event.preventDefault();
@@ -310,6 +325,9 @@ $(document).ready(function() {
 			
 		});
 	});
+	if($('#search-content').data('vendor-users') == true){
+	  $('#search-content').show();
+	}
 });
 
 var $confirmModal = $('#deactivate-confirm');
@@ -322,13 +340,13 @@ function toggleContent(contentId,spanId){
 	if($("#" + contentId).is(":visible")){
 		//Currently Expanded
 		$("#" + spanId).removeClass('expandedImage').addClass('collapsedImage');
-		$("#" + contentId).removeClass("displayBlock").addClass("displayNone");
+		$("#" + contentId).hide();
 		$("#" + spanId).text('Show Search Criteria');
 	}
 	else{
 		//Currently Collapsed
 	   $("#" + spanId).removeClass('collapsedImage').addClass('expandedImage');
-	   $("#" + contentId).removeClass("displayNone").addClass("displayBlock");
+	   $("#" + contentId).show();
 	   $("#" + spanId).text('Hide Search Criteria');
 	}
 	

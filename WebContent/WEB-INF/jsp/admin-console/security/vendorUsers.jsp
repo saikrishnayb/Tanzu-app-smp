@@ -8,6 +8,8 @@
 	<link href="${commonStaticUrl}/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
 	<script src="${commonStaticUrl}/js/jquery.maskedinput-1.3.min.js" type="text/javascript"></script>
 	<link href="${baseUrl}/css/admin-console/security/users.css" rel="stylesheet" type="text/css"/>
+	<link href="${baseUrl}/css/jquery.multiselect.css"rel="stylesheet" type="text/css" />
+	<link href="${baseUrl}/css/jquery.multiselect.filter.css"rel="stylesheet" type="text/css" />
 </head>
 
 <!-- ******************************edit modal******************************** -->
@@ -29,12 +31,10 @@
 				<c:if test="${hasBeenSearched eq false}">collapsedImage</c:if>
 				<c:if test="${hasBeenSearched eq true}">expandedImage</c:if>
 				 floatRight margin-bottom"
-				onclick="toggleContent('search-content','advancedSearch');">Show Search Criteria</span>
+				onclick="toggleContent('search-content','advancedSearch');">Hide Search Criteria</span>
 				
-			<div id="search-content" 
-				class="<c:if test="${hasBeenSearched eq false}">displayNone</c:if> 
-				<c:if test="${hasBeenSearched eq true}">displayBlock</c:if> 
-				tableBorder margin-top clear-both search-content">
+			<div id="search-content" style="display:none"
+				class="tableBorder margin-top clear-both search-content" data-vendor-users="true">
 				<form id="search-vendor-user-form" action="./users-search.htm" method="GET">
 					<div class="threeColumnContainer">
 						<div class="clear-float-left">	
@@ -57,6 +57,22 @@
 							<label class="rightAlign">Last Name</label>
 							<input id="search-last-name" tabindex=2 name="lastName" class="supportingLabel input alpha alpha-name optional" type="text" value="<c:out value="${userSearchForm.lastName}"/>"/>
 						</div>
+						<div class="clear-float-left">
+              <label class="rightAlign">Org</label>
+              <select id="search-org" tabindex=4 name="orgIds" class="input numeric numeric-whole optional" multiple>
+                <c:forEach items="${orgList}" var="org">
+	                <c:if test="${hasBeenSearched}">
+	                  <c:set var="orgSelected" value =""/>
+	                  <c:forEach items="${userSearchForm.orgIds}" var="searchOrgId">
+	                    <c:if test="${org.orgId eq searchOrgId}">
+	                      <c:set var="orgSelected" value ="selected"/>
+	                    </c:if>
+	                  </c:forEach>
+	                </c:if>
+	                <option value="${org.orgId}" ${orgSelected}>${org.orgName}</option>
+                </c:forEach>
+              </select>
+            </div>
 					</div>
 				
 					<div id="threeColumnContainer third" class="threeColumnContainer third">
@@ -138,4 +154,6 @@
 </body>
 <!-- Scripts -->
 <script src="${baseUrl}/js/admin-console/security/users.js" type="text/javascript"></script>
+<script type="text/javascript" src="${baseUrl}/jQuery/jquery.multiselect.js"></script>
+<script type="text/javascript" src="${baseUrl}/jQuery/jquery.multiselect.filter.js"></script>
 </html>

@@ -9,6 +9,8 @@
 	<link href="${commonStaticUrl}/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
 	<script src="${commonStaticUrl}/js/jquery.maskedinput-1.3.min.js" type="text/javascript"></script>
 	<link href="${baseUrl}/css/admin-console/security/users.css" rel="stylesheet" type="text/css"/>
+	<link href="${baseUrl}/css/jquery.multiselect.css"rel="stylesheet" type="text/css" />
+  <link href="${baseUrl}/css/jquery.multiselect.filter.css"rel="stylesheet" type="text/css" />
 </head>
 <!-- ******************************edit modal******************************** -->
 <div id="edit-modal" class="modal edit-user-modal" title="Edit User Information"></div>
@@ -140,4 +142,6 @@
 </body>
 <!-- Scripts -->
 <script src="${baseUrl}/js/admin-console/security/users.js" type="text/javascript"></script>
+<script type="text/javascript" src="${baseUrl}/jQuery/jquery.multiselect.js"></script>
+<script type="text/javascript" src="${baseUrl}/jQuery/jquery.multiselect.filter.js"></script>
 </html>

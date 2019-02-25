@@ -30,6 +30,7 @@
 				U.EXTENSION AS extension,
 				U.SSO as ssoId,
 				U.STATUS AS status,
+				O.NAME as org,
 				T.USER_TYPE AS "userType.userType",
 				U.ROLE_ID AS "role.roleId",
 				R.ROLE_NAME AS "role.roleName",
@@ -41,6 +42,8 @@
     ON U.ROLE_ID = R.ROLE_ID
     JOIN SMC.SMC_USER_TYPES T
     ON U.TYPE_ID = T.TYPE_ID
+    JOIN SMC.SMC_ORG_MASTER O
+    ON U.ORG_ID = O.ORG_ID
 		WHERE
 				<if test="email != ''">
 					UPPER(U.EMAIL) LIKE #{email} AND
@@ -57,6 +60,13 @@
 				<if test="userTypeId != 0">
 					U.TYPE_ID = #{userTypeId} AND
 				</if>
+				<if test="orgIds != null">
+          <if test ="orgIds.size() != 0">
+            U.ORG_ID IN
+            <foreach item="searchedOrgId" collection="orgIds" open="(" separator="," close=")">#{searchedOrgId}</foreach>
+            AND
+          </if>
+        </if>
 				U.STATUS = 'A' AND
 				R.STATUS = 'A' AND 
 				U.ORG_ID IN(
