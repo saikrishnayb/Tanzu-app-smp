@@ -13,7 +13,7 @@ $(document).ready(function() {
 	
 	
 	$('#search-org').multiselect({
-    minWidth:305,
+    minWidth:315,
     noneSelectedText:"",
     }).multiselectfilter({width : 57});
 	
