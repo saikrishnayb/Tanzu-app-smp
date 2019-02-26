@@ -6,7 +6,7 @@ var iframeResizer = (function() {
   let _iframeNode = window.parent.document.querySelector('#mainFrame');
   let _iframeWindow = window.parent.window.frames[0];
   let _resizeIframeTimeoutID = null;
-  let _problemClassRegex = /.ui-state-hover/gm;
+  let _problemClassRegex = /\s?ui-state-hover/gm;
   let _problemTargetIds = ['createRule-Table_wrapper'];
   let _observer = null;
   
@@ -78,8 +78,11 @@ var iframeResizer = (function() {
         //For jquery ui hover
         if(mutationRecord.attributeName === 'class') {
           
-          let notJustUiStateHoverChange = mutationRecord.oldValue.replace(_problemClassRegex, '') !==
-                                          mutationRecord.target.classList.toString().replace(_problemClassRegex, '');
+          let oldClassList = mutationRecord.oldValue === null? '' : mutationRecord.oldValue;
+          let newClassList = mutationRecord.target.classList.toString();
+          
+          let notJustUiStateHoverChange = oldClassList.replace(_problemClassRegex, '') !==
+                                          newClassList.replace(_problemClassRegex, '');
           
           if(notJustUiStateHoverChange) 
             isAllProblemChildClasses = false;
