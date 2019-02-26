@@ -40,12 +40,6 @@ $(document).ready(function() {
 						        }
 	} );
 	
-	//To resize iframe on datatable search
-	$("div.dataTables_filter input").keyup( function (e) {
-		parent.resizeAfterPaginationChange();
-	} );	
-
-	
 	var compRequestedFrom=$("#compRequestedFrom").val();
 	var strHTML='<div id="org-desc-div" style="float: right; text-align: right;margin-bottom: 1%;">'+
 	'<a class="buttonSecondary floatLeft clear-left back" href="goBack-componets.htm?requestedFrom='+compRequestedFrom+'">Back</a>'+

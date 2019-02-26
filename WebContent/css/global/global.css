@@ -1,6 +1,10 @@
 body {
   margin: 0 !important;
 }
+
+body:not(#app-container-body) {
+  overflow-y: hidden;
+}
 /** Header **************************************************/
 #title h1.qa:after{
     content: " (QA)";

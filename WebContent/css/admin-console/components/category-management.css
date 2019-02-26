@@ -1,6 +1,3 @@
-body {
-  height: calc(100% - 4px); /*IDK what this is for but it is needed for 100 rows */
-}
 .po-category-div{
 	margin-right:20px;
 }

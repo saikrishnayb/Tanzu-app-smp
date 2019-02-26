@@ -39,10 +39,6 @@ $(document).ready(function() {
 		$("#linkTAB_PROD").removeClass("selected-tab");
 	}
 	
-  
-  if(window.parent.resizeAfterPaginationChange)
-    window.parent.resizeAfterPaginationChange();
-	
 });
 
 function initializePage() {
@@ -156,7 +152,6 @@ function getAlertCount(tabKey){
 			var alertMessage = $(response).find('#alertTable').html();
 			$("#alertTable").html(alertMessage); 
 			displayTable();
-			parent.resizeAfterPaginationChange();
 			hideLoading();
 		},error: function(jqXHR, textStatus, errorThrown) {
 			hideLoading();

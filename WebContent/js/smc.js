@@ -296,49 +296,23 @@ function redirectToTemplate(tabKey,templateKey){
 }
 
 
-var parentObj;
-
 /*Resize page if Pagination count Changed*/
-
-function resizeAfterPaginationChange()
-{
-	resizeIframe(parentObj);
-	
+function resizeAfterPaginationChange() {
+  
+  if(window.parent.iframeResizer !== undefined)
+    window.parent.iframeResizer.resizeIframe();
 }
 
-
-
-/*Function for resizing the frame based on frame size*/
-
-function resizeIframe(obj) {
-	
-	obj.style.height=0+'px';
-	parentObj=obj;
-	
-//  $($('iframe')[0].contentDocument.body).closest('html').height('0px')
-//  $($('iframe')[0].contentDocument.body).height('0px')
-	
-	var height = obj.contentWindow.document.body.scrollHeight;
-	var minHeight = $('#title').outerHeight(true) 
-	                + $('#footer').outerHeight(true) 
-	                + $('body > div > nav').outerHeight(true)
-	                + 10;//misc padding in px
-	
-	var lessThanMainContentMin = height < 600;
-	if(lessThanMainContentMin) height = $(obj.contentWindow.document.body).find('#mainContent').outerHeight();
-	
-  obj.style.minHeight = 'calc( 100vh - ' + minHeight + 'px)';
-  obj.style.height = height + 'px';
+function iframeLoaded() {
   
-//  $($('iframe')[0].contentDocument.body).closest('html').height('100%')
-//  $($('iframe')[0].contentDocument.body).height('100%')
-	
-	//hideLoading();
-	//hideLoadingOnResize(); - commented for Jira Issue-246 - Deal Review page opening all schedules on page load
-	
-	hideLoadingOnIframeLoad();
-	
+  if(window.parent.iframeResizer !== undefined) {
+    window.parent.iframeResizer.resizeIframe();
+    window.parent.iframeResizer.initateResizeListener();
   }
+  
+  hideLoadingOnIframeLoad();
+}
+
 /*Function to block whole screen when we click on tabs*/
 function showLoadingForPage()
 {

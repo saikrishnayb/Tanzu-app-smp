@@ -40,8 +40,6 @@ $(document).ready(function() {
 							infoRow.css("display", "none");
 						}		
 						
-					  if(window.parent.resizeAfterPaginationChange)
-              window.parent.resizeAfterPaginationChange();
 					}
 	});
 	

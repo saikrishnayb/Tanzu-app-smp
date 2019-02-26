@@ -78,9 +78,6 @@ $(document).ready(function() {
     	}
     	
     	
-    	if(window.parent.resizeAfterPaginationChange)
-    	  window.parent.resizeAfterPaginationChange();
-    	
     		}
 	} );
 	
@@ -217,9 +214,6 @@ function toggleContent(contentId,spanId){
 	   $("#" + contentId).removeClass("displayNone").addClass("displayBlock");
 	   $("#" + spanId).text('Hide Search Criteria');
 	}
-	
-	if(window.parent.resizeAfterPaginationChange)
-    window.parent.resizeAfterPaginationChange();
 	
 }
 

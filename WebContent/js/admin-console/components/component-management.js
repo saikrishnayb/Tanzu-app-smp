@@ -37,9 +37,6 @@ $componentManagementTable.dataTable({
   "iDisplayLength" : 12,
   "fnDrawCallback": function() {  //This will hide the pagination menu if we only have 1 page.
     
-    if(window.parent.resizeAfterPaginationChange)
-      window.parent.resizeAfterPaginationChange();
-    
   }
 });
 

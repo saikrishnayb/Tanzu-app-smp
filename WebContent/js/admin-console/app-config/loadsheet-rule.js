@@ -83,20 +83,6 @@ function initializeRuleTable($loadsheetRuleTable){
         }
 });
 	
-	//To resize iframe on datatable search
-	$("div.dataTables_filter input").keyup( function (e) {
-		parent.resizeAfterPaginationChange();
-	} );	
-
-	
-	//To resize iframe on change of page size and on click of page numbers
-	$('select[name=loadsheet-rule-table_length]').change(function(){
-		parent.resizeAfterPaginationChange();
-	
-	});
-	$(document).on("click", "a.paginate_button", function () {
-		parent.resizeAfterPaginationChange();
-	});
 }
 
 function openConfirmModal(ruleName,timesUsed){

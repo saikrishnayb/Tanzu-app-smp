@@ -50,19 +50,6 @@ $(document).ready(function() {
         }
 	} );
 	
-	//To resize iframe on datatable search
-	$("div.dataTables_filter input").keyup( function (e) {
-		parent.resizeAfterPaginationChange();
-	} );	
-	
-	//To resize iframe on change of page size and on click of page numbers
-	$('select[name=sequence-table_length]').change(function(){
-		parent.resizeAfterPaginationChange();
-	
-	});
-	$(document).on("click", "a.paginate_button", function () {
-		parent.resizeAfterPaginationChange();
-	});
 	
 	// category and type drop downs
 	var dropdowns='<form name="open-sequencing-form" id="open-sequencing-form" action="open-create-sequence.htm" method="POST"><div id="org-desc-div" style="float: left; text-align: right;">'+
