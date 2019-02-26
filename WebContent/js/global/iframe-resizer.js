@@ -6,7 +6,8 @@ var iframeResizer = (function() {
   let _iframeNode = window.parent.document.querySelector('#mainFrame');
   let _iframeWindow = window.parent.window.frames[0];
   let _resizeIframeTimeoutID = null;
-  let _problemClassRegex = /.ui-state-hover/gm
+  let _problemClassRegex = /.ui-state-hover/gm;
+  let _problemTargetIds = ['createRule-Table_wrapper'];
   let _observer = null;
   
   let _getElementHeight = function getElementHeight(element) {
@@ -68,22 +69,39 @@ var iframeResizer = (function() {
     
     _observer = new MutationObserver(function(mutationsList, observer) {
       
-      let isAllProblemChildClasses = true; //Guilty till proven innocent
+      //Guilty till proven innocent
+      let isAllProblemChildClasses = true; 
+      let isAllProblemChildTargets = true;
       
       mutationsList.every(function(mutationRecord) {
         
+        //For jquery ui hover
         if(mutationRecord.attributeName === 'class') {
-          let onlyUiStateHoverChange = mutationRecord.oldValue.replace(_problemClassRegex, '') ===
-                                       mutationRecord.target.classList.toString().replace(_problemClassRegex, '');
           
-          if(!onlyUiStateHoverChange) isAllProblemChildClasses = false;
-        } else {
+          let notJustUiStateHoverChange = mutationRecord.oldValue.replace(_problemClassRegex, '') !==
+                                          mutationRecord.target.classList.toString().replace(_problemClassRegex, '');
+          
+          if(notJustUiStateHoverChange) 
+            isAllProblemChildClasses = false;
+        } 
+        //For wonky Loadsheet Rules page TODO please fix and remove
+        else if(mutationRecord.type === 'childList') {
+          
+          let targetId = mutationsList[0].target.id;
+          
+          let noProblemTargets = _problemTargetIds.indexOf(targetId) === -1;
+          
+          if(noProblemTargets) 
+            isAllProblemChildTargets = false;
+          
+        } else{
           isAllProblemChildClasses = false;
-        }
+          isAllProblemChildTargets = false;
+        } 
         
       });
       
-      if(!isAllProblemChildClasses) resizeIframe();
+      if(!isAllProblemChildClasses || !isAllProblemChildTargets) resizeIframe();
       
     });
     

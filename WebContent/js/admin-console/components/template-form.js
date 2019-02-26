@@ -612,7 +612,6 @@ function getRulesByTemplateComponentId(templateComponentId,templateName){
 	 	  	$errorModal.text(jqXHR.responseText);
 	 	 	$errorModal.dialog("option", "title", "Error");
 	      	ModalUtil.openModal($errorModal);
-			parent.resizeAfterPaginationChange();
 		  }
 		);		
 }

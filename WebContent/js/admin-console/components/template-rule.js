@@ -313,7 +313,6 @@ var addRow= function(gIndex){
 	$($addCriteriaGrp).appendTo("#createRule-Table_filter");
 	$("#createRule-Table_filter").addClass("floatRight");
 	$("#createRule-Table_wrapper").css("width","99%");
-	parent.resizeAfterPaginationChange();
 	 var defer = $.Deferred();
 	 defer.resolve(); 
 	 $(".searchSelect").chosen();
@@ -345,8 +344,6 @@ function addNewGroup(){
 	createGroupHeader(grpIndex);
 	applyOddEvenRule();
 	 $(".searchSelect").chosen();
-	//resize Iframe while adding the rows or groups
-	parent.resizeAfterPaginationChange();
 }
 
 function createGroupHeader(grpIndex){
@@ -381,8 +378,6 @@ function deleteGroup(grpIndex){
 	var rows = $createRuleTable.rows( '.group'+grpIndex).remove().draw();
 	applyOddEvenRule();
 	clearErrorMessage();
-	//resize Iframe while adding the rows or groups
-	parent.resizeAfterPaginationChange();
 	
 }
 
@@ -490,8 +485,6 @@ var copyGroupData= function(srcGrpIndex){
 		$('tr[id^="'+regExp+'"]').addClass("whiteRow");
     }
 	
-	//resize Iframe while adding the rows or groups
-	parent.resizeAfterPaginationChange();
 	 var defer = $.Deferred();
 	 defer.resolve(); 
 	 $(".searchSelect").chosen();
@@ -632,7 +625,6 @@ function submitCreateRuleForm(){
 							}else{
 								$("#ErrorMsg span").text(status);
 								$("#ErrorMsg").show();
-								parent.resizeAfterPaginationChange();
 							}
 							 showLoading=false;
 						 },
@@ -644,7 +636,6 @@ function submitCreateRuleForm(){
 					$("#ErrorMsg span").text("Entered Rule Name already exists ! please enter different name.");
 					$("#ErrorMsg").show();
 					$("#ruleName").addClass("errorMsgInput");
-					parent.resizeAfterPaginationChange();
 					}
 				
 			  },
@@ -668,7 +659,6 @@ function validateFields(){
 		$("#ErrorMsg").show();
 		$("#ruleName").addClass("errorMsgInput");
 		$("#description").addClass("errorMsgInput");
-		parent.resizeAfterPaginationChange();
 		return false;
 	}else{
 		$("#ErrorMsg").hide();
@@ -678,7 +668,6 @@ function validateFields(){
 		if ( ! $createRuleTable.data().count() ) {
 			$("#ErrorMsg span").text("Please add at least one criteria group");
 			$("#ErrorMsg").show();
-			parent.resizeAfterPaginationChange();
 			return false;
 		}else{
 			
@@ -699,7 +688,6 @@ function validateFields(){
 				    }else if(compVal != "" && (operandsVal != "E" && operandsVal != "=") && ruleVal == ""){
 				    	$("#ErrorMsg span").text("Please enter a component value for the selected component IDs");
 						$("#ErrorMsg").show();
-						parent.resizeAfterPaginationChange();
 						$("#"+$comId).addClass("errorMsgInput");
 						$("#"+ruleValId).addClass("errorMsgInput");
 						rtrnFlag = false;
@@ -734,7 +722,6 @@ function checkMaxrowsCount(gCnt){
 	if(rowCount > maxRowsCount){
 		$("#ErrorMsg span").text("Reached maximum number of rows("+maxRowsCount+") for this Criteria Group");
 		$("#ErrorMsg").show();
-		parent.resizeAfterPaginationChange();
 		return false;
 	}else{
 		$("#ErrorMsg").hide();
@@ -754,7 +741,6 @@ function checkMaxCriteriaGroupCount(){
 	if(gCnt > maxGroupsCount){
 		$("#ErrorMsg span").text("Reached maximum number of Criteria Groups("+maxRowsCount+") for this Rule");
 		$("#ErrorMsg").show();
-		parent.resizeAfterPaginationChange();
 		return false;
 	}else{
 		$("#ErrorMsg").hide();
@@ -785,7 +771,6 @@ function getRuleDetails(ruleId){
  	   showLoading=false;
  	   	$("#ErrorMsg span").text(jqXHR.responseText);
 		$("#ErrorMsg").show();
-		parent.resizeAfterPaginationChange();
 	  }
 	);		
 	}
@@ -857,7 +842,6 @@ $("#rulesTable tbody").sortable({
 						$("#ErrorMsg span").text("Error in updating rule priority please check with system admin.");
 						$("#ErrorMsg").show();
 						$("#ruleName").addClass("errorMsgInput");
-						parent.resizeAfterPaginationChange();
 					  }
 				});
 		}

@@ -329,7 +329,6 @@ function AddRemoveExtraColumns(e,ui){
 			ui.sender.sortable("cancel");//cancel dropping if groups are not there
 			j2("#ErrorMsg span").text("Please Create Group first");
 			j2("#ErrorMsg").show();
-			parent.resizeAfterPaginationChange();
 			
 		}else{
 			
@@ -521,7 +520,6 @@ function submitLoadSheetForm(){
 							j2("#ErrorMsg").show();
 						}
 						
-						parent.resizeAfterPaginationChange();
 						}
 					
 				  },
@@ -549,7 +547,6 @@ function validateFields(){
 		j2("#ErrorMsg span").text("Please enter Name");
 		j2("#ErrorMsg").show();
 		j2("#name").addClass("errorMsgInput");
-		parent.resizeAfterPaginationChange();
 		return false;
 	}else if((j2("#categoryID option:selected").text()=="")) {
 			
@@ -561,7 +558,6 @@ function validateFields(){
 		j2("#ErrorMsg").show();
 		
 		j2("#categoryID").addClass("errorMsgInput");
-		parent.resizeAfterPaginationChange();
 		return false;
 		
 	}else{
@@ -576,7 +572,6 @@ function validateFields(){
 				
 				j2("#ErrorMsg span").text("Please add atleast one Group");
 				j2("#ErrorMsg").show();
-				parent.resizeAfterPaginationChange();
 				return false;
 		}
 		
@@ -586,7 +581,6 @@ function validateFields(){
 				if(j2(data).children().size() < 2){
 					j2("#ErrorMsg span").text("Please add atleast one Component for each group");
 					j2("#ErrorMsg").show();
-					parent.resizeAfterPaginationChange();
 					rtrnFlag= false;
 					return false;
 				}else{
@@ -613,14 +607,12 @@ function validateFields(){
 						  } else {
 							  j2("#ErrorMsg span").text("Group name: "+curGrpName+" found duplicate, Please change the group name.");
 							  j2("#ErrorMsg").show();
-							  parent.resizeAfterPaginationChange();
 							  rtrnFlag= false;
 							  return false;
 						  }   
 					}else{
 						  j2("#ErrorMsg span").text("Please enter Group Name for all groups.");
 						  j2("#ErrorMsg").show();
-						  parent.resizeAfterPaginationChange();
 						  rtrnFlag= false;
 						  return false;
 					}

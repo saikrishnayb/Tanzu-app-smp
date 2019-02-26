@@ -188,21 +188,6 @@ function initializeAssignedTable($assigendTable){
 		}
 });
 	
-	//To resize iframe on datatable search
-	$("div.dataTables_filter input").keyup( function (e) {
-		parent.resizeAfterPaginationChange();
-	} );	
-
-	
-	//To resize iframe on change of page size and on click of page numbers
-	$('select[name=Assigned-Table_length]').change(function(){
-		parent.resizeAfterPaginationChange();
-	
-	});
-	$(document).on("click", "a.paginate_button", function () {
-		parent.resizeAfterPaginationChange();
-	});
-	
 }
 
 /*Function to load operands based on selected component*/
@@ -311,7 +296,6 @@ var addRow= function(gIndex){
 	$($addCriteriaGrp).appendTo("#createRule-Table_filter");
 	$("#createRule-Table_filter").addClass("floatRight");
 	$("#createRule-Table_wrapper").css("width","99%");
-	parent.resizeAfterPaginationChange();
 	 var defer = $.Deferred();
 	 defer.resolve(); 
 	 $(".searchSelect").chosen();
@@ -343,8 +327,6 @@ function addNewGroup(){
 	createGroupHeader(grpIndex);
 	applyOddEvenRule();
 	 $(".searchSelect").chosen();
-	//resize Iframe while adding the rows or groups
-	parent.resizeAfterPaginationChange();
 }
 
 function createGroupHeader(grpIndex){
@@ -379,8 +361,6 @@ function deleteGroup(grpIndex){
 	var rows = $createRuleTable.rows( '.group'+grpIndex).remove().draw();
 	applyOddEvenRule();
 	clearErrorMessage();
-	//resize Iframe while adding the rows or groups
-	parent.resizeAfterPaginationChange();
 	
 }
 
@@ -488,8 +468,6 @@ var copyGroupData= function(srcGrpIndex){
 		$('tr[id^="'+regExp+'"]').addClass("whiteRow");
     }
 	
-	//resize Iframe while adding the rows or groups
-	parent.resizeAfterPaginationChange();
 	 var defer = $.Deferred();
 	 defer.resolve(); 
 	 $(".searchSelect").chosen();
@@ -603,7 +581,6 @@ function submitCreateRuleForm(){
 					$("#ErrorMsg span").text("Entered Rule Name already exists ! please enter different name.");
 					$("#ErrorMsg").show();
 					$("#ruleName").addClass("errorMsgInput");
-					parent.resizeAfterPaginationChange();
 					}
 				
 			  },
@@ -629,7 +606,6 @@ function validateFields(){
 		$("#ErrorMsg").show();
 		$("#ruleName").addClass("errorMsgInput");
 		$("#description").addClass("errorMsgInput");
-		parent.resizeAfterPaginationChange();
 		return false;
 	}else{
 		$("#ErrorMsg").hide();
@@ -639,7 +615,6 @@ function validateFields(){
 		if ( ! $createRuleTable.data().count() ) {
 			$("#ErrorMsg span").text("Please add atleast one criteria group");
 			$("#ErrorMsg").show();
-			parent.resizeAfterPaginationChange();
 			return false;
 		}else{
 			
@@ -657,7 +632,6 @@ function validateFields(){
 				    	
 				    	$("#ErrorMsg span").text("Please select component ID's and enter component value's");
 						$("#ErrorMsg").show();
-						parent.resizeAfterPaginationChange();
 						$("#"+$comId).addClass("errorMsgInput");
 						$("#"+ruleValId).addClass("errorMsgInput");
 						rtrnFlag = false;
@@ -697,7 +671,6 @@ function checkMaxrowsCount(gCnt){
 	if(rowCount > maxRowsCount){
 		$("#ErrorMsg span").text("Reached maximum number of rows("+maxRowsCount+") for this Criteria Group");
 		$("#ErrorMsg").show();
-		parent.resizeAfterPaginationChange();
 		return false;
 	}else{
 		$("#ErrorMsg").hide();
@@ -717,7 +690,6 @@ function checkMaxCriteriaGroupCount(){
 	if(gCnt > maxGroupsCount){
 		$("#ErrorMsg span").text("Reached maximum number of Criteria Groups("+maxRowsCount+") for this Rule");
 		$("#ErrorMsg").show();
-		parent.resizeAfterPaginationChange();
 		return false;
 	}else{
 		$("#ErrorMsg").hide();
