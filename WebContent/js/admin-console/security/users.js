@@ -6,7 +6,6 @@ var $searchuserType = $('#search-user-type');
 var $searchUserForm = $('#search-user-form');
 var $inputs = $('#search-first-name','#search-last-name','#search-role','#search-email');
 $(document).ready(function() {
-  
 	var $tabNavUser=$('#tabNavUser').val();
 	selectCurrentNavigation("tab-security",$tabNavUser);
 	
@@ -322,9 +321,9 @@ $(document).ready(function() {
 			
 		});
 	});
-	if($('#search-content').data('vendor-users') == true){
-	  $('#search-content').show();
-	}
+  if($('#search-content').data('has-been-searched')==true && $('#search-content').data('vendor-user-search')==true){
+    $("#search-content").removeClass("displayNone").addClass("displayBlock");
+  }
 });
 
 var $confirmModal = $('#deactivate-confirm');
@@ -336,15 +335,15 @@ function toggleContent(contentId,spanId){
 	
 	if($("#" + contentId).is(":visible")){
 		//Currently Expanded
-		$("#" + spanId).removeClass('expandedImage').addClass('collapsedImage');
-		$("#" + contentId).hide();
-		$("#" + spanId).text('Show Search Criteria');
+	  $("#" + spanId).removeClass('expandedImage').addClass('collapsedImage');
+    $("#" + contentId).removeClass("displayBlock").addClass("displayNone");
+    $("#" + spanId).text('Show Search Criteria');
 	}
 	else{
 		//Currently Collapsed
-	   $("#" + spanId).removeClass('collapsedImage').addClass('expandedImage');
-	   $("#" + contentId).show();
-	   $("#" + spanId).text('Hide Search Criteria');
+	  $("#" + spanId).removeClass('collapsedImage').addClass('expandedImage');
+    $("#" + contentId).removeClass("displayNone").addClass("displayBlock");
+    $("#" + spanId).text('Hide Search Criteria');
 	}
 	
 }

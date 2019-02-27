@@ -31,10 +31,11 @@
 				<c:if test="${hasBeenSearched eq false}">collapsedImage</c:if>
 				<c:if test="${hasBeenSearched eq true}">expandedImage</c:if>
 				 floatRight margin-bottom"
-				onclick="toggleContent('search-content','advancedSearch');">Hide Search Criteria</span>
-				
-			<div id="search-content" style="display:none"
-				class="tableBorder margin-top clear-both search-content" data-vendor-users="true">
+				onclick="toggleContent('search-content','advancedSearch');">
+				<c:if test="${hasBeenSearched eq false}">Show Search Criteria</c:if>
+				<c:if test="${hasBeenSearched eq true}">Hide Search Criteria</c:if></span>
+			<div id="search-content" 
+        class="displayNone tableBorder margin-top clear-both search-content" data-has-been-searched="${hasBeenSearched}" data-vendor-user-search="true">
 				<form id="search-vendor-user-form" action="./users-search.htm" method="GET">
 					<div class="threeColumnContainer">
 						<div class="clear-float-left">	
