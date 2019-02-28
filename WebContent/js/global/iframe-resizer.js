@@ -8,6 +8,7 @@ var iframeResizer = (function() {
   let _resizeIframeTimeoutID = null;
   let _problemClassRegex = /\s?ui-state-hover/gm;
   let _problemTargetIds = ['createRule-Table_wrapper'];
+  let _problemPreviousSiblings = ['missing-info-table'];
   let _observer = null;
   
   let _getElementHeight = function getElementHeight(element) {
@@ -91,10 +92,12 @@ var iframeResizer = (function() {
         else if(mutationRecord.type === 'childList') {
           
           let targetId = mutationsList[0].target.id;
+          let previousSiblingId = mutationsList[0].previousSibling.id;
           
           let noProblemTargets = _problemTargetIds.indexOf(targetId) === -1;
+          let noProblemPrevSiblings = _problemPreviousSiblings.indexOf(previousSiblingId) === -1;
           
-          if(noProblemTargets) 
+          if(noProblemTargets && noProblemPrevSiblings) 
             isAllProblemChildTargets = false;
           
         } else{
