@@ -14,7 +14,7 @@ $(document).ready(function() {
 	$('#search-org').multiselect({
     minWidth:315,
     noneSelectedText:"",
-    }).multiselectfilter({width : 57});
+    }).multiselectfilter({width : 230});
 	
 	//cache selector
 	var $usersTable = $('#users-table');

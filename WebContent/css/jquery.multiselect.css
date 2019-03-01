@@ -25,3 +25,19 @@
 
 /* remove label borders in IE6 because IE6 does not support transparency */
 * html .ui-multiselect-checkboxes label { border:none }
+
+.ui-multiselect {
+  background: white !important;
+  position: relative;
+  border: 1px solid #ABABAB !important;
+  color: #454545 !important;
+  font-weight: normal !important;
+  height: 19px !important;
+  padding-top: 1px !important;
+  padding-right: 0 !important;
+  padding-bottom: 0 !important;
+  padding-left: 10px !important;
+}
+.ui-state-default .ui-icon{
+  background-image:url("images/ui-icons_222222_256x240.png") !important;
+}
