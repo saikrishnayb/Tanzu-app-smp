@@ -12,9 +12,12 @@ $(document).ready(function() {
 	
 	
 	$('#search-org').multiselect({
-    minWidth:315,
+    minWidth:220,
     noneSelectedText:"",
-    }).multiselectfilter({width : 230});
+    open: function(){
+      $(".ui-multiselect-menu ").css('width','335px');
+    }
+    }).multiselectfilter({width : 250});
 	
 	//cache selector
 	var $usersTable = $('#users-table');
