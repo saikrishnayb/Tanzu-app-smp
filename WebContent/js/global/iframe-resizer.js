@@ -11,6 +11,9 @@ var iframeResizer = (function() {
   let _problemPreviousSiblings = ['missing-info-table'];
   let _observer = null;
   
+  /**
+   * Gets the height of the given element by adding up the top and bottom margins as well as the element hieght itself
+   */
   let _getElementHeight = function getElementHeight(element) {
     let marginTop = Number.parseInt(window.getComputedStyle(element).marginTop.replace('px', ''));
     let marginBottom = Number.parseInt(window.getComputedStyle(element).marginBottom.replace('px', ''));
@@ -19,6 +22,10 @@ var iframeResizer = (function() {
     return clientHeight + marginTop + marginBottom;
   };
   
+  /**
+   * Changes the size of the parent iframe's minHeight and height to at minimum match the users screen height 
+   * and if the content is taller than the minimum to match that instead.
+   */
   let resizeIframe = function resizeIframe() {
     
     parent.window.clearTimeout(_resizeIframeTimeoutID);
@@ -48,12 +55,19 @@ var iframeResizer = (function() {
       
       window.parent.scrollTo(0, pageYOffset);
       
-      console.log('iframe resized');
+      //console.log('iframe resized');
       
     }, 100);
     
   };
   
+  /**
+   * Starts the mutation observer listener and the window resize listeners to call the
+   * resizeIframe function in an event of a browser resize change, or a page content change. If a user navigates to a
+   * different page, it calls the stopResizeListener function.
+   * 
+   * If the mutation observer is already started, it throws an exception.
+   */
   let initateResizeListener = function initateResizeListener() {
     
     if(_observer !== null) throw 'ResizeListener already initialized'; 
@@ -121,6 +135,10 @@ var iframeResizer = (function() {
     
   };
   
+  /**
+   * Function that halts the mutation observer to prevent any further events from being captured. If no mutation
+   * observer is started, it throws an exception
+   */
   let stopResizeListener = function stopResizeListener() {
     
     if(_observer === null) 
