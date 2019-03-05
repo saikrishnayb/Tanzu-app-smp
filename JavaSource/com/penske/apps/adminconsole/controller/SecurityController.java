@@ -126,7 +126,9 @@ public class SecurityController {
             mav = new ModelAndView("/admin-console/security/vendorUsers");
             mav.addObject("roleList", securityService.getVendorRoles(false,userContext.getRoleId(),userContext.getOrgId()));
             mav.addObject("accessVendor",CommonUtils.hasAccess(ApplicationConstants.VENDORUSER, userContext));
-            mav.addObject("orgList", securityService.getOrgList(null, userContext));
+            List<Org> orgList = securityService.getOrgList(null, userContext);
+            Collections.sort(orgList, Org.ORG_NAME_ASC);
+            mav.addObject("orgList", orgList);
         } else {
             userSearchForm.setUserTypeId(ApplicationConstants.PENSKE_USER);
             mav.addObject("roleList", securityService.getUserRoles(userContext.getRoleId()));
@@ -309,7 +311,9 @@ public class SecurityController {
         // If the user is a supplier.
         boolean isVendor = userContext.isVendorUser();
         mav.addObject("roleList", securityService.getVendorRoles(isVendor,userContext.getRoleId(),userContext.getOrgId()));
-        mav.addObject("orgList", securityService.getOrgList(null, userContext));
+        List<Org> orgList = securityService.getOrgList(null, userContext);
+        Collections.sort(orgList, Org.ORG_NAME_ASC);
+        mav.addObject("orgList", orgList);
         mav.addObject("hasBeenSearched", false);
         mav.addObject("userTypeList", securityService.getUserTypes());
         mav.addObject("accessVendor",CommonUtils.hasAccess(ApplicationConstants.VENDORUSER, userContext));
