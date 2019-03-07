@@ -106,7 +106,7 @@ var iframeResizer = (function() {
         else if(mutationRecord.type === 'childList') {
           
           let targetId = mutationsList[0].target.id;
-          let previousSiblingId = mutationsList[0].previousSibling.id;
+          let previousSiblingId = mutationsList[0].previousSibling === null? null: mutationsList[0].previousSibling.id;
           
           let noProblemTargets = _problemTargetIds.indexOf(targetId) === -1;
           let noProblemPrevSiblings = _problemPreviousSiblings.indexOf(previousSiblingId) === -1;
