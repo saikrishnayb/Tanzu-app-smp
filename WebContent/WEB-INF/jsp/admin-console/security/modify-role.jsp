@@ -12,7 +12,7 @@
 		<link href="${commonStaticUrl}/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
 	</head>
 	
-	<body>
+	<body style="overflow-y: auto;">
 		<%@ include file="../../../jsp/jsp-fragment/global/header.jsp" %>
 		
 		<div id="mainContent" class="borderTop floatLeft">
