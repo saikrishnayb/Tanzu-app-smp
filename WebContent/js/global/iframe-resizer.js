@@ -38,12 +38,12 @@ var iframeResizer = (function() {
       _iframeNode.style.minHeight = '0px';
       
       let iframeBody = _iframeWindow.document.body;
-      
-      //Certain pages give me an incorrect size, switching temp to relative style fixes that
       let oldPosition = iframeBody.style.position;
+     
+      //Certain pages give me an incorrect size, switching temp to relative style fixes that
       iframeBody.style.position = 'relative'; 
+      
       let iframeBodyHeight = iframeBody.scrollHeight;
-      iframeBody.style.position = oldPosition;
       
       let minHeightSubtract =   _getElementHeight(window.parent.document.querySelector('#title'))
                               + _getElementHeight(window.parent.document.querySelector('#footer'))
@@ -57,6 +57,9 @@ var iframeResizer = (function() {
       //Not sure why scrollHeight does not give accurate results. Do this for now //TODO
       let newIframeBodyHeight = iframeBody.scrollHeight;
       if(newIframeBodyHeight > 10 + iframeBodyHeight ) _iframeNode.style.height = newIframeBodyHeight + 'px';
+      
+      //switch it back to what it was before
+      iframeBody.style.position = oldPosition;
       
       window.parent.scrollTo(0, pageYOffset);
       
