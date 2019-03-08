@@ -80,8 +80,8 @@ $('.btn-save-vendor-filter').on('click', function() {
 	  //hideLoading();
     ModalUtil.closeModal($('.modal-utility'));
     
-    if(data === true) 
-      $(".vendor-filter-toggle-container").removeClass('hidden');
+    if(data === true)
+      $(".vendor-filter-toggle-container").removeClass('hidden off').addClass('on');
     else
       $(".vendor-filter-toggle-container").addClass('hidden');
     
