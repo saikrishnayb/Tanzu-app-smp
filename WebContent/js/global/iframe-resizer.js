@@ -39,7 +39,12 @@ var iframeResizer = (function() {
       
       let iframeBody = _iframeWindow.document.body;
       
+      //Certain pages give me an incorrect size, switching temp to relative style fixes that
+      let oldPosition = iframeBody.style.position;
+      iframeBody.style.position = 'relative'; 
       let iframeBodyHeight = iframeBody.scrollHeight;
+      iframeBody.style.position = oldPosition;
+      
       let minHeightSubtract =   _getElementHeight(window.parent.document.querySelector('#title'))
                               + _getElementHeight(window.parent.document.querySelector('#footer'))
                               + _getElementHeight(window.parent.document.querySelector('body > div > nav'))
