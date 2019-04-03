@@ -14,6 +14,8 @@
  		 Select EXTENSION,MIME_TYPE from CORP.vfjtransporterfiletype 
  	</select> 
 
+  <!-- As part of VOD-1848 (April 2019), the COLUMNS for PO_CATEGORY and FREIGHT_AMOUNT are repurposed for
+       Transmission Type and Canadian Tax respectively-->
  	<insert id="insertTransporter" parameterType="com.penske.apps.adminconsole.model.Transport"> 
 	
  		Insert into CORP.NVONTRNRCV  
@@ -24,10 +26,10 @@
  			DEST_ADD_1,					DEST_ADD_2,			DEST_CITY,				DEST_STATE_PROV,			DEST_ZIP_CODE,				DEST_PHONE,				 
  			EST_MILES,					VIN,				BODY_SERIAL,			UNIT_GVW,					PO_CATEGORY,				VEHICLE_CATEGORY,		 
  			VEHICLE_TYPE,				FUEL_TYPE,			SLPR_CODE,				AERO_ROOF,					AERO_SIDE,					AERO_CAB,				 
- 			DECKING,					NO_DECKS,			FREIGHT_AMOUNT,			FUEL_SUR_CHARGE,			ADD_ON_CHARGES,				TOTAL_AMOUNT,			 
+ 			DECKING,					NO_DECKS,			FREIGHT_AMOUNT,						ADD_ON_CHARGES,				TOTAL_AMOUNT,			 
  			TRNST_PO,					TRNST_PO_DATE,		UNIT_DELIVERY_DATE,		ACT_DELV_REPORTED,			FLUID_AMOUNT,				BREAKDWN_AMOUNT,		 
  			TOLL_AMOUNT,				MISC_AMOUNT,		REVISED_AMOUNT,			SUBMIT_PAYMENT,				PENSKE_COMMENT,				TRANSPORTER_COMMENT,	 
- 			ASSIGN_DATE,				LAST_CHANGE_DATE,	CORP,					PARENT_VENDOR,				PO_NO,						ADV_NOTICE_SEQ,		 
+ 			ASSIGN_DATE,				LAST_CHANGE_DATE,	CORP,														 
  			REPORT_ID,					LIFTGATE_MAKE,		LIFTGATE_MODEL,			TREDEL						 
  		)	
  		values  
@@ -36,12 +38,12 @@
  			#{advanceNoticeCancelDate},	#{oem},				#{plantCode},			#{plantName},				#{plantAdrs1},				#{plantAdrs1}, 
  			#{originCity},				#{originState},		#{originZipCode},		#{originContactInfo},		#{destCode},				#{dlvName},
  			#{dlvAdrs1},				#{dlvAdrs2},		#{destCity},			#{destState},				#{destZipCode},				#{destContactInfo}, 
- 			#{mileage},					#{vin},				#{bodySerial},			#{unitGvw},					#{cat},						#{vehicleCategory}, 
+ 			#{mileage},					#{vin},				#{bodySerial},			#{unitGvw},					#{transmissionType},						#{vehicleCategory}, 
  			#{vehicleType},				#{fuelType},		#{slprCode},			#{aeroRoof},				#{aeroSide},				#{aeroCab}, 
- 			#{decking},					#{numDecks},		#{frieghtAmount},		#{fuelSurcharge},			#{penskeAddOnCharge},		#{totalAmount}, 
+ 			#{decking},					#{numDecks},		#{canadaTax},					#{penskeAddOnCharge},		#{totalAmount}, 
  			#{trnstPo},					#{transitPoDate},	#{actDelvry},			#{actualDeliveryReported},	#{fluids},					#{breakDown}, 
  			#{tolls},					#{misc},			#{revisedPOAmount},		#{isPOAmountAccepted},		#{penskeComment},			#{transporterComment}, 
- 			#{transporterAssignDate},	#{lastChangedDate},	#{companyCode},			#{parentVendor},			#{purchasePoNum},			#{advancedNoticeSequence},
+ 			#{transporterAssignDate},	#{lastChangedDate},	#{companyCode},									
  			#{reportId},				#{liftgateMake},	#{liftgateModel},		#{estimatedDeliveryDate}
  		)
  	</insert>
