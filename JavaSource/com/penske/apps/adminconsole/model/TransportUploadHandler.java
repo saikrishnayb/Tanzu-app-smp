@@ -84,8 +84,8 @@ public class TransportUploadHandler extends ExcelUploadHandler<Transport>{
     public void collectExcelDataList(boolean readRecords,List<Transport> transportList, Transport modelObject) throws Exception{
 
         if (readRecords == true) {
-            if (  (modelObject).getUnitNo() != null 			  &&  (modelObject).getCat() != null &&
-                    !(modelObject).getUnitNo().trim().equals("0") && !(modelObject).getCat().equals(" ") ){
+            if (  (modelObject).getUnitNo() != null 			  &&  (modelObject).getVehicleCategory() != null &&
+                    !(modelObject).getUnitNo().trim().equals("0") && !(modelObject).getVehicleCategory().equals(" ") ){
                 transportList.add(modelObject);
             }else{
                 Exception e = new Exception("Row does not contain the Unit and Category primary keys");
@@ -96,7 +96,7 @@ public class TransportUploadHandler extends ExcelUploadHandler<Transport>{
 
     }
 
-    /**R
+    /**
      * Method to validate , if the Excel file is valid or not.
      * 
      * @param fileName java.lang.String
@@ -296,12 +296,8 @@ public class TransportUploadHandler extends ExcelUploadHandler<Transport>{
             case VsportalConstants.TRANSPORTER_UNIT_GVW:
                 transport.setUnitGvw(value);
                 break;
-            /*case VsportalConstants.TRANSPORTER_CAT:
-                transport.setCat(value);
-                break;*/
             case VsportalConstants.TRANSPORTER_VEH_CAT:
                 transport.setVehicleCategory(value);
-                transport.setCat(value);
                 break;
             case VsportalConstants.TRANSPORTER_VEH_TYPE:
                 transport.setVehicleType(value);
@@ -327,12 +323,6 @@ public class TransportUploadHandler extends ExcelUploadHandler<Transport>{
             case VsportalConstants.TRANSPORTER_NUM_DECKING:
                 transport.setNumDecks(value);
                 break;
-            /*case VsportalConstants.TRANSPORTER_FREIGHT_AMOUNT:
-                transport.setFrieghtAmount(toDouble(value));
-                break;
-            case VsportalConstants.TRANSPORTER_FUEL_SUR_CHARGE:
-                transport.setFuelSurcharge(toDouble(value));
-                break;*/
             case VsportalConstants.TRANSPORTER_PENSKE_CHARGE:
                 transport.setPenskeAddOnCharge(toDouble(value));
                 break;
@@ -409,15 +399,6 @@ public class TransportUploadHandler extends ExcelUploadHandler<Transport>{
             case VsportalConstants.TRANSPORTER_CORP_CODE:
                 transport.setCompanyCode(value);
                 break;
-            /*case VsportalConstants.TRANSPORTER_PARENT_VENDOR:
-                transport.setParentVendor(value);
-                break;
-            case VsportalConstants.TRANSPORTER_PURCH_PO_NUM:
-                transport.setPurchasePoNum(value);
-                break;
-            case VsportalConstants.TRANSPORTER_ADV_NOT_SEQ:
-                transport.setAdvancedNoticeSequence(value);
-                break;*/
             case VsportalConstants.TRANSPORTER_LIFTGATE_MAKE:
                 transport.setLiftgateMake(value);
                 break;
