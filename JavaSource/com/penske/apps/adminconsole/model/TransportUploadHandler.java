@@ -118,7 +118,7 @@ public class TransportUploadHandler extends ExcelUploadHandler<Transport>{
                 Row row = rows.next();
 
                 String estDelDateText = row.getCell(VsportalConstants.TRANSPORTER_EST_DEL_DATE).getStringCellValue();
-                if(estDelDateText.compareToIgnoreCase("Estimated Delivery Date") != 0) {
+                if(estDelDateText.compareToIgnoreCase("Estimated\nDelivery\nDate") != 0) {
                     message = "Estimated Delivery Date Field not found at expected index. Check format of report.";
                 }
 
@@ -296,11 +296,12 @@ public class TransportUploadHandler extends ExcelUploadHandler<Transport>{
             case VsportalConstants.TRANSPORTER_UNIT_GVW:
                 transport.setUnitGvw(value);
                 break;
-            case VsportalConstants.TRANSPORTER_CAT:
+            /*case VsportalConstants.TRANSPORTER_CAT:
                 transport.setCat(value);
-                break;
+                break;*/
             case VsportalConstants.TRANSPORTER_VEH_CAT:
                 transport.setVehicleCategory(value);
+                transport.setCat(value);
                 break;
             case VsportalConstants.TRANSPORTER_VEH_TYPE:
                 transport.setVehicleType(value);
@@ -326,12 +327,12 @@ public class TransportUploadHandler extends ExcelUploadHandler<Transport>{
             case VsportalConstants.TRANSPORTER_NUM_DECKING:
                 transport.setNumDecks(value);
                 break;
-            case VsportalConstants.TRANSPORTER_FREIGHT_AMOUNT:
+            /*case VsportalConstants.TRANSPORTER_FREIGHT_AMOUNT:
                 transport.setFrieghtAmount(toDouble(value));
                 break;
             case VsportalConstants.TRANSPORTER_FUEL_SUR_CHARGE:
                 transport.setFuelSurcharge(toDouble(value));
-                break;
+                break;*/
             case VsportalConstants.TRANSPORTER_PENSKE_CHARGE:
                 transport.setPenskeAddOnCharge(toDouble(value));
                 break;
@@ -408,7 +409,7 @@ public class TransportUploadHandler extends ExcelUploadHandler<Transport>{
             case VsportalConstants.TRANSPORTER_CORP_CODE:
                 transport.setCompanyCode(value);
                 break;
-            case VsportalConstants.TRANSPORTER_PARENT_VENDOR:
+            /*case VsportalConstants.TRANSPORTER_PARENT_VENDOR:
                 transport.setParentVendor(value);
                 break;
             case VsportalConstants.TRANSPORTER_PURCH_PO_NUM:
@@ -416,7 +417,7 @@ public class TransportUploadHandler extends ExcelUploadHandler<Transport>{
                 break;
             case VsportalConstants.TRANSPORTER_ADV_NOT_SEQ:
                 transport.setAdvancedNoticeSequence(value);
-                break;
+                break;*/
             case VsportalConstants.TRANSPORTER_LIFTGATE_MAKE:
                 transport.setLiftgateMake(value);
                 break;
@@ -426,6 +427,13 @@ public class TransportUploadHandler extends ExcelUploadHandler<Transport>{
             case VsportalConstants.TRANSPORTER_REPORT_ID:
                 transport.setReportId(value);
                 break;
+            case VsportalConstants.TRANSPORTER_CANADA_TAX:
+                transport.setCanadaTax(toDouble(value));
+                break;
+            case VsportalConstants.TRANSPORTER_TRANSMISSION_TYPE:
+                transport.setTransmissionType(value);
+                break;
+            
         }
     }
 

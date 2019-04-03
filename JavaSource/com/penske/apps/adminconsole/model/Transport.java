@@ -104,6 +104,11 @@ public class Transport{
 	private String	liftgateModel;
 	private String 	reportId;
 	
+	//April 2, 2018
+	//J. Frey - VOD-1848
+	private double canadaTax;
+	private String transmissionType;
+	
 	public String getUnitNo() {
 		return unitNo;
 	}
@@ -570,9 +575,20 @@ public class Transport{
 	public void setLiftgateModel(String liftgateModel) {
 		this.liftgateModel = liftgateModel;
 	}
-
 	private Date getAS400DefaultDate()
 	{
 		return DateUtil.parseDate("0001-01-01");
+	}
+	public double getCanadaTax() {
+		return canadaTax;
+	}
+	public void setCanadaTax(double canadaTax) {
+		this.canadaTax = canadaTax;
+	}
+	public String getTransmissionType() {
+		return transmissionType;
+	}
+	public void setTransmissionType(String transmissionType) {
+		this.transmissionType = transmissionType;
 	}
 }

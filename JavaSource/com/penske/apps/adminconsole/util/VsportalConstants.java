@@ -80,71 +80,80 @@ public class VsportalConstants {
 	 /* 
 	  * Transporter Constants
 	  */	 
-	 public static final int  	TRANSPORTER_PICKUP_VENDOR	=	0	;
-	 public static final int  	TRANSPORTER_STUS			=	1	;
-	 public static final int  	TRANSPORTER_UNIT_NO			=	2	;
-	 public static final int  	TRANSPORTER_PICKUP_DATE		=	3	;
-	 public static final int  	TRANSPORTER_PROD_DATE		=	4	;
-	 public static final int  	TRANSPORTER_EST_DEL_DATE	=	5	;	 
-	 public static final int  	TRANSPORTER_HOLD_DATE		=	6	;
-	 public static final int  	TRANSPORTER_CANCEL_DATE		=	7	;
-	 public static final int  	TRANSPORTER_PLANT_OEM		=	8	;
-	 public static final int  	TRANSPORTER_PLANT_CODE		=	9	;
-	 public static final int  	TRANSPORTER_PLANT_NAME		=	10	;
-	 public static final int  	TRANSPORTER_PLANT_ADRS_1	=	11	;
-	 public static final int  	TRANSPORTER_PLANT_ADRS_2	=	12	;
-	 public static final int  	TRANSPORTER_PLANT_CITY		=	13	;
-	 public static final int  	TRANSPORTER_PLANT_STATE		=	14	;
-	 public static final int  	TRANSPORTER_PLANT_ZIP		=	15	;
-	 public static final int  	TRANSPORTER_PLANT_CONTACT	=	16	;
-	 public static final int  	TRANSPORTER_DEST_CODE		=	17	;
-	 public static final int  	TRANSPORTER_DLV_NAME		=	18	;
-	 public static final int  	TRANSPORTER_DLV_ADRS_1		=	19	;
-	 public static final int  	TRANSPORTER_DLV_ADRS_2		=	20	;
-	 public static final int  	TRANSPORTER_DLV_CITY		=	21	;
-	 public static final int  	TRANSPORTER_DLV_STATE		=	22	;
-	 public static final int  	TRANSPORTER_DLV_ZIP			=	23	;
-	 public static final int  	TRANSPORTER_DLV_CONTACT		=	24	;
-	 public static final int  	TRANSPORTER_MILEAGE			=	25	;
-	 public static final int  	TRANSPORTER_VIN				=	26	;
-	 public static final int  	TRANSPORTER_BODY_SERIAL		=	27	;
-	 public static final int  	TRANSPORTER_UNIT_GVW		=	28	;
-	 public static final int  	TRANSPORTER_CAT				=	29	;
-	 public static final int  	TRANSPORTER_VEH_CAT			=	30	;
-	 public static final int  	TRANSPORTER_VEH_TYPE		=	31	;
-	 public static final int  	TRANSPORTER_FUEL_TYPE		=	32	;
-	 public static final int  	TRANSPORTER_SLPR_CODE		=	33	;
-	 public static final int  	TRANSPORTER_AERO_ROOF		=	34	;
-	 public static final int  	TRANSPORTER_AERO_SIDE		=	35	;
-	 public static final int  	TRANSPORTER_AERO_CAB		=	36	;
-	 public static final int  	TRANSPORTER_DECKING			=	37	;
-	 public static final int  	TRANSPORTER_NUM_DECKING		=	38	;
+	 /*
+	  * 
 	 public static final int  	TRANSPORTER_FREIGHT_AMOUNT	=	39	;
 	 public static final int  	TRANSPORTER_FUEL_SUR_CHARGE	=	40	;
-	 public static final int  	TRANSPORTER_PENSKE_CHARGE	=	41	;
-	 public static final int  	TRANSPORTER_TOTAL_AMOUNT	=	42	;
-	 public static final int  	TRANSPORTER_TRNST_PO		=	43	;
-	 public static final int  	TRANSPORTER_TRNST_PO_DATE	=	44	;
-	 public static final int	TRANSPORTER_UNIT_DLV_DATE	=	45	;
-	 public static final int  	TRANSPORTER_ACT_DELVRY		=	46	;
-	 public static final int    TRANSPORTER_FLUID_AMOUNT 	= 	47	; 
-	 public static final int    TRANSPORTER_BREAKDWN_AMOUNT = 	48	;
-	 public static final int    TRANSPORTER_TOLL_AMOUNT 	= 	49	;
-	 public static final int    TRANSPORTER_MISC_AMOUNT 	= 	50	;
-	 public static final int    TRANSPORTER_REVISED_AMOUNT 	= 	51	; 
-	 public static final int    TRANSPORTER_ACCEPT_AMOUNT 	= 	52	;
-	 public static final int    PENSKE_COMMENT			 	= 	53	;
-	 public static final int    TRANSPORTER_COMMENT		 	= 	54	;
-	 public static final int	TRANSPORTER_ASSIGN_DATE		=	55	;
-	 public static final int    TRANSPORTER_LAST_UPDATED 	= 	56	;
-	 public static final int    TRANSPORTER_CORP_CODE	 	= 	57	;
+	 public static final int  	TRANSPORTER_CAT				=	43	;
+	 public static final int    TRANSPORTER_ADV_NOT_SEQ		= 	60	;
 	 public static final int    TRANSPORTER_PARENT_VENDOR 	= 	58	;
 	 public static final int    TRANSPORTER_PURCH_PO_NUM 	= 	59	;
-	 public static final int    TRANSPORTER_ADV_NOT_SEQ		= 	60	;
-	 public static final int    TRANSPORTER_LIFTGATE_MAKE	= 	61	;
-	 public static final int    TRANSPORTER_LIFTGATE_MODEL	= 	62	;
-	 public static final int    TRANSPORTER_REPORT_ID		= 	63	;
-	 
+	 */
+	
+	 public static final int  	TRANSPORTER_STUS			=	0	;
+	 public static final int  	TRANSPORTER_UNIT_NO			=	1	;
+	 public static final int  	TRANSPORTER_PROD_DATE		=	2	;
+	 public static final int  	TRANSPORTER_PICKUP_DATE		=	3	;
+	 public static final int  	TRANSPORTER_EST_DEL_DATE	=	4	;
+	 public static final int	TRANSPORTER_UNIT_DLV_DATE	=	5	;
+	 public static final int  	TRANSPORTER_ACT_DELVRY		=	6	;
+	 public static final int  	TRANSPORTER_TRNST_PO		=	7	;
+	 public static final int  	TRANSPORTER_TRNST_PO_DATE	=	8	;
+	 public static final int  	TRANSPORTER_MILEAGE			=	9	;
+	 public static final int  	TRANSPORTER_PENSKE_CHARGE	=	10	;
+	 public static final int  	TRANSPORTER_TOTAL_AMOUNT	=	11	;
+	 public static final int    TRANSPORTER_FLUID_AMOUNT 	= 	12	; 
+	 public static final int    TRANSPORTER_BREAKDWN_AMOUNT = 	13	;
+	 public static final int    TRANSPORTER_TOLL_AMOUNT 	= 	14	;
+	 public static final int    TRANSPORTER_MISC_AMOUNT 	= 	15	;
+	 public static final int    TRANSPORTER_REVISED_AMOUNT 	= 	16	; 
+	 //New for VOD-1848
+	 public static final int    TRANSPORTER_CANADA_TAX 		= 	17	;
+	 //
+	 public static final int    TRANSPORTER_ACCEPT_AMOUNT 	= 	18	;
+	 public static final int    TRANSPORTER_COMMENT		 	= 	19	;
+	 public static final int    PENSKE_COMMENT			 	= 	20	;
+	 public static final int  	TRANSPORTER_HOLD_DATE		=	21	;
+	 public static final int  	TRANSPORTER_CANCEL_DATE		=	22	;
+	 public static final int  	TRANSPORTER_PLANT_OEM		=	23	;
+	 public static final int  	TRANSPORTER_PLANT_CODE		=	24	;
+	 public static final int  	TRANSPORTER_PLANT_NAME		=	25	;
+	 public static final int  	TRANSPORTER_PLANT_ADRS_1	=	26	;
+	 public static final int  	TRANSPORTER_PLANT_ADRS_2	=	27	;
+	 public static final int  	TRANSPORTER_PLANT_CITY		=	28	;
+	 public static final int  	TRANSPORTER_PLANT_STATE		=	29	;
+	 public static final int  	TRANSPORTER_PLANT_ZIP		=	30	;
+	 public static final int  	TRANSPORTER_PLANT_CONTACT	=	31	;
+	 public static final int  	TRANSPORTER_DEST_CODE		=	32	;
+	 public static final int  	TRANSPORTER_DLV_NAME		=	33	;
+	 public static final int  	TRANSPORTER_DLV_ADRS_1		=	34	;
+	 public static final int  	TRANSPORTER_DLV_ADRS_2		=	35	;
+	 public static final int  	TRANSPORTER_DLV_CITY		=	36	;
+	 public static final int  	TRANSPORTER_DLV_STATE		=	37	;
+	 public static final int  	TRANSPORTER_DLV_ZIP			=	38	;
+	 public static final int  	TRANSPORTER_DLV_CONTACT		=	39	;
+	 public static final int  	TRANSPORTER_VIN				=	40	;
+	 public static final int  	TRANSPORTER_BODY_SERIAL		=	41	;
+	 public static final int  	TRANSPORTER_UNIT_GVW		=	42	;
+	 public static final int  	TRANSPORTER_VEH_CAT			=	43	;
+	 public static final int  	TRANSPORTER_VEH_TYPE		=	44	;
+	 public static final int  	TRANSPORTER_FUEL_TYPE		=	45	;
+	 public static final int  	TRANSPORTER_SLPR_CODE		=	46	;
+	 public static final int  	TRANSPORTER_AERO_ROOF		=	47	;
+	 public static final int  	TRANSPORTER_AERO_SIDE		=	48	;
+	 public static final int  	TRANSPORTER_AERO_CAB		=	49	;
+	 public static final int  	TRANSPORTER_DECKING			=	50	;
+	 public static final int  	TRANSPORTER_NUM_DECKING		=	51	;
+	 public static final int	TRANSPORTER_ASSIGN_DATE		=	52	;
+	 public static final int    TRANSPORTER_LAST_UPDATED 	= 	53	;
+	 public static final int    TRANSPORTER_CORP_CODE	 	= 	54	;
+	 public static final int    TRANSPORTER_LIFTGATE_MAKE	= 	55	;
+	 //New for VOD-1848
+	 public static final int    TRANSPORTER_TRANSMISSION_TYPE = 56	;
+	 //
+	 public static final int    TRANSPORTER_LIFTGATE_MODEL	= 	57	;
+	 public static final int  	TRANSPORTER_PICKUP_VENDOR	=	58	;
+	 public static final int    TRANSPORTER_REPORT_ID		= 	59	;
 	 
 		 
 	 public static final String EXCEL  = ".xls";
