@@ -80,16 +80,7 @@ public class VsportalConstants {
 	 /* 
 	  * Transporter Constants
 	  */	 
-	 /*
-	  * 
-	 public static final int  	TRANSPORTER_FREIGHT_AMOUNT	=	39	;
-	 public static final int  	TRANSPORTER_FUEL_SUR_CHARGE	=	40	;
-	 public static final int  	TRANSPORTER_CAT				=	43	;
-	 public static final int    TRANSPORTER_ADV_NOT_SEQ		= 	60	;
-	 public static final int    TRANSPORTER_PARENT_VENDOR 	= 	58	;
-	 public static final int    TRANSPORTER_PURCH_PO_NUM 	= 	59	;
-	 */
-	
+
 	 public static final int  	TRANSPORTER_STUS			=	0	;
 	 public static final int  	TRANSPORTER_UNIT_NO			=	1	;
 	 public static final int  	TRANSPORTER_PROD_DATE		=	2	;
@@ -107,9 +98,7 @@ public class VsportalConstants {
 	 public static final int    TRANSPORTER_TOLL_AMOUNT 	= 	14	;
 	 public static final int    TRANSPORTER_MISC_AMOUNT 	= 	15	;
 	 public static final int    TRANSPORTER_REVISED_AMOUNT 	= 	16	; 
-	 //New for VOD-1848
 	 public static final int    TRANSPORTER_CANADA_TAX 		= 	17	;
-	 //
 	 public static final int    TRANSPORTER_ACCEPT_AMOUNT 	= 	18	;
 	 public static final int    TRANSPORTER_COMMENT		 	= 	19	;
 	 public static final int    PENSKE_COMMENT			 	= 	20	;
@@ -148,9 +137,7 @@ public class VsportalConstants {
 	 public static final int    TRANSPORTER_LAST_UPDATED 	= 	53	;
 	 public static final int    TRANSPORTER_CORP_CODE	 	= 	54	;
 	 public static final int    TRANSPORTER_LIFTGATE_MAKE	= 	55	;
-	 //New for VOD-1848
 	 public static final int    TRANSPORTER_TRANSMISSION_TYPE = 56	;
-	 //
 	 public static final int    TRANSPORTER_LIFTGATE_MODEL	= 	57	;
 	 public static final int  	TRANSPORTER_PICKUP_VENDOR	=	58	;
 	 public static final int    TRANSPORTER_REPORT_ID		= 	59	;

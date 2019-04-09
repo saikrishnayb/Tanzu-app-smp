@@ -47,7 +47,6 @@ public class Transport{
 	private String	vin;
 	private String	bodySerial;
 	private String	unitGvw;
-	private String	cat;
 	private String	slprCode;
 	private String	aeroRoof;
 	private String	aeroSide;
@@ -57,8 +56,6 @@ public class Transport{
 	private String 	status;
 	private Date 	requestedPickupDate;
 	private Date 	transitDateDelivered;
-	private double 	frieghtAmount;
-	private double 	fuelSurcharge;
 	private double 	totalAmount; 
 	private String 	plantCode;
 	private String 	destCode;
@@ -97,9 +94,6 @@ public class Transport{
 	private Date 	transporterAssignDate;
 	private Date 	lastChangedDate;
 	private String 	companyCode;
-	private String 	parentVendor;
-	private String	purchasePoNum;
-	private String 	advancedNoticeSequence;
 	private String	liftgateMake;
 	private String	liftgateModel;
 	private String 	reportId;
@@ -144,12 +138,6 @@ public class Transport{
 	}
 	public void setBodySerial(String bodySerial) {
 		this.bodySerial = bodySerial==null ? " " : bodySerial;
-	}
-	public String getCat() {
-		return cat;
-	}
-	public void setCat(String cat) {
-		this.cat = cat=="" ? " " : cat;
 	}
 	public String getDlvAdrs1() {
 		return dlvAdrs1;
@@ -198,9 +186,6 @@ public class Transport{
 	}
 	public void setDestCode(String destCode) {
 		this.destCode = destCode==null ? " " : destCode;
-	}
-	public double getFrieghtAmount() {
-		return frieghtAmount;
 	}
 	public String getOem() {
 		return oem;
@@ -281,15 +266,6 @@ public class Transport{
 	}
 	public void setTolls(double tolls) {
 		this.tolls = tolls;
-	}
-	public void setFrieghtAmount(double frieghtAmount) {
-		this.frieghtAmount = frieghtAmount;
-	}
-	public double getFuelSurcharge() {
-		return fuelSurcharge;
-	}
-	public void setFuelSurcharge(double fuelSurcharge) {
-		this.fuelSurcharge = fuelSurcharge;
 	}
 	public double getTotalAmount() {
 		return totalAmount;
@@ -497,18 +473,6 @@ public class Transport{
 	public void setCompanyCode(String companyCode) {
 		this.companyCode = companyCode;
 	}
-	public String getParentVendor() {
-		return parentVendor;
-	}
-	public void setParentVendor(String parentVendor) {
-		this.parentVendor = parentVendor;
-	}
-	public String getAdvancedNoticeSequence() {
-		return advancedNoticeSequence;
-	}
-	public void setAdvancedNoticeSequence(String advancedNoticeSequence) {
-		this.advancedNoticeSequence = advancedNoticeSequence;
-	}
 	public String getReportId() {
 		return reportId;
 	}
@@ -556,12 +520,6 @@ public class Transport{
 	}
 	public void setReqDelvry(String reqDelvry) {
 		this.reqDelvry = reqDelvry==null ? " " : reqDelvry;		
-	}
-	public String getPurchasePoNum() {
-		return purchasePoNum;
-	}
-	public void setPurchasePoNum(String purchasePoNum) {
-		this.purchasePoNum = purchasePoNum==null ? " " : purchasePoNum;
 	}
 	public String getLiftgateMake() {
 		return liftgateMake;

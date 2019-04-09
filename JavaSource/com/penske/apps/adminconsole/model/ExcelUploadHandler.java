@@ -388,6 +388,10 @@ public abstract class ExcelUploadHandler<T> {
 				value = String.valueOf(cell.getRichStringCellValue());
 				readRecords = populateExcelData(value, modelObject,cellNum,row);
 				break;
+			case FORMULA:
+				value=String.valueOf(cell.getNumericCellValue());
+	            readRecords = populateExcelData(value,modelObject,cellNum,row);
+	            break;
 			case BLANK:
 				value = "";
 				readRecords = populateExcelData(value,modelObject,cellNum,row);      
