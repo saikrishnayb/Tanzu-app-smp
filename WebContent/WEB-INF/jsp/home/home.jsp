@@ -122,9 +122,6 @@
 										<c:choose>
 											<c:when test="${alert.actionable eq 1 and not empty alert.link and alert.count != 0}">
 												<c:choose>
-													<c:when test="${alert.alertKey eq 'ALRT_PROD_UP_VEND_DATE_CHG'}">
-														<a id="CountId-${TabKey}-${alert.templateKey }" onClick="redirectToTab('upStreamVendor');return false">${alert.count}</a>
-													</c:when>
 													<c:when test="${alert.alertKey eq 'ALRT_PROD_DATA_CONFLICT'}">
 														<tl:isAuthorized tabName="Production" secFunction="DATA_CONFLICT_MENU">
 														<a id="CountId-${TabKey}-${alert.templateKey }" onClick="redirectToTab('dataConflict');return false">${alert.count}</a>

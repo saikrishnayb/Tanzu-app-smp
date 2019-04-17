@@ -237,15 +237,6 @@ function redirect(tabName,templateKey){
 	}else if(tabName=="massUpload"){
 		path = "smcop";
 		controllerName="massUpload";
-	}else if(tabName=="upStreamVendor"){
-		path = "smcop";
-		controllerName="upStreamVendor";
-		
-		if(homeLink==1){
-			templateKey=1;	
-		}else{
-			templateKey=2;	
-		}
 	}
 	else if(tabName="Home")
 		{
@@ -515,9 +506,6 @@ function changeCurrentTab(value){
 	}*/
 	if(value=="production"){
 		selectCurrentNavigation("productionStatus",'');
-	}
-	if(value=="upstreamVendor"){
-		selectCurrentNavigation("upStreamVendor",'');
 	}
 	if(value=="massUpload"){
 		selectCurrentNavigation("massUpload",'');
