@@ -1,7 +1,7 @@
 /**
  * @author john.shiffler (600139252)
  */
-package com.penske.apps.suppliermgmt.dao;
+package com.pensle.apps.adminconsole.dao;
 
 import org.junit.Before;
 import org.junit.Test;

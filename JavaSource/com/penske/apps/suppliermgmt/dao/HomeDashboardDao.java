@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Param;
 
 import com.penske.apps.smccore.base.annotation.NonVendorQuery;
+import com.penske.apps.smccore.base.annotation.SkipQueryTest;
 import com.penske.apps.suppliermgmt.domain.AlertCount;
 import com.penske.apps.suppliermgmt.model.Alert;
 import com.penske.apps.suppliermgmt.model.AlertHeader;
@@ -41,14 +42,17 @@ public interface HomeDashboardDao {
     @NonVendorQuery //FIXME: should this be filtered by vendor?
     public List<Alert> selectAlerts(@Param("headerId")int headerId,@Param("userType")int userType);
 
+    @SkipQueryTest
     @NonVendorQuery("Uses a stored procedure - can't filter by vendor ID")  //TODO: Review Query
     @MapKey("alertKey")
     public Map<String, AlertCount> getOrderConfirmationAlertCountsByAlertKey(@Param("sso") String sso);
 
+    @SkipQueryTest
     @NonVendorQuery
     @MapKey("alertKey")
     public Map<String, AlertCount> getOrderFullfillmentCountsByAlertKey(@Param("sso") String sso);
 
+    @SkipQueryTest
     @NonVendorQuery
     @MapKey("alertKey")
     public Map<String, AlertCount> getProductionAlertCountsByAlertKey(@Param("sso") String sso);

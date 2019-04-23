@@ -60,6 +60,7 @@ public interface UserDAO {
     @NonVendorQuery
     public String getTermsAndCondition(@Param("date")Date date,@Param("status")String status);
 
+    @NonVendorQuery
     public List<UserVendorFilterSelection> getUserVendorFilterSelections(@Param("userId") int userId);
 
     @NonVendorQuery

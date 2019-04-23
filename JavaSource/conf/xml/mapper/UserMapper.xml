@@ -15,7 +15,7 @@
 		DEPT_ID,
 		TYPE_ID
 		ROLE_ID
-		FROM SMC_USER_MASTER SUI 
+		FROM SMC.SMC_USER_MASTER SUI 
 		WHERE TYPE_ID=#{userType}
 		ORDER BY DEPT_ID		
 	</select>  
@@ -34,37 +34,37 @@
 					
 	</resultMap>
 	<delete id = "deleteBuddyList" parameterType = "com.penske.apps.suppliermgmt.model.Buddies"> 
- 		DELETE SMC_BUDDIES 
+ 		DELETE FROM SMC.SMC_BUDDIES 
  		WHERE 
  		SSO = #{userSso}
  	</delete>
  	
 	<!-- if random users selected in buddies -->			
 	<insert id = "addBuddyList" parameterType="list">
- 		INSERT INTO SMC_BUDDIES(SSO, BUDDY_SSO, USER_DEPT, CREATED_BY,CREATED_DATE,SELECTION_TYPE)
+ 		INSERT INTO SMC.SMC_BUDDIES(SSO, BUDDY_SSO, USER_DEPT, CREATED_BY,CREATED_DATE,SELECTION_TYPE)
  		VALUES
  		<foreach item="item"  collection="list" separator=",">
- 	 		(#{item.sso},#{item.buddySso}, #{item.userDept}, #{item.sso},CURRENT TIMESTAMP,#{item.selectionType})
+ 	 		(#{item.sso},#{item.buddySso}, #{item.userDept}, #{item.sso},CURRENT_TIMESTAMP,#{item.selectionType})
  		</foreach>
  	</insert>	
  	
  	<!-- if all users selected in buddies -->
  	<insert id = "addBuddyBasedOnselectionType" parameterType="com.penske.apps.suppliermgmt.model.Buddies">
- 		INSERT INTO SMC_BUDDIES(SSO, BUDDY_SSO, USER_DEPT, CREATED_BY,CREATED_DATE,SELECTION_TYPE)
+ 		INSERT INTO SMC.SMC_BUDDIES(SSO, BUDDY_SSO, USER_DEPT, CREATED_BY,CREATED_DATE,SELECTION_TYPE)
  		VALUES
  		
- 	 		(#{sso},#{buddySso}, #{userDept}, #{sso},CURRENT TIMESTAMP,#{selectionType})
+ 	 		(#{sso},#{buddySso}, #{userDept}, #{sso},CURRENT_TIMESTAMP,#{selectionType})
  		
  	</insert>
  	
  	<select id="getSelectionType" parameterType="String" resultType="String">
- 		SELECT DISTINCT(SELECTION_TYPE) FROM SMC_BUDDIES WHERE SSO=#{loggedInSso} AND BUDDY_SSO=#{loggedInSso}
+ 		SELECT DISTINCT(SELECTION_TYPE) FROM SMC.SMC_BUDDIES WHERE SSO=#{loggedInSso} AND BUDDY_SSO=#{loggedInSso}
  	</select>
  	
  	<select id="getExistingBuddiesListFromUserMaster" parameterType="String" resultType="com.penske.apps.suppliermgmt.model.Buddies">
  	
  		SELECT SSO AS buddySso
-		FROM SMC_USER_MASTER
+		FROM SMC.SMC_USER_MASTER
 		<where>
 			( TYPE_ID=1
 			<if test="selectionType != 'ALL'">
@@ -92,17 +92,17 @@
 		CREATED_BY AS createdBy,
 		CREATED_DATE AS createdDate,
 		SELECTION_TYPE AS selectionType
-		from SMC_BUDDIES
+		from SMC.SMC_BUDDIES
 		where SSO=#{userSso}
 	</select>
  	<select id="getDeptDetailList" resultType="com.penske.apps.suppliermgmt.model.LabelValue">
  	select 
  	DEPT_ID AS labelId,
  	USER_DEPT AS labelValue
- 	from SMC_USER_DEPT
+ 	from SMC.SMC_USER_DEPT
  	</select>
 	<select id="getTermsAndCondition" resultType="String" >
-		select TC_TEXT from SMC_TERMS_AND_CONDITIONS 
+		select TC_TEXT from SMC.SMC_TERMS_AND_CONDITIONS 
 		where status = #{status} 
 		and START_DATE &lt;= #{date} 
 		and END_DATE &gt;= #{date}
@@ -128,7 +128,7 @@
            NAME,
            DESCRIPTION,
            PARENT_ORG_ID
-      FROM SMC_ORG_MASTER
+      FROM SMC.SMC_ORG_MASTER
      WHERE ORG_ID != 1 --Dont show the base penske org -Dave Roth 1/18/2017
   </select>
   
@@ -137,7 +137,7 @@
            NAME,
            DESCRIPTION,
            PARENT_ORG_ID
-      FROM SMC_ORG_MASTER
+      FROM SMC.SMC_ORG_MASTER
      WHERE ORG_ID = #{orgId}
   </select>
   
@@ -145,11 +145,11 @@
          SELECT orgMaster.ORG_ID,
                 vendorFilter.VENDOR_ID,
                 vendorFilter.IS_ACTIVE
-          FROM SMC_VENDOR_FILTER vendorFilter
-               INNER JOIN SMC_ORG_VENDOR_ASSOC vendorAssoc
+          FROM SMC.SMC_VENDOR_FILTER vendorFilter
+               INNER JOIN SMC.SMC_ORG_VENDOR_ASSOC vendorAssoc
                ON vendorAssoc.VENDOR_ID = vendorFilter.VENDOR_ID
                
-               INNER JOIN SMC_ORG_MASTER orgMaster
+               INNER JOIN SMC.SMC_ORG_MASTER orgMaster
                ON orgMaster.ORG_ID = vendorAssoc.ORG_ID
     
          WHERE vendorFilter.USER_ID = #{userId}
@@ -157,12 +157,12 @@
   </select>
   
   <delete id="deletePreviousUserVendorFilters">
-    DELETE FROM SMC_VENDOR_FILTER
+    DELETE FROM SMC.SMC_VENDOR_FILTER
           WHERE USER_ID = #{userId}
   </delete>
   
   <insert id="saveUserVendorFilterSelections">
-    INSERT INTO SMC_VENDOR_FILTER (VENDOR_ID,USER_ID,IS_ACTIVE)
+    INSERT INTO SMC.SMC_VENDOR_FILTER (VENDOR_ID,USER_ID,IS_ACTIVE)
          VALUES 
                <foreach collection="vendorIds" item="vendorId" separator=",">
                 (#{vendorId}, #{userId},1)
@@ -171,7 +171,7 @@
   </insert>
   
   <update id="toggleVendorFilter">
-    UPDATE SMC_VENDOR_FILTER
+    UPDATE SMC.SMC_VENDOR_FILTER
        SET IS_ACTIVE = CASE WHEN IS_ACTIVE = 1 THEN 0 ELSE 1 END
      WHERE USER_ID = #{userId}
   </update>

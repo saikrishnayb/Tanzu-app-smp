@@ -10,7 +10,7 @@
 				LOOKUP_DESC,
 				LOOKUP_SEQ,
 				LOOKUP_STATUS
-			FROM SMC_LOOKUP WHERE LOOKUP_STATUS='A'  ORDER BY LOOKUP_NAME ,LOOKUP_SEQ
+			FROM SMC.SMC_LOOKUP WHERE LOOKUP_STATUS='A'  ORDER BY LOOKUP_NAME ,LOOKUP_SEQ
 	</select>  
 	
 	<resultMap id="lookUpDetailsMap" type="com.penske.apps.suppliermgmt.model.LookUp">
@@ -27,7 +27,7 @@
 		SELECT MAX(CREATED_DATE) AS maxCreatedDate,
 		MAX(MODIFIED_DATE) AS maxModifiedDate,
 		COUNT(1) AS count
-		FROM SMC_LOOKUP
+		FROM SMC.SMC_LOOKUP
 		
 	</select>
 	

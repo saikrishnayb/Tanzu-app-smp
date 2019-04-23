@@ -22,6 +22,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.penske.apps.smccore.base.annotation.NonVendorQuery;
+import com.penske.apps.smccore.base.annotation.SkipQueryTest;
 import com.penske.apps.suppliermgmt.domain.UserLoginHistory;
 import com.penske.apps.suppliermgmt.domain.UserVendorFilterSelection;
 import com.penske.apps.suppliermgmt.model.Tab;
@@ -52,6 +53,7 @@ public interface LoginDAO {
     @NonVendorQuery
     public UserLoginHistory getUserLoginHistory(UserContext userContext);
 
+    @SkipQueryTest
     @NonVendorQuery
     public void putUserLogin(@Param("user") UserContext user, @Param("serverLocation") String serverLocation, @Param("loginDate") Date loginDate);
 
