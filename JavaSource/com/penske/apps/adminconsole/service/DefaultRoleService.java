@@ -1,6 +1,7 @@
 package com.penske.apps.adminconsole.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -34,7 +35,7 @@ public class DefaultRoleService implements RoleService
 				currentTab.setPermissions(roleDao.getRolePermissions(roleId, currentTab.getTabKey()));
 			}
 			else {
-				currentTab.setPermissions(roleDao.getAllRolePermissions(currentTab.getTabKey()));
+				currentTab.setPermissions(Collections.emptyList());
 			}
 		}
 			
@@ -66,7 +67,7 @@ public class DefaultRoleService implements RoleService
 				currentTab.setPermissions(baseRolePermissions);
 			}
 			else {
-				List<Permission> baseRolePermissions = roleDao.getAllRolePermissions(currentTab.getTabKey());
+				List<Permission> baseRolePermissions = Collections.emptyList();
 				List<Permission> rolePermissions = roleDao.getRolePermissions(role.getRoleId(), currentTab.getTabKey());
 				
 				// For each base role permission, if the current role also has that permission, then set available to 'true'.

@@ -11,7 +11,7 @@ public class ComponentVisibilityModel {
 	private int componentVisibilityId;
 	private int componentId;
 	private String componentName;
-	private String group;
+	private String compGroup;
 	private String subGroup;
 	private String loadSheet;
 	private String lsOverride;
@@ -52,10 +52,10 @@ public class ComponentVisibilityModel {
 	}
 
 	public String getGroup() {
-		return group;
+		return compGroup;
 	}
 	public void setGroup(String group) {
-		this.group = group;
+		this.compGroup = group;
 	}
 	 
 	public String getSubGroup() {

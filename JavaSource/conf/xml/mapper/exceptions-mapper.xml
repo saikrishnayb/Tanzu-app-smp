@@ -89,7 +89,7 @@
 		SET		PROVIDER_VENDOR_ID = #{providervendorId},
 				PROVIDER_PO_CATEGORY_ASSOC_ID = #{poCategoryAssociationId},
 				MODIFIED_BY = #{modifiedBy},
-				MODIFIED_DATE = current timestamp
+				MODIFIED_DATE = CURRENT_TIMESTAMP
 		WHERE	GLOBAL_EXCEPTION_ID = #{exceptionId}
 	</update>
 </mapper>

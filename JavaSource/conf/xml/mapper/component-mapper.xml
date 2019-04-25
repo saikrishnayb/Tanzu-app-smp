@@ -53,7 +53,7 @@
  		(TEMPLATE_ID, COMPONENT_ID, COMPONENT_ACCESS, AVAIL_TO_OTHER_PO, EXPORT_TO_EXCEL, 
  		CREATED_BY, CREATED_DATE, MODIFIED_BY, MODIFIED_DATE)
  		VALUES 	(#{templateId},#{componentId},#{editRequiredStr},#{dispOtherPOStr},#{excelStr},#{createdBy}
- 		,CURRENT TIMESTAMP,#{modifiedBy},CURRENT TIMESTAMP)
+ 		,CURRENT_TIMESTAMP,#{modifiedBy},CURRENT_TIMESTAMP)
  	</insert>
 	
 	<update id="updateTemplateComponent">
@@ -63,7 +63,7 @@
 	 		 AVAIL_TO_OTHER_PO = #{dispOtherPOStr},
 	 		 EXPORT_TO_EXCEL = #{excelStr}, 
 	 		 MODIFIED_BY = #{modifiedBy},
-	 		 MODIFIED_DATE = CURRENT TIMESTAMP
+	 		 MODIFIED_DATE = CURRENT_TIMESTAMP
  		WHERE 
  		     TEMPLATE_ID = #{templateId} AND COMPONENT_ID = #{componentId}
  	</update>
@@ -71,7 +71,7 @@
 	<update id="updateTemplate">
  		UPDATE SMC.SMC_TEMPLATE_MASTER 
 		SET TEMPLATE_HASH=#{templateHash},TEMPLATE_DESC=#{templateDesc},TEMPLATE_NAME=#{templateDesc},
- 			MODIFIED_BY=#{createdBy},PO_CATEGORY_ASSOC_ID=#{poCatAssID}, MODIFIED_DATE=CURRENT TIMESTAMP
+ 			MODIFIED_BY=#{createdBy},PO_CATEGORY_ASSOC_ID=#{poCatAssID}, MODIFIED_DATE=CURRENT_TIMESTAMP
  		WHERE TEMPLATE_ID = #{templateID}
  	</update>
 		
@@ -84,7 +84,7 @@
  	</update>
  	
  	<select id="isTemplateComponentExist" resultType="_boolean">
-	 SELECT CASE WHEN Count(COMPONENT_ID) > 0 THEN 1 ELSE 0 END  FROM SMC_TEMPLATE_COMPONENTS WHERE TEMPLATE_ID = #{templateId} AND COMPONENT_ID = #{componentId}
+	 SELECT CASE WHEN Count(COMPONENT_ID) > 0 THEN 1 ELSE 0 END  FROM SMC.SMC_TEMPLATE_COMPONENTS WHERE TEMPLATE_ID = #{templateId} AND COMPONENT_ID = #{componentId}
  	</select>
  	
  	<delete  id="deleteTemplateComponents">

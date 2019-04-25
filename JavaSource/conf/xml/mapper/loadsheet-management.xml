@@ -8,17 +8,17 @@
 		SELECT 	SCV.CMP_VISIBLE_ID AS componentVisibilityId,
 		SCV.CAT_TYPE_ID AS categoryId,
 		SCV.COMPONENT_ID AS componentId,
-		TRIM(VCS.COMPONENT_GROUP) AS group,
+		TRIM(VCS.COMPONENT_GROUP) AS compGroup,
 		TRIM(VCS.SUB_GROUP) AS subGroup,
 		TRIM(VCS.SUB_COMPONENT_NAME) AS componentName,
 		SCV.V2B_VISIBILITY AS screen2b,
 		SCV.LOADSHEET_VISIBILITY AS lsOverride,
-		(SELECT COUNT(SCRO.RULE_ID) FROM SMC_COMPONENT_RULE_OVERRIDES SCRO WHERE SCRO.CMP_VISIBLE_ID = SCV.CMP_VISIBLE_ID) AS ruleCount
-		FROM SMC_COMPONENT_VISIBILITY SCV
+		(SELECT COUNT(SCRO.RULE_ID) FROM SMC.SMC_COMPONENT_RULE_OVERRIDES SCRO WHERE SCRO.CMP_VISIBLE_ID = SCV.CMP_VISIBLE_ID) AS ruleCount
+		FROM SMC.SMC_COMPONENT_VISIBILITY SCV
 		JOIN CORP.VEHCMPSGF VCS on SCV.COMPONENT_ID=VCS.COMPONENT_ID
-		JOIN SMC_CAT_TYPE_MASTER SCM ON SCV.CAT_TYPE_ID=SCM.CAT_TYPE_ID
+		JOIN SMC.SMC_CAT_TYPE_MASTER SCM ON SCV.CAT_TYPE_ID=SCM.CAT_TYPE_ID
 		WHERE SCM.PO_CATEGORY=#{category} AND SCM.TYPE=#{type} AND SCV.LOADSHEET_VISIBILITY !='' 
-		ORDER BY group,subGroup,componentName
+		ORDER BY compGroup,subGroup,componentName
  		
  	</select>
  	
@@ -31,16 +31,16 @@
 				FIRST_NAME||' '||LAST_NAME		AS 	editedBy,
 				CTM.MODIFIED_DATE				AS	editedDate
 		FROM
-				SMC_CAT_TYPE_MASTER CTM
+				SMC.SMC_CAT_TYPE_MASTER CTM
 		LEFT JOIN 
-				SMC_USER_MASTER SUM 
-		ON 		SUM.SSO=CTM.MODIFIED_BY
+				SMC.SMC_USER_MASTER USER 
+		ON 		USER.SSO=CTM.MODIFIED_BY
 	</select>
 	
 	
 	<!-- To Load the Details in Load Sheet Management Page-->
 	<select  id="getUsesDefaultForCategoryAndType" resultType="String">
-		SELECT 	USES_DEFAULT FROM SMC_CAT_TYPE_MASTER SCM
+		SELECT 	USES_DEFAULT FROM SMC.SMC_CAT_TYPE_MASTER SCM
 		WHERE SCM.PO_CATEGORY=#{category} AND SCM.TYPE=#{type} 
 	</select>
 	
@@ -55,15 +55,15 @@
 				SUME.FIRST_NAME||' '||SUME.LAST_NAME	AS 	editBy,
 				CVRM.MODIFIED_DATE						AS	editDate
 		FROM
-				SMC_CMP_VISIBILITY_RULES_MASTER CVRM
+				SMC.SMC_CMP_VISIBILITY_RULES_MASTER CVRM
 		LEFT JOIN 
-				SMC_USER_MASTER SUMC
+				SMC.SMC_USER_MASTER SUMC
 		ON 		SUMC.SSO=CVRM.CREATED_BY 	 
 		LEFT JOIN 
-				SMC_USER_MASTER SUME
+				SMC.SMC_USER_MASTER SUME
 		ON		SUME.SSO=CVRM.MODIFIED_BY
 		LEFT JOIN
-				SMC_COMPONENT_RULE_OVERRIDES CRO
+				SMC.SMC_COMPONENT_RULE_OVERRIDES CRO
 		ON		CVRM.RULE_ID = CRO.RULE_ID
 		WHERE 
 		       CVRM.RULE_TYPE = 'L'
@@ -76,7 +76,7 @@
  		SELECT 
 				TRIM(NAME)
 		FROM
-				SMC_CMP_VISIBILITY_RULES_MASTER
+				SMC.SMC_CMP_VISIBILITY_RULES_MASTER
 		<if test="ruleId != 0">
 		WHERE
 				RULE_ID NOT IN ( #{ruleId} ) 
@@ -86,7 +86,7 @@
 	<!-- To Insert the Rule master Details -->
  	<insert id="insertRuleMasterDetails" useGeneratedKeys="true" keyProperty="rule.ruleId" keyColumn="RULE_ID" >
  		INSERT INTO 
- 					SMC_CMP_VISIBILITY_RULES_MASTER 
+ 					SMC.SMC_CMP_VISIBILITY_RULES_MASTER 
  					(NAME,			DESCRIPTION,			CREATED_BY,			MODIFIED_BY,RULE_TYPE)
  		VALUES 		(#{rule.ruleName},	#{rule.description},	#{user.userSSO},	#{user.userSSO},#{rule.ruleType})
  	</insert>
@@ -94,7 +94,7 @@
  	<!-- To insert the rule definition -->
  	<insert id="insertRuleDefinitions">
  		INSERT INTO 
- 					SMC_CMP_VISIBILITY_RULES_DEFINITION
+ 					SMC.SMC_CMP_VISIBILITY_RULES_DEFINITION
  					(RULE_ID,			CRITERIA_GROUP,				COMPONENT_ID,			COMPONENT_TYPE,
  					 OPERAND,			COMPONENT_VALUE,			CREATED_BY,				MODIFIED_BY)
  		VALUES		
@@ -107,7 +107,7 @@
  	<!-- To Update the rule master details -->
  	<update id="updateRuleMasterDetails">
  		UPDATE
- 				SMC_CMP_VISIBILITY_RULES_MASTER
+ 				SMC.SMC_CMP_VISIBILITY_RULES_MASTER
  		<set>		
  				NAME			=	#{rule.ruleName},
  				DESCRIPTION		=	#{rule.description},
@@ -122,7 +122,7 @@
  	<update id="updateRuleDefinitions">
  		
 		 	UPDATE
-		 			SMC_CMP_VISIBILITY_RULES_DEFINITION
+		 			SMC.SMC_CMP_VISIBILITY_RULES_DEFINITION
 		 	<set>		
 		 			CRITERIA_GROUP	=	#{ruleDef.criteriaGroup},
 		 			COMPONENT_ID	=	#{ruleDef.componentId},
@@ -143,7 +143,7 @@
  	<delete id="deleteRuleDefinitions">
  		DELETE
  		FROM
- 				SMC_CMP_VISIBILITY_RULES_DEFINITION
+ 				SMC.SMC_CMP_VISIBILITY_RULES_DEFINITION
  		WHERE
  				RULE_DEF_ID IN 
  				<foreach item="ruleDefId"  collection="ruleDefIdList" open="(" separator="," close=")">
@@ -156,7 +156,7 @@
  	<delete id="deleteRuleAssociation">
  		DELETE
  		FROM
- 				SMC_COMPONENT_RULE_OVERRIDES
+ 				SMC.SMC_COMPONENT_RULE_OVERRIDES
  		WHERE
  				RULE_ID=	#{ruleId}
  	</delete>
@@ -165,7 +165,7 @@
  	<delete id="deleteRuleMasterDetails">
  		DELETE
  		FROM
- 				SMC_CMP_VISIBILITY_RULES_MASTER
+ 				SMC.SMC_CMP_VISIBILITY_RULES_MASTER
  		WHERE
  				RULE_ID =	#{ruleId} 
  	</delete>
@@ -173,7 +173,7 @@
  	<delete id="deleteRuleDefDetails">
  		DELETE
  		FROM
- 				SMC_CMP_VISIBILITY_RULES_DEFINITION
+ 				SMC.SMC_CMP_VISIBILITY_RULES_DEFINITION
  		WHERE
  				RULE_ID =	#{ruleId} 
  	</delete>
@@ -182,11 +182,11 @@
  	<!-- Query to fetch the rule definition details based on ruleID -->
  	<select id="getRuleDetails" resultMap="ruleDetailsMap" >
 		SELECT 
- 				TRIM(RULE_ID) AS RULE_ID,
+ 				RULE_ID AS RULE_ID,
  				TRIM(NAME) AS NAME, 
  				TRIM(DESCRIPTION) AS DESCRIPTION 
  		FROM 
- 		 		SMC_CMP_VISIBILITY_RULES_MASTER 
+ 		 		SMC.SMC_CMP_VISIBILITY_RULES_MASTER 
  		 WHERE 	
  		 		RULE_ID=#{ruleId}
  	</select>
@@ -209,7 +209,7 @@
 				OPERAND,
 				COMPONENT_VALUE
 		FROM
-				SMC_CMP_VISIBILITY_RULES_DEFINITION
+				SMC.SMC_CMP_VISIBILITY_RULES_DEFINITION
 		WHERE 
 				RULE_ID=#{ruleId}
 	</select>
@@ -229,7 +229,7 @@
 		SELECT 
 		      VISIBILITY_OVERRIDE AS lsOverride
 		FROM 
-		     SMC_COMPONENT_RULE_OVERRIDES 
+		     SMC.SMC_COMPONENT_RULE_OVERRIDES 
 		WHERE 
 				TEMP_COMP_ID = #{templateComponentId}
 			AND RULE_ID=#{ruleId}
@@ -248,8 +248,8 @@
 			LSM.OEM AS oem,
 			FIRST_NAME||' '||LAST_NAME AS editedBy,
 			LSM.MODIFIED_DATE AS editedDate
-		FROM SMC_LOADSHEET_SEQ_MASTER LSM
-		JOIN SMC_USER_MASTER SUM ON LSM.MODIFIED_BY=SUM.SSO 
+		FROM SMC.SMC_LOADSHEET_SEQ_MASTER LSM
+		JOIN SMC.SMC_USER_MASTER USER ON LSM.MODIFIED_BY=USER.SSO 
         <where>
           <if test="category !=null and category !=''">
 			LSM.PO_CATEGORY=#{category}
@@ -272,22 +272,22 @@
 			LSM.OEM AS oem,
 			FIRST_NAME||' '||LAST_NAME AS editedBy,
 			LSM.MODIFIED_DATE AS editedDate
-		FROM SMC_LOADSHEET_SEQ_MASTER LSM
-		JOIN SMC_USER_MASTER SUM ON LSM.MODIFIED_BY=SUM.SSO 
+		FROM SMC.SMC_LOADSHEET_SEQ_MASTER LSM
+		JOIN SMC.SMC_USER_MASTER USER ON LSM.MODIFIED_BY=USER.SSO 
  	</select> 
  	
  	<!-- To get Load sheet category list in Load Sheet Sequencing Page-->
 	<select  id="getCategoryList" resultType="String">
 		SELECT 	DISTINCT TRIM(PO_CATEGORY) AS PO_CATEGORY
 		FROM
-		SMC_CAT_TYPE_MASTER ORDER BY PO_CATEGORY
+		SMC.SMC_CAT_TYPE_MASTER ORDER BY PO_CATEGORY
 		
 	</select>
 	<!-- To get Load sheet type list in Load Sheet Sequencing Page-->
 	<select  id="getTypeList" resultType="String">
 		SELECT DISTINCT TRIM(TYPE) AS TYPE
 		FROM
-		SMC_CAT_TYPE_MASTER
+		SMC.SMC_CAT_TYPE_MASTER
 		<where>
 		   TYPE != 'DEFAULT'
 		<if test="category != null and category !='' ">
@@ -311,7 +311,7 @@
 		SELECT 	DISTINCT RULE_ID AS 	ruleId,
                 NAME  AS	ruleName,
 		        LOWER(NAME) as Name
-		FROM SMC_CMP_VISIBILITY_RULES_MASTER WHERE RULE_TYPE = 'L' ORDER BY Name
+		FROM SMC.SMC_CMP_VISIBILITY_RULES_MASTER WHERE RULE_TYPE = 'L' ORDER BY Name
 	</select>
 	
 	<!-- TO get component visibility rules-->
@@ -319,41 +319,41 @@
 		SELECT 	RULE_ID AS 	ruleId,
 				PRIORITY  AS priority,          
                 VISIBILITY_OVERRIDE AS lsOverride
-		FROM SMC_COMPONENT_RULE_OVERRIDES
+		FROM SMC.SMC_COMPONENT_RULE_OVERRIDES
 		WHERE CMP_VISIBLE_ID=#{componentVisibleId} ORDER BY PRIORITY
 	</select>
 	
 	<!-- To delete the rules associated to the component -->
     <delete  id="deleteComponentVisibilityRules">
- 		DELETE FROM SMC_COMPONENT_RULE_OVERRIDES WHERE CMP_VISIBLE_ID=#{componentVisibilityId}
+ 		DELETE FROM SMC.SMC_COMPONENT_RULE_OVERRIDES WHERE CMP_VISIBLE_ID=#{componentVisibilityId}
  	</delete>
  	
  	<!-- To associate list of rules to the component -->
  	<insert id="saveComponentVisibilityRules">
-		INSERT INTO SMC_COMPONENT_RULE_OVERRIDES (CMP_VISIBLE_ID,RULE_ID, PRIORITY,VISIBILITY_OVERRIDE,CREATED_BY,
+		INSERT INTO SMC.SMC_COMPONENT_RULE_OVERRIDES (CMP_VISIBLE_ID,RULE_ID, PRIORITY,VISIBILITY_OVERRIDE,CREATED_BY,
 		CREATED_DATE, MODIFIED_BY, MODIFIED_DATE) VALUES
 		<foreach collection="rule" item="item" separator=",">
-		(#{componentVisibilityId},#{item.ruleId},#{item.priority},#{item.lsOverride},#{createdBy},current timestamp,#{createdBy},current timestamp)
+		(#{componentVisibilityId},#{item.ruleId},#{item.priority},#{item.lsOverride},#{createdBy},CURRENT_TIMESTAMP,#{createdBy},CURRENT_TIMESTAMP)
 		 </foreach>
     </insert>
     
      	
  	<!-- To associate list of rules to the component -->
  	<insert id="saveTemplateComponentVisibilityRules">
-		INSERT INTO SMC_COMPONENT_RULE_OVERRIDES (TEMP_COMP_ID,RULE_ID, PRIORITY,VISIBILITY_OVERRIDE,CREATED_BY,
+		INSERT INTO SMC.SMC_COMPONENT_RULE_OVERRIDES (TEMP_COMP_ID,RULE_ID, PRIORITY,VISIBILITY_OVERRIDE,CREATED_BY,
 		CREATED_DATE, MODIFIED_BY, MODIFIED_DATE) VALUES
-		(#{templateComponentId},#{ruleId},#{priority},#{lsOverride},#{createdBy},current timestamp,#{createdBy},current timestamp)
+		(#{templateComponentId},#{ruleId},#{priority},#{lsOverride},#{createdBy},CURRENT_TIMESTAMP,#{createdBy},CURRENT_TIMESTAMP)
     </insert>
     
      	<!-- To associate list of rules to the component -->
  	<insert id="updateTemplateComponentVisibilityRules">
-		UPDATE SMC_COMPONENT_RULE_OVERRIDES
+		UPDATE SMC.SMC_COMPONENT_RULE_OVERRIDES
 		<set>
 		VISIBILITY_OVERRIDE = #{lsOverride},
 		CREATED_BY			= #{createdBy},
-		CREATED_DATE		= current timestamp,
+		CREATED_DATE		= CURRENT_TIMESTAMP,
 		MODIFIED_BY			= #{createdBy},
-		MODIFIED_DATE		= current timestamp
+		MODIFIED_DATE		= CURRENT_TIMESTAMP
 		</set>
 		WHERE TEMP_COMP_ID = #{templateComponentId} AND RULE_ID = #{ruleId}
     </insert>
@@ -387,9 +387,9 @@
 				VCS.COMPONENT_ID		AS	componentId,
 				CRO.VISIBILITY_OVERRIDE AS lsOverride
 		FROM 
-				SMC_COMPONENT_VISIBILITY SCV
+				SMC.SMC_COMPONENT_VISIBILITY SCV
 		JOIN 	
-				SMC_COMPONENT_RULE_OVERRIDES CRO
+				SMC.SMC_COMPONENT_RULE_OVERRIDES CRO
 		ON	
 				CRO.CMP_VISIBLE_ID = SCV.CMP_VISIBLE_ID
 		JOIN 	
@@ -416,13 +416,13 @@
   				TRIM(VCS.SUB_GROUP)				AS subGroup,
   				TRIM(VCS.SUB_COMPONENT_NAME)	AS componentName
 		FROM 
-				SMC_COMPONENT_VISIBILITY SCV
+				SMC.SMC_COMPONENT_VISIBILITY SCV
 		JOIN 
 				CORP.VEHCMPSGF VCS 
 		ON   
 				SCV.COMPONENT_ID=VCS.COMPONENT_ID
 		JOIN 
-				SMC_CAT_TYPE_MASTER SCM 
+				SMC.SMC_CAT_TYPE_MASTER SCM 
 		ON 	
 				SCV.CAT_TYPE_ID=SCM.CAT_TYPE_ID
 		<where>		
@@ -450,35 +450,35 @@
 	<!-- insert into seq master Table -->
 	<insert id="insertSeqMasterDetails" useGeneratedKeys="true" keyProperty="seqMaster.id" keyColumn="SEQ_MASTER_ID" >
 		INSERT INTO 
-					SMC_LOADSHEET_SEQ_MASTER 
+					SMC.SMC_LOADSHEET_SEQ_MASTER 
 					(NAME,		DESCRIPTION,	PO_CATEGORY,	TYPE,	OEM,
 					CREATED_BY, CREATED_DATE,	MODIFIED_BY,	MODIFIED_DATE) 
 		VALUES 
 					(#{seqMaster.name}, #{seqMaster.description}, #{seqMaster.category}, #{seqMaster.type}, #{seqMaster.oem},
-					#{user.userSSO}, CURRENT TIMESTAMP, #{user.userSSO}, CURRENT TIMESTAMP)
+					#{user.userSSO}, CURRENT_TIMESTAMP, #{user.userSSO}, CURRENT_TIMESTAMP)
 	</insert>
 	
 	<!-- insert into group master table -->
 	<insert id="insertGrpMasterDetails" useGeneratedKeys="true" keyProperty="grpMaster.grpMasterId" keyColumn="GRP_MASTER_ID" >
 		INSERT INTO 
-					SMC_LOADSHEET_GROUP_MASTER 
+					SMC.SMC_LOADSHEET_GROUP_MASTER 
 					(SEQ_MASTER_ID,	NAME,	DISPLAY_SEQ,	CREATED_BY, 
 					CREATED_DATE,	MODIFIED_BY,	MODIFIED_DATE) 
 		VALUES 
 					(#{grpMaster.seqMasterId}, #{grpMaster.name}, #{grpMaster.displaySeq}, 
-					#{user.userSSO}, CURRENT TIMESTAMP, #{user.userSSO}, CURRENT TIMESTAMP)
+					#{user.userSSO}, CURRENT_TIMESTAMP, #{user.userSSO}, CURRENT_TIMESTAMP)
 	</insert>
 	
 	<!-- insert into component grp sequencing table -->
 	<insert id="insertCmpGrpSeqDetails" >
 		INSERT INTO 
-					SMC_LOADSHEET_CMP_GROUP_SEQ 
+					SMC.SMC_LOADSHEET_CMP_GROUP_SEQ 
 					(GRP_MASTER_ID,	COMPONENT_ID,	DISPLAY_SEQ,
 					CREATED_BY,	CREATED_DATE,	MODIFIED_BY,	MODIFIED_DATE) 
 		VALUES 
 				<foreach item="cmpGrpSeq" collection="cmpGrpSeqList" separator=",">
 					(#{cmpGrpSeq.grpMasterId},#{cmpGrpSeq.componentId},#{cmpGrpSeq.displaySeq},
-					#{user.userSSO}, CURRENT TIMESTAMP, #{user.userSSO}, CURRENT TIMESTAMP)
+					#{user.userSSO}, CURRENT_TIMESTAMP, #{user.userSSO}, CURRENT_TIMESTAMP)
 				</foreach>
 	</insert>
 	
@@ -493,7 +493,7 @@
 				TYPE,
 				OEM
 		FROM
-				SMC_LOADSHEET_SEQ_MASTER
+				SMC.SMC_LOADSHEET_SEQ_MASTER
 		WHERE
 				SEQ_MASTER_ID = #{seqMasterId}
 	</select>
@@ -516,7 +516,7 @@
 				TRIM(NAME) as NAME,
 				DISPLAY_SEQ
 		FROM 
-				SMC_LOADSHEET_GROUP_MASTER
+				SMC.SMC_LOADSHEET_GROUP_MASTER
 		WHERE
 				SEQ_MASTER_ID = #{id}
 		ORDER BY
@@ -542,7 +542,7 @@
 				SUB_GROUP,
 				SUB_COMPONENT_NAME
 		FROM
-				SMC_LOADSHEET_CMP_GROUP_SEQ CGS
+				SMC.SMC_LOADSHEET_CMP_GROUP_SEQ CGS
 		JOIN
 				CORP.VEHCMPSGF CMP
 		ON
@@ -568,7 +568,7 @@
 	<update id="updateSeqMasterDetails">
 	
 		UPDATE 
-				SMC_LOADSHEET_SEQ_MASTER
+				SMC.SMC_LOADSHEET_SEQ_MASTER
 				
 		<set>
 				NAME			=	#{seqMaster.name},
@@ -585,7 +585,7 @@
 	<update id="updateGrpMasterDetails">
 		
 		UPDATE
-				SMC_LOADSHEET_GROUP_MASTER
+				SMC.SMC_LOADSHEET_GROUP_MASTER
 		<set>
 				NAME 			=	#{grpMaster.name},
 				DISPLAY_SEQ 	= 	#{grpMaster.displaySeq},
@@ -599,7 +599,7 @@
 	
 	<delete id="deleteGrpMasterDetails">
 		DELETE FROM
-			SMC_LOADSHEET_GROUP_MASTER
+			SMC.SMC_LOADSHEET_GROUP_MASTER
 		WHERE
 			GRP_MASTER_ID NOT IN
 			<foreach item="grpMasterId"  collection="groupMasterIdList" open="(" separator="," close=")">
@@ -611,14 +611,14 @@
 	
 	<delete id="deleteGrpMaster">
 		DELETE FROM
-			SMC_LOADSHEET_GROUP_MASTER
+			SMC.SMC_LOADSHEET_GROUP_MASTER
 		WHERE
  			SEQ_MASTER_ID = #{seqMasterId}
 	</delete>
 	
 	<update id="updateCmpGrpSeqDeatils">
 		UPDATE
-				SMC_LOADSHEET_CMP_GROUP_SEQ
+				SMC.SMC_LOADSHEET_CMP_GROUP_SEQ
 		<set>
 				DISPLAY_SEQ		= 	#{cmpGrpSeq.displaySeq},
 				MODIFIED_BY		=	#{user.userSSO},
@@ -634,7 +634,7 @@
 	
 	<delete id="deleteCmpGrpSeqDetails">
 		DELETE FROM
-				SMC_LOADSHEET_CMP_GROUP_SEQ
+				SMC.SMC_LOADSHEET_CMP_GROUP_SEQ
 		WHERE
 				CMP_GRP_SEQ_ID NOT IN
 				<foreach item="compGrpSeqId"  collection="compGrpSeqIdList" open="(" separator="," close=")">
@@ -646,7 +646,7 @@
 	
 	<delete id="deleteCmpGrpSeq">
 		DELETE FROM
-				SMC_LOADSHEET_CMP_GROUP_SEQ
+				SMC.SMC_LOADSHEET_CMP_GROUP_SEQ
 		WHERE
  				GRP_MASTER_ID = #{grpMasterId}
 	</delete>
@@ -656,16 +656,16 @@
  	<delete id="deleteLoadsheetGroupSequnece">
  		DELETE
  		FROM
- 				SMC_LOADSHEET_CMP_GROUP_SEQ
+ 				SMC.SMC_LOADSHEET_CMP_GROUP_SEQ
  		WHERE
- 				GRP_MASTER_ID IN(SELECT GRP_MASTER_ID FROM  SMC_LOADSHEET_GROUP_MASTER WHERE SEQ_MASTER_ID=#{sequenceId})
+ 				GRP_MASTER_ID IN(SELECT GRP_MASTER_ID FROM  SMC.SMC_LOADSHEET_GROUP_MASTER WHERE SEQ_MASTER_ID=#{sequenceId})
  	</delete>
 	
 	<!-- To delete a load sheet sequence group master -->
  	<delete id="deleteLoadsheetGroupMaster">
  		DELETE
  		FROM
- 				SMC_LOADSHEET_GROUP_MASTER
+ 				SMC.SMC_LOADSHEET_GROUP_MASTER
  		WHERE
  				SEQ_MASTER_ID=	#{sequenceId}
  				
@@ -676,7 +676,7 @@
  	<delete id="deleteLoadsheetSequenceMaster">
  		DELETE
  		FROM
- 				SMC_LOADSHEET_SEQ_MASTER
+ 				SMC.SMC_LOADSHEET_SEQ_MASTER
  		WHERE
  				SEQ_MASTER_ID=	#{sequenceId}
  	</delete>	
@@ -687,7 +687,7 @@
  		SELECT 
 				TRIM(NAME)
 		FROM
-				SMC_LOADSHEET_SEQ_MASTER
+				SMC.SMC_LOADSHEET_SEQ_MASTER
 		<if test="sequenceId != 0">
 		WHERE
 				SEQ_MASTER_ID NOT IN ( #{sequenceId} ) 
@@ -699,7 +699,7 @@
  		SELECT 
 				count(*)
 		FROM
-				SMC_LOADSHEET_SEQ_MASTER
+				SMC.SMC_LOADSHEET_SEQ_MASTER
 		WHERE
 		   PO_CATEGORY=#{category} 
 		<if test="type != null">
@@ -718,17 +718,17 @@
  		SELECT SCMRM.RULE_ID AS ruleId,
  				SCMRM.NAME AS ruleName,
  				SCRO.PRIORITY AS priority
- 		from SMC_CMP_VISIBILITY_RULES_MASTER  SCMRM
-		LEFT JOIN SMC_COMPONENT_RULE_OVERRIDES SCRO  ON SCRO.RULE_ID = SCMRM.RULE_ID
+ 		from SMC.SMC_CMP_VISIBILITY_RULES_MASTER  SCMRM
+		LEFT JOIN SMC.SMC_COMPONENT_RULE_OVERRIDES SCRO  ON SCRO.RULE_ID = SCMRM.RULE_ID
 		WHERE SCRO.TEMP_COMP_ID=#{templateComponentId} ORDER BY priority
  	</select>
 	<select id="getRulesByComponentIdAndTemplateId" resultType="String">	
 		SELECT compInfo.DISPLAY_NAME || ' - ' || rule.NAME
-			FROM SMC_COMPONENT_RULE_OVERRIDES outcome
-			JOIN SMC_TEMPLATE_COMPONENTS comp ON comp.TEMP_COMP_ID = outcome.TEMP_COMP_ID
-			JOIN SMC_CMP_VISIBILITY_RULES_MASTER rule ON rule.RULE_ID = outcome.RULE_ID
-			JOIN SMC_CMP_VISIBILITY_RULES_DEFINITION criteria ON criteria.RULE_ID = rule.RULE_ID
-			JOIN SMC_COMPONENT_INFO_DETAILS compInfo ON compInfo.COMPONENT_ID = comp.COMPONENT_ID
+			FROM SMC.SMC_COMPONENT_RULE_OVERRIDES outcome
+			JOIN SMC.SMC_TEMPLATE_COMPONENTS comp ON comp.TEMP_COMP_ID = outcome.TEMP_COMP_ID
+			JOIN SMC.SMC_CMP_VISIBILITY_RULES_MASTER rule ON rule.RULE_ID = outcome.RULE_ID
+			JOIN SMC.SMC_CMP_VISIBILITY_RULES_DEFINITION criteria ON criteria.RULE_ID = rule.RULE_ID
+			JOIN SMC.SMC_COMPONENT_INFO_DETAILS compInfo ON compInfo.COMPONENT_ID = comp.COMPONENT_ID
 			WHERE comp.TEMPLATE_ID = #{templateId}
 			AND (comp.COMPONENT_ID = #{componentId} OR criteria.COMPONENT_ID = #{componentId})
 		GROUP BY compInfo.DISPLAY_NAME || ' - ' || rule.NAME ORDER BY compInfo.DISPLAY_NAME || ' - ' || rule.NAME
@@ -737,7 +737,7 @@
 	<!-- To Update component rules priority  -->
  	<update id="updateComponentRulePriority">
  		UPDATE
- 				SMC_COMPONENT_RULE_OVERRIDES
+ 				SMC.SMC_COMPONENT_RULE_OVERRIDES
  		<set>		
  				PRIORITY		=	#{priority},
  				MODIFIED_BY		=	#{modifiedBy},
@@ -750,6 +750,6 @@
  	</update>
 	
  	<select id="getRuleCountByTemplateComponentId" resultType="int">
- 		select count(RULE_ID) from SMC_COMPONENT_RULE_OVERRIDES where TEMP_COMP_ID=#{templateComponentId}
+ 		select count(RULE_ID) from SMC.SMC_COMPONENT_RULE_OVERRIDES where TEMP_COMP_ID=#{templateComponentId}
  	</select>
 </mapper>

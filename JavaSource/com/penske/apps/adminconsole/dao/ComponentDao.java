@@ -10,6 +10,7 @@ import com.penske.apps.adminconsole.model.LoadSheetComponentDetails;
 import com.penske.apps.adminconsole.model.Template;
 import com.penske.apps.adminconsole.model.TemplatePoAssociation;
 import com.penske.apps.smccore.base.annotation.NonVendorQuery;
+import com.penske.apps.smccore.base.annotation.SkipQueryTest;
 import com.penske.apps.suppliermgmt.domain.ComponentGroup;
 /**
  * 
@@ -29,6 +30,7 @@ public interface ComponentDao {
     @NonVendorQuery
     public List<Components> getAllComponent();
 
+    @SkipQueryTest("SELECT IDENTITY_VAL_LOCAL() AS VAL FROM SYSIBM.SYSDUMMY1")
     @NonVendorQuery
     public void addTemplate(Template template);
 

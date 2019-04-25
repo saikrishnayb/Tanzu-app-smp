@@ -76,7 +76,7 @@
  	<insert id="addDynamicRule">
  		INSERT INTO SMC.SMC_DYNAMIC_RULES
 		(PRIORITY, CORP,  MANUFACTURER,  MODEL,  MODEL_YEAR,  STATUS, CREATED_BY,CREATED_DATE, MODIFIED_BY, MODIFIED_DATE)
-		VALUES( #{priority}, #{corpCode}, #{manufacturer}, #{model}, #{modelYear},#{status},#{createdBy},CURRENT TIMESTAMP, #{modifiedBy},CURRENT TIMESTAMP )
+		VALUES( #{priority}, #{corpCode}, #{manufacturer}, #{model}, #{modelYear},#{status},#{createdBy},CURRENT_TIMESTAMP, #{modifiedBy},CURRENT_TIMESTAMP )
  	</insert>
  	
  	<update id="modifyDynamicRule">
@@ -89,7 +89,7 @@
  				MODEL_YEAR = #{modelYear},
  				STATUS = #{status},
  				MODIFIED_BY =#{modifiedBy},
- 				MODIFIED_DATE = CURRENT TIMESTAMP
+ 				MODIFIED_DATE = CURRENT_TIMESTAMP
  		WHERE	DYNAMIC_RULE_ID = #{dynamicRuleId}
  	</update>
  	

@@ -35,18 +35,6 @@
         AND sfn.STATUS = 'A'
 	</select>
 	
-	<select id="getAllRolePermissions" resultType="com.penske.apps.adminconsole.model.Permission">
-		SELECT	sfn.SEC_FUNC_ID AS securityFunctionId,
-				sfn.NAME AS name
-				
-		FROM 	SMC.SMC_SECURITY_FUNCTION sfn, 
-				SMC.SMC_TAB_MASTER tab 
-				
-		WHERE 	sfn.TAB_KEY = tab.TAB_KEY
-		AND		tab.TAB_KEY = #{tabKey}
-        AND sfn.STATUS = 'A'
-	</select>
-	
 	<select id="getRoleSecurityFunctions" resultType="Integer">
 		SELECT	SEC_FUNC_ID
 		
@@ -95,7 +83,7 @@
 		INSERT INTO SMC.smc_user_roles
 		( ROLE_NAME, <if test="baseRoleId != 0">BASE_ROLE_ID,</if>DESCRIPTION,OEM, STATUS,CREATED_BY,
  				CREATED_DATE,MODIFIED_BY,MODIFIED_DATE)
-		VALUES( #{roleName}, <if test="baseRoleId != 0">#{baseRoleId},</if> #{roleDescription},#{oem} ,'A',#{createdBy},CURRENT TIMESTAMP,#{createdBy},CURRENT TIMESTAMP )
+		VALUES( #{roleName}, <if test="baseRoleId != 0">#{baseRoleId},</if> #{roleDescription},#{oem} ,'A',#{createdBy},CURRENT_TIMESTAMP,#{createdBy},CURRENT_TIMESTAMP )
 	</insert>
 	
 	<insert id="addRoleSecurityFunction">
@@ -125,7 +113,7 @@
 		SET		ROLE_NAME = #{roleName},
 				MODIFIED_BY =#{modifiedBy},
 				DESCRIPTION = #{roleDescription},
- 				MODIFIED_DATE = CURRENT TIMESTAMP,
+ 				MODIFIED_DATE = CURRENT_TIMESTAMP,
  				BASE_ROLE_ID = #{baseRoleId}
 		WHERE	ROLE_ID = #{roleId}
 	</update>
@@ -143,7 +131,7 @@
 		UPDATE	SMC.smc_user_roles
 		SET		STATUS = 'I',
 				MODIFIED_BY =#{modifiedBy},
- 				MODIFIED_DATE = CURRENT TIMESTAMP
+ 				MODIFIED_DATE = CURRENT_TIMESTAMP
 		WHERE ROLE_ID IN(
 				SELECT ROLE_ID	FROM SMC.smc_user_roles WHERE STATUS='A'
 				START WITH ROLE_ID = #{roleId} 
