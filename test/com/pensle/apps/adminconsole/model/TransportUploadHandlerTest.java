@@ -32,7 +32,7 @@ public class TransportUploadHandlerTest {
 	public void shouldPopulateExcelData() {
 		Workbook workbook = null;
 		try {
-			workbook = WorkbookFactory.create(this.getClass().getClassLoader().getResourceAsStream("resources/transporter-report-example.xls"));
+			workbook = WorkbookFactory.create(this.getClass().getClassLoader().getResourceAsStream("resources/transporter-report-example-1.xls"));
 		} catch (EncryptedDocumentException e1) {
 			e1.printStackTrace();
 		} catch (InvalidFormatException e1) {
@@ -92,37 +92,54 @@ public class TransportUploadHandlerTest {
 				break;
 			}                   
 		}
-        assertThat(transport.getPickupVendor(), is("800473"));
-        assertThat(transport.getStatus(), is("Pending Approval"));
-        assertThat(transport.getUnitNo(), is("277359"));
-        assertThat(transport.getRequestedPickupDate(), is(new GregorianCalendar(2019, Calendar.FEBRUARY, 13).getTime()));
-        assertThat(transport.getProductionDate(), is(new GregorianCalendar(2019, Calendar.FEBRUARY, 11).getTime()));
-        assertThat(transport.getEstimatedDeliveryDate(), is(new GregorianCalendar(2019, Calendar.FEBRUARY, 20).getTime()));
+        
+        assertThat(transport.getUnitNo(), is("283768"));
+        assertThat(transport.getStatus(), is("Pick-up"));
+        assertThat(transport.getProductionDate(), is(new GregorianCalendar(2019, Calendar.FEBRUARY, 14).getTime()));
+        assertThat(transport.getRequestedPickupDate(), is(new GregorianCalendar(2019, Calendar.FEBRUARY, 26).getTime()));
+        assertThat(transport.getEstimatedDeliveryDate(), is(new GregorianCalendar(2019, Calendar.MARCH, 1).getTime()));
+        assertThat(transport.getActDelvry(), is(new GregorianCalendar(1, Calendar.JANUARY, 1).getTime()));
+        assertThat(transport.getActualDeliveryReported(), is(new GregorianCalendar(1, Calendar.JANUARY, 1).getTime()));
+        assertThat(transport.getTrnstPo(), is(""));
+        assertThat(transport.getTransitPoDate(), is(new GregorianCalendar(1, Calendar.JANUARY, 1).getTime()));
+        assertThat(transport.getMileage(), is("78"));
+        assertThat(transport.getPenskeAddOnCharge(), is(0.00));
+        assertThat(transport.getFreightCharge(), is(175.00));
+        assertThat(transport.getFuelCharge(), is(0.00));
+        assertThat(transport.getTotalAmount(), is(175.00));
+        assertThat(transport.getFluids(), is(0.00));
+        assertThat(transport.getBreakDown(), is(0.00));
+        assertThat(transport.getTolls(), is(0.00));
+        assertThat(transport.getMisc(), is(0.00));
+        assertThat(transport.getRevisedPOAmount(), is(175.00));
+        assertThat(transport.getCanadaTax(), is(0.00));
+        assertThat(transport.getIsPOAmountAccepted(), is(""));
+        assertThat(transport.getTransporterComment(), is(""));
+        assertThat(transport.getPenskeComment(), is(""));
         assertThat(transport.getHoldNotificationDate(), is(new GregorianCalendar(1, Calendar.JANUARY, 1).getTime()));
         assertThat(transport.getAdvanceNoticeCancelDate(), is(new GregorianCalendar(1, Calendar.JANUARY, 1).getTime()));
-        assertThat(transport.getOem(), is("MOR"));
-        assertThat(transport.getPlantCode(), is("N/F"));
-        assertThat(transport.getPlantName(), is("MORGAN CANADA CORP"));
-        assertThat(transport.getPlantAdrs1(), is("12 CHELSEA LANE"));
+        assertThat(transport.getOem(), is("SUP"));
+        assertThat(transport.getPlantCode(), is("050"));
+        assertThat(transport.getPlantName(), is("SUPREME - JONESTOWN"));
+        assertThat(transport.getPlantAdrs1(), is("411 JONESTOWN ROAD"));
         assertThat(transport.getPlantAdrs2(), is(""));
-        assertThat(transport.getOriginCity(), is("BRAMPTON"));
-        assertThat(transport.getOriginState(), is("ON"));
-        assertThat(transport.getOriginZipCode(), is("L6T 3Y4"));
-        assertThat(transport.getOriginContactInfo(), is("905 791-8100"));
-        assertThat(transport.getDestCode(), is("023132"));
-        assertThat(transport.getDlvName(), is("HIWAY REFRIGERATION LTD"));
-        assertThat(transport.getDlvAdrs1(), is("1462 MUSTANG PLACE"));
-        assertThat(transport.getDlvAdrs2(), is("604-944-0119"));
-        assertThat(transport.getDestCity(), is("PORT COQUITLAM"));
-        assertThat(transport.getDestState(), is("BC"));
-        assertThat(transport.getDestZipCode(), is("V3C 6L2"));
-        assertThat(transport.getDestContactInfo(), is("905 791-8100"));
-        assertThat(transport.getMileage(), is("2699"));
-        assertThat(transport.getVin(), is("JALE5W161K7302368"));
-        assertThat(transport.getBodySerial(), is("CB06718001001"));
-        assertThat(transport.getUnitGvw(), is("19500"));
+        assertThat(transport.getOriginCity(), is("JONESTOWN"));
+        assertThat(transport.getOriginState(), is("PA"));
+        assertThat(transport.getOriginZipCode(), is("17038"));
+        assertThat(transport.getOriginContactInfo(), is(""));
+        assertThat(transport.getDestCode(), is("039310"));
+        assertThat(transport.getDlvName(), is("PENSKE TRUCK LEASING CO."));
+        assertThat(transport.getDlvAdrs1(), is("499 SHOEMAKER RD"));
+        assertThat(transport.getDlvAdrs2(), is(""));
+        assertThat(transport.getDestCity(), is("KING OF PRUSSIA"));
+        assertThat(transport.getDestState(), is("PA"));
+        assertThat(transport.getDestZipCode(), is("19406"));
+        assertThat(transport.getDestContactInfo(), is("(610) 275-5083"));
+        assertThat(transport.getVin(), is("3HAEUMML7LL300515"));
+        assertThat(transport.getBodySerial(), is("J0506533"));
+        assertThat(transport.getUnitGvw(), is("25999"));
         assertThat(transport.getVehicleCategory(), is("TRUCK"));
-        assertThat(transport.getVehicleType(), is("REEFER"));
+        assertThat(transport.getVehicleType(), is("VAN"));
         assertThat(transport.getFuelType(), is("DIESEL"));
         assertThat(transport.getSlprCode(), is("N"));
         assertThat(transport.getAeroRoof(), is("NONE"));
@@ -130,28 +147,19 @@ public class TransportUploadHandlerTest {
         assertThat(transport.getAeroCab(), is("N"));
         assertThat(transport.getDecking(), is("N"));
         assertThat(transport.getNumDecks(), is("0"));
-        assertThat(transport.getPenskeAddOnCharge(), is(4420.00));
-        assertThat(transport.getTotalAmount(), is(4420.00));
-        assertThat(transport.getTrnstPo(), is(""));
-        assertThat(transport.getTransitPoDate(), is(new GregorianCalendar(1, Calendar.JANUARY, 1).getTime()));
-        assertThat(transport.getActDelvry(), is(new GregorianCalendar(2019, Calendar.FEBRUARY, 20).getTime()));
-        assertThat(transport.getActualDeliveryReported(), is(new GregorianCalendar(2019, Calendar.FEBRUARY, 20).getTime()));
-        assertThat(transport.getFluids(), is(0.00));
-        assertThat(transport.getBreakDown(), is(0.00));
-        assertThat(transport.getTolls(), is(0.00));
-        assertThat(transport.getMisc(), is(0.00));
-        assertThat(transport.getRevisedPOAmount(), is(4420.0));
-        assertThat(transport.getIsPOAmountAccepted(), is(""));
-        assertThat(transport.getPenskeComment(), is(""));
-        assertThat(transport.getTransporterComment(), is("Delivered-Incorrect delivery address"));
-        assertThat(transport.getTransporterAssignDate(), is(new GregorianCalendar(2019, Calendar.FEBRUARY, 12).getTime()));
-        assertThat(transport.getLastChangedDate(), is(new GregorianCalendar(2018, Calendar.NOVEMBER, 12).getTime()));
-        assertThat(transport.getCompanyCode(), is("2000"));
-        assertThat(transport.getLiftgateMake(), is(""));
-        assertThat(transport.getLiftgateModel(), is(""));
-        assertThat(transport.getReportId(), is("2019-03-19 14:47:44.906000"));
-        assertThat(transport.getCanadaTax(), is(0.00));
+        assertThat(transport.getTransporterAssignDate(), is(new GregorianCalendar(2019, Calendar.FEBRUARY, 22).getTime()));
+        assertThat(transport.getLastChangedDate(), is(new GregorianCalendar(2019, Calendar.FEBRUARY, 25).getTime()));
+        assertThat(transport.getCompanyCode(), is("HPTL"));
+        assertThat(transport.getLiftgateMake(), is("WAL"));
         assertThat(transport.getTransmissionType(), is("A"));
+        assertThat(transport.getLiftgateModel(), is("EMWAP33"));
+        assertThat(transport.getPickupVendor(), is("17618"));
+        assertThat(transport.getPoCategory(), is("BODY"));
+        assertThat(transport.getPenskePo(), is("484313"));
+        assertThat(transport.getParentVendor(), is("17618"));
+        assertThat(transport.getAdvNoticeSeq(), is("0"));
+        assertThat(transport.getReportId(), is("2019-04-22 16:31:50.622000"));
+        
 	}
 
 }

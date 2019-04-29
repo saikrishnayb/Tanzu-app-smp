@@ -20,31 +20,33 @@
 	
  		Insert into CORP.NVONTRNRCV  
  		( 
- 			PICKUP_VENDOR,				REPORT_STATUS,		UNIT,					PKU_NOTICE_DATE,			PRODUCTION_DATE,			HOLD_DATE,		
- 			ADV_NOTICE_CANCEL_DATE,		OEM,				PLANT_CODE,				ORIGIN_NAME,				ORIGIN_ADD_1,				ORIGIN_ADD_2,		
- 			ORIGIN_CITY,				ORGIN_STATE_PROV,	ORIGIN_ZIP_CODE,		ORIGIN_PHONE,				DEST_CODE,					DEST_NAME,			 
- 			DEST_ADD_1,					DEST_ADD_2,			DEST_CITY,				DEST_STATE_PROV,			DEST_ZIP_CODE,				DEST_PHONE,				 
- 			EST_MILES,					VIN,				BODY_SERIAL,			UNIT_GVW,					PO_CATEGORY,				VEHICLE_CATEGORY,		 
- 			VEHICLE_TYPE,				FUEL_TYPE,			SLPR_CODE,				AERO_ROOF,					AERO_SIDE,					AERO_CAB,				 
- 			DECKING,					NO_DECKS,			FREIGHT_AMOUNT,						ADD_ON_CHARGES,				TOTAL_AMOUNT,			 
- 			TRNST_PO,					TRNST_PO_DATE,		UNIT_DELIVERY_DATE,		ACT_DELV_REPORTED,			FLUID_AMOUNT,				BREAKDWN_AMOUNT,		 
- 			TOLL_AMOUNT,				MISC_AMOUNT,		REVISED_AMOUNT,			SUBMIT_PAYMENT,				PENSKE_COMMENT,				TRANSPORTER_COMMENT,	 
+ 			PICKUP_VENDOR,				REPORT_STATUS,		UNIT,					PKU_NOTICE_DATE,		PRODUCTION_DATE,	HOLD_DATE,	
+ 			ADV_NOTICE_CANCEL_DATE,		OEM,				PLANT_CODE,				ORIGIN_NAME,			ORIGIN_ADD_1,		ORIGIN_ADD_2,		
+ 			ORIGIN_CITY,				ORGIN_STATE_PROV,	ORIGIN_ZIP_CODE,		ORIGIN_PHONE,			DEST_CODE,			DEST_NAME,			 
+ 			DEST_ADD_1,					DEST_ADD_2,			DEST_CITY,				DEST_STATE_PROV,		DEST_ZIP_CODE,		DEST_PHONE,				 
+ 			EST_MILES,					VIN,				BODY_SERIAL,			UNIT_GVW,				PO_CATEGORY,		VEHICLE_CATEGORY,		 
+ 			VEHICLE_TYPE,				FUEL_TYPE,			SLPR_CODE,				AERO_ROOF,				AERO_SIDE,			AERO_CAB,				 
+ 			DECKING,					NO_DECKS,			FREIGHT_AMOUNT,			ADD_ON_CHARGES,			TOTAL_AMOUNT,			 
+ 			TRNST_PO,					TRNST_PO_DATE,		UNIT_DELIVERY_DATE,		ACT_DELV_REPORTED,		FLUID_AMOUNT,		BREAKDWN_AMOUNT,		 
+ 			TOLL_AMOUNT,				MISC_AMOUNT,		REVISED_AMOUNT,			SUBMIT_PAYMENT,			PENSKE_COMMENT,		TRANSPORTER_COMMENT,	 
  			ASSIGN_DATE,				LAST_CHANGE_DATE,	CORP,														 
- 			REPORT_ID,					LIFTGATE_MAKE,		LIFTGATE_MODEL,			TREDEL						 
+ 			REPORT_ID,					LIFTGATE_MAKE,		LIFTGATE_MODEL,			TREDEL,					FUEL_SUR_CHARGE,	PARENT_VENDOR,
+ 			PO_NO,						ADV_NOTICE_SEQ,		TRANSMISSION_TYPE,		CANADIAN_TAX						 
  		)	
  		values  
  		( 
  			#{pickupVendor},			#{status},			#{unitNo},				#{requestedPickupDate},		#{productionDate},			#{holdNotificationDate}, 
- 			#{advanceNoticeCancelDate},	#{oem},				#{plantCode},			#{plantName},				#{plantAdrs1},				#{plantAdrs1}, 
+ 			#{advanceNoticeCancelDate},	#{oem},				#{plantCode},			#{plantName},				#{plantAdrs1},				#{plantAdrs2}, 
  			#{originCity},				#{originState},		#{originZipCode},		#{originContactInfo},		#{destCode},				#{dlvName},
  			#{dlvAdrs1},				#{dlvAdrs2},		#{destCity},			#{destState},				#{destZipCode},				#{destContactInfo}, 
- 			#{mileage},					#{vin},				#{bodySerial},			#{unitGvw},					#{transmissionType},						#{vehicleCategory}, 
+ 			#{mileage},					#{vin},				#{bodySerial},			#{unitGvw},					#{poCategory},				#{vehicleCategory}, 
  			#{vehicleType},				#{fuelType},		#{slprCode},			#{aeroRoof},				#{aeroSide},				#{aeroCab}, 
- 			#{decking},					#{numDecks},		#{canadaTax},					#{penskeAddOnCharge},		#{totalAmount}, 
+ 			#{decking},					#{numDecks},		#{freightCharge},		#{penskeAddOnCharge},		#{totalAmount}, 
  			#{trnstPo},					#{transitPoDate},	#{actDelvry},			#{actualDeliveryReported},	#{fluids},					#{breakDown}, 
  			#{tolls},					#{misc},			#{revisedPOAmount},		#{isPOAmountAccepted},		#{penskeComment},			#{transporterComment}, 
  			#{transporterAssignDate},	#{lastChangedDate},	#{companyCode},									
- 			#{reportId},				#{liftgateMake},	#{liftgateModel},		#{estimatedDeliveryDate}
+ 			#{reportId},				#{liftgateMake},	#{liftgateModel},		#{estimatedDeliveryDate},	#{fuelCharge},				#{parentVendor},
+ 			#{penskePo},				#{advNoticeSeq},	#{transmissionType},	#{canadaTax}
  		)
  	</insert>
 

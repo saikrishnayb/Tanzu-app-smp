@@ -103,6 +103,15 @@ public class Transport{
 	private double canadaTax;
 	private String transmissionType;
 	
+	//April 29, 2018
+	//J. Frey - VOD-1891
+	private double freightCharge;
+	private double fuelCharge;
+	private String poCategory;
+	private String penskePo;
+	private String parentVendor;
+	private String advNoticeSeq;
+	
 	public String getUnitNo() {
 		return unitNo;
 	}
@@ -549,4 +558,53 @@ public class Transport{
 	public void setTransmissionType(String transmissionType) {
 		this.transmissionType = transmissionType;
 	}
+	
+	public String getAdvNoticeSeq() {
+		return advNoticeSeq;
+	}
+	
+	public void setAdvNoticeSeq(String advNoticeSeq) {
+		this.advNoticeSeq = advNoticeSeq;
+	}
+	
+	public double getFreightCharge() {
+		return freightCharge;
+	}
+	
+	public void setFreightCharge(double freightCharge) {
+		this.freightCharge = freightCharge;
+	}
+	
+	public double getFuelCharge() {
+		return fuelCharge;
+	}
+	
+	public void setFuelCharge(double fuelCharge) {
+		this.fuelCharge = fuelCharge;
+	}
+	
+	public String getParentVendor() {
+		return parentVendor;
+	}
+	
+	public void setParentVendor(String parentVendor) {
+		this.parentVendor = parentVendor;
+	}
+	
+	public String getPenskePo() {
+		return penskePo;
+	}
+	
+	public void setPenskePo(String penskePo) {
+		this.penskePo = penskePo;
+	}
+	
+	public String getPoCategory() {
+		return poCategory;
+	}
+	
+	public void setPoCategory(String poCategory) {
+		this.poCategory = poCategory;
+	}
+	
 }

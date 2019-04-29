@@ -414,6 +414,24 @@ public class TransportUploadHandler extends ExcelUploadHandler<Transport>{
             case VsportalConstants.TRANSPORTER_TRANSMISSION_TYPE:
                 transport.setTransmissionType(value);
                 break;
+            case VsportalConstants.TRANSPORTER_FREIGHT_CHARGE:
+            	transport.setFreightCharge(toDouble(value));
+            	break;
+            case VsportalConstants.TRANSPORTER_FUEL_CHARGE:
+            	transport.setFuelCharge(toDouble(value));
+            	break;
+            case VsportalConstants.TRANSPORTER_PO_CATEGORY:
+            	transport.setPoCategory(value);
+            	break;
+            case VsportalConstants.TRANSPORTER_PENSKE_PO:
+            	transport.setPenskePo(value);
+            	break;
+            case VsportalConstants.TRANSPORTER_PARENT_VENDOR:
+            	transport.setParentVendor(value);
+            	break;
+            case VsportalConstants.TRANSPORTER_ADV_NOTICE_SEQ:
+            	transport.setAdvNoticeSeq(value);
+            	break;
             
         }
     }
