@@ -74,7 +74,7 @@ public class UserDAOTest extends MyBatisDaoTest{
     @Test
     public void shouldGetUserList() {
     	try {
-			userDao.getUserList(1);
+			userDao.getUserList(1, false);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

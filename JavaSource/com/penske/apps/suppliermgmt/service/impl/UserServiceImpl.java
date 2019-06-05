@@ -56,9 +56,9 @@ public class UserServiceImpl implements UserService {
 	private SuppliermgmtSessionBean sessionBean;
 	
 	@Override
-	public List<User> getUserDetails() throws SMCException {
+	public List<User> getUserDetails(boolean active) throws SMCException {
 		try{
-			 List<User> userDetails = userDao.getUserList(ApplicationConstants.PENSKE_USER_TYPE);
+			 List<User> userDetails = userDao.getUserList(ApplicationConstants.PENSKE_USER_TYPE, active);
 		     return userDetails;
 		} catch(SQLException ex){
 			throw new SMCException(ex.getErrorCode(),ex.getMessage(),ex);

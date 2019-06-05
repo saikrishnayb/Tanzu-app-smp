@@ -17,6 +17,9 @@
 		ROLE_ID
 		FROM SMC.SMC_USER_MASTER SUI 
 		WHERE TYPE_ID=#{userType}
+		<if test="active">
+		AND STATUS = 'A'
+		</if>
 		ORDER BY DEPT_ID		
 	</select>  
 		<resultMap id="userDetailsMap" type="com.penske.apps.suppliermgmt.model.User">
@@ -75,6 +78,8 @@
 				<if test="selectionType == 'ALLPLANNING'">
 					AND DEPT_ID=2
 				</if>
+				--Only get active buddies VOD-1902
+				AND STATUS = 'A'
 			</if>
 			)
 			OR SSO=#{loggedInSso}
@@ -86,14 +91,18 @@
  	
  	<select id="getExistingBuddiesList" resultType="com.penske.apps.suppliermgmt.model.Buddies">
 		select
-		SSO AS sso,
-		BUDDY_SSO AS buddySso,
-		USER_DEPT AS userDept,
-		CREATED_BY AS createdBy,
-		CREATED_DATE AS createdDate,
-		SELECTION_TYPE AS selectionType
-		from SMC.SMC_BUDDIES
-		where SSO=#{userSso}
+		buddies.SSO AS sso,
+		buddies.BUDDY_SSO AS buddySso,
+		buddies.USER_DEPT AS userDept,
+		buddies.CREATED_BY AS createdBy,
+		buddies.CREATED_DATE AS createdDate,
+		buddies.SELECTION_TYPE AS selectionType
+		FROM SMC.SMC_BUDDIES buddies
+		--Only get active buddies VOD-1902
+		INNER JOIN SMC.SMC_USER_MASTER userMaster
+		           ON userMaster.SSO = buddies.BUDDY_SSO
+	 WHERE buddies.SSO=#{userSso}
+		 AND userMaster.STATUS = 'A'
 	</select>
  	<select id="getDeptDetailList" resultType="com.penske.apps.suppliermgmt.model.LabelValue">
  	select 

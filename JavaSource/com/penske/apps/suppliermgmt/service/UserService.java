@@ -12,7 +12,7 @@ import com.penske.apps.suppliermgmt.model.VendorFilter;
 
 public interface UserService {
 
-	public List<User> getUserDetails() throws SMCException;
+	public List<User> getUserDetails(boolean active) throws SMCException;
 
 	public void  addBuddyList(List<Buddies> newBuddyList) throws SMCException;
 	

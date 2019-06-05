@@ -48,7 +48,7 @@ public class UserController extends BaseController {
         {
 
             userContext = sessionBean.getUserContext();
-            userList=userService.getUserDetails();
+            userList=userService.getUserDetails(true);
             List<User> purchasingUsersList=new ArrayList<User>();
             List<User> planningUsersList=new ArrayList<User>();
             populateUserLists(userList,planningUsersList,purchasingUsersList);
@@ -91,7 +91,7 @@ public class UserController extends BaseController {
                 userService.deleteBuddyList(loggedInUserSso);
             }
             List<LabelValue> deptDetailList=userService.getDeptDetailList();
-            List<User> usersList=userService.getUserDetails();
+            List<User> usersList=userService.getUserDetails(false);
             populateNewBuddyUserList(newBuddyList,usersList,deptDetailList,loggedInUserSso,newBuddyArray);
 
             addBuddyList(newBuddyList,loggedInUserSso);

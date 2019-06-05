@@ -40,7 +40,7 @@ public interface UserDAO {
     public void addBuddyList(List<Buddies> newBuddyList)throws  SQLException;
 
     @NonVendorQuery
-    public List<User> getUserList(@Param("userType")int userType)throws  SQLException;
+    public List<User> getUserList(@Param("userType") int userType, @Param("active") boolean active)throws  SQLException;
 
     @NonVendorQuery
     public void addBuddyBasedOnselectionType(Buddies buddy);
