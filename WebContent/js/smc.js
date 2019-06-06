@@ -238,11 +238,15 @@ function redirect(tabName,templateKey){
 		path = "smcop";
 		controllerName="massUpload";
 	}
-	else if(tabName="Home")
+	else if(tabName=="Home")
 		{
 		path = "Home";
 		controllerName=tabId;
 		}
+	else if (tabName=="oemBuildMatrix"){
+		path = "smcof";
+		controllerName="oemBuildMatrix";
+	}
 	if(path != ""){
 		 
 		$('nav ul li.current',parent.document).removeClass('current');

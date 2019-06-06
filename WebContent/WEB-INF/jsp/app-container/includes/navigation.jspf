@@ -12,7 +12,14 @@
 		
 		<tl:isAuthorized tabName="Order Fulfillment" secFunction="ORDER_FULFILLMENT_TAB">
           <tl:penskeOnly>
-			<li><a href="#" id="orderfulfillment" onmousedown="redirectToTab('orderfulfillment');">Order Fulfillment</a></li>
+			<li><a href="#" id="orderfulfillment" onmousedown="redirectToTab('orderfulfillment');">Order Fulfillment</a>
+				<tl:isAuthorized tabName="Order Fulfillment" secFunction="OEM_BUILD_MATRIX">
+				<ul>
+					<li><a href="#" id="orderfulfillment" onmousedown="redirectToTab('orderfulfillment');">Deal Search</a></li>
+					<li><a href="#" id="oemBuildMatrix" onmousedown="redirectToTab('oemBuildMatrix')">OEM Build Matrix</a></li>
+				</ul>
+				</tl:isAuthorized>
+			</li>
           </tl:penskeOnly>
 		</tl:isAuthorized>
 
