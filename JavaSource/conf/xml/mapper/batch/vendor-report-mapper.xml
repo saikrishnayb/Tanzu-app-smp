@@ -13,16 +13,23 @@
 		 Select EXTENSION,MIME_TYPE from CORP.vfjtransporterfiletype
 	</select>
 	
-	<insert id="insertVendorReport"  parameterType="com.penske.apps.adminconsole.model.VendorReport">
+	<insert id="insertVendorReport"  parameterType="java.util.Collection">
 	
 		Insert into CORP.NVOBNIMSF 
-		(
-				REPORT_ID,ROW_SEQ,COL_SEQ,COL_VALUE,IS_HEADER,USER_ID, CREATE_DATE	
-		)
-		values 
-		(	
-			#{reportId} ,	#{rowSeq},		#{colSeq},	#{colValue},	#{isHeader},	 #{userId},	CURRENT_TIMESTAMP
-		)
+		(REPORT_ID,ROW_SEQ,COL_SEQ,COL_VALUE,IS_HEADER,USER_ID, CREATE_DATE)
+		
+VALUES 
+		
+		  <foreach collection="list" item="vendorReport"  separator=",">
+		    (#{vendorReport.reportId}, 
+		    #{vendorReport.rowSeq},
+		    #{vendorReport.colSeq},
+		    #{vendorReport.colValue},
+		    #{vendorReport.isHeader},
+		    #{vendorReport.userId},
+		    CURRENT_TIMESTAMP)
+		  </foreach>
+	
  
 	</insert>
 	

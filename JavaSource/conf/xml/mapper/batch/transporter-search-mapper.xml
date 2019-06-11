@@ -16,7 +16,7 @@
 
   <!-- As part of VOD-1848 (April 2019), the COLUMNS for PO_CATEGORY and FREIGHT_AMOUNT are repurposed for
        Transmission Type and Canadian Tax respectively-->
- 	<insert id="insertTransporter" parameterType="com.penske.apps.adminconsole.model.Transport"> 
+ 	<insert id="insertTransporter" parameterType="java.util.Collection"> 
 	
  		Insert into CORP.NVONTRNRCV  
  		( 
@@ -34,20 +34,22 @@
  			PO_NO,						ADV_NOTICE_SEQ,		TRANSMISSION_TYPE,		CANADIAN_TAX						 
  		)	
  		values  
+ 		<foreach collection="list" item="transport"  separator=",">
  		( 
- 			#{pickupVendor},			#{status},			#{unitNo},				#{requestedPickupDate},		#{productionDate},			#{holdNotificationDate}, 
- 			#{advanceNoticeCancelDate},	#{oem},				#{plantCode},			#{plantName},				#{plantAdrs1},				#{plantAdrs2}, 
- 			#{originCity},				#{originState},		#{originZipCode},		#{originContactInfo},		#{destCode},				#{dlvName},
- 			#{dlvAdrs1},				#{dlvAdrs2},		#{destCity},			#{destState},				#{destZipCode},				#{destContactInfo}, 
- 			#{mileage},					#{vin},				#{bodySerial},			#{unitGvw},					#{poCategory},				#{vehicleCategory}, 
- 			#{vehicleType},				#{fuelType},		#{slprCode},			#{aeroRoof},				#{aeroSide},				#{aeroCab}, 
- 			#{decking},					#{numDecks},		#{freightCharge},		#{penskeAddOnCharge},		#{totalAmount}, 
- 			#{trnstPo},					#{transitPoDate},	#{actDelvry},			#{actualDeliveryReported},	#{fluids},					#{breakDown}, 
- 			#{tolls},					#{misc},			#{revisedPOAmount},		#{isPOAmountAccepted},		#{penskeComment},			#{transporterComment}, 
- 			#{transporterAssignDate},	#{lastChangedDate},	#{companyCode},									
- 			#{reportId},				#{liftgateMake},	#{liftgateModel},		#{estimatedDeliveryDate},	#{fuelCharge},				#{parentVendor},
- 			#{penskePo},				#{advNoticeSeq},	#{transmissionType},	#{canadaTax}
+ 			#{transport.pickupVendor},			#{transport.status},			#{transport.unitNo},				#{transport.requestedPickupDate},		#{transport.productionDate},			#{transport.holdNotificationDate}, 
+ 			#{transport.advanceNoticeCancelDate},	#{transport.oem},				#{transport.plantCode},			#{transport.plantName},				#{transport.plantAdrs1},				#{transport.plantAdrs2}, 
+ 			#{transport.originCity},				#{transport.originState},		#{transport.originZipCode},		#{transport.originContactInfo},		#{transport.destCode},				#{transport.dlvName},
+ 			#{transport.dlvAdrs1},				#{transport.dlvAdrs2},		#{transport.destCity},			#{transport.destState},				#{transport.destZipCode},				#{transport.destContactInfo}, 
+ 			#{transport.mileage},					#{transport.vin},				#{transport.bodySerial},			#{transport.unitGvw},					#{transport.poCategory},				#{transport.vehicleCategory}, 
+ 			#{transport.vehicleType},				#{transport.fuelType},		#{transport.slprCode},			#{transport.aeroRoof},				#{transport.aeroSide},				#{transport.aeroCab}, 
+ 			#{transport.decking},					#{transport.numDecks},		#{transport.freightCharge},		#{transport.penskeAddOnCharge},		#{transport.totalAmount}, 
+ 			#{transport.trnstPo},					#{transport.transitPoDate},	#{transport.actDelvry},			#{transport.actualDeliveryReported},	#{transport.fluids},					#{transport.breakDown}, 
+ 			#{transport.tolls},					#{transport.misc},			#{transport.revisedPOAmount},		#{transport.isPOAmountAccepted},		#{transport.penskeComment},			#{transport.transporterComment}, 
+ 			#{transport.transporterAssignDate},	#{transport.lastChangedDate},	#{transport.companyCode},									
+ 			#{transport.reportId},				#{transport.liftgateMake},	#{transport.liftgateModel},		#{transport.estimatedDeliveryDate},	#{transport.fuelCharge},				#{transport.parentVendor},
+ 			#{transport.penskePo},				#{transport.advNoticeSeq},	#{transport.transmissionType},	#{transport.canadaTax}
  		)
+ 		</foreach>
  	</insert>
 
  </mapper>

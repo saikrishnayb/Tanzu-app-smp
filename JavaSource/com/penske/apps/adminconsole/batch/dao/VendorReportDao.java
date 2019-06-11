@@ -1,5 +1,6 @@
 package com.penske.apps.adminconsole.batch.dao;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.penske.apps.adminconsole.model.MimeTypeModel;
@@ -23,7 +24,7 @@ public interface VendorReportDao {
 	public List<MimeTypeModel> getMimeTypeList() throws Exception;
 	
 	@NonVendorQuery //TODO: Review Query
-	public void insertVendorReport(VendorReport vendorReport) throws Exception;
+	public void insertVendorReport(Collection<VendorReport> vendorReports) throws Exception;
 	
 	@NonVendorQuery //TODO: Review Query
 	public String getUploadLimit() throws Exception;

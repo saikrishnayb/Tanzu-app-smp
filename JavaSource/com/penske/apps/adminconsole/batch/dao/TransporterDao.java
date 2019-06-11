@@ -1,5 +1,6 @@
 package com.penske.apps.adminconsole.batch.dao;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.penske.apps.adminconsole.model.MimeTypeModel;
@@ -17,5 +18,5 @@ public interface TransporterDao {
 	public List<MimeTypeModel> getMimeTypeList() throws Exception;
 	
 	@NonVendorQuery //TODO: Review Query
-	public void insertTransporter(Transport transporter) throws Exception;
+	public void insertTransporter(Collection<Transport> transporter) throws Exception;
 }

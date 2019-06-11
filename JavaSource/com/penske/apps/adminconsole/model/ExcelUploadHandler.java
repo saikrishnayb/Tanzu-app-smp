@@ -275,19 +275,19 @@ public abstract class ExcelUploadHandler<T> {
 			 * Adding limit to number of rows uploaded using Vendor exception
 			 * Retrieves Upload Row limit for Vendor Upload from vfjapplnk table
 			 */
-			if(objUploadService.getClass().getName().indexOf("VendorReportService") != -1){
-				logger.debug("*****************VENDOR REPORT**************************");
-				/*
-				 *  Retrieves Upload Row limit for Vendor Upload from vfjapplnk table
-				 */
-				int uploadLimit= Integer.parseInt(objUploadService.getUploadLimit());
-				logger.debug("*****************VENDOR REPORT******uploadLimit*******************"+uploadLimit);
-				if(totalrows > uploadLimit ){
-					Exception e = new Exception("File contains "+totalrows+" records to upload. please limit to "+uploadLimit+" Rows");
-					logger.debug("File contains "+totalrows+" records to upload. please limit to "+uploadLimit+"");
-					throw e;
-				}
-			}
+//			if(objUploadService.getClass().getName().indexOf("VendorReportService") != -1){
+//				logger.debug("*****************VENDOR REPORT**************************");
+//				/*
+//				 *  Retrieves Upload Row limit for Vendor Upload from vfjapplnk table
+//				 */
+//				int uploadLimit= Integer.parseInt(objUploadService.getUploadLimit());
+//				logger.debug("*****************VENDOR REPORT******uploadLimit*******************"+uploadLimit);
+//				if(totalrows > uploadLimit ){
+//					Exception e = new Exception("File contains "+totalrows+" records to upload. please limit to "+uploadLimit+" Rows");
+//					logger.debug("File contains "+totalrows+" records to upload. please limit to "+uploadLimit+"");
+//					throw e;
+//				}
+//			}
 				rows = sheet.rowIterator(); // Get the rows and  iterate
 				populateRecords(rows,modelObjectList,pilot);// Populate the data from each row into the model object			
 				if (modelObjectList.size()>0){

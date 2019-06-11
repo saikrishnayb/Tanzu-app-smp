@@ -4,11 +4,14 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TimeZone;
 
+import org.apache.commons.collections4.ListUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -66,11 +69,11 @@ public class VendorReportServiceImpl implements UploadService<VendorReport>
      * @see com.penske.apps.vsportal.service.IUploadService#insert(java.lang.Object)
      */
     @Override
-    public void insert(VendorReport vendorReport) throws Exception
+    public void insert(Collection<VendorReport> vendorReports) throws Exception
     {
         try
         {
-            objDao.insertVendorReport(vendorReport);
+            objDao.insertVendorReport(vendorReports);
         }
         catch (Exception e)
         {
@@ -78,6 +81,7 @@ public class VendorReportServiceImpl implements UploadService<VendorReport>
             throw e;
         }
     }
+    
 
     /* (non-Javadoc)
      * @see com.penske.apps.vsportal.service.IUploadService#uploadExcelDataList(java.util.List)
@@ -86,27 +90,23 @@ public class VendorReportServiceImpl implements UploadService<VendorReport>
     @Override
     public String uploadExcelDataList(List<VendorReport> vendorReportList) throws Exception
     {
-        VendorReport vendorReport = null;
         String message = "";
-        Iterator<VendorReport> It = vendorReportList.iterator();
 
         //added for debug - Rajkumar
         long start = System.currentTimeMillis();
         int i=0;
         logger.info("Inserting "+i+" record Started at time : " + start);
-
+        
+        
         try {
-            while (It.hasNext())
-            {
+            
+            List<List<VendorReport>> subLists = ListUtils.partition(vendorReportList, 2000);
 
-                //added for debug - Rajkumar
-                i++;
-
-                //end
-                vendorReport = It.next();
-                reportId = vendorReport.getReportId();
-                insert(vendorReport);
-            }
+            for (List<VendorReport> subList : subLists)
+                insert(subList);
+            
+            i=vendorReportList.size();
+            reportId = vendorReportList.get(vendorReportList.size() - 1).getReportId();
 
         }
         catch (Exception e) {

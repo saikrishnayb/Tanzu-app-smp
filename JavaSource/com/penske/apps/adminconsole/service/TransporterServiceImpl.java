@@ -1,9 +1,11 @@
 package com.penske.apps.adminconsole.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.collections4.ListUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.penske.apps.adminconsole.batch.dao.TransporterDao;
 import com.penske.apps.adminconsole.model.MimeTypeModel;
 import com.penske.apps.adminconsole.model.Transport;
+import com.penske.apps.adminconsole.model.VendorReport;
 import com.penske.apps.suppliermgmt.annotation.TransporterUploadService;
 
 /**
@@ -51,7 +54,7 @@ public class TransporterServiceImpl  implements UploadService<Transport>{
      * @exception java.lang.Exception
      */
     @Override
-    public void insert(Transport transporter) throws Exception
+    public void insert(Collection<Transport> transporter) throws Exception
     {
         try
         {
@@ -75,16 +78,13 @@ public class TransporterServiceImpl  implements UploadService<Transport>{
     @Override
     public String uploadExcelDataList(List<Transport> transportList) throws Exception {
 
-        Transport transport = null;
         String message = "";
-        Iterator<Transport> It = transportList.iterator();
         try {
-            while (It.hasNext()) {
+            
+            List<List<Transport>> subLists = ListUtils.partition(transportList, 2000);
 
-                transport = It.next();
-                insert(transport);
-
-            }
+            for (List<Transport> subList : subLists)
+                insert(subList);
         } catch (Exception e) {
             logger.debug(" ERROR while trying to insert the records "
                     + e.getMessage());

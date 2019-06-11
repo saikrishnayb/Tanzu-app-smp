@@ -122,7 +122,7 @@ public class VendorUploadHandler extends ExcelUploadHandler<VendorReport>{
 	        			vendorReport.setReportId(reportId);
 	        			if(null==value || value.length()==0){
 	        				value = " ";
-	        				logger.info("Cell Content=NOTHING"+ "cellNum"+cellNum+" Row"+rowNum + ". Replacing cell value with blank space: "+value);
+	        				//logger.info("Cell Content=NOTHING"+ "cellNum"+cellNum+" Row"+rowNum + ". Replacing cell value with blank space: "+value);
 	        			}
 	        			vendorReport.setColValue(value);
 	        			if(rowNum>0){
@@ -133,7 +133,7 @@ public class VendorUploadHandler extends ExcelUploadHandler<VendorReport>{
 	        			vendorReport.setUserId(getUserId());
 	        			readRecords = true;
 	        			vendorReportLst.add(vendorReport);
-	        			logger.info("Report Id:"+ reportId +"cellNum"+cellNum+" Row"+rowNum + " value"+value);
+	        			//logger.info("Report Id:"+ reportId +"cellNum"+cellNum+" Row"+rowNum + " value"+value);
     				//}
     			}
     		}
