@@ -270,7 +270,6 @@ public abstract class ExcelUploadHandler<T> {
 			Workbook wb = WorkbookFactory.create(input);
 			Sheet sheet = wb.getSheetAt(0);
 			Iterator<Row> rows = sheet.rowIterator();
-			int totalrows = sheet.getLastRowNum();
 			/**
 			 * Adding limit to number of rows uploaded using Vendor exception
 			 * Retrieves Upload Row limit for Vendor Upload from vfjapplnk table

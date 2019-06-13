@@ -2,7 +2,6 @@ package com.penske.apps.adminconsole.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.collections4.ListUtils;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
 import com.penske.apps.adminconsole.batch.dao.TransporterDao;
 import com.penske.apps.adminconsole.model.MimeTypeModel;
 import com.penske.apps.adminconsole.model.Transport;
-import com.penske.apps.adminconsole.model.VendorReport;
 import com.penske.apps.suppliermgmt.annotation.TransporterUploadService;
 
 /**

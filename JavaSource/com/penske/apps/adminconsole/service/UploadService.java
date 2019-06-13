@@ -4,8 +4,6 @@ import java.util.Collection;
 import java.util.List;
 
 import com.penske.apps.adminconsole.model.MimeTypeModel;
-import com.penske.apps.adminconsole.model.Transport;
-import com.penske.apps.adminconsole.model.VendorReport;
 
 /**
  * This interface will define the classes that will upload excel docs.
