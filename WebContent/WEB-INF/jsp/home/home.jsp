@@ -74,6 +74,7 @@
 				<div id ="alertTable"  <c:if test="${hideTable}">style="display:none"</c:if> >
 					<div class="tab-header" id="${TabKey}">
 					<c:forEach var="alertHeader" items="${alertHeaders}">
+						<c:if test="${!empty alertHeader.alerts}">
 						<c:set var="tabKey" value="${TabKey}"/>
 						<div class="header width-full">
 							<table class="width-full">
@@ -99,7 +100,7 @@
 													<c:set var="isValidAlert" value="Y"/>
 												</tl:isAuthorized>
 											</c:when>
-											<c:when test="${alert.alertKey eq 'ALRT_PROD_MISSING_INFO' or alert.alertKey eq 'ALRT_PROD_DELV_MISSING_INFO'}">
+											<c:when test="${alert.alertKey eq 'PROD_MISSING_INFO'}">
 												<c:set var="isValidAlert" value="N"/>						
 												<tl:isAuthorized tabName="Production" secFunction="PROVIDE_MISSING_INFORMATION">
 													<c:set var="isValidAlert" value="Y"/>
@@ -153,6 +154,7 @@
 							</table>
 							
 						</div>
+						</c:if>
 					</c:forEach>
 					</div>
 					<div id = "flagMessage" class="error floatLeft" style ="display: none; text-align:center; padding-top:1%;">

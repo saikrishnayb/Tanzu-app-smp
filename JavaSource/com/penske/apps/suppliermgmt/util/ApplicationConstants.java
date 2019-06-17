@@ -91,6 +91,11 @@ public class ApplicationConstants {
 	
 	public static final int DASHBOARD_TAB_ID = 1;
 	
+	public static final String DEL_MISSED_INFO = "PROD_DELV_MISSING_INFO";
+	public static final String PROD_MISSING_INFO = "PROD_PROD_MISSING_INFO";
+	public static final String PROD_OTHER_TAB = "HDR_PROD_OTHER";
+	public static final String MISSING_INFO = "PROD_MISSING_INFO";
+	
 }
 
 

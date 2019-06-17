@@ -24,7 +24,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-ma
 	<select id="selectHeaders" resultType="com.penske.apps.suppliermgmt.model.AlertHeader">
 		SELECT	SAH.HEADER_NAME AS headerName,
 				SAH.HELP_TEXT AS helpText,
-				SAH.HEADER_ID AS headerId
+				SAH.HEADER_ID AS headerId,
+				SAH.HEADER_KEY AS headerKey
 		
 		FROM	SMC.SMC_ALERT_HEADER SAH
 		JOIN 	SMC.SMC_TAB_MASTER ST
