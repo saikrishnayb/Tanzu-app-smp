@@ -1,7 +1,6 @@
 package com.penske.apps.suppliermgmt.service.impl;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -104,26 +103,17 @@ public class DefaultHomeDashboardService implements HomeDashboardService {
             break;
             default : break;
         }
-		int missingInfoCount = 0;
 		for (AlertHeader currentHeader : headers) {
 		    
 			currentHeader.setAlerts(homeDashboardDao.selectAlerts(currentHeader.getHeaderId(),userType));
-			Iterator<Alert> alertInterator = currentHeader.getAlerts().iterator();
-			while(alertInterator.hasNext()){
-			    Alert alert = alertInterator.next();
+			
+			for(Alert alert : currentHeader.getAlerts()){
 			    String alertKey = alert.getAlertKey();
 			    
 			    AlertCount alertCount = alertCounts.get(alertKey);
 			    
 			    boolean noAlertCount = alertCount == null;
 			    if(noAlertCount) continue;
-			    
-			    if(ApplicationConstants.PRODUCTION_TAB_KEY.equals(tabKey) && alert.getTemplateKey() != null)
-				if(ApplicationConstants.PROD_MISSING_INFO.equals(alert.getTemplateKey()) || ApplicationConstants.DEL_MISSED_INFO.contentEquals(alert.getTemplateKey())) {
-				    missingInfoCount += alertCount.getAlertCount();
-				    alertInterator.remove();
-				    continue;
-			    }
 			    
 			    alert.updateAlertCount(alertCount);
 			    
@@ -138,19 +128,6 @@ public class DefaultHomeDashboardService implements HomeDashboardService {
 					default : break;
 				}
 				}
-			}
-			if(ApplicationConstants.PROD_OTHER_TAB.equals(currentHeader.getHeaderKey())) {
-			    Alert missingInfoAlert = new Alert();
-			    missingInfoAlert.setActionable(1);
-			    missingInfoAlert.setLink("./production?alertId=" + ApplicationConstants.MISSING_INFO);
-			    missingInfoAlert.setAlertKey(ApplicationConstants.MISSING_INFO);
-			    missingInfoAlert.setCount(missingInfoCount);
-			    missingInfoAlert.setAlertName("Missing Information");
-			    missingInfoAlert.setHelpText("Units missing component information required by Penske in order to process payment.");
-			    missingInfoAlert.setTemplateKey(ApplicationConstants.MISSING_INFO);
-			    List<Alert> newList = currentHeader.getAlerts();
-			    newList.add(missingInfoAlert);
-			    currentHeader.setAlerts(newList);
 			}
 		}
 		return headers;
