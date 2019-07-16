@@ -16,7 +16,7 @@
 				<tl:isAuthorized tabName="Order Fulfillment" secFunction="OEM_BUILD_MATRIX">
 				<ul>
 					<li><a href="#" id="orderfulfillment" onmousedown="redirectToTab('orderfulfillment');">Deal Search</a></li>
-					<li><a href="#" id="oemBuildMatrix" onmousedown="redirectToTab('oemBuildMatrix')">OEM Build Matrix</a></li>
+					<li style="display: none;"><a href="#" id="oemBuildMatrix" onmousedown="redirectToTab('oemBuildMatrix')">OEM Build Matrix</a></li>
 				</ul>
 				</tl:isAuthorized>
 			</li>
@@ -50,7 +50,7 @@
 						     </tl:isAuthorized>
 						     
 						     <tl:isAuthorized tabName="Production" secFunction="UPDATE_DATES">
-						 		<li><a href="#" id="dateValidation" onmousedown="linkRequest('button'); redirectToTab('dateValidation');">Update Date/Delay</a></li>
+						 		<li style="display: none;"><a href="#" id="dateValidation" onmousedown="linkRequest('button'); redirectToTab('dateValidation');">Update Date/Delay</a></li>
 							 </tl:isAuthorized>
                              <tl:isAuthorized tabName="Production" secFunction="MASS_UPDATE">				     
 						       <li><a href="#" id="massUpload"  onmousedown="redirectToTab('massUpload')">Unit Template Upload</a></li>   
