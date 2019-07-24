@@ -13,12 +13,17 @@
 		<tl:isAuthorized tabName="Order Fulfillment" secFunction="ORDER_FULFILLMENT_TAB">
           <tl:penskeOnly>
 			<li><a href="#" id="orderfulfillment" onmousedown="redirectToTab('orderfulfillment');">Order Fulfillment</a>
-				<tl:isAuthorized tabName="Order Fulfillment" secFunction="OEM_BUILD_MATRIX">
+				
 				<ul>
 					<li><a href="#" id="orderfulfillment" onmousedown="redirectToTab('orderfulfillment');">Deal Search</a></li>
-					<li style="display: none;"><a href="#" id="oemBuildMatrix" onmousedown="redirectToTab('oemBuildMatrix')">OEM Build Matrix</a></li>
+          <tl:isAuthorized tabName="Order Fulfillment" secFunction="CHANGE_ORDERS">
+             <li><a href="#" id="changeOrders" onmousedown="redirectToTab('changeOrders')">Change Orders</a></li>
+          </tl:isAuthorized>
+          <tl:isAuthorized tabName="Order Fulfillment" secFunction="OEM_BUILD_MATRIX">
+             <li class="hidden"><a href="#" id="oemBuildMatrix" onmousedown="redirectToTab('oemBuildMatrix')">OEM Build Matrix</a></li>
+          </tl:isAuthorized>
 				</ul>
-				</tl:isAuthorized>
+				
 			</li>
           </tl:penskeOnly>
 		</tl:isAuthorized>
@@ -49,9 +54,9 @@
                              </tl:penskeOnly>
 						     </tl:isAuthorized>
 						     
-						     <tl:isAuthorized tabName="Production" secFunction="UPDATE_DATES">
+						     <%-- <tl:isAuthorized tabName="Production" secFunction="UPDATE_DATES">
 						 		<li style="display: none;"><a href="#" id="dateValidation" onmousedown="linkRequest('button'); redirectToTab('dateValidation');">Update Date/Delay</a></li>
-							 </tl:isAuthorized>
+							 </tl:isAuthorized> --%>
                              <tl:isAuthorized tabName="Production" secFunction="MASS_UPDATE">				     
 						       <li><a href="#" id="massUpload"  onmousedown="redirectToTab('massUpload')">Unit Template Upload</a></li>   
                              </tl:isAuthorized>

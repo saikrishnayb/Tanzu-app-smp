@@ -247,6 +247,14 @@ function redirect(tabName,templateKey){
 		path = "smcof";
 		controllerName="oemBuildMatrix";
 	}
+	else if (tabName=="changeOrders"){
+		path = "smcof";
+		controllerName="change-orders";
+	}
+	else{
+		path = "Home";
+		controllerName=tabId;
+	}
 	if(path != ""){
 		 
 		$('nav ul li.current',parent.document).removeClass('current');
