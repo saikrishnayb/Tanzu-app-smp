@@ -279,7 +279,7 @@
 			</div>
 		</div>
 	<input type="hidden" id="numberOfGroups" value="${fn:length(seqMaster.groupMasterList)}"/>
-	<script src="${baseUrl}/js/v2/jquery-2.2.4.min.js"></script>
+	<script src="${baseUrl}/js/v2/jquery-3.4.1.min.js"></script>
 	<Script>
 		var j2 = jQuery.noConflict();
 	</Script>

@@ -14,7 +14,7 @@
 <![endif]-->
 
 <%-- Most scripts get put in the footer of the page, but the main jQuery script has to be in the header, since the $ is very occasionally referenced in page bodies. (ex: $.parseJSON()) --%>
-<script src="${baseUrl}/js/v2/jquery-2.2.4.min.js"></script>
+<script src="${baseUrl}/js/v2/jquery-3.4.1.min.js"></script>
 
 <script type="text/javascript">
   sessionStorage.setItem('commonStaticUrl', '${commonStaticUrl}');
