@@ -38,6 +38,9 @@ var iframeResizer = (function() {
       _iframeNode.style.minHeight = '0px';
       
       let iframeBody = _iframeWindow.document.body;
+      
+      if(iframeBody == null) return; //Iframes are dumb, a few cases where the iframe does not have a body tag, just a head
+      
       let oldPosition = iframeBody.style.position;
      
       //Certain pages give me an incorrect size, switching temp to relative style fixes that
