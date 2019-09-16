@@ -386,6 +386,13 @@ public class DefaultSecurityService implements SecurityService{
 	public User doesUserExistVendor(String userName, int userId,boolean isVandorFlow,String isCreateOrEdit) {
 		User rtnUserBean = new User();
 		rtnUserBean.setReturnFlg(-1);
+		
+		//Short-circuit if the name contains anything but letters and numbers
+		if (!userName.matches("[a-zA-z0-9]+")) {
+			rtnUserBean.setReturnFlg(4);// username contains invalid characters
+			return rtnUserBean;
+		}
+				
 		List<String> userNameList = securityDao.getUserName(userName.toUpperCase(), userId);
 		//return userNameList.size() > 0;
 		

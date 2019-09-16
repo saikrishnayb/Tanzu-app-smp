@@ -302,9 +302,9 @@ public class SecurityRestController {
 
     @VendorAllowed
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
-    @RequestMapping(value ="is-username-exist",  method = RequestMethod.POST)
+    @RequestMapping(value ="is-username-valid",  method = RequestMethod.POST)
     @ResponseBody
-    public User isUserExist(@RequestParam("ssoId")String ssoId, @RequestParam("userId") int userId,
+    public User isUsernameValid(@RequestParam("ssoId")String ssoId, @RequestParam("userId") int userId,
             @RequestParam("isCreateOrEdit") String isCreateOrEdit,HttpServletResponse response) throws Exception {
         try{
             User user=securityService.doesUserExistVendor(ssoId, userId, true, isCreateOrEdit);

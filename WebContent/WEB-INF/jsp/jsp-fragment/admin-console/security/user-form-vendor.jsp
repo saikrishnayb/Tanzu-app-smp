@@ -39,12 +39,18 @@
 						</div>
 						<div id="sso-id-div" class="single-line-content">
 								<label for="sso-id">User Name <span class=requiredField>*</span></label> 
-								<input id="sso-id" tabindex="2" name="ssoId"  class='input alpha alpha-username  <c:if test = "${isCreatePage == false}"> borderless</c:if>'  type="text" value="${editableUser.ssoId}"  <c:if test = "${isCreatePage == false}">readonly</c:if> />
+								<input id="sso-id" tabindex="2" name="ssoId" class='input alpha alpha-username  <c:if test = "${isCreatePage == false}"> borderless</c:if>'  type="text" value="${editableUser.ssoId}"  <c:if test = "${isCreatePage == false}">readonly</c:if> />
 								<input id="sso-old-id" type="hidden" value="${editableUser.ssoId}"/>
 								<c:if test = "${isCreatePage == false}">
 							 	<span id="refreshSSODetails" class="reloadImage"><a href="#" tabindex="-1" id="refreshSSO"></a></span>
 							  </c:if>
 						</div>
+						<c:if test = "${isCreatePage == true}">
+							<div class="single-line-content">
+								User Names can contain letters and numbers only
+							</div>						
+						</c:if>
+						
 						<div class="single-line-content first-name-container" <c:if test = "${isCreatePage == true && currentUser.visibleToPenske}">class="displayNone"</c:if>>
 							<label for="first-name">First Name <span class=requiredField>*</span></label> 
 							<input id="first-name" tabindex=3 name="firstName" type="text" class="input alpha alpha-name " value="${editableUser.firstName}" />

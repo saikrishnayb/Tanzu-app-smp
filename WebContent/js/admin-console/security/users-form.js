@@ -297,14 +297,14 @@ $(document).ready(function() {
 		var ssoId = $('#sso-id').val();
 		var userId = 0;
 		
-		var $isUserNameAvailiblePromise = $.ajax({
+		var $isUserNameValidPromise = $.ajax({
 											type: "POST",
 											url:'./is-username-available.htm',
 											global: false,
 											data: {ssoId:ssoId, userId:userId}
 										});
 		
-		$isUserNameAvailiblePromise.fail(function(xhr, ajaxOptions, thrownError){
+		$isUserNameValidPromise.fail(function(xhr, ajaxOptions, thrownError){
 			var responseText = xhr.responseText;
 			if(responseText.indexOf('user')>0){
 				  $errMsg.text(responseText.substring(10,responseText.length));
@@ -389,14 +389,14 @@ $(document).ready(function() {
 		var ssoId = $('#sso-id').val();
 		var userId = $('#user-id').val();
 		
-		var $isUserNameAvailiblePromise = $.ajax({
+		var $isUserNameValidPromise = $.ajax({
 			type: "POST",
 			url:'./is-username-available.htm',
 			global: false,
 			data: {ssoId:ssoId, userId:userId}
 		});
 		
-		$isUserNameAvailiblePromise.fail(function(xhr, ajaxOptions, thrownError){
+		$isUserNameValidPromise.fail(function(xhr, ajaxOptions, thrownError){
 			var responseText = (xhr.responseText);
 			$('#customized-ajax-error').find('p').html(responseText);
 			$('#customized-ajax-error').dialog("open");
@@ -725,14 +725,14 @@ $('#signature-add').on('click', function(){
 			var ssoId = $('#sso-id').val();
 			var userId = 0;
 			
-			var $isUserNameAvailiblePromise = $.ajax({
+			var $isUserNameValidPromise = $.ajax({
 												type: "POST",
 												url:'./is-username-available.htm',
 												global: false,
 												data: {ssoId:ssoId, userId:userId}
 											});
 			
-			$isUserNameAvailiblePromise.fail(function(xhr, ajaxOptions, thrownError){
+			$isUserNameValidPromise.fail(function(xhr, ajaxOptions, thrownError){
 				var responseText = xhr.responseText;
 				if(responseText.indexOf('user')>0){
 					  $errMsg.text(responseText.substring(10,responseText.length));
@@ -811,14 +811,14 @@ $('#signature-add').on('click', function(){
 			var ssoId = $('#sso-id').val();
 			var userId = $('#user-id').val();
 			
-			var $isUserNameAvailiblePromise = $.ajax({
+			var $isUserNameValidPromise = $.ajax({
 				type: "POST",
 				url:'./is-username-available.htm',
 				global: false,
 				data: {ssoId:ssoId, userId:userId}
 			});
 			
-			$isUserNameAvailiblePromise.fail(function(xhr, ajaxOptions, thrownError){
+			$isUserNameValidPromise.fail(function(xhr, ajaxOptions, thrownError){
 				var responseText = (xhr.responseText);
 				$('#customized-ajax-error').find('p').html(responseText);
 				$('#customized-ajax-error').dialog("open");
@@ -898,6 +898,7 @@ function validate($editForm){
 	var flag = true;
 	var userTypeId = $('#user-type').val();
 	if(validateFormTextFields($editForm) == false){
+		
 		if($('#phone').hasClass('errorMsgInput')){
 			$errMsg.text('Error phone number invalid!');
 		}
@@ -985,17 +986,25 @@ function validateEmailOrUserId(isCreateOrEdit){
 	var ssoId = $('#sso-id').val();
 	var userId = $('#user-id').val();
 	var oldUserName=$('#sso-old-id').val();
-	if(isCreateOrEdit=='true' || (isCreateOrEdit=='false' && $.trim(ssoId) != $.trim(oldUserName))){
+	
+	var validUserId = isUserIdValid(ssoId);
+	
+	if(validUserId === false ) {
+		$errMsg.text("Selected username contains invalid characters. Please use only letters and numbers");
+		$('.error-messages-container').removeClass('displayNone');
+	}
+	
+	if(validUserId && (isCreateOrEdit=='true') || (isCreateOrEdit=='false' && $.trim(ssoId) != $.trim(oldUserName))){
 		$errMsg.text("");
 		$('.error-messages-container').addClass('displayNone');
-		var $isUserNameAvailiblePromise = $.ajax({
+		var $isUserNameValidPromise = $.ajax({
 			type: "POST",
-			url:'./is-username-exist.htm',
+			url:'./is-username-valid.htm',
 			global: true,
 			data: {ssoId:ssoId, userId:userId,isCreateOrEdit:isCreateOrEdit}
 		});
 
-		$isUserNameAvailiblePromise.fail(function(xhr, ajaxOptions, thrownError){
+		$isUserNameValidPromise.fail(function(xhr, ajaxOptions, thrownError){
 			var responseText = xhr.responseText;
 			if(responseText.indexOf('Error in processing the last request.')>0){
 				$errMsg.text("Error in processing the last request.");
@@ -1069,6 +1078,15 @@ function validateEmailOrUserId(isCreateOrEdit){
 		    	}
 				toggleButton("disable");
 		        break;
+		    case 3:
+		    	var errorTxt="<p>Selected username contains invalid characters. Please use letters and numbers only</p>";
+				if(isCreateOrEdit ==='true'){
+					$ldapUserinfoModal.find("#infoText").html(errorTxt);
+					$ldapUserinfoModal.find("#ok").show();
+					openModal($ldapUserinfoModal);
+		    	}
+				toggleButton("disable");
+		        break;		        
 		    default:
 		    	if(isCreateOrEdit ==='true'){
 		    		 openModal($ldapUserinfoModal);
@@ -1092,6 +1110,13 @@ function validateEmailOrUserId(isCreateOrEdit){
 		});
 	}
 }
+
+function isUserIdValid(userId) {
+	console.log("Validating Username");
+	var alphaNumericRegex = /(^[A-Za-z0-9]+$)/;
+	return alphaNumericRegex.test(userId)
+}
+
 /*function formatPhone(phone){
 	if(phone !=null && phone.length==10){
 		return "("+phone.substr(0, 3) +")" + '-' + phone.substr(3, 3) + '-' + phone.substr(6,4);
@@ -1099,4 +1124,5 @@ function validateEmailOrUserId(isCreateOrEdit){
 		return phone;
 	}
 }*/
+
 //# sourceURL=users-form.js
