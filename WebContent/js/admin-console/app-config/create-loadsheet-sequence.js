@@ -568,7 +568,7 @@ function validateFields(){
 		//Validate the Assigned Components
 		
 		//check for Available group's
-		if(j2("#assignedComponentsTable tbody:not(.displayNone)").children().size() == 0){
+		if(j2("#assignedComponentsTable tbody:not(.displayNone)").children().length == 0){
 				
 				j2("#ErrorMsg span").text("Please add atleast one Group");
 				j2("#ErrorMsg").show();
@@ -578,7 +578,7 @@ function validateFields(){
 		//check for Available Componets in each group
 		j2("#assignedComponentsTable tbody:not(.displayNone)").each(function (index,data) {
 			
-				if(j2(data).children().size() < 2){
+				if(j2(data).children().length < 2){
 					j2("#ErrorMsg span").text("Please add atleast one Component for each group");
 					j2("#ErrorMsg").show();
 					rtrnFlag= false;
