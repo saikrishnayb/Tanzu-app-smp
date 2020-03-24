@@ -285,13 +285,14 @@ public class BuildMatrixController {
     @RequestMapping(value="insert-district-proximity")
     @ResponseBody
     public ModelAndView insertDistrictProximity(DistrictProximity districtProximity,HttpServletResponse response) throws Exception {
-        try{
-        	System.out.println("Inside insert-district-proximity!!!!!!!!!!");
-            districtProximityService.insertDistrictProximity(districtProximity);
-        }catch (Exception e) {
-            LOGGER.error("Error while saving proximity: "+e.getMessage(),e);
-            CommonUtils.getCommonErrorAjaxResponse(response,"Error Processing the updating Attribute");
-        }
+		/*
+		 * try{ System.out.println("Inside insert-district-proximity!!!!!!!!!!");
+		 * districtProximityService.insertDistrictProximity(districtProximity); }catch
+		 * (Exception e) {
+		 * LOGGER.error("Error while saving proximity: "+e.getMessage(),e);
+		 * CommonUtils.getCommonErrorAjaxResponse(
+		 * response,"Error Processing the updating Attribute"); }
+		 */
         return null;
     }
 	
