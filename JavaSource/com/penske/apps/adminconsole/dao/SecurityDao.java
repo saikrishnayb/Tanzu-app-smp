@@ -15,6 +15,7 @@ import com.penske.apps.adminconsole.model.UserType;
 import com.penske.apps.adminconsole.model.VendorTree;
 import com.penske.apps.adminconsole.service.MailRequest;
 import com.penske.apps.smccore.base.annotation.NonVendorQuery;
+import com.penske.apps.suppliermgmt.annotation.DBSmc;
 import com.penske.apps.suppliermgmt.model.UserContext;
 
 /**
@@ -23,6 +24,7 @@ import com.penske.apps.suppliermgmt.model.UserContext;
  * @author kenneth.french
  *
  */
+@DBSmc
 public interface SecurityDao {
 
     @NonVendorQuery

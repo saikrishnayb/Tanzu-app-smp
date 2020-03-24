@@ -13,6 +13,8 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import com.penske.apps.adminconsole.controller.AdminControllerMarker;
 import com.penske.apps.adminconsole.service.AdminServiceMarker;
+import com.penske.apps.buildmatrix.controller.BuildMatrixControllerMarker;
+import com.penske.apps.buildmatrix.service.BuildMatrixServiceMarker;
 import com.penske.apps.smccore.base.configuration.CoreConfiguration;
 import com.penske.apps.smccore.base.configuration.ProfileType;
 import com.penske.apps.suppliermgmt.controller.ControllerMarker;
@@ -34,6 +36,8 @@ import com.penske.apps.suppliermgmt.util.SpringBeanHelper;
 	AdminControllerMarker.class, AdminServiceMarker.class, MapperMarker.class,
 	//Main suppliermgmt packages
 	ControllerMarker.class, ServiceMarker.class, MapperMarker.class,
+	//OEM Build Matrix packages
+	BuildMatrixCroMapperConfiguration.class, BuildMatrixSmcMapperConfiguration.class, BuildMatrixServiceMarker.class, BuildMatrixControllerMarker.class,
 	//Framework-level packages
 	InterceptorMarker.class
 })

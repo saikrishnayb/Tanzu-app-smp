@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.penske.apps.smccore.base.annotation.NonVendorQuery;
 import com.penske.apps.smccore.base.annotation.SkipQueryTest;
+import com.penske.apps.suppliermgmt.annotation.DBSmc;
 import com.penske.apps.suppliermgmt.domain.AlertCount;
 import com.penske.apps.suppliermgmt.model.Alert;
 import com.penske.apps.suppliermgmt.model.AlertHeader;
@@ -31,6 +32,7 @@ import com.penske.apps.suppliermgmt.model.Tab;
  *
  * ****************************************************************************************************************
  **/
+@DBSmc
 public interface HomeDashboardDao {
 
     @NonVendorQuery //FIXME: should this be filtered by vendor?

@@ -54,11 +54,6 @@ public enum PoCategoryType
 	private static final List<PoCategoryType> VEHICLE_TYPE_CATEGORIES = Arrays.asList(TRUCK, TRACTOR, TRAILER, BODY, CAR, DEMOUNT, DOLLY, MISC, OTHER);
 
 	/**
-	 * The PO Categories that require a purchase agreement number.
-	 */
-	private static final List<PoCategoryType> PURCHASE_AGREEMENT_CATEGORIES = Arrays.asList(TRUCK, TRACTOR, TRAILER, CAR);
-	
-	/**
 	 * The PO categpries that do not require manufacture information (make / model / model year)
 	 */
 	private static final List<PoCategoryType> NO_MANUFACTURER_CATEGORIES = Arrays.asList(NONE, DECAL);
@@ -141,17 +136,7 @@ public enum PoCategoryType
 	{
 		return PoCategoryType.VEHICLE_TYPE_CATEGORIES.contains(categoryType);
 	}
-	
-	/**
-	 * Checks if a loadsheet with the given PO Category requires a purcahse agreementor not.
-	 * @param categoryType The PO Category Type to check
-	 * @return True if loadsheets with the PO Category require purchase agreements; false otherwise.
-	 */
-	public static boolean isPurchaseAgreementRequired(PoCategoryType categoryType)
-	{
-		return PoCategoryType.PURCHASE_AGREEMENT_CATEGORIES.contains(categoryType);
-	}
-	
+
 	/**
      * Checks if a spec with the given PO Category requires manufacture infor or not.
      * @param categoryType The PO Category Type to check
@@ -161,16 +146,6 @@ public enum PoCategoryType
 	{
 	    return !PoCategoryType.NO_MANUFACTURER_CATEGORIES.contains(categoryType);
 	}
-	
-	/**
-     * Checks if a category type should have a vehicle master record
-     * @param categoryType The PO Category Type to check
-     * @return True if loadsheets with the PO Category require purchase agreements; false otherwise.
-     */
-    public static boolean isVehicleMasterRequired(PoCategoryType categoryType)
-    {
-        return PoCategoryType.VEHICLE_MASTER_CATEGORIES.contains(categoryType);
-    }
 	
 	//***** DEFAULT ACCESSORS *****//
 	/**

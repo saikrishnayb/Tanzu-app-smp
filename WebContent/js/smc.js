@@ -251,6 +251,14 @@ function redirect(tabName,templateKey){
 		path = "smcof";
 		controllerName="change-orders";
 	}
+	else if (tabName=="cancellations"){
+		path = "smcof";
+		controllerName="cancellations";
+	}	
+	else if (tabName=="massComponentUpdate"){
+		path = "smcof";
+		controllerName="mass-component-update";
+	}		
 	else{
 		path = "Home";
 		controllerName=tabId;

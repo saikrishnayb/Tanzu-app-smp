@@ -45,8 +45,10 @@ public @interface SmcSecurity {
         LOADSHEET_MANAGEMENT, 
         LOADSHEET_RULES, 
         LOADSHEET_SEQUENCES,
-        SHIP_THRU_LEAD_TIME;
-
+        SHIP_THRU_LEAD_TIME,
+        
+        OEM_BUILD_MATRIX;
+    	
         public static SecurityFunction findByName(String name) {
             for (SecurityFunction securityFunction : values())
                 if (securityFunction.name().equals(name)) return securityFunction;

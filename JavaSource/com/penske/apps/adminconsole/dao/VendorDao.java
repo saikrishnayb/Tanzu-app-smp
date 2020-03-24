@@ -9,8 +9,9 @@ import com.penske.apps.adminconsole.model.User;
 import com.penske.apps.adminconsole.model.Vendor;
 import com.penske.apps.adminconsole.model.VendorContact;
 import com.penske.apps.smccore.base.annotation.NonVendorQuery;
+import com.penske.apps.suppliermgmt.annotation.DBSmc;
 
-
+@DBSmc
 public interface VendorDao {
     public List<Vendor> getAllVendors(@Param("orgId")int orgId);
     public List<Vendor> getVendorsBySearchConditions(@Param("orgId")int orgId,@Param("vendor") Vendor vendor);

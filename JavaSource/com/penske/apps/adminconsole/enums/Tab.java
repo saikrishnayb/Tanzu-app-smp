@@ -10,7 +10,7 @@ public enum Tab {
 
     ADMIN_CONSOLE;
 
-    private List<SubTab> subTabs = Arrays.asList(SubTab.SECURITY, SubTab.COMPONENTS, SubTab.APP_CONFIG);
+    private List<SubTab> subTabs = Arrays.asList(SubTab.SECURITY, SubTab.COMPONENTS, SubTab.APP_CONFIG,SubTab.OEM_BUILD_MATRIX);
 
     /**
      * Secondary Tabs of a Primary Tab
@@ -37,7 +37,11 @@ public enum Tab {
                 LeftNav.ALERTS,
                 LeftNav.GLOBAL_EXCEPTIONS,
                 LeftNav.T_AND_C_MANAGEMENT,
-                LeftNav.EXCEL_UPLOADS));
+                LeftNav.EXCEL_UPLOADS)),
+    	
+		OEM_BUILD_MATRIX(Arrays.asList(LeftNav.BUILD_HISTORY));
+    	
+    	
 
         private final List<LeftNav> leftNavs;
 

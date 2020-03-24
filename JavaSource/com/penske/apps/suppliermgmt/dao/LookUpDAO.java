@@ -19,8 +19,10 @@ import java.util.List;
 
 import com.penske.apps.smccore.base.annotation.NonVendorQuery;
 import com.penske.apps.smccore.base.annotation.SkipQueryTest;
+import com.penske.apps.suppliermgmt.annotation.DBSmc;
 import com.penske.apps.suppliermgmt.model.LookUp;
 
+@DBSmc
 public interface LookUpDAO {
 
 	@NonVendorQuery

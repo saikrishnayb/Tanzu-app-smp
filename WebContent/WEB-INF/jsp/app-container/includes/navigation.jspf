@@ -19,6 +19,15 @@
           <tl:isAuthorized tabName="Order Fulfillment" secFunction="CHANGE_ORDERS">
              <li><a href="#" id="changeOrders" onmousedown="redirectToTab('changeOrders')">Change Orders</a></li>
           </tl:isAuthorized>
+          
+          <tl:isAuthorized tabName="Order Fulfillment" secFunction="CANCELLATIONS">
+             <li><a href="#" id="cancellations" onmousedown="redirectToTab('cancellations')">Cancellations</a></li>
+          </tl:isAuthorized>
+
+          <tl:isAuthorized tabName="Order Fulfillment" secFunction="MASS_COMPONENT_UPDATE">
+             <li><a href="#" id="massComponentUpdate" onmousedown="redirectToTab('massComponentUpdate')">Mass Component Update</a></li>
+          </tl:isAuthorized>
+          
           <tl:isAuthorized tabName="Order Fulfillment" secFunction="OEM_BUILD_MATRIX">
              <li class="hidden"><a href="#" id="oemBuildMatrix" onmousedown="redirectToTab('oemBuildMatrix')">OEM Build Matrix</a></li>
           </tl:isAuthorized>

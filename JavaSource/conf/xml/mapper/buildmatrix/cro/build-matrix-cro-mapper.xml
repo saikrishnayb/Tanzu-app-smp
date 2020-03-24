@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.penske.apps.buildmatrix.dao.BuildMatrixCroDAO">
+
+	<select id="getApprovedOrdersForBuildMatrix" resultType="com.penske.apps.buildmatrix.domain.ApprovedOrder">
+		SELECT
+			v.OrderId,
+			v.DeliveryId,
+			v.LocationNumber,
+			v.DeliveryDate as deliveryDate,
+			v.Region,
+			v.Area,
+			v.District,
+			v.DistrictDesc,
+			v.AddCount,
+			v.ReplaceCount,
+			v.PackageName,
+			o.ApprovalStatus
+		FROM v_ApprovedOrdersForBuildMatrix v
+		JOIN t_Order o
+ 			ON o.OrderId = v.OrderId
+	</select>
+	
+	<select id="getApprovedOrdersByIds" resultType="com.penske.apps.buildmatrix.domain.ApprovedOrder">
+		SELECT 
+			v.OrderId,    
+			v.DeliveryId,    
+			v.LocationNumber,    
+			v.DeliveryDate as deliveryDate,    
+			v.Region,    
+			v.Area,    
+			v.District,    
+			v.DistrictDesc,    
+			v.AddCount,    
+			v.ReplaceCount,    
+			v.PackageName,    
+			o.ApprovalStatus 
+		FROM v_ApprovedOrdersForBuildMatrix v   
+		JOIN t_Order o     
+			ON o.OrderId = v.OrderId
+		JOIN (VALUES 
+				<foreach close="" separator="," open="" collection="orderKeys" item="orderKey" >
+					(#{orderKey.orderId}, #{orderKey.deliveryId})
+				</foreach>
+				) AS keys (orderId, deliveryId) 
+			ON v.orderId = keys.orderId AND v.deliveryId = keys.deliveryId
+	</select>
+	
+</mapper>

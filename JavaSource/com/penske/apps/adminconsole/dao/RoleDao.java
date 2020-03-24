@@ -10,8 +10,9 @@ import com.penske.apps.adminconsole.model.Role;
 import com.penske.apps.adminconsole.model.Tab;
 import com.penske.apps.smccore.base.annotation.NonVendorQuery;
 import com.penske.apps.smccore.base.annotation.SkipQueryTest;
+import com.penske.apps.suppliermgmt.annotation.DBSmc;
 
-
+@DBSmc
 public interface RoleDao {
 
     @NonVendorQuery

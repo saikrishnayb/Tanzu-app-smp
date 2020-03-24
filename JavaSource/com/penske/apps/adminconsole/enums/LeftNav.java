@@ -29,8 +29,12 @@ public enum LeftNav {
     ALERTS(SecurityFunction.ALERT_MANAGEMENT, "admin-console/app-config/alerts.htm"),
     GLOBAL_EXCEPTIONS(SecurityFunction.GLOBAL_EXCEPTIONS_MANAGEMENT, "admin-console/app-config/global-exceptions.htm"),
     T_AND_C_MANAGEMENT(SecurityFunction.MANAGE_TC, "admin-console/app-config/terms-and-conditions.htm"),
-    EXCEL_UPLOADS(SecurityFunction.UPLOAD_EXCEL, "admin-console/app-config/excelUploads.htm");
+    EXCEL_UPLOADS(SecurityFunction.UPLOAD_EXCEL, "admin-console/app-config/excelUploads.htm"),
 
+	/**OEM Build Matrix**/
+    BODY_PLANT_CAPABILITIES(SecurityFunction.OEM_BUILD_MATRIX, "admin-console/oem-build-matrix/bodyplant-capabilities.htm"),
+    BUILD_HISTORY(SecurityFunction.OEM_BUILD_MATRIX, "admin-console/oem-build-matrix/build-history.htm"),
+	ATTRIBUTE_MAINTENANCE(SecurityFunction.OEM_BUILD_MATRIX, "admin-console/oem-build-matrix/attribute-maintenance.htm");
     private final SecurityFunction securityFunction;
     private final String urlEntry;
 

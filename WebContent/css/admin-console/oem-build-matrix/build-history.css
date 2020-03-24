@@ -1,0 +1,16 @@
+.status-terms-container h2 {
+	margin-top: 10px !important;
+	margin-bottom: 5px !important;
+}
+
+.status-terms-container ul {
+	list-style: none !important;
+}
+
+.status-terms-container li {
+	margin-bottom: 5px;
+}
+
+.build-history-header div{
+	display: inline-block;
+}

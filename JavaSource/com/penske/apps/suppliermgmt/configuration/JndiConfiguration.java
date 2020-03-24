@@ -18,6 +18,8 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import com.penske.apps.smccore.base.annotation.qualifier.CoreDataSourceQualifier;
 import com.penske.apps.smccore.base.configuration.ProfileType;
 import com.penske.apps.suppliermgmt.annotation.CommonStaticUrl;
+import com.penske.apps.suppliermgmt.annotation.DBCro;
+import com.penske.apps.suppliermgmt.annotation.DBSmc;
 import com.penske.apps.suppliermgmt.annotation.UserCreationServiceUrl;
 
 /**
@@ -30,6 +32,7 @@ public class JndiConfiguration {
 	private static final Logger logger = Logger.getLogger(JndiConfiguration.class);
 
 	@Bean
+	@DBSmc
 	@CoreDataSourceQualifier
 	public DataSource dataSource() throws NamingException {
 		InitialContext context = new InitialContext();
@@ -39,6 +42,20 @@ public class JndiConfiguration {
 		} catch (NameNotFoundException exception) {
 			logger.info(exception);
 			return (DataSource) context.lookup("java:comp/env/jdbc/ds_suppliermgmt"); // Tomcat
+		}
+	}
+	
+	@Bean
+    @DBCro
+	public DataSource buildMatrixCroDataSource() throws NamingException
+	{
+    	InitialContext context = new InitialContext();
+    	
+    	try {
+			return (DataSource) context.lookup("jdbc/ds_cro"); // Websphere
+		} catch (NameNotFoundException exception) {
+			logger.info(exception);
+			return (DataSource) context.lookup("java:comp/env/jdbc/ds_cro"); //Tomcat
 		}
 	}
 

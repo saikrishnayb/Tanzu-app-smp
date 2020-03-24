@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.penske.apps.buildmatrix.dao.BuildMatrixSmcDAO">
+
+	<select id="getAllBuildHistory" resultType="com.penske.apps.buildmatrix.domain.BuildSummary">
+		SELECT
+			RUN_ID AS buildId,
+	        UNIT_QTY AS quantity,
+		    RUN_STATUS AS buildStatus,
+	        starter.SSO as startedBySso,
+	        starter.FIRST_NAME||' '||starter.LAST_NAME AS startedByName,
+	        STARTED_DATE as startedDate,
+	        submitter.SSO as submittedBySso,
+	        submitter.FIRST_NAME||' '||submitter.LAST_NAME AS submittedByName,
+	        SUBMITTED_DATE as submittedDate,
+	        RUN_START_DATE as runStartDate,
+	        RUN_END_DATE as runEndDate
+		FROM SMC.OBM_RUN_SUMMARY runSummary
+		LEFT JOIN SMC.SMC_USER_MASTER starter ON starter.SSO = runSummary.STARTED_BY
+		LEFT JOIN SMC.SMC_USER_MASTER submitter ON submitter.SSO = runSummary.SUBMITTED_BY
+	</select>
+	
+	<insert id="insertNewBuild" useGeneratedKeys="true" keyProperty="newBuild.buildId">
+ 		INSERT INTO SMC.OBM_RUN_SUMMARY (
+ 			RUN_STATUS,
+ 			UNIT_QTY,
+ 			STARTED_BY,
+ 			STARTED_DATE
+ 		) VALUES (
+ 			#{newBuild.buildStatus.code},
+ 			#{newBuild.quantity},
+ 			#{newBuild.startedBySso},
+ 			CURRENT TIMESTAMP
+ 		)
+	</insert>
+	
+	<insert id="insertCroBuildRequest" >
+ 		INSERT INTO SMC.OBM_CRO_BUILD_REQUEST (
+ 			RUN_ID,
+ 			ORDER_ID,
+ 			DELIVERY_ID
+ 		) VALUES (
+ 			#{buildId},
+ 			#{order.orderId},
+ 			#{order.deliveryId}
+ 		)
+	</insert>
+	
+	<update id="updateBuild">
+		UPDATE SMC.OBM_RUN_SUMMARY
+		SET
+			UNIT_QTY = #{existingBuild.quantity},
+		    RUN_STATUS = #{existingBuild.buildStatus},
+	        SUBMITTED_BY = #{existingBuild.submittedBySso},
+	        SUBMITTED_DATE = #{existingBuild.submittedDate},
+	        RUN_START_DATE = #{existingBuild.runStartDate},
+	        RUN_END_DATE = #{existingBuild.runEndDate}
+	    WHERE
+	    	RUN_ID = #{existingBuild.buildId}
+	</update>
+
+	<delete id="deleteCroBuildRequestsFromBuild">
+	 	DELETE FROM SMC.OBM_CRO_BUILD_REQUEST
+	 	WHERE RUN_ID = #{existingBuildId}
+	</delete>
+
+	<select id="getBuildSummary" resultType="com.penske.apps.buildmatrix.domain.BuildSummary">
+		SELECT
+			RUN_ID AS buildId,
+	        UNIT_QTY AS quantity,
+		    RUN_STATUS AS buildStatus,
+	        starter.SSO as startedBySso,
+	        starter.FIRST_NAME||' '||starter.LAST_NAME AS startedByName,
+	        STARTED_DATE as startedDate,
+	        submitter.SSO as submittedBySso,
+	        submitter.FIRST_NAME||' '||submitter.LAST_NAME AS submittedByName,
+	        SUBMITTED_DATE as submittedDate,
+	        RUN_START_DATE as runStartDate,
+	        RUN_END_DATE as runEndDate
+		FROM SMC.OBM_RUN_SUMMARY runSummary
+		LEFT JOIN SMC.SMC_USER_MASTER starter ON starter.SSO = runSummary.STARTED_BY
+		LEFT JOIN SMC.SMC_USER_MASTER submitter ON submitter.SSO = runSummary.SUBMITTED_BY
+		WHERE RUN_ID = #{buildId}
+	</select>
+	
+	<select id="getCroOrderKeysForBuild" resultType="com.penske.apps.buildmatrix.domain.CroOrderKey">
+		SELECT
+			ORDER_ID as orderId,
+ 			DELIVERY_ID as deliveryId
+		FROM SMC.OBM_CRO_BUILD_REQUEST
+		WHERE RUN_ID = #{buildId}
+	</select>
+</mapper>

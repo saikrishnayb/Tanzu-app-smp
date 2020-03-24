@@ -23,6 +23,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.penske.apps.smccore.base.annotation.NonVendorQuery;
 import com.penske.apps.smccore.base.annotation.SkipQueryTest;
+import com.penske.apps.suppliermgmt.annotation.DBSmc;
 import com.penske.apps.suppliermgmt.domain.UserLoginHistory;
 import com.penske.apps.suppliermgmt.domain.UserVendorFilterSelection;
 import com.penske.apps.suppliermgmt.model.Tab;
@@ -30,6 +31,7 @@ import com.penske.apps.suppliermgmt.model.User;
 import com.penske.apps.suppliermgmt.model.UserContext;
 import com.penske.apps.suppliermgmt.model.VendorLocation;
 
+@DBSmc
 public interface LoginDAO {
 
     @NonVendorQuery

@@ -11,13 +11,14 @@ import com.penske.apps.adminconsole.model.Template;
 import com.penske.apps.adminconsole.model.TemplatePoAssociation;
 import com.penske.apps.smccore.base.annotation.NonVendorQuery;
 import com.penske.apps.smccore.base.annotation.SkipQueryTest;
+import com.penske.apps.suppliermgmt.annotation.DBSmc;
 import com.penske.apps.suppliermgmt.domain.ComponentGroup;
 /**
  * 
  * @author 600144005
  * This interface is used to get queries defined in category-management-mapper for visibility by category page
  */
-
+@DBSmc
 public interface ComponentDao {
 
     //Template Page --- start

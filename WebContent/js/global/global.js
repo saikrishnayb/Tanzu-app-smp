@@ -1,3 +1,6 @@
+var baseAppUrl = sessionStorage.getItem('baseAppUrl');
+var baseAdminConsoleUrl = baseAppUrl + '/admin-console';
+var baseBuildMatrixUrl = baseAdminConsoleUrl + '/oem-build-matrix';
 //***************************************************** regex************
 /*
 * Has to match exactly: (xxx)xxx-xxxx

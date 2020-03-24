@@ -17,8 +17,10 @@ import com.penske.apps.adminconsole.model.RuleDefinitions;
 import com.penske.apps.adminconsole.model.RuleMaster;
 import com.penske.apps.adminconsole.model.TemplateComponentRuleAssociation;
 import com.penske.apps.smccore.base.annotation.NonVendorQuery;
+import com.penske.apps.suppliermgmt.annotation.DBSmc;
 import com.penske.apps.suppliermgmt.model.UserContext;
 
+@DBSmc
 public interface LoadsheetManagementDao {
 
     @NonVendorQuery

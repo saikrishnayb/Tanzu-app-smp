@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.2//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.penske.apps.adminconsole.dao.OEMAttributeDao">
+
+	<select id="getAllBuildMatrixAttributes" resultMap="buildmatrixAttributeMap">
+		SELECT   ATTRIBUTE_ID AS attributeId,
+		         ATTRIBUTE_NAME AS attributeName,
+		         '' AS attributeType
+		FROM     OBM_ATTRIBUTE
+	</select>
+
+	<resultMap id="buildmatrixAttributeMap" type="com.penske.apps.adminconsole.model.BuildMatrixAttribute" >
+		<result property="attributeId"   column="attributeId"/>
+		<result property="attributeName" column="attributeName"/>
+		<result property="attributeType" column="attributeType"/>
+		<result property="attributeValue" 	 column="attributeValue"/>
+		<collection property="values" column="attributeId" select="getAttributeValues"></collection>
+	</resultMap>
+
+	<select id="getAttributeValues" resultType="string">
+		SELECT   ATTRIBUTE_VALUE
+		FROM     OBM_ATTRIBUTE_VALUE
+		WHERE    ATTRIBUTE_ID=#{attributeId}
+	</select>
+	
+	<select id="getAttributeDetails" resultMap="buildmatrixAttributeMap">
+		SELECT   ATTRIBUTE_ID AS attributeId,
+		         ATTRIBUTE_NAME AS attributeName,
+		         '' AS attributeType
+		FROM     OBM_ATTRIBUTE
+		WHERE    ATTRIBUTE_ID=#{attributeId}
+	</select>
+	
+	<update id="updateAttribute">
+		UPDATE OBM_ATTRIBUTE SET ATTRIBUTE_NAME=#{attributeName}
+		WHERE ATTRIBUTE_ID=#{attributeId}
+	</update>
+	
+	<delete id="updateAttributeValues">
+		DELETE
+		FROM OBM_ATTRIBUTE_VALUE
+		WHERE ATTRIBUTE_ID=#{attributeId}
+		AND ATTRIBUTE_VALUE NOT IN 
+		<foreach collection="values" item="value" separator="," open="(" close=")">#{value}</foreach>
+	</delete>
+	
+	<insert id="addAttribute">
+		INSERT INTO 
+ 					SMC.OBM_ATTRIBUTE_VALUE 
+ 					(ATTRIBUTE_ID, ATTRIBUTE_VALUE)
+ 		VALUES 		(#{attributeId}, #{attributeValue})
+	</insert>
+</mapper>

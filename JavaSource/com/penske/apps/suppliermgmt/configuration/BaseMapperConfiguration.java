@@ -23,9 +23,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.transaction.PlatformTransactionManager;
 
+import com.penske.apps.buildmatrix.domain.BuildMatrixTypeAlias;
 import com.penske.apps.smccore.base.annotation.qualifier.VendorQueryWrappingPluginQualifier;
 import com.penske.apps.smccore.base.configuration.CoreMapperConfiguration;
 import com.penske.apps.smccore.base.configuration.ProfileType;
@@ -42,9 +41,6 @@ import com.penske.apps.suppliermgmt.plugins.VendorQueryWrappingPlugin;
 @Import({JndiConfiguration.class})
 public class BaseMapperConfiguration
 {
-	@Autowired
-	private DataSource dataSource;
-
 	@Autowired(required = false)
 	private TimingBean timingBean;
 	
@@ -55,7 +51,7 @@ public class BaseMapperConfiguration
 	@VendorQueryWrappingPluginQualifier
 	private Interceptor vendorWrappingPlugin;
 	
-	public SqlSessionFactory getBaseSqlSessionFactory(String baseMapperPath, boolean batch) throws Exception
+	public SqlSessionFactory getBaseSqlSessionFactory(String baseMapperPath, DataSource dataSource, boolean batch) throws Exception
 	{
 		SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
 		sessionFactory.setDataSource(dataSource);
@@ -65,7 +61,8 @@ public class BaseMapperConfiguration
 		
 		//***** TYPE ALIASES *****//
 		Set<String> typeAliasPackages = SpringConfigUtil.getPackageNames(
-			TypeAliasMarker.class
+			TypeAliasMarker.class,
+			BuildMatrixTypeAlias.class
 		);
 		
 		//***** GLOBAL TYPE HANDLERS *****//
@@ -86,7 +83,9 @@ public class BaseMapperConfiguration
 		//***** ENUM TYPE HANDLER CONFIGURATION *****//
 		//Register a custom enum type handler for all the enum types listed in the @MappedEnumTypes annotation on the following classes.
 		List<Class<?>> mappedTypes = SpringConfigUtil.getMappedEnumTypes(
-			CoreMapperConfiguration.class
+			CoreMapperConfiguration.class,
+			BuildMatrixCroMapperConfiguration.class,
+			BuildMatrixSmcMapperConfiguration.class
 		);
 		
 		
@@ -124,13 +123,4 @@ public class BaseMapperConfiguration
 		return new VendorQueryWrappingPlugin();
 	}
 
-	@Bean
-	@Profile(ProfileType.NOT_TEST)
-	public PlatformTransactionManager transactionManager()
-	{
-		DataSourceTransactionManager dataSourceTransactionManager = new DataSourceTransactionManager();
-		dataSourceTransactionManager.setDataSource(dataSource);
-
-		return dataSourceTransactionManager;
-	}
 }

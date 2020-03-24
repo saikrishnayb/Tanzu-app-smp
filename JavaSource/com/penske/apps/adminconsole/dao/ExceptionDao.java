@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import com.penske.apps.adminconsole.model.GlobalException;
 import com.penske.apps.smccore.base.annotation.NonVendorQuery;
 import com.penske.apps.smccore.base.annotation.SkipQueryTest;
+import com.penske.apps.suppliermgmt.annotation.DBSmc;
 /**
  * This interface contains the myBatis DAO methods that relay
  * directly to the database to retrieve data and return it to the
@@ -15,6 +16,7 @@ import com.penske.apps.smccore.base.annotation.SkipQueryTest;
  * @author 600132441 M.Leis
  *
  */
+@DBSmc
 public interface ExceptionDao {
 
     // Global Exception Dao Methods

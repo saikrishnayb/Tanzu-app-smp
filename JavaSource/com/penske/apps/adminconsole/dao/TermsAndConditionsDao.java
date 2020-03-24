@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.penske.apps.adminconsole.model.TermsAndConditions;
 import com.penske.apps.smccore.base.annotation.NonVendorQuery;
+import com.penske.apps.suppliermgmt.annotation.DBSmc;
 
 
 /**
@@ -14,7 +15,7 @@ import com.penske.apps.smccore.base.annotation.NonVendorQuery;
  * @author mark.weaver 600144069
  *
  */
-
+@DBSmc
 public interface TermsAndConditionsDao {
 
     @NonVendorQuery

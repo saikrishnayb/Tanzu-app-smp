@@ -7,6 +7,7 @@ import com.penske.apps.adminconsole.model.MimeTypeModel;
 import com.penske.apps.adminconsole.model.VendorReport;
 import com.penske.apps.adminconsole.model.VendorReportResults;
 import com.penske.apps.smccore.base.annotation.NonVendorQuery;
+import com.penske.apps.suppliermgmt.annotation.DBSmc;
 
 /**
  * This interface will map to vendor-report-mapper
@@ -15,6 +16,7 @@ import com.penske.apps.smccore.base.annotation.NonVendorQuery;
  * @author 600139251
  *
  */
+@DBSmc
 public interface VendorReportDao {
 
 	@NonVendorQuery //TODO: Review Query

@@ -7,13 +7,14 @@ import org.apache.ibatis.annotations.Param;
 import com.penske.apps.adminconsole.model.CategoryAssociation;
 import com.penske.apps.adminconsole.model.SubCategory;
 import com.penske.apps.smccore.base.annotation.NonVendorQuery;
+import com.penske.apps.suppliermgmt.annotation.DBSmc;
 /**
  * 
  * @author 600144005
  * This interface is used to get queries defined in category-management-mapper
  * that are used for categor management /category association pages
  */
-
+@DBSmc
 public interface CategoryManagementDao {
 
     @NonVendorQuery
