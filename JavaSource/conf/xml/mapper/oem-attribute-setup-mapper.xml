@@ -50,4 +50,13 @@
  					(ATTRIBUTE_ID, ATTRIBUTE_VALUE)
  		VALUES 		(#{attributeId}, #{attributeValue})
 	</insert>
+	
+ 	<select id="getAllAttributeValues" resultType="String">
+ 		SELECT 
+				TRIM(ATTRIBUTE_VALUE)
+		FROM
+				SMC.OBM_ATTRIBUTE_VALUE
+		WHERE
+				ATTRIBUTE_ID=#{attributeId} 
+	</select>
 </mapper>

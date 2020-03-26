@@ -384,9 +384,20 @@ public class BuildMatrixController {
         	attributeService.addAttribute(attributeId,attributeValue);
         }catch (Exception e) {
             LOGGER.error("Error while saving Attribute: "+e.getMessage(),e);
-           // CommonUtils.getCommonErrorAjaxResponse(response,"Error Processing the saving Attribute");
         }
         return null;
     }
-
+	
+	/**
+	 * method to check for unique attribute value
+	 * 
+	 * 	 */
+	@SmcSecurity(securityFunction = SecurityFunction.OEM_BUILD_MATRIX)
+	@RequestMapping(value = "/check-unique-attribute-value", method = RequestMethod.POST)
+	@ResponseBody
+    public boolean checkForUniqueAttributeValue(@RequestParam(value="attributeId") int attributeId, @RequestParam(value="attributeValue") String attributeValue) {
+		boolean isUnique = true;
+		isUnique = attributeService.checkForUniqueAttributeValue(attributeId, attributeValue);
+        return isUnique;
+    }
 }

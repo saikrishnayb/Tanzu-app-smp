@@ -10,7 +10,7 @@
 					<a class="buttonPrimary buttonDisabled" id="update-attr" href="#" onclick="">Update</a>
 					</c:when>
 					<c:otherwise>
-					<a class="buttonPrimary" id="create-attr" href="#" onclick="">Save</a>
+					<a class="buttonPrimary round-corner-btn-cls" id="create-attr" href="#" onclick="">Save</a>
 					</c:otherwise>
 				</c:choose>
 				

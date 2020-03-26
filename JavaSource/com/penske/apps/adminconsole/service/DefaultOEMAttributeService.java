@@ -64,6 +64,19 @@ public class DefaultOEMAttributeService implements OEMAttributeService {
 	}
 	
 	@Override
+	public boolean checkForUniqueAttributeValue(int attributeId, String attributeValue){
+		List<String> existingNames=null;
+		boolean isUnique=true;
+		existingNames = attributeDao.getAllAttributeValues(attributeId);
+		
+		for(String name:existingNames){
+			if(name.equalsIgnoreCase(attributeValue.trim())){
+				isUnique=false;
+			}
+		}
+		return isUnique;
+	}
+	@Override
 	public void addAttribute(int attributeId, String attributeValue)
 	{
 		attributeDao.addAttribute(attributeId,attributeValue);

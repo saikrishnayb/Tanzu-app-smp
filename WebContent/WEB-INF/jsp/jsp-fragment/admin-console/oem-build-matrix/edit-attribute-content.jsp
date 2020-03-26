@@ -20,7 +20,7 @@
 				<label id="attributeName">${attribute.attributeName}</label>
 			</c:when>
 			<c:otherwise>
-				<input  style="width: 173px;"  class="attributeName input alpha alpha-numeric" id="attributeName" type="text" value="${attribute.attributeName}"/>
+				<input  style="width: 173px;"  class="attributeName input alpha alpha-numeric round-corner-text-box" id="attributeName" type="text" value="${attribute.attributeName}"/>
 			</c:otherwise>
 			</c:choose>
 		
@@ -44,7 +44,11 @@
 				</select>
 			</c:when>
 			<c:otherwise>
-				<input style="width: 173px;" class="attributeValue input alpha alpha-numeric" id="attributeValue" type="text" value="${attribute.attributeValue}"/>
+				<input style="width: 173px;" class="attributeValue input alpha alpha-numeric round-corner-text-box" id="attributeValue" type="text" value="${attribute.attributeValue}"/>
+				<div id="ErrorMsg" class="floatLeft error-messages-container displayNone">
+					<img src="${commonStaticUrl}/images/warning.png"></img>
+					<span class="errorMsg"></span>
+			</div>
 			</c:otherwise>
 			</c:choose>
 		</div>

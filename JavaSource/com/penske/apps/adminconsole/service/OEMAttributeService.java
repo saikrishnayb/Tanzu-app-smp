@@ -18,4 +18,6 @@ public interface OEMAttributeService {
 	
 	public void addAttribute(int attributeId, String attributeValue);
 	
+	public boolean checkForUniqueAttributeValue(int attributeId, String attributeValue);
+	
 }

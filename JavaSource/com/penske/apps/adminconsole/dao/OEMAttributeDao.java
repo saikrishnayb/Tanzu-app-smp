@@ -32,4 +32,7 @@ public interface OEMAttributeDao {
 	@NonVendorQuery
 	public void addAttribute(@Param("attributeId") int attributeId, @Param("attributeValue") String attributeValue);
 	
+	@NonVendorQuery
+    public List<String> getAllAttributeValues(@Param("attributeId") int attributeId);
+	
 }

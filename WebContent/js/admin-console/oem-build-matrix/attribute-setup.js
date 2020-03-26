@@ -128,29 +128,42 @@ $(document).ready(function() {
 		
 	});
 	
-	$addAttributeModal.on("click",'.create-attr',function(){
+	$addAttributeModal.on("click",'#create-attr',function(){
 		
 		var $form = $('#editAttributeForm');
-		var attributeData =$form.serialize();
+		var attributeData = $form.serialize();
 		var attributeId = $form.find('.attributeId').val();
 		var attributeName = $form.find('#attributeName').val();
 		var attributeValue = $addAttributeModal.find('#attributeValue').val();
 		
-			var $addAttributePromise = $.ajax({
-				type: "POST",
-				url:'./add-attribute.htm',
-				global: false,
-				data: {attributeId : attributeId, attributeValue: attributeValue}
+		var isValid = validateAttributeValue($form);
+		if(isValid){
+		$.ajax({
+			  type: "POST",
+			  url: "./check-unique-attribute-value.htm",
+			  cache:false,
+			  data: {attributeId : attributeId, attributeValue: attributeValue},
+			  success: function(isUnique){
+				  if(isUnique){
+					showLoading=true;
+						url='./add-attribute.htm';
+					$.ajax({
+						url : url,
+						type: "POST",  
+						data: {attributeId : attributeId, attributeValue: attributeValue},
+						success : function(data) {
+						},
+					}); 
+					closeModal($addAttributeModal);
+				  }else{
+					showLoading=false;
+					$("#ErrorMsg span").text("Attribute Value: "+attributeValue+" already exists !");
+					$("#ErrorMsg").show();
+					$("#attributeValue").addClass("errorMsgInput");
+					}
+			  },
 			});
-			$addAttributePromise.done(function(data){
-				 closeModal($editAttributeModal);
-			});
-		    $addAttributePromise.fail(function(xhr, ajaxOptions, thrownError) {
-					  if(xhr.responseText.indexOf('Error Processing the saving Attribute')>0){
-						  $('.errorMsg').text("Error Processing the saving Attribute.");
-							 $('.error').show();
-					  }
-				});
+	}
 	});
 	
 
@@ -220,5 +233,20 @@ function validate($form){
 		$('.error').show();
 		}
 
+return valid;
+}
+
+function validateAttributeValue($form){
+	var valid = validateFormTextFields($form);
+	var attributeValue = $('#add-attribute-modal').find('#attributeValue').val();
+	
+	if(attributeValue == '')
+		{
+		valid = false;
+		$("#ErrorMsg span").text("please enter Attribute Value");
+		$("#ErrorMsg").show();
+		$("#attributeValue").addClass("errorMsgInput");
+		}
+	
 return valid;
 }
