@@ -7,9 +7,9 @@
 <title>Add OEM</title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta http-equiv="pragma" content="no-cache" />
-<script src="${baseUrl}/js/admin-console/oem-build-matrix/add-oem.js" type="text/javascript"></script>
+
 <link href="${baseUrl}/css/admin-console/oem-build-matrix/build-matrix.css" rel="stylesheet" type="text/css" />
-<link href="${commonStaticUrl}/css/jQueryUI/jquery-ui-1.8.21.custom.css" rel="stylesheet" type="text/css" />
+<link href="${baseUrl}/css/global/v2/jquery.multiselect.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 	<div class="add-oem">
@@ -48,5 +48,7 @@
 					</c:otherwise>
 		</c:choose>
 	</div>
+	<script src="${baseUrl}/js/admin-console/oem-build-matrix/add-oem.js" type="text/javascript"></script>
+	<script src="${baseUrl}/js/v2/jquery.multiselect.js" type="text/javascript"></script>
 </body>
 </html>

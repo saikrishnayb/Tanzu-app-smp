@@ -274,7 +274,7 @@ public class BuildMatrixController {
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping("/load-add-oem-popup")
 	public ModelAndView getAddOemPopup() {
-		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/add-oem");
+		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/modal/add-oem");
 		model.addObject("poCategoryList", businessAwardMaintService.getAllPoCategory());
 		model.addObject("oemList",businessAwardMaintService.getAllOEMNames());
 		model.addObject("editPopup", false);

@@ -1,0 +1,16 @@
+.business-award-maint-table-top {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.business-award-maint-table-top div {
+	display: inline-block;
+}
+
+.second-level-group td {
+	color: #828282;
+    font-size: 21px;
+    font-weight: normal;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+}
