@@ -30,6 +30,7 @@ import com.penske.apps.adminconsole.service.DistrictProximityService;
 import com.penske.apps.adminconsole.service.OEMAttributeService;
 import com.penske.apps.adminconsole.util.CommonUtils;
 import com.penske.apps.buildmatrix.domain.ApprovedOrder;
+import com.penske.apps.buildmatrix.domain.BuildAttribute;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.CroOrderKey;
 import com.penske.apps.buildmatrix.domain.enums.BuildStatus;
@@ -268,19 +269,6 @@ public class BuildMatrixController {
 		return model;
 	}
 	
-	/**
-	 * method to load add oem popup
-	 */
-	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
-	@RequestMapping("/load-add-oem-popup")
-	public ModelAndView getAddOemPopup() {
-		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/modal/add-oem");
-		model.addObject("poCategoryList", businessAwardMaintService.getAllPoCategory());
-		model.addObject("oemList",businessAwardMaintService.getAllOEMNames());
-		model.addObject("editPopup", false);
-		return model;
-	}
-	
 	@SmcSecurity(securityFunction = SecurityFunction.OEM_BUILD_MATRIX)
     @RequestMapping(value="insert-district-proximity")
     @ResponseBody
@@ -360,6 +348,33 @@ public class BuildMatrixController {
 		model.addObject("bodiesOnOrder", bodiesOnOrder);
 		model.addObject("chassisAvailable", chassisAvailable);
 		model.addObject("buildId", buildId);
+		
+		return model;
+	}
+	
+	/**
+	 * method to load confirm-selection screen
+	 * 
+	 * 	 */
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping("/build-mix")
+	public ModelAndView getConfirmSelection(@RequestParam("buildId") int buildId) {
+		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/build-mix");
+		BuildSummary existingBuild = buildMatrixSmcService.getBuildSummary(buildId);
+		if(existingBuild == null)
+			throw new IllegalArgumentException("Couldn't find existing build");
+		
+		List<CroOrderKey> selectedOrderKeys = buildMatrixSmcService.getCroOrderKeysForBuild(existingBuild.getBuildId());
+		List<ApprovedOrder> selectedOrders = buildMatrixCroService.getApprovedOrdersByIds(selectedOrderKeys);
+		int bodiesOnOrder = selectedOrders.stream().collect(Collectors.summingInt(order->order.getOrderTotalQuantity()));
+		int chassisAvailable = buildMatrixCorpService.getAvailableChasisCount();
+		
+		List<BuildAttribute> attributes = buildMatrixSmcService.getAttributesForBuild();
+		
+		model.addObject("bodiesOnOrder", bodiesOnOrder);
+		model.addObject("chassisAvailable", chassisAvailable);
+		model.addObject("buildId", buildId);
+		model.addObject("attributes", attributes);
 		
 		return model;
 	}

@@ -1,0 +1,11 @@
+.control-label, .common-form-control {
+	display: inline-block;
+}
+
+label {
+	margin-right: 0px;
+}
+
+.modal-footer {
+	margin-top: 10px;
+}

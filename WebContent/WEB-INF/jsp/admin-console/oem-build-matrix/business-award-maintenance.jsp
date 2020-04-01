@@ -7,6 +7,8 @@
 	<%@ include file="../../../jsp/jsp-fragment/global/new/default-head-block.jsp"%>
 	<link href="${baseUrl}/css/admin-console/oem-build-matrix/build-matrix.css" rel="stylesheet" type="text/css" />
 	<link href="${baseUrl}/css/admin-console/oem-build-matrix/business-award-maintenance.css" rel="stylesheet" type="text/css" />
+	<link href="${baseUrl}/css/global/v2/jquery.multiselect.css" rel="stylesheet" type="text/css" />
+	<link href="${baseUrl}/css/jquery.multiselect.filter.css"rel="stylesheet" type="text/css" />
 </head>
 
 <body style="overflow-y:visible;">
@@ -70,5 +72,7 @@
 	
 	<%@ include file="../../../jsp/jsp-fragment/global/new/global-scripts.jsp"%>
 	<script src="${baseUrl}/js/admin-console/oem-build-matrix/business-award-maintenance.js" type="text/javascript"></script>
+	<script src="${baseUrl}/js/v2/jquery.multiselect.js" type="text/javascript"></script>
+	<script type="text/javascript" src="${baseUrl}/jQuery/jquery.multiselect.filter.js"></script>
 </body>
 </html>

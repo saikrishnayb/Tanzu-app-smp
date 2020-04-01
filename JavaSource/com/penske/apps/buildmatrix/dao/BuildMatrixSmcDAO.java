@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.penske.apps.buildmatrix.domain.ApprovedOrder;
+import com.penske.apps.buildmatrix.domain.BuildAttribute;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.CroOrderKey;
 import com.penske.apps.suppliermgmt.annotation.DBSmc;
@@ -29,4 +30,6 @@ public interface BuildMatrixSmcDAO {
 	public BuildSummary getBuildSummary(@Param("buildId") Integer buildId);
 
 	public List<CroOrderKey> getCroOrderKeysForBuild(@Param("buildId") Integer buildId);
+	
+	public List<BuildAttribute> getAttributesForBuild();
 }

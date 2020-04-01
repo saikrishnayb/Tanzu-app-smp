@@ -1,0 +1,71 @@
+.build-mix-top {
+	margin-bottom: 10px;
+}
+
+.build-mix-top  div {
+	display: inline-block;
+}
+
+.build-mix-top .badge-div .badge {
+	margin-right: 10px;
+}
+
+.attribute-container {
+	border: 1px solid #EBEBEB;
+	border-radius: 10px;
+	padding: 10px;
+}
+
+.attribute-header h2 {
+	display: inline-block;
+}
+
+.attribute-header {
+	margin-top: 10px;
+}
+
+.attribute-table-container .attribute-table{
+	width: 100%;
+}
+
+.attribute-table input { 
+	margin: 0px;
+	width: 40px;
+	text-align: right;
+	padding-right:4px;
+}
+
+.attribute-table .attribute-percentage-td,
+.attribute-table .attribute-units-td {
+	width: 80px;
+}
+
+.attribute-table td:first-child {
+	padding-left: 5px;
+}
+
+.attribute-total-row {
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+.attribute-total-row td{
+	font-weight: bold;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.total-percentage,
+.total-units {
+	display:inline-block;
+	width:40px;
+	padding-right:4px;
+}
+
+.text-align-right {
+	text-align:right;
+}
+
+.text-align-center {
+	text-align:center;
+}

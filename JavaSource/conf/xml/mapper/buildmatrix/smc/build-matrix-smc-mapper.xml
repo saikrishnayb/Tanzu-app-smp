@@ -90,4 +90,38 @@
 		FROM SMC.OBM_CRO_BUILD_REQUEST
 		WHERE RUN_ID = #{buildId}
 	</select>
+	
+	<resultMap type="com.penske.apps.buildmatrix.domain.BuildAttribute" id="BuildAttributeMap">
+		<id column="ATTRIBUTE_ID"				property="attributeId" />
+		<result column="ATTRIBUTE_KEY" 			property="attributeKey"/>
+		<result column="ATTRIBUTE_NAME"   		property="attributeName"/>
+		<result column="GROUP_KEY"  			property="groupKey"/>
+		<result column="GROUP_DESCRIPTION"    	property="groupDescription"/>
+		<result column="GROUP_ORDER"    		property="groupOrder"/>
+		<collection property="attributeValues"			ofType="com.penske.apps.buildmatrix.domain.BuildAttributeValue" column="ATTRIBUTE_ID" resultMap="BuildAttributeValueMap" columnPrefix="VAL_" />
+	</resultMap>
+	
+	<resultMap type="com.penske.apps.buildmatrix.domain.BuildAttributeValue" id="BuildAttributeValueMap">
+		<id column="ATTRIBUTE_VALUE_ID"			property="attributeValueId" />
+		<result column="ATTRIBUTE_VALUE"		property="attributeValue" />
+	</resultMap>
+	
+	
+	<select id="getAttributesForBuild" resultMap="BuildAttributeMap">
+		SELECT
+			attribute.ATTRIBUTE_ID,
+			attribute.ATTRIBUTE_KEY,
+			attribute.ATTRIBUTE_NAME,
+			awardGroup.GROUP_KEY,
+			awardGroup.GROUP_DESCRIPTION,
+			awardGroup.GROUP_ORDER,
+			val.ATTRIBUTE_VALUE_ID AS VAL_ATTRIBUTE_VALUE_ID,
+			val.ATTRIBUTE_VALUE AS VAL_ATTRIBUTE_VALUE
+		FROM SMC.OBM_ATTRIBUTE_VALUE val
+		LEFT JOIN SMC.OBM_ATTRIBUTE attribute
+			ON attribute.ATTRIBUTE_ID = val.ATTRIBUTE_ID
+		LEFT JOIN SMC.OBM_BUSINESS_AWARD_GROUP awardGroup
+			ON awardGroup.ATTRIBUTE_ID = val.ATTRIBUTE_ID
+		ORDER BY attribute.ATTRIBUTE_ID
+	</select>
 </mapper>

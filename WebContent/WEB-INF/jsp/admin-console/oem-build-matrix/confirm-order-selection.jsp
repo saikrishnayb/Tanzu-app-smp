@@ -37,7 +37,7 @@
 		          			</c:if>
 		          			<div class="btn-div floatRight">
 		          				<a id="back-btn" href="${baseAppUrl}/admin-console/oem-build-matrix/order-summary?buildId=${buildId}" class="buttonSecondary round-corner-btn-cls">Back</a>
-		          				<a id="continue" class="buttonSecondary round-corner-btn-cls <c:if test="${tooManyBodies}"> buttonDisabled</c:if>">Continue</a>
+		          				<a id="continue" href="${baseAppUrl}/admin-console/oem-build-matrix/build-mix?buildId=${buildId}" class="buttonSecondary round-corner-btn-cls <c:if test="${tooManyBodies}"> buttonDisabled</c:if>">Continue</a>
 		          			</div>
 		        		</div>
 		      		</div>

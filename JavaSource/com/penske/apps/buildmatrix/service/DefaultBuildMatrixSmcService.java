@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.penske.apps.buildmatrix.dao.BuildMatrixSmcDAO;
 import com.penske.apps.buildmatrix.domain.ApprovedOrder;
+import com.penske.apps.buildmatrix.domain.BuildAttribute;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.CroOrderKey;
 import com.penske.apps.suppliermgmt.model.UserContext;
@@ -57,5 +58,10 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	@Override
 	public List<CroOrderKey> getCroOrderKeysForBuild(Integer buildId) {
 		return buildMatrixSmcDAO.getCroOrderKeysForBuild(buildId);
+	}
+	
+	@Override
+	public List<BuildAttribute> getAttributesForBuild() {
+		return buildMatrixSmcDAO.getAttributesForBuild();
 	}
 }
