@@ -23,6 +23,7 @@ import com.penske.apps.adminconsole.enums.LeftNav;
 import com.penske.apps.adminconsole.enums.Tab.SubTab;
 import com.penske.apps.adminconsole.util.CommonUtils;
 import com.penske.apps.buildmatrix.domain.ApprovedOrder;
+import com.penske.apps.buildmatrix.domain.BuildAttribute;
 import com.penske.apps.buildmatrix.domain.BuildMatrixAttribute;
 import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
@@ -367,4 +368,31 @@ public class BuildMatrixController {
 		isUnique = buildMatrixSmcService.checkForUniqueAttributeValue(attributeId, attributeValue);
         return isUnique;
     }
+	
+	/**
+	 * method to load confirm-selection screen
+	 * 
+	 * 	 */
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping("/build-mix")
+	public ModelAndView getConfirmSelection(@RequestParam("buildId") int buildId) {
+		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/build-mix");
+		BuildSummary existingBuild = buildMatrixSmcService.getBuildSummary(buildId);
+		if(existingBuild == null)
+			throw new IllegalArgumentException("Couldn't find existing build");
+		
+		List<CroOrderKey> selectedOrderKeys = buildMatrixSmcService.getCroOrderKeysForBuild(existingBuild.getBuildId());
+		List<ApprovedOrder> selectedOrders = buildMatrixCroService.getApprovedOrdersByIds(selectedOrderKeys);
+		int bodiesOnOrder = selectedOrders.stream().collect(Collectors.summingInt(order->order.getOrderTotalQuantity()));
+		int chassisAvailable = buildMatrixCorpService.getAvailableChasisCount();
+		
+		List<BuildAttribute> attributes = buildMatrixSmcService.getAttributesForBuild();
+		
+		model.addObject("bodiesOnOrder", bodiesOnOrder);
+		model.addObject("chassisAvailable", chassisAvailable);
+		model.addObject("buildId", buildId);
+		model.addObject("attributes", attributes);
+		
+		return model;
+	}
 }

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.penske.apps.buildmatrix.dao.BuildMatrixSmcDAO;
 import com.penske.apps.buildmatrix.domain.ApprovedOrder;
 import com.penske.apps.buildmatrix.domain.BodyPlantCapability;
+import com.penske.apps.buildmatrix.domain.BuildAttribute;
 import com.penske.apps.buildmatrix.domain.BuildMatrixAttribute;
 import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
@@ -303,4 +304,9 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		}
 		return resultAttribute;
 	}*/
+	
+	@Override
+	public List<BuildAttribute> getAttributesForBuild() {
+		return buildMatrixSmcDAO.getAttributesForBuild();
+	}
 }

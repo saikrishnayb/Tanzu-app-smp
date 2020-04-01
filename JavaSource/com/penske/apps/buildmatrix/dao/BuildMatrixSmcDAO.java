@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.penske.apps.buildmatrix.domain.ApprovedOrder;
 import com.penske.apps.buildmatrix.domain.BodyPlantCapability;
+import com.penske.apps.buildmatrix.domain.BuildAttribute;
 import com.penske.apps.buildmatrix.domain.BuildMatrixAttribute;
 import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
@@ -63,5 +64,7 @@ public interface BuildMatrixSmcDAO {
 	public void addAttribute(@Param("attributeId") int attributeId, @Param("attributeValue") String attributeValue);
 	
     public List<String> getAllAttributeValues(@Param("attributeId") int attributeId);
+    
+    public List<BuildAttribute> getAttributesForBuild();
 	
 }

@@ -22,4 +22,16 @@
 			AND ((CORP_NVOPODL1.CHANGE_NUMBER) &lt; 1))
 	</select>
 	
+	<select id="getManufacturersByType" resultType="com.penske.apps.buildmatrix.model.ManufacturerDetails">
+   		SELECT DISTINCT
+  				MFCODE as mfrCode,
+   				MFNAME as mfrName
+   		FROM
+   		  		CORP.FVEHMFR
+		WHERE
+				MFTYP${poCategoryType.mfrFieldCode} = #{poCategoryType.mfrFieldCode}
+		ORDER BY
+   				MFNAME
+   	</select>
+   	
 </mapper>
