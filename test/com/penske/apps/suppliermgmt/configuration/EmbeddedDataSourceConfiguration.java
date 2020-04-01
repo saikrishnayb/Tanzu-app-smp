@@ -23,6 +23,8 @@ import com.penske.apps.smccore.base.configuration.ProfileType;
 import com.penske.apps.smccore.base.plugins.TimingBean;
 import com.penske.apps.smccore.base.plugins.TimingBeanImpl;
 import com.penske.apps.suppliermgmt.annotation.CommonStaticUrl;
+import com.penske.apps.suppliermgmt.annotation.DBCro;
+import com.penske.apps.suppliermgmt.annotation.DBSmc;
 import com.penske.apps.suppliermgmt.beans.DefaultSuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.model.LookUp;
@@ -56,6 +58,8 @@ public class EmbeddedDataSourceConfiguration {
     }
 
     @Bean
+    @DBSmc
+    @DBCro
     @CoreDataSourceQualifier
     public DataSource smcDataSource() throws NamingException {
     	
