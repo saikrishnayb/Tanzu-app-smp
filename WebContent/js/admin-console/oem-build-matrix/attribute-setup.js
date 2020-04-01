@@ -82,7 +82,7 @@ $(document).ready(function() {
 	});
 	
 	$editAttributeModal.on("click",'#update-attr',function(){
-		
+		showLoading();
 		var $form = $('#editAttributeForm');
 		var attributeData =$form.serialize();
 		var attributeId = $form.find('.attributeId').val();
@@ -94,15 +94,13 @@ $(document).ready(function() {
 			attrValuesString += ' <a class="buttonPrimary non-selected-attrvalue">'+$(this).val()+'</a>';
 		});
 		
-	//	var isValid =validate($form);
-		
-			var $updateAttributePromise = $.ajax({
+		var $updateAttributePromise = $.ajax({
 				type: "POST",
 				url:'./update-attribute.htm',
 				global: false,
 				data: attributeData
 			});
-			$updateAttributePromise.done(function(data){
+		$updateAttributePromise.done(function(data){
 					
 					$('#attribute-table').find('.edit-attribute-id').each(function(){
 						var attributeIdCheck = $(this).val();
@@ -117,19 +115,21 @@ $(document).ready(function() {
 						}
 					});
 					closeModal($editAttributeModal);
-				});
-		    $updateAttributePromise.fail(function(xhr, ajaxOptions, thrownError) {
+					hideLoading();
+		});
+		$updateAttributePromise.fail(function(xhr, ajaxOptions, thrownError) {
 					  if(xhr.responseText.indexOf('Error Processing the updating Attribute')>0){
 						  $('.errorMsg').text("Error Processing the updating Attribute.");
 							 $('.error').show();
 					  }
-				});
+					  hideLoading();
+		});
 		
 		
 	});
 	
 	$addAttributeModal.on("click",'#create-attr',function(){
-		
+		showLoading();
 		var $form = $('#editAttributeForm');
 		var attributeData = $form.serialize();
 		var attributeId = $form.find('.attributeId').val();
@@ -145,18 +145,39 @@ $(document).ready(function() {
 			  data: {attributeId : attributeId, attributeValue: attributeValue},
 			  success: function(isUnique){
 				  if(isUnique){
-					showLoading=true;
+					  	showLoading();
+					  	var attrValues=$('.attr-original-values').val().slice(1,-1).split(',').map(function(item) {return item.trim();});
+					  	attrValues.push(attributeValue);
+					  	var attrValuesString= '';
+					  	 for (i = 0; i < attrValues.length; i++) {
+							attrValuesString += ' <a class="buttonPrimary non-selected-attrvalue">'+attrValues[i]+'</a>';
+						};
+						
 						url='./add-attribute.htm';
 					$.ajax({
 						url : url,
 						type: "POST",  
 						data: {attributeId : attributeId, attributeValue: attributeValue},
 						success : function(data) {
+								showLoading();
+								$('#attribute-table').find('.edit-attribute-id').each(function(){
+									var attributeIdCheck = $(this).val();
+									var attributeIdMatch = (attributeIdCheck ==attributeId) ;
+								
+									if(attributeIdMatch){
+										
+										var $attributeRow = $(this).closest('tr');
+										var nRow = $attributeRow[0];
+										$attributeTable.dataTable().fnUpdate( attrValuesString, nRow, 2, false);
+										
+									}
+						});
+						closeModal($addAttributeModal);
+						hideLoading();
 						},
 					}); 
-					closeModal($addAttributeModal);
 				  }else{
-					showLoading=false;
+					hideLoading();
 					$("#ErrorMsg span").text("Attribute Value: "+attributeValue+" already exists !");
 					$("#ErrorMsg").show();
 					$("#attributeValue").addClass("errorMsgInput");

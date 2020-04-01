@@ -9,5 +9,7 @@
 		<div><a href="#" id="left-nav-vendor-users" onclick="javascript:loadProcessImage();">Slots</a></div>
 		<div><a href="#" id="left-nav-vendor-users" onclick="javascript:loadProcessImage();">Location Availability</a></div>
 		<div class="leftNavGroup"><a href="${baseAppUrl}/admin-console/security/roles.htm" id="left-nav-roles" onclick="javascript:loadProcessImage();">Reports</a></div>
+		<tl:penskeOnly>
 		<div class="leftNavGroup"><a href="${baseAppUrl}/admin-console/oem-build-matrix/attribute-maintenance.htm" id="left-nav-attribute-maintenance" onclick="javascript:loadProcessImage();">Attribute Maintenance</a></div>
+		</tl:penskeOnly>
 </div>

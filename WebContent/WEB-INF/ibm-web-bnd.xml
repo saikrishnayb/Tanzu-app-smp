@@ -7,6 +7,5 @@
 
 	<virtual-host name="default_host" />
 	<resource-ref name="ds_suppliermgmt" binding-name="jdbc/ds_suppliermgmt"/>
-	<resource-ref name="ds_cro" binding-name="jdbc/ds_cro"/>
 	
 </web-bnd>

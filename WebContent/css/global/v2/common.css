@@ -1533,3 +1533,8 @@ div.dataTables_scrollBody > table.dataTable > thead > tr > th{
 .ui-multiselect-menu > ul.ui-multiselect-checkboxes > li > label > span {
   vertical-align: top;
 }
+
+.round-corner-btn-cls {
+	border-radius: 10px;
+}
+

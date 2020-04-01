@@ -44,8 +44,6 @@ var $orderSummaryDataTable = $orderSummaryTable.DataTable({ //All of the below a
 		} 
 });
 
-calculateBodiesOnOrder();
-
 $('#order-search').on('keyup',function(){
 	$orderSummaryDataTable.search($(this).val()).draw() ;
 });

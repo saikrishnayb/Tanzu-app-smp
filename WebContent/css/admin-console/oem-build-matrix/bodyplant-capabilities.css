@@ -1,0 +1,34 @@
+.selected-dimension {
+	border-radius: 10px;
+	background-color: #98FB98;
+	min-width: 40px !important;
+	color: black !important;
+}
+
+.non-selected-dimension {
+	border-radius: 10px;
+	background-color: #FFC0CB;
+	min-width: 40px !important;
+	color: black !important;
+}
+
+.plant-view {
+  width: 99%;
+}
+
+.allow {
+  width: 13px;
+}
+
+.edit-button {
+  min-width: 50px!important;
+  border-radius: 10px;
+}
+
+#build-number {
+  width: 50px;
+}
+
+#term {
+  padding-top: 65px;
+}

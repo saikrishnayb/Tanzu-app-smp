@@ -1,71 +1,3 @@
-/* attribute setup style */
-
-.non-selected-attrvalue {
-	border-radius: 10px;
-	background-color: lightgray !important;
-	min-width: 40px !important;
-	color: black !important;
-}
-.non-selected-attrvalue:hover
-{
-	background-color: lightgray;
-}
-/* attribute setup style end */
-
-.selected-dimension {
-	border-radius: 10px;
-	background-color: #98FB98;
-	min-width: 40px !important;
-	color: black !important;
-}
-
-.non-selected-dimension {
-	border-radius: 10px;
-	background-color: #FFC0CB;
-	min-width: 40px !important;
-	color: black !important;
-}
-
-.round-corner-btn-cls {
-	border-radius: 10px;
-}
-
-.status-class {
-	text-align: left;
-	position: absolute;
-	padding-top: 2%;
-}
-.slotActionSelect {
-	width: 72px;
-	height: 25px;
-	border-radius: 10px;
-}
-.attribute-row{
-	padding-bottom: 13px;
-}
-.attribute-class {
-	text-align: right;
-	display: inline-block;
-	width: 40%
-}
-.dimension-class {
-	text-align: center;
-	padding: 7px;
-}
-
-.dimension-select {
-	margin: 2%
-}
-.rowgroupHeader{
-	color: #828282;
-    font-size: 17px;
-}
-.add-oem-class{
-	text-align: right;
-	display: inline-block;
-	width: 40%;
-	padding: 2px;
-}
 /* Start of custom Bootstrap Dropdown custom CSS */
 
 .bootStrapDropDown{
@@ -240,313 +172,62 @@ color:inherit}
 
 /* End of Bootstrap Dropdown custom CSS */
 
-.attribute-view {
-  width: 99%;
-}
-
-#heading-view {
-  width: 13px;
-  padding: 3px 10px;
-}
-
-.data-view {
-  width: 12%;
-}
-
-.display-color {
-  color: black;
-}
-
-.display-none {
-  display: none;
+table.dataTable thead th{
+	padding: 10px 10px !important;
 }
 
 .plant-view {
   width: 99%;
 }
 
-.allow {
-  width: 13px;
+.round-corner-btn-cls {
+	border-radius: 10px;
 }
 
-.edit-button {
-  min-width: 50px!important;
-  border-radius: 10px;
+.width-60 {
+	width: 60px;
 }
 
-#build-number {
-  width: 50px;
+.numeric-jquery-date {
+  width: 80px;
 }
 
-#term {
-  padding-top: 65px;
+.offline-row{
+	margin-right: 0px;
+    margin-left: 0px;
+    padding-bottom: 17px;
+}
+.padding-15{
+	padding-right: 15px
 }
 
-/* Start of Business Award Maintenance style */
 
-#bottom-view {
-  padding-bottom: 1%;
-}
-
-#maint-table-view {
-  width: 100%;
-}
-
-#save-div {
-  text-align: right;
-  padding: 1%;
-}
-
-#oem-value {
-  width: 7%; 
-  text-align: center;
-}
-
-#delete-display {
-  min-width: 50px;
-}
-
-#table-data1 {
-  width: 70%
-}
-
-#table-data2 {
-  width: 30%
-}
-
-#table-head1 {
-  width: 12%
-}
-
-#table-head2 {
-  width: 15%
-}
-
-/* End of Business Award Maintenance style */
-
-/* Start of Edit Attribute style */
-
-#attribute-view {
-  width: 100%;
-}
-
-#tdata1 {
-  width: 50%
-}
-
-#tdata2 {
-  width: 25%
-}
-
-.save-update {
-  text-align: right;
-  padding: 5px";
-}
-
-#checkbox-display {
-  margin: 2%;
-}
-
-.round-corner-text-box {
-	border-radius: 5px;
-}
-
-/* End of Edit Attribute style */
-
-/* Start of Add OEM style */
-
-#add-oem {
-  width: 100%;
-}
-
-.dropdown-view {
-  width: 200px;
-}
-
-.save-or-update {
-  text-align: right;
-  padding: 5px";
-}
-
-/* End of Add OEM style */
-
-/* Start of Edit Attribute Content style */
-
-.attribute-div {
-  width: 100%;
-}
-
-.option-group {
-  width: 175px;
-}
-
-.attribute-name {
-  width: 173px;
-}
-
-.attibute-display {
-  display: inline-block;
-} 
-
-/* End of Edit Attribute Content style */
-
-.save-update-row {
-  width: 100%;
-  padding-top: 9px;
-  text-align: right;
-}
-
-/* Start of Proximity Configuration style */
-
-.vl {
-  border-left: 1px solid silver;
-  height: 450px;
-  position: absolute;
-  left: 39%;
-  margin-left: -3px;
-  top: 65px;
-}
-
-.vl2 {
-  border-left: 1px solid silver;
-  height: 450px;
-  position: absolute;
-  left: 68%;
-  margin-left: -3px;
-  top: 65px;
-}
-
-.leftpane {
-    width: 30%;
-    height: 100%;
-    float: left;
-    border-collapse: collapse;
-}
-
-.middlepane {
-    width: 35%;
-    height: 100%;
-    float: left;
-    border-collapse: collapse;
-}
-
-.rightpane {
-  width: 35%;
-  height: 100%;
-  position: relative;
-  float: right;
-  border-collapse: collapse;
-}
-
-#mainContent ul, #mainContent ol , .ui-dialog-content ul, .ui-dialog-content ol{
-  list-style: disc;
+.form-group .ui-datepicker-trigger {
   margin-left: 0px;
-  margin-top: 5px
+  position: relative;
+  float: none;
+  top: 7px;
 }
 
-#list1 {
-  left-margin: 0;
-}
-
-.fieldset {
-  border: 0;
-}
-
-.legend-view {
-  width: 100%;
-  margin-top: 10px;
-}
-
-.chkbox-display {
-   margin-left: 22px;;
-}
-
-#check-uncheck-display {
-   display: -webkit-inline-box;
-}
-
-/* Remove default bullets */
-ul, #myUL {
-  list-style-type: none;
-}
-
-/* Remove margins and padding from the parent ul */
-#myUL {
-  margin: 0;
-  padding: 0;
-}
-
-.filter {
-  margin-bottom: 0.4rem;
-  padding-right: 15px;
-   border-radius: 3px;
-}
-.alf-delete {
-  text-decoration: none;
-  color: #ffffff;
-  background: #cccccc;
-  border-radius: 50%;
+.advanced-date-operator {
   display: inline-block;
-  font-size: 75%;
-  line-height: 0.95;
-  padding: 0 2px;
+  width: 40px;
+}
+
+.advanced-date {
+  display: inline-block;
+  width: 72px;
+}
+
+.advanced-date+.ui-datepicker-trigger {
   position: absolute;
-  margin: 4px 0 0 -14px;
-  opacity: 0;
-} 
-.alf-delete:hover {
-  opacity: 1;
-}
-.filterable {
-  margin:0;
-  padding: 0;
-  list-style: none;
-  margin-left:10%;
-}
-.filterable .potential {
-  font-weight: bold;
-}
-.filterable li {
-  list-style: none;
-  margin-bottom: 0.4rem;
-}
-.filterable label {
-  font-weight: bold;
-  cursor: pointer;
-}
-.filterable label:before {
-  content: "\25B6";
-  color: black;
-  display: inline-block;
-  margin-right: 6px;
-}
-.filterable .expanded:before {
-  transform: rotate(90deg);
-}
-.filterable ul {
-  display: none;
-  margin: 0 0 0 20px;
-  padding: 0;
-}
-.save-proximity{
-  display: inline-block;
-  text-align: right;
-  width: 90%;
+  margin-top: -9px;
+  margin-left: -2px;
 }
 
-/* End of Proximity Configuration style */
-
-.ui-dialog-titlebar-close {
-	display: contents;
-	position: static;
+.padding-8{
+    padding-top: 8px;
 }
-
-.ui-dialog .ui-dialog-titlebar-close span {
-    display: block;
-    margin: 1px;
-    position: static;
-}
-
-table.dataTable thead th{
-	padding: 10px 10px !important;
+.right-padding{
+padding-right: 53px;
 }

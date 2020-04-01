@@ -51,6 +51,9 @@ public class UserCreationServiceImpl implements UserCreationService {
 				logger.info(" Modify User to LDAP..");
 				CPTSso oSSO = new CPTSso();
 				CPBGESSOUser oB2BUser = oSSO.findUser(userObj.getUserName().trim());
+				//CPTDate datStop  = null;
+				//datStop = CPTDate.createDateFromMMDDYYYY( "12/31/4712" );
+				//oB2BUser.setGESSOEffectiveEndDate(datStop.convertDateForLDAP());
 				oB2BUser.setGESSOStatus("A");
 				oB2BUser.setCommonName(userObj.getLastName() + ", " + userObj.getFirstName());
 				oB2BUser.setEmailAddress(userObj.getEmail());
@@ -191,7 +194,7 @@ public class UserCreationServiceImpl implements UserCreationService {
 		attributeList.add(createLDAPattribute(LDAPConstants.EMAIL_ADDRESS, userBean.getEmail()));
 		attributeList.add(createLDAPattribute(LDAPConstants.FULL_NAME,userBean.getLastName() + "," + userBean.getFirstName()));
 		attributeList.add(createLDAPattribute(LDAPConstants.PHONE, userBean.getPhone()));
-		attributeList.add(createLDAPattribute(LDAPConstants.GESSO_STATUS, "U"));
+		attributeList.add(createLDAPattribute(LDAPConstants.GESSO_STATUS, "A"));
 		return attributeList;
 	}
 	

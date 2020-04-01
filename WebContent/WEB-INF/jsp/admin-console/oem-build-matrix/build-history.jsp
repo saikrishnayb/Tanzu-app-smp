@@ -7,7 +7,6 @@
 		<title>OEM Build Matrix</title>
 		
 		<%@ include file="../../../jsp/jsp-fragment/global/new/default-head-block.jsp"%>
-		<link href="${baseUrl}/css/admin-console/oem-build-matrix/build-matrix.css" rel="stylesheet" type="text/css" />
 		<link href="${baseUrl}/css/admin-console/oem-build-matrix/build-history.css" rel="stylesheet" type="text/css" />
 	</head>
 	

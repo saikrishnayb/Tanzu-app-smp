@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,17 +21,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.penske.apps.adminconsole.enums.LeftNav;
 import com.penske.apps.adminconsole.enums.Tab.SubTab;
-import com.penske.apps.adminconsole.model.BuildMatrixAttribute;
-import com.penske.apps.adminconsole.model.DistrictProximity;
-import com.penske.apps.adminconsole.service.BodyPlantBuildHistoryService;
-import com.penske.apps.adminconsole.service.BodyPlantCapabilityService;
-import com.penske.apps.adminconsole.service.BodyPlantMaintSummaryService;
-import com.penske.apps.adminconsole.service.BusinessAwardMaintService;
-import com.penske.apps.adminconsole.service.DistrictProximityService;
-import com.penske.apps.adminconsole.service.OEMAttributeService;
 import com.penske.apps.adminconsole.util.CommonUtils;
 import com.penske.apps.buildmatrix.domain.ApprovedOrder;
-import com.penske.apps.buildmatrix.domain.BuildAttribute;
+import com.penske.apps.buildmatrix.domain.BuildMatrixAttribute;
+import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.CroOrderKey;
 import com.penske.apps.buildmatrix.domain.enums.BuildStatus;
@@ -68,24 +62,6 @@ public class BuildMatrixController {
 	@Autowired
 	private SuppliermgmtSessionBean sessionBean;
 
-	@Autowired
-	private OEMAttributeService attributeService;
-	
-	@Autowired
-	private BodyPlantCapabilityService capabilityService;
-	
-	@Autowired
-	private BodyPlantBuildHistoryService buildHistoryService;
-	
-	@Autowired
-	private BodyPlantMaintSummaryService maintSummaryService;
-	
-	@Autowired
-	private BusinessAwardMaintService businessAwardMaintService;
-	
-	@Autowired
-	private DistrictProximityService districtProximityService;
-
 	/**
 	 * Method to navigate to OEM-build matrix screen
 	 * 
@@ -121,7 +97,7 @@ public class BuildMatrixController {
 	@RequestMapping("/attribute-maintenance")
 	public ModelAndView getattributeMaintenace() {
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/attribute-setup");
-		model.addObject("attributeList", attributeService.getAllBuildMatrixAttributes());
+		model.addObject("attributeList", buildMatrixSmcService.getAllBuildMatrixAttributes());
 		return model;
 	}
 
@@ -135,16 +111,13 @@ public class BuildMatrixController {
 	@RequestMapping(value = "/get-edit-attribute-content",method = { RequestMethod.GET })
 	@ResponseBody
 	public ModelAndView getEditAttributeContent(@RequestParam("attributeId") int attributeId, HttpServletResponse response) {
-		BuildMatrixAttribute buildMatrixAttribute = attributeService.getAttributeDetails(attributeId);
+		BuildMatrixAttribute buildMatrixAttribute = buildMatrixSmcService.getAttributeDetails(attributeId);
 		ModelAndView model = new ModelAndView("/jsp-fragment/admin-console/oem-build-matrix/edit-attribute-modal");
 		try {
-			
-			model.addObject("optionGroupList",attributeService.getDropdownOptionGrpList());//Need to be updated once mapping is known
 			model.addObject("editPopup", true);
 			model.addObject("attribute", buildMatrixAttribute);
 		} catch (Exception e) {
 			LOGGER.error("Error in loading Edit Attribute popup" .concat(e.getLocalizedMessage()) );
-			//handleAjaxException(e, response);
 		}
 		return model;
 	}
@@ -159,7 +132,7 @@ public class BuildMatrixController {
 	@RequestMapping(value = "/get-add-attribute-content",method = { RequestMethod.GET })
 	@ResponseBody
 	public ModelAndView getAddAttributeContent(@RequestParam("attributeId") int attributeId, HttpServletResponse response) {
-		BuildMatrixAttribute buildMatrixAttribute = attributeService.getAttributeDetails(attributeId);
+		BuildMatrixAttribute buildMatrixAttribute = buildMatrixSmcService.getAttributeDetails(attributeId);
 		ModelAndView model = new ModelAndView("/jsp-fragment/admin-console/oem-build-matrix/edit-attribute-modal");
 		try {
 			model.addObject("addPopup", true);
@@ -192,7 +165,7 @@ public class BuildMatrixController {
 	@RequestMapping("/bodyplant-capabilities")
 	public ModelAndView getAttributeMaintenance() {
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/bodyplant-capabilities");
-		model.addObject("capabilityList", capabilityService.getAllBuildMatrixCapabilities());
+		model.addObject("capabilityList", buildMatrixSmcService.getAllBuildMatrixCapabilities());
 		return model;
 	}
 
@@ -207,7 +180,7 @@ public class BuildMatrixController {
 	@RequestMapping(value = "/load-edit-dimension-popup", method = { RequestMethod.POST })
 	public ModelAndView loadEditDimensionPopup(@RequestParam("capabilityId") int capabilityId, HttpServletResponse response) {
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/edit-dimension");
-		model.addObject("bodyPlantCapability",capabilityService.getCapabilityDetails(capabilityId));
+		model.addObject("bodyPlantCapability",buildMatrixSmcService.getCapabilityDetails(capabilityId));
 		model.addObject("editPopup", true);
 		return model;
 	}
@@ -238,7 +211,7 @@ public class BuildMatrixController {
 	@RequestMapping("/maintenance-summary")
 	public ModelAndView getMaintenanceSummary() {
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/maintenance-summary");
-		model.addObject("maintenanceSummary", maintSummaryService.getMaintenanceSummary());
+		model.addObject("maintenanceSummary", buildMatrixSmcService.getAllBodyPlants());
 		return model;
 	}
 	
@@ -252,7 +225,7 @@ public class BuildMatrixController {
 	public ModelAndView getDistrictProximity() {
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/district-proximity");
 		//model.addObject("districtProximity", districtProximityService.getDistrictProximity());
-		model.addObject("districtProximityList", districtProximityService.getDistrictProximityMockService());
+		model.addObject("districtProximityList", buildMatrixSmcService.getDistrictProximityMockService());
 		return model;
 	}
 	
@@ -265,33 +238,11 @@ public class BuildMatrixController {
 	@RequestMapping("/business-award-maint")
 	public ModelAndView getBusinessAwardMaintenance() {
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/business-award-maintenance");
-		model.addObject("oemMaintenanceList", businessAwardMaintService.getAllOEMs());
+		model.addObject("oemMaintenanceList", buildMatrixSmcService.getAllOEMs());
 		return model;
 	}
 	
-	@SmcSecurity(securityFunction = SecurityFunction.OEM_BUILD_MATRIX)
-    @RequestMapping(value="insert-district-proximity")
-    @ResponseBody
-    public ModelAndView insertDistrictProximity(DistrictProximity districtProximity,HttpServletResponse response) throws Exception {
-		/*
-		 * try{ System.out.println("Inside insert-district-proximity!!!!!!!!!!");
-		 * districtProximityService.insertDistrictProximity(districtProximity); }catch
-		 * (Exception e) {
-		 * LOGGER.error("Error while saving proximity: "+e.getMessage(),e);
-		 * CommonUtils.getCommonErrorAjaxResponse(
-		 * response,"Error Processing the updating Attribute"); }
-		 */
-        return null;
-    }
-	
-	/*@SmcSecurity(securityFunction = SecurityFunction.OEM_BUILD_MATRIX)
-    @RequestMapping(value="insert-district-proximity")
-    public int insertDistrictProximity(DistrictProximity districtProximity) throws Exception {
-		System.out.println("Inside insert-district-proximity!!!!!!!!!!");
-        districtProximityService.insertProximityValues(districtProximity);
-        return 0;
-    }
-	*/
+		
 	/**
 	 * method to load order-summary screen
 	 * 
@@ -352,42 +303,43 @@ public class BuildMatrixController {
 		return model;
 	}
 	
-	/**
-	 * method to load confirm-selection screen
-	 * 
-	 * 	 */
-	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
-	@RequestMapping("/build-mix")
-	public ModelAndView getConfirmSelection(@RequestParam("buildId") int buildId) {
-		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/build-mix");
-		BuildSummary existingBuild = buildMatrixSmcService.getBuildSummary(buildId);
-		if(existingBuild == null)
-			throw new IllegalArgumentException("Couldn't find existing build");
-		
-		List<CroOrderKey> selectedOrderKeys = buildMatrixSmcService.getCroOrderKeysForBuild(existingBuild.getBuildId());
-		List<ApprovedOrder> selectedOrders = buildMatrixCroService.getApprovedOrdersByIds(selectedOrderKeys);
-		int bodiesOnOrder = selectedOrders.stream().collect(Collectors.summingInt(order->order.getOrderTotalQuantity()));
-		int chassisAvailable = buildMatrixCorpService.getAvailableChasisCount();
-		
-		List<BuildAttribute> attributes = buildMatrixSmcService.getAttributesForBuild();
-		
-		model.addObject("bodiesOnOrder", bodiesOnOrder);
-		model.addObject("chassisAvailable", chassisAvailable);
-		model.addObject("buildId", buildId);
-		model.addObject("attributes", attributes);
-		
-		return model;
-	}
-	
 	@SmcSecurity(securityFunction = SecurityFunction.OEM_BUILD_MATRIX)
     @RequestMapping(value="update-attribute")
     @ResponseBody
     public ModelAndView updateAttribute(BuildMatrixAttribute attributeData,HttpServletResponse response) throws Exception {
         try{
-        	attributeService.updateAttribute(attributeData);
+        	buildMatrixSmcService.updateAttribute(attributeData);
         }catch (Exception e) {
             LOGGER.error("Error while updating Attribute: "+e.getMessage(),e);
             CommonUtils.getCommonErrorAjaxResponse(response,"Error Processing the updating Attribute");
+        }
+        return null;
+    }
+	/**
+	 *Method to load offline dates setup model 
+	 */
+	@SmcSecurity(securityFunction = SecurityFunction.OEM_BUILD_MATRIX)
+    @RequestMapping(value = "/get-offline-date-setup-modal", method = RequestMethod.POST)
+    @ResponseBody
+    public ModelAndView getModalData(@RequestParam("plantId") int plantId)
+	 	{
+	        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/oem-build-matrix/set-offline-dates-modal");
+	        mav.addObject("plantData", buildMatrixSmcService.getPlantData(plantId));
+	        return mav;
+	    }
+
+	/**
+	 * Method to save offline dates for a plant
+	 */
+	@SmcSecurity(securityFunction = SecurityFunction.OEM_BUILD_MATRIX)
+    @RequestMapping(value="save-offline-dates")
+    @ResponseBody
+    public ModelAndView saveOfflineDates(@RequestBody BuildMatrixBodyPlant plantData,HttpServletResponse response) throws Exception {
+        try{
+        	buildMatrixSmcService.saveOfflineDates(plantData);
+        }catch (Exception e) {
+            LOGGER.error("Error while setting Offline Dates: "+e.getMessage(),e);
+            CommonUtils.getCommonErrorAjaxResponse(response,"Error Processing the Setting Offline dates");
         }
         return null;
     }
@@ -396,7 +348,7 @@ public class BuildMatrixController {
     @RequestMapping(value="add-attribute")
     public ModelAndView addAttribute(@RequestParam(value="attributeId") int attributeId, @RequestParam(value="attributeValue") String attributeValue) throws Exception {
         try{
-        	attributeService.addAttribute(attributeId,attributeValue);
+        	buildMatrixSmcService.addAttribute(attributeId,attributeValue);
         }catch (Exception e) {
             LOGGER.error("Error while saving Attribute: "+e.getMessage(),e);
         }
@@ -412,7 +364,7 @@ public class BuildMatrixController {
 	@ResponseBody
     public boolean checkForUniqueAttributeValue(@RequestParam(value="attributeId") int attributeId, @RequestParam(value="attributeValue") String attributeValue) {
 		boolean isUnique = true;
-		isUnique = attributeService.checkForUniqueAttributeValue(attributeId, attributeValue);
+		isUnique = buildMatrixSmcService.checkForUniqueAttributeValue(attributeId, attributeValue);
         return isUnique;
     }
 }

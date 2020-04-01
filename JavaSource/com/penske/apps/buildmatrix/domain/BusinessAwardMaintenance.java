@@ -1,12 +1,12 @@
-package com.penske.apps.adminconsole.model;
+package com.penske.apps.buildmatrix.domain;
 
-public class OEM {
+public class BusinessAwardMaintenance {
 private int oemId;
 private String poCategory;
 private String oemName;
 private float value;
 
-public OEM(int oemId, String poCategory, String oemName, float value) {
+public BusinessAwardMaintenance(int oemId, String poCategory, String oemName, float value) {
 	super();
 	this.oemId = oemId;
 	this.poCategory = poCategory;

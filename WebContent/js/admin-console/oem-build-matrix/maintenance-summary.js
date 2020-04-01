@@ -1,12 +1,9 @@
 $(document).ready(function() {
-	var times = [
-		"Body Plant Exceptions",
-		"Proximity Configuration",
-		"Proximity Configuration"
-
-	];
+	var $setOfflineDatesModal= $('#set-offline-dates-modal');
+	
 	selectCurrentNavigation("tab-oem-build-matrix", "left-nav-maintenance-summary");
-	$table = $('#body-plant-maint-table').dataTable({ //All of the below are optional
+	
+	$bodyPlantTable = $('#body-plant-maint-table').dataTable({ //All of the below are optional
 		"bPaginate" : true, //enable pagination
 		"bStateSave" : true, //To retrieve the data on click of back button
 		"sPaginationType" : "two_button",
@@ -15,28 +12,6 @@ $(document).ready(function() {
 			'bSortable' : false,
 			'aTargets' : [ 0 ]
 		} ],
-		"aocolumn" : [
-			{
-				"render" : function(d, t, r) {
-					var $select = $("<select></select>", {
-						"id" : r[0] + "start",
-						"value" : d
-					});
-					$.each(times, function(k, v) {
-						var $option = $("<option></option>", {
-							"text" : v,
-							"value" : v
-						});
-						if (d === v) {
-							$option.attr("selected", "selected")
-						}
-						$select.append($option);
-					});
-					return $select.prop("outerHTML");
-				}
-			}
-			, null, null, null, null, null, null
-		],
 		"bLengthChange" : true, //enable change of records per page, not recommended
 		"bFilter" : true, //Allows dynamic filtering of results, do not enable if using ajax for pagination
 		"bAutoWidth" : false,
@@ -69,4 +44,112 @@ $(document).ready(function() {
 		}
 	});
 
+	$setOfflineDatesModal.dialog({
+		autoOpen: false,
+		modal: true,
+		dialogClass: 'popupModal',
+		width: 350,
+		minHeight: 230,
+		resizable: false,
+		title: 'Set Plant Offline Date',
+		closeOnEscape: false
+	});
+
+	$setOfflineDatesModal.on("click",'#save-offline-dates',function(){
+		var $form = $('#set-offline-date-form');
+		var plantId = $form.find('.plantId').val();
+		var offlineStartDate= $form.find('#start-date').val();
+		var offlineEndDate= $form.find('#end-date').val();
+		showLoading();
+		var input = {};
+		input['plantId'] = $form.find('.plantId').val();
+		input['offlineStartDate'] =($form.find('#start-date').val()!='')? (new Date($form.find('#start-date').val())) : null;
+		input['offlineEndDate'] = ($form.find('#end-date').val()!='')? (new Date($form.find('#end-date').val())) : null;
+		
+		var errorMsg = '';
+		
+		// Validate the form.
+		errorMsg = validateOfflineDateForm($form);
+		
+		// If no error message was returned, hide any errors and submit the form data.
+		if (errorMsg.length == 0) {
+		var $saveOfflineDatesPromise = $.ajax({
+			type: "POST",
+			url:'./save-offline-dates.htm',
+			global: false,
+			data: JSON.stringify(input),
+			contentType: 'application/json',
+			success: function(data){
+				$('#body-plant-maint-table').find('.plant-id').each(function(){
+					var plantIdCheck = $(this).val();
+					var plantIdMatch = (plantIdCheck ==plantId) ;
+				
+					if(plantIdMatch){
+						var stringToAppend = (offlineStartDate== '')?"No offline Dates" :( offlineStartDate+' - '+offlineEndDate);
+						var $bodyPlantRow = $(this).closest('tr');
+						var nRow = $bodyPlantRow[0];
+						$bodyPlantTable.dataTable().fnUpdate(stringToAppend , nRow, 5, false);
+						
+					}
+				});
+				closeModal($setOfflineDatesModal);
+				hideLoading();
+			  },
+			error: function(XMLHttpRequest, textStatus, errorThrown) {
+				  if(XMLHttpRequest.responseText.indexOf('Error Processing the Setting Offline dates')>0){
+					  $('.errorMsg').text("Error Processing the Setting Offline dates.");
+					  $('.error').show();
+					 
+				  }
+				  hideLoading();
+				
+			  }
+		});
+		
+		}
+		// If an error was found, display it to the user and do not submit the form data.
+		else {
+			
+			$('.errorMsg').text(errorMsg);
+			$('.error').show();
+			hideLoading();
+		}
+		
+	});
 });
+ 
+function validateOfflineDateForm($form) {
+	var errorMsg = '';
+	var offlineStartDate= $form.find('#start-date').val();
+	var offlineEndDate= $form.find('#end-date').val();
+	if(offlineStartDate.length!=0 && offlineEndDate.length ==0)
+		{
+			errorMsg = "Offline End date cannot be empty.";
+		}
+	else if(offlineStartDate.length ==0 && offlineEndDate.length !=0)
+		{
+			errorMsg = "Offline Start date cannot be empty.";
+		}
+	else if(offlineStartDate.length !=0 && offlineEndDate.length !=0)
+		{
+			if(new Date(offlineStartDate) > new Date(offlineEndDate) )
+				{
+				errorMsg = "Start date is greater than End date. ";
+				}
+		}
+	return errorMsg;
+}
+function setOfflineDates(plantId)
+{
+	$.post('./get-offline-date-setup-modal.htm',
+			{'plantId':plantId},
+			function(data) {
+				$('#set-offline-dates-modal').html(data);
+				
+				$('#set-offline-dates-modal').find('.error').hide();
+				$('.errorMsgInput').removeClass('errorMsgInput');
+				
+				$('#set-offline-dates-modal').dialog('open');
+			});
+}
+

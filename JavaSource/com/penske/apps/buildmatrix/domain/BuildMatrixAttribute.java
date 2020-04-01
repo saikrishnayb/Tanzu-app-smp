@@ -1,4 +1,4 @@
-package com.penske.apps.adminconsole.model;
+package com.penske.apps.buildmatrix.domain;
 
 import java.util.List;
 

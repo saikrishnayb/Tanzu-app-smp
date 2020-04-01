@@ -5,24 +5,18 @@
 <head>
 <title>OEM Build Matrix</title>
 <%@ include file="../../../jsp/jsp-fragment/global/new/default-head-block.jsp"%>
-<%@ include file="../../../jsp/jsp-fragment/global/new/global-scripts.jsp"%>
-<script type="text/javascript" src="${baseUrl}/jQuery/jquery.multiselect.js"></script>
-<script type="text/javascript" src="${baseUrl}/jQuery/jquery.multiselect.filter.js"></script>
 <script type="text/javascript" src="${baseUrl}/jQuery/jquery.accordion-live-filter.js"></script>
 <script type="text/javascript" src="${baseUrl}/jQuery/jquery.selectall.min.js"></script>
-<script type="text/javascript" src="${baseUrl}/js/admin-console/oem-build-matrix/district-proximity.js"></script>
 <link href="${baseUrl}/css/jquery.multiselect.css" rel="stylesheet" type="text/css" />
 <link href="${baseUrl}/css/global/font-awesome.min.css" rel="stylesheet" type="text/css" />
-<link href="${baseUrl}/css/home/home.css" rel="stylesheet" type="text/css" />
 <link href="${baseUrl}/css/jquery.multiselect.filter.css" rel="stylesheet" type="text/css" />
-<link href="${baseUrl}/css/admin-console/oem-build-matrix/build-matrix.css" rel="stylesheet" type="text/css" />
+<link href="${baseUrl}/css/admin-console/oem-build-matrix/district-proximity.css" rel="stylesheet" type="text/css" />
 <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body style="overflow-y:visible;">
 	<%@ include file="../../../jsp/jsp-fragment/global/header.jsp"%>
 	<div id="mainContent" class="borderTop">
-		<%@ include
-			file="../../../jsp/jsp-fragment/admin-console/oem-build-matrix/left-nav.jsp"%>
+		<%@ include file="../../../jsp/jsp-fragment/admin-console/oem-build-matrix/left-nav.jsp"%>
 		<div class="leftNavAdjacentContainer">
 			<span class="floatRight addRow push-right"> </span>
 			<div id="PopupError" style="display:none">
@@ -97,5 +91,10 @@
 		    </div>
 		</div>
 	</div>
+	
+	<%@ include file="../../../jsp/jsp-fragment/global/new/global-scripts.jsp"%>
+	<script type="text/javascript" src="${baseUrl}/jQuery/jquery.multiselect.js"></script>
+	<script type="text/javascript" src="${baseUrl}/jQuery/jquery.multiselect.filter.js"></script>
+	<script type="text/javascript" src="${baseUrl}/js/admin-console/oem-build-matrix/district-proximity.js"></script>
 </body>
 </html>

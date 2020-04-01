@@ -91,37 +91,111 @@
 		WHERE RUN_ID = #{buildId}
 	</select>
 	
-	<resultMap type="com.penske.apps.buildmatrix.domain.BuildAttribute" id="BuildAttributeMap">
-		<id column="ATTRIBUTE_ID"				property="attributeId" />
-		<result column="ATTRIBUTE_KEY" 			property="attributeKey"/>
-		<result column="ATTRIBUTE_NAME"   		property="attributeName"/>
-		<result column="GROUP_KEY"  			property="groupKey"/>
-		<result column="GROUP_DESCRIPTION"    	property="groupDescription"/>
-		<result column="GROUP_ORDER"    		property="groupOrder"/>
-		<collection property="attributeValues"			ofType="com.penske.apps.buildmatrix.domain.BuildAttributeValue" column="ATTRIBUTE_ID" resultMap="BuildAttributeValueMap" columnPrefix="VAL_" />
-	</resultMap>
+	<select  id="getDistrictProximity" resultType="com.penske.apps.buildmatrix.domain.DistrictProximity">
+		SELECT   DISTRICT AS district,
+		         TIER AS tier
+		FROM     SMC.OBM_PLANT_PROXIMITY OPP
+		WHERE    OPP.TIER = 1
+	</select>
 	
-	<resultMap type="com.penske.apps.buildmatrix.domain.BuildAttributeValue" id="BuildAttributeValueMap">
-		<id column="ATTRIBUTE_VALUE_ID"			property="attributeValueId" />
-		<result column="ATTRIBUTE_VALUE"		property="attributeValue" />
-	</resultMap>
+	<insert id="insertProximityValues">
+	</insert>
 	
-	
-	<select id="getAttributesForBuild" resultMap="BuildAttributeMap">
+	<select id="getAllBodyPlants" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant">
 		SELECT
-			attribute.ATTRIBUTE_ID,
-			attribute.ATTRIBUTE_KEY,
-			attribute.ATTRIBUTE_NAME,
-			awardGroup.GROUP_KEY,
-			awardGroup.GROUP_DESCRIPTION,
-			awardGroup.GROUP_ORDER,
-			val.ATTRIBUTE_VALUE_ID AS VAL_ATTRIBUTE_VALUE_ID,
-			val.ATTRIBUTE_VALUE AS VAL_ATTRIBUTE_VALUE
-		FROM SMC.OBM_ATTRIBUTE_VALUE val
-		LEFT JOIN SMC.OBM_ATTRIBUTE attribute
-			ON attribute.ATTRIBUTE_ID = val.ATTRIBUTE_ID
-		LEFT JOIN SMC.OBM_BUSINESS_AWARD_GROUP awardGroup
-			ON awardGroup.ATTRIBUTE_ID = val.ATTRIBUTE_ID
-		ORDER BY attribute.ATTRIBUTE_ID
+			PLANT_ID AS plantId,
+			PLANT_MFR_CODE AS plantMfrCode,
+			PLANT_MANUFACTURER AS plantManufacturer,
+			PLANT_NAME AS plantName,
+			PLANT_STATE AS state,
+			PLANT_ZIP AS zip,
+			PLANT_COUNTRY AS country,
+			PLANT_CITY AS city,
+			OFFLINE_START AS offlineStartDate,
+			OFFLINE_END AS offlineEndDate
+		from OBM_PLANTS
+	</select>
+	
+	<select id="getPlantData" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant">
+		SELECT
+			PLANT_ID AS plantId,
+			PLANT_MFR_CODE AS plantMfrCode,
+			PLANT_MANUFACTURER AS plantManufacturer,
+			PLANT_NAME AS plantName,
+			PLANT_STATE AS state,
+			PLANT_ZIP AS zip,
+			PLANT_COUNTRY AS country,
+			PLANT_CITY AS city,
+			OFFLINE_START AS offlineStartDate,
+			OFFLINE_END AS offlineEndDate
+		from OBM_PLANTS
+		WHERE PLANT_ID=#{plantId}
+	</select>
+	
+	<update id="saveOfflineDates">
+		UPDATE OBM_PLANTS 
+		SET OFFLINE_START=#{offlineStartDate},
+			OFFLINE_END=#{offlineEndDate}
+		WHERE PLANT_ID=#{plantId}
+	</update>
+	
+	<select id="getAllBuildMatrixAttributes" resultMap="buildmatrixAttributeMap">
+		SELECT   ATTRIBUTE_ID AS attributeId,
+		         ATTRIBUTE_NAME AS attributeName,
+		         '' AS attributeType
+		FROM     OBM_ATTRIBUTE
+	</select>
+
+	<resultMap id="buildmatrixAttributeMap" type="com.penske.apps.buildmatrix.domain.BuildMatrixAttribute" >
+		<result property="attributeId"   	column="attributeId"/>
+		<result property="attributeName" 	column="attributeName"/>
+		<result property="attributeType" 	column="attributeType"/>
+		<result property="attributeValue" 	column="attributeValue"/>
+		<collection property="values" 		column="attributeId" select="getAttributeValues"></collection>
+	</resultMap>
+
+	<select id="getAttributeValues" resultType="string">
+		SELECT   ATTRIBUTE_VALUE
+		FROM     OBM_ATTRIBUTE_VALUE
+		WHERE    ATTRIBUTE_ID=#{attributeId}
+	</select>
+	
+	<select id="getAttributeDetails" resultMap="buildmatrixAttributeMap">
+		SELECT   ATTRIBUTE_ID AS attributeId,
+		         ATTRIBUTE_NAME AS attributeName,
+		         '' AS attributeType
+		FROM     OBM_ATTRIBUTE
+		WHERE    ATTRIBUTE_ID=#{attributeId}
+	</select>
+	
+	<update id="updateAttribute">
+		UPDATE OBM_ATTRIBUTE SET ATTRIBUTE_NAME=#{attributeName}
+		WHERE ATTRIBUTE_ID=#{attributeId}
+	</update>
+	
+	<delete id="updateAttributeValues">
+		DELETE
+		FROM 	OBM_ATTRIBUTE_VALUE
+		WHERE 	ATTRIBUTE_ID=#{attributeId}
+		 <if test="values != null">
+           	AND 	ATTRIBUTE_VALUE NOT IN 
+		   	<foreach collection="values" item="value" separator="," open="(" close=")">#{value}</foreach>
+         </if>
+	</delete>
+	
+	<insert id="addAttribute">
+		INSERT INTO 
+ 					SMC.OBM_ATTRIBUTE_VALUE 
+ 					(ATTRIBUTE_ID, ATTRIBUTE_VALUE)
+ 		VALUES 		(#{attributeId}, #{attributeValue})
+	</insert>
+	
+ 	<select id="getAllAttributeValues" resultType="String">
+ 		SELECT 
+				TRIM(ATTRIBUTE_VALUE)
+		FROM
+				SMC.OBM_ATTRIBUTE_VALUE
+		WHERE
+				ATTRIBUTE_ID=#{attributeId} 
 	</select>
 </mapper>

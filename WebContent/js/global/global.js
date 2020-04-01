@@ -282,3 +282,21 @@ function tableRowLengthCalc() {
 	
 	return tableLengthSize;
 }
+
+//function to show the loading image 
+var showLoading = function(gIndex) {
+var defer = $.Deferred();
+processingImageAndTextHandler('visible','Processing...');
+setTimeout(function() {
+    defer.resolve(gIndex);
+}, 1);
+
+return defer;
+};
+//function to hide the loading image 
+var hideLoading = function() {
+var defer = $.Deferred();
+processingImageAndTextHandler('hidden');
+defer.resolve(); 
+return defer;
+};

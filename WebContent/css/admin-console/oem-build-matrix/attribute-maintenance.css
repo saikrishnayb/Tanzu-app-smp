@@ -1,0 +1,99 @@
+.non-selected-attrvalue {
+	border-radius: 10px;
+	background-color: lightgray !important;
+	min-width: 40px !important;
+	color: black !important;
+}
+.non-selected-attrvalue:hover
+{
+	background-color: lightgray;
+}
+
+.save-update-row {
+  width: 100%;
+  padding-top: 9px;
+  text-align: right;
+}
+
+.attribute-view {
+  width: 99%;
+}
+
+#heading-view {
+  width: 13px;
+  padding: 3px 10px;
+}
+
+.data-view {
+  width: 12%;
+}
+
+.display-color {
+  color: black;
+}
+
+.display-none {
+  display: none;
+}
+
+#attribute-view {
+  width: 100%;
+}
+
+#tdata1 {
+  width: 50%
+}
+
+#tdata2 {
+  width: 25%
+}
+
+.save-update {
+  text-align: right;
+  padding: 5px";
+}
+
+#checkbox-display {
+  margin: 2%;
+}
+
+.attribute-row{
+	padding-bottom: 20px;
+}
+.attribute-class {
+	text-align: right;
+	display: inline-block;
+	width: 25%
+}
+.dimension-class {
+	text-align: center;
+	padding: 7px;
+}
+
+.dimension-select {
+	margin: 2%
+}
+
+/* Start of Edit Attribute Content style */
+
+.attribute-div {
+  width: 100%;
+}
+
+.option-group {
+  width: 175px;
+}
+
+.attribute-name {
+  width: 173px;
+}
+
+.attibute-display {
+  display: inline-block;
+}
+
+.round-corner-text-box {
+	border-radius: 5px;
+}
+
+/* End of Edit Attribute Content style */

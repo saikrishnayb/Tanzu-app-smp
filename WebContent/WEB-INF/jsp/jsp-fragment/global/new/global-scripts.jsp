@@ -12,3 +12,4 @@
 <script src="${baseUrl}/js/global/modal-util.js"></script>
 <script src="${baseUrl}/js/global/ritsu.min.js"></script>
 <script src="${baseUrl}/js/global/global.js"></script>
+<script src="${baseUrl}/js/admin-console/app-config/bootstrap/bootstrap.min.js" type="text/javascript"></script>
