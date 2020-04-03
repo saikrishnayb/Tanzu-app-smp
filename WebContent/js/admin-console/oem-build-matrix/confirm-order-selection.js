@@ -1,6 +1,6 @@
 var $confirmSelectionTable = $('#confirm-selection-table');
 
-selectCurrentNavigation("tab-oem-build-matrix", "left-nav-order-summary");
+selectCurrentNavigation("tab-app-config", "left-nav-order-summary");
 
 var $confirmSelectionDataTable = $confirmSelectionTable.DataTable({ //All of the below are optional
 		"bPaginate" : true, //enable pagination

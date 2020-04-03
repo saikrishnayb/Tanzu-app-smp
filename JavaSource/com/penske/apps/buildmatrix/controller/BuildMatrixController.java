@@ -65,32 +65,6 @@ public class BuildMatrixController {
 	private SuppliermgmtSessionBean sessionBean;
 
 	/**
-	 * Method to navigate to OEM-build matrix screen
-	 * 
-	 * @return
-	 */
-	@RequestMapping(value = "/navigate-oem-build-matrix", method = { RequestMethod.GET })
-	public ModelAndView navigateOEMBuildMatrix() {
-
-		Set<SecurityFunction> securityFunctions = sessionBean.getUserContext().getSecurityFunctions();
-
-		List<LeftNav> leftNavs = SubTab.OEM_BUILD_MATRIX.getLeftNavs();
-
-		for (LeftNav leftNav : leftNavs) {
-
-			SecurityFunction securityFunction = leftNav.getSecurityFunction();
-
-			boolean noAccess = securityFunction != null && !securityFunctions.contains(securityFunction);
-			if (noAccess)
-				continue;
-
-			return new ModelAndView("redirect:/app/" + leftNav.getUrlEntry());
-		}
-
-		return new ModelAndView("/admin-console/security/noAccess");
-	}
-
-	/**
 	 * method to load attribute maintenance screen
 	 * 
 	 * @return

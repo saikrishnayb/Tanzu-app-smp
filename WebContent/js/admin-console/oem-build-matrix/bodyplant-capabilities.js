@@ -1,6 +1,6 @@
 var allNodes;
 $(document).ready(function() {
-	selectCurrentNavigation("tab-oem-build-matrix", "left-nav-bodyplant-capabilities");
+	selectCurrentNavigation("tab-app-config", "left-nav-bodyplant-capabilities");
 
 	$table = $('#plant-capablity-table').dataTable({ //All of the below are optional
 		"bPaginate" : true, //enable pagination

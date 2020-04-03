@@ -1,10 +1,13 @@
+
 selectCurrentNavigation("tab-oem-build-matrix", "left-nav-business-award-maint");
-	
 var $businessAwardMainTable = $('#business-award-maint-table');
 var $addBtn = $('#add-mfr');
 var $deleteBtn = $('#delete-mfr');
 var $saveBtn = $('#save-oem-mix');
 var $oemMixModal = $('#oem-mix-modal');
+
+	
+
 
 $businessAwardMainDataTable = $businessAwardMainTable.DataTable( {
 	"bPaginate" : true, //enable pagination
@@ -63,6 +66,7 @@ $businessAwardMainDataTable = $businessAwardMainTable.DataTable( {
 	    
 	  }
 	  
+
 });
 
 ModalUtil.initializeModal($oemMixModal, "auto");
@@ -101,6 +105,7 @@ $addBtn.on('click', function(){
 
 function saveCheckedBoxes(id) {
 	var checkedRowCount = 0;
+
 	var rowCount = $businessAwardMainDataTable.rows().nodes().length;
 	$($businessAwardMainDataTable.rows().nodes()).each(function() {
 		 if($(this).find('#select-oem'). prop("checked") == true ) {

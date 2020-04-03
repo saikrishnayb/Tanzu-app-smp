@@ -1,5 +1,5 @@
 $(document).ready(function() {
-	selectCurrentNavigation("tab-oem-build-matrix", "left-nav-district-proximity");
+	selectCurrentNavigation("tab-app-config", "left-nav-district-proximity");
 	
 	var $saveProximity = $('.saveProximity');
 

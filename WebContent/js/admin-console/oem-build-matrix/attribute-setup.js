@@ -1,6 +1,6 @@
 var allNodes;
 $(document).ready(function() {
-	selectCurrentNavigation("tab-oem-build-matrix", "left-nav-attribute-maintenance");
+	selectCurrentNavigation("tab-app-config", "left-nav-attribute-maintenance");
 	var $editAttributeModal =$('#edit-attribute-modal');
 	var $addAttributeModal =$('#add-attribute-modal');
 
@@ -76,16 +76,16 @@ $(document).ready(function() {
 			of : window
 		},
 		resizable : false,
-		title : 'Add Attribute Value',
+		title : 'Add Attribute',
 		closeOnEscape : false,
 		open: function(event, ui) { }
 	});
 	
 	$editAttributeModal.on("click",'#update-attr',function(){
 		showLoading();
-		var $form = $('#editAttributeForm');
+		var attributeId = $(this).attr('save-attr-id');
+		var $form = $('#editAttributeForm[save-attr-id="'+attributeId+'"]');
 		var attributeData =$form.serialize();
-		var attributeId = $form.find('.attributeId').val();
 		var attributeOptionGrp =$form.find('#optionGroup').val();
 		var attributeName = $form.find('#attributeName').val();
 		var attrValues = $form.find('#values').find('option:selected');
@@ -130,11 +130,14 @@ $(document).ready(function() {
 	
 	$addAttributeModal.on("click",'#create-attr',function(){
 		showLoading();
-		var $form = $('#editAttributeForm');
+		var attributeId = $(this).attr('save-attr-id');
+		var $form = $('#editAttributeForm[save-attr-id="'+attributeId+'"]');
 		var attributeData = $form.serialize();
-		var attributeId = $form.find('.attributeId').val();
+		$form.find('.attributeId').val();
 		var attributeName = $form.find('#attributeName').val();
-		var attributeValue = $addAttributeModal.find('#attributeValue').val();
+		var originalAttributeValue = $addAttributeModal.find('#attributeValue').val()
+		var attributeValue = $addAttributeModal.find('#attributeValue').val().toUpperCase();
+		
 		
 		var isValid = validateAttributeValue($form);
 		if(isValid){
@@ -146,10 +149,11 @@ $(document).ready(function() {
 			  success: function(isUnique){
 				  if(isUnique){
 					  	showLoading();
-					  	var attrValues=$('.attr-original-values').val().slice(1,-1).split(',').map(function(item) {return item.trim();});
+					  	var attrValues=$form.find('.attr-original-values').val().slice(1,-1).split(',').map(function(item) {return item.trim();});
 					  	attrValues.push(attributeValue);
 					  	var attrValuesString= '';
 					  	 for (i = 0; i < attrValues.length; i++) {
+					  		if(attrValues[i]!='') 
 							attrValuesString += ' <a class="buttonPrimary non-selected-attrvalue">'+attrValues[i]+'</a>';
 						};
 						
@@ -178,13 +182,16 @@ $(document).ready(function() {
 					}); 
 				  }else{
 					hideLoading();
-					$("#ErrorMsg span").text("Attribute Value: "+attributeValue+" already exists !");
+					$("#ErrorMsg span").text("Attribute Value: "+originalAttributeValue+" already exists !");
 					$("#ErrorMsg").show();
 					$("#attributeValue").addClass("errorMsgInput");
 					}
 			  },
 			});
 	}
+		else{
+			hideLoading();
+			}
 	});
 	
 
@@ -206,6 +213,7 @@ $(document).ready(function() {
 			var attributeId = $this.closest('.attribute-row').find('.edit-attribute-id').val();
 			
 			var $getEditAttributeContentPromise =$.get("get-edit-attribute-content.htm",{attributeId:attributeId});
+			$('.editAttributeForm[save-attr-id="'+attributeId+'"]').remove();
 			$getEditAttributeContentPromise.done(function(data){
 				$editAttributeModal.html(data);
 				openModal($editAttributeModal);
@@ -219,6 +227,7 @@ $(document).ready(function() {
 		var attributeId = $this.closest('.attribute-row').find('.edit-attribute-id').val();
 		
 		var $getAddAttributeContentPromise =$.get("get-add-attribute-content.htm",{attributeId:attributeId});
+		$('.editAttributeForm[save-attr-id="'+attributeId+'"]').remove();
 		$getAddAttributeContentPromise.done(function(data){
 			$addAttributeModal.html(data);
 			openModal($addAttributeModal);
@@ -268,6 +277,14 @@ function validateAttributeValue($form){
 		$("#ErrorMsg").show();
 		$("#attributeValue").addClass("errorMsgInput");
 		}
+	else{
+	    if (attributeValue.length > 20) {
+		valid = false;
+		$("#ErrorMsg span").text("Attribute Value length is too long");
+		$("#ErrorMsg").show();
+		$("#attributeValue").addClass("errorMsgInput");
+	    }
+	}
 	
 return valid;
 }

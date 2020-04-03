@@ -2,18 +2,20 @@
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ include file="../../../jsp-fragment/admin-console/oem-build-matrix/edit-attribute-content.jsp" %>
 <script src="${baseUrl}/js/admin-console/oem-build-matrix/edit-attribute.js" type="text/javascript"></script>	
-<div style="width:100%;padding-top: 9px;text-align:right">
-		<div>
-			<div class="rightAlign">
-				<c:choose>
-					<c:when test="${editPopup eq true}">
-					<a class="buttonPrimary buttonDisabled" id="update-attr" href="#" onclick="">Save</a>
-					</c:when>
-					<c:otherwise>
-					<a class="buttonPrimary" id="create-attr" href="#" onclick="">Save</a>
-					</c:otherwise>
-				</c:choose>
-				
+<div>
+	<c:choose>
+		<c:when test="${editPopup eq true}">
+			<div class="update-attribute">
+				<a class="buttonPrimary buttonDisabled round-corner-btn-cls"
+					id="update-attr" save-attr-id="${attribute.attributeId}" href="#"
+					onclick="">Save</a>
 			</div>
-		</div>
-</div>	
+		</c:when>
+		<c:otherwise>
+			<div class="save-attribute">
+				<a class="buttonPrimary round-corner-btn-cls" id="create-attr"
+					save-attr-id="${attribute.attributeId}" href="#" onclick="">Save</a>
+			</div>
+		</c:otherwise>
+	</c:choose>
+</div>

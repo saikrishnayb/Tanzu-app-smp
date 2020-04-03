@@ -12,7 +12,7 @@
 <body style="overflow-y:visible;">
 	<%@ include file="../../../jsp/jsp-fragment/global/header.jsp"%>
 	<div id="mainContent" class="borderTop">
-		<%@ include file="../../../jsp/jsp-fragment/admin-console/oem-build-matrix/left-nav.jsp"%>
+		<%@ include file="../../../jsp/jsp-fragment/admin-console/app-config/left-nav.jsp" %>
 		<div class="leftNavAdjacentContainer">
 			<span class="floatRight addRow push-right"> </span>
 			<div id="PopupError" style="display:none">
@@ -23,12 +23,12 @@
 			<table id="body-plant-maint-table" class="plant-view">
 				<thead>
 					<tr>
-						<th></th>
-						<th class="">Manufacturer</th>
+						<th class="actionsheader"></th>
+						<th>Manufacturer</th>
 						<th>City</th>
-						<th class="">State</th>
-						<th class="">Plant Name</th>
-						<th class="">Offline Dates</th>
+						<th>State</th>
+						<th>Plant Name</th>
+						<th>Offline Dates</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -56,7 +56,7 @@
 							 <c:when test="${fn:trim(plant.offlineStartDate) ne '' and fn:trim(plant.offlineEndDate) ne '' }">
 							 <fmt:formatDate pattern = "MM/dd/yyyy" value = "${plant.offlineStartDate}" /> - <fmt:formatDate pattern = "MM/dd/yyyy" value = "${plant.offlineEndDate}" />
 						     </c:when>
-						     <c:otherwise>No offline Dates</c:otherwise>
+						     <c:otherwise>No Offline Dates</c:otherwise>
 							</c:choose>
 							</td>
 						</tr>

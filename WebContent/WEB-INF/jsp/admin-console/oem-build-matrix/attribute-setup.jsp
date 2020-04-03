@@ -8,12 +8,10 @@
 	<link href="${baseUrl}/css/admin-console/oem-build-matrix/attribute-maintenance.css" rel="stylesheet" type="text/css" />
 	<link href="${baseUrl}/css/jquery.multiselect.css" rel="stylesheet" type="text/css" />
 </head>
-`
 <body style="overflow-y:visible;">
 	<%@ include file="../../../jsp/jsp-fragment/global/header.jsp"%>
-	
 	<div id="mainContent" class="borderTop">
-		<%@ include file="../../../jsp/jsp-fragment/admin-console/oem-build-matrix/left-nav.jsp"%>
+		<%@ include file="../../../jsp/jsp-fragment/admin-console/app-config/left-nav.jsp" %>
 		<div class="leftNavAdjacentContainer">
 			<span class="floatRight addRow push-right"> </span>
 			<div id="PopupError" style="display:none">

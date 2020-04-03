@@ -58,13 +58,26 @@
 }
 
 .attribute-row{
-	padding-bottom: 20px;
+	padding-bottom: 15px;
+	padding-top: 5px;
 }
+
 .attribute-class {
 	text-align: right;
 	display: inline-block;
 	width: 25%
 }
+.add-attribute-row {
+	padding-top: 20px;
+    display: inline-block;
+    width: 100%;
+}
+
+.add-attribute-class {
+	display: inline-block;
+	width: 28%
+}
+
 .dimension-class {
 	text-align: center;
 	padding: 7px;
@@ -72,6 +85,18 @@
 
 .dimension-select {
 	margin: 2%
+}
+
+.update-attribute {
+	width: 100%;
+    padding-top: 9px;
+    text-align: right;
+}
+
+.save-attribute {
+	width: 78%;
+    padding-top: 9px;
+    text-align: right;
 }
 
 /* Start of Edit Attribute Content style */
@@ -96,4 +121,7 @@
 	border-radius: 5px;
 }
 
+.error-text{
+	width: 225px;
+}
 /* End of Edit Attribute Content style */

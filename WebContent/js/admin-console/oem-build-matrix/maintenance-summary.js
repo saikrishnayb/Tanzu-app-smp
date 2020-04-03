@@ -1,7 +1,7 @@
 $(document).ready(function() {
 	var $setOfflineDatesModal= $('#set-offline-dates-modal');
 	
-	selectCurrentNavigation("tab-oem-build-matrix", "left-nav-maintenance-summary");
+	selectCurrentNavigation("tab-app-config", "left-nav-maintenance-summary");
 	
 	$bodyPlantTable = $('#body-plant-maint-table').dataTable({ //All of the below are optional
 		"bPaginate" : true, //enable pagination
@@ -48,7 +48,7 @@ $(document).ready(function() {
 		autoOpen: false,
 		modal: true,
 		dialogClass: 'popupModal',
-		width: 350,
+		width: 312,
 		minHeight: 230,
 		resizable: false,
 		title: 'Set Plant Offline Date',
@@ -85,7 +85,7 @@ $(document).ready(function() {
 					var plantIdMatch = (plantIdCheck ==plantId) ;
 				
 					if(plantIdMatch){
-						var stringToAppend = (offlineStartDate== '')?"No offline Dates" :( offlineStartDate+' - '+offlineEndDate);
+						var stringToAppend = (offlineStartDate== '')?"No Offline Dates" :( offlineStartDate+' - '+offlineEndDate);
 						var $bodyPlantRow = $(this).closest('tr');
 						var nRow = $bodyPlantRow[0];
 						$bodyPlantTable.dataTable().fnUpdate(stringToAppend , nRow, 5, false);
@@ -124,11 +124,11 @@ function validateOfflineDateForm($form) {
 	var offlineEndDate= $form.find('#end-date').val();
 	if(offlineStartDate.length!=0 && offlineEndDate.length ==0)
 		{
-			errorMsg = "Offline End date cannot be empty.";
+			errorMsg = "Offline End date is required.";
 		}
 	else if(offlineStartDate.length ==0 && offlineEndDate.length !=0)
 		{
-			errorMsg = "Offline Start date cannot be empty.";
+			errorMsg = "Offline Start date is required.";
 		}
 	else if(offlineStartDate.length !=0 && offlineEndDate.length !=0)
 		{

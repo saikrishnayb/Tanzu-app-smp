@@ -13,7 +13,7 @@
 	<body style="overflow-y:visible;">
 		<%@ include file="../../../jsp/jsp-fragment/global/header.jsp"%>
 		<div id="mainContent" class="borderTop">
-			<%@ include file="../../../jsp/jsp-fragment/admin-console/oem-build-matrix/left-nav.jsp"%>
+			<%@ include file="../../../jsp/jsp-fragment/admin-console/app-config/left-nav.jsp" %>
 			<div class="leftNavAdjacentContainer">
 				<div id="PopupError" style="display:none">
 					<span class="errorMsg"> Hmm, something went wrong. See if you could try again. </span>

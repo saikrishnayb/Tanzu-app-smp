@@ -227,3 +227,9 @@ table.dataTable thead th{
 .right-padding{
 padding-right: 53px;
 }
+.left-padding{
+padding-left: 0;
+}
+.actionsheader{
+width: 80px;
+}

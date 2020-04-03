@@ -1,4 +1,4 @@
-selectCurrentNavigation("tab-oem-build-matrix", "left-nav-build-history");
+selectCurrentNavigation("tab-app-config", "left-nav-build-history");
 
 var $buildHistoryTable = $('#build-history-table');
 
