@@ -30,7 +30,7 @@
 
 .attribute-table input { 
 	margin: 0px;
-	width: 40px;
+	width: 50px;
 	text-align: right;
 	padding-right:4px;
 }
@@ -58,7 +58,7 @@
 .total-percentage,
 .total-units {
 	display:inline-block;
-	width:40px;
+	width:50px;
 	padding-right:4px;
 }
 

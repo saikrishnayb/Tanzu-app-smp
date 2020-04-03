@@ -33,7 +33,7 @@
 		          				<label>Chassis Available</label> <span class="badge">${chassisAvailable}</span>
 		          			</div>
 		          			<div class="btn-div floatRight">
-		          				<a id="add-to-build" class="buttonSecondary round-corner-btn-cls">Add to Build</a>
+		          				<a id="add-to-build" class="buttonSecondary">Add to Build</a>
 		          			</div>
 		        		</div>
 		      		</div>

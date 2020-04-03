@@ -87,7 +87,7 @@
 				</script>
 			</div>
 			<div class="save-proximity">
-					<a href="#" class="buttonPrimary round-corner-btn-cls" onClick="saveProximity()">Save</a>
+					<a href="#" class="buttonPrimary" onClick="saveProximity()">Save</a>
 		    </div>
 		</div>
 	</div>

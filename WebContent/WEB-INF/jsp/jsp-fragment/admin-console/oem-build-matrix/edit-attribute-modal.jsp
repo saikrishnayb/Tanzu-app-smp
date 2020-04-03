@@ -7,10 +7,10 @@
 			<div class="rightAlign">
 				<c:choose>
 					<c:when test="${editPopup eq true}">
-					<a class="buttonPrimary buttonDisabled round-corner-btn-cls" id="update-attr" href="#" onclick="">Save</a>
+					<a class="buttonPrimary buttonDisabled" id="update-attr" href="#" onclick="">Save</a>
 					</c:when>
 					<c:otherwise>
-					<a class="buttonPrimary round-corner-btn-cls" id="create-attr" href="#" onclick="">Save</a>
+					<a class="buttonPrimary" id="create-attr" href="#" onclick="">Save</a>
 					</c:otherwise>
 				</c:choose>
 				

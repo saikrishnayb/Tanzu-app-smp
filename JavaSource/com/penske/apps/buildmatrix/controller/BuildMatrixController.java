@@ -29,6 +29,7 @@ import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.CroOrderKey;
 import com.penske.apps.buildmatrix.domain.enums.BuildStatus;
+import com.penske.apps.buildmatrix.model.BuildMixForm;
 import com.penske.apps.buildmatrix.model.OrderSelectionForm;
 import com.penske.apps.buildmatrix.service.BuildMatrixCorpService;
 import com.penske.apps.buildmatrix.service.BuildMatrixCroService;
@@ -394,5 +395,13 @@ public class BuildMatrixController {
 		model.addObject("attributes", attributes);
 		
 		return model;
+	}
+	
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping("/submit-build")
+	public void submitBuild(BuildMixForm buildMixForm) {
+		int buildId = buildMixForm.getBuildId();
+		
+		
 	}
 }

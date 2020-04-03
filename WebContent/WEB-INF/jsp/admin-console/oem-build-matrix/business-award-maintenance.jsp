@@ -30,9 +30,9 @@
           				<label>Search: </label> <input type="text" id="mix-search"/>
           			</div>
           			<div class="btn-div floatRight">
-          				<a id="delete-mfr" class="buttonSecondary round-corner-btn-cls">Delete</a>
-          				<a id="add-mfr" class="buttonSecondary round-corner-btn-cls">Add</a>
-          				<a id="save-oem-mix" class="buttonPrimary round-corner-btn-cls">Save</a>
+          				<a id="delete-mfr" class="buttonSecondary">Delete</a>
+          				<a id="add-mfr" class="buttonSecondary">Add</a>
+          				<a id="save-oem-mix" class="buttonPrimary">Save</a>
           			</div>
         		</div>
       		</div>
@@ -53,7 +53,7 @@
 									<td class="po-category">${oem.poCategory}</td>
 									<td class="leftAlign">
 										<input type="checkbox" id="select-oem" onclick="saveCheckedBoxes(this.id)" > 
-										<a class="buttonSecondary round-corner-btn-cls" class="delete-row">DELETE</a>
+										<a class="buttonSecondary" class="delete-row">DELETE</a>
 									</td>
 									<td class="leftAlign">${oem.oemName}</td>
 									<td class="leftAlign">

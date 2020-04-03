@@ -4,7 +4,6 @@
 	<head>
 	<title>OEM Build Matrix</title>
 		<%@ include file="../../../jsp/jsp-fragment/global/new/default-head-block.jsp"%>
-		<link href="${baseUrl}/css/admin-console/oem-build-matrix/build-matrix.css" rel="stylesheet" type="text/css" />
 		<link href="${baseUrl}/css/admin-console/oem-build-matrix/build-mix.css" rel="stylesheet" type="text/css" />
 		<link href="${baseUrl}/css/admin-console/oem-build-matrix/build-matrix-global.css" rel="stylesheet" type="text/css" />
 	</head>
@@ -15,7 +14,6 @@
 		<div id="mainContent">
 			<%@ include file="../../../jsp/jsp-fragment/admin-console/oem-build-matrix/left-nav.jsp"%>
 			<div class="leftNavAdjacentContainer">
-				<c:set var="tooManyBodies" value="${bodiesOnOrder > chassisAvailable}"/>
 				<div class="container-fluid">
 					<div id="PopupError" style="display:none">
 						<span class="errorMsg"> Hmm, something went wrong. See if you could try again. </span>
@@ -26,14 +24,14 @@
 		        		</div>
 		      		</div>
 		      		<div class="row">
-		        		<div class="col-xs-12 build-mix-top">
-		        			<div class='badge-div'>
+		        		<div class="col-xs-12 build-mix-top" data-bodies-on-order="${bodiesOnOrder}" >
+		        			<div class='badge-div' >
 		          				<label>Bodies on Order</label> <span class="badge">${bodiesOnOrder}</span>
 		          				<label>Chassis Available</label> <span class="badge">${chassisAvailable}</span>
 		          			</div>
 		          			<div class="btn-div floatRight">
-		          				<a id="back-btn" href="${baseAppUrl}/admin-console/oem-build-matrix/order-summary?buildId=${buildId}" class="buttonSecondary round-corner-btn-cls">Back</a>
-		          				<a id="continue" class="buttonPrimary round-corner-btn-cls buttonDisabled">Sumbit</a>
+		          				<a id="back-btn" href="${baseAppUrl}/admin-console/oem-build-matrix/order-summary?buildId=${buildId}" class="buttonSecondary">Back</a>
+		          				<a id="submit-btn" class="buttonPrimary buttonDisabled" data-build-id="${buildId}">Submit</a>
 		          			</div>
 		        		</div>
 		      		</div>
@@ -41,8 +39,8 @@
 		      			<div class="col-xs-12 attributes-section">
 		      			<c:forEach items="${attributes}" var="attribute" varStatus="outerLoop">
 		      				<c:if test="${outerLoop.count eq 1 or (outerLoop.count-1) % 3 eq 0}"><div class="row attribute-row"></c:if>
-		      				<div class="col-xs-4" data-attribute-id="${attribute.attributeId}">
-			      				<diV class="attribute-container">
+		      				<div class="col-xs-4">
+			      				<diV class="attribute-container" data-attribute-id="${attribute.attributeId}" data-attribute-key="${attribute.attributeKey}" data-group-key="${attribute.groupKey}">
 			      					<div class="row">
 			      						<div class="col-xs-12 attribute-header">
 			      							<h2>${attribute.attributeName}</h2>
@@ -64,7 +62,7 @@
 			      												<c:set var="rowClass" value="even"/>
 			      											</c:otherwise>
 			      										</c:choose>
-			      										<tr class="attribute-value-row ${rowClass}" data-attribute-value-id="${attributeValue.attributeValueId}">
+			      										<tr class="attribute-value-row ${rowClass}" data-attribute-value="${attributeValue.attributeValue}">
 			      											<td class="attribute-value-td">${attributeValue.attributeValue}</td>
 			      											<td class="attribute-percentage-td"><input type="text" class="attribute-percentage text-align-right" value="0" disabled /></td>
 			      											<td>%<td>
@@ -94,6 +92,7 @@
 		      			</div> 			
 		      		</div>
 					<div id="oem-mix-modal" style="display:none;"></div>
+					<form id="build-mix-form" name="buildMixForm" data-build-id="${buildId}" method="POST" action="${baseAppUrl}/admin-console/oem-build-matrix/submit-build"></form>
 				</div>
 			</div>
 		</div>
