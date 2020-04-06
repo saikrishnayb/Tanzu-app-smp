@@ -38,7 +38,7 @@
 					<div class="attibute-display">
 						<select id="attributeName" name="attributeName" class="attribute-name round-corner-text-box">
 							<option value="attributeName">${attribute.attributeName}</option>
-						</select>
+ 						</select>
 					</div>
 				</div>
 				<div class="add-attribute-class">
@@ -46,7 +46,7 @@
 				</div>
 				<div class="add-attribute-class">
 					<input style="width: 173px;" class="attributeValue input alpha alpha-numeric" id="attributeValue" type="text"
-						value="${attribute.attributeValue}" />
+						value="${attribute.attributeValue}" maxlength="20"/>
 					<div id="ErrorMsg" class="error-text floatLeft error-messages-container displayNone">
 						<img src="${commonStaticUrl}/images/warning.png"></img>
 							<span class="errorMsg"></span>

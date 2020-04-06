@@ -135,7 +135,6 @@ $(document).ready(function() {
 		var attributeData = $form.serialize();
 		$form.find('.attributeId').val();
 		var attributeName = $form.find('#attributeName').val();
-		var originalAttributeValue = $addAttributeModal.find('#attributeValue').val()
 		var attributeValue = $addAttributeModal.find('#attributeValue').val().toUpperCase();
 		
 		
@@ -176,13 +175,13 @@ $(document).ready(function() {
 										
 									}
 						});
-						closeModal($addAttributeModal);
-						hideLoading();
 						},
 					}); 
+					closeModal($addAttributeModal);
+					hideLoading();
 				  }else{
 					hideLoading();
-					$("#ErrorMsg span").text("Attribute Value: "+originalAttributeValue+" already exists !");
+					$("#ErrorMsg span").text("Provided attribute value already exists, check the data and try again");
 					$("#ErrorMsg").show();
 					$("#attributeValue").addClass("errorMsgInput");
 					}
@@ -273,18 +272,9 @@ function validateAttributeValue($form){
 	if(attributeValue == '')
 		{
 		valid = false;
-		$("#ErrorMsg span").text("please enter Attribute Value");
+		$("#ErrorMsg span").text("Attribute value must be provided");
 		$("#ErrorMsg").show();
 		$("#attributeValue").addClass("errorMsgInput");
 		}
-	else{
-	    if (attributeValue.length > 20) {
-		valid = false;
-		$("#ErrorMsg span").text("Attribute Value length is too long");
-		$("#ErrorMsg").show();
-		$("#attributeValue").addClass("errorMsgInput");
-	    }
-	}
-	
 return valid;
 }
