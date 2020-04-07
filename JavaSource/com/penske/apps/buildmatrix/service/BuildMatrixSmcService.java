@@ -58,5 +58,11 @@ public interface BuildMatrixSmcService {
 	public boolean checkForUniqueAttributeValue(int attributeId, String attributeValue);
 	
 	public List<BuildAttribute> getAttributesForBuild();
+	
+	public List<String> getExcludedUnits();
+
+	public void excludeUnits(List<String> excludedUnits);
+
+	public void deleteExcludedUnits(List<String> excludedUnits);
 
 }

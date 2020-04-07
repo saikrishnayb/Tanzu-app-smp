@@ -212,6 +212,8 @@
 	<resultMap type="com.penske.apps.buildmatrix.domain.BuildAttributeValue" id="BuildAttributeValueMap">
 		<id column="ATTRIBUTE_VALUE_ID"			property="attributeValueId" />
 		<result column="ATTRIBUTE_VALUE"		property="attributeValue" />
+		<result column="DEFAULT_VALUE"			property="defaultPercentage" />
+		<result column="ITEM_ORDER"				property="itemOrder" />
 	</resultMap>
 	
 	
@@ -224,12 +226,42 @@
 			awardGroup.GROUP_DESCRIPTION,
 			awardGroup.GROUP_ORDER,
 			val.ATTRIBUTE_VALUE_ID AS VAL_ATTRIBUTE_VALUE_ID,
-			val.ATTRIBUTE_VALUE AS VAL_ATTRIBUTE_VALUE
+			val.ATTRIBUTE_VALUE AS VAL_ATTRIBUTE_VALUE,
+			COALESCE(awardDefs.DEFAULT_VALUE, 0 ) AS VAL_DEFAULT_VALUE,
+			COALESCE(awardDefs.ITEM_ORDER, -1) AS VAL_ITEM_ORDER
 		FROM SMC.OBM_ATTRIBUTE_VALUE val
 		LEFT JOIN SMC.OBM_ATTRIBUTE attribute
 			ON attribute.ATTRIBUTE_ID = val.ATTRIBUTE_ID
 		LEFT JOIN SMC.OBM_BUSINESS_AWARD_GROUP awardGroup
 			ON awardGroup.ATTRIBUTE_ID = val.ATTRIBUTE_ID
+		LEFT JOIN SMC.OBM_BUSINESS_AWARD_DEFAULTS awardDefs
+			ON awardDefs.ITEM_ID = val.ATTRIBUTE_VALUE_ID
 		ORDER BY attribute.ATTRIBUTE_ID
 	</select>
+	
+	<select id="getExcludedUnits" resultType="String">
+		SELECT
+			UNIT_NUMBER
+		FROM SMC.OBM_UNITS_EXCLUDED_FROM_BUILD
+		WHERE RUN_YEAR = #{year}
+	</select>
+	
+	<insert id="excludeUnits">
+		INSERT INTO SMC.OBM_UNITS_EXCLUDED_FROM_BUILD
+ 					(UNIT_NUMBER, RUN_YEAR)
+ 		VALUES
+ 			<foreach collection="excludedUnits" item="unit" separator="," open="" close="">
+ 				(#{unit}, #{year})
+ 			</foreach>
+	</insert>
+	
+	<delete id="deleteExcludedUnits">
+		DELETE FROM SMC.OBM_UNITS_EXCLUDED_FROM_BUILD
+		WHERE RUN_YEAR = #{year}
+		AND UNIT_NUMBER IN (
+			<foreach collection="excludedUnits" item="unit" separator="," open="" close="">
+				#{unit}
+			</foreach>
+		)
+	</delete>
 </mapper>

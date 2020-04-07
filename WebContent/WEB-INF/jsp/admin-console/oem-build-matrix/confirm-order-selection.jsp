@@ -4,7 +4,7 @@
 	<head>
 	<title>OEM Build Matrix</title>
 		<%@ include file="../../../jsp/jsp-fragment/global/new/default-head-block.jsp"%>
-		<link href="${baseUrl}/css/admin-console/oem-build-matrix/build-matrix.css" rel="stylesheet" type="text/css" />
+		<link href="${baseUrl}/css/admin-console/oem-build-matrix/build-matrix-global.css" rel="stylesheet" type="text/css" />
 		<link href="${baseUrl}/css/admin-console/oem-build-matrix/confirm-order-selection.css" rel="stylesheet" type="text/css" />
 	</head>
 
@@ -37,7 +37,7 @@
 		          			</c:if>
 		          			<div class="btn-div floatRight">
 		          				<a id="back-btn" href="${baseAppUrl}/admin-console/oem-build-matrix/order-summary?buildId=${buildId}" class="buttonSecondary">Back</a>
-		          				<a id="continue" href="${baseAppUrl}/admin-console/oem-build-matrix/build-mix?buildId=${buildId}" class="buttonSecondary <c:if test="${tooManyBodies}"> buttonDisabled</c:if>">Continue</a>
+		          				<a id="continue" href="${baseAppUrl}/admin-console/oem-build-matrix/available-chassis-summary?buildId=${buildId}" class="buttonSecondary <c:if test="${tooManyBodies}"> buttonDisabled</c:if>">Continue</a>
 		          			</div>
 		        		</div>
 		      		</div>

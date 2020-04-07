@@ -1,13 +1,9 @@
-
 selectCurrentNavigation("tab-oem-build-matrix", "left-nav-business-award-maint");
 var $businessAwardMainTable = $('#business-award-maint-table');
 var $addBtn = $('#add-mfr');
 var $deleteBtn = $('#delete-mfr');
 var $saveBtn = $('#save-oem-mix');
 var $oemMixModal = $('#oem-mix-modal');
-
-	
-
 
 $businessAwardMainDataTable = $businessAwardMainTable.DataTable( {
 	"bPaginate" : true, //enable pagination
@@ -37,30 +33,30 @@ $businessAwardMainDataTable = $businessAwardMainTable.DataTable( {
 	    if(!columnLength)
 	      columnLength = 1
 	    
-	    var lastCategory = "";
+	    var lastAttributeName = "";
 
 	    api.column(0, {page:'current'}).nodes().each(function (node, index) {
 	      
-	      var category = node.textContent;
+	      var attribute = node.textContent;
 	      
-	      var sameCategory = category === lastCategory;
+	      var sameAttribute = attribute === lastAttributeName;
 	      
-	      if(sameCategory) return true;
+	      if(sameAttribute) return true;
 	      
-	      var poCategory = $(rows[index]).find('td.po-category').text();
+	      var attributeName = $(rows[index]).find('td.attribute-name').text();
 	      
 	      var groupingHeaderTrElement = document.createElement('tr');
 	      groupingHeaderTrElement.className = "second-level-group";
-	      groupingHeaderTrElement.setAttribute("data-po-category", poCategory);
+	      groupingHeaderTrElement.setAttribute("data-attribute-name", attributeName);
 	      
 	      var tdElement = document.createElement('td');
 	      tdElement.colSpan = columnLength;
-	      tdElement.innerHTML = poCategory;
+	      tdElement.innerHTML = attributeName;
 	      
 	      groupingHeaderTrElement.appendChild(tdElement);
 	      rows[index].parentNode.insertBefore(groupingHeaderTrElement, rows[index]);
 	      
-	      lastCategory = poCategory;
+	      lastAttributeName = attributeName;
 	      
 	    });
 	    
@@ -69,10 +65,40 @@ $businessAwardMainDataTable = $businessAwardMainTable.DataTable( {
 
 });
 
+ritsu.storeInitialFormValues('input');
+
 ModalUtil.initializeModal($oemMixModal, "auto");
 
 $('#mix-search').on('keyup',function(){
 	$businessAwardMainDataTable.search($(this).val()).draw() ;
+});
+
+$businessAwardMainTable.on('input', 'input', function(){
+	var isDirty = ritsu.isFormDirty('input');
+	
+	var noEmpties = true;
+	var $percentageInputs = $('.attribute-percentage');
+	$percentageInputs.each(function(){
+		if($(this).val().trim() == '')
+			noEmpties = false;
+	})
+	
+	if(isDirty && noEmpties)
+		$saveBtn.removeClass('buttonDisabled');
+	else
+		$saveBtn.addClass('buttonDisabled');
+});
+
+$saveBtn.on('click', function(){
+	if($(this).hasClass('buttonDisabled'))
+		return false;
+	
+	var $rows = $('.attribute-row');
+	var $businessAwardForm = $('#business-award-form').empty();
+	
+	$rows.each(function(){
+		
+	})
 });
 
 $('#mass_select_all').on('click', function() {

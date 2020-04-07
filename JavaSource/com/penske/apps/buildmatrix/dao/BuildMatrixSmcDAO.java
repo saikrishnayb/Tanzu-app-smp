@@ -66,5 +66,11 @@ public interface BuildMatrixSmcDAO {
     public List<String> getAllAttributeValues(@Param("attributeId") int attributeId);
     
     public List<BuildAttribute> getAttributesForBuild();
+    
+    public List<String> getExcludedUnits(@Param("year") int year);
+
+	public void excludeUnits(@Param("excludedUnits") List<String> excludedUnits, @Param("year") int year);
+
+	public void deleteExcludedUnits(@Param("excludedUnits") List<String> excludedUnits, @Param("year") int year);
 	
 }

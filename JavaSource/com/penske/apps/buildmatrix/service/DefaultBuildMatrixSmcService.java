@@ -1,9 +1,13 @@
 package com.penske.apps.buildmatrix.service;
 
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.summingInt;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +22,7 @@ import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.BusinessAwardMaintenance;
 import com.penske.apps.buildmatrix.domain.CroOrderKey;
 import com.penske.apps.buildmatrix.domain.DistrictProximity;
+import com.penske.apps.smccore.base.util.Util;
 import com.penske.apps.suppliermgmt.model.UserContext;
 
 @Service
@@ -39,7 +44,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	
 	@Override
 	public BuildSummary startNewBuild(List<ApprovedOrder> selectedOrders, UserContext userContext) {
-		int bodiesOnOrder = selectedOrders.stream().collect(Collectors.summingInt(order->order.getOrderTotalQuantity()));
+		int bodiesOnOrder = selectedOrders.stream().collect(summingInt(order->order.getOrderTotalQuantity()));
 		BuildSummary newBuild = new BuildSummary(bodiesOnOrder, userContext);
 		buildMatrixSmcDAO.insertNewBuild(newBuild);
 		int buildId = newBuild.getBuildId();
@@ -51,7 +56,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	
 	@Override
 	public BuildSummary updateExistingBuild(Integer buildId, List<ApprovedOrder> selectedOrders) {
-		int bodiesOnOrder = selectedOrders.stream().collect(Collectors.summingInt(order->order.getOrderTotalQuantity()));
+		int bodiesOnOrder = selectedOrders.stream().collect(summingInt(order->order.getOrderTotalQuantity()));
 		BuildSummary existingBuild = buildMatrixSmcDAO.getBuildSummary(buildId);
 		existingBuild.setQuantity(bodiesOnOrder);
 		buildMatrixSmcDAO.updateBuild(existingBuild);
@@ -308,5 +313,24 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	@Override
 	public List<BuildAttribute> getAttributesForBuild() {
 		return buildMatrixSmcDAO.getAttributesForBuild();
+	}
+	
+	@Override
+	public List<String> getExcludedUnits() {
+		int year = LocalDate.now().getYear();
+		return buildMatrixSmcDAO.getExcludedUnits(year);
+	}
+	
+	@Override
+	public void excludeUnits(List<String> excludedUnits) {
+		int year = LocalDate.now().getYear();
+		buildMatrixSmcDAO.excludeUnits(excludedUnits.stream().map(unit->Util.getPaddedUnitNumber(unit)).collect(toList()), year);
+		
+	}
+	
+	@Override
+	public void deleteExcludedUnits(List<String> excludedUnits) {
+		int year = LocalDate.now().getYear();
+		buildMatrixSmcDAO.deleteExcludedUnits(excludedUnits.stream().map(unit->Util.getPaddedUnitNumber(unit)).collect(toList()), year);
 	}
 }
