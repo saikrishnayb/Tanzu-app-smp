@@ -73,4 +73,6 @@ public interface BuildMatrixSmcDAO {
 
 	public void deleteExcludedUnits(@Param("excludedUnits") List<String> excludedUnits, @Param("year") int year);
 	
+	public int getExcludedUnitCount(@Param("year") int year);
+	
 }

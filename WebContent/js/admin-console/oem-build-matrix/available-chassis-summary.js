@@ -181,7 +181,7 @@ $('#multi-exclude-btn').on('click', function() {
   })
 });
 
-$('.exclude-btn').on('click', function() {
+$('#eligible-unit-table').on('click', '.exclude-btn', function() {
   var row = $(this).closest('tr');
   var selectExcludedQunatityCell = row.find('.select-excluded-unit-quantity-cell');
   var selectedUnitQunatity = selectExcludedQunatityCell.find('#select-unit-quantity').val();

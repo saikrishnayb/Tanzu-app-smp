@@ -239,6 +239,13 @@
 		ORDER BY attribute.ATTRIBUTE_ID
 	</select>
 	
+	<select id="getExcludedUnitCount" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM SMC.OBM_UNITS_EXCLUDED_FROM_BUILD
+		WHERE RUN_YEAR = #{year}
+	</select>
+	
 	<select id="getExcludedUnits" resultType="String">
 		SELECT
 			UNIT_NUMBER

@@ -231,7 +231,9 @@ public class BuildMatrixController {
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/order-summary");
 		List<ApprovedOrder> approvedOrders = buildMatrixCroService.getApprovedOrdersForBuildMatrix();
 		Map<CroOrderKey, ApprovedOrder> approvedOrdersByKey = approvedOrders.stream().collect(toMap(order->new CroOrderKey(order), order-> order));
-		int chassisAvailable = buildMatrixCorpService.getAvailableChasisCount();
+		int totalChassis = buildMatrixCorpService.getAvailableChasisCount();
+		int excludedChassis = buildMatrixSmcService.getExcludedUnitCount();
+		int chassisAvailable = totalChassis - excludedChassis;
 		
 		List<CroOrderKey> selectedOrderKeys = new ArrayList<>();
 		if(buildId != null) {
@@ -272,7 +274,10 @@ public class BuildMatrixController {
 		}
 		
 		int bodiesOnOrder = selectedOrders.stream().collect(Collectors.summingInt(order->order.getOrderTotalQuantity()));
-		int chassisAvailable = buildMatrixCorpService.getAvailableChasisCount();
+		int totalChassis = buildMatrixCorpService.getAvailableChasisCount();
+		int excludedChassis = buildMatrixSmcService.getExcludedUnitCount();
+		int chassisAvailable = totalChassis - excludedChassis;
+		
 		model.addObject("selectedOrders", selectedOrders);
 		model.addObject("bodiesOnOrder", bodiesOnOrder);
 		model.addObject("chassisAvailable", chassisAvailable);
@@ -366,8 +371,6 @@ public class BuildMatrixController {
 		AvailableChassisSummaryModel summaryModel = buildMatrixCorpService.getAvailableChassis(excludedUnits);
 		int chassisAvailable = summaryModel.getGroupedAvailableUnits().stream().mapToInt(ac->ac.size()).sum() + summaryModel.getGroupedExcludedUnits().stream().mapToInt(ac->ac.size()).sum();
 		
-		
-		
 		model.addObject("bodiesOnOrder", bodiesOnOrder);
 		model.addObject("summaryModel", summaryModel);
 		model.addObject("chassisAvailable", chassisAvailable);
@@ -391,8 +394,9 @@ public class BuildMatrixController {
 		List<CroOrderKey> selectedOrderKeys = buildMatrixSmcService.getCroOrderKeysForBuild(existingBuild.getBuildId());
 		List<ApprovedOrder> selectedOrders = buildMatrixCroService.getApprovedOrdersByIds(selectedOrderKeys);
 		int bodiesOnOrder = selectedOrders.stream().collect(Collectors.summingInt(order->order.getOrderTotalQuantity()));
-		int chassisAvailable = buildMatrixCorpService.getAvailableChasisCount();
-		
+		int totalChassis = buildMatrixCorpService.getAvailableChasisCount();
+		int excludedChassis = buildMatrixSmcService.getExcludedUnitCount();
+		int chassisAvailable = totalChassis - excludedChassis;
 		List<BuildAttribute> attributes = buildMatrixSmcService.getAttributesForBuild();
 		
 		model.addObject("bodiesOnOrder", bodiesOnOrder);

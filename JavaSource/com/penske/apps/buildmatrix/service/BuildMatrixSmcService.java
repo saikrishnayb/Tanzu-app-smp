@@ -65,4 +65,6 @@ public interface BuildMatrixSmcService {
 
 	public void deleteExcludedUnits(List<String> excludedUnits);
 
+	public int getExcludedUnitCount();
+
 }

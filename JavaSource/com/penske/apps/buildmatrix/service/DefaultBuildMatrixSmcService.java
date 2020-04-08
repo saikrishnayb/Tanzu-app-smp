@@ -333,4 +333,10 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		int year = LocalDate.now().getYear();
 		buildMatrixSmcDAO.deleteExcludedUnits(excludedUnits.stream().map(unit->Util.getPaddedUnitNumber(unit)).collect(toList()), year);
 	}
+	
+	@Override
+	public int getExcludedUnitCount() {
+		int year = LocalDate.now().getYear();
+		return buildMatrixSmcDAO.getExcludedUnitCount(year);
+	}
 }
