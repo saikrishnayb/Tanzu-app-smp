@@ -7,6 +7,7 @@
 	<%@ include file="../../../jsp/jsp-fragment/global/new/default-head-block.jsp"%>
 	<link href="${baseUrl}/css/admin-console/oem-build-matrix/attribute-maintenance.css" rel="stylesheet" type="text/css" />
 	<link href="${baseUrl}/css/jquery.multiselect.css" rel="stylesheet" type="text/css" />
+	<link href="${baseUrl}/css/admin-console/oem-build-matrix/build-matrix-global.css" rel="stylesheet" type="text/css" />
 </head>
 <body style="overflow-y:visible;">
 	<%@ include file="../../../jsp/jsp-fragment/global/header.jsp"%>

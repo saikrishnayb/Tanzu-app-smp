@@ -24,7 +24,7 @@
 	</div>
 	
 	<div class="row floatRight offline-row right-padding">
-		<a class="buttonPrimary  clear-left " id="save-offline-dates" tabindex=8>Save</a>
+		<a class="buttonPrimary  clear-left round-corner-btn-cls" id="save-offline-dates" tabindex=8>Save</a>
      </div>
 	
 </form>

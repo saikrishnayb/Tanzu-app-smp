@@ -4,3 +4,7 @@ textarea[disabled] {
   cursor: not-allowed !important;
   background-color: #CECECE !important;
 }
+
+.round-corner-btn-cls {
+	border-radius: 10px;
+}
