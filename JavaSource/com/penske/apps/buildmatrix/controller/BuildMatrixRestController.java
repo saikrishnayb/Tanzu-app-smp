@@ -3,16 +3,15 @@
  */
 package com.penske.apps.buildmatrix.controller;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.penske.apps.adminconsole.enums.PoCategoryType;
-import com.penske.apps.buildmatrix.model.ManufacturerDetails;
+import com.penske.apps.buildmatrix.model.BusinessAwardForm;
 import com.penske.apps.buildmatrix.service.BuildMatrixCorpService;
 import com.penske.apps.buildmatrix.service.BuildMatrixSmcService;
 import com.penske.apps.suppliermgmt.annotation.SmcSecurity;
@@ -47,5 +46,14 @@ public class BuildMatrixRestController
 	@RequestMapping("/delete-excluded-units")
 	public void deleteExcludeUnits(@RequestParam("excludedUnits[]") List<String> excludedUnits) {
 		buildMatrixSmcService.deleteExcludedUnits(excludedUnits);
+	}
+	
+	/**
+	 * method to load add oem popup
+	 */
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping("/save-business-award-maint")
+	public void saveBusinessAwardMaint(@RequestBody BusinessAwardForm businessAwardForm) {
+		buildMatrixSmcService.saveBusinessAwardMaintenance(businessAwardForm);
 	}
 }

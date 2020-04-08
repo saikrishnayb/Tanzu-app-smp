@@ -8,6 +8,7 @@ public class BuildAttribute {
 	private String attributeKey;
 	private String attributeName;
 	
+	private Integer groupId;
 	private String groupKey;
 	private String groupDescription;
 	private int groupOrder;
@@ -25,6 +26,9 @@ public class BuildAttribute {
 	}
 	public String getAttributeName() {
 		return attributeName;
+	}
+	public Integer getGroupId() {
+		return groupId;
 	}
 	public String getGroupKey() {
 		return groupKey;

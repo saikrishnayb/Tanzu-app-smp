@@ -11,6 +11,7 @@ import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.BusinessAwardMaintenance;
 import com.penske.apps.buildmatrix.domain.CroOrderKey;
 import com.penske.apps.buildmatrix.domain.DistrictProximity;
+import com.penske.apps.buildmatrix.model.BusinessAwardForm;
 import com.penske.apps.suppliermgmt.model.UserContext;
 
 public interface BuildMatrixSmcService {
@@ -66,5 +67,7 @@ public interface BuildMatrixSmcService {
 	public void deleteExcludedUnits(List<String> excludedUnits);
 
 	public int getExcludedUnitCount();
+
+	public void saveBusinessAwardMaintenance(BusinessAwardForm businessAwardForm);
 
 }

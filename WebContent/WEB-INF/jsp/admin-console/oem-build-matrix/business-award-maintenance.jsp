@@ -50,7 +50,7 @@
 						<tbody>
 							<c:forEach items="${attributes}" var="attribute">
 								<c:forEach items="${attribute.attributeValues}" var="attributeValue">
-									<tr class="attribute-row" data-attribute-value-id="${attributeValue.attributeValueId}">
+									<tr class="attribute-row" data-attribute-id="${attribute.attributeId}" data-group-id="${attribute.groupId}" data-attribute-value-id="${attributeValue.attributeValueId}">
 										<td class="attribute-name">${attribute.attributeName}</td>
 										<!-- <td class="leftAlign">
 											<input type="checkbox" id="select-oem" onclick="saveCheckedBoxes(this.id)" > 

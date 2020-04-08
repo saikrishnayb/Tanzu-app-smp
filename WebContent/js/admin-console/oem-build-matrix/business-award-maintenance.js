@@ -34,6 +34,7 @@ $businessAwardMainDataTable = $businessAwardMainTable.DataTable( {
 	      columnLength = 1
 	    
 	    var lastAttributeName = "";
+	    var lastAttributeId = "";
 
 	    api.column(0, {page:'current'}).nodes().each(function (node, index) {
 	      
@@ -44,6 +45,23 @@ $businessAwardMainDataTable = $businessAwardMainTable.DataTable( {
 	      if(sameAttribute) return true;
 	      
 	      var attributeName = $(rows[index]).find('td.attribute-name').text();
+	      var attributeId = $(rows[index]).data('attribute-id');
+	      
+	      if(index != 0) {
+		      var totalTrElement = document.createElement('tr');
+		      totalTrElement.className = "total-row";
+		      totalTrElement.setAttribute("data-attribute-id", lastAttributeId);
+		      
+		      var totalTd = document.createElement('td');
+		      totalTd.innerHTML = '<label class="floatRight">Total</label>';
+		      totalTrElement.appendChild(totalTd);
+		      
+		      var totalInputTd = document.createElement('td');
+		      totalInputTd.innerHTML = '<input class="total-percentage" type="text" value="0" disabled>%';
+		      totalTrElement.appendChild(totalInputTd);
+		      
+		      rows[index].parentNode.insertBefore(totalTrElement, rows[index]);
+	      }
 	      
 	      var groupingHeaderTrElement = document.createElement('tr');
 	      groupingHeaderTrElement.className = "second-level-group";
@@ -57,6 +75,7 @@ $businessAwardMainDataTable = $businessAwardMainTable.DataTable( {
 	      rows[index].parentNode.insertBefore(groupingHeaderTrElement, rows[index]);
 	      
 	      lastAttributeName = attributeName;
+	      lastAttributeId = attributeId;
 	      
 	    });
 	    
@@ -68,6 +87,8 @@ $businessAwardMainDataTable = $businessAwardMainTable.DataTable( {
 ritsu.storeInitialFormValues('input');
 
 ModalUtil.initializeModal($oemMixModal, "auto");
+
+updateTotals();
 
 $('#mix-search').on('keyup',function(){
 	$businessAwardMainDataTable.search($(this).val()).draw() ;
@@ -83,7 +104,16 @@ $businessAwardMainTable.on('input', 'input', function(){
 			noEmpties = false;
 	})
 	
-	if(isDirty && noEmpties)
+	updateTotals();
+	
+	var noneOver100 = true
+	$('.total-percentage').each(function(){
+		var percentage = parseInt($(this).val());
+		if(percentage > 100)
+			noneOver100 = false;
+	});
+	
+	if(isDirty && noEmpties && noneOver100)
 		$saveBtn.removeClass('buttonDisabled');
 	else
 		$saveBtn.addClass('buttonDisabled');
@@ -96,9 +126,36 @@ $saveBtn.on('click', function(){
 	var $rows = $('.attribute-row');
 	var $businessAwardForm = $('#business-award-form').empty();
 	
-	$rows.each(function(){
+	$rows.each(function(index){
+		var $row = $(this); 
 		
-	})
+		var attributeValueId = $row.data('attribute-value-id');
+		var groupId = $row.data('group-id');
+		var percentage = parseInt($row.find('.attribute-percentage').val());
+		
+		var attributeValueIdInput = document.createElement('input');
+		attributeValueIdInput.type = 'hidden';
+		attributeValueIdInput.name = 'businessAwardRows[' + index + '].attributeValueId'
+		attributeValueIdInput.value = attributeValueId;
+		$businessAwardForm.append(attributeValueIdInput);
+	    
+		var groupIdInput = document.createElement('input');
+		groupIdInput.type = 'hidden';
+		groupIdInput.name = 'businessAwardRows[' + index + '].groupId'
+		groupIdInput.value = groupId;
+		$businessAwardForm.append(groupIdInput);
+		
+		var percentageInput = document.createElement('input');
+		percentageInput.type = 'hidden';
+		percentageInput.name = 'businessAwardRows[' + index + '].percentage'
+		percentageInput.value = percentage;
+		$businessAwardForm.append(percentageInput);
+	});
+	
+	$.post(baseBuildMatrixUrl + '/save-business-award-maint', $businessAwardForm.serialize()).done(function(){
+    	$saveBtn.addClass('buttonDisabled');
+    	ritsu.storeInitialFormValues('input');
+    })
 });
 
 $('#mass_select_all').on('click', function() {
@@ -143,4 +200,24 @@ function saveCheckedBoxes(id) {
 				$('#mass_select_all').prop('checked', false);
 		 }
 	 });	 
+}
+
+function updateTotals() {
+	$('.total-row').each(function(){
+		var $totalRow = $(this);
+		var attributeId = $totalRow.data('attribute-id');
+		
+		var totalPercentage = 0;
+		var $attributeRows = $businessAwardMainTable.find('.attribute-row[data-attribute-id=' + attributeId + ']');
+		
+		$attributeRows.each(function(){
+			var $row = $(this);
+			var percentage = $row.find('.attribute-percentage').val();
+			if(percentage.trim() == '')
+				percentage = "0";
+			totalPercentage += parseInt(percentage);
+		});
+		
+		$totalRow.find('.total-percentage').val(totalPercentage);
+	})
 }

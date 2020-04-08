@@ -1,13 +1,15 @@
 package com.penske.apps.buildmatrix.service;
 
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.summingInt;
+import static java.util.stream.Collectors.toList;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,9 +21,12 @@ import com.penske.apps.buildmatrix.domain.BuildAttribute;
 import com.penske.apps.buildmatrix.domain.BuildMatrixAttribute;
 import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
+import com.penske.apps.buildmatrix.domain.BusinessAwardDefault;
 import com.penske.apps.buildmatrix.domain.BusinessAwardMaintenance;
 import com.penske.apps.buildmatrix.domain.CroOrderKey;
 import com.penske.apps.buildmatrix.domain.DistrictProximity;
+import com.penske.apps.buildmatrix.model.BusinessAwardForm;
+import com.penske.apps.buildmatrix.model.BusinessAwardForm.BusinessAwardRow;
 import com.penske.apps.smccore.base.util.Util;
 import com.penske.apps.suppliermgmt.model.UserContext;
 
@@ -338,5 +343,35 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	public int getExcludedUnitCount() {
 		int year = LocalDate.now().getYear();
 		return buildMatrixSmcDAO.getExcludedUnitCount(year);
+	}
+	
+	@Override
+	public void saveBusinessAwardMaintenance(BusinessAwardForm businessAwardForm) {
+		List<BusinessAwardDefault> businessAwardDefaults = buildMatrixSmcDAO.getBusinessAwardDefaults();
+		if(businessAwardDefaults ==null)
+			businessAwardDefaults = Collections.emptyList();
+		
+		Map<Integer, BusinessAwardDefault> defaultByAttributeValueId = new HashMap<>();
+		for(BusinessAwardDefault awardDefault: businessAwardDefaults) {
+			defaultByAttributeValueId.put(awardDefault.getAttributeValueId(), awardDefault);
+		}
+		
+		List<BusinessAwardDefault> defaultsToInsert = new ArrayList<>();
+		
+		for(BusinessAwardRow row: businessAwardForm.getBusinessAwardRows()) {
+			BusinessAwardDefault awardDefault = defaultByAttributeValueId.get(row.getAttributeValueId());
+			if(awardDefault == null) {
+				BusinessAwardDefault addedDefault = new BusinessAwardDefault(row.getGroupId(), row.getAttributeValueId(), row.getPercentage());
+				defaultsToInsert.add(addedDefault);
+			}
+			else {
+				awardDefault.setDefaultPercentage(row.getPercentage());
+				buildMatrixSmcDAO.updateBusinessAwardDefault(awardDefault);
+			}
+		}
+		
+		if(!defaultsToInsert.isEmpty())
+			buildMatrixSmcDAO.insertBusinessAwardDefault(defaultsToInsert);
+		
 	}
 }

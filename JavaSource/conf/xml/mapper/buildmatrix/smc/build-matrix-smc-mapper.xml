@@ -200,13 +200,14 @@
 	</select>
 	
 	<resultMap type="com.penske.apps.buildmatrix.domain.BuildAttribute" id="BuildAttributeMap">
-		<id column="ATTRIBUTE_ID"				property="attributeId" />
-		<result column="ATTRIBUTE_KEY" 			property="attributeKey"/>
-		<result column="ATTRIBUTE_NAME"   		property="attributeName"/>
-		<result column="GROUP_KEY"  			property="groupKey"/>
-		<result column="GROUP_DESCRIPTION"    	property="groupDescription"/>
-		<result column="GROUP_ORDER"    		property="groupOrder"/>
-		<collection property="attributeValues"			ofType="com.penske.apps.buildmatrix.domain.BuildAttributeValue" column="ATTRIBUTE_ID" resultMap="BuildAttributeValueMap" columnPrefix="VAL_" />
+		<id column="ATTRIBUTE_ID"					property="attributeId" />
+		<result column="ATTRIBUTE_KEY" 				property="attributeKey"/>
+		<result column="ATTRIBUTE_NAME"   			property="attributeName"/>
+		<result column="BUSINESS_AWARD_GROUP_ID"	property="groupId"/>
+		<result column="GROUP_KEY"  				property="groupKey"/>
+		<result column="GROUP_DESCRIPTION"    		property="groupDescription"/>
+		<result column="GROUP_ORDER"    			property="groupOrder"/>
+		<collection property="attributeValues"		ofType="com.penske.apps.buildmatrix.domain.BuildAttributeValue" column="ATTRIBUTE_ID" resultMap="BuildAttributeValueMap" columnPrefix="VAL_" />
 	</resultMap>
 	
 	<resultMap type="com.penske.apps.buildmatrix.domain.BuildAttributeValue" id="BuildAttributeValueMap">
@@ -222,6 +223,7 @@
 			attribute.ATTRIBUTE_ID,
 			attribute.ATTRIBUTE_KEY,
 			attribute.ATTRIBUTE_NAME,
+			awardGroup.BUSINESS_AWARD_GROUP_ID,
 			awardGroup.GROUP_KEY,
 			awardGroup.GROUP_DESCRIPTION,
 			awardGroup.GROUP_ORDER,
@@ -232,10 +234,10 @@
 		FROM SMC.OBM_ATTRIBUTE_VALUE val
 		LEFT JOIN SMC.OBM_ATTRIBUTE attribute
 			ON attribute.ATTRIBUTE_ID = val.ATTRIBUTE_ID
-		LEFT JOIN SMC.OBM_BUSINESS_AWARD_GROUP awardGroup
-			ON awardGroup.ATTRIBUTE_ID = val.ATTRIBUTE_ID
 		LEFT JOIN SMC.OBM_BUSINESS_AWARD_DEFAULTS awardDefs
 			ON awardDefs.ITEM_ID = val.ATTRIBUTE_VALUE_ID
+		JOIN SMC.OBM_BUSINESS_AWARD_GROUP awardGroup
+			ON awardGroup.ATTRIBUTE_ID = val.ATTRIBUTE_ID
 		ORDER BY attribute.ATTRIBUTE_ID
 	</select>
 	
@@ -271,4 +273,33 @@
 			</foreach>
 		)
 	</delete>
+	
+	<select id="getBusinessAwardDefaults" resultType="com.penske.apps.buildmatrix.domain.BusinessAwardDefault">
+		SELECT	
+			BUSINESS_AWARD_DEFAULT_ID as businessDefaultId,
+			GROUP_ID as groupId,
+			ITEM_ID as attributeValueId,
+			ITEM_ORDER as itemOrder,
+			DEFAULT_VALUE as defaultPercentage
+		FROM
+			SMC.OBM_BUSINESS_AWARD_DEFAULTS
+	</select>
+	
+	<update id="updateBusinessAwardDefault">
+		UPDATE SMC.OBM_BUSINESS_AWARD_DEFAULTS
+		SET 
+			ITEM_ORDER = #{awardDefault.itemOrder},
+			DEFAULT_VALUE = #{awardDefault.defaultPercentage}
+		WHERE
+			ITEM_ID = #{awardDefault.attributeValueId}
+	</update>
+	
+	<insert id="insertBusinessAwardDefault">
+		INSERT INTO SMC.OBM_BUSINESS_AWARD_DEFAULTS
+ 				(GROUP_ID, ITEM_ID, ITEM_ORDER, DEFAULT_VALUE)
+ 		VALUES
+ 			<foreach collection="defaultsToInsert" item="awardDefault" separator="," open="" close="">
+ 				(#{awardDefault.groupId}, #{awardDefault.attributeValueId}, #{awardDefault.itemOrder}, #{awardDefault.defaultPercentage})
+ 			</foreach>
+	</insert>
 </mapper>
