@@ -10,9 +10,11 @@ import com.penske.apps.buildmatrix.domain.BuildAttribute;
 import com.penske.apps.buildmatrix.domain.BuildMatrixAttribute;
 import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
+import com.penske.apps.buildmatrix.domain.BusinessAward;
 import com.penske.apps.buildmatrix.domain.BusinessAwardDefault;
 import com.penske.apps.buildmatrix.domain.CroOrderKey;
 import com.penske.apps.buildmatrix.domain.DistrictProximity;
+import com.penske.apps.buildmatrix.domain.enums.BuildStatus;
 import com.penske.apps.suppliermgmt.annotation.DBSmc;
 
 /**
@@ -81,5 +83,9 @@ public interface BuildMatrixSmcDAO {
 	public void updateBusinessAwardDefault(@Param("awardDefault") BusinessAwardDefault awardDefault);
 
 	public void insertBusinessAwardDefault(@Param("defaultsToInsert") List<BusinessAwardDefault> defaultsToInsert);
+
+	public void insertBusinessAwards(@Param("awardsToInsert") List<BusinessAward> awardsToInsert);
+
+	public void submitBuild(@Param("buildId") int buildId, @Param("status") BuildStatus submitted, @Param("sso") String userSSO);
 	
 }

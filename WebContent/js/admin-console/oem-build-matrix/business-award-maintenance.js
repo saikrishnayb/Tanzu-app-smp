@@ -38,6 +38,25 @@ $businessAwardMainDataTable = $businessAwardMainTable.DataTable( {
 
 	    api.column(0, {page:'current'}).nodes().each(function (node, index) {
 	      
+    	if(index + 1 === api.column(0, {page:'current'}).nodes().length) {
+	    	  var attributeName = $(rows[index]).find('td.attribute-name').text();
+		      var attributeId = $(rows[index]).data('attribute-id');
+		      
+	    	  var totalTrElement = document.createElement('tr');
+		      totalTrElement.className = "total-row";
+		      totalTrElement.setAttribute("data-attribute-id", attributeId);
+		      
+		      var totalTd = document.createElement('td');
+		      totalTd.innerHTML = '<label class="floatRight">Total</label>';
+		      totalTrElement.appendChild(totalTd);
+		      
+		      var totalInputTd = document.createElement('td');
+		      totalInputTd.innerHTML = '<input class="total-percentage" type="text" value="0" disabled>%';
+		      totalTrElement.appendChild(totalInputTd);
+		      
+		      $(rows[index]).after(totalTrElement);
+	      }
+	    	
 	      var attribute = node.textContent;
 	      
 	      var sameAttribute = attribute === lastAttributeName;

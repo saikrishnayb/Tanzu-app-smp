@@ -302,4 +302,23 @@
  				(#{awardDefault.groupId}, #{awardDefault.attributeValueId}, #{awardDefault.itemOrder}, #{awardDefault.defaultPercentage})
  			</foreach>
 	</insert>
+	
+	<insert id="insertBusinessAwards">
+		INSERT INTO SMC.OBM_BUSINESS_AWARD
+ 				(RUN_ID, GROUP_KEY, AWARD_KEY, AWARD_KEY_ORDER, AWARD_PERCENTAGE, AWARD_QUANTITY, AWARD_TYPE)
+ 		VALUES
+ 			<foreach collection="awardsToInsert" item="award" separator="," open="" close="">
+ 				(#{award.buildId}, #{award.groupKey}, #{award.attributeValueKey}, #{award.awardOrder}, #{award.percentage}, #{award.quantity}, #{award.awardType})
+ 			</foreach>
+	</insert>
+
+	<update id="submitBuild">
+		UPDATE SMC.OBM_RUN_SUMMARY
+		SET
+			RUN_STATUS = #{status.code},
+			SUBMITTED_BY = #{sso},
+			SUBMITTED_DATE = CURRENT_TIMESTAMP
+		WHERE
+			RUN_ID = #{buildId}
+	</update>
 </mapper>

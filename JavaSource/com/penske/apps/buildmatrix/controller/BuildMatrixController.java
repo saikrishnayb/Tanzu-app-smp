@@ -410,8 +410,7 @@ public class BuildMatrixController {
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping("/submit-build")
 	public void submitBuild(BuildMixForm buildMixForm) {
-		int buildId = buildMixForm.getBuildId();
-		
-		
+		UserContext userContext = sessionBean.getUserContext();
+		buildMatrixSmcService.submitBuild(buildMixForm, userContext);
 	}
 }

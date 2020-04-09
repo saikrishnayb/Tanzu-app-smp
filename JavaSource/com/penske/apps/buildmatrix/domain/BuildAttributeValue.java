@@ -8,6 +8,12 @@ public class BuildAttributeValue {
 	
 	protected BuildAttributeValue() {}
 	
+	public int getUnitsByPercentage(int bodiesOnOrder) {
+		float percent = (float) this.defaultPercentage/(float) 100.00;
+		float unitsFloat = bodiesOnOrder * percent;
+		return Math.round(unitsFloat);
+	}
+	
 	public int getAttributeValueId() {
 		return attributeValueId;
 	}

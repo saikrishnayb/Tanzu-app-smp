@@ -21,10 +21,14 @@ import com.penske.apps.buildmatrix.domain.BuildAttribute;
 import com.penske.apps.buildmatrix.domain.BuildMatrixAttribute;
 import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
+import com.penske.apps.buildmatrix.domain.BusinessAward;
 import com.penske.apps.buildmatrix.domain.BusinessAwardDefault;
 import com.penske.apps.buildmatrix.domain.BusinessAwardMaintenance;
 import com.penske.apps.buildmatrix.domain.CroOrderKey;
 import com.penske.apps.buildmatrix.domain.DistrictProximity;
+import com.penske.apps.buildmatrix.domain.enums.BuildStatus;
+import com.penske.apps.buildmatrix.model.BuildMixForm;
+import com.penske.apps.buildmatrix.model.BuildMixForm.AttributeRow;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm.BusinessAwardRow;
 import com.penske.apps.smccore.base.util.Util;
@@ -373,5 +377,20 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		if(!defaultsToInsert.isEmpty())
 			buildMatrixSmcDAO.insertBusinessAwardDefault(defaultsToInsert);
 		
+	}
+	
+	@Override
+	public void submitBuild(BuildMixForm buildMixForm, UserContext userContext) {
+		int buildId = buildMixForm.getBuildId();
+		
+		int itemOrder = 1;
+		List<BusinessAward> awardsToInsert = new ArrayList<>();
+		for(AttributeRow attributeRow: buildMixForm.getAttributeRows()) {
+			BusinessAward award = new BusinessAward(buildId, attributeRow.getGroupKey(), attributeRow.getAwardKey(), itemOrder, attributeRow.getAwardPercentage(), attributeRow.getAwardQuantity());
+			awardsToInsert.add(award);
+		}
+		
+		buildMatrixSmcDAO.insertBusinessAwards(awardsToInsert);
+		buildMatrixSmcDAO.submitBuild(buildId, BuildStatus.SUBMITTED, userContext.getUserSSO());
 	}
 }

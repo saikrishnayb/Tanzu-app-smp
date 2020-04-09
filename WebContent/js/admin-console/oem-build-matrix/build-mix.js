@@ -1,6 +1,19 @@
 var bodiesOnOrder = $('.build-mix-top').data('bodies-on-order');
 var $submitBtn = $('#submit-btn');
 
+$('.attribute-container').each(function(){
+	var $container = $(this);
+	$container.find('.attribute-value-row').each(function(){
+		var $row = $(this);
+		var $unitsInput = $row.find('.attribute-units');
+		var units = parseInt($unitsInput.val());
+		
+		var percentage = calculatePercentage(units);
+		$row.find('.attribute-percentage').val(percentage);
+	});
+	
+	calculateTotals($container);
+});
 
 $('.attribute-container').on('input', '.attribute-units', function(){
 	var $unitsInput = $(this);
@@ -73,7 +86,9 @@ $submitBtn.on('click', function(){
 	
 	});
 	
-	buildMixForm.submit();
+	$.post(baseBuildMatrixUrl + '/submit-build', buildMixForm.serialize()).done(function(){
+    	window.location.href = baseBuildMatrixUrl + "/build-history";
+    })
 	
 });
 

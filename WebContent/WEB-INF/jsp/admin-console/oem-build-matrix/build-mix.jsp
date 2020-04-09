@@ -66,7 +66,7 @@
 			      											<td class="attribute-value-td">${attributeValue.attributeValue}</td>
 			      											<td class="attribute-percentage-td"><input type="text" class="attribute-percentage text-align-right" value="0" disabled /></td>
 			      											<td>%<td>
-			      											<td class="attribute-units-td"><input type="text" class="attribute-units text-align-right" value="0"/></td>
+			      											<td class="attribute-units-td"><input type="text" class="attribute-units text-align-right" value="${attributeValue.getUnitsByPercentage(bodiesOnOrder)}"/></td>
 			      											<td>Units</td>
 			      										</tr>
 			      									</c:forEach>
@@ -92,7 +92,7 @@
 		      			</div> 			
 		      		</div>
 					<div id="oem-mix-modal" style="display:none;"></div>
-					<form id="build-mix-form" name="buildMixForm" data-build-id="${buildId}" method="POST" action="${baseAppUrl}/admin-console/oem-build-matrix/submit-build"></form>
+					<form id="build-mix-form" name="buildMixForm" data-build-id="${buildId}"></form>
 				</div>
 			</div>
 		</div>

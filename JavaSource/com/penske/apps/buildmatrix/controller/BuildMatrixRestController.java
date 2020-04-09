@@ -53,7 +53,7 @@ public class BuildMatrixRestController
 	 */
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping("/save-business-award-maint")
-	public void saveBusinessAwardMaint(@RequestBody BusinessAwardForm businessAwardForm) {
+	public void saveBusinessAwardMaint(BusinessAwardForm businessAwardForm) {
 		buildMatrixSmcService.saveBusinessAwardMaintenance(businessAwardForm);
 	}
 }
