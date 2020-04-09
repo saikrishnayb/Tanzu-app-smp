@@ -1,7 +1,5 @@
 selectCurrentNavigation("tab-oem-build-matrix", "left-nav-business-award-maint");
 var $businessAwardMainTable = $('#business-award-maint-table');
-var $addBtn = $('#add-mfr');
-var $deleteBtn = $('#delete-mfr');
 var $saveBtn = $('#save-oem-mix');
 var $oemMixModal = $('#oem-mix-modal');
 
@@ -188,22 +186,6 @@ $('#mass_select_all').on('click', function() {
 	}
        // $(this).toggleClass('allChecked');
 });
-
-$addBtn.on('click', function(){
-	
-	var $getAddOemModalPromise = $.ajax({
-		type : 'POST',
-		url : baseBuildMatrixUrl + '/load-add-oem-popup'
-	});
-	  
-	$getAddOemModalPromise.done(function(data) {
-		var htmlContent = data;
-		$oemMixModal.html(htmlContent);
-		
-		ModalUtil.openModal($oemMixModal);
-	});
-});
-  
 
 function saveCheckedBoxes(id) {
 	var checkedRowCount = 0;

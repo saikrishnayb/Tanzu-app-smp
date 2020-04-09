@@ -45,7 +45,7 @@
 										<td class="centerAlign">
 											<c:choose>
 												<c:when test='${buildHistory.buildStatus.code eq "P"}'>
-													<a href="${baseAppUrl}/admin-console/oem-build-matrix/order-summary?buildId=${buildHistory.buildId}">${buildHistory.buildId}</a>
+													<a href="${baseAppUrl}/admin-console/oem-build-matrix/order-summary?buildId=${buildHistory.buildId}" onclick="javascript:loadProcessImage();">${buildHistory.buildId}</a>
 												</c:when>
 												<c:otherwise>
 													${buildHistory.buildId}

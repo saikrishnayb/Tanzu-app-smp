@@ -12,7 +12,7 @@
 		<%@ include file="../../../jsp/jsp-fragment/global/header.jsp"%>
 		
 		<div id="mainContent">
-			<%@ include file="../../../jsp/jsp-fragment/admin-console/oem-build-matrix/left-nav.jsp"%>
+			<%@ include file="../../../jsp/jsp-fragment/admin-console/app-config/left-nav.jsp" %>
 			<div class="leftNavAdjacentContainer">
 				<div class="container-fluid">
 					<div id="PopupError" style="display:none">
@@ -30,7 +30,7 @@
 		          				<label>Chassis Available</label> <span class="badge">${chassisAvailable}</span>
 		          			</div>
 		          			<div class="btn-div floatRight">
-		          				<a id="back-btn" href="${baseAppUrl}/admin-console/oem-build-matrix/order-summary?buildId=${buildId}" class="buttonSecondary">Back</a>
+		          				<a id="back-btn" href="${baseAppUrl}/admin-console/oem-build-matrix/order-summary?buildId=${buildId}" onclick="javascript:loadProcessImage();" class="buttonSecondary">Back</a>
 		          				<a id="submit-btn" class="buttonPrimary buttonDisabled" data-build-id="${buildId}">Submit</a>
 		          			</div>
 		        		</div>

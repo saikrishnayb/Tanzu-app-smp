@@ -6,13 +6,11 @@ package com.penske.apps.buildmatrix.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.penske.apps.buildmatrix.model.BusinessAwardForm;
-import com.penske.apps.buildmatrix.service.BuildMatrixCorpService;
 import com.penske.apps.buildmatrix.service.BuildMatrixSmcService;
 import com.penske.apps.suppliermgmt.annotation.SmcSecurity;
 import com.penske.apps.suppliermgmt.annotation.SmcSecurity.SecurityFunction;
@@ -22,10 +20,7 @@ import com.penske.apps.suppliermgmt.annotation.SmcSecurity.SecurityFunction;
  */
 @RestController
 @RequestMapping(value = "/admin-console/oem-build-matrix")
-public class BuildMatrixRestController
-{
-	@Autowired
-	private BuildMatrixCorpService buildMatrixCorpService;
+public class BuildMatrixRestController {
 	
 	@Autowired
 	private BuildMatrixSmcService buildMatrixSmcService;
