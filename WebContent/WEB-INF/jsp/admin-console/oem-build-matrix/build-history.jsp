@@ -8,6 +8,7 @@
 		
 		<%@ include file="../../../jsp/jsp-fragment/global/new/default-head-block.jsp"%>
 		<link href="${baseUrl}/css/admin-console/oem-build-matrix/build-history.css" rel="stylesheet" type="text/css" />
+		<link href="${baseUrl}/css/admin-console/oem-build-matrix/build-matrix-global.css" rel="stylesheet" type="text/css" />
 	</head>
 	
 	<body style="overflow-y:visible;">
@@ -28,8 +29,8 @@
 						<table id="build-history-table" class="plant-view" data-show-start-build-btn="${showStartBuildBtn}">
 							<thead>
 								<tr>
-									<th class="centerAlign" id="build-number">Build #</th>
-									<th class="centerAlign">Unit Qty</th>
+									<th class="leftAlign" id="build-number">Build #</th>
+									<th class="leftAlign">Unit Qty</th>
 									<th class="leftAlign">Status</th>
 									<th class="leftAlign">Started By</th>
 									<th class="leftAlign">Start Date</th>
@@ -42,7 +43,7 @@
 							<tbody>
 								<c:forEach items="${buildHistoryList}" var="buildHistory">
 									<tr class="user-row">
-										<td class="centerAlign">
+										<td class="leftAlign">
 											<c:choose>
 												<c:when test='${buildHistory.buildStatus.code eq "P"}'>
 													<a href="${baseAppUrl}/admin-console/oem-build-matrix/order-summary?buildId=${buildHistory.buildId}" onclick="javascript:loadProcessImage();">${buildHistory.buildId}</a>
@@ -52,7 +53,7 @@
 												</c:otherwise>
 											</c:choose>
 										</td>
-										<td class="centerAlign">${buildHistory.quantity}</td>
+										<td class="leftAlign">${buildHistory.quantity}</td>
 										<td class=""> ${buildHistory.buildStatus.label} </td>
 										<td>${buildHistory.startedByName}</td>
 										<td>${buildHistory.startedDate}</td>
