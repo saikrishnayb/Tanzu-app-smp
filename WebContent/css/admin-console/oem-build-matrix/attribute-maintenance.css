@@ -124,4 +124,7 @@
 .error-text{
 	width: 225px;
 }
+.display-none{
+	display: none;
+}
 /* End of Edit Attribute Content style */

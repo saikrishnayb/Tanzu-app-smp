@@ -7,6 +7,7 @@
 		</div>
 		<input type="hidden" value="${attribute.attributeId}" class="attributeId" name="attributeId" /> <input type="hidden"
 			value="${attribute.values}" class="attr-original-values">
+		<input type="text" autofocus="autofocus" class="display-none">
 		<c:choose>
 			<c:when test="${editPopup eq true}">
 				<div class="attribute-row">
