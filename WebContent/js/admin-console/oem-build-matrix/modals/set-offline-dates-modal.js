@@ -1,7 +1,7 @@
 $( "#start-date" ).datepicker({ 
 	dateFormat: 'mm/dd/yy',
-    //changeMonth:true,
-    //changeYear:true,
+    changeMonth:true,
+    changeYear:true,
     showOn: "button",
     buttonImage: "../../../images/calendar.png",
     buttonImageOnly: true,
@@ -44,3 +44,5 @@ $( "#end-date" ).datepicker({
     }
 });
 
+$("#start-date").mask("99/99/9999");
+$("#end-date").mask("99/99/9999");

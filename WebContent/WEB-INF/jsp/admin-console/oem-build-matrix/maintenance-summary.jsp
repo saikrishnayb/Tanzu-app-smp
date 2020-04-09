@@ -69,5 +69,6 @@
 	<div id="set-offline-dates-modal" class="modal"></div>
 	<%@ include file="../../../jsp/jsp-fragment/global/new/global-scripts.jsp"%>
 	<script src="${baseUrl}/js/admin-console/oem-build-matrix/maintenance-summary.js" type="text/javascript"></script>
+	<script src="${baseUrl}/js/plugins/jquery.mask.min.js"></script>
 </body>
 </html>

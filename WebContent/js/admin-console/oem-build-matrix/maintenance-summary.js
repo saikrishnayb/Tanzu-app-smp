@@ -132,10 +132,17 @@ function validateOfflineDateForm($form) {
 		}
 	else if(offlineStartDate.length !=0 && offlineEndDate.length !=0)
 		{
-			if(new Date(offlineStartDate) > new Date(offlineEndDate) )
-				{
+			if(!validateDate(offlineStartDate))
+				errorMsg = "Invalid Start date.";
+			
+			else if(!validateDate(offlineEndDate))
+				errorMsg = "Invalid End date.";
+			
+			else 
+			{
+				if(new Date(offlineStartDate) > new Date(offlineEndDate) )
 				errorMsg = "Start date is greater than End date. ";
-				}
+			}
 		}
 	return errorMsg;
 }
@@ -153,3 +160,29 @@ function setOfflineDates(plantId)
 			});
 }
 
+function validateDate(input){
+	
+	if(input=="")
+		{
+			//if date is empty
+			return true;
+		}
+	else
+		{
+			//Detailed check for valid date ranges
+			var monthfield=input.split("/")[0];
+			var dayfield=input.split("/")[1];
+			var yearfield=input.split("/")[2];
+			var dayobj = new Date(yearfield, monthfield-1, dayfield);
+		
+				if ((dayobj.getMonth()+1!=monthfield)||(dayobj.getDate()!=dayfield)||(dayobj.getFullYear()!=yearfield)){
+					returnVal= false;
+				}
+				else{
+					returnVal=true;
+					return returnVal;
+				}
+		}
+		
+	
+}
