@@ -10,10 +10,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.penske.apps.buildmatrix.model.BuildMixForm;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm;
 import com.penske.apps.buildmatrix.service.BuildMatrixSmcService;
 import com.penske.apps.suppliermgmt.annotation.SmcSecurity;
 import com.penske.apps.suppliermgmt.annotation.SmcSecurity.SecurityFunction;
+import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
+import com.penske.apps.suppliermgmt.model.UserContext;
 
 /**
  * Controller to service AJAX requests for navigating between screens in the change order module
@@ -25,8 +28,14 @@ public class BuildMatrixRestController {
 	@Autowired
 	private BuildMatrixSmcService buildMatrixSmcService;
 	
+	@Autowired
+	private SuppliermgmtSessionBean sessionBean;
+	
+	//***** BUILD MATRIX WORKFLOW *****//
+	
+	// AVAILABLE CHASSIS SUMMARY //
 	/**
-	 * method to load add oem popup
+	 * Method to exclude chassis from builds
 	 */
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping("/exclude-units")
@@ -35,7 +44,7 @@ public class BuildMatrixRestController {
 	}
 	
 	/**
-	 * method to load add oem popup
+	 * Method to delete excludes from builds
 	 */
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping("/delete-excluded-units")
@@ -43,8 +52,20 @@ public class BuildMatrixRestController {
 		buildMatrixSmcService.deleteExcludedUnits(excludedUnits);
 	}
 	
+	// SUBMIT BUILD //
 	/**
-	 * method to load add oem popup
+	 * Method to submit the build
+	 */
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping("/submit-build")
+	public void submitBuild(BuildMixForm buildMixForm) {
+		UserContext userContext = sessionBean.getUserContext();
+		buildMatrixSmcService.submitBuild(buildMixForm, userContext);
+	}
+	
+	// ***** OEM MIX MAINTENACE *****//
+	/**
+	 * Method to save OEM Mix Maintenance page
 	 */
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping("/save-business-award-maint")

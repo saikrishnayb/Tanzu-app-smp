@@ -12,6 +12,9 @@ import com.penske.apps.suppliermgmt.annotation.DBSmc;
 @DBSmc
 public interface BuildMatrixCorpDAO {
 	
+	// ***** BUILD MATRIX WORKFLOW *****/
+	
+	// AVAILABLE CHASSIS //
 	public int getAvailableChassisCount();
 	
 	public List<AvailableChassis> getAvailableChassis();

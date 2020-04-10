@@ -17,6 +17,9 @@ public class DefaultBuildMatrixCroService implements BuildMatrixCroService {
 	@Autowired
 	BuildMatrixCroDAO buildMatrixCroDAO;
 	
+	// ***** BUILD MATRIX WORKFLOW *****//
+	
+	// CRO ORDERS //
 	@Override
 	public List<ApprovedOrder> getApprovedOrdersForBuildMatrix() {
 		return buildMatrixCroDAO.getApprovedOrdersForBuildMatrix();

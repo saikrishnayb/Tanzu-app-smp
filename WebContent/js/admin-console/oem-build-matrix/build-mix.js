@@ -87,6 +87,7 @@ $submitBtn.on('click', function(){
 	});
 	
 	$.post(baseBuildMatrixUrl + '/submit-build', buildMixForm.serialize()).done(function(){
+		loadProcessImage();
     	window.location.href = baseBuildMatrixUrl + "/build-history";
     })
 	

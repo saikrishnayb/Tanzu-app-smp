@@ -27,7 +27,6 @@ import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.CroOrderKey;
 import com.penske.apps.buildmatrix.domain.enums.BuildStatus;
 import com.penske.apps.buildmatrix.model.AvailableChassisSummaryModel;
-import com.penske.apps.buildmatrix.model.BuildMixForm;
 import com.penske.apps.buildmatrix.model.OrderSelectionForm;
 import com.penske.apps.buildmatrix.service.BuildMatrixCorpService;
 import com.penske.apps.buildmatrix.service.BuildMatrixCroService;
@@ -158,23 +157,7 @@ public class BuildMatrixController {
 		model.addObject("editPopup", true);
 		return model;
 	}
-
-	/**
-	 * method to load build history screen
-	 * 
-	 * @return
-	 */
-	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
-	@RequestMapping("/build-history")
-	public ModelAndView getBuildHistory() {
-		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/build-history");
-		List<BuildSummary> buildHistoryList = buildMatrixSmcService.getAllBuildHistory();
-		boolean showStartBuildBtn = !buildHistoryList.stream().anyMatch(bs->!bs.showStartBuildBtn());
-		model.addObject("buildHistoryList", buildHistoryList);
-		model.addObject("showStartBuildBtn", showStartBuildBtn);
-		model.addObject("buildStatuses", BuildStatus.values());
-		return model;
-	}
+	
 
 	/**
 	 * method to load maintenance summary screen
@@ -212,72 +195,6 @@ public class BuildMatrixController {
 	public ModelAndView getBusinessAwardMaintenance() {
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/business-award-maintenance");
 		model.addObject("attributes", buildMatrixSmcService.getAttributesForBuild());
-		return model;
-	}
-	
-		
-	/**
-	 * method to load order-summary screen
-	 * 
-	 * 	 */
-	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
-	@RequestMapping("/order-summary")
-	public ModelAndView getorderSummary(@RequestParam(value="buildId", required=false) Integer buildId) {
-		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/order-summary");
-		List<ApprovedOrder> approvedOrders = buildMatrixCroService.getApprovedOrdersForBuildMatrix();
-		Map<CroOrderKey, ApprovedOrder> approvedOrdersByKey = approvedOrders.stream().collect(toMap(order->new CroOrderKey(order), order-> order));
-		int totalChassis = buildMatrixCorpService.getAvailableChasisCount();
-		int excludedChassis = buildMatrixSmcService.getExcludedUnitCount();
-		int chassisAvailable = totalChassis - excludedChassis;
-		
-		List<CroOrderKey> selectedOrderKeys = new ArrayList<>();
-		if(buildId != null) {
-			BuildSummary existingBuild = buildMatrixSmcService.getBuildSummary(buildId);
-			if(existingBuild == null)
-				throw new IllegalArgumentException("Couldn't find existing build");
-			selectedOrderKeys = buildMatrixSmcService.getCroOrderKeysForBuild(existingBuild.getBuildId());
-		}
-		
-		model.addObject("approvedOrdersByKey", approvedOrdersByKey);
-		model.addObject("selectedOrderKeys", selectedOrderKeys);
-		model.addObject("chassisAvailable", chassisAvailable);
-		model.addObject("buildId", buildId);
-		return model;
-	}
-	
-	/**
-	 * method to load confirm-selection screen
-	 * 
-	 * 	 */
-	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
-	@RequestMapping("/add-to-build")
-	public ModelAndView getConfirmSelection(OrderSelectionForm orderSelectionForm) {
-		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/confirm-order-selection");
-		Integer formBuildId = orderSelectionForm.getBuildId();
-		List<CroOrderKey> selectedOrderKeys = orderSelectionForm.getCroOrderKeys();
-		List<ApprovedOrder> selectedOrders = buildMatrixCroService.getApprovedOrdersByIds(selectedOrderKeys);
-		UserContext userContext = sessionBean.getUserContext();
-		
-		int buildId = 0;
-		if(formBuildId == null) {
-			BuildSummary newBuild = buildMatrixSmcService.startNewBuild(selectedOrders, userContext);
-			buildId = newBuild.getBuildId();
-		}
-		else {
-			BuildSummary existingBuild = buildMatrixSmcService.updateExistingBuild(formBuildId, selectedOrders);
-			buildId = existingBuild.getBuildId();
-		}
-		
-		int bodiesOnOrder = selectedOrders.stream().collect(Collectors.summingInt(order->order.getOrderTotalQuantity()));
-		int totalChassis = buildMatrixCorpService.getAvailableChasisCount();
-		int excludedChassis = buildMatrixSmcService.getExcludedUnitCount();
-		int chassisAvailable = totalChassis - excludedChassis;
-		
-		model.addObject("selectedOrders", selectedOrders);
-		model.addObject("bodiesOnOrder", bodiesOnOrder);
-		model.addObject("chassisAvailable", chassisAvailable);
-		model.addObject("buildId", buildId);
-		
 		return model;
 	}
 	
@@ -346,6 +263,93 @@ public class BuildMatrixController {
         return isUnique;
     }
 	
+	//***** BUILD MATRIX WORKFLOW *****//
+	
+	// BUILD HISTORY //
+	/**
+	 * method to load build history screen
+	 * 
+	 */
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping("/build-history")
+	public ModelAndView getBuildHistory() {
+		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/build-history");
+		List<BuildSummary> buildHistoryList = buildMatrixSmcService.getAllBuildHistory();
+		boolean showStartBuildBtn = !buildHistoryList.stream().anyMatch(bs->!bs.showStartBuildBtn());
+		model.addObject("buildHistoryList", buildHistoryList);
+		model.addObject("showStartBuildBtn", showStartBuildBtn);
+		model.addObject("buildStatuses", BuildStatus.values());
+		return model;
+	}
+	
+	// ORDER SUMMARY //
+	/**
+	 * method to load order-summary screen
+	 * 
+	 * 	 */
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping("/order-summary")
+	public ModelAndView getorderSummary(@RequestParam(value="buildId", required=false) Integer buildId) {
+		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/order-summary");
+		List<ApprovedOrder> approvedOrders = buildMatrixCroService.getApprovedOrdersForBuildMatrix();
+		Map<CroOrderKey, ApprovedOrder> approvedOrdersByKey = approvedOrders.stream().collect(toMap(order->new CroOrderKey(order), order-> order));
+		int totalChassis = buildMatrixCorpService.getAvailableChasisCount();
+		int excludedChassis = buildMatrixSmcService.getExcludedUnitCount();
+		int chassisAvailable = totalChassis - excludedChassis;
+		
+		List<CroOrderKey> selectedOrderKeys = new ArrayList<>();
+		if(buildId != null) {
+			BuildSummary existingBuild = buildMatrixSmcService.getBuildSummary(buildId);
+			if(existingBuild == null)
+				throw new IllegalArgumentException("Couldn't find existing build");
+			selectedOrderKeys = buildMatrixSmcService.getCroOrderKeysForBuild(existingBuild.getBuildId());
+		}
+		
+		model.addObject("approvedOrdersByKey", approvedOrdersByKey);
+		model.addObject("selectedOrderKeys", selectedOrderKeys);
+		model.addObject("chassisAvailable", chassisAvailable);
+		model.addObject("buildId", buildId);
+		return model;
+	}
+	
+	// CONFIRM SELECTION //
+	/**
+	 * method to load confirm-selection screen
+	 * 
+	 * 	 */
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping("/add-to-build")
+	public ModelAndView getConfirmSelection(OrderSelectionForm orderSelectionForm) {
+		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/confirm-order-selection");
+		Integer formBuildId = orderSelectionForm.getBuildId();
+		List<CroOrderKey> selectedOrderKeys = orderSelectionForm.getCroOrderKeys();
+		List<ApprovedOrder> selectedOrders = buildMatrixCroService.getApprovedOrdersByIds(selectedOrderKeys);
+		UserContext userContext = sessionBean.getUserContext();
+		
+		int buildId = 0;
+		if(formBuildId == null) {
+			BuildSummary newBuild = buildMatrixSmcService.startNewBuild(selectedOrders, userContext);
+			buildId = newBuild.getBuildId();
+		}
+		else {
+			BuildSummary existingBuild = buildMatrixSmcService.updateExistingBuild(formBuildId, selectedOrders);
+			buildId = existingBuild.getBuildId();
+		}
+		
+		int bodiesOnOrder = selectedOrders.stream().collect(Collectors.summingInt(order->order.getOrderTotalQuantity()));
+		int totalChassis = buildMatrixCorpService.getAvailableChasisCount();
+		int excludedChassis = buildMatrixSmcService.getExcludedUnitCount();
+		int chassisAvailable = totalChassis - excludedChassis;
+		
+		model.addObject("selectedOrders", selectedOrders);
+		model.addObject("bodiesOnOrder", bodiesOnOrder);
+		model.addObject("chassisAvailable", chassisAvailable);
+		model.addObject("buildId", buildId);
+		
+		return model;
+	}
+	
+	// AVAILABLE CHASSIS SUMMARY //
 	/**
 	 * method to load confirm-selection screen
 	 * 
@@ -374,8 +378,9 @@ public class BuildMatrixController {
 		return model;
 	}
 	
+	// BUILD OEM MIX //
 	/**
-	 * method to load confirm-selection screen
+	 * method to load build mix screen
 	 * 
 	 * 	 */
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
@@ -402,10 +407,4 @@ public class BuildMatrixController {
 		return model;
 	}
 	
-	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
-	@RequestMapping("/submit-build")
-	public void submitBuild(BuildMixForm buildMixForm) {
-		UserContext userContext = sessionBean.getUserContext();
-		buildMatrixSmcService.submitBuild(buildMixForm, userContext);
-	}
 }

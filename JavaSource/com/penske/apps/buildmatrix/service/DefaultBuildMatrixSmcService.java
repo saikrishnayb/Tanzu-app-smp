@@ -23,7 +23,6 @@ import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.BusinessAward;
 import com.penske.apps.buildmatrix.domain.BusinessAwardDefault;
-import com.penske.apps.buildmatrix.domain.BusinessAwardMaintenance;
 import com.penske.apps.buildmatrix.domain.CroOrderKey;
 import com.penske.apps.buildmatrix.domain.DistrictProximity;
 import com.penske.apps.buildmatrix.domain.enums.BuildStatus;
@@ -40,59 +39,10 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	@Autowired
 	BuildMatrixSmcDAO buildMatrixSmcDAO;
 	
-	static List<BusinessAwardMaintenance> oemList=new ArrayList<BusinessAwardMaintenance>();
 	static List<BodyPlantCapability> bodyPlantCapabilityList = new ArrayList<BodyPlantCapability>();
 	static List<DistrictProximity> districtProximity = new ArrayList<DistrictProximity>();
 	static List<DistrictProximity> districtProximityList = new ArrayList<DistrictProximity>();
 	static List<BuildMatrixAttribute> buildMatrixAttributeList = new ArrayList<BuildMatrixAttribute>();
-	
-	@Override
-	public List<BuildSummary> getAllBuildHistory() {
-		return buildMatrixSmcDAO.getAllBuildHistory();
-	}
-	
-	@Override
-	public BuildSummary startNewBuild(List<ApprovedOrder> selectedOrders, UserContext userContext) {
-		int bodiesOnOrder = selectedOrders.stream().collect(summingInt(order->order.getOrderTotalQuantity()));
-		BuildSummary newBuild = new BuildSummary(bodiesOnOrder, userContext);
-		buildMatrixSmcDAO.insertNewBuild(newBuild);
-		int buildId = newBuild.getBuildId();
-		for(ApprovedOrder order: selectedOrders) {
-			buildMatrixSmcDAO.insertCroBuildRequest(buildId, order);
-		}
-		return newBuild;
-	}
-	
-	@Override
-	public BuildSummary updateExistingBuild(Integer buildId, List<ApprovedOrder> selectedOrders) {
-		int bodiesOnOrder = selectedOrders.stream().collect(summingInt(order->order.getOrderTotalQuantity()));
-		BuildSummary existingBuild = buildMatrixSmcDAO.getBuildSummary(buildId);
-		existingBuild.setQuantity(bodiesOnOrder);
-		buildMatrixSmcDAO.updateBuild(existingBuild);
-		Integer existingBuildId = existingBuild.getBuildId();
-		buildMatrixSmcDAO.deleteCroBuildRequestsFromBuild(existingBuildId);
-		for(ApprovedOrder order: selectedOrders) {
-			buildMatrixSmcDAO.insertCroBuildRequest(buildId, order);
-		}
-		return existingBuild;
-	}
-	
-	@Override
-	public BuildSummary getBuildSummary(Integer buildId) {
-		return buildMatrixSmcDAO.getBuildSummary(buildId);
-	}
-	
-	@Override
-	public List<CroOrderKey> getCroOrderKeysForBuild(Integer buildId) {
-		return buildMatrixSmcDAO.getCroOrderKeysForBuild(buildId);
-	}
-	
-	@Override
-	public List<BusinessAwardMaintenance> getAllOEMs()
-	{
-		List<BusinessAwardMaintenance> oemList=getAllOEMsMockService();
-		return oemList;
-	}
 	
 	@Override
 	public List<String> getAllPoCategory()
@@ -109,28 +59,6 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	}
 	
 	// Mock service methods
-	public List<BusinessAwardMaintenance> getAllOEMsMockService()
-	{
-		oemList.clear();
-		BusinessAwardMaintenance oem1=new BusinessAwardMaintenance(1, "Chassis","FTL",60);
-		BusinessAwardMaintenance oem2=new BusinessAwardMaintenance(2, "Chassis","HIN",30);
-		BusinessAwardMaintenance oem3=new BusinessAwardMaintenance(3, "Chassis","IHC",30);
-		BusinessAwardMaintenance oem4=new BusinessAwardMaintenance(4, "Body","AMH",5);
-		BusinessAwardMaintenance oem5=new BusinessAwardMaintenance(5, "Body","GDT",5);
-		BusinessAwardMaintenance oem6=new BusinessAwardMaintenance(6, "Body","KID",5);
-		BusinessAwardMaintenance oem7=new BusinessAwardMaintenance(7, "Body","MKY",5);
-		BusinessAwardMaintenance oem8=new BusinessAwardMaintenance(8, "Body","MOR",40);
-		oemList.add(oem1);
-		oemList.add(oem2);
-		oemList.add(oem3);
-		oemList.add(oem4);
-		oemList.add(oem5);
-		oemList.add(oem6);
-		oemList.add(oem7);
-		oemList.add(oem8);
-		return oemList;
-	}
-	
 	public List<String> getAllPoCategoryMockService()
 	{
 		return new ArrayList<String>(Arrays.asList("Truck","Chassis","Body"));
@@ -278,11 +206,75 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		return resultAttribute;
 	}*/
 	
+	//***** BUILD MATRIX WORKFLOW *****//
+	
+	// BUILD HISTROY //
 	@Override
-	public List<BuildAttribute> getAttributesForBuild() {
-		return buildMatrixSmcDAO.getAttributesForBuild();
+	public List<BuildSummary> getAllBuildHistory() {
+		return buildMatrixSmcDAO.getAllBuildHistory();
 	}
 	
+	// BUILD FUNCTIONS //
+	@Override
+	public BuildSummary startNewBuild(List<ApprovedOrder> selectedOrders, UserContext userContext) {
+		int bodiesOnOrder = selectedOrders.stream().collect(summingInt(order->order.getOrderTotalQuantity()));
+		BuildSummary newBuild = new BuildSummary(bodiesOnOrder, userContext);
+		buildMatrixSmcDAO.insertNewBuild(newBuild);
+		int buildId = newBuild.getBuildId();
+		for(ApprovedOrder order: selectedOrders) {
+			buildMatrixSmcDAO.insertCroBuildRequest(buildId, order);
+		}
+		return newBuild;
+	}
+	
+	@Override
+	public BuildSummary updateExistingBuild(Integer buildId, List<ApprovedOrder> selectedOrders) {
+		int bodiesOnOrder = selectedOrders.stream().collect(summingInt(order->order.getOrderTotalQuantity()));
+		BuildSummary existingBuild = buildMatrixSmcDAO.getBuildSummary(buildId);
+		existingBuild.setQuantity(bodiesOnOrder);
+		buildMatrixSmcDAO.updateBuild(existingBuild);
+		Integer existingBuildId = existingBuild.getBuildId();
+		buildMatrixSmcDAO.deleteCroBuildRequestsFromBuild(existingBuildId);
+		for(ApprovedOrder order: selectedOrders) {
+			buildMatrixSmcDAO.insertCroBuildRequest(buildId, order);
+		}
+		return existingBuild;
+	}
+
+	@Override
+	public BuildSummary getBuildSummary(Integer buildId) {
+		return buildMatrixSmcDAO.getBuildSummary(buildId);
+	}
+	
+	@Override
+	public void submitBuild(BuildMixForm buildMixForm, UserContext userContext) {
+		int buildId = buildMixForm.getBuildId();
+		
+		int itemOrder = 1;
+		List<BusinessAward> awardsToInsert = new ArrayList<>();
+		for(AttributeRow attributeRow: buildMixForm.getAttributeRows()) {
+			BusinessAward award = new BusinessAward(buildId, attributeRow.getGroupKey(), attributeRow.getAwardKey(), itemOrder, attributeRow.getAwardPercentage(), attributeRow.getAwardQuantity());
+			awardsToInsert.add(award);
+		}
+		
+		buildMatrixSmcDAO.insertBusinessAwards(awardsToInsert);
+		buildMatrixSmcDAO.submitBuild(buildId, BuildStatus.SUBMITTED, userContext.getUserSSO());
+	}
+	
+	// CRO BUILD REQUESTS //
+	@Override
+	public List<CroOrderKey> getCroOrderKeysForBuild(Integer buildId) {
+		return buildMatrixSmcDAO.getCroOrderKeysForBuild(buildId);
+	}
+	
+	// AVAILABLE CHASSIS //
+	@Override
+	public int getExcludedUnitCount() {
+		int year = LocalDate.now().getYear();
+		return buildMatrixSmcDAO.getExcludedUnitCount(year);
+	}
+	
+	@Override
 	public List<String> getExcludedUnits() {
 		int year = LocalDate.now().getYear();
 		return buildMatrixSmcDAO.getExcludedUnits(year);
@@ -301,12 +293,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		buildMatrixSmcDAO.deleteExcludedUnits(excludedUnits.stream().map(unit->Util.getPaddedUnitNumber(unit)).collect(toList()), year);
 	}
 	
-	@Override
-	public int getExcludedUnitCount() {
-		int year = LocalDate.now().getYear();
-		return buildMatrixSmcDAO.getExcludedUnitCount(year);
-	}
-	
+	//***** OEM MIX MAINTENANCE *****//
 	@Override
 	public void saveBusinessAwardMaintenance(BusinessAwardForm businessAwardForm) {
 		List<BusinessAwardDefault> businessAwardDefaults = buildMatrixSmcDAO.getBusinessAwardDefaults();
@@ -334,21 +321,18 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		
 		if(!defaultsToInsert.isEmpty())
 			buildMatrixSmcDAO.insertBusinessAwardDefault(defaultsToInsert);
-		
+	}
+	
+	//***** BUILD ATTRIBUTE *****//
+	@Override
+	public List<BuildAttribute> getAttributesForBuild() {
+		return buildMatrixSmcDAO.getAttributesForBuild();
 	}
 	
 	@Override
-	public void submitBuild(BuildMixForm buildMixForm, UserContext userContext) {
-		int buildId = buildMixForm.getBuildId();
-		
-		int itemOrder = 1;
-		List<BusinessAward> awardsToInsert = new ArrayList<>();
-		for(AttributeRow attributeRow: buildMixForm.getAttributeRows()) {
-			BusinessAward award = new BusinessAward(buildId, attributeRow.getGroupKey(), attributeRow.getAwardKey(), itemOrder, attributeRow.getAwardPercentage(), attributeRow.getAwardQuantity());
-			awardsToInsert.add(award);
-		}
-		
-		buildMatrixSmcDAO.insertBusinessAwards(awardsToInsert);
-		buildMatrixSmcDAO.submitBuild(buildId, BuildStatus.SUBMITTED, userContext.getUserSSO());
+	public BuildAttribute getBuildAttributeById(int attributeId) 
+	{
+		BuildAttribute buildAttribute = buildMatrixSmcDAO.getBuildAttributeById(attributeId);
+		return buildAttribute;
 	}
 }

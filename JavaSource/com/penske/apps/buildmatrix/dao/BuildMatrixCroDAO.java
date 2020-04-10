@@ -15,6 +15,9 @@ import com.penske.apps.suppliermgmt.annotation.DBCro;
 @DBCro
 public interface BuildMatrixCroDAO {
 	
+	// ***** BUILD MATRIX WORKFLOW *****//
+	
+	// CRO ORDERS //
 	public List<ApprovedOrder> getApprovedOrdersForBuildMatrix();
 
 	public List<ApprovedOrder> getApprovedOrdersByIds(@Param("orderKeys") List<CroOrderKey> orderKeys);

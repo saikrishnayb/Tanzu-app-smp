@@ -24,20 +24,6 @@ import com.penske.apps.suppliermgmt.annotation.DBSmc;
 @DBSmc
 public interface BuildMatrixSmcDAO {
 	
-	public List<BuildSummary> getAllBuildHistory();
-
-	public void insertNewBuild(@Param("newBuild") BuildSummary newBuild);
-
-	public void insertCroBuildRequest(@Param("buildId") int buildId, @Param("order") ApprovedOrder order);
-
-	public void updateBuild(@Param("existingBuild") BuildSummary existingBuild);
-
-	public void deleteCroBuildRequestsFromBuild(@Param("existingBuildId") Integer existingBuildId);
-
-	public BuildSummary getBuildSummary(@Param("buildId") Integer buildId);
-
-	public List<CroOrderKey> getCroOrderKeysForBuild(@Param("buildId") Integer buildId);
-	
 	public List<BodyPlantCapability> getAllBuildMatrixCapabilities();
 
 	public BodyPlantCapability getCapabilityDetails(int capabilityId);
@@ -67,25 +53,51 @@ public interface BuildMatrixSmcDAO {
 	public void addAttribute(@Param("attributeId") int attributeId, @Param("attributeValue") String attributeValue);
 	
     public List<String> getAllAttributeValues(@Param("attributeId") int attributeId);
-    
-    public List<BuildAttribute> getAttributesForBuild();
-    
-    public List<String> getExcludedUnits(@Param("year") int year);
+	
+	
+	//***** BUILD MATRIX WORKFLOW *****//
+	
+	// BUILD HISTROY //
+	public List<BuildSummary> getAllBuildHistory();
+	
+	// BUILD FUNCTIONS //
+	public void insertNewBuild(@Param("newBuild") BuildSummary newBuild);
+	
+	public void updateBuild(@Param("existingBuild") BuildSummary existingBuild);
+	
+	public BuildSummary getBuildSummary(@Param("buildId") Integer buildId);
+	
+	public void submitBuild(@Param("buildId") int buildId, @Param("status") BuildStatus submitted, @Param("sso") String userSSO);
+	
+	// CRO BUILD REQUESTS //
+	public void insertCroBuildRequest(@Param("buildId") int buildId, @Param("order") ApprovedOrder order);
+
+	public void deleteCroBuildRequestsFromBuild(@Param("existingBuildId") Integer existingBuildId);
+
+	public List<CroOrderKey> getCroOrderKeysForBuild(@Param("buildId") Integer buildId);
+	
+	// AVAILABLE CHASSIS //
+	public int getExcludedUnitCount(@Param("year") int year);
+	
+	public List<String> getExcludedUnits(@Param("year") int year);
 
 	public void excludeUnits(@Param("excludedUnits") List<String> excludedUnits, @Param("year") int year);
 
 	public void deleteExcludedUnits(@Param("excludedUnits") List<String> excludedUnits, @Param("year") int year);
 	
-	public int getExcludedUnitCount(@Param("year") int year);
-
+	// BUSINESS AWARDS //
+	public void insertBusinessAwards(@Param("awardsToInsert") List<BusinessAward> awardsToInsert);
+	
+	//***** OEM MIX MAINTENANCE *****//
 	public List<BusinessAwardDefault> getBusinessAwardDefaults();
 
 	public void updateBusinessAwardDefault(@Param("awardDefault") BusinessAwardDefault awardDefault);
 
 	public void insertBusinessAwardDefault(@Param("defaultsToInsert") List<BusinessAwardDefault> defaultsToInsert);
 
-	public void insertBusinessAwards(@Param("awardsToInsert") List<BusinessAward> awardsToInsert);
-
-	public void submitBuild(@Param("buildId") int buildId, @Param("status") BuildStatus submitted, @Param("sso") String userSSO);
+	//***** BUILD ATTRIBUTE *****//
+	public List<BuildAttribute> getAttributesForBuild();
+	
+	public BuildAttribute getBuildAttributeById(@Param("attributeId") int attributeId);
 	
 }
