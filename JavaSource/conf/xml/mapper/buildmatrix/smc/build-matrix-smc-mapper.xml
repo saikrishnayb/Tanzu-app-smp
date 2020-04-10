@@ -92,10 +92,12 @@
 	</select>
 	
 	<select  id="getDistrictProximity" resultType="com.penske.apps.buildmatrix.domain.DistrictProximity">
-		SELECT   DISTRICT AS district,
-		         TIER AS tier
-		FROM     SMC.OBM_PLANT_PROXIMITY OPP
-		WHERE    OPP.TIER = 1
+		SELECT    
+		         AREA 	  AS area
+		
+		FROM 	 SMC.OBM_FREIGHT_MILEAGE OFM
+		
+		WHERE    AREA <![CDATA[<>]]> ''
 	</select>
 	
 	<insert id="insertProximityValues">

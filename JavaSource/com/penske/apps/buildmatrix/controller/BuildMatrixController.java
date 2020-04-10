@@ -198,8 +198,7 @@ public class BuildMatrixController {
 	@RequestMapping("/district-proximity")
 	public ModelAndView getDistrictProximity() {
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/district-proximity");
-		//model.addObject("districtProximity", districtProximityService.getDistrictProximity());
-		model.addObject("districtProximityList", buildMatrixSmcService.getDistrictProximityMockService());
+		model.addObject("districtProximityList", buildMatrixSmcService.getDistrictProximity());
 		return model;
 	}
 	

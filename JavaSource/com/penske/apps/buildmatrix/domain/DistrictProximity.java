@@ -1,17 +1,31 @@
 package com.penske.apps.buildmatrix.domain;
 
+import java.util.List;
+
 public class DistrictProximity {
 
-	private String district;
+	private List<String> district;
 	private int tier;
+	private String area;
+	private int plantId;
+	
+	public DistrictProximity(){		
+	}
+	
+	public DistrictProximity(List<String> district, int tier, String area) {
+		super();
+		this.district = district;
+		this.tier = tier;
+		this.area = area;
+	}
 
-	public DistrictProximity(String district, int tier) {
+	public DistrictProximity(List<String> district, int tier) {
 		super();
 		this.district = district;
 		this.tier = tier;
 	}
 
-	public String getDistrict() {
+	public List<String> getDistrict() {
 		return district;
 	}
 	
@@ -19,7 +33,15 @@ public class DistrictProximity {
 		return tier;
 	}
 	
-	public void setDistrict(String district) {
+	public String getArea() {
+		return area;
+	}
+	
+	public int getPlantId() {
+		return plantId;
+	}
+	
+	public void setDistrict(List<String> district) {
 		this.district = district;
 	}
 	
@@ -27,4 +49,11 @@ public class DistrictProximity {
 		this.tier = tier;
 	}
 
+	public void setArea(String area) {
+		this.area = area;
+	}
+	
+	public void setPlantId(int plantId) {
+		this.plantId = plantId;
+	}
 }

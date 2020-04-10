@@ -39,8 +39,6 @@ public interface BuildMatrixSmcService {
 	
     public List<DistrictProximity> getDistrictProximity();
 	
-	public List<DistrictProximity> getDistrictProximityMockService();
-	
 	public void insertProximityValues(DistrictProximity districtProximity);
 	
 	public List<BuildMatrixBodyPlant> getAllBodyPlants();

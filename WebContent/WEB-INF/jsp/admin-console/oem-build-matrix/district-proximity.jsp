@@ -29,18 +29,14 @@
 					Filter <input id="tier1" class="filter" data-alf="#list1" type="text" placeholder="" />
 					<ul id="list1" class="filterable">
 						<c:forEach items="${districtProximityList}" var="districtProximity">
-							<li><label>AREA ${districtProximity.district}</label> 
-									<ul>
-										<fieldset class="fieldset">
-											<legend class="legend-view"></legend>
-											<c:forEach items="${districtProximityList}" var="districtProximityList">
-											<li class="chkbox-display"><input type="checkbox" value="1">${districtProximityList.district}</li>
-												</c:forEach>
-										</fieldset>
-									</ul>
-								</li>
+							<li><label> ${districtProximity.area}</label>
+								<ul>
+									<fieldset class="fieldset">
+										<legend class="legend-view"></legend>
+									</fieldset>
+								</ul></li>
 						</c:forEach>
-						</ul>
+					</ul>
 				</div>
 				<div class="vl"></div>
 			</div>
@@ -51,8 +47,30 @@
 				</div>
 				<ul id="list2" class="filterable">
 					<c:forEach items="${districtProximityList}" var="districtProximity">
-						<li><label>AREA ${districtProximity.district}</label></li>
-					</c:forEach>
+							<li><label> ${districtProximity.area}</label>
+								<ul>
+									<fieldset class="fieldset">
+										<legend class="legend-view"></legend>
+									</fieldset>
+								</ul></li>
+						</c:forEach>
+				</ul>
+				<div class="vl2"></div>
+			</div>
+			<div class="rightpane">
+				<h2>Tier 3</h2>
+				<div>
+					Filter <input id="tier3" class="filter" data-alf="#list3" type="text" placeholder="">
+				</div>
+				<ul id="list3" class="filterable">
+					<c:forEach items="${districtProximityList}" var="districtProximity">
+							<li><label> ${districtProximity.area}</label>
+								<ul>
+									<fieldset class="fieldset">
+										<legend class="legend-view"></legend>
+									</fieldset>
+								</ul></li>
+						</c:forEach>
 				</ul>
 				<script>
 					$("fieldset").selectAll({
@@ -70,18 +88,6 @@
 						buttonExtraClasses : "btn btn-default"
 					});
 				</script>
-				<div class="vl2"></div>
-			</div>
-			<div class="rightpane">
-				<h2>Tier 3</h2>
-				<div>
-					Filter <input id="tier3" class="filter" data-alf="#list3" type="text" placeholder="">
-				</div>
-				<ul id="list3" class="filterable">
-					<c:forEach items="${districtProximityList}" var="districtProximity">
-						<li><label>AREA ${districtProximity.district}</label></li>
-					</c:forEach>
-				</ul>
 				<script>
 					$('.filter').accordionLiveFilter();
 				</script>
