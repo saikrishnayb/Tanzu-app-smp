@@ -29,7 +29,7 @@
 				</thead>
 				<tbody>
 					<c:forEach items="${attributeList}" var="attribute">
-						<tr class="attribute-row">
+						<tr class="attribute-row" data-attribute-id="${attribute.attributeId}">
 							<td class="data-view">
 								<a href="#" class="edit-attribute">Update</a>
 								<span class="display-color">|</span> 
@@ -37,9 +37,9 @@
 							    <input type="hidden" class="edit-attribute-id" value="${attribute.attributeId}" />
 							</td>
 							<td>${attribute.attributeName}</td>
-							<td>
-								<c:forEach items="${attribute.values}" var="value">
-								<a class="buttonPrimary non-selected-attrvalue">${value}</a>	
+							<td class="value-td">
+								<c:forEach items="${attribute.attributeValues}" var="value">
+								<span class="badge non-selected-attrvalue" data-attribute-value-id="${value.attributeValueId}">${value.attributeValue}</span>	
 								</c:forEach>
 							</td>
 						</tr>

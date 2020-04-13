@@ -69,13 +69,6 @@
 		WHERE PLANT_ID=#{plantId}
 	</update>
 	
-	<select id="getAllBuildMatrixAttributes" resultMap="buildmatrixAttributeMap">
-		SELECT   ATTRIBUTE_ID AS attributeId,
-		         ATTRIBUTE_NAME AS attributeName,
-		         '' AS attributeType
-		FROM     OBM_ATTRIBUTE
-	</select>
-
 	<resultMap id="buildmatrixAttributeMap" type="com.penske.apps.buildmatrix.domain.BuildMatrixAttribute" >
 		<result property="attributeId"   	column="attributeId"/>
 		<result property="attributeName" 	column="attributeName"/>
@@ -107,17 +100,17 @@
 		DELETE
 		FROM 	OBM_ATTRIBUTE_VALUE
 		WHERE 	ATTRIBUTE_ID=#{attributeId}
-		 <if test="values != null">
-           	AND 	ATTRIBUTE_VALUE NOT IN 
-		   	<foreach collection="values" item="value" separator="," open="(" close=")">#{value}</foreach>
+		 <if test="attrValueIds != null">
+           	AND 	ATTRIBUTE_VALUE_ID NOT IN 
+		   	<foreach collection="attrValueIds" item="id" separator="," open="(" close=")">#{id}</foreach>
          </if>
 	</delete>
 	
-	<insert id="addAttribute">
+	<insert id="addAttribute" useGeneratedKeys="true" keyProperty="attributeValue.attributeValueId">
 		INSERT INTO 
- 					SMC.OBM_ATTRIBUTE_VALUE 
- 					(ATTRIBUTE_ID, ATTRIBUTE_VALUE)
- 		VALUES 		(#{attributeId}, #{attributeValue})
+					SMC.OBM_ATTRIBUTE_VALUE 
+					(ATTRIBUTE_ID, ATTRIBUTE_VALUE)
+ 		VALUES 		(#{attributeId}, #{attributeValue.attributeValue})
 	</insert>
 	
  	<select id="getAllAttributeValues" resultType="String">
@@ -326,6 +319,29 @@
 		<result column="ITEM_ORDER"				property="itemOrder" />
 	</resultMap>
 	
+	<select id="getAllBuildMatrixAttributes" resultMap="BuildAttributeMap">
+		SELECT
+			attribute.ATTRIBUTE_ID,
+			attribute.ATTRIBUTE_KEY,
+			attribute.ATTRIBUTE_NAME,
+			awardGroup.BUSINESS_AWARD_GROUP_ID,
+			awardGroup.GROUP_KEY,
+			awardGroup.GROUP_DESCRIPTION,
+			awardGroup.GROUP_ORDER,
+			val.ATTRIBUTE_VALUE_ID AS VAL_ATTRIBUTE_VALUE_ID,
+			val.ATTRIBUTE_VALUE AS VAL_ATTRIBUTE_VALUE,
+			COALESCE(awardDefs.DEFAULT_VALUE, 0 ) AS VAL_DEFAULT_VALUE,
+			COALESCE(awardDefs.ITEM_ORDER, -1) AS VAL_ITEM_ORDER
+		FROM SMC.OBM_ATTRIBUTE_VALUE val
+		LEFT JOIN SMC.OBM_ATTRIBUTE attribute
+			ON attribute.ATTRIBUTE_ID = val.ATTRIBUTE_ID
+		LEFT JOIN SMC.OBM_BUSINESS_AWARD_DEFAULTS awardDefs
+			ON awardDefs.ITEM_ID = val.ATTRIBUTE_VALUE_ID
+		LEFT JOIN SMC.OBM_BUSINESS_AWARD_GROUP awardGroup
+			ON awardGroup.ATTRIBUTE_ID = val.ATTRIBUTE_ID
+		ORDER BY attribute.ATTRIBUTE_ID
+	</select>
+	
 	<select id="getAttributesForBuild" resultMap="BuildAttributeMap">
 		SELECT
 			attribute.ATTRIBUTE_ID,
@@ -367,7 +383,7 @@
 			ON attribute.ATTRIBUTE_ID = val.ATTRIBUTE_ID
 		LEFT JOIN SMC.OBM_BUSINESS_AWARD_DEFAULTS awardDefs
 			ON awardDefs.ITEM_ID = val.ATTRIBUTE_VALUE_ID
-		JOIN SMC.OBM_BUSINESS_AWARD_GROUP awardGroup
+		LEFT JOIN SMC.OBM_BUSINESS_AWARD_GROUP awardGroup
 			ON awardGroup.ATTRIBUTE_ID = val.ATTRIBUTE_ID
 		WHERE
 			attribute.ATTRIBUTE_ID = #{attributeId}

@@ -83,39 +83,37 @@ $(document).ready(function() {
 	
 	$editAttributeModal.on("click",'#update-attr',function(){
 		showLoading();
-		var attributeId = $(this).attr('save-attr-id');
-		var $form = $('#editAttributeForm[save-attr-id="'+attributeId+'"]');
-		var attributeData =$form.serialize();
-		var attributeOptionGrp =$form.find('#optionGroup').val();
-		var attributeName = $form.find('#attributeName').val();
-		var attrValues = $form.find('#values').find('option:selected');
-		var attrValuesString= '';
-		$(attrValues).each(function(){
-			attrValuesString += ' <a class="buttonPrimary non-selected-attrvalue">'+$(this).val()+'</a>';
+		var attributeId = $(this).data('save-attr-id');
+		var attrValueIds = $editAttributeModal.find('#values').val();
+		var notSelectedIds = [];
+		$('#values').find('option').not(':selected').each(function() {
+			notSelectedIds.push($(this).val());
 		});
 		
 		var $updateAttributePromise = $.ajax({
 				type: "POST",
 				url:'./update-attribute.htm',
 				global: false,
-				data: attributeData
+				data: {attributeId: attributeId, attrValueIds: attrValueIds}
 			});
 		$updateAttributePromise.done(function(data){
-					
-					$('#attribute-table').find('.edit-attribute-id').each(function(){
-						var attributeIdCheck = $(this).val();
-						var attributeIdMatch = (attributeIdCheck ==attributeId) ;
-					
-						if(attributeIdMatch){
-							
-							var $attributeRow = $(this).closest('tr');
-							var nRow = $attributeRow[0];
-							$attributeTable.dataTable().fnUpdate( attrValuesString, nRow, 2, false);
-							
-						}
-					});
-					closeModal($editAttributeModal);
-					hideLoading();
+			notSelectedIds.forEach(function(id){
+				$('#attribute-table').find('.non-selected-attrvalue[data-attribute-value-id="' + id + '"]').remove();;
+			})
+//					$('#attribute-table').find('.edit-attribute-id').each(function(){
+//						var attributeIdCheck = $(this).val();
+//						var attributeIdMatch = (attributeIdCheck ==attributeId) ;
+//					
+//						if(attributeIdMatch){
+//							
+//							var $attributeRow = $(this).closest('tr');
+//							var nRow = $attributeRow[0];
+//							$attributeTable.dataTable().fnUpdate( attrValuesString, nRow, 2, false);
+//							
+//						}
+//					});
+			closeModal($editAttributeModal);
+			hideLoading();
 		});
 		$updateAttributePromise.fail(function(xhr, ajaxOptions, thrownError) {
 					  if(xhr.responseText.indexOf('Error Processing the updating Attribute')>0){
@@ -130,8 +128,8 @@ $(document).ready(function() {
 	
 	$addAttributeModal.on("click",'#create-attr',function(){
 		showLoading();
-		var attributeId = $(this).attr('save-attr-id');
-		var $form = $('#editAttributeForm[save-attr-id="'+attributeId+'"]');
+		var attributeId = $(this).data('save-attr-id');
+		var $form = $('#editAttributeForm[data-save-attr-id="'+attributeId+'"]');
 		var attributeData = $form.serialize();
 		$form.find('.attributeId').val();
 		var attributeName = $form.find('#attributeName').val();
@@ -161,20 +159,10 @@ $(document).ready(function() {
 						url : url,
 						type: "POST",  
 						data: {attributeId : attributeId, attributeValue: attributeValue},
-						success : function(data) {
+						success : function(attrValue) {
 								showLoading();
-								$('#attribute-table').find('.edit-attribute-id').each(function(){
-									var attributeIdCheck = $(this).val();
-									var attributeIdMatch = (attributeIdCheck ==attributeId) ;
-								
-									if(attributeIdMatch){
-										
-										var $attributeRow = $(this).closest('tr');
-										var nRow = $attributeRow[0];
-										$attributeTable.dataTable().fnUpdate( attrValuesString, nRow, 2, false);
-										
-									}
-						});
+								var $attributeRow = $('#attribute-table').find('.attribute-row[data-attribute-id="' + attributeId + '"]');
+								$attributeRow.find('.value-td').append('<span class="badge non-selected-attrvalue" data-attribute-value-id="' + attrValue.attributeValueId + '">' + attrValue.attributeValue + '</span>');
 						},
 					}); 
 					closeModal($addAttributeModal);
@@ -212,7 +200,7 @@ $(document).ready(function() {
 			var attributeId = $this.closest('.attribute-row').find('.edit-attribute-id').val();
 			
 			var $getEditAttributeContentPromise =$.get("get-edit-attribute-content.htm",{attributeId:attributeId});
-			$('.editAttributeForm[save-attr-id="'+attributeId+'"]').remove();
+			$('.editAttributeForm[data-save-attr-id="'+attributeId+'"]').remove();
 			$getEditAttributeContentPromise.done(function(data){
 				$editAttributeModal.html(data);
 				openModal($editAttributeModal);
@@ -226,7 +214,7 @@ $(document).ready(function() {
 		var attributeId = $this.closest('.attribute-row').find('.edit-attribute-id').val();
 		
 		var $getAddAttributeContentPromise =$.get("get-add-attribute-content.htm",{attributeId:attributeId});
-		$('.editAttributeForm[save-attr-id="'+attributeId+'"]').remove();
+		$('.editAttributeForm[data-save-attr-id="'+attributeId+'"]').remove();
 		$getAddAttributeContentPromise.done(function(data){
 			$addAttributeModal.html(data);
 			openModal($addAttributeModal);

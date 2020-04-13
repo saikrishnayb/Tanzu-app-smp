@@ -18,6 +18,7 @@ import com.penske.apps.buildmatrix.dao.BuildMatrixSmcDAO;
 import com.penske.apps.buildmatrix.domain.ApprovedOrder;
 import com.penske.apps.buildmatrix.domain.BodyPlantCapability;
 import com.penske.apps.buildmatrix.domain.BuildAttribute;
+import com.penske.apps.buildmatrix.domain.BuildAttributeValue;
 import com.penske.apps.buildmatrix.domain.BuildMatrixAttribute;
 import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
@@ -140,10 +141,9 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	}
 
 	@Override
-	public List<BuildMatrixAttribute> getAllBuildMatrixAttributes() 
+	public List<BuildAttribute> getAllBuildMatrixAttributes() 
 	{
-		List<BuildMatrixAttribute> buildMatrixAttribute = buildMatrixSmcDAO.getAllBuildMatrixAttributes();
-				//getAllattributesmockDataService();
+		List<BuildAttribute> buildMatrixAttribute = buildMatrixSmcDAO.getAllBuildMatrixAttributes();
 		return buildMatrixAttribute;
 	}
 
@@ -171,10 +171,10 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	}*/
 
 	@Override
-	public void updateAttribute(BuildMatrixAttribute attributeData)
+	public void updateAttribute(int attributeId, List<Integer> attrValueIds)
 	{
 		//attributeDao.updateAttribute(attributeData); //need to confirm attribute name update
-		buildMatrixSmcDAO.updateAttributeValues(attributeData);
+		buildMatrixSmcDAO.updateAttributeValues(attributeId, attrValueIds);
 	}
 	
 	@Override
@@ -191,9 +191,11 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		return isUnique;
 	}
 	@Override
-	public void addAttribute(int attributeId, String attributeValue)
+	public BuildAttributeValue addAttribute(int attributeId, String attributeValue)
 	{
-		buildMatrixSmcDAO.addAttribute(attributeId,attributeValue);
+		BuildAttributeValue attrValue = new BuildAttributeValue(attributeValue);
+		buildMatrixSmcDAO.addAttribute(attributeId,attrValue);
+		return attrValue;
 	}
 	
 	// Mock service methods

@@ -7,14 +7,14 @@
 		<c:when test="${editPopup eq true}">
 			<div class="update-attribute">
 				<a class="buttonPrimary buttonDisabled round-corner-btn-cls"
-					id="update-attr" save-attr-id="${attribute.attributeId}" href="#"
+					id="update-attr" data-save-attr-id="${buildAttribute.attributeId}" href="#"
 					onclick="">Save</a>
 			</div>
 		</c:when>
 		<c:otherwise>
 			<div class="save-attribute">
 				<a class="buttonPrimary round-corner-btn-cls" id="create-attr"
-					save-attr-id="${attribute.attributeId}" href="#" onclick="">Save</a>
+					data-save-attr-id="${buildAttribute.attributeId}" href="#" onclick="">Save</a>
 			</div>
 		</c:otherwise>
 	</c:choose>

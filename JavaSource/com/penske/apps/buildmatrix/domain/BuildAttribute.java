@@ -2,6 +2,10 @@ package com.penske.apps.buildmatrix.domain;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
+import static java.util.stream.Collectors.toList;
+
 public class BuildAttribute {
 
 	private int attributeId;
@@ -16,6 +20,11 @@ public class BuildAttribute {
 	List<BuildAttributeValue> attributeValues;
 	
 	protected BuildAttribute() {}
+	
+	//MODIFIED ACCESSORS
+	public String getAttributeValueList(){
+		return StringUtils.join(attributeValues.stream().map(val -> val.getAttributeValue()).collect(toList()), ',');
+	}
 	
 	//DEFAULT ACCESSORS
 	public int getAttributeId() {

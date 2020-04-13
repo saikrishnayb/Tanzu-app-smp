@@ -21,7 +21,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.penske.apps.adminconsole.util.CommonUtils;
 import com.penske.apps.buildmatrix.domain.ApprovedOrder;
 import com.penske.apps.buildmatrix.domain.BuildAttribute;
-import com.penske.apps.buildmatrix.domain.BuildMatrixAttribute;
 import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.CroOrderKey;
@@ -61,61 +60,6 @@ public class BuildMatrixController {
 	@Autowired
 	private SuppliermgmtSessionBean sessionBean;
 
-	/**
-	 * method to load attribute maintenance screen
-	 * 
-	 * @return
-	 */
-	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
-	@RequestMapping("/attribute-maintenance")
-	public ModelAndView getattributeMaintenace() {
-		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/attribute-setup");
-		model.addObject("attributeList", buildMatrixSmcService.getAllBuildMatrixAttributes());
-		return model;
-	}
-
-	/**
-	 * Method to Loads Edit Attribute Popup
-	 * 
-	 * @param request
-	 * @return ModelAndView
-	 */ 
-	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
-	@RequestMapping(value = "/get-edit-attribute-content",method = { RequestMethod.GET })
-	@ResponseBody
-	public ModelAndView getEditAttributeContent(@RequestParam("attributeId") int attributeId, HttpServletResponse response) {
-		BuildMatrixAttribute buildMatrixAttribute = buildMatrixSmcService.getAttributeDetails(attributeId);
-		ModelAndView model = new ModelAndView("/jsp-fragment/admin-console/oem-build-matrix/edit-attribute-modal");
-		try {
-			model.addObject("editPopup", true);
-			model.addObject("attribute", buildMatrixAttribute);
-		} catch (Exception e) {
-			LOGGER.error("Error in loading Edit Attribute popup" .concat(e.getLocalizedMessage()) );
-		}
-		return model;
-	}
-
-	/**
-	 * Method to Loads Add Attribute Value Popup
-	 * 
-	 * @param request
-	 * @return ModelAndView
-	 */ 
-	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
-	@RequestMapping(value = "/get-add-attribute-content",method = { RequestMethod.GET })
-	@ResponseBody
-	public ModelAndView getAddAttributeContent(@RequestParam("attributeId") int attributeId, HttpServletResponse response) {
-		BuildMatrixAttribute buildMatrixAttribute = buildMatrixSmcService.getAttributeDetails(attributeId);
-		ModelAndView model = new ModelAndView("/jsp-fragment/admin-console/oem-build-matrix/edit-attribute-modal");
-		try {
-			model.addObject("addPopup", true);
-			model.addObject("attribute", buildMatrixAttribute);
-		} catch (Exception e) {
-			LOGGER.error("Error in loading Add Attribute Value popup" .concat(e.getLocalizedMessage()) );
-		}
-		return model;
-	}
-	
 	/**
 	 * method to load edit program screen
 	 * 
@@ -186,31 +130,6 @@ public class BuildMatrixController {
 	}
 	
 	/**
-	 * method to business award maintenance screen
-	 * 
-	 * @return
-	 */
-	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
-	@RequestMapping("/business-award-maint")
-	public ModelAndView getBusinessAwardMaintenance() {
-		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/business-award-maintenance");
-		model.addObject("attributes", buildMatrixSmcService.getAttributesForBuild());
-		return model;
-	}
-	
-	@SmcSecurity(securityFunction = SecurityFunction.OEM_BUILD_MATRIX)
-    @RequestMapping(value="update-attribute")
-    @ResponseBody
-    public ModelAndView updateAttribute(BuildMatrixAttribute attributeData,HttpServletResponse response) throws Exception {
-        try{
-        	buildMatrixSmcService.updateAttribute(attributeData);
-        }catch (Exception e) {
-            LOGGER.error("Error while updating Attribute: "+e.getMessage(),e);
-            CommonUtils.getCommonErrorAjaxResponse(response,"Error Processing the updating Attribute");
-        }
-        return null;
-    }
-	/**
 	 *Method to load offline dates setup model 
 	 */
 	@SmcSecurity(securityFunction = SecurityFunction.OEM_BUILD_MATRIX)
@@ -237,30 +156,6 @@ public class BuildMatrixController {
             CommonUtils.getCommonErrorAjaxResponse(response,"Error Processing the Setting Offline dates");
         }
         return null;
-    }
-	
-	@SmcSecurity(securityFunction = SecurityFunction.OEM_BUILD_MATRIX)
-    @RequestMapping(value="add-attribute")
-    public ModelAndView addAttribute(@RequestParam(value="attributeId") int attributeId, @RequestParam(value="attributeValue") String attributeValue) throws Exception {
-        try{
-        	buildMatrixSmcService.addAttribute(attributeId,attributeValue);
-        }catch (Exception e) {
-            LOGGER.error("Error while saving Attribute: "+e.getMessage(),e);
-        }
-        return null;
-    }
-	
-	/**
-	 * method to check for unique attribute value
-	 * 
-	 * 	 */
-	@SmcSecurity(securityFunction = SecurityFunction.OEM_BUILD_MATRIX)
-	@RequestMapping(value = "/check-unique-attribute-value", method = RequestMethod.POST)
-	@ResponseBody
-    public boolean checkForUniqueAttributeValue(@RequestParam(value="attributeId") int attributeId, @RequestParam(value="attributeValue") String attributeValue) {
-		boolean isUnique = true;
-		isUnique = buildMatrixSmcService.checkForUniqueAttributeValue(attributeId, attributeValue);
-        return isUnique;
     }
 	
 	//***** BUILD MATRIX WORKFLOW *****//
@@ -404,6 +299,35 @@ public class BuildMatrixController {
 		model.addObject("buildId", buildId);
 		model.addObject("attributes", attributes);
 		
+		return model;
+	}
+	
+	//***** BUILD ATTRIBUTE *****//
+	/**
+	 * method to load attribute maintenance screen
+	 * 
+	 * @return
+	 */
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping("/attribute-maintenance")
+	public ModelAndView getattributeMaintenace() {
+		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/attribute-setup");
+		List<BuildAttribute> attributeList = buildMatrixSmcService.getAllBuildMatrixAttributes();
+		model.addObject("attributeList", attributeList);
+		return model;
+	}
+	
+	//***** BUSINESS AWARD MAINTENANCE *****//
+	/**
+	 * method to business award maintenance screen
+	 * 
+	 * @return
+	 */
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping("/business-award-maint")
+	public ModelAndView getBusinessAwardMaintenance() {
+		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/business-award-maintenance");
+		model.addObject("attributes", buildMatrixSmcService.getAttributesForBuild());
 		return model;
 	}
 	

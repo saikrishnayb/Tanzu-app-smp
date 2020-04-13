@@ -5,6 +5,7 @@ import java.util.List;
 import com.penske.apps.buildmatrix.domain.ApprovedOrder;
 import com.penske.apps.buildmatrix.domain.BodyPlantCapability;
 import com.penske.apps.buildmatrix.domain.BuildAttribute;
+import com.penske.apps.buildmatrix.domain.BuildAttributeValue;
 import com.penske.apps.buildmatrix.domain.BuildMatrixAttribute;
 import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
@@ -34,13 +35,9 @@ public interface BuildMatrixSmcService {
 	
 	public int saveOfflineDates(BuildMatrixBodyPlant plantData);
 	
-	public List<BuildMatrixAttribute> getAllBuildMatrixAttributes();
-
 	public BuildMatrixAttribute getAttributeDetails(int attributeId);
 
-	public void updateAttribute(BuildMatrixAttribute attributeData);
-	
-	public void addAttribute(int attributeId, String attributeValue);
+	public BuildAttributeValue addAttribute(int attributeId, String attributeValue);
 	
 	public boolean checkForUniqueAttributeValue(int attributeId, String attributeValue);
 	
@@ -73,11 +70,15 @@ public interface BuildMatrixSmcService {
 	// BUILD ATTRIBUTES //
 	public List<BuildAttribute> getAttributesForBuild();
 	
+	public List<BuildAttribute> getAllBuildMatrixAttributes();
+	
 	// BUSINESS AWARDS //
 	
 	//***** OEM MIX MAINTENANCE *****//
 	public void saveBusinessAwardMaintenance(BusinessAwardForm businessAwardForm);
 
 	BuildAttribute getBuildAttributeById(int attributeId);
+
+	void updateAttribute(int attributeId, List<Integer> attrValueIds);
 
 }

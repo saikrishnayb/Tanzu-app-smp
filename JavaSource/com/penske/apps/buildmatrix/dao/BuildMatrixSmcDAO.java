@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import com.penske.apps.buildmatrix.domain.ApprovedOrder;
 import com.penske.apps.buildmatrix.domain.BodyPlantCapability;
 import com.penske.apps.buildmatrix.domain.BuildAttribute;
+import com.penske.apps.buildmatrix.domain.BuildAttributeValue;
 import com.penske.apps.buildmatrix.domain.BuildMatrixAttribute;
 import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
@@ -40,17 +41,13 @@ public interface BuildMatrixSmcDAO {
 	
 	public List<String> getDropdownOptionGrpList();
 
-	public List<BuildMatrixAttribute> getAllBuildMatrixAttributes();
-
 	public BuildMatrixAttribute getAttributeDetails(int attributeId);
 	
 	public List<String> getDropdownAttrValueList();
 	
 	public void updateAttribute(BuildMatrixAttribute attributeData);
 	
-	public void updateAttributeValues(BuildMatrixAttribute attributeData);
-	
-	public void addAttribute(@Param("attributeId") int attributeId, @Param("attributeValue") String attributeValue);
+	public void addAttribute(@Param("attributeId") int attributeId, @Param("attributeValue") BuildAttributeValue attributeValue);
 	
     public List<String> getAllAttributeValues(@Param("attributeId") int attributeId);
 	
@@ -96,8 +93,12 @@ public interface BuildMatrixSmcDAO {
 	public void insertBusinessAwardDefault(@Param("defaultsToInsert") List<BusinessAwardDefault> defaultsToInsert);
 
 	//***** BUILD ATTRIBUTE *****//
+	public List<BuildAttribute> getAllBuildMatrixAttributes();
+	
 	public List<BuildAttribute> getAttributesForBuild();
 	
 	public BuildAttribute getBuildAttributeById(@Param("attributeId") int attributeId);
+	
+	public void updateAttributeValues(@Param("attributeId") int attributeId, @Param("attrValueIds") List<Integer> attrValueIds);
 	
 }
