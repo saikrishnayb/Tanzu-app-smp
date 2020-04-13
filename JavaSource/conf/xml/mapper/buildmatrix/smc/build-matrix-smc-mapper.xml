@@ -3,30 +3,29 @@
 <mapper namespace="com.penske.apps.buildmatrix.dao.BuildMatrixSmcDAO">
 	
 	<resultMap id="districtProximityMap" type="com.penske.apps.buildmatrix.domain.DistrictProximity" >
-		<result property="proximityId"   	column="proximity_id"/>
-		<result property="plantId" 			column="plant_id"/>
+		<result property="proximityId"   	column="proximityId"/>
+		<result property="plantId" 			column="plantId"/>
 		<result property="area" 			column="area"/>
 		<result property="tier" 	column="tier"/>
-		<result property="district" 	column="district"/>
-		<collection property="districtValues" 	column="district" javaType="ArrayList" select="getDistrictValues"></collection>
+		<collection property="districtValues" 	column="plantId"  select="getDistrictValues"></collection>
 	</resultMap>
 
-	<select id="getDistrictValues" resultType="com.penske.apps.buildmatrix.domain.DistrictProximity">
+	<select id="getDistrictValues" resultType="String">
 		SELECT   OPP.DISTRICT AS districtValues
 		FROM     SMC.OBM_PLANT_PROXIMITY OPP
-		JOIN 	 SMC.OBM_FREIGHT_MILEAGE OFM
-		ON    	 OFM.PLANT_ID = OPP.PLANT_ID
-		WHERE    OFM.AREA <![CDATA[<>]]> ''
+		WHERE    OPP.PLANT_ID = #{plantId}
 	</select>
 	
 	<select id="getDistrictProximity" resultMap="districtProximityMap">
-		SELECT  OFM.AREA AS area,
-				OPP.TIER AS tier
-		FROM 	SMC.OBM_FREIGHT_MILEAGE OFM
-		JOIN    SMC.OBM_PLANT_PROXIMITY OPP
-		ON    	OPP.PLANT_ID = OFM.PLANT_ID
-		WHERE   OFM.AREA <![CDATA[<>]]> ''
-		GROUP BY OFM.AREA,OPP.TIER
+		SELECT 
+			OFM.PLANT_ID AS plantId,
+			OFM.AREA AS area,
+			OPP.TIER AS tier,
+			OPP.PROXIMITY_ID AS proximityId
+		FROM SMC.OBM_FREIGHT_MILEAGE OFM
+			JOIN SMC.OBM_PLANT_PROXIMITY OPP ON OPP.PLANT_ID = OFM.PLANT_ID
+		WHERE OFM.AREA <![CDATA[<>]]> ''
+		GROUP BY OFM.AREA,OPP.TIER,OFM.PLANT_ID,OPP.PROXIMITY_ID
 	</select>
 	
 	<insert id="insertProximityValues">
