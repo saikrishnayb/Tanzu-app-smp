@@ -29,12 +29,19 @@
 					Filter <input id="tier1" class="filter" data-alf="#list1" type="text" placeholder="" />
 					<ul id="list1" class="filterable">
 						<c:forEach items="${districtProximityList}" var="districtProximity">
-							<li><label> ${districtProximity.area}</label>
-								<ul>
-									<fieldset class="fieldset">
-										<legend class="legend-view"></legend>
-									</fieldset>
-								</ul></li>
+							<c:choose>
+								<c:when test="${districtProximity.tier == 1}">
+									<li><label> ${districtProximity.area}</label>
+										<ul>
+											<fieldset class="fieldset">
+												<legend class="legend-view"></legend>
+												<%-- <c:forEach items="${districtProximityList}" var="districtProximity">
+										<li><input type="checkbox" value="1" checked="checked">${districtProximity.districtValues}</li>
+										</c:forEach> --%>
+											</fieldset>
+										</ul></li>
+								</c:when>
+							</c:choose>
 						</c:forEach>
 					</ul>
 				</div>
@@ -47,13 +54,17 @@
 				</div>
 				<ul id="list2" class="filterable">
 					<c:forEach items="${districtProximityList}" var="districtProximity">
-							<li><label> ${districtProximity.area}</label>
-								<ul>
-									<fieldset class="fieldset">
-										<legend class="legend-view"></legend>
-									</fieldset>
-								</ul></li>
-						</c:forEach>
+						<c:choose>
+							<c:when test="${districtProximity.tier == 2}">
+								<li><label> ${districtProximity.area}</label>
+									<ul>
+										<fieldset class="fieldset">
+											<legend class="legend-view"></legend>
+										</fieldset>
+									</ul></li>
+							</c:when>
+						</c:choose>
+					</c:forEach>
 				</ul>
 				<div class="vl2"></div>
 			</div>
@@ -64,13 +75,17 @@
 				</div>
 				<ul id="list3" class="filterable">
 					<c:forEach items="${districtProximityList}" var="districtProximity">
-							<li><label> ${districtProximity.area}</label>
-								<ul>
-									<fieldset class="fieldset">
-										<legend class="legend-view"></legend>
-									</fieldset>
-								</ul></li>
-						</c:forEach>
+						<c:choose>
+							<c:when test="${districtProximity.tier == 3}">
+								<li><label> ${districtProximity.area}</label>
+									<ul>
+										<fieldset class="fieldset">
+											<legend class="legend-view"></legend>
+										</fieldset>
+									</ul></li>
+							</c:when>
+						</c:choose>
+					</c:forEach>
 				</ul>
 				<script>
 					$("fieldset").selectAll({
@@ -93,7 +108,7 @@
 				</script>
 			</div>
 			<div class="save-proximity">
-					<a href="#" class="buttonPrimary" onClick="saveProximity()">Save</a>
+					<a href="#" class="buttonPrimary buttonDisabled round-corner-btn-cls" onClick="saveProximity()">Save</a>
 		    </div>
 		</div>
 	</div>

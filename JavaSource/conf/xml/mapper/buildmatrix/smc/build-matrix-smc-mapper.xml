@@ -2,13 +2,31 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.penske.apps.buildmatrix.dao.BuildMatrixSmcDAO">
 	
-	<select  id="getDistrictProximity" resultType="com.penske.apps.buildmatrix.domain.DistrictProximity">
-		SELECT    
-		         AREA 	  AS area
-		
-		FROM 	 SMC.OBM_FREIGHT_MILEAGE OFM
-		
-		WHERE    AREA <![CDATA[<>]]> ''
+	<resultMap id="districtProximityMap" type="com.penske.apps.buildmatrix.domain.DistrictProximity" >
+		<result property="proximityId"   	column="proximity_id"/>
+		<result property="plantId" 			column="plant_id"/>
+		<result property="area" 			column="area"/>
+		<result property="tier" 	column="tier"/>
+		<result property="district" 	column="district"/>
+		<collection property="districtValues" 	column="district" javaType="ArrayList" select="getDistrictValues"></collection>
+	</resultMap>
+
+	<select id="getDistrictValues" resultType="com.penske.apps.buildmatrix.domain.DistrictProximity">
+		SELECT   OPP.DISTRICT AS districtValues
+		FROM     SMC.OBM_PLANT_PROXIMITY OPP
+		JOIN 	 SMC.OBM_FREIGHT_MILEAGE OFM
+		ON    	 OFM.PLANT_ID = OPP.PLANT_ID
+		WHERE    OFM.AREA <![CDATA[<>]]> ''
+	</select>
+	
+	<select id="getDistrictProximity" resultMap="districtProximityMap">
+		SELECT  OFM.AREA AS area,
+				OPP.TIER AS tier
+		FROM 	SMC.OBM_FREIGHT_MILEAGE OFM
+		JOIN    SMC.OBM_PLANT_PROXIMITY OPP
+		ON    	OPP.PLANT_ID = OFM.PLANT_ID
+		WHERE   OFM.AREA <![CDATA[<>]]> ''
+		GROUP BY OFA.AREA,OPP.TIER
 	</select>
 	
 	<insert id="insertProximityValues">
