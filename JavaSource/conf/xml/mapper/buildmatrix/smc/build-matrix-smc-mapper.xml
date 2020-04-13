@@ -26,7 +26,7 @@
 		JOIN    SMC.OBM_PLANT_PROXIMITY OPP
 		ON    	OPP.PLANT_ID = OFM.PLANT_ID
 		WHERE   OFM.AREA <![CDATA[<>]]> ''
-		GROUP BY OFA.AREA,OPP.TIER
+		GROUP BY OFM.AREA,OPP.TIER
 	</select>
 	
 	<insert id="insertProximityValues">
