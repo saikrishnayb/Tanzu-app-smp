@@ -13,7 +13,7 @@
 		<%@ include file="../../../jsp/jsp-fragment/global/header.jsp"%>
 		
 		<div id="mainContent">
-			<%@ include file="../../../jsp/jsp-fragment/admin-console/app-config/left-nav.jsp" %>
+			<%@ include file="../../../jsp/jsp-fragment/admin-console/oem-build-matrix/left-nav.jsp"%>
 			<div class="leftNavAdjacentContainer">
 				<c:set var="tooManyBodies" value="${bodiesOnOrder > chassisAvailable}"/>
 				<div class="container-fluid">

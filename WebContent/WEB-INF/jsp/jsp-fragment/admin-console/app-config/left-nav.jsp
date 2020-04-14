@@ -39,7 +39,7 @@
       <div class="leftNavGroup"><a href="${baseAppUrl}/admin-console/app-config/ship-thru-lead-time" id="left-nav-ship-thru-lead-time" onclick="javascript:loadProcessImage();">Lead Time Management</a></div>
     </tl:penskeOnly>
   </tl:isAuthorized>  
-  <!-- OEM BUILD MATRIX links -->
+<%--   <!-- OEM BUILD MATRIX links -->
 	<tl:isAuthorized secFunction="OEM_BUILD_MATRIX" tabName="Admin Console">
 		<div class="leftNavGroup build-matrix-left-nav-lbl">OEM Build Matrix</div>
 		<tl:penskeOnly>
@@ -53,5 +53,5 @@
 		<div><a href="${baseAppUrl}/admin-console/oem-build-matrix/bodyplant-capabilities.htm" id="left-nav-bodyplant-capabilities" onclick="javascript:loadProcessImage();">Body Plant Capabilities</a></div>
 		<div><a href="${baseAppUrl}/admin-console/oem-build-matrix/district-proximity.htm" id="left-nav-district-proximity" onclick="javascript:loadProcessImage();">Body Plant District Proximity</a></div>
 		
-	</tl:isAuthorized>
+	</tl:isAuthorized> --%>
 </div>

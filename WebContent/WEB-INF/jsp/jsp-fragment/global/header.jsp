@@ -72,6 +72,9 @@
 					<li><a id="tab-app-config" href="${baseAppUrl}/admin-console/app-config/navigate-app-config.htm" onclick="javascript:loadProcessImage();">App Config</a></li>
                   </tl:penskeOnly>
 				</c:if>
+				<tl:isAuthorized secFunction="OEM_BUILD_MATRIX" tabName="Admin Console">
+					<li><a id="tab-oem-build-matrix" href="${baseAppUrl}/admin-console/oem-build-matrix/navigate-oem-build-matrix.htm" onclick="javascript:loadProcessImage();">Build Matrix</a></li>
+				</tl:isAuthorized>
 			</ul>
 		</li>
 	</ul>

@@ -1,6 +1,6 @@
 var allNodes;
 $(document).ready(function() {
-	selectCurrentNavigation("tab-app-config", "left-nav-attribute-maintenance");
+	selectCurrentNavigation("tab-oem-build-matrix", "left-nav-attribute-maintenance");
 	var $editAttributeModal =$('#edit-attribute-modal');
 	var $addAttributeModal =$('#add-attribute-modal');
 

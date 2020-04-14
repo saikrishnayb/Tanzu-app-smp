@@ -1,7 +1,7 @@
 $(document).ready(function() {
 	var $setOfflineDatesModal= $('#set-offline-dates-modal');
 	
-	selectCurrentNavigation("tab-app-config", "left-nav-maintenance-summary");
+	selectCurrentNavigation("tab-oem-build-matrix", "left-nav-maintenance-summary");
 	
 	$bodyPlantTable = $('#body-plant-maint-table').dataTable({ //All of the below are optional
 		"bPaginate" : true, //enable pagination

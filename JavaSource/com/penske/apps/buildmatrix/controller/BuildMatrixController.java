@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.penske.apps.adminconsole.enums.LeftNav;
+import com.penske.apps.adminconsole.enums.Tab.SubTab;
 import com.penske.apps.adminconsole.util.CommonUtils;
 import com.penske.apps.buildmatrix.domain.ApprovedOrder;
 import com.penske.apps.buildmatrix.domain.BuildAttribute;
@@ -60,6 +63,32 @@ public class BuildMatrixController {
 	@Autowired
 	private SuppliermgmtSessionBean sessionBean;
 
+	/**
+	 * Method to navigate to OEM-build matrix screen
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/navigate-oem-build-matrix", method = { RequestMethod.GET })
+	public ModelAndView navigateOEMBuildMatrix() {
+
+		Set<SecurityFunction> securityFunctions = sessionBean.getUserContext().getSecurityFunctions();
+
+		List<LeftNav> leftNavs = SubTab.OEM_BUILD_MATRIX.getLeftNavs();
+
+		for (LeftNav leftNav : leftNavs) {
+
+			SecurityFunction securityFunction = leftNav.getSecurityFunction();
+
+			boolean noAccess = securityFunction != null && !securityFunctions.contains(securityFunction);
+			if (noAccess)
+				continue;
+
+			return new ModelAndView("redirect:/app/" + leftNav.getUrlEntry());
+		}
+
+		return new ModelAndView("/admin-console/security/noAccess");
+	}
+	
 	/**
 	 * method to load edit program screen
 	 * 
