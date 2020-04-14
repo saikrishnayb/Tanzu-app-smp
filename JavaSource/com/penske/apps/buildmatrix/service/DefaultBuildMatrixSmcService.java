@@ -147,13 +147,6 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		return buildMatrixAttribute;
 	}
 
-	@Override
-	public BuildMatrixAttribute getAttributeDetails(int attributeId) 
-	{
-		BuildMatrixAttribute buildMatrixAttribute = buildMatrixSmcDAO.getAttributeDetails(attributeId);
-		return buildMatrixAttribute;
-	}
-
 	/*@Override
 	public List<String> getDropdownOptionGrpList() 
 	{

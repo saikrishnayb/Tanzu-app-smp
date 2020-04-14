@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.penske.apps.adminconsole.util.CommonUtils;
 import com.penske.apps.buildmatrix.domain.BuildAttribute;
 import com.penske.apps.buildmatrix.domain.BuildAttributeValue;
 import com.penske.apps.buildmatrix.model.BuildMixForm;
@@ -95,12 +94,10 @@ public class BuildMatrixRestController {
 	@RequestMapping(value = "/get-add-attribute-content",method = { RequestMethod.GET })
 	@ResponseBody
 	public ModelAndView getAddAttributeContent(@RequestParam("attributeId") int attributeId, HttpServletResponse response) {
-		//BuildMatrixAttribute buildMatrixAttribute = buildMatrixSmcService.getAttributeDetails(attributeId);
 		BuildAttribute buildAttribute = buildMatrixSmcService.getBuildAttributeById(attributeId);
 		ModelAndView model = new ModelAndView("/jsp-fragment/admin-console/oem-build-matrix/edit-attribute-modal");
 		try {
 			model.addObject("addPopup", true);
-			//model.addObject("attribute", buildMatrixAttribute);
 			model.addObject("buildAttribute", buildAttribute);
 		} catch (Exception e) {
 			LOGGER.error("Error in loading Add Attribute Value popup" .concat(e.getLocalizedMessage()) );
@@ -118,12 +115,10 @@ public class BuildMatrixRestController {
 	@RequestMapping(value = "/get-edit-attribute-content",method = { RequestMethod.GET })
 	@ResponseBody
 	public ModelAndView getEditAttributeContent(@RequestParam("attributeId") int attributeId, HttpServletResponse response) {
-		//BuildMatrixAttribute buildMatrixAttribute = buildMatrixSmcService.getAttributeDetails(attributeId);
 		BuildAttribute buildAttribute = buildMatrixSmcService.getBuildAttributeById(attributeId);
 		ModelAndView model = new ModelAndView("/jsp-fragment/admin-console/oem-build-matrix/edit-attribute-modal");
 		try {
 			model.addObject("editPopup", true);
-			//model.addObject("attribute", buildMatrixAttribute);
 			model.addObject("buildAttribute", buildAttribute);
 		} catch (Exception e) {
 			LOGGER.error("Error in loading Edit Attribute popup" .concat(e.getLocalizedMessage()) );

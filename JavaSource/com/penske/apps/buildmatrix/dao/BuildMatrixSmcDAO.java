@@ -41,8 +41,6 @@ public interface BuildMatrixSmcDAO {
 	
 	public List<String> getDropdownOptionGrpList();
 
-	public BuildMatrixAttribute getAttributeDetails(int attributeId);
-	
 	public List<String> getDropdownAttrValueList();
 	
 	public void updateAttribute(BuildMatrixAttribute attributeData);

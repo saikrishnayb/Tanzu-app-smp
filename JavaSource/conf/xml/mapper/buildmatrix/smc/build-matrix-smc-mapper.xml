@@ -68,60 +68,7 @@
 			OFFLINE_END=#{offlineEndDate}
 		WHERE PLANT_ID=#{plantId}
 	</update>
-	
-	<resultMap id="buildmatrixAttributeMap" type="com.penske.apps.buildmatrix.domain.BuildMatrixAttribute" >
-		<result property="attributeId"   	column="attributeId"/>
-		<result property="attributeName" 	column="attributeName"/>
-		<result property="attributeType" 	column="attributeType"/>
-		<result property="attributeValue" 	column="attributeValue"/>
-		<collection property="values" 		column="attributeId" select="getAttributeValues"></collection>
-	</resultMap>
 
-	<select id="getAttributeValues" resultType="string">
-		SELECT   ATTRIBUTE_VALUE
-		FROM     OBM_ATTRIBUTE_VALUE
-		WHERE    ATTRIBUTE_ID=#{attributeId}
-	</select>
-	
-	<select id="getAttributeDetails" resultMap="buildmatrixAttributeMap">
-		SELECT   ATTRIBUTE_ID AS attributeId,
-		         ATTRIBUTE_NAME AS attributeName,
-		         '' AS attributeType
-		FROM     OBM_ATTRIBUTE
-		WHERE    ATTRIBUTE_ID=#{attributeId}
-	</select>
-	
-	<update id="updateAttribute">
-		UPDATE OBM_ATTRIBUTE SET ATTRIBUTE_NAME=#{attributeName}
-		WHERE ATTRIBUTE_ID=#{attributeId}
-	</update>
-	
-	<delete id="updateAttributeValues">
-		DELETE
-		FROM 	OBM_ATTRIBUTE_VALUE
-		WHERE 	ATTRIBUTE_ID=#{attributeId}
-		 <if test="attrValueIds != null">
-           	AND 	ATTRIBUTE_VALUE_ID NOT IN 
-		   	<foreach collection="attrValueIds" item="id" separator="," open="(" close=")">#{id}</foreach>
-         </if>
-	</delete>
-	
-	<insert id="addAttribute" useGeneratedKeys="true" keyProperty="attributeValue.attributeValueId">
-		INSERT INTO 
-					SMC.OBM_ATTRIBUTE_VALUE 
-					(ATTRIBUTE_ID, ATTRIBUTE_VALUE)
- 		VALUES 		(#{attributeId}, #{attributeValue.attributeValue})
-	</insert>
-	
- 	<select id="getAllAttributeValues" resultType="String">
- 		SELECT 
-				TRIM(ATTRIBUTE_VALUE)
-		FROM
-				SMC.OBM_ATTRIBUTE_VALUE
-		WHERE
-				ATTRIBUTE_ID=#{attributeId} 
-	</select>
-	
 	<!--***** BUILD MATRIX WORKFLOW *****-->
 	
 	<!-- BUILD HISTROY -->
@@ -387,5 +334,36 @@
 			ON awardGroup.ATTRIBUTE_ID = val.ATTRIBUTE_ID
 		WHERE
 			attribute.ATTRIBUTE_ID = #{attributeId}
+	</select>
+	
+	<update id="updateAttribute">
+		UPDATE OBM_ATTRIBUTE SET ATTRIBUTE_NAME=#{attributeName}
+		WHERE ATTRIBUTE_ID=#{attributeId}
+	</update>
+	
+	<delete id="updateAttributeValues">
+		DELETE
+		FROM 	OBM_ATTRIBUTE_VALUE
+		WHERE 	ATTRIBUTE_ID=#{attributeId}
+		 <if test="attrValueIds != null">
+           	AND 	ATTRIBUTE_VALUE_ID NOT IN 
+		   	<foreach collection="attrValueIds" item="id" separator="," open="(" close=")">#{id}</foreach>
+         </if>
+	</delete>
+	
+	<insert id="addAttribute" useGeneratedKeys="true" keyProperty="attributeValue.attributeValueId">
+		INSERT INTO 
+					SMC.OBM_ATTRIBUTE_VALUE 
+					(ATTRIBUTE_ID, ATTRIBUTE_VALUE)
+ 		VALUES 		(#{attributeId}, #{attributeValue.attributeValue})
+	</insert>
+	
+ 	<select id="getAllAttributeValues" resultType="String">
+ 		SELECT 
+				TRIM(ATTRIBUTE_VALUE)
+		FROM
+				SMC.OBM_ATTRIBUTE_VALUE
+		WHERE
+				ATTRIBUTE_ID=#{attributeId} 
 	</select>
 </mapper>
