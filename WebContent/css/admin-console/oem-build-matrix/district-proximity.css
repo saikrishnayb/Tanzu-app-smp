@@ -1,4 +1,4 @@
-.leftpane {
+/* .leftpane {
     width: 30%;
     height: 100%;
     float: left;
@@ -18,7 +18,7 @@
   position: relative;
   float: right;
   border-collapse: collapse;
-}
+} */
 
 #mainContent ul, #mainContent ol , .ui-dialog-content ul, .ui-dialog-content ol{
   list-style: disc;
@@ -47,7 +47,18 @@
    display: -webkit-inline-box;
 }
 
-.vl {
+.tire-main-div .tire-div {
+	float: left;
+	width: 30%;
+	margin-left: 1%;
+}
+
+.vertical-line {
+	border-right: 1px solid silver;
+	/* height: this will be set dynamically based on max height of tier1-div/tier2-div/tier3-div*/
+}
+
+/* .vl {
   border-left: 1px solid silver;
   height: 450px;
   position: absolute;
@@ -63,7 +74,7 @@
   left: 68%;
   margin-left: -3px;
   top: 65px;
-}
+} */
 
 /* Remove default bullets */
 ul, #myUL {

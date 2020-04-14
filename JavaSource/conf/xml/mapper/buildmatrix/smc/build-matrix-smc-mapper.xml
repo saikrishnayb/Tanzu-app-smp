@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.penske.apps.buildmatrix.dao.BuildMatrixSmcDAO">
 	
-	<resultMap id="districtProximityMap" type="com.penske.apps.buildmatrix.domain.DistrictProximity" >
+	<!-- <resultMap id="districtProximityMap" type="com.penske.apps.buildmatrix.domain.DistrictProximity" >
 		<result property="proximityId"   	column="proximityId"/>
 		<result property="plantId" 			column="plantId"/>
 		<result property="area" 			column="area"/>
@@ -26,6 +26,35 @@
 			JOIN SMC.OBM_PLANT_PROXIMITY OPP ON OPP.PLANT_ID = OFM.PLANT_ID
 		WHERE OFM.AREA <![CDATA[<>]]> ''
 		GROUP BY OFM.AREA,OPP.TIER,OFM.PLANT_ID,OPP.PROXIMITY_ID
+	</select> -->
+	
+	
+	
+	<resultMap id="districtProximityMap" type="com.penske.apps.buildmatrix.domain.DistrictProximity" >
+		<result property="plantId" column="plantId" />
+  		<result property="area" column="area"/>
+		<result property="tier" column="tier"/>
+		
+  		<collection property="districtValues" 	column="{plantId=plantId,area=area}"  select="getDistrictValues"></collection>
+	</resultMap>
+	
+	<select id="getDistrictValues" resultType="String">
+		SELECT   OFM.DISTRICT AS districtValues
+		FROM     SMC.OBM_FREIGHT_MILEAGE OFM
+		WHERE    OFM.PLANT_ID = #{plantId}
+		AND 	 OFM.AREA = #{area}
+	</select>
+	
+	<select id="getDistrictProximity" resultMap="districtProximityMap">
+		SELECT   OFM.PLANT_ID AS plantId,
+		         OFM.AREA AS area,
+		         OPP.TIER AS tier
+		FROM     SMC.OBM_FREIGHT_MILEAGE OFM 
+		         JOIN SMC.OBM_PLANT_PROXIMITY OPP ON OPP.PLANT_ID = OFM.PLANT_ID
+		WHERE    OFM.AREA <![CDATA[<>]]> ''
+		AND      OFM.PLANT_ID = 1 <!-- Plant Id is hard coded for testing. It should be sent from UI --> 
+		GROUP BY OFM.AREA, OPP.TIER, OFM.PLANT_ID
+		ORDER BY OFM.AREA
 	</select>
 	
 	<insert id="insertProximityValues">
