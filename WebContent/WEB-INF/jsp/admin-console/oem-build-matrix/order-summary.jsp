@@ -31,6 +31,7 @@
 		        			<div class='badge-div'>
 		          				<label>Bodies on Order</label> <span id="bodies-on-order" class="badge">0</span>
 		          				<label>Chassis Available</label> <span class="badge">${chassisAvailable}</span>
+		          				<label>Show Selected Only</label> <input type="checkbox" id="show-selected-checkbox">
 		          			</div>
 		          			<div class="btn-div floatRight">
 		          				<a id="add-to-build" class="buttonSecondary">Add to Build</a>
@@ -58,7 +59,7 @@
 									<c:forEach items="${approvedOrdersByKey}" var="orderEntry">
 										<c:set var="orderKey" value="${orderEntry.key}"/>
 										<c:set var="order" value="${orderEntry.value}"/>
-										<tr class="user-row approved-order-row" data-order-id="${order.orderId}" data-delivery-id="${order.deliveryId}">
+										<tr class="user-row approved-order-row <c:if test="${selectedOrderKeys.contains(orderKey)}">row-selected</c:if>" data-order-id="${order.orderId}" data-delivery-id="${order.deliveryId}">
 											<td><input class="select-order" onclick="saveCheckedBoxes(this.id)" type='checkbox' <c:if test="${selectedOrderKeys.contains(orderKey)}"> checked</c:if>></td>
 											<td><a>${order.orderId}</a></td>
 											<td>${order.approvalStatus.label}</td>

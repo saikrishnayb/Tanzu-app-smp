@@ -4,7 +4,7 @@ selectCurrentNavigation("tab-oem-build-matrix", "left-nav-build-history");
 
 var $orderSummaryDataTable = $orderSummaryTable.DataTable({ //All of the below are optional
 		"bPaginate" : true, //enable pagination
-		"bStateSave" : true, //To retrieve the data on click of back button
+		"bStateSave" : false, //To retrieve the data on click of back button
 		"sPaginationType" : "two_button",
 		"aaSorting" : [], //default sort column
 		"aoColumnDefs" : [ {
@@ -47,17 +47,59 @@ var $orderSummaryDataTable = $orderSummaryTable.DataTable({ //All of the below a
 calculateBodiesOnOrder();
 
 $('#order-search').on('keyup',function(){
-	$orderSummaryDataTable.search($(this).val()).draw() ;
+	$("#mass-select-all").prop('checked', false);
+	var isChecked = $('#show-selected-checkbox').is(':checked');
+	if(isChecked) {
+	    $.fn.dataTable.ext.search.push(
+		    function (settings, data, dataIndex){             
+		        return ($($orderSummaryDataTable.row(dataIndex).node()).hasClass('row-selected')) ? true : false;
+		    }
+		);
+		  
+	    $orderSummaryDataTable.search($(this).val()).draw() ;
+		  
+		$.fn.dataTable.ext.search.pop();
+	}
+	else {
+		$orderSummaryDataTable.search($(this).val()).draw() ;
+	}
+});
+
+$("#show-selected-checkbox").on('click', function(){
+	var isChecked = $(this).is(':checked');
+	if(isChecked) {
+	    $.fn.dataTable.ext.search.push(
+		    function (settings, data, dataIndex){             
+		        return ($($orderSummaryDataTable.row(dataIndex).node()).hasClass('row-selected')) ? true : false;
+		    }
+		);
+		  
+	    $orderSummaryDataTable.draw();
+		  
+		$.fn.dataTable.ext.search.pop();
+	}
+	else {
+		$("#mass-select-all").prop('checked', false);
+		$orderSummaryDataTable.draw();
+	}
 });
 
 $('#mass-select-all').on('click', function() {
-	   var rows, checked;
-	 var  allPagesd = $orderSummaryDataTable.rows().nodes();
-	  if ($(this).is(':checked')) {
-            $(allPagesd).find('input[type="checkbox"]').prop('checked', true);
-        } else {
-            $(allPagesd).find('input[type="checkbox"]').prop('checked', false);
-        }
+	 var isChecked = $(this).is(':checked');
+	 var  $rows = $orderSummaryTable.find('.approved-order-row');
+	 $rows.each(function(){
+		 var $row = $(this);
+		 if (isChecked) {
+			 $row.find('input[type="checkbox"]').prop('checked', true);
+			 $row.addClass('row-selected');
+	     } 
+		 else {
+			 $row.find('input[type="checkbox"]').prop('checked', false);
+			 $row.removeClass('row-selected');
+	     }
+		 
+	 })
+	  
        // $(this).toggleClass('allChecked');
 	  calculateBodiesOnOrder();
  });
@@ -117,6 +159,7 @@ function saveCheckedBoxes(id) {
 	var sum = 0;
 	$($orderSummaryDataTable.rows().nodes()).each(function() {
 		 if($(this).find('.select-order').prop("checked") == true ) {
+			 $(this).addClass('row-selected');
 			 checkedRowCount++;
 			 if(rowCount == checkedRowCount) {
 				$('#mass-select-all').prop('checked', true); 
@@ -125,6 +168,7 @@ function saveCheckedBoxes(id) {
 			 sum += quantity;
 		 } else {
 				$('#mass-select-all').prop('checked', false);
+				$(this).removeClass('row-selected');
 		 }
 	 });
 	$('#bodies-on-order').html(sum);
