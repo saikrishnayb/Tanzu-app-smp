@@ -111,8 +111,8 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	}
 	
 	@Override
-	public List<DistrictProximity> getDistrictProximity() {
-		List<DistrictProximity> districtProximity = buildMatrixSmcDAO.getDistrictProximity();
+	public List<DistrictProximity> getDistrictProximity(int plantId) {
+		List<DistrictProximity> districtProximity = buildMatrixSmcDAO.getDistrictProximity(plantId);
 		return districtProximity;
 	}
 	

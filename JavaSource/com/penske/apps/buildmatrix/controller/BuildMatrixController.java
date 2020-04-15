@@ -152,9 +152,9 @@ public class BuildMatrixController {
 	 */
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping("/district-proximity")
-	public ModelAndView getDistrictProximity() {
+	public ModelAndView getDistrictProximity(@RequestParam("plantId") int plantId) {
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/district-proximity");
-		model.addObject("districtProximityList", buildMatrixSmcService.getDistrictProximity());
+		model.addObject("districtProximityList", buildMatrixSmcService.getDistrictProximity(plantId));
 		return model;
 	}
 	

@@ -24,7 +24,7 @@ public interface BuildMatrixSmcService {
 
 	public BodyPlantCapability getCapabilityDetails(int capabilityId);
 	
-    public List<DistrictProximity> getDistrictProximity();
+    public List<DistrictProximity> getDistrictProximity(int plantId);
 	
 	public void insertProximityValues(DistrictProximity districtProximity);
 	
