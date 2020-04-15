@@ -14,3 +14,10 @@
 .build-history-header div{
 	display: inline-block;
 }
+
+#build-history-table {
+	margin-top: 25px;
+}
+body {
+	overflow-y: hidden !important;
+}

@@ -1,6 +1,5 @@
 var $orderSummaryTable = $('#order-summary-table');
 
-selectCurrentNavigation("tab-oem-build-matrix", "left-nav-build-history");
 
 var $orderSummaryDataTable = $orderSummaryTable.DataTable({ //All of the below are optional
 		"bPaginate" : true, //enable pagination
