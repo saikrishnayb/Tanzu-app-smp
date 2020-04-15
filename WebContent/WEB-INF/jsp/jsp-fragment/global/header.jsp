@@ -72,9 +72,15 @@
 					<li><a id="tab-app-config" href="${baseAppUrl}/admin-console/app-config/navigate-app-config.htm" onclick="javascript:loadProcessImage();">App Config</a></li>
                   </tl:penskeOnly>
 				</c:if>
+				<c:set var="hasBuildMatrix" value="0"></c:set>
 				<tl:isAuthorized secFunction="OEM_BUILD_MATRIX" tabName="Admin Console">
-					<li><a id="tab-oem-build-matrix" href="${baseAppUrl}/admin-console/oem-build-matrix/navigate-oem-build-matrix.htm" onclick="javascript:loadProcessImage();">Build Matrix</a></li>
+					<c:set var="hasBuildMatrix" value="1"></c:set>
 				</tl:isAuthorized>
+				<c:if test="${hasBuildMatrix == '1'}">
+                  <tl:penskeOnly>
+					<li><a id="tab-oem-build-matrix" href="${baseAppUrl}/admin-console/oem-build-matrix/navigate-oem-build-matrix.htm" onclick="javascript:loadProcessImage();">Build Matrix</a></li>
+				</tl:penskeOnly>
+				</c:if>
 			</ul>
 		</li>
 	</ul>
