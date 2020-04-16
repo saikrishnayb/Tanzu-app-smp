@@ -60,9 +60,9 @@ function setMaxVericalLineHeight() {
 			&& $("#tier2-div") && $("#tier2-div").length > 0 
 			&& $("#tier3-div") && $("#tier3-div").length > 0) {
 		
-		var tier1_div_height = $("#tier1-header").height() + $("#tier1-filter-div");
-		var tier2_div_height = $("#tier2-header").height() + $("#tier2-filter-div");
-		var tier3_div_height = $("#tier3-header").height() + $("#tier3-filter-div");
+		var tier1_div_height = $("#tier1-header").height() + $("#tier1-filter-div").height();
+		var tier2_div_height = $("#tier2-header").height() + $("#tier2-filter-div").height();
+		var tier3_div_height = $("#tier3-header").height() + $("#tier3-filter-div").height();
 		
 		maxVerticalLineHeight = Math.max(tier1_div_height, tier2_div_height, tier3_div_height);
 	}
