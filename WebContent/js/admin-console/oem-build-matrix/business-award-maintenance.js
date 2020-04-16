@@ -123,14 +123,14 @@ $businessAwardMainTable.on('input', 'input', function(){
 	
 	updateTotals();
 	
-	var noneOver100 = true
+	var allEqual100Percent = true
 	$('.total-percentage').each(function(){
 		var percentage = parseInt($(this).val());
-		if(percentage > 100)
-			noneOver100 = false;
+		if(percentage != 100)
+			allEqual100Percent = false;
 	});
 	
-	if(isDirty && noEmpties && noneOver100)
+	if(isDirty && noEmpties && allEqual100Percent)
 		$saveBtn.removeClass('buttonDisabled');
 	else
 		$saveBtn.addClass('buttonDisabled');
