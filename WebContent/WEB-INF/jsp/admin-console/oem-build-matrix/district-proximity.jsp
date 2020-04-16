@@ -28,8 +28,8 @@
 			
 			<div class="tire-main-div">
 				<div class="tire-div vertical-line" id="tier1-div">
-					<h2>Tier 1</h2>
-					<div>
+					<h2 id="tier1-header">Tier 1</h2>
+					<div id="tier1-filter-div">
 						Filter <input id="tier1" class="filter" data-alf="#list1" type="text" placeholder="" />
 						<ul id="list1" class="filterable">
 							<c:forEach items="${districtProximityList}" var="districtProximity">
@@ -51,79 +51,78 @@
 							</c:forEach>
 						</ul>
 					</div>
-					<!-- <div class="vl"></div> -->
 				</div>
 								
 				<div class="tire-div vertical-line" id="tier2-div">
-					<h2>Tier 2</h2>
-					<div>
+					<h2 id="tier2-header">Tier 2</h2>
+					<div id="tier2-filter-div">
 						Filter <input id="tier2" class="filter" data-alf="#list2" type="text" placeholder="">
+						<ul id="list2" class="filterable">
+							<c:forEach items="${districtProximityList}" var="districtProximity">
+								<c:choose>
+									<c:when test="${districtProximity.tier == 2}">
+										<li>
+											<label> ${districtProximity.area}</label>
+											<ul>
+												<fieldset class="fieldset">
+													<legend class="legend-view"></legend>
+													<c:forEach items="${districtProximity.districtValues}" var="district">
+														<li class="district-values"><input type="checkbox" value="${district}" checked="checked">${district}</li>
+													</c:forEach>
+												</fieldset>
+											</ul>
+										</li>
+									</c:when>
+								</c:choose>
+							</c:forEach>
+						</ul>
 					</div>
-					<ul id="list2" class="filterable">
-						<c:forEach items="${districtProximityList}" var="districtProximity">
-							<c:choose>
-								<c:when test="${districtProximity.tier == 2}">
-									<li>
-										<label> ${districtProximity.area}</label>
-										<ul>
-											<fieldset class="fieldset">
-												<legend class="legend-view"></legend>
-												<c:forEach items="${districtProximity.districtValues}" var="district">
-													<li class="district-values"><input type="checkbox" value="${district}" checked="checked">${district}</li>
-												</c:forEach>
-											</fieldset>
-										</ul>
-									</li>
-								</c:when>
-							</c:choose>
-						</c:forEach>
-					</ul>
-					<!-- <div class="vl2"></div> -->
 				</div>
 				
 				<div class="tire-div" id="tier3-div">
-					<h2>Tier 3</h2>
-					<div>
+					<h2 id="tier3-header">Tier 3</h2>
+					<div id="tier3-filter-div">
 						Filter <input id="tier3" class="filter" data-alf="#list3" type="text" placeholder="">
+					
+						<ul id="list3" class="filterable">
+							<c:forEach items="${districtProximityList}" var="districtProximity">
+								<c:choose>
+									<c:when test="${districtProximity.tier == 3}">
+										<li>
+											<label> ${districtProximity.area}</label>
+											<ul>
+												<fieldset class="fieldset">
+													<legend class="legend-view"></legend>
+													<c:forEach items="${districtProximity.districtValues}" var="district">
+														<li class="district-values"><input type="checkbox" value="${district}" checked="checked">${district}</li>
+													</c:forEach>
+												</fieldset>
+											</ul>
+										</li>
+									</c:when>
+								</c:choose>
+							</c:forEach>
+						</ul>
+						<script>
+							$("fieldset").selectAll({
+								buttonParent : "legend",
+								buttonWrapperHTML : "",
+						
+								buttonSelectBeforeHTML : "<span class='ui-icon ui-icon-check' id='check-uncheck-display'></span>",
+								buttonSelectText : "Check All",
+								buttonSelectAfterHTML : "",
+						
+								buttonDeSelectBeforeHTML : "<span class='ui-icon ui-icon-closethick' id='check-uncheck-display'></span>",
+								buttonDeSelectText : "Uncheck All",
+								buttonDeSelectAfterHTML : "",
+						
+								buttonExtraClasses : "btn"
+							});
+						</script>
+						<script>
+							$('.filter').accordionLiveFilter();
+						</script>
 					</div>
-					<ul id="list3" class="filterable">
-						<c:forEach items="${districtProximityList}" var="districtProximity">
-							<c:choose>
-								<c:when test="${districtProximity.tier == 3}">
-									<li>
-										<label> ${districtProximity.area}</label>
-										<ul>
-											<fieldset class="fieldset">
-												<legend class="legend-view"></legend>
-												<c:forEach items="${districtProximity.districtValues}" var="district">
-													<li class="district-values"><input type="checkbox" value="${district}" checked="checked">${district}</li>
-												</c:forEach>
-											</fieldset>
-										</ul>
-									</li>
-								</c:when>
-							</c:choose>
-						</c:forEach>
-					</ul>
-					<script>
-						$("fieldset").selectAll({
-							buttonParent : "legend",
-							buttonWrapperHTML : "",
-					
-							buttonSelectBeforeHTML : "<span class='ui-icon ui-icon-check' id='check-uncheck-display'></span>",
-							buttonSelectText : "Check All",
-							buttonSelectAfterHTML : "",
-					
-							buttonDeSelectBeforeHTML : "<span class='ui-icon ui-icon-closethick' id='check-uncheck-display'></span>",
-							buttonDeSelectText : "Uncheck All",
-							buttonDeSelectAfterHTML : "",
-					
-							buttonExtraClasses : "btn"
-						});
-					</script>
-					<script>
-						$('.filter').accordionLiveFilter();
-					</script>
 				</div>
 			</div>
 			<div class="save-proximity">

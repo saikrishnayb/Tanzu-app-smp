@@ -49,13 +49,22 @@ function getContextRoot() {
 	return window.sessionStorage.getItem('baseAppUrl');
 }
 
+/**
+ * This method is used to identify the height of each tier to modify the vertical line height.
+ * This has been invoked on page load and on-click of expanding icon at each area level under each tier.
+ */
 function setMaxVericalLineHeight() {
 	var maxVerticalLineHeight = 450; // Default height
 	
 	if($("#tier1-div") && $("#tier1-div").length > 0 
 			&& $("#tier2-div") && $("#tier2-div").length > 0 
 			&& $("#tier3-div") && $("#tier3-div").length > 0) {
-		maxVerticalLineHeight = Math.max($("#tier1-div").height(), $("#tier2-div").height(), $("#tier3-div").height());
+		
+		var tier1_div_height = $("#tier1-header").height() + $("#tier1-filter-div");
+		var tier2_div_height = $("#tier2-header").height() + $("#tier2-filter-div");
+		var tier3_div_height = $("#tier3-header").height() + $("#tier3-filter-div");
+		
+		maxVerticalLineHeight = Math.max(tier1_div_height, tier2_div_height, tier3_div_height);
 	}
 	
 	$(".vertical-line").height(maxVerticalLineHeight + "px");	
