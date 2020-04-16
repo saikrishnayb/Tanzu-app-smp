@@ -40,15 +40,36 @@
                 $ul.data('alf-parent', $label);
             });
 
-            $('label', $accordion).on('expand.alf', function() {
+            var firstEvent=$('label', $accordion).on('expand.alf', function() {
+            	//dfd= $.Deferred();
                 $(this).addClass('expanded').data('alf-child').slideDown();
             }).on('contract.alf', function() {
                 $(this).removeClass('expanded').data('alf-child').slideUp();
             }).on('click', function() {
                 var $label = $(this);
                 $label.hasClass('expanded') ? $label.trigger('contract.alf') : $label.trigger('expand.alf');
-            });
+             /*   $.when.apply(this,firstEvent).done(function(){
+                	if($label.hasClass('proximityArea'))
+                    	setMaxVericalLineHeight();
+                });*/
+                /*firstEvent.promise().done(function(){
+                	if($label.hasClass('proximityArea'))
+                    	setMaxVericalLineHeight();
+                });*/
+                	
+               
+             });
 
+            //work around code -will be moved to district-proximity .js 
+            $('.filterable li').on("click",function(){
+        		$.when.apply(this,firstEvent).done(function(){
+                setMaxVericalLineHeight();
+                });
+        		firstEvent.promise().done(function(){
+                setMaxVericalLineHeight();
+                });
+        	});
+            
             $filterField.on('keyup', function() {
                 var query = $filterField.val().toLowerCase();
                 $('li > ul', $accordion).each(function(index, element) {
