@@ -1,25 +1,3 @@
-/* .leftpane {
-    width: 30%;
-    height: 100%;
-    float: left;
-    border-collapse: collapse;
-}
-
-.middlepane {
-    width: 35%;
-    height: 100%;
-    float: left;
-    border-collapse: collapse;
-}
-
-.rightpane {
-  width: 35%;
-  height: 100%;
-  position: relative;
-  float: right;
-  border-collapse: collapse;
-} */
-
 #mainContent ul, #mainContent ol , .ui-dialog-content ul, .ui-dialog-content ol{
   list-style: disc;
   margin-left: 0px;
@@ -57,24 +35,6 @@
 	border-right: 1px solid silver;
 	/* height: this will be set dynamically based on max height of tier1-div/tier2-div/tier3-div*/
 }
-
-/* .vl {
-  border-left: 1px solid silver;
-  height: 450px;
-  position: absolute;
-  left: 39%;
-  margin-left: -3px;
-  top: 65px;
-}
-
-.vl2 {
-  border-left: 1px solid silver;
-  height: 450px;
-  position: absolute;
-  left: 68%;
-  margin-left: -3px;
-  top: 65px;
-} */
 
 /* Remove default bullets */
 ul, #myUL {
@@ -138,6 +98,9 @@ ul, #myUL {
   display: none;
   margin: 0 0 0 20px;
   padding: 0;
+}
+.district-values{
+  padding-left: 19px;
 }
 .save-proximity{
   display: inline-block;

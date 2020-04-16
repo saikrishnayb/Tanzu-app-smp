@@ -11,6 +11,7 @@
 <link href="${baseUrl}/css/global/font-awesome.min.css" rel="stylesheet" type="text/css" />
 <link href="${baseUrl}/css/jquery.multiselect.filter.css" rel="stylesheet" type="text/css" />
 <link href="${baseUrl}/css/admin-console/oem-build-matrix/district-proximity.css" rel="stylesheet" type="text/css" />
+<link href="${baseUrl}/css/admin-console/oem-build-matrix/build-matrix-global.css" rel="stylesheet" type="text/css" />
 <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body style="overflow-y:visible;">
@@ -40,7 +41,7 @@
 												<fieldset class="fieldset">
 													<legend class="legend-view"></legend>
 													<c:forEach items="${districtProximity.districtValues}" var="district">
-														<li><input type="checkbox" value="${district}" checked="checked">${district}</li>
+														<li class="district-values"><input type="checkbox" value="${district}" checked="checked">${district}</li>
 													</c:forEach>
 												</fieldset>
 											</ul>
@@ -68,7 +69,7 @@
 											<fieldset class="fieldset">
 												<legend class="legend-view"></legend>
 												<c:forEach items="${districtProximity.districtValues}" var="district">
-													<li><input type="checkbox" value="${district}" checked="checked">${district}</li>
+													<li class="district-values"><input type="checkbox" value="${district}" checked="checked">${district}</li>
 												</c:forEach>
 											</fieldset>
 										</ul>
@@ -95,7 +96,7 @@
 											<fieldset class="fieldset">
 												<legend class="legend-view"></legend>
 												<c:forEach items="${districtProximity.districtValues}" var="district">
-													<li><input type="checkbox" value="${district}" checked="checked">${district}</li>
+													<li class="district-values"><input type="checkbox" value="${district}" checked="checked">${district}</li>
 												</c:forEach>
 											</fieldset>
 										</ul>
@@ -117,7 +118,7 @@
 							buttonDeSelectText : "Uncheck All",
 							buttonDeSelectAfterHTML : "",
 					
-							buttonExtraClasses : "btn btn-default"
+							buttonExtraClasses : "btn"
 						});
 					</script>
 					<script>
