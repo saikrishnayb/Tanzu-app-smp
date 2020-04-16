@@ -24,7 +24,7 @@
 				<span class="errorMsg"> Hmm, something went wrong. See if you could try again. </span>
 			</div>
 			
-			<h1>Proximity Configuration - MORGAN - PORTLAND, OR</h1>
+			<h1>Proximity Configuration - ${plantName} - ${plantCity}, ${plantState}</h1>
 			
 			<div class="tire-main-div">
 				<div class="tire-div vertical-line" id="tier1-div">
