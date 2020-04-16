@@ -15,8 +15,8 @@ $businessAwardMainDataTable = $businessAwardMainTable.DataTable( {
 	"sPaginationType" : "full_numbers", //Shows first/previous 1,2,3,4 next/last buttons
 	"iDisplayLength" : 100, //number of records per page for pagination
 	"columnDefs": [
-		{"targets": [ 0], "className":   "hidden", "searchable": false, "sortable": false },
-		{"targets": [1], "searchable": false, "sortable": false }
+		{"targets": [ 0], "className":   "hidden", "sortable": false },
+		{"targets": [1,2], "sortable": false }
 	],
 	"dom": "t",
 	drawCallback : function () {
