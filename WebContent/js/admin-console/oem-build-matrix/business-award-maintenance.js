@@ -126,8 +126,15 @@ $businessAwardMainTable.on('input', 'input', function(){
 	var allEqual100Percent = true
 	$('.total-percentage').each(function(){
 		var percentage = parseInt($(this).val());
-		if(percentage != 100)
+		var $row = $(this).closest('tr');
+		
+		if(percentage != 100) {
 			allEqual100Percent = false;
+			$row.addClass('invalid-percentage');
+		}
+		else {
+			$row.removeClass('invalid-percentage');
+		}
 	});
 	
 	if(isDirty && noEmpties && allEqual100Percent)
