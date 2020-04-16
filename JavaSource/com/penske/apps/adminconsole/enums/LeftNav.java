@@ -36,8 +36,7 @@ public enum LeftNav {
     BUILD_HISTORY(SecurityFunction.OEM_BUILD_MATRIX, "admin-console/oem-build-matrix/build-history.htm"),
 	ATTRIBUTE_MAINTENANCE(SecurityFunction.OEM_BUILD_MATRIX, "admin-console/oem-build-matrix/attribute-maintenance.htm"),
 	OEM_MIX_MAINTENANCE(SecurityFunction.OEM_BUILD_MATRIX, "admin-console/oem-build-matrix/business-award-maint.htm"),
-	PRODUCTION_SLOT_MAINTENACE(SecurityFunction.OEM_BUILD_MATRIX, "admin-console/oem-build-matrix/maintenance-summary.htm"),
-	DISTRICT_PROXIMITY(SecurityFunction.OEM_BUILD_MATRIX, "admin-console/oem-build-matrix/district-proximity.htm");
+	PRODUCTION_SLOT_MAINTENACE(SecurityFunction.OEM_BUILD_MATRIX, "admin-console/oem-build-matrix/maintenance-summary.htm");
     private final SecurityFunction securityFunction;
     private final String urlEntry;
 

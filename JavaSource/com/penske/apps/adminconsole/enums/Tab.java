@@ -42,16 +42,14 @@ public enum Tab {
                 LeftNav.BODY_PLANT_CAPABILITIES,
                 LeftNav.ATTRIBUTE_MAINTENANCE,
                 LeftNav.OEM_MIX_MAINTENANCE,
-                LeftNav.PRODUCTION_SLOT_MAINTENACE,
-                LeftNav.DISTRICT_PROXIMITY)),
+                LeftNav.PRODUCTION_SLOT_MAINTENACE)),
     	
     	OEM_BUILD_MATRIX(Arrays.asList(
     			LeftNav.BUILD_HISTORY,
 				LeftNav.BODY_PLANT_CAPABILITIES,
 	            LeftNav.ATTRIBUTE_MAINTENANCE,
 	            LeftNav.OEM_MIX_MAINTENANCE,
-	            LeftNav.PRODUCTION_SLOT_MAINTENACE,
-	            LeftNav.DISTRICT_PROXIMITY));
+	            LeftNav.PRODUCTION_SLOT_MAINTENACE));
     	
     	 private final List<LeftNav> leftNavs;
 

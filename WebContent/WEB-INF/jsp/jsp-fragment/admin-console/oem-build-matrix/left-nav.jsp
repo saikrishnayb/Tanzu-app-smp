@@ -21,5 +21,4 @@
 		<div class="leftNavGroup"><a href="${baseAppUrl}/admin-console/oem-build-matrix/build-history.htm" id="left-nav-build-history" onclick="javascript:loadProcessImage();">Build History</a></div>
 		<div class="leftNavGroup"><a href="#" id="left-nav-slot-utilization" >Slot Utilization</a></div>
 		<div class="leftNavGroup"><a href="${baseAppUrl}/admin-console/oem-build-matrix/bodyplant-capabilities.htm" id="left-nav-bodyplant-capabilities" onclick="javascript:loadProcessImage();">Body Plant Capabilities</a></div>
-		<div class="leftNavGroup"><a href="${baseAppUrl}/admin-console/oem-build-matrix/district-proximity.htm" id="left-nav-district-proximity" onclick="javascript:loadProcessImage();">Body Plant District Proximity</a></div>
 </div>
