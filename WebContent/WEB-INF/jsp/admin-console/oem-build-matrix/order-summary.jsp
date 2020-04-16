@@ -34,7 +34,7 @@
 		          				<label>Show Selected Only</label> <input type="checkbox" id="show-selected-checkbox">
 		          			</div>
 		          			<div class="btn-div floatRight">
-		          				<a id="add-to-build" class="buttonSecondary">Add to Build</a>
+		          				<a id="add-to-build" class="buttonSecondary buttonDisabled">Add to Build</a>
 		          			</div>
 		        		</div>
 		      		</div>

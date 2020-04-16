@@ -1,5 +1,5 @@
 var $orderSummaryTable = $('#order-summary-table');
-
+var $addToBuildBtn = $('#add-to-build');
 
 var $orderSummaryDataTable = $orderSummaryTable.DataTable({ //All of the below are optional
 		"bPaginate" : true, //enable pagination
@@ -171,6 +171,7 @@ function saveCheckedBoxes(id) {
 		 }
 	 });
 	$('#bodies-on-order').html(sum);
+	checkAddToBuild();
 }
 
 function calculateBodiesOnOrder(){
@@ -182,4 +183,13 @@ function calculateBodiesOnOrder(){
 		}
 	});
 	$('#bodies-on-order').html(sum);
+	checkAddToBuild();
+}
+
+function checkAddToBuild() {
+	var sum = parseInt($('#bodies-on-order').html());
+	if(sum > 0)
+		$addToBuildBtn.removeClass('buttonDisabled');
+	else
+		$addToBuildBtn.addClass('buttonDisabled');
 }
