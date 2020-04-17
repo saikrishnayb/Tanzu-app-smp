@@ -15,6 +15,7 @@
 .legend-view {
   width: 100%;
   margin-top: 10px;
+  padding-left: 8px;
 }
 
 #right-padding {
@@ -27,6 +28,10 @@
 
 #check-uncheck-display {
    display: -webkit-inline-box;
+}
+
+.no-text-decoration {
+   text-decoration: none;
 }
 
 .tire-main-div .tire-div {

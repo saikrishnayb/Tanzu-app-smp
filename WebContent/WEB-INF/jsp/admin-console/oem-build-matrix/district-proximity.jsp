@@ -109,12 +109,12 @@
 								buttonWrapperHTML : "",
 						
 								buttonSelectBeforeHTML : "<span class='ui-icon ui-icon-check' id='check-uncheck-display'></span>",
-								buttonSelectText : "Check All",
-								buttonSelectAfterHTML : "",
+								buttonSelectText : "",
+								buttonSelectAfterHTML : "<a class='no-text-decoration' id='check-uncheck-display'>Check All</a>",
 						
 								buttonDeSelectBeforeHTML : "<span id='right-padding'></span><span class='ui-icon ui-icon-closethick' id='check-uncheck-display'></span>",
-								buttonDeSelectText : "Uncheck All",
-								buttonDeSelectAfterHTML : "",
+								buttonDeSelectText : "",
+								buttonDeSelectAfterHTML : "<a class='no-text-decoration' id='check-uncheck-display'>Uncheck All</a>",
 						
 								buttonExtraClasses : ""
 							});
