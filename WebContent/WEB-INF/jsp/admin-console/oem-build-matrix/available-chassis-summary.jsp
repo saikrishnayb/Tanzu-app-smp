@@ -37,7 +37,7 @@
 			          			</div>
 		          			</c:if>
 		          			<div class="btn-div floatRight">
-		          				<a id="back-btn" href="${baseAppUrl}/admin-console/oem-build-matrix/order-summary?buildId=${buildId}" onclick="javascript:loadProcessImage();" class="buttonSecondary">Back</a>
+		          				<a id="back-btn" href="${baseAppUrl}/admin-console/oem-build-matrix/back-to-confirm?buildId=${buildId}" onclick="javascript:loadProcessImage();" class="buttonSecondary">Back</a>
 		          				<a id="continue" href="${baseAppUrl}/admin-console/oem-build-matrix/build-mix?buildId=${buildId}" onclick="javascript:loadProcessImage();" class="buttonSecondary <c:if test="${tooManyBodies}"> buttonDisabled</c:if>">Continue</a>
 		          			</div>
 		        		</div>

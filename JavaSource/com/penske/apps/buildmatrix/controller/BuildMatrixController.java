@@ -277,6 +277,34 @@ public class BuildMatrixController {
 		return model;
 	}
 	
+	/**
+	 * method to load confirm-selection screen
+	 * 
+	 * 	 */
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping("/back-to-confirm")
+	public ModelAndView backToConfirmSelection(@RequestParam("buildId") int buildId) {
+		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/confirm-order-selection");
+		BuildSummary existingBuild = buildMatrixSmcService.getBuildSummary(buildId);
+		if(existingBuild == null)
+			throw new IllegalArgumentException("Couldn't find existing build");
+		
+		List<CroOrderKey> selectedOrderKeys = buildMatrixSmcService.getCroOrderKeysForBuild(existingBuild.getBuildId());
+		List<ApprovedOrder> selectedOrders = buildMatrixCroService.getApprovedOrdersByIds(selectedOrderKeys);
+		int bodiesOnOrder = selectedOrders.stream().collect(Collectors.summingInt(order->order.getOrderTotalQuantity()));
+		
+		int totalChassis = buildMatrixCorpService.getAvailableChasisCount();
+		int excludedChassis = buildMatrixSmcService.getExcludedUnitCount();
+		int chassisAvailable = totalChassis - excludedChassis;
+		
+		model.addObject("selectedOrders", selectedOrders);
+		model.addObject("bodiesOnOrder", bodiesOnOrder);
+		model.addObject("chassisAvailable", chassisAvailable);
+		model.addObject("buildId", buildId);
+		
+		return model;
+	}
+	
 	// AVAILABLE CHASSIS SUMMARY //
 	/**
 	 * method to load confirm-selection screen
@@ -322,15 +350,23 @@ public class BuildMatrixController {
 		List<CroOrderKey> selectedOrderKeys = buildMatrixSmcService.getCroOrderKeysForBuild(existingBuild.getBuildId());
 		List<ApprovedOrder> selectedOrders = buildMatrixCroService.getApprovedOrdersByIds(selectedOrderKeys);
 		int bodiesOnOrder = selectedOrders.stream().collect(Collectors.summingInt(order->order.getOrderTotalQuantity()));
+		
 		int totalChassis = buildMatrixCorpService.getAvailableChasisCount();
 		int excludedChassis = buildMatrixSmcService.getExcludedUnitCount();
 		int chassisAvailable = totalChassis - excludedChassis;
 		List<BuildAttribute> attributes = buildMatrixSmcService.getAttributesForBuild();
 		
+		int reeferUnits = selectedOrders.stream().filter(order->order.isHasReeferUnits()).collect(Collectors.summingInt(order->order.getOrderTotalQuantity()));
+		int reardoorUnits = selectedOrders.stream().filter(order->order.isHasReardoorUnits()).collect(Collectors.summingInt(order->order.getOrderTotalQuantity()));
+		int liftgateUnits = selectedOrders.stream().filter(order->order.isHasLiftgateUnits()).collect(Collectors.summingInt(order->order.getOrderTotalQuantity()));
+		
 		model.addObject("bodiesOnOrder", bodiesOnOrder);
 		model.addObject("chassisAvailable", chassisAvailable);
 		model.addObject("buildId", buildId);
 		model.addObject("attributes", attributes);
+		model.addObject("reeferUnits", reeferUnits);
+		model.addObject("reardoorUnits", reardoorUnits);
+		model.addObject("liftgateUnits", liftgateUnits); 
 		
 		return model;
 	}

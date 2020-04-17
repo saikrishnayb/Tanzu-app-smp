@@ -17,6 +17,9 @@ public class ApprovedOrder {
 	private int addCount;
 	private int replaceCount;
 	private String packageName;
+	private boolean hasReardoorUnits;
+	private boolean hasLiftgateUnits;
+	private boolean hasReeferUnits; 
 	private ApprovalStatus approvalStatus;
 	
 	/** Null constructor - MyBatis only */
@@ -82,4 +85,15 @@ public class ApprovedOrder {
 		return approvalStatus;
 	}
 	
+	public boolean isHasLiftgateUnits() {
+		return hasLiftgateUnits;
+	}
+	
+	public boolean isHasReardoorUnits() {
+		return hasReardoorUnits;
+	}
+	
+	public boolean isHasReeferUnits() {
+		return hasReeferUnits;
+	}
 }

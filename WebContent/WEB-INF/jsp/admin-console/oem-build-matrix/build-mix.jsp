@@ -30,7 +30,7 @@
 		          				<label>Chassis Available</label> <span class="badge">${chassisAvailable}</span>
 		          			</div>
 		          			<div class="btn-div floatRight">
-		          				<a id="back-btn" href="${baseAppUrl}/admin-console/oem-build-matrix/order-summary?buildId=${buildId}" onclick="javascript:loadProcessImage();" class="buttonSecondary">Back</a>
+		          				<a id="back-btn" href="${baseAppUrl}/admin-console/oem-build-matrix/available-chassis-summary?buildId=${buildId}" onclick="javascript:loadProcessImage();" class="buttonSecondary">Back</a>
 		          				<a id="submit-btn" class="buttonPrimary buttonDisabled" data-build-id="${buildId}">Submit</a>
 		          			</div>
 		        		</div>
@@ -39,8 +39,29 @@
 		      			<div class="col-xs-12 attributes-section">
 		      			<c:forEach items="${attributes}" var="attribute" varStatus="outerLoop">
 		      				<c:if test="${outerLoop.count eq 1 or (outerLoop.count-1) % 3 eq 0}"><div class="row attribute-row"></c:if>
-		      				<div class="col-xs-4">
-			      				<diV class="attribute-container" data-attribute-id="${attribute.attributeId}" data-attribute-key="${attribute.attributeKey}" data-group-key="${attribute.groupKey}">
+		      				<c:set var="isLiftgate" value="${false}" />
+		      				<c:set var="isRearDoor" value="${false}" />
+		      				<c:set var="isReefer" value="${false}" />
+		      				<c:choose>
+								<c:when test='${attribute.attributeKey eq "LIFTGATEMAKE"}'>
+									<c:set var="isLiftgate" value="${true}" />
+								</c:when>
+								<c:when test='${attribute.attributeKey eq "REARDOORMAKE"}'>
+		      						<c:set var="isRearDoor" value="${true}" />
+								</c:when>
+								<c:when test='${attribute.attributeKey eq "REEFERMAKE"}'>
+		      						<c:set var="isReefer" value="${true}" />
+								</c:when>
+							</c:choose>
+		      				<div class="col-lg-4">
+			      				<diV class="attribute-container" 
+			      					data-attribute-id="${attribute.attributeId}" 
+			      					data-attribute-key="${attribute.attributeKey}" 
+			      					data-group-key="${attribute.groupKey}" 
+			      					<c:if test="${isLiftgate}">data-liftgate-units="${liftgateUnits}"</c:if>
+			      					<c:if test="${isRearDoor}">data-reardoor-units="${reardoorUnits}"</c:if>
+			      					<c:if test="${isReefer}">data-reefer-units="${reeferUnits}"</c:if>
+			      					>
 			      					<div class="row">
 			      						<div class="col-xs-12 attribute-header">
 			      							<h2>${attribute.attributeName}</h2>
@@ -64,23 +85,74 @@
 			      										</c:choose>
 			      										<tr class="attribute-value-row ${rowClass}" data-attribute-value="${attributeValue.attributeValue}">
 			      											<td class="attribute-value-td">${attributeValue.attributeValue}</td>
-			      											<td class="attribute-percentage-td"><input type="text" class="attribute-percentage text-align-right" value="0" disabled /></td>
-			      											<td>%<td>
-			      											<td class="attribute-units-td"><input type="text" class="attribute-units text-align-right" value="${attributeValue.getUnitsByPercentage(bodiesOnOrder)}"/></td>
-			      											<td>Units</td>
+			      											<td class="attribute-percentage-td unit-percent-input">
+			      												<input type="text" class="attribute-percentage text-align-right" value="0" disabled />
+			      												<span class="percent-sign">%</span>
+			      											</td>
+			      											<!-- <td>%<td> -->
+			      											<td class="attribute-units-td unit-percent-input">
+				      											<c:choose>
+				      												<c:when test="${isReefer}">
+			      														<input type="text" class="attribute-units text-align-right" value="${attributeValue.getUnitsByPercentage(reeferUnits)}"/>
+				      												</c:when>
+				      												<c:when test="${isRearDoor}">
+			      														<input type="text" class="attribute-units text-align-right" value="${attributeValue.getUnitsByPercentage(reardoorUnits)}"/>
+				      												</c:when>
+				      												<c:when test="${isLiftgate}">
+			      														<input type="text" class="attribute-units text-align-right" value="${attributeValue.getUnitsByPercentage(liftgateUnits)}"/>
+				      												</c:when>
+				      												<c:otherwise>
+			      														<input type="text" class="attribute-units text-align-right" value="${attributeValue.getUnitsByPercentage(bodiesOnOrder)}"/>
+				      												</c:otherwise>
+				      											</c:choose>
+				      											<span class="units-label">Units</span>
+				      										</td>
+			      											<!-- <td>Units</td> -->
 			      										</tr>
 			      									</c:forEach>
-			      									<tr class="attribute-total-row">
-			      										<td>Total</td>
-			      										<td class="total-percentage-td">
-			      											<span class="total-percentage text-align-right">0</span>
-			      										</td>
-			      										<td>%<td>
-			      										<td class="total-units-td">
-			      											<span class="total-units text-align-right">0</span>
-			      										</td>
-			      										<td>Units</td>
-			      									</tr>
+			      									<c:choose>
+			      										<c:when test='${isReefer or isRearDoor or isLiftgate}'>
+			      											<c:choose>
+			      												<c:when test="${isReefer}">
+			      													<c:set var="totalUnits" value="${reeferUnits}" />
+			      												</c:when>
+			      												<c:when test="${isRearDoor}">
+			      													<c:set var="totalUnits" value="${reardoorUnits}" />
+			      												</c:when>
+			      												<c:when test="${isLiftgate}">
+			      													<c:set var="totalUnits" value="${liftgateUnits}" />
+			      												</c:when>
+			      											</c:choose>
+			      											<tr class="attribute-total-row">
+					      										<td >Total</td>
+					      										<td class="total-percentage-td unit-percent-input">
+					      											<span class="total-percentage text-align-right">0</span>
+					      											<span class="percent-sign">%</span>
+					      										</td>
+					      										<!-- <td>%<td> -->
+					      										<td class="total-units-td unit-percent-input">
+					      											<span class="total-units text-align-right">0</span>
+					      											<span class="units-label">of ${totalUnits} Units</span>
+					      										</td>
+					      										<%-- <td>of ${totalUnits} Units</td> --%>
+					      									</tr>
+			      										</c:when>
+			      										<c:otherwise>
+					      									<tr class="attribute-total-row">
+					      										<td >Total</td>
+					      										<td class="total-percentage-td unit-percent-input">
+					      											<span class="total-percentage text-align-right">0</span>
+					      											<span class="percent-sign">%</span>
+					      										</td>
+					      										<!-- <td>%<td> -->
+					      										<td class="total-units-td unit-percent-input">
+					      											<span class="total-units text-align-right">0</span>
+					      											<span class="units-label">Units</span>
+					      										</td>
+					      										<!-- <td>Units</td> -->
+					      									</tr>
+			      										</c:otherwise>
+			      									</c:choose>
 			      								</tbody>
 			      							</table>
 			      						</div>

@@ -18,6 +18,9 @@
 			v.AddCount,
 			v.ReplaceCount,
 			v.PackageName,
+			CASE WHEN v.REARDOORINSTALLED = 'YES' then 1 ELSE 0 END AS hasReardoorUnits,
+			CASE WHEN v.LIFTGATEINSTALLED = 'YES' then 1 ELSE 0 END AS hasLiftgateUnits,
+			CASE WHEN v.REEFERINSTALLED = 'YES' then 1 ELSE 0 END AS hasReeferUnits,
 			o.ApprovalStatus
 		FROM v_ApprovedOrdersForBuildMatrix v
 		JOIN t_Order o
@@ -36,8 +39,11 @@
 			v.DistrictDesc,    
 			v.AddCount,    
 			v.ReplaceCount,    
-			v.PackageName,    
-			o.ApprovalStatus 
+			v.PackageName,
+			CASE WHEN v.REARDOORINSTALLED = 'YES' then 1 ELSE 0 END AS hasReardoorUnits,
+			CASE WHEN v.LIFTGATEINSTALLED = 'YES' then 1 ELSE 0 END AS hasLiftgateUnits,
+			CASE WHEN v.REEFERINSTALLED = 'YES' then 1 ELSE 0 END AS hasReeferUnits,
+			o.ApprovalStatus
 		FROM v_ApprovedOrdersForBuildMatrix v   
 		JOIN t_Order o     
 			ON o.OrderId = v.OrderId
