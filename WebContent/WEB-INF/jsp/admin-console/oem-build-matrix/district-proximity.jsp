@@ -112,11 +112,11 @@
 								buttonSelectText : "Check All",
 								buttonSelectAfterHTML : "",
 						
-								buttonDeSelectBeforeHTML : "<span class='ui-icon ui-icon-closethick' id='check-uncheck-display'></span>",
+								buttonDeSelectBeforeHTML : "<span id='right-padding'></span><span class='ui-icon ui-icon-closethick' id='check-uncheck-display'></span>",
 								buttonDeSelectText : "Uncheck All",
 								buttonDeSelectAfterHTML : "",
 						
-								buttonExtraClasses : "btn"
+								buttonExtraClasses : ""
 							});
 						</script>
 						<script>

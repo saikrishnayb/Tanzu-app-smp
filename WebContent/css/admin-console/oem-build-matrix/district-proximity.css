@@ -17,6 +17,10 @@
   margin-top: 10px;
 }
 
+#right-padding {
+  padding-right: 10px;
+}
+
 .chkbox-display {
    margin-left: 22px;;
 }
