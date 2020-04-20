@@ -32,14 +32,20 @@
 					<div id="tier1-filter-div">
 						Filter <input id="tier1" class="filter" data-alf="#list1" type="text" placeholder="" />
 						<ul id="list1" class="filterable">
-							<c:forEach items="${districtProximityList}" var="districtProximity">
+							<c:forEach items="${freightMileageData}" var="freightMileage">
 										<li>
-											<label> ${districtProximity.area}</label>
+											<label> ${freightMileage.area}</label>
 											<ul>
 												<fieldset class="fieldset">
 													<legend class="legend-view"></legend>
-													<c:forEach items="${districtProximity.districtValues}" var="district">
-														<li class="district-values"><input type="checkbox" value="${district}" checked="checked">${district}</li>
+													<c:forEach items="${freightMileage.districts}" var="district">
+													<c:set var="contains" value="false" />
+													<c:forEach items="${districtProximityList}" var="proximity">
+														<c:if test="${proximity.district eq district and proximity.tier eq 1}">
+															<c:set var="contains" value="true" />
+														</c:if>
+													</c:forEach>
+														<li class="district-values"><input type="checkbox" value="${district}"  <c:if test="contains == true">checked="checked"</c:if> >${district}</li>
 													</c:forEach>
 												</fieldset>
 											</ul>
@@ -54,14 +60,20 @@
 					<div id="tier2-filter-div">
 						Filter <input id="tier2" class="filter" data-alf="#list2" type="text" placeholder="">
 						<ul id="list2" class="filterable">
-							<c:forEach items="${districtProximityList}" var="districtProximity">
+							<c:forEach items="${freightMileageData}" var="freightMileage">
 										<li>
-											<label> ${districtProximity.area}</label>
+											<label> ${freightMileage.area}</label>
 											<ul>
 												<fieldset class="fieldset">
 													<legend class="legend-view"></legend>
-													<c:forEach items="${districtProximity.districtValues}" var="district">
-														<li class="district-values"><input type="checkbox" value="${district}" checked="checked">${district}</li>
+													<c:forEach items="${freightMileage.districts}" var="district">
+													<c:set var="contains" value="false" />
+													<c:forEach items="${districtProximityList}" var="proximity">
+														<c:if test="${ proximity.tier eq 2 and proximity.district eq district}">
+															<c:set var="contains" value="true" />
+														</c:if>
+													</c:forEach>
+														<li class="district-values"><input type="checkbox" value="${district}" <c:if test="contains == true">checked="checked"</c:if> >${district}</li>
 													</c:forEach>
 												</fieldset>
 											</ul>
@@ -77,14 +89,20 @@
 						Filter <input id="tier3" class="filter" data-alf="#list3" type="text" placeholder="">
 					
 						<ul id="list3" class="filterable">
-							<c:forEach items="${districtProximityList}" var="districtProximity">
+							<c:forEach items="${freightMileageData}" var="freightMileage">
 										<li>
-											<label> ${districtProximity.area}</label>
+											<label> ${freightMileage.area}</label>
 											<ul>
 												<fieldset class="fieldset">
 													<legend class="legend-view"></legend>
-													<c:forEach items="${districtProximity.districtValues}" var="district">
-														<li class="district-values"><input type="checkbox" value="${district}" checked="checked">${district}</li>
+													<c:forEach items="${freightMileage.districts}" var="district">
+														<c:set var="contains" value="false" />
+														<c:forEach items="${districtProximityList}" var="proximity">
+															<c:if test="${proximity.tier eq 2 and proximity.district eq district}">
+																<c:set var="contains" value="true" />
+															</c:if>
+														</c:forEach>
+														<li class="district-values"><input type="checkbox" value="${district}" <c:if test="contains == true">checked= "checked"</c:if>>${district}</li>
 													</c:forEach>
 												</fieldset>
 											</ul>

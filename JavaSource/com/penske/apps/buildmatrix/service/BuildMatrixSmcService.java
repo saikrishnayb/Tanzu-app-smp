@@ -9,7 +9,8 @@ import com.penske.apps.buildmatrix.domain.BuildAttributeValue;
 import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.CroOrderKey;
-import com.penske.apps.buildmatrix.domain.DistrictProximity;
+import com.penske.apps.buildmatrix.domain.FreightMileage;
+import com.penske.apps.buildmatrix.domain.PlantProximity;
 import com.penske.apps.buildmatrix.model.BuildMixForm;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm;
 import com.penske.apps.suppliermgmt.model.UserContext;
@@ -24,11 +25,11 @@ public interface BuildMatrixSmcService {
 
 	public BodyPlantCapability getCapabilityDetails(int capabilityId);
 	
-    public List<DistrictProximity> getDistrictProximity(int plantId);
+    public List<FreightMileage> getFreightMileageData(int plantId);
 	
-	public void insertProximityValues(DistrictProximity districtProximity);
-	
-	public List<BuildMatrixBodyPlant> getAllBodyPlants();
+    public List<PlantProximity> getPlantProximity(int plantId);
+    
+    public List<BuildMatrixBodyPlant> getAllBodyPlants();
 	
 	public BuildMatrixBodyPlant getPlantData(int plantId);
 	

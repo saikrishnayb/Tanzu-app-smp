@@ -25,7 +25,8 @@ import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.BusinessAward;
 import com.penske.apps.buildmatrix.domain.BusinessAwardDefault;
 import com.penske.apps.buildmatrix.domain.CroOrderKey;
-import com.penske.apps.buildmatrix.domain.DistrictProximity;
+import com.penske.apps.buildmatrix.domain.FreightMileage;
+import com.penske.apps.buildmatrix.domain.PlantProximity;
 import com.penske.apps.buildmatrix.domain.enums.BuildStatus;
 import com.penske.apps.buildmatrix.model.BuildMixForm;
 import com.penske.apps.buildmatrix.model.BuildMixForm.AttributeRow;
@@ -41,8 +42,6 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	BuildMatrixSmcDAO buildMatrixSmcDAO;
 	
 	static List<BodyPlantCapability> bodyPlantCapabilityList = new ArrayList<BodyPlantCapability>();
-	static List<DistrictProximity> districtProximity = new ArrayList<DistrictProximity>();
-	static List<DistrictProximity> districtProximityList = new ArrayList<DistrictProximity>();
 	static List<BuildMatrixAttribute> buildMatrixAttributeList = new ArrayList<BuildMatrixAttribute>();
 	
 	@Override
@@ -111,16 +110,18 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	}
 	
 	@Override
-	public List<DistrictProximity> getDistrictProximity(int plantId) {
-		List<DistrictProximity> districtProximity = buildMatrixSmcDAO.getDistrictProximity(plantId);
-		return districtProximity;
+	 public List<FreightMileage> getFreightMileageData(int plantId)
+	{
+		List<FreightMileage> freightMileageData = buildMatrixSmcDAO.getFreightMileageData(plantId);
+		return freightMileageData;
 	}
 	
 	@Override
-	public void insertProximityValues(DistrictProximity districtProximity) {
-		buildMatrixSmcDAO.insertProximityValues(districtProximity);		
-	}
-	
+	public List<PlantProximity> getPlantProximity(int plantId)
+	 {
+		List<PlantProximity> plantProximityList = buildMatrixSmcDAO.getPlantProximity(plantId);
+		return plantProximityList;
+	 }
 	@Override
 	public List<BuildMatrixBodyPlant> getAllBodyPlants()
 	{
@@ -146,22 +147,6 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		List<BuildAttribute> buildMatrixAttribute = buildMatrixSmcDAO.getAllBuildMatrixAttributes();
 		return buildMatrixAttribute;
 	}
-
-	/*@Override
-	public List<String> getDropdownOptionGrpList() 
-	{
-		List<String> dropdownOptionGrpList = getMockDropdownOptionGrpList();
-		// List<String> dropdownOptionGrpList=attributeDao.getDropdownOptionGrpList();;
-		return dropdownOptionGrpList;
-	}
-
-	@Override
-	public List<String> getDropdownAttrValueList() 
-	{
-		List<String> dropdownAttrValueList = getMockDropdownAttrValueList();
-		//List<String> dropdownAttrValueList = attributeDao.getDropdownAttrValueList();
-		return dropdownAttrValueList;
-	}*/
 
 	@Override
 	public void updateAttribute(int attributeId, List<Integer> attrValueIds)

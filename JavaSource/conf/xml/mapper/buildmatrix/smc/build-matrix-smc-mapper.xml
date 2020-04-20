@@ -3,39 +3,33 @@
 <mapper namespace="com.penske.apps.buildmatrix.dao.BuildMatrixSmcDAO">
 	
 	
-	<resultMap id="districtProximityMap" type="com.penske.apps.buildmatrix.domain.DistrictProximity" >
+	<resultMap id="freightMileageMap" type="com.penske.apps.buildmatrix.domain.FreightMileage" >
 		<result property="plantId" column="plantId" />
   		<result property="area"    column="area"/>
-		<result property="tier"    column="tier"/>
-  		<collection property="districtValues" 			column="{plantId=plantId,area=area}"  select="getDistrictValues"></collection>
-  		<collection property="proximityDistrictValues" 	column="{plantId=plantId}"  		  select="getProximityDistrictValues"></collection>
+  		<collection property="districts" column="{plantId=plantId,area=area}"  select="getFreightMileageDistricts"></collection>
 	</resultMap>
 	
-	<resultMap id="plantProximityMap" type="com.penske.apps.buildmatrix.domain.PlantProximity" >
-		<result property="proximityId" column="proximityId" />
-		<result property="tier"    column="tier"/>
-  		<result property="plantId"    column="plantId"/>
-  		<collection property="proximityDistrictValues" 	column="{plantId=plantId}"  		  select="getProximityDistrictValues"></collection>
-	</resultMap>
-	
-	<select id="getDistrictValues" resultType="String">
+	<select id="getFreightMileageDistricts" resultType="String">
 		SELECT   OFM.DISTRICT AS districtValues
 		FROM     SMC.OBM_FREIGHT_MILEAGE OFM
 		WHERE    OFM.PLANT_ID = #{plantId}
 		AND 	 OFM.AREA = #{area}
 	</select>
 	
-	<select id="getProximityDistrictValues" resultType="String">
-		SELECT   OPP.DISTRICT AS proximityDistrictValues
-		FROM     SMC.OBM_PLANT_PROXIMITY OPP
-		WHERE    OPP.PLANT_ID = #{plantId}
+	<select id="getPlantProximity" resultType="com.penske.apps.buildmatrix.domain.PlantProximity">
+	SELECT
+		PROXIMITY_ID as proximityId,
+		PLANT_ID as plantId,
+		TIER as tier,
+		DISTRICT as district
+	FROM SMC.OBM_PLANT_PROXIMITY 
+	WHERE PLANT_ID =#{plantId}
 	</select>
 	
-	<select id="getDistrictProximity" resultMap="districtProximityMap">
+	<select id="getFreightMileageData" resultMap="freightMileageMap">
 		SELECT   OFM.PLANT_ID AS plantId,
 		         OFM.AREA AS area
 		FROM     SMC.OBM_FREIGHT_MILEAGE OFM 
-		         JOIN SMC.OBM_PLANT_PROXIMITY OPP ON OPP.PLANT_ID = OFM.PLANT_ID
 		WHERE    OFM.AREA <![CDATA[<>]]> ''
 		AND      OFM.PLANT_ID = #{plantId} 
 		GROUP BY OFM.AREA, OFM.PLANT_ID

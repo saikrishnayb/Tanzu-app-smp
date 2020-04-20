@@ -14,7 +14,8 @@ import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.BusinessAward;
 import com.penske.apps.buildmatrix.domain.BusinessAwardDefault;
 import com.penske.apps.buildmatrix.domain.CroOrderKey;
-import com.penske.apps.buildmatrix.domain.DistrictProximity;
+import com.penske.apps.buildmatrix.domain.FreightMileage;
+import com.penske.apps.buildmatrix.domain.PlantProximity;
 import com.penske.apps.buildmatrix.domain.enums.BuildStatus;
 import com.penske.apps.suppliermgmt.annotation.DBSmc;
 
@@ -29,9 +30,9 @@ public interface BuildMatrixSmcDAO {
 
 	public BodyPlantCapability getCapabilityDetails(int capabilityId);
 	
-	public List<DistrictProximity> getDistrictProximity(int plantId);
+	public List<FreightMileage> getFreightMileageData(int plantId);
 	
-    public void insertProximityValues(DistrictProximity districtProximity);
+	public List<PlantProximity> getPlantProximity(int plantId);
 	
 	public List<BuildMatrixBodyPlant> getAllBodyPlants();
 	

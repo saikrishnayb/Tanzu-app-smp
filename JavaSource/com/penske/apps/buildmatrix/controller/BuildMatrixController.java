@@ -155,7 +155,8 @@ public class BuildMatrixController {
 	public ModelAndView getDistrictProximity(@RequestParam("plantId") int plantId, @RequestParam("plantName") String plantName, 
 											 @RequestParam("plantCity") String plantCity, @RequestParam("plantState") String plantState) {
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/district-proximity");
-		model.addObject("districtProximityList", buildMatrixSmcService.getDistrictProximity(plantId));
+		model.addObject("freightMileageData", buildMatrixSmcService.getFreightMileageData(plantId));
+		model.addObject("districtProximityList", buildMatrixSmcService.getPlantProximity(plantId));
 		model.addObject("plantName", plantName);
 		model.addObject("plantCity", plantCity);
 		model.addObject("plantState", plantState);
