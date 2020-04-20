@@ -8,7 +8,14 @@
   		<result property="area"    column="area"/>
 		<result property="tier"    column="tier"/>
   		<collection property="districtValues" 			column="{plantId=plantId,area=area}"  select="getDistrictValues"></collection>
-  		<!-- <collection property="proximityDistrictValues" 	column="{plantId=plantId}"  		  select="getProximityDistrictValues"></collection> -->
+  		<collection property="proximityDistrictValues" 	column="{plantId=plantId}"  		  select="getProximityDistrictValues"></collection>
+	</resultMap>
+	
+	<resultMap id="plantProximityMap" type="com.penske.apps.buildmatrix.domain.PlantProximity" >
+		<result property="proximityId" column="proximityId" />
+		<result property="tier"    column="tier"/>
+  		<result property="plantId"    column="plantId"/>
+  		<collection property="proximityDistrictValues" 	column="{plantId=plantId}"  		  select="getProximityDistrictValues"></collection>
 	</resultMap>
 	
 	<select id="getDistrictValues" resultType="String">
@@ -18,11 +25,11 @@
 		AND 	 OFM.AREA = #{area}
 	</select>
 	
-	<!-- <select id="getProximityDistrictValues" resultType="String">
+	<select id="getProximityDistrictValues" resultType="String">
 		SELECT   OPP.DISTRICT AS proximityDistrictValues
 		FROM     SMC.OBM_PLANT_PROXIMITY OPP
 		WHERE    OPP.PLANT_ID = #{plantId}
-	</select> -->
+	</select>
 	
 	<select id="getDistrictProximity" resultMap="districtProximityMap">
 		SELECT   OFM.PLANT_ID AS plantId,
