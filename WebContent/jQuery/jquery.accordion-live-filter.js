@@ -42,9 +42,9 @@
 
             var firstEvent=$('label', $accordion).on('expand.alf', function() {
             	//dfd= $.Deferred();
-                $(this).addClass('expanded').data('alf-child').slideDown();
+                $(this).addClass('expanded').data('alf-child').slideDown(0, setMaxVericalLineHeight(this));
             }).on('contract.alf', function() {
-                $(this).removeClass('expanded').data('alf-child').slideUp();
+                $(this).removeClass('expanded').data('alf-child').slideUp(0, setMaxVericalLineHeight(this));
             }).on('click', function() {
                 var $label = $(this);
                 $label.hasClass('expanded') ? $label.trigger('contract.alf') : $label.trigger('expand.alf');
@@ -61,14 +61,14 @@
              });
 
             //work around code -will be moved to district-proximity .js 
-            $('.filterable li').on("click",function(){
+           /* $('.filterable li').on("click",function(){
         		$.when.apply(this,firstEvent).done(function(){
                 setMaxVericalLineHeight();
                 });
         		firstEvent.promise().done(function(){
                 setMaxVericalLineHeight();
                 });
-        	});
+        	});*/
             
             $filterField.on('keyup', function() {
                 var query = $filterField.val().toLowerCase();

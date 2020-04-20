@@ -26,10 +26,10 @@
 			
 			<h1>Proximity Configuration - ${plantName} - ${plantCity}, ${plantState}</h1>
 			
-			<div class="tire-main-div">
-				<div class="tire-div vertical-line" id="tier1-div">
-					<h2 id="tier1-header">Tier 1</h2>
-					<div id="tier1-filter-div">
+			<div class="tier-main-div">
+				<div class="tier-div vertical-line" id="tier1-div">
+					<div class="tier-header"><h2 id="tier1-header">Tier 1</h2></div>
+					<div class="tier-filter-div" id="tier1-filter-div">
 						Filter <input id="tier1" class="filter" data-alf="#list1" type="text" placeholder="" />
 						<ul id="list1" class="filterable">
 							<c:forEach items="${freightMileageData}" var="freightMileage">
@@ -55,9 +55,9 @@
 					</div>
 				</div>
 								
-				<div class="tire-div vertical-line" id="tier2-div">
-					<h2 id="tier2-header">Tier 2</h2>
-					<div id="tier2-filter-div">
+				<div class="tier-div vertical-line" id="tier2-div">
+					<div class="tier-header"><h2 id="tier2-header">Tier 2</h2></div>
+					<div class="tier-filter-div" id="tier2-filter-div">
 						Filter <input id="tier2" class="filter" data-alf="#list2" type="text" placeholder="">
 						<ul id="list2" class="filterable">
 							<c:forEach items="${freightMileageData}" var="freightMileage">
@@ -83,9 +83,9 @@
 					</div>
 				</div>
 				
-				<div class="tire-div" id="tier3-div">
-					<h2 id="tier3-header">Tier 3</h2>
-					<div id="tier3-filter-div">
+				<div class="tier-div" id="tier3-div">
+					<div class="tier-header"><h2 id="tier3-header">Tier 3</h2></div>
+					<div class="tier-filter-div" id="tier3-filter-div">
 						Filter <input id="tier3" class="filter" data-alf="#list3" type="text" placeholder="">
 					
 						<ul id="list3" class="filterable">

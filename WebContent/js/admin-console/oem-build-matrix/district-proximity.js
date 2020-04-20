@@ -41,8 +41,6 @@ $(document).ready(function() {
 			});
 		}); */
 	
-	setMaxVericalLineHeight();
-
 });
 
 function getContextRoot() {
@@ -51,21 +49,57 @@ function getContextRoot() {
 
 /**
  * This method is used to identify the height of each tier to modify the vertical line height.
- * This has been invoked on page load and on-click of expanding icon at each area level under each tier.
+ * This has been invoked on-click of expanding icon at each area level under each tier.
+ * 
+ * Parameter "obj" is passed while invoking this method on-click of expanding icon
  */
-function setMaxVericalLineHeight() {
-	var maxVerticalLineHeight = 450; // Default height
+function setMaxVericalLineHeight(obj) {
+	var maxVerticalLineHeight;
+	var tier1_div_height,tier2_div_height,tier3_div_height; 
 	
 	if($("#tier1-div") && $("#tier1-div").length > 0 
 			&& $("#tier2-div") && $("#tier2-div").length > 0 
 			&& $("#tier3-div") && $("#tier3-div").length > 0) {
-		
-		var tier1_div_height = $("#tier1-header").height() + $("#tier1-filter-div").height();
-		var tier2_div_height = $("#tier2-header").height() + $("#tier2-filter-div").height();
-		var tier3_div_height = $("#tier3-header").height() + $("#tier3-filter-div").height();
+		tier1_div_height = $("#tier1-header").height() + $("#tier1-filter-div").height();
+		tier2_div_height = $("#tier2-header").height() + $("#tier2-filter-div").height();
+		tier3_div_height = $("#tier3-header").height() + $("#tier3-filter-div").height();
 		
 		maxVerticalLineHeight = Math.max(tier1_div_height, tier2_div_height, tier3_div_height);
 	}
 	
-	$(".vertical-line").height(maxVerticalLineHeight + "px");	
+	if(obj != null && obj != undefined) {
+		var current_tier_div_height = $(obj).closest("div .tier-filter-div").prev("div .tier-header").height() + $(obj).closest("div .tier-filter-div").height();
+		var expanded_accordion_height = $(obj).height() + $(obj).next("ul").height(); //label + ul heights
+		
+		if($(obj).hasClass("expanded")) {
+			var tempVerticalLineHeight = current_tier_div_height + expanded_accordion_height; 
+			maxVerticalLineHeight = Math.max(maxVerticalLineHeight, tempVerticalLineHeight);
+
+			$(".vertical-line, #tier3-div").height(maxVerticalLineHeight + "px");
+		}
+		else {
+			tempVerticalLineHeight = current_tier_div_height - expanded_accordion_height;
+
+			var current_tier_div_id =  $(obj).closest("div .tier-div").attr("id");
+			var tier_number = current_tier_div_id.split("-div")[0].split("tier")[1];
+			
+			switch(tier_number) {
+				case "1": 
+					console.log("1");
+					maxVerticalLineHeight = Math.max(tempVerticalLineHeight,  tier2_div_height, tier3_div_height); 
+					break;
+				case "2":
+					console.log("2");
+					maxVerticalLineHeight = Math.max(tempVerticalLineHeight,  tier1_div_height, tier3_div_height); 
+					break;
+				case "3": 
+					console.log("3");
+					maxVerticalLineHeight = Math.max(tempVerticalLineHeight,  tier1_div_height, tier2_div_height); 
+					break;
+			}
+
+			$(".vertical-line, #tier3-div").height(maxVerticalLineHeight + 20 + "px");
+
+		} 
+	} 
 }
