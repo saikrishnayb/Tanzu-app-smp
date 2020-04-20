@@ -6,6 +6,7 @@ public class DistrictProximity {
 
 	private int proximityId;
 	private List<String> districtValues;
+	private List<String> proximityDistrictValues;
 	private int tier;
 	private String area;
 	private int plantId;
@@ -25,6 +26,10 @@ public class DistrictProximity {
 		super();
 		this.districtValues = districtValues;
 		this.tier = tier;
+	}
+	
+	public List<String> getProximityDistrictValues() {
+		return proximityDistrictValues;
 	}
 
 	public int getProximityId() {
@@ -55,8 +60,12 @@ public class DistrictProximity {
 		this.proximityId = proximityId;
 	}
 	
-	public void setDistrict(List<String> districtValues) {
+	public void setDistrictValues(List<String> districtValues) {
 		this.districtValues = districtValues;
+	}
+	
+	public void setProximityDistrictValues(List<String> proximityDistrictValues) {
+		this.proximityDistrictValues = proximityDistrictValues;
 	}
 	
 	public void setTier(int tier) {

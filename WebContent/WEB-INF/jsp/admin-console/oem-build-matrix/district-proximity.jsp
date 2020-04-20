@@ -33,8 +33,6 @@
 						Filter <input id="tier1" class="filter" data-alf="#list1" type="text" placeholder="" />
 						<ul id="list1" class="filterable">
 							<c:forEach items="${districtProximityList}" var="districtProximity">
-								<c:choose>
-									<c:when test="${districtProximity.tier == 1}">
 										<li>
 											<label> ${districtProximity.area}</label>
 											<ul>
@@ -46,8 +44,6 @@
 												</fieldset>
 											</ul>
 										</li>
-									</c:when>
-								</c:choose>
 							</c:forEach>
 						</ul>
 					</div>
@@ -59,8 +55,6 @@
 						Filter <input id="tier2" class="filter" data-alf="#list2" type="text" placeholder="">
 						<ul id="list2" class="filterable">
 							<c:forEach items="${districtProximityList}" var="districtProximity">
-								<c:choose>
-									<c:when test="${districtProximity.tier == 2}">
 										<li>
 											<label> ${districtProximity.area}</label>
 											<ul>
@@ -72,8 +66,6 @@
 												</fieldset>
 											</ul>
 										</li>
-									</c:when>
-								</c:choose>
 							</c:forEach>
 						</ul>
 					</div>
@@ -86,8 +78,6 @@
 					
 						<ul id="list3" class="filterable">
 							<c:forEach items="${districtProximityList}" var="districtProximity">
-								<c:choose>
-									<c:when test="${districtProximity.tier == 3}">
 										<li>
 											<label> ${districtProximity.area}</label>
 											<ul>
@@ -99,8 +89,6 @@
 												</fieldset>
 											</ul>
 										</li>
-									</c:when>
-								</c:choose>
 							</c:forEach>
 						</ul>
 						<script>

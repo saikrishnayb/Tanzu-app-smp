@@ -5,10 +5,10 @@
 	
 	<resultMap id="districtProximityMap" type="com.penske.apps.buildmatrix.domain.DistrictProximity" >
 		<result property="plantId" column="plantId" />
-  		<result property="area" column="area"/>
-		<result property="tier" column="tier"/>
-		
-  		<collection property="districtValues" 	column="{plantId=plantId,area=area}"  select="getDistrictValues"></collection>
+  		<result property="area"    column="area"/>
+		<result property="tier"    column="tier"/>
+  		<collection property="districtValues" 			column="{plantId=plantId,area=area}"  select="getDistrictValues"></collection>
+  		<!-- <collection property="proximityDistrictValues" 	column="{plantId=plantId}"  		  select="getProximityDistrictValues"></collection> -->
 	</resultMap>
 	
 	<select id="getDistrictValues" resultType="String">
@@ -18,15 +18,20 @@
 		AND 	 OFM.AREA = #{area}
 	</select>
 	
+	<!-- <select id="getProximityDistrictValues" resultType="String">
+		SELECT   OPP.DISTRICT AS proximityDistrictValues
+		FROM     SMC.OBM_PLANT_PROXIMITY OPP
+		WHERE    OPP.PLANT_ID = #{plantId}
+	</select> -->
+	
 	<select id="getDistrictProximity" resultMap="districtProximityMap">
 		SELECT   OFM.PLANT_ID AS plantId,
-		         OFM.AREA AS area,
-		         OPP.TIER AS tier
+		         OFM.AREA AS area
 		FROM     SMC.OBM_FREIGHT_MILEAGE OFM 
 		         JOIN SMC.OBM_PLANT_PROXIMITY OPP ON OPP.PLANT_ID = OFM.PLANT_ID
 		WHERE    OFM.AREA <![CDATA[<>]]> ''
 		AND      OFM.PLANT_ID = #{plantId} 
-		GROUP BY OFM.AREA, OPP.TIER, OFM.PLANT_ID
+		GROUP BY OFM.AREA, OFM.PLANT_ID
 		ORDER BY OFM.AREA
 	</select>
 	
