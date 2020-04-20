@@ -147,7 +147,7 @@
 					      										<!-- <td>%<td> -->
 					      										<td class="total-units-td unit-percent-input">
 					      											<span class="total-units text-align-right">0</span>
-					      											<span class="units-label">Units</span>
+					      											<span class="units-label">of ${bodiesOnOrder} Units</span>
 					      										</td>
 					      										<!-- <td>Units</td> -->
 					      									</tr>
