@@ -53,8 +53,8 @@ $(document).ready(function() {
 		width : 400,
 		minHeight: 200,
 		position : {
-			my : "center top",
-			at : "center top",
+			my : "center",
+			at : "center",
 			of : window
 		},
 		resizable : false,
@@ -71,8 +71,8 @@ $(document).ready(function() {
 		width : 400,
 		minHeight: 200,
 		position : {
-			my : "center top",
-			at : "center top",
+			my : "center",
+			at : "center",
 			of : window
 		},
 		resizable : false,

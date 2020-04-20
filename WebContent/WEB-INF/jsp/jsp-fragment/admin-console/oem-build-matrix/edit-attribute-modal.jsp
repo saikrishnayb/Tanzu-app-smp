@@ -5,7 +5,7 @@
 <div>
 	<c:choose>
 		<c:when test="${editPopup eq true}">
-			<div class="update-attribute">
+			<div class="save-attribute">
 				<a class="buttonPrimary buttonDisabled round-corner-btn-cls"
 					id="update-attr" data-save-attr-id="${buildAttribute.attributeId}" href="#"
 					onclick="">Save</a>

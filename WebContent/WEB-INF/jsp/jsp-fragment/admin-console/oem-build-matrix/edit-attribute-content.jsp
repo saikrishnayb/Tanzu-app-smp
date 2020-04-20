@@ -37,7 +37,7 @@
 						<label> Attribute</label>
 					</div>
 					<div class="attibute-display">
-						<select id="attributeName" name="attributeName" class="attribute-name round-corner-text-box">
+						<select id="attributeName" name="attributeName" class="attribute-name">
 							<option value="attributeName">${buildAttribute.attributeName}</option>
  						</select>
 					</div>

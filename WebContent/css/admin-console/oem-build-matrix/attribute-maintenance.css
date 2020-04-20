@@ -87,14 +87,8 @@
 	margin: 2%
 }
 
-.update-attribute {
-	width: 100%;
-    padding-top: 9px;
-    text-align: right;
-}
-
 .save-attribute {
-	width: 78%;
+	width: 100%;
     padding-top: 9px;
     text-align: right;
 }
@@ -115,10 +109,6 @@
 
 .attibute-display {
   display: inline-block;
-}
-
-.round-corner-text-box {
-	border-radius: 5px;
 }
 
 .error-text{
