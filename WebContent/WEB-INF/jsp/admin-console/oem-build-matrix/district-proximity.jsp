@@ -45,7 +45,7 @@
 															<c:set var="contains" value="true" />
 														</c:if>
 													</c:forEach>
-														<li class="district-values"><input type="checkbox" value="${district}"  <c:if test="contains == true">checked="checked"</c:if> >${district}</li>
+														<li class="district-values"><input type="checkbox" value="${district}"  <c:if test="${contains eq true}">checked="checked"</c:if> >${district}</li>
 													</c:forEach>
 												</fieldset>
 											</ul>
@@ -73,7 +73,7 @@
 															<c:set var="contains" value="true" />
 														</c:if>
 													</c:forEach>
-														<li class="district-values"><input type="checkbox" value="${district}" <c:if test="contains == true">checked="checked"</c:if> >${district}</li>
+														<li class="district-values"><input type="checkbox" value="${district}" <c:if test="${contains eq true}">checked="checked"</c:if> >${district}</li>
 													</c:forEach>
 												</fieldset>
 											</ul>
@@ -98,11 +98,11 @@
 													<c:forEach items="${freightMileage.districts}" var="district">
 														<c:set var="contains" value="false" />
 														<c:forEach items="${districtProximityList}" var="proximity">
-															<c:if test="${proximity.tier eq 2 and proximity.district eq district}">
+															<c:if test="${proximity.tier eq 3 and proximity.district eq district}">
 																<c:set var="contains" value="true" />
 															</c:if>
 														</c:forEach>
-														<li class="district-values"><input type="checkbox" value="${district}" <c:if test="contains == true">checked= "checked"</c:if>>${district}</li>
+														<li class="district-values"><input type="checkbox" value="${district}" <c:if test="${contains eq true}">checked= "checked"</c:if>>${district}</li>
 													</c:forEach>
 												</fieldset>
 											</ul>
