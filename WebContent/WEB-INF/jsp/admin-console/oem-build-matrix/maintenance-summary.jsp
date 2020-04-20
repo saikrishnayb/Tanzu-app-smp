@@ -19,7 +19,7 @@
 			<div id="PopupError" style="display:none">
 				<span class="errorMsg"> Hmm, something went wrong. See if you could try again. </span>
 			</div>
-			<h1>Production Slots Maintenance</h1>
+			<h1>Plant Maintenance</h1>
 
 			<table id="body-plant-maint-table" class="plant-view">
 				<thead>

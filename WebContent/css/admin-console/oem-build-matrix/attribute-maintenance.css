@@ -87,11 +87,17 @@
 	margin: 2%
 }
 
-.save-attribute {
+.update-attribute {
 	width: 100%;
     padding-top: 9px;
     text-align: right;
 }
+
+/* .save-attribute {
+	width: 78%;
+    padding-top: 9px;
+    text-align: right;
+} */
 
 /* Start of Edit Attribute Content style */
 
@@ -111,6 +117,10 @@
   display: inline-block;
 }
 
+.round-corner-text-box {
+	border-radius: 5px;
+}
+
 .error-text{
 	width: 225px;
 }
@@ -118,3 +128,7 @@
 	display: none;
 }
 /* End of Edit Attribute Content style */
+
+.popupModal .row{ 
+	margin-top:10px;
+}

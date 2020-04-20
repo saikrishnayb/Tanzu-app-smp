@@ -18,34 +18,49 @@
 			<div id="PopupError" style="display:none">
 				<span class="errorMsg"> Hmm, something went wrong. See if you could try again. </span>
 			</div>
-			<h1>Attribute Maintenance</h1>
-			<table id="attribute-table" class="attribute-view">
-				<thead>
-					<tr>
-						<th class="" id="heading-view"></th>
-						<th class="">Attribute Name</th>
-						<th class="">Possible Values</th>
-					</tr>
-				</thead>
-				<tbody>
-					<c:forEach items="${attributeList}" var="attribute">
-						<tr class="attribute-row" data-attribute-id="${attribute.attributeId}">
-							<td class="data-view">
-								<a href="#" class="edit-attribute">Update</a>
-								<span class="display-color">|</span> 
-							    <a href="#" class="add-attribute">Add</a>
-							    <input type="hidden" class="edit-attribute-id" value="${attribute.attributeId}" />
-							</td>
-							<td>${attribute.attributeName}</td>
-							<td class="value-td">
-								<c:forEach items="${attribute.attributeValues}" var="value">
-								<span class="badge non-selected-attrvalue" data-attribute-value-id="${value.attributeValueId}">${value.attributeValue}</span>	
-								</c:forEach>
-							</td>
-						</tr>
-					</c:forEach>
-				</tbody>
-			</table>
+			<div class="row">
+        		<div class="col-xs-12">
+					<h1>Attribute Maintenance</h1>
+				</div>
+			</div>
+			<div class="row">
+        		<div class="col-xs-12 attribute-setup-table-top">
+        			<div class='search-div'>
+          				<label>Search: </label> <input type="text" id="attribute-search"/>
+          			</div>
+        		</div>
+      		</div>
+      		<div class="row">
+        		<div class="col-xs-12 business-award-maint-table-container">
+					<table id="attribute-table" class="attribute-view">
+						<thead>
+							<tr>
+								<th class="" id="heading-view"></th>
+								<th class="">Attribute Name</th>
+								<th class="">Possible Values</th>
+							</tr>
+						</thead>
+						<tbody>
+							<c:forEach items="${attributeList}" var="attribute">
+								<tr class="attribute-row" data-attribute-id="${attribute.attributeId}">
+									<td class="data-view">
+										<a href="#" class="edit-attribute">Update</a>
+										<span class="display-color">|</span> 
+									    <a href="#" class="add-attribute">Add</a>
+									    <input type="hidden" class="edit-attribute-id" value="${attribute.attributeId}" />
+									</td>
+									<td>${attribute.attributeName}</td>
+									<td class="value-td">
+										<c:forEach items="${attribute.attributeValues}" var="value">
+										<span class="badge non-selected-attrvalue" data-attribute-value-id="${value.attributeValueId}">${value.attributeValue}</span>	
+										</c:forEach>
+									</td>
+								</tr>
+							</c:forEach>
+						</tbody>
+					</table>
+				</div>
+			</div>
 			
 			<div id="edit-attribute-modal" class="edit-attribute modal"></div>
 			<div id="add-attribute-modal" class="add-attribute modal"></div>

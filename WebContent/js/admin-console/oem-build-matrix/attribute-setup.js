@@ -4,7 +4,7 @@ $(document).ready(function() {
 	var $editAttributeModal =$('#edit-attribute-modal');
 	var $addAttributeModal =$('#add-attribute-modal');
 
-	$attributeTable = $('#attribute-table').dataTable({ //All of the below are optional
+	$attributeTable = $('#attribute-table').DataTable({ //All of the below are optional
 		"bPaginate" : true, //enable pagination
 		"bStateSave" : true, //To retrieve the data on click of back button
 		"sPaginationType" : "two_button",
@@ -23,6 +23,7 @@ $(document).ready(function() {
 		"oLanguage" : {
 			"sEmptyTable" : "No Results Found"
 		},
+		"dom": "t",
 		//"sScrollY": 246, //Adds a vertical scroll bar if the content exceeds this amount
 		//"sScrollXInner": "100%" 
 		"fnDrawCallback" : function() { //This will hide the pagination menu if we only have 1 page.
@@ -220,6 +221,10 @@ $(document).ready(function() {
 			openModal($addAttributeModal);
 		});
 		
+	});
+	
+	$('#attribute-search').on("input", function(){
+		$attributeTable.search($(this).val()).draw() ;
 	});
 });
 
