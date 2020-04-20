@@ -4,7 +4,7 @@ var $buildHistoryTable = $('#build-history-table');
 
 $buildHistoryDataTable = $buildHistoryTable.DataTable({ //All of the below are optional
 	"bPaginate" : true, //enable pagination
-	"bStateSave" : true, //To retrieve the data on click of back button
+	"bStateSave" : false, //To retrieve the data on click of back button
 	"sPaginationType" : "two_button",
 	"aaSorting" : [], //default sort column
 	"aoColumnDefs" : [ {
