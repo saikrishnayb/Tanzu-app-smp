@@ -126,6 +126,7 @@
 				</div>
 			</div>
 			<div class="save-proximity">
+					<a href="${baseAppUrl}/admin-console/oem-build-matrix/maintenance-summary.htm" onclick="javascript:loadProcessImage();" class="buttonSecondary round-corner-btn-cls">Cancel</a>
 					<a href="#" class="buttonPrimary buttonDisabled round-corner-btn-cls" onClick="saveProximity()">Save</a>
 		    </div>
 		</div>
