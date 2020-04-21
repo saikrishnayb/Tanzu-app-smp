@@ -93,7 +93,7 @@ $(document).ready(function() {
 						contentType: 'application/json'
 					});
 					$saveProximityPromise.done(function(data){
-						hideLoading();
+						window.location.href="maintenance-summary.htm";
 						});
 					$saveProximityPromise.fail(function(xhr, ajaxOptions, thrownError) {
 						if(xhr.responseText.indexOf('Error Processing the Save proximity configuration.')>0){

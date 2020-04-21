@@ -168,13 +168,9 @@ public class BuildMatrixController {
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping("/save-district-proximity")
 	public ModelAndView saveDistrictProximity(@RequestBody List<PlantProximity> plantProximityList,HttpServletResponse response) throws Exception {
-		int plantId = plantProximityList.get(0).getPlantId();
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/district-proximity");
 		try{
 			 buildMatrixSmcService.saveDistrictProximity(plantProximityList);
-			 model.addObject("freightMileageData", buildMatrixSmcService.getFreightMileageData(plantId));
-			 model.addObject("districtProximityList", buildMatrixSmcService.getPlantProximity(plantId));
-			 model.addObject("plantData", buildMatrixSmcService.getPlantData(plantId));
 			}catch (Exception e) {
 	            LOGGER.error("Error while saving proximity configuration: "+e.getMessage(),e);
 	            CommonUtils.getCommonErrorAjaxResponse(response,"Error Processing the Save proximity configuration.");
