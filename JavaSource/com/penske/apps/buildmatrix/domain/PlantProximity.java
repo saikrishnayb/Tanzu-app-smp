@@ -6,6 +6,7 @@ public class PlantProximity {
 	private int plantId;
 	private int tier;
 	private String district;
+	private boolean removeDistrict;
 	
 	public PlantProximity(){		
 	}
@@ -40,6 +41,14 @@ public class PlantProximity {
 
 	public void setDistrict(String district) {
 		this.district = district;
+	}
+
+	public boolean isRemoveDistrict() {
+		return removeDistrict;
+	}
+
+	public void setRemoveDistrict(boolean removeDistrict) {
+		this.removeDistrict = removeDistrict;
 	}
 
 }

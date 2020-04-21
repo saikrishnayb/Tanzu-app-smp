@@ -2,43 +2,67 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.penske.apps.buildmatrix.dao.BuildMatrixSmcDAO">
 	
-	
-	<resultMap id="freightMileageMap" type="com.penske.apps.buildmatrix.domain.FreightMileage" >
+	<!-- District Proximity workflow -->
+
+	<resultMap id="freightMileageMap"
+		type="com.penske.apps.buildmatrix.domain.FreightMileage">
 		<result property="plantId" column="plantId" />
-  		<result property="area"    column="area"/>
-  		<collection property="districts" column="{plantId=plantId,area=area}"  select="getFreightMileageDistricts"></collection>
+		<result property="area" column="area" />
+		<collection property="districts" column="{plantId=plantId,area=area}"
+			select="getFreightMileageDistricts"></collection>
 	</resultMap>
-	
+
 	<select id="getFreightMileageDistricts" resultType="String">
-		SELECT   OFM.DISTRICT AS districtValues
-		FROM     SMC.OBM_FREIGHT_MILEAGE OFM
-		WHERE    OFM.PLANT_ID = #{plantId}
-		AND 	 OFM.AREA = #{area}
+		SELECT
+		OFM.DISTRICT AS districtValues
+		FROM SMC.OBM_FREIGHT_MILEAGE OFM
+		WHERE
+		OFM.PLANT_ID = #{plantId}
+		AND OFM.AREA = #{area}
 	</select>
-	
+
 	<select id="getPlantProximity" resultType="com.penske.apps.buildmatrix.domain.PlantProximity">
-	SELECT
+		SELECT
 		PROXIMITY_ID as proximityId,
 		PLANT_ID as plantId,
 		TIER as tier,
-		DISTRICT as district
-	FROM SMC.OBM_PLANT_PROXIMITY 
-	WHERE PLANT_ID =#{plantId}
+		DISTRICT
+		as district
+		FROM SMC.OBM_PLANT_PROXIMITY
+		WHERE PLANT_ID =#{plantId}
 	</select>
-	
+
 	<select id="getFreightMileageData" resultMap="freightMileageMap">
-		SELECT   OFM.PLANT_ID AS plantId,
-		         OFM.AREA AS area
-		FROM     SMC.OBM_FREIGHT_MILEAGE OFM 
-		WHERE    OFM.AREA <![CDATA[<>]]> ''
-		AND      OFM.PLANT_ID = #{plantId} 
+		SELECT OFM.PLANT_ID AS plantId,
+		OFM.AREA AS area
+		FROM SMC.OBM_FREIGHT_MILEAGE OFM
+		WHERE OFM.AREA <![CDATA[<>]]>
+		''
+		AND OFM.PLANT_ID = #{plantId}
 		GROUP BY OFM.AREA, OFM.PLANT_ID
 		ORDER BY OFM.AREA
 	</select>
-	
-	<insert id="insertProximityValues">
+
+	<insert id="insertDistrictProximity">
+		INSERT INTO SMC.OBM_PLANT_PROXIMITY
+		(PLANT_ID,TIER,DISTRICT)
+		VALUES
+		<foreach collection="plantProximityinsert" item="proximity" separator=","
+			open="" close="">
+			(#{proximity.plantId}, #{proximity.tier}, #{proximity.district})
+		</foreach>
 	</insert>
 	
+	<update id="removeDistrictProximity">
+		DELETE FROM SMC.OBM_PLANT_PROXIMITY 
+		WHERE  PROXIMITY_ID IN (
+		<foreach collection="plantProximityRemove" item="proximity" separator=","
+			open="" close="">
+			#{proximity.proximityId}
+		</foreach>
+		)
+	</update>
+	<!-- Plant Maintenance workflow -->
 	<select id="getAllBodyPlants" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant">
 		SELECT
 			PLANT_ID AS plantId,

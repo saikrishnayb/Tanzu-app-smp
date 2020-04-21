@@ -10,9 +10,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.penske.apps.buildmatrix.dao.BuildMatrixSmcDAO;
 import com.penske.apps.buildmatrix.domain.ApprovedOrder;
@@ -122,6 +124,16 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		List<PlantProximity> plantProximityList = buildMatrixSmcDAO.getPlantProximity(plantId);
 		return plantProximityList;
 	 }
+	
+	@Override
+	@Transactional
+	public void saveDistrictProximity(List<PlantProximity> plantProximityData)
+	{
+		List<PlantProximity> proximityListToInsert= plantProximityData.stream().filter(p->(!p.isRemoveDistrict())).collect(Collectors.toList());
+		List<PlantProximity> ProximityListToRemove= plantProximityData.stream().filter(p->(p.isRemoveDistrict())).collect(Collectors.toList());
+		if(!proximityListToInsert.isEmpty()) buildMatrixSmcDAO.insertDistrictProximity(proximityListToInsert);
+		if(!ProximityListToRemove.isEmpty()) buildMatrixSmcDAO.removeDistrictProximity(ProximityListToRemove);
+	}
 	@Override
 	public List<BuildMatrixBodyPlant> getAllBodyPlants()
 	{

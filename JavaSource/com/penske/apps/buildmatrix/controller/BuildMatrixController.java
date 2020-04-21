@@ -27,6 +27,7 @@ import com.penske.apps.buildmatrix.domain.BuildAttribute;
 import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.CroOrderKey;
+import com.penske.apps.buildmatrix.domain.PlantProximity;
 import com.penske.apps.buildmatrix.domain.enums.BuildStatus;
 import com.penske.apps.buildmatrix.model.AvailableChassisSummaryModel;
 import com.penske.apps.buildmatrix.model.OrderSelectionForm;
@@ -152,17 +153,35 @@ public class BuildMatrixController {
 	 */
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping("/district-proximity")
-	public ModelAndView getDistrictProximity(@RequestParam("plantId") int plantId, @RequestParam("plantName") String plantName, 
-											 @RequestParam("plantCity") String plantCity, @RequestParam("plantState") String plantState) {
+	public ModelAndView getDistrictProximity(@RequestParam("plantId") int plantId) {
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/district-proximity");
 		model.addObject("freightMileageData", buildMatrixSmcService.getFreightMileageData(plantId));
 		model.addObject("districtProximityList", buildMatrixSmcService.getPlantProximity(plantId));
-		model.addObject("plantName", plantName);
-		model.addObject("plantCity", plantCity);
-		model.addObject("plantState", plantState);
+		model.addObject("plantData", buildMatrixSmcService.getPlantData(plantId));
 		return model;
 	}
 	
+	/**
+	 * method to save proximity configuration
+	 * @return 
+	 */
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping("/save-district-proximity")
+	public ModelAndView saveDistrictProximity(@RequestBody List<PlantProximity> plantProximityList,HttpServletResponse response) throws Exception {
+		int plantId = plantProximityList.get(0).getPlantId();
+		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/district-proximity");
+		try{
+			 buildMatrixSmcService.saveDistrictProximity(plantProximityList);
+			 model.addObject("freightMileageData", buildMatrixSmcService.getFreightMileageData(plantId));
+			 model.addObject("districtProximityList", buildMatrixSmcService.getPlantProximity(plantId));
+			 model.addObject("plantData", buildMatrixSmcService.getPlantData(plantId));
+			}catch (Exception e) {
+	            LOGGER.error("Error while saving proximity configuration: "+e.getMessage(),e);
+	            CommonUtils.getCommonErrorAjaxResponse(response,"Error Processing the Save proximity configuration.");
+	            model=null;
+	        }
+		 return model;
+	}
 	/**
 	 *Method to load offline dates setup model 
 	 */

@@ -24,8 +24,8 @@
 				<span class="errorMsg"> Hmm, something went wrong. See if you could try again. </span>
 			</div>
 			
-			<h1>Proximity Configuration - ${plantName} - ${plantCity}, ${plantState}</h1>
-			
+			<h1>Proximity Configuration - ${plantData.plantName} - ${plantData.city}, ${plantData.state}</h1>
+			<input type="hidden" id="plantId" value="${plantData.plantId}" >
 			<div class="tier-main-div">
 				<div class="tier-div vertical-line" id="tier1-div">
 					<div class="tier-header"><h2 id="tier1-header">Tier 1</h2></div>
@@ -43,9 +43,10 @@
 													<c:forEach items="${districtProximityList}" var="proximity">
 														<c:if test="${proximity.district eq district and proximity.tier eq 1}">
 															<c:set var="contains" value="true" />
+															<c:set var="proximityId" value="${proximity.proximityId}" />
 														</c:if>
 													</c:forEach>
-														<li class="district-values"><input type="checkbox" value="${district}"  <c:if test="${contains eq true}">checked="checked"</c:if> >${district}</li>
+														<li class="district-values"><input type="checkbox" class="district-checkbox" value="${district}"  area="${freightMileage.area}" tier=1 <c:if test="${contains eq true}">checked="checked" proximityId="${proximityId}"</c:if> >${district}</li>
 													</c:forEach>
 												</fieldset>
 											</ul>
@@ -73,7 +74,7 @@
 															<c:set var="contains" value="true" />
 														</c:if>
 													</c:forEach>
-														<li class="district-values"><input type="checkbox" value="${district}" <c:if test="${contains eq true}">checked="checked"</c:if> >${district}</li>
+														<li class="district-values"><input type="checkbox" class="district-checkbox" value="${district}"  area="${freightMileage.area}" tier=2 <c:if test="${contains eq true}">checked="checked" proximityId="${proximityId}"</c:if> >${district}</li>
 													</c:forEach>
 												</fieldset>
 											</ul>
@@ -102,7 +103,7 @@
 																<c:set var="contains" value="true" />
 															</c:if>
 														</c:forEach>
-														<li class="district-values"><input type="checkbox" value="${district}" <c:if test="${contains eq true}">checked= "checked"</c:if>>${district}</li>
+														<li class="district-values"><input type="checkbox" class="district-checkbox" value="${district}"  area="${freightMileage.area}" tier=3 <c:if test="${contains eq true}">checked="checked" proximityId="${proximityId}"</c:if> >${district}</li>
 													</c:forEach>
 												</fieldset>
 											</ul>
@@ -133,7 +134,7 @@
 			</div>
 			<div class="save-proximity">
 					<a href="${baseAppUrl}/admin-console/oem-build-matrix/maintenance-summary.htm" onclick="javascript:loadProcessImage();" class="buttonSecondary">Cancel</a>
-					<a href="#" class="buttonPrimary buttonDisabled" onClick="saveProximity()">Save</a>
+					<a id="save-proximitybtn" href="#" class="buttonPrimary buttonDisabled">Save</a>
 		    </div>
 		</div>
 	</div>

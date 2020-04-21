@@ -1,8 +1,8 @@
 $(document).ready(function() {
 	selectCurrentNavigation("tab-oem-build-matrix", "left-nav-maintenance-summary");
+	var proximityChangeCnt=0;
+	var proximityUpdateList=[];
 	
-	var $saveProximity = $('.saveProximity');
-
 	$("#tier1").on("keyup", function() {
 		var value = $(this).val().toLowerCase();
 		$("#list1 li").filter(function() {
@@ -24,23 +24,89 @@ $(document).ready(function() {
 		});
 	});
 
-	//Saves the proximity data
-	/*$saveProximity.on("click", function() {
-			//AJAX call for updating the T_AND_C frequency setting
-			$.ajax({
-				type: "POST",
-				url: 'insert-district-proximity.htm',
-				global: false,
-				data: {},
-				success: function() {
-					
-				},
-				error: function() {
-					
+	$('.district-checkbox').on("change",function(){
+		debugger;
+		var plantId=parseInt($('#plantId').val());
+		var area=$(this).attr('area');
+		var tier=parseInt($(this).attr('tier'));
+		var district = $(this).val();
+		var proximityId=($(this).attr('proximityId')!="" && $(this).attr('proximityId')!=undefined)?parseInt($(this).attr('proximityId')):"";
+		var proximityUpdateObj = {};
+		proximityUpdateObj['proximityId'] = proximityId;
+		proximityUpdateObj['plantId'] = plantId;
+		proximityUpdateObj['tier'] = tier;
+		proximityUpdateObj['district'] = district;
+		
+		if($(this).is(':checked'))
+			{//user selects a district
+			if(proximityId ==0 || proximityId=="")
+				{
+				//selected district to be inserted
+				proximityUpdateObj["removeDistrict"]=false;
+				proximityUpdateList.push(proximityUpdateObj);
+				proximityChangeCnt++;
 				}
-			});
-		}); */
+				
+			else{//in this case,user reverts selection
+
+				proximityUpdateList = $.grep(proximityUpdateList, function(e){ 
+				     return e.district != district && e.tier !=tier; 
+				});
+				proximityChangeCnt--;
+			}
+			}
+		else{//user de-selects a  district
+			if(proximityId !=0 && proximityId !="")
+				{
+				//selected district to be deleted
+				proximityUpdateObj["removeDistrict"]=true;
+				proximityUpdateList.push(proximityUpdateObj);
+				proximityChangeCnt++;
+				}
+			else{//in this case,user reverts selection
+				proximityUpdateList = $.grep(proximityUpdateList, function(e){ 
+				     return e.district != district && e.tier !=tier; 
+				});
+				proximityChangeCnt--;
+			}
+		}
+		//enable/disable save button
+		if (proximityUpdateList.length!=0) {
+			   $("#save-proximitybtn").removeClass("buttonDisabled"); 
+		   }
+		else{
+			 $("#save-proximitybtn").addClass("buttonDisabled");
+			}
+	});
 	
+	//Saves the proximity data
+	$('#save-proximitybtn').on("click",function(){
+		
+			if(proximityUpdateList && proximityUpdateList.length!=0)
+				{
+				showLoading();
+					var $saveProximityPromise = $.ajax({
+						type: "POST",
+						url:'./save-district-proximity.htm',
+						global: false,
+						data: JSON.stringify(proximityUpdateList),
+						contentType: 'application/json'
+					});
+					$saveProximityPromise.done(function(data){
+						hideLoading();
+						});
+					$saveProximityPromise.fail(function(xhr, ajaxOptions, thrownError) {
+						if(xhr.responseText.indexOf('Error Processing the Save proximity configuration.')>0){
+							  $('.errorMsg').text("Error Processing the Save proximity configuration.");
+								 $('#PopupError').show();
+						  }
+						  hideLoading();
+					});
+				}
+		
+			
+		
+	});
 });
 
 function getContextRoot() {

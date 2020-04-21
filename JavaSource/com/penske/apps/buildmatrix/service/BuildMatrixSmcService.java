@@ -29,6 +29,8 @@ public interface BuildMatrixSmcService {
 	
     public List<PlantProximity> getPlantProximity(int plantId);
     
+    public void saveDistrictProximity(List<PlantProximity> plantProximityData);
+    
     public List<BuildMatrixBodyPlant> getAllBodyPlants();
 	
 	public BuildMatrixBodyPlant getPlantData(int plantId);
