@@ -4,41 +4,34 @@
 	
 	<!-- District Proximity workflow -->
 
-	<resultMap id="freightMileageMap"
-		type="com.penske.apps.buildmatrix.domain.FreightMileage">
+	<resultMap id="freightMileageMap" type="com.penske.apps.buildmatrix.domain.FreightMileage">
 		<result property="plantId" column="plantId" />
 		<result property="area" column="area" />
-		<collection property="districts" column="{plantId=plantId,area=area}"
-			select="getFreightMileageDistricts"></collection>
+		<collection property="districts" column="{plantId=plantId,area=area}" select="getFreightMileageDistricts"></collection>
 	</resultMap>
 
 	<select id="getFreightMileageDistricts" resultType="String">
-		SELECT
-		OFM.DISTRICT AS districtValues
-		FROM SMC.OBM_FREIGHT_MILEAGE OFM
-		WHERE
-		OFM.PLANT_ID = #{plantId}
-		AND OFM.AREA = #{area}
+		SELECT   OFM.DISTRICT AS districtValues
+		FROM     SMC.OBM_FREIGHT_MILEAGE OFM
+		WHERE    OFM.PLANT_ID = #{plantId}
+		AND      OFM.AREA = #{area}
 	</select>
 
 	<select id="getPlantProximity" resultType="com.penske.apps.buildmatrix.domain.PlantProximity">
-		SELECT
-		PROXIMITY_ID as proximityId,
-		PLANT_ID as plantId,
-		TIER as tier,
-		DISTRICT
-		as district
-		FROM SMC.OBM_PLANT_PROXIMITY
-		WHERE PLANT_ID =#{plantId}
+		SELECT   PROXIMITY_ID as proximityId,
+		         PLANT_ID as plantId,
+		         TIER as tier,
+		         DISTRICT as district
+		FROM     SMC.OBM_PLANT_PROXIMITY
+		WHERE    PLANT_ID =#{plantId}
 	</select>
 
 	<select id="getFreightMileageData" resultMap="freightMileageMap">
-		SELECT OFM.PLANT_ID AS plantId,
-		OFM.AREA AS area
-		FROM SMC.OBM_FREIGHT_MILEAGE OFM
-		WHERE OFM.AREA <![CDATA[<>]]>
-		''
-		AND OFM.PLANT_ID = #{plantId}
+		SELECT   OFM.PLANT_ID AS plantId,
+		         OFM.AREA AS area
+		FROM     SMC.OBM_FREIGHT_MILEAGE OFM
+		WHERE    OFM.AREA <![CDATA[<>]]> ''
+		AND      OFM.PLANT_ID = #{plantId}
 		GROUP BY OFM.AREA, OFM.PLANT_ID
 		ORDER BY OFM.AREA
 	</select>
