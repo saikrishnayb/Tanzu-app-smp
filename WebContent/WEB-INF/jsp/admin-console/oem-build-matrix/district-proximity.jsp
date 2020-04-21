@@ -123,7 +123,7 @@
 								buttonDeSelectText : "",
 								buttonDeSelectAfterHTML : "<a class='no-text-decoration' id='check-uncheck-display'>Uncheck All</a>",
 						
-								buttonExtraClasses : ""
+								buttonExtraClasses : "select-deselect-all"
 							});
 						</script>
 						<script>

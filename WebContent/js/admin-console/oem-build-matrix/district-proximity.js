@@ -24,6 +24,9 @@ $(document).ready(function() {
 		});
 	});
 
+	$('.select-deselect-all').on("click",function(){
+		$(this).parent().parent().find('.district-checkbox').trigger("change");
+	});
 	$('.district-checkbox').on("change",function(){
 		debugger;
 		var plantId=parseInt($('#plantId').val());
@@ -65,7 +68,7 @@ $(document).ready(function() {
 				}
 			else{//in this case,user reverts selection
 				proximityUpdateList = $.grep(proximityUpdateList, function(e){ 
-				     return e.district != district && e.tier !=tier; 
+				     return ((e.district != district) && (e.tier !=tier)); 
 				});
 				proximityChangeCnt--;
 			}
