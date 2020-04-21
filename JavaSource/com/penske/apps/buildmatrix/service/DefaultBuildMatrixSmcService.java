@@ -112,58 +112,51 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	}
 	
 	@Override
-	 public List<FreightMileage> getFreightMileageData(int plantId)
-	{
+	public List<FreightMileage> getFreightMileageData(int plantId) {
 		List<FreightMileage> freightMileageData = buildMatrixSmcDAO.getFreightMileageData(plantId);
 		return freightMileageData;
 	}
-	
+
 	@Override
-	public List<PlantProximity> getPlantProximity(int plantId)
-	 {
+	public List<PlantProximity> getPlantProximity(int plantId) {
 		List<PlantProximity> plantProximityList = buildMatrixSmcDAO.getPlantProximity(plantId);
 		return plantProximityList;
-	 }
+	}
 	
 	@Override
 	@Transactional
-	public void saveDistrictProximity(List<PlantProximity> plantProximityData)
-	{
+	public void saveDistrictProximity(List<PlantProximity> plantProximityData) {
 		List<PlantProximity> proximityListToInsert= plantProximityData.stream().filter(p->(!p.isRemoveDistrict())).collect(Collectors.toList());
 		List<PlantProximity> ProximityListToRemove= plantProximityData.stream().filter(p->(p.isRemoveDistrict())).collect(Collectors.toList());
 		if(!proximityListToInsert.isEmpty()) buildMatrixSmcDAO.insertDistrictProximity(proximityListToInsert);
 		if(!ProximityListToRemove.isEmpty()) buildMatrixSmcDAO.removeDistrictProximity(ProximityListToRemove);
 	}
+	
 	@Override
-	public List<BuildMatrixBodyPlant> getAllBodyPlants()
-	{
-		List<BuildMatrixBodyPlant> bodyPlantSummary= buildMatrixSmcDAO.getAllBodyPlants();
+	public List<BuildMatrixBodyPlant> getAllBodyPlants() {
+		List<BuildMatrixBodyPlant> bodyPlantSummary = buildMatrixSmcDAO.getAllBodyPlants();
 		return bodyPlantSummary;
 	}
 	
 	@Override
-	public BuildMatrixBodyPlant getPlantData(int plantId)
-	{
+	public BuildMatrixBodyPlant getPlantData(int plantId) {
 		return buildMatrixSmcDAO.getPlantData(plantId);
 	}
 	
 	@Override
-	public int saveOfflineDates(BuildMatrixBodyPlant plantData)
-	{
+	public int saveOfflineDates(BuildMatrixBodyPlant plantData) {
 		return buildMatrixSmcDAO.saveOfflineDates(plantData);
 	}
 
 	@Override
-	public List<BuildAttribute> getAllBuildMatrixAttributes() 
-	{
+	public List<BuildAttribute> getAllBuildMatrixAttributes() {
 		List<BuildAttribute> buildMatrixAttribute = buildMatrixSmcDAO.getAllBuildMatrixAttributes();
 		return buildMatrixAttribute;
 	}
 
 	@Override
-	public void updateAttribute(int attributeId, List<Integer> attrValueIds)
-	{
-		//attributeDao.updateAttribute(attributeData); //need to confirm attribute name update
+	public void updateAttribute(int attributeId, List<Integer> attrValueIds) {
+		// attributeDao.updateAttribute(attributeData); //need to confirm attribute name update
 		buildMatrixSmcDAO.updateAttributeValues(attributeId, attrValueIds);
 	}
 	
@@ -180,11 +173,11 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		}
 		return isUnique;
 	}
+	
 	@Override
-	public BuildAttributeValue addAttribute(int attributeId, String attributeValue)
-	{
+	public BuildAttributeValue addAttribute(int attributeId, String attributeValue) {
 		BuildAttributeValue attrValue = new BuildAttributeValue(attributeValue);
-		buildMatrixSmcDAO.addAttribute(attributeId,attrValue);
+		buildMatrixSmcDAO.addAttribute(attributeId, attrValue);
 		return attrValue;
 	}
 	
