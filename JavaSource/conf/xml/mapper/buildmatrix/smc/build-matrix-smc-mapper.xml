@@ -45,7 +45,13 @@
 			(#{proximity.plantId}, #{proximity.tier}, #{proximity.district})
 		</foreach>
 	</insert>
-	
+	<select id="checkProximityAlreadyExists" resultType="int" >
+		SELECT COUNT(*)
+		FROM SMC.OBM_PLANT_PROXIMITY
+		WHERE PLANT_ID=#{plantId}
+			AND DISTRICT=#{district}
+			AND TIER=#{tier}
+	</select>
 	<update id="removeDistrictProximity">
 		DELETE FROM SMC.OBM_PLANT_PROXIMITY 
 		WHERE  PROXIMITY_ID IN (

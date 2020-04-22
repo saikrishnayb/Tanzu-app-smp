@@ -110,7 +110,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		}
 		return resultCapability;
 	}
-	
+	//***** DISTRICT PROXIMITY WORKFLOW *****//
 	@Override
 	public List<FreightMileage> getFreightMileageData(int plantId) {
 		List<FreightMileage> freightMileageData = buildMatrixSmcDAO.getFreightMileageData(plantId);
@@ -128,10 +128,23 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	public void saveDistrictProximity(List<PlantProximity> plantProximityData) {
 		List<PlantProximity> proximityListToInsert= plantProximityData.stream().filter(p->(!p.isRemoveDistrict())).collect(Collectors.toList());
 		List<PlantProximity> ProximityListToRemove= plantProximityData.stream().filter(p->(p.isRemoveDistrict())).collect(Collectors.toList());
-		if(!proximityListToInsert.isEmpty()) buildMatrixSmcDAO.insertDistrictProximity(proximityListToInsert);
+		if(!proximityListToInsert.isEmpty())
+			{
+			proximityListToInsert=checkForDuplicates(proximityListToInsert);
+			buildMatrixSmcDAO.insertDistrictProximity(proximityListToInsert);
+			}
 		if(!ProximityListToRemove.isEmpty()) buildMatrixSmcDAO.removeDistrictProximity(ProximityListToRemove);
 	}
 	
+	public List<PlantProximity> checkForDuplicates(List<PlantProximity> plantProximityData){
+		for(PlantProximity proximity:plantProximityData)
+		{
+			if(buildMatrixSmcDAO.checkProximityAlreadyExists(proximity)>0)
+				plantProximityData.remove(proximity);
+		}
+		return plantProximityData;
+	}
+	//***** PLANT MAINTENANCE WORKFLOW *****//
 	@Override
 	public List<BuildMatrixBodyPlant> getAllBodyPlants() {
 		List<BuildMatrixBodyPlant> bodyPlantSummary = buildMatrixSmcDAO.getAllBodyPlants();
@@ -148,6 +161,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		return buildMatrixSmcDAO.saveOfflineDates(plantData);
 	}
 
+	//*****ATTRIBUTE MAINENANCE WORKFLOW *****//
 	@Override
 	public List<BuildAttribute> getAllBuildMatrixAttributes() {
 		List<BuildAttribute> buildMatrixAttribute = buildMatrixSmcDAO.getAllBuildMatrixAttributes();
@@ -180,16 +194,6 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		buildMatrixSmcDAO.addAttribute(attributeId, attrValue);
 		return attrValue;
 	}
-	
-	// Mock service methods
-	/*private BuildMatrixAttribute getAttributeMockService(int attributeId) {
-		BuildMatrixAttribute resultAttribute = null;
-		for (BuildMatrixAttribute attribute : buildMatrixAttributeList) {
-			if (attribute.getAttributeId() == attributeId)
-				resultAttribute = attribute;
-		}
-		return resultAttribute;
-	}*/
 	
 	//***** BUILD MATRIX WORKFLOW *****//
 	

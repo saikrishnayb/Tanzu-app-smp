@@ -54,9 +54,14 @@ $(document).ready(function() {
 				}
 				
 			else{//in this case,user reverts selection
-
 				proximityUpdateList = $.grep(proximityUpdateList, function(e){ 
-				     return e.district != district && e.tier !=tier; 
+					var include=true;
+					if(e.district == district)
+						{
+						if(e.tier==tier) include=false;
+						}
+					return include;
+				    // return e.district != district && e.tier !=tier; 
 				});
 				proximityChangeCnt--;
 			}
@@ -71,7 +76,12 @@ $(document).ready(function() {
 				}
 			else{//in this case,user reverts selection
 				proximityUpdateList = $.grep(proximityUpdateList, function(e){ 
-				     return ((e.district != district) && (e.tier !=tier)); 
+					var include=true;
+					if(e.district == district)
+						{
+						if(e.tier==tier) include=false;
+						}
+					return include;
 				});
 				proximityChangeCnt--;
 			}
