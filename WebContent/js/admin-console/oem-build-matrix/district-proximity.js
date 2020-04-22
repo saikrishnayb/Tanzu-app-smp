@@ -8,6 +8,7 @@ $(document).ready(function() {
 		$("#list1 li").filter(function() {
 			$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
 		});
+		setMaxVericalLineHeight();
 	});
 
 	$("#tier2").on("keyup", function() {
@@ -15,6 +16,7 @@ $(document).ready(function() {
 		$("#list2 li").filter(function() {
 			$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
 		});
+		setMaxVericalLineHeight();
 	});
 
 	$("#tier3").on("keyup", function() {
@@ -22,6 +24,7 @@ $(document).ready(function() {
 		$("#list3 li").filter(function() {
 			$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
 		});
+		setMaxVericalLineHeight();
 	});
 
 	$('.select-deselect-all').on("click",function(){
