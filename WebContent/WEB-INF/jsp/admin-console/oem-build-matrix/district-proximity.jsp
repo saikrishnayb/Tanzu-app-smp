@@ -33,24 +33,27 @@
 						Filter <input id="tier1" class="filter" data-alf="#list1" type="text" placeholder="" />
 						<ul id="list1" class="filterable">
 							<c:forEach items="${freightMileageData}" var="freightMileage">
-										<li>
-											<label> ${freightMileage.area}</label>
-											<ul>
-												<fieldset class="fieldset">
-													<legend class="legend-view"></legend>
-													<c:forEach items="${freightMileage.districts}" var="district">
-													<c:set var="contains" value="false" />
-													<c:forEach items="${districtProximityList}" var="proximity">
-														<c:if test="${proximity.district eq district and proximity.tier eq 1}">
-															<c:set var="contains" value="true" />
-															<c:set var="proximityId" value="${proximity.proximityId}" />
-														</c:if>
-													</c:forEach>
-														<li class="district-values"><input type="checkbox" class="district-checkbox" value="${district}"  area="${freightMileage.area}" tier=1 <c:if test="${contains eq true}">checked="checked" proximityId="${proximityId}"</c:if> >${district}</li>
-													</c:forEach>
-												</fieldset>
-											</ul>
-										</li>
+								<li>
+									<label> ${freightMileage.area}</label>
+									<ul>
+										<fieldset class="fieldset">
+											<legend class="legend-view"></legend>
+											<c:forEach items="${freightMileage.districts}" var="district">
+												<c:set var="contains" value="false" />
+												<c:forEach items="${districtProximityList}" var="proximity">
+													<c:if test="${proximity.district eq district and proximity.tier eq 1}">
+														<c:set var="contains" value="true" />
+														<c:set var="proximityId" value="${proximity.proximityId}" />
+													</c:if>
+												</c:forEach>
+												<li class="district-values">
+													<input type="checkbox" class="district-checkbox" value="${district}" area="${freightMileage.area}" tier=1 
+														<c:if test="${contains eq true}">checked="checked" proximityId="${proximityId}"</c:if> >${district}
+												</li>
+											</c:forEach>
+										</fieldset>
+									</ul>
+								</li>
 							</c:forEach>
 						</ul>
 					</div>
@@ -62,24 +65,27 @@
 						Filter <input id="tier2" class="filter" data-alf="#list2" type="text" placeholder="">
 						<ul id="list2" class="filterable">
 							<c:forEach items="${freightMileageData}" var="freightMileage">
-										<li>
-											<label> ${freightMileage.area}</label>
-											<ul>
-												<fieldset class="fieldset">
-													<legend class="legend-view"></legend>
-													<c:forEach items="${freightMileage.districts}" var="district">
-													<c:set var="contains" value="false" />
-													<c:forEach items="${districtProximityList}" var="proximity">
-														<c:if test="${ proximity.tier eq 2 and proximity.district eq district}">
-															<c:set var="contains" value="true" />
-															<c:set var="proximityId" value="${proximity.proximityId}" />
-														</c:if>
-													</c:forEach>
-														<li class="district-values"><input type="checkbox" class="district-checkbox" value="${district}"  area="${freightMileage.area}" tier=2 <c:if test="${contains eq true}">checked="checked" proximityId="${proximityId}"</c:if> >${district}</li>
-													</c:forEach>
-												</fieldset>
-											</ul>
-										</li>
+								<li>
+									<label> ${freightMileage.area}</label>
+									<ul>
+										<fieldset class="fieldset">
+											<legend class="legend-view"></legend>
+											<c:forEach items="${freightMileage.districts}" var="district">
+												<c:set var="contains" value="false" />
+												<c:forEach items="${districtProximityList}" var="proximity">
+													<c:if test="${ proximity.tier eq 2 and proximity.district eq district}">
+														<c:set var="contains" value="true" />
+														<c:set var="proximityId" value="${proximity.proximityId}" />
+													</c:if>
+												</c:forEach>
+												<li class="district-values">
+													<input type="checkbox" class="district-checkbox" value="${district}" area="${freightMileage.area}" tier=2 
+														<c:if test="${contains eq true}">checked="checked" proximityId="${proximityId}"</c:if> >${district}
+												</li>
+											</c:forEach>
+										</fieldset>
+									</ul>
+								</li>
 							</c:forEach>
 						</ul>
 					</div>
@@ -92,24 +98,27 @@
 					
 						<ul id="list3" class="filterable">
 							<c:forEach items="${freightMileageData}" var="freightMileage">
-										<li>
-											<label> ${freightMileage.area}</label>
-											<ul>
-												<fieldset class="fieldset">
-													<legend class="legend-view"></legend>
-													<c:forEach items="${freightMileage.districts}" var="district">
-														<c:set var="contains" value="false" />
-														<c:forEach items="${districtProximityList}" var="proximity">
-															<c:if test="${proximity.tier eq 3 and proximity.district eq district}">
-																<c:set var="contains" value="true" />
-																<c:set var="proximityId" value="${proximity.proximityId}" />
-															</c:if>
-														</c:forEach>
-														<li class="district-values"><input type="checkbox" class="district-checkbox" value="${district}"  area="${freightMileage.area}" tier=3 <c:if test="${contains eq true}">checked="checked" proximityId="${proximityId}"</c:if> >${district}</li>
-													</c:forEach>
-												</fieldset>
-											</ul>
-										</li>
+								<li>
+									<label> ${freightMileage.area}</label>
+									<ul>
+										<fieldset class="fieldset">
+											<legend class="legend-view"></legend>
+											<c:forEach items="${freightMileage.districts}" var="district">
+												<c:set var="contains" value="false" />
+												<c:forEach items="${districtProximityList}" var="proximity">
+													<c:if test="${proximity.tier eq 3 and proximity.district eq district}">
+														<c:set var="contains" value="true" />
+														<c:set var="proximityId" value="${proximity.proximityId}" />
+													</c:if>
+												</c:forEach>
+												<li class="district-values">
+													<input type="checkbox" class="district-checkbox" value="${district}"  area="${freightMileage.area}" tier=3 
+														<c:if test="${contains eq true}">checked="checked" proximityId="${proximityId}"</c:if> >${district}
+													</li>
+											</c:forEach>
+										</fieldset>
+									</ul>
+								</li>
 							</c:forEach>
 						</ul>
 						<script>
