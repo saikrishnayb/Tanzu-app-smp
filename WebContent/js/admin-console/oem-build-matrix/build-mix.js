@@ -10,7 +10,9 @@ $('.attribute-container').each(function(){
 	$container.find('.attribute-value-row').each(function(){
 		var $row = $(this);
 		var $unitsInput = $row.find('.attribute-units');
-		var units = parseInt($unitsInput.val());
+		var unitsText = $unitsInput.val();
+		unitsText = unitsText.trim() == '' ? 0 : unitsText;
+		var units = parseInt(unitsText);
 		
 		var percentage = calculatePercentage(units, $container, isReefer, isRearDoor, isLiftgate);
 		$row.find('.attribute-percentage').val(percentage);
@@ -23,7 +25,9 @@ $('.attribute-container').on('input', '.attribute-units', function(){
 	var $unitsInput = $(this);
 	var $attributeValueRow = $unitsInput.closest('.attribute-value-row');
 	var $container = $attributeValueRow.closest('.attribute-container');
-	var units = parseInt($unitsInput.val());
+	var unitsText = $unitsInput.val();
+	unitsText = unitsText.trim() == '' ? 0 : unitsText;
+	var units = parseInt(unitsText);
 	
 	var isReefer = "REEFERMAKE" == $container.data('attribute-key');
 	var isRearDoor = "REARDOORMAKE" == $container.data('attribute-key');
@@ -62,7 +66,9 @@ $submitBtn.on('click', function(){
 			
 			var attributeValue = $row.data('attribute-value');
 			var percentage = parseFloat($row.find('.attribute-percentage').val());
-			var units = parseInt($row.find('.attribute-units').val());
+			var unitsText = $row.find('.attribute-units').val();
+			unitsText = unitsText.trim() == '' ? 0 : unitsText;
+			var units = parseInt(unitsText);
 			
 			var groupKeyInput = document.createElement('input');
 			groupKeyInput.type = 'hidden';
@@ -104,15 +110,24 @@ $submitBtn.on('click', function(){
 function calculatePercentage(units, $container, isReefer, isRearDoor, isLiftgate){
 	if(isReefer) {
 		var reeferUnits = $container.data('reefer-units');
-		return ((units/reeferUnits) * 100).toFixed(2);
+		if(reeferUnits == 0)
+			return 0.00;
+		else
+			return ((units/reeferUnits) * 100).toFixed(2);
 	}
 	else if(isRearDoor) {
 		var rearDoorUnits = $container.data('reardoor-units');
-		return ((units/rearDoorUnits) * 100).toFixed(2);
+		if(rearDoorUnits == 0)
+			return 0.00;
+		else
+			return ((units/rearDoorUnits) * 100).toFixed(2);
 	}
 	else if(isLiftgate) {
 		var liftgateUnits = $container.data('liftgate-units');
-		return ((units/liftgateUnits) * 100).toFixed(2);
+		if(liftgateUnits == 0)
+			return 0.00;
+		else
+			return ((units/liftgateUnits) * 100).toFixed(2);
 	}
 	else{
 		return ((units/bodiesOnOrder) * 100).toFixed(2);
@@ -128,7 +143,9 @@ function calculateTotals($container) {
 		var $row = $(this);
 		var percentage = parseFloat($row.find('.attribute-percentage').val());
 		totalPercentage += percentage;
-		var units = parseInt($row.find('.attribute-units').val());
+		var unitsText = $row.find('.attribute-units').val();
+		unitsText = unitsText.trim() == '' ? 0 : unitsText;
+		var units = parseInt(unitsText);
 		totalUnits += units;
 	});
 	
@@ -161,21 +178,26 @@ function checkTotals(){
 		else
 			unitsToCompare = bodiesOnOrder;
 			
-			
-		
-		if(totalUnits > unitsToCompare) {
+		if(totalUnits != unitsToCompare) {
 			$totalRow.addClass('text-danger');
 			enableSubmit = false;
 		}
 		else {
-			
-			if(totalUnits === unitsToCompare)
-				$totalRow.find('.total-percentage').text("100");
-			else
-				enableSubmit = false
-				
+			$totalRow.find('.total-percentage').text("100");
 			$totalRow.removeClass('text-danger');
 		}
+		
+		var $attributeValueRows = $container.find('.attribute-value-row');
+		$attributeValueRows.each(function(){
+			var $row = $(this);
+			var unitsText = $row.find('.attribute-units').val();
+			if(unitsText.trim() == ''){
+				enableSubmit = false;
+				$row.find('.attribute-units').addClass('error-input');
+			}
+			else
+				$row.find('.attribute-units').removeClass('error-input');
+		});
 	});
 	
 	if(enableSubmit)

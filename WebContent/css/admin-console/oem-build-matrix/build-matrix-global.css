@@ -12,3 +12,7 @@ textarea[disabled] {
 table.dataTable th {
   padding: 8px 10px !important;
 }
+
+.error-input {
+	background-color: #F7D9D9 !important;
+}
