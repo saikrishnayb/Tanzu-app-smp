@@ -166,8 +166,12 @@ function setMaxVericalLineHeight(obj) {
 					maxVerticalLineHeight = Math.max(tempVerticalLineHeight, tier1_div_height, tier2_div_height); 
 					break;
 			}
-		} 
-	} 
-	
-	$(".vertical-line, #tier3-div").height(maxVerticalLineHeight + 20 + "px");
+		}
+	}
+
+	if (maxVerticalLineHeight > defaultVerticalLineHeight) {
+		$(".vertical-line, #tier3-div").height(maxVerticalLineHeight + 20 + "px");
+	} else {
+		$(".vertical-line, #tier3-div").height(defaultVerticalLineHeight + 20 + "px");
+	}
 }
