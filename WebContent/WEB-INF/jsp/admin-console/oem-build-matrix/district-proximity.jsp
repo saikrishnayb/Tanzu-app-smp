@@ -7,9 +7,6 @@
 <%@ include file="../../../jsp/jsp-fragment/global/new/default-head-block.jsp"%>
 <script type="text/javascript" src="${baseUrl}/jQuery/jquery.accordion-live-filter.js"></script>
 <script type="text/javascript" src="${baseUrl}/jQuery/jquery.selectall.min.js"></script>
-<link href="${baseUrl}/css/jquery.multiselect.css" rel="stylesheet" type="text/css" />
-<link href="${baseUrl}/css/global/font-awesome.min.css" rel="stylesheet" type="text/css" />
-<link href="${baseUrl}/css/jquery.multiselect.filter.css" rel="stylesheet" type="text/css" />
 <link href="${baseUrl}/css/admin-console/oem-build-matrix/district-proximity.css" rel="stylesheet" type="text/css" />
 <link href="${baseUrl}/css/admin-console/oem-build-matrix/build-matrix-global.css" rel="stylesheet" type="text/css" />
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -151,8 +148,6 @@
 	</div>
 	
 	<%@ include file="../../../jsp/jsp-fragment/global/new/global-scripts.jsp"%>
-	<script type="text/javascript" src="${baseUrl}/jQuery/jquery.multiselect.js"></script>
-	<script type="text/javascript" src="${baseUrl}/jQuery/jquery.multiselect.filter.js"></script>
 	<script type="text/javascript" src="${baseUrl}/js/admin-console/oem-build-matrix/district-proximity.js"></script>
 </body>
 </html>
