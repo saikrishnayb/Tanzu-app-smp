@@ -34,11 +34,7 @@ public interface BuildMatrixSmcDAO {
 	
 	public List<PlantProximity> getPlantProximity(int plantId);
 	
-	public int insertDistrictProximity(@Param("plantProximityinsert")List<PlantProximity> plantProximityinsert);
-	
-	public int removeDistrictProximity(@Param("plantProximityRemove")List<PlantProximity> plantProximityRemove);
-	
-	public int checkProximityAlreadyExists(PlantProximity proximity);
+	public void saveDistrictProximity(@Param("plantProximityData")List<PlantProximity> plantProximityData);
 	
 	public List<BuildMatrixBodyPlant> getAllBodyPlants();
 	

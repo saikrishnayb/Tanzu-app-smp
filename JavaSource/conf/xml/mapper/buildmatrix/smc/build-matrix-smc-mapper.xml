@@ -36,31 +36,40 @@
 		ORDER BY OFM.AREA
 	</select>
 
-	<insert id="insertDistrictProximity">
-		INSERT INTO SMC.OBM_PLANT_PROXIMITY
-		(PLANT_ID,TIER,DISTRICT)
+	<update id="saveDistrictProximity">
+		MERGE INTO SMC.OBM_PLANT_PROXIMITY AS proximity USING
+		(
 		VALUES
-		<foreach collection="plantProximityinsert" item="proximity" separator=","
-			open="" close="">
-			(#{proximity.plantId}, #{proximity.tier}, #{proximity.district})
-		</foreach>
-	</insert>
-	<select id="checkProximityAlreadyExists" resultType="int" >
-		SELECT COUNT(*)
-		FROM SMC.OBM_PLANT_PROXIMITY
-		WHERE PLANT_ID=#{plantId}
-			AND DISTRICT=#{district}
-			AND TIER=#{tier}
-	</select>
-	<update id="removeDistrictProximity">
-		DELETE FROM SMC.OBM_PLANT_PROXIMITY 
-		WHERE  PROXIMITY_ID IN (
-		<foreach collection="plantProximityRemove" item="proximity" separator=","
-			open="" close="">
-			#{proximity.proximityId}
+		<foreach collection="plantProximityData" item="data" separator="," >
+			(
+				CAST(#{data.plantId} AS INTEGER),
+				CAST(#{data.tier} AS INTEGER),
+				CAST(#{data.district} AS VARCHAR(10))
+			)
 		</foreach>
 		)
+		AS input
+		(
+			PLANT_ID,TIER,DISTRICT
+		)
+		ON proximity.PLANT_ID=input.PLANT_ID AND proximity.TIER=input.TIER AND
+		proximity.DISTRICT=input.DISTRICT
+		WHEN MATCHED THEN DELETE
+		WHEN NOT MATCHED THEN
+		INSERT
+			(
+			PLANT_ID,
+			TIER,
+			DISTRICT
+			)
+		 VALUES
+			(
+			input.PLANT_ID,
+			input.TIER,
+			input.DISTRICT
+			)
 	</update>
+	
 	<!-- Plant Maintenance workflow -->
 	<select id="getAllBodyPlants" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant">
 		SELECT

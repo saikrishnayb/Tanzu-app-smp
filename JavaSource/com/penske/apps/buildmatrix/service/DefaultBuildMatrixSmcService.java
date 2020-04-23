@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -126,24 +125,9 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	@Override
 	@Transactional
 	public void saveDistrictProximity(List<PlantProximity> plantProximityData) {
-		List<PlantProximity> proximityListToInsert= plantProximityData.stream().filter(p->(!p.isRemoveDistrict())).collect(Collectors.toList());
-		List<PlantProximity> ProximityListToRemove= plantProximityData.stream().filter(p->(p.isRemoveDistrict())).collect(Collectors.toList());
-		if(!proximityListToInsert.isEmpty())
-			{
-			proximityListToInsert=checkForDuplicates(proximityListToInsert);
-			buildMatrixSmcDAO.insertDistrictProximity(proximityListToInsert);
-			}
-		if(!ProximityListToRemove.isEmpty()) buildMatrixSmcDAO.removeDistrictProximity(ProximityListToRemove);
+		buildMatrixSmcDAO.saveDistrictProximity(plantProximityData);
 	}
 	
-	public List<PlantProximity> checkForDuplicates(List<PlantProximity> plantProximityData){
-		for(PlantProximity proximity:plantProximityData)
-		{
-			if(buildMatrixSmcDAO.checkProximityAlreadyExists(proximity)>0)
-				plantProximityData.remove(proximity);
-		}
-		return plantProximityData;
-	}
 	//***** PLANT MAINTENANCE WORKFLOW *****//
 	@Override
 	public List<BuildMatrixBodyPlant> getAllBodyPlants() {
