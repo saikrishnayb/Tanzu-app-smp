@@ -95,7 +95,7 @@ public class BuildMatrixRestController {
 	@ResponseBody
 	public ModelAndView getAddAttributeContent(@RequestParam("attributeId") int attributeId, HttpServletResponse response) {
 		BuildAttribute buildAttribute = buildMatrixSmcService.getBuildAttributeById(attributeId);
-		ModelAndView model = new ModelAndView("/jsp-fragment/admin-console/oem-build-matrix/edit-attribute-modal");
+		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/modal/add-update-attribute-modal");
 		try {
 			model.addObject("addPopup", true);
 			model.addObject("buildAttribute", buildAttribute);
@@ -116,7 +116,7 @@ public class BuildMatrixRestController {
 	@ResponseBody
 	public ModelAndView getEditAttributeContent(@RequestParam("attributeId") int attributeId, HttpServletResponse response) {
 		BuildAttribute buildAttribute = buildMatrixSmcService.getBuildAttributeById(attributeId);
-		ModelAndView model = new ModelAndView("/jsp-fragment/admin-console/oem-build-matrix/edit-attribute-modal");
+		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/modal/add-update-attribute-modal");
 		try {
 			model.addObject("editPopup", true);
 			model.addObject("buildAttribute", buildAttribute);

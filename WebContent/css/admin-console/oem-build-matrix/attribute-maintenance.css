@@ -129,6 +129,6 @@
 }
 /* End of Edit Attribute Content style */
 
-.popupModal .row{ 
-	margin-top:10px;
+body {
+	overflow-y: hidden !important;
 }

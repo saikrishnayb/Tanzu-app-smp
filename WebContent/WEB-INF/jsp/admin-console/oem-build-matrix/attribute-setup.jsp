@@ -44,9 +44,9 @@
 							<c:forEach items="${attributeList}" var="attribute">
 								<tr class="attribute-row" data-attribute-id="${attribute.attributeId}">
 									<td class="data-view">
-										<a href="#" class="edit-attribute">Update</a>
+										<a class="edit-attribute secondaryLink">Update</a>
 										<span class="display-color">|</span> 
-									    <a href="#" class="add-attribute">Add</a>
+									    <a class="add-attribute secondaryLink">Add</a>
 									    <input type="hidden" class="edit-attribute-id" value="${attribute.attributeId}" />
 									</td>
 									<td>${attribute.attributeName}</td>
@@ -62,8 +62,7 @@
 				</div>
 			</div>
 			
-			<div id="edit-attribute-modal" class="edit-attribute modal"></div>
-			<div id="add-attribute-modal" class="add-attribute modal"></div>
+			<div id="add-update-attribute-modal" class="modal row"></div>
 		</div>
 	</div>
 	
