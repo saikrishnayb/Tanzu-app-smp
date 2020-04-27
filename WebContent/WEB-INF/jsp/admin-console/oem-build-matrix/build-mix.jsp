@@ -86,25 +86,26 @@
 			      										<tr class="attribute-value-row ${rowClass}" data-attribute-value="${attributeValue.attributeValue}">
 			      											<td class="attribute-value-td">${attributeValue.attributeValue}</td>
 			      											<td class="attribute-percentage-td unit-percent-input">
-			      												<input type="text" class="attribute-percentage text-align-right" value="0" disabled />
+			      												<input type="text" class="attribute-percentage text-align-right numbers-only" value="0" />
 			      												<span class="percent-sign">%</span>
 			      											</td>
 			      											<!-- <td>%<td> -->
 			      											<td class="attribute-units-td unit-percent-input">
 				      											<c:choose>
 				      												<c:when test="${isReefer}">
-			      														<input type="text" class="attribute-units text-align-right" value="${attributeValue.getUnitsByPercentage(reeferUnits)}"/>
+				      													<c:set var="unitsValue" value="${attributeValue.getUnitsByPercentage(reeferUnits)}"/>
 				      												</c:when>
 				      												<c:when test="${isRearDoor}">
-			      														<input type="text" class="attribute-units text-align-right" value="${attributeValue.getUnitsByPercentage(reardoorUnits)}"/>
+				      													<c:set var="unitsValue" value="${attributeValue.getUnitsByPercentage(reardoorUnits)}"/>
 				      												</c:when>
 				      												<c:when test="${isLiftgate}">
-			      														<input type="text" class="attribute-units text-align-right" value="${attributeValue.getUnitsByPercentage(liftgateUnits)}"/>
+				      													<c:set var="unitsValue" value="${attributeValue.getUnitsByPercentage(liftgateUnits)}"/>
 				      												</c:when>
 				      												<c:otherwise>
-			      														<input type="text" class="attribute-units text-align-right" value="${attributeValue.getUnitsByPercentage(bodiesOnOrder)}"/>
+				      													<c:set var="unitsValue" value="${attributeValue.getUnitsByPercentage(bodiesOnOrder)}"/>
 				      												</c:otherwise>
 				      											</c:choose>
+				      											<input type="text" class="attribute-units text-align-right numbers-only" value="${unitsValue}"/>
 				      											<span class="units-label">Units</span>
 				      										</td>
 			      											<!-- <td>Units</td> -->
@@ -171,6 +172,6 @@
 		
 		<%@ include file="../../../jsp/jsp-fragment/global/new/global-scripts.jsp"%>
 		<script src="${baseUrl}/js/admin-console/oem-build-matrix/build-mix.js" type="text/javascript"></script>
-		
+		<script src="${baseUrl}/js/admin-console/oem-build-matrix/build-matrix-global.js" type="text/javascript"></script>
 	</body>
 </html>
