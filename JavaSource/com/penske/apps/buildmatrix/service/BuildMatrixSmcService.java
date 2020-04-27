@@ -11,6 +11,7 @@ import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.CroOrderKey;
 import com.penske.apps.buildmatrix.domain.FreightMileage;
 import com.penske.apps.buildmatrix.domain.PlantProximity;
+import com.penske.apps.buildmatrix.domain.ProductionSlotResult;
 import com.penske.apps.buildmatrix.model.BuildMixForm;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm;
 import com.penske.apps.suppliermgmt.model.UserContext;
@@ -40,6 +41,9 @@ public interface BuildMatrixSmcService {
 	public BuildAttributeValue addAttribute(int attributeId, String attributeValue);
 	
 	public boolean checkForUniqueAttributeValue(int attributeId, String attributeValue);
+	
+	// PRODUCTION SLOT RESULTS //
+	public List<ProductionSlotResult> getProductionSlotResults(int buildId);
 	
 	//***** BUILD MATRIX WORKFLOW *****//
 	

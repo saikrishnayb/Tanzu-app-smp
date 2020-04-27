@@ -28,6 +28,7 @@ import com.penske.apps.buildmatrix.domain.BusinessAwardDefault;
 import com.penske.apps.buildmatrix.domain.CroOrderKey;
 import com.penske.apps.buildmatrix.domain.FreightMileage;
 import com.penske.apps.buildmatrix.domain.PlantProximity;
+import com.penske.apps.buildmatrix.domain.ProductionSlotResult;
 import com.penske.apps.buildmatrix.domain.enums.BuildStatus;
 import com.penske.apps.buildmatrix.model.BuildMixForm;
 import com.penske.apps.buildmatrix.model.BuildMixForm.AttributeRow;
@@ -170,6 +171,11 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 			}
 		}
 		return isUnique;
+	}
+	//****PRODUCTION SLOT RESULTS WORKFLOW****//
+	public List<ProductionSlotResult> getProductionSlotResults(int buildId) {
+		List<ProductionSlotResult> productionSlotResults = buildMatrixSmcDAO.getProductionSlotResults(buildId);
+		return productionSlotResults;
 	}
 	
 	@Override

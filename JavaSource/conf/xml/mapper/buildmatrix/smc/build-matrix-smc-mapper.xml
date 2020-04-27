@@ -109,6 +109,25 @@
 		WHERE PLANT_ID=#{plantId}
 	</update>
 
+	<!-- PRODUCTION SLOT RESULTS -->
+	<select id="getProductionSlotResults" resultType="com.penske.apps.buildmatrix.domain.ProductionSlotResult">
+		SELECT
+			slot_req.ORDER_ID AS orderId,
+			slot_reserve.UNIT_NUMBER AS unitNumber,
+			slot_req.DESTINATION_DISTRICT AS districtNumber,
+			slot_req.DESTINATION_DELIVERY_DATE AS requestedDeliveryDate,
+			plant.PLANT_MANUFACTURER ||'-' ||plant.PLANT_CITY ||',' ||plant.PLANT_STATE AS productionSlot
+		FROM 
+			OBM_RUN_SUMMARY run_summary
+			JOIN smc.OBM_SLOT_REQUEST slot_req
+			    ON slot_req.RUN_ID=run_summary.RUN_ID
+			LEFT JOIN smc.OBM_SLOT_RESERVATION slot_reserve 
+				ON slot_reserve.SLOT_REQUEST_ID = slot_req.SLOT_REQUEST_ID
+			LEFT JOIN smc.OBM_SLOTS slot ON slot.SLOT_ID=slot_reserve.SLOT_ID
+			LEFT JOIN smc.OBM_PLANTS plant ON plant.PLANT_ID = slot.PLANT_ID
+		WHERE
+			 run_summary.RUN_ID=#{buildId}
+	</select>
 	<!--***** BUILD MATRIX WORKFLOW *****-->
 	
 	<!-- BUILD HISTROY -->

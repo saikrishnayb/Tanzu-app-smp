@@ -234,6 +234,16 @@ public class BuildMatrixController {
 		return model;
 	}
 	
+	// VIEW SLOT RESULTS //
+	
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping("/view-slot-results")
+	public ModelAndView viewSlotResults(@RequestParam("buildId") int buildId) {
+		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/production-slot-results");
+		model.addObject("slotResults", buildMatrixSmcService.getProductionSlotResults(buildId));
+		return model;
+	}
+	
 	// ORDER SUMMARY //
 	/**
 	 * method to load order-summary screen

@@ -63,8 +63,11 @@
 										<td>
 											<c:choose>
 												<c:when test="${buildHistory.showViewReportBtn()}">
-												<a class=""> View Report</a> 
-												</c:when>
+												<a class=""
+													onclick="processingImageAndTextHandler('visible','Loading data...');"
+													href="view-slot-results.htm?buildId=${buildHistory.buildId}">
+													View Report</a>
+											</c:when>
 												<c:otherwise>
 												</c:otherwise>
 											</c:choose>

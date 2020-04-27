@@ -16,6 +16,7 @@ import com.penske.apps.buildmatrix.domain.BusinessAwardDefault;
 import com.penske.apps.buildmatrix.domain.CroOrderKey;
 import com.penske.apps.buildmatrix.domain.FreightMileage;
 import com.penske.apps.buildmatrix.domain.PlantProximity;
+import com.penske.apps.buildmatrix.domain.ProductionSlotResult;
 import com.penske.apps.buildmatrix.domain.enums.BuildStatus;
 import com.penske.apps.suppliermgmt.annotation.DBSmc;
 
@@ -51,7 +52,9 @@ public interface BuildMatrixSmcDAO {
 	public void addAttribute(@Param("attributeId") int attributeId, @Param("attributeValue") BuildAttributeValue attributeValue);
 	
     public List<String> getAllAttributeValues(@Param("attributeId") int attributeId);
-	
+    
+	// PRODUCTION SLOT RESULTS //
+    public List<ProductionSlotResult> getProductionSlotResults(@Param("buildId")int buildId);
 	
 	//***** BUILD MATRIX WORKFLOW *****//
 	
