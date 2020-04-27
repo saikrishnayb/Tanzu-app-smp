@@ -27,6 +27,7 @@ import com.penske.apps.buildmatrix.domain.BuildAttribute;
 import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.CroOrderKey;
+import com.penske.apps.buildmatrix.domain.FreightMileage;
 import com.penske.apps.buildmatrix.domain.PlantProximity;
 import com.penske.apps.buildmatrix.domain.enums.BuildStatus;
 import com.penske.apps.buildmatrix.model.AvailableChassisSummaryModel;
@@ -155,9 +156,16 @@ public class BuildMatrixController {
 	@RequestMapping("/district-proximity")
 	public ModelAndView getDistrictProximity(@RequestParam("plantId") int plantId) {
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/district-proximity");
-		model.addObject("freightMileageData", buildMatrixSmcService.getFreightMileageData(plantId));
-		model.addObject("districtProximityList", buildMatrixSmcService.getPlantProximity(plantId));
-		model.addObject("plantData", buildMatrixSmcService.getPlantData(plantId));
+			List<FreightMileage> freightMileage = buildMatrixSmcService.getFreightMileageData(plantId);
+			if(freightMileage.size() > 0){
+				model.addObject("freightMileageData", freightMileage);
+				model.addObject("isDataAvailable", true);
+				model.addObject("districtProximityList", buildMatrixSmcService.getPlantProximity(plantId));
+			}
+			
+			model.addObject("plantData", buildMatrixSmcService.getPlantData(plantId));
+	      
+		
 		return model;
 	}
 	
