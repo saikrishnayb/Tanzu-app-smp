@@ -20,133 +20,167 @@
 			<div id="PopupError" style="display:none">
 				<span class="errorMsg"> Hmm, something went wrong. See if you could try again. </span>
 			</div>
-			
+
 			<h1>Proximity Configuration - ${plantData.plantName} - ${plantData.city}, ${plantData.state}</h1>
-			<input type="hidden" id="plantId" value="${plantData.plantId}" >
-			<div class="tier-main-div">
-				<div class="tier-div vertical-line" id="tier1-div">
-					<div class="tier-header"><h2 id="tier1-header">Tier 1</h2></div>
-					<div class="tier-filter-div" id="tier1-filter-div">
-						Filter <input id="tier1" class="filter" data-alf="#list1" type="text" placeholder="" />
-						<ul id="list1" class="filterable">
-							<c:forEach items="${freightMileageData}" var="freightMileage">
-								<li>
-									<label> ${freightMileage.area}</label>
-									<ul>
-										<fieldset class="fieldset">
-											<legend class="legend-view"></legend>
-											<c:forEach items="${freightMileage.districts}" var="district">
-												<c:set var="contains" value="false" />
-												<c:forEach items="${districtProximityList}" var="proximity">
-													<c:if test="${proximity.district eq district and proximity.tier eq 1}">
-														<c:set var="contains" value="true" />
-														<c:set var="proximityId" value="${proximity.proximityId}" />
-													</c:if>
-												</c:forEach>
-												<li class="district-values">
-													<input type="checkbox" class="district-checkbox" value="${district}" area="${freightMileage.area}" tier=1 
-														<c:if test="${contains eq true}">checked="checked" proximityId="${proximityId}"</c:if> >${district}
-												</li>
-											</c:forEach>
-										</fieldset>
-									</ul>
-								</li>
-							</c:forEach>
-						</ul>
-					</div>
-				</div>
+			<input type="hidden" id="plantId" value="${plantData.plantId}">
+			<c:choose>
+				<c:when test="${isDataAvailable eq true}">
+					<div class="tier-main-div">
+						<div class="tier-div vertical-line" id="tier1-div">
+							<div class="tier-header">
+								<h2 id="tier1-header">Tier 1</h2>
+							</div>
+							<div class="tier-filter-div" id="tier1-filter-div">
+								Filter <input id="tier1" class="filter" data-alf="#list1"
+									type="text" placeholder="" />
+								<ul id="list1" class="filterable">
+									<c:forEach items="${freightMileageData}" var="freightMileage">
+										<li><label> ${freightMileage.area}</label>
+											<ul>
+												<fieldset class="fieldset">
+													<legend class="legend-view"></legend>
+													<c:forEach items="${freightMileage.districts}"
+														var="district">
+														<c:set var="contains" value="false" />
+														<c:forEach items="${districtProximityList}"
+															var="proximity">
+															<c:if
+																test="${proximity.district eq district and proximity.tier eq 1}">
+																<c:set var="contains" value="true" />
+																<c:set var="proximityId"
+																	value="${proximity.proximityId}" />
+															</c:if>
+														</c:forEach>
+														<li class="district-values"><input type="checkbox"
+															class="district-checkbox" value="${district}"
+															area="${freightMileage.area}" tier=1
+															<c:if test="${contains eq true}">checked="checked" proximityId="${proximityId}"</c:if>>${district}
+														</li>
+													</c:forEach>
+												</fieldset>
+											</ul></li>
+									</c:forEach>
+								</ul>
+							</div>
+						</div>
+
+						<div class="tier-div vertical-line" id="tier2-div">
+							<div class="tier-header">
+								<h2 id="tier2-header">Tier 2</h2>
+							</div>
+							<div class="tier-filter-div" id="tier2-filter-div">
+								Filter <input id="tier2" class="filter" data-alf="#list2"
+									type="text" placeholder="">
+								<ul id="list2" class="filterable">
+									<c:forEach items="${freightMileageData}" var="freightMileage">
+										<li><label> ${freightMileage.area}</label>
+											<ul>
+												<fieldset class="fieldset">
+													<legend class="legend-view"></legend>
+													<c:forEach items="${freightMileage.districts}"
+														var="district">
+														<c:set var="contains" value="false" />
+														<c:forEach items="${districtProximityList}"
+															var="proximity">
+															<c:if
+																test="${ proximity.tier eq 2 and proximity.district eq district}">
+																<c:set var="contains" value="true" />
+																<c:set var="proximityId"
+																	value="${proximity.proximityId}" />
+															</c:if>
+														</c:forEach>
+														<li class="district-values"><input type="checkbox"
+															class="district-checkbox" value="${district}"
+															area="${freightMileage.area}" tier=2
+															<c:if test="${contains eq true}">checked="checked" proximityId="${proximityId}"</c:if>>${district}
+														</li>
+													</c:forEach>
+												</fieldset>
+											</ul></li>
+									</c:forEach>
+								</ul>
+							</div>
+						</div>
+
+						<div class="tier-div" id="tier3-div">
+							<div class="tier-header">
+								<h2 id="tier3-header">Tier 3</h2>
+							</div>
+							<div class="tier-filter-div" id="tier3-filter-div">
+								Filter <input id="tier3" class="filter" data-alf="#list3"
+									type="text" placeholder="">
+
+								<ul id="list3" class="filterable">
+									<c:forEach items="${freightMileageData}" var="freightMileage">
+										<li><label> ${freightMileage.area}</label>
+											<ul>
+												<fieldset class="fieldset">
+													<legend class="legend-view"></legend>
+													<c:forEach items="${freightMileage.districts}"
+														var="district">
+														<c:set var="contains" value="false" />
+														<c:forEach items="${districtProximityList}"
+															var="proximity">
+															<c:if
+																test="${proximity.tier eq 3 and proximity.district eq district}">
+																<c:set var="contains" value="true" />
+																<c:set var="proximityId"
+																	value="${proximity.proximityId}" />
+															</c:if>
+														</c:forEach>
+														<li class="district-values"><input type="checkbox"
+															class="district-checkbox" value="${district}"
+															area="${freightMileage.area}" tier=3
+															<c:if test="${contains eq true}">checked="checked" proximityId="${proximityId}"</c:if>>${district}
+														</li>
+													</c:forEach>
+												</fieldset>
+											</ul></li>
+									</c:forEach>
+								</ul>
+								<script>
+									$("fieldset").selectAll({
+										buttonParent : "legend",
+										buttonWrapperHTML : "",
 								
-				<div class="tier-div vertical-line" id="tier2-div">
-					<div class="tier-header"><h2 id="tier2-header">Tier 2</h2></div>
-					<div class="tier-filter-div" id="tier2-filter-div">
-						Filter <input id="tier2" class="filter" data-alf="#list2" type="text" placeholder="">
-						<ul id="list2" class="filterable">
-							<c:forEach items="${freightMileageData}" var="freightMileage">
-								<li>
-									<label> ${freightMileage.area}</label>
-									<ul>
-										<fieldset class="fieldset">
-											<legend class="legend-view"></legend>
-											<c:forEach items="${freightMileage.districts}" var="district">
-												<c:set var="contains" value="false" />
-												<c:forEach items="${districtProximityList}" var="proximity">
-													<c:if test="${ proximity.tier eq 2 and proximity.district eq district}">
-														<c:set var="contains" value="true" />
-														<c:set var="proximityId" value="${proximity.proximityId}" />
-													</c:if>
-												</c:forEach>
-												<li class="district-values">
-													<input type="checkbox" class="district-checkbox" value="${district}" area="${freightMileage.area}" tier=2 
-														<c:if test="${contains eq true}">checked="checked" proximityId="${proximityId}"</c:if> >${district}
-												</li>
-											</c:forEach>
-										</fieldset>
-									</ul>
-								</li>
-							</c:forEach>
-						</ul>
+										buttonSelectBeforeHTML : "<span class='ui-icon ui-icon-check' id='check-uncheck-display'></span>",
+										buttonSelectText : "",
+										buttonSelectAfterHTML : "<a class='no-text-decoration' id='check-uncheck-display'>Check All</a>",
+								
+										buttonDeSelectBeforeHTML : "<span id='right-padding'></span><span class='ui-icon ui-icon-closethick' id='check-uncheck-display'></span>",
+										buttonDeSelectText : "",
+										buttonDeSelectAfterHTML : "<a class='no-text-decoration' id='check-uncheck-display'>Uncheck All</a>",
+								
+										buttonExtraClasses : "select-deselect-all"
+									});
+								</script>
+								<script>
+									$('.filter').accordionLiveFilter();
+								</script>
+							</div>
+						</div>
 					</div>
-				</div>
-				
-				<div class="tier-div" id="tier3-div">
-					<div class="tier-header"><h2 id="tier3-header">Tier 3</h2></div>
-					<div class="tier-filter-div" id="tier3-filter-div">
-						Filter <input id="tier3" class="filter" data-alf="#list3" type="text" placeholder="">
-					
-						<ul id="list3" class="filterable">
-							<c:forEach items="${freightMileageData}" var="freightMileage">
-								<li>
-									<label> ${freightMileage.area}</label>
-									<ul>
-										<fieldset class="fieldset">
-											<legend class="legend-view"></legend>
-											<c:forEach items="${freightMileage.districts}" var="district">
-												<c:set var="contains" value="false" />
-												<c:forEach items="${districtProximityList}" var="proximity">
-													<c:if test="${proximity.tier eq 3 and proximity.district eq district}">
-														<c:set var="contains" value="true" />
-														<c:set var="proximityId" value="${proximity.proximityId}" />
-													</c:if>
-												</c:forEach>
-												<li class="district-values">
-													<input type="checkbox" class="district-checkbox" value="${district}"  area="${freightMileage.area}" tier=3 
-														<c:if test="${contains eq true}">checked="checked" proximityId="${proximityId}"</c:if> >${district}
-													</li>
-											</c:forEach>
-										</fieldset>
-									</ul>
-								</li>
-							</c:forEach>
-						</ul>
-						<script>
-							$("fieldset").selectAll({
-								buttonParent : "legend",
-								buttonWrapperHTML : "",
-						
-								buttonSelectBeforeHTML : "<span class='ui-icon ui-icon-check' id='check-uncheck-display'></span>",
-								buttonSelectText : "",
-								buttonSelectAfterHTML : "<a class='no-text-decoration' id='check-uncheck-display'>Check All</a>",
-						
-								buttonDeSelectBeforeHTML : "<span id='right-padding'></span><span class='ui-icon ui-icon-closethick' id='check-uncheck-display'></span>",
-								buttonDeSelectText : "",
-								buttonDeSelectAfterHTML : "<a class='no-text-decoration' id='check-uncheck-display'>Uncheck All</a>",
-						
-								buttonExtraClasses : "select-deselect-all"
-							});
-						</script>
-						<script>
-							$('.filter').accordionLiveFilter();
-						</script>
+
+					<div class="save-proximity">
+						<a
+							href="${baseAppUrl}/admin-console/oem-build-matrix/maintenance-summary.htm"
+							onclick="javascript:loadProcessImage();" class="buttonSecondary">Cancel</a>
+						<a id="save-proximitybtn" href="#"
+							class="buttonPrimary buttonDisabled">Save</a>
 					</div>
-				</div>
-			</div>
-			<div class="save-proximity">
-					<a href="${baseAppUrl}/admin-console/oem-build-matrix/maintenance-summary.htm" onclick="javascript:loadProcessImage();" class="buttonSecondary">Cancel</a>
-					<a id="save-proximitybtn" href="#" class="buttonPrimary buttonDisabled">Save</a>
-		    </div>
+				</c:when>
+				<c:otherwise>
+					<div>No data found</div>
+					<div class="cancel-button-container">
+						<a
+							href="${baseAppUrl}/admin-console/oem-build-matrix/maintenance-summary.htm"
+							onclick="javascript:loadProcessImage();" class="buttonSecondary">Cancel</a>
+					</div>
+				</c:otherwise>
+			</c:choose>
 		</div>
 	</div>
-	
+
 	<%@ include file="../../../jsp/jsp-fragment/global/new/global-scripts.jsp"%>
 	<script type="text/javascript" src="${baseUrl}/js/admin-console/oem-build-matrix/district-proximity.js"></script>
 </body>

@@ -116,3 +116,9 @@ ul, #myUL {
   text-align: right;
   width: 100%;
 }
+
+.cancel-button-container{
+  position:fixed;
+  bottom:10%;
+  padding: 5px 920px;
+}
