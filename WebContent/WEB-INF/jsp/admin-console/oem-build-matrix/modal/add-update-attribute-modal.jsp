@@ -50,10 +50,12 @@
 							<div class="col-xs-7">
 								<input style="width: 173px;" class="attributeValue input alpha alpha-numeric" id="attributeValue" type="text"
 									maxlength="20"/>
-								<div id="ErrorMsg" class="error-text floatLeft error-messages-container displayNone">
-									<img src="${commonStaticUrl}/images/warning.png"></img>
-										<span class="errorMsg"></span>
-								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div id="ErrorMsg" class="col-xs-7 col-xs-offset-5 error-text floatLeft error-messages-container displayNone">
+								<img src="${commonStaticUrl}/images/warning.png"></img>
+								<span class="errorMsg"></span>
 							</div>
 						</div>
 					</c:otherwise>
