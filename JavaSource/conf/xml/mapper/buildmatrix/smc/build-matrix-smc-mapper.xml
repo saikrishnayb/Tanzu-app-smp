@@ -147,7 +147,12 @@
 		FROM SMC.OBM_RUN_SUMMARY runSummary
 		LEFT JOIN SMC.SMC_USER_MASTER starter ON starter.SSO = runSummary.STARTED_BY
 		LEFT JOIN SMC.SMC_USER_MASTER submitter ON submitter.SSO = runSummary.SUBMITTED_BY
-		ORDER BY (CASE WHEN buildStatus = 'P' THEN 0 ELSE 1 END), buildId
+		ORDER BY 
+			(CASE WHEN buildStatus = 'P' THEN 0 ELSE 1 END), 
+			(CASE WHEN buildStatus = 'S' THEN 0 ELSE 1 END), 
+			(CASE WHEN buildStatus = 'R' THEN 0 ELSE 1 END), 
+			(CASE WHEN buildStatus = 'F' THEN 0 ELSE 1 END), 
+			buildId
 	</select>
 	
 	<!-- BUILD FUNCTIONS -->
