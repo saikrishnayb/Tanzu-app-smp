@@ -41,7 +41,7 @@ public class BuildSummary {
 	}
 	
 	public boolean showViewReportBtn() {
-		if(BuildStatus.COMPLETED == buildStatus || BuildStatus.COMPLETED_WITH_EXCEPTIONS == buildStatus)
+		if(BuildStatus.COMPLETED == buildStatus)
 			return true;
 		else
 			return false;
