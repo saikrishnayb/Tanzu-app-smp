@@ -114,19 +114,30 @@
 		SELECT
 			slot_req.ORDER_ID AS orderId,
 			slot_reserve.UNIT_NUMBER AS unitNumber,
+			slot_req.PROGRAM_NAME AS programName,
+			mileage.REGION AS region,
+			mileage.AREA AS area,
 			slot_req.DESTINATION_DISTRICT AS districtNumber,
+			slot_req.DESTINATION_DISTRICT_NAME AS districtName,
 			slot_req.DESTINATION_DELIVERY_DATE AS requestedDeliveryDate,
-			plant.PLANT_MANUFACTURER ||'-' ||plant.PLANT_CITY ||',' ||plant.PLANT_STATE AS productionSlot
+			plant.PLANT_MFR_CODE ||'-' ||plant.PLANT_CITY ||',' ||plant.PLANT_STATE AS productionSlot,
+			slot_dates.SLOT_DATE AS productionDate
 		FROM 
 			OBM_RUN_SUMMARY run_summary
 			JOIN smc.OBM_SLOT_REQUEST slot_req
 			    ON slot_req.RUN_ID=run_summary.RUN_ID
-			LEFT JOIN smc.OBM_SLOT_RESERVATION slot_reserve 
+			JOIN smc.OBM_SLOT_RESERVATION slot_reserve 
 				ON slot_reserve.SLOT_REQUEST_ID = slot_req.SLOT_REQUEST_ID
-			LEFT JOIN smc.OBM_SLOTS slot ON slot.SLOT_ID=slot_reserve.SLOT_ID
-			LEFT JOIN smc.OBM_PLANTS plant ON plant.PLANT_ID = slot.PLANT_ID
+			LEFT JOIN smc.OBM_SLOTS slot 
+				ON slot.SLOT_ID=slot_reserve.SLOT_ID
+			LEFT JOIN smc.OBM_PLANTS plant 
+				ON plant.PLANT_ID = slot.PLANT_ID
+			LEFT JOIN smc.OBM_FREIGHT_MILEAGE mileage 
+				ON mileage.PLANT_ID = plant.PLANT_ID AND mileage.DISTRICT = slot_req.DESTINATION_DISTRICT
+			LEFT JOIN smc.OBM_SLOT_DATES slot_dates 
+				ON slot_dates.SLOT_DATE_ID = slot.SLOT_DATE_ID
 		WHERE
-			 run_summary.RUN_ID=#{buildId}
+			 run_summary.RUN_ID=#{buildId} AND slot_reserve.UNIT_NUMBER <![CDATA[<>]]>''
 	</select>
 	<!--***** BUILD MATRIX WORKFLOW *****-->
 	

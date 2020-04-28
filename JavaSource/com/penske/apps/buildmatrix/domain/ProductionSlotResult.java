@@ -12,7 +12,7 @@ public class ProductionSlotResult {
 	private String districtName;
 	private Date requestedDeliveryDate;
 	private String productionSlot;
-	private Date productionDate;
+	private String productionDate;
 
 	// getters
 	public long getOrderId() {
@@ -51,7 +51,7 @@ public class ProductionSlotResult {
 		return productionSlot;
 	}
 
-	public Date getProductionDate() {
+	public String getProductionDate() {
 		return productionDate;
 	}
 
@@ -92,7 +92,7 @@ public class ProductionSlotResult {
 		this.productionSlot = productionSlot;
 	}
 
-	public void setProductionDate(Date productionDate) {
+	public void setProductionDate(String productionDate) {
 		this.productionDate = productionDate;
 	}
 

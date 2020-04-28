@@ -2,6 +2,7 @@
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib uri="/WEB-INF/tld/taglib.tld" prefix="tl"%>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+ <%@ taglib uri = "http://java.sun.com/jsp/jstl/fmt" prefix = "fmt"%>
 <html>
 <head>
 	<title>OEM Build Matrix</title>
@@ -29,6 +30,8 @@
           				<label>Search: </label> <input type="text" id="slot-search"/>
           			</div>
           			<div class="btn-div floatRight">
+          				<a href="${baseAppUrl}/admin-console/oem-build-matrix/build-history.htm"
+							onclick="javascript:loadProcessImage();" class="buttonSecondary">Back</a>
           			<c:if test="${fn:length(slotResults) ne 0}">
           				<a id="export-slot-results" class="buttonPrimary">Accept and Export</a>
           			</c:if>
@@ -55,14 +58,14 @@
 						<tbody>
 							<c:forEach items="${slotResults}" var="unit">
 								<tr class="result">
-										<td>${unit.orderId}</td>
+										<td><a class="secondaryLink">${unit.orderId}</a></td>
 										<td class="leftAlign">${unit.unitNumber}</td>
 										<td class="leftAlign">${unit.programName}</td>
 										<td class="leftAlign">${unit.region}</td>
 										<td class="leftAlign">${unit.area}</td>
 										<td class="leftAlign">${unit.districtNumber}</td>
 										<td class="leftAlign">${unit.districtName}</td>
-										<td class="leftAlign">${unit.requestedDeliveryDate}</td>
+										<td class="leftAlign"><fmt:formatDate pattern = "MM/dd/yyyy" value = "${unit.requestedDeliveryDate}" /></td>
 										<td class="leftAlign">${unit.productionSlot}</td>
 										<td class="leftAlign">${unit.productionDate}</td>
 								</tr>

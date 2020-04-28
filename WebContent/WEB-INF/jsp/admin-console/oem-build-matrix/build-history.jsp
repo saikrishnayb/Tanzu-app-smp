@@ -66,7 +66,7 @@
 												<a class=""
 													onclick="processingImageAndTextHandler('visible','Loading data...');"
 													href="view-slot-results.htm?buildId=${buildHistory.buildId}">
-													View Report</a>
+													View Slot Results</a>
 											</c:when>
 												<c:otherwise>
 												</c:otherwise>
