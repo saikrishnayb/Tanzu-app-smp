@@ -110,9 +110,10 @@ function getContextRoot() {
 
 /**
  * This method is used to identify the height of each tier to modify the vertical line height.
- * This has been invoked on-click of expanding icon at each area level under each tier.
+ * This has been invoked on page load and 
+ * on-click of expanding filter icon (from jquery.accordion-live-filter.js) at each area level under each tier.
  * 
- * Parameter "obj" is passed while invoking this method on-click of expanding icon
+ * Parameter "obj" is passed while invoking this method on-click of expanding filter icon
  */
 function setMaxVericalLineHeight(obj) {
 	var defaultVerticalLineHeight = 450;

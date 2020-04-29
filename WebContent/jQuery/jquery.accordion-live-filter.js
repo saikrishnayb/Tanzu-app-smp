@@ -41,12 +41,12 @@
             });
 
             var firstEvent=$('label', $accordion).on('expand.alf', function() {
-            	if($(this).hasClass('dist-proximity-lbl'))
+            	if($(this).hasClass('dist-proximity-lbl')) //Custom condition to control the Proximity Configuration screen
             		$(this).addClass('expanded').data('alf-child').slideDown(0, setMaxVericalLineHeight(this));
             	else
             		$(this).addClass('expanded').data('alf-child').slideDown();
             }).on('contract.alf', function() {
-            	if($(this).hasClass('dist-proximity-lbl'))
+            	if($(this).hasClass('dist-proximity-lbl')) //Custom condition to control the Proximity Configuration screen
             		$(this).removeClass('expanded').data('alf-child').slideUp(0, setMaxVericalLineHeight(this));
                 else
                 	$(this).removeClass('expanded').data('alf-child').slideUp();
