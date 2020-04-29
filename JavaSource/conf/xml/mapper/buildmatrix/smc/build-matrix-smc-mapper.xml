@@ -164,7 +164,7 @@
 			(CASE WHEN buildStatus = 'S' THEN 0 ELSE 1 END), 
 			(CASE WHEN buildStatus = 'R' THEN 0 ELSE 1 END), 
 			(CASE WHEN buildStatus = 'F' THEN 0 ELSE 1 END), 
-			buildId
+			buildId DESC
 	</select>
 	
 	<!-- BUILD FUNCTIONS -->
