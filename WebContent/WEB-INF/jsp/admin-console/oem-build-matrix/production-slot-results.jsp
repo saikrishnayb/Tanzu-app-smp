@@ -24,6 +24,7 @@
           			<h1>Production Slot Results</h1>
         		</div>
       		</div>
+      		<input type="hidden" id="buildId" value="${buildId}">
 			<div class="row">
         		<div class="col-xs-12 slot-results-table-top">
         			<div class='search-div'>
@@ -33,7 +34,7 @@
           				<a href="${baseAppUrl}/admin-console/oem-build-matrix/build-history.htm"
 							onclick="javascript:loadProcessImage();" class="buttonSecondary">Back</a>
           			<c:if test="${fn:length(slotResults) ne 0}">
-          				<a id="export-slot-results" class="buttonPrimary">Accept and Export</a>
+          				<a id="export-slot-results" class="buttonPrimary" onclick="exportSlotResults();return false;">Accept and Export</a>
           			</c:if>
           			</div>
         		</div>
@@ -81,5 +82,6 @@
 	<%@ include file="../../../jsp/jsp-fragment/global/new/global-scripts.jsp"%>
 	<script src="${baseUrl}/js/admin-console/oem-build-matrix/production-slot-results.js" type="text/javascript"></script>
 	<script src="${baseUrl}/js/admin-console/oem-build-matrix/build-matrix-global.js" type="text/javascript"></script>
+	<script src="${baseUrl}/js/admin-console/oem-build-matrix/file-download-helper.js" type="text/javascript"></script>
 </body>
 </html>

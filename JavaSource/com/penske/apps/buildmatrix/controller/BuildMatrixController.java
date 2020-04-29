@@ -2,6 +2,7 @@ package com.penske.apps.buildmatrix.controller;
 
 import static java.util.stream.Collectors.toMap;
 
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +12,10 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,6 +25,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.penske.apps.adminconsole.enums.LeftNav;
 import com.penske.apps.adminconsole.enums.Tab.SubTab;
+import com.penske.apps.adminconsole.util.ApplicationConstants;
 import com.penske.apps.adminconsole.util.CommonUtils;
 import com.penske.apps.buildmatrix.domain.ApprovedOrder;
 import com.penske.apps.buildmatrix.domain.BuildAttribute;
@@ -241,6 +246,7 @@ public class BuildMatrixController {
 	public ModelAndView viewSlotResults(@RequestParam("buildId") int buildId) {
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/production-slot-results");
 		model.addObject("slotResults", buildMatrixSmcService.getProductionSlotResults(buildId));
+		model.addObject("buildId", buildId);
 		return model;
 	}
 	
@@ -434,4 +440,55 @@ public class BuildMatrixController {
 		return model;
 	}
 	
+
+	 /**************************************************************************************************************
+    * Method to load data into excel file.
+    * @param request
+    * @param response
+    * @param confirmationSearch
+    ***************************************************************************************************************
+    */
+   @SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+   @RequestMapping(value="/exportToExcel",method = {RequestMethod.POST })
+   public void exportToExcel(HttpServletResponse response,@ModelAttribute("buildId")int buildId)
+   {
+   	 Workbook workbook = null;
+   	 OutputStream out = null;
+        try{
+            if(buildId!=0){
+           	 workbook=buildMatrixSmcService.downloadProductionSlotResultsDocument(buildId);
+        		 if(workbook != null){
+        			 response.setHeader("Set-Cookie", "fileDownload=true; path=/");
+                    out = response.getOutputStream();
+
+                    response.setContentType(ApplicationConstants.EXCEL_CONTENT_TYPE_XLSX);
+                    response.setHeader(ApplicationConstants.CONTENT_DISPOSITION_HEADER,"attachment;filename=\"Order Confirmation-Template.xlsx\"");
+                    response.setHeader("Pragma",ApplicationConstants.EXCEL_HEADER_TYPE);
+                    response.setHeader("Expires",ApplicationConstants.EXCEL_EXPIRES);
+                    response.setContentType(ApplicationConstants.EXCEL_CONTENT_TYPE);
+                    workbook.write(out);
+                }
+                else{
+                    response.getWriter().write("Production slot results not available to process the template");
+                    response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                }
+                
+            }
+
+        }catch(Exception ex){
+        	LOGGER.error("Error in downloading production slot results. Exception is::"+ex.toString(),ex);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }finally{
+			try {
+				  if(out != null)
+				     out.close();
+				} catch (Exception ex) {
+					LOGGER.error("Error in closing the ouput stream. Exception is::"+ex.toString(),ex);
+				}
+           if (workbook != null && workbook instanceof SXSSFWorkbook) {
+                 ((SXSSFWorkbook) workbook).dispose();
+           }
+        }
+   	
+   }
 }

@@ -35,4 +35,12 @@ public class ApplicationConstants {
 	public static final String DEFAULT_TYPE="DEFAULT";
 	public static final String BLANK="";
 	
+	//Excel download
+	public static final String EXCEL_CONTENT_TYPE = "application/vnd.ms-excel";
+	public static final String EXCEL_CONTENT_TYPE_XLSX = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+	public static final String CONTENT_DISPOSITION_HEADER = "Content-Disposition";
+	public static final String UNITDETAIL_CONTENT_DISPOSITION = "attachment;filename=\"Unit Details-Template.xlsx\"";
+	public static final String EXCEL_HEADER_TYPE = "public";
+	public static final String EXCEL_EXPIRES = "3600";
+	
 }

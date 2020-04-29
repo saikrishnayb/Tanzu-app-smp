@@ -2,6 +2,8 @@ package com.penske.apps.buildmatrix.service;
 
 import java.util.List;
 
+import org.apache.poi.ss.usermodel.Workbook;
+
 import com.penske.apps.buildmatrix.domain.ApprovedOrder;
 import com.penske.apps.buildmatrix.domain.BodyPlantCapability;
 import com.penske.apps.buildmatrix.domain.BuildAttribute;
@@ -84,5 +86,7 @@ public interface BuildMatrixSmcService {
 	BuildAttribute getBuildAttributeById(int attributeId);
 
 	void updateAttribute(int attributeId, List<Integer> attrValueIds);
+	
+	public Workbook downloadProductionSlotResultsDocument(int buildId) throws Exception;
 
 }

@@ -3,6 +3,7 @@ package com.penske.apps.buildmatrix.service;
 import static java.util.stream.Collectors.summingInt;
 import static java.util.stream.Collectors.toList;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,6 +12,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.streaming.SXSSFCell;
+import org.apache.poi.xssf.streaming.SXSSFRow;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +49,7 @@ import com.penske.apps.buildmatrix.model.BusinessAwardForm;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm.BusinessAwardRow;
 import com.penske.apps.smccore.base.util.Util;
 import com.penske.apps.suppliermgmt.model.UserContext;
+import com.penske.apps.webservice.util.json.ParseException;
 
 @Service
 public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
@@ -314,4 +328,151 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		BuildAttribute buildAttribute = buildMatrixSmcDAO.getBuildAttributeById(attributeId);
 		return buildAttribute;
 	}
+	@Override
+	public Workbook downloadProductionSlotResultsDocument(int buildId) throws  Exception{
+		Workbook workbook = null;
+		List<ProductionSlotResult> productionSlotResult = buildMatrixSmcDAO.getProductionSlotResults(buildId);
+		 if(productionSlotResult!=null && !productionSlotResult.isEmpty()){
+			workbook = generateProductionSlotResultsExcel(productionSlotResult);
+        }
+        return workbook;
+	}
+	 private Workbook generateProductionSlotResultsExcel(List<ProductionSlotResult> productionSlotResult) throws IOException, ParseException {
+	        SXSSFWorkbook workbook = new SXSSFWorkbook();
+	        SXSSFSheet  workSheet = workbook.createSheet("Production Slot Results"); // creating new work sheet
+	        
+	        workbook.setCompressTempFiles(true);
+	        createHeader(workbook,workSheet);
+	        
+	        int rowId = 1;
+	        if(productionSlotResult == null)
+	        	productionSlotResult = Collections.emptyList();	
+			for(ProductionSlotResult ProductionSlotResultData :productionSlotResult ){
+			
+			SXSSFRow dataRow = workSheet.createRow(rowId);
+			
+				SXSSFCell datacell1=dataRow.createCell(0);
+				datacell1.setCellValue(ProductionSlotResultData.getOrderId());
+	
+				SXSSFCell datacell2=dataRow.createCell(1);
+				datacell2.setCellValue(ProductionSlotResultData.getUnitNumber());
+	
+				SXSSFCell datacell3=dataRow.createCell(2);
+				datacell3.setCellValue(ProductionSlotResultData.getProgramName());
+				
+				SXSSFCell datacell4=dataRow.createCell(3);
+				datacell4.setCellValue(ProductionSlotResultData.getRegion());
+	
+				SXSSFCell datacell5=dataRow.createCell(4);
+				datacell5.setCellValue(ProductionSlotResultData.getArea());
+	
+				SXSSFCell datacell6=dataRow.createCell(5);
+				datacell6.setCellValue(ProductionSlotResultData.getDistrictNumber());
+	
+				SXSSFCell datacell7=dataRow.createCell(6);
+				datacell7.setCellValue(ProductionSlotResultData.getDistrictName());
+	
+				SXSSFCell datacell8=dataRow.createCell(7);
+				datacell8.setCellValue(ProductionSlotResultData.getRequestedDeliveryDate());
+				formatDateCell(workbook, datacell8);
+	
+				SXSSFCell datacell9=dataRow.createCell(8);
+				datacell9.setCellValue(ProductionSlotResultData.getProductionSlot());
+	
+				SXSSFCell datacell10=dataRow.createCell(9);
+				datacell10.setCellValue(ProductionSlotResultData.getProductionDate());
+				rowId++;
+		    }
+	        return workbook;
+	    }
+	 
+	 /**
+		 * Method for creating the header
+		 * @param workbook
+		 * @param workSheet
+		 */
+		private void createHeader(SXSSFWorkbook workbook,SXSSFSheet  workSheet)
+		{
+			SXSSFRow row = workSheet.createRow(0);
+			row.setHeight((short)550);
+
+			workSheet.setColumnWidth(0, 20*150);
+			workSheet.setColumnWidth(1, 20*150);
+			workSheet.setColumnWidth(2, 20*256);
+			workSheet.setColumnWidth(3, 20*150);
+			workSheet.setColumnWidth(4, 20*150);
+			workSheet.setColumnWidth(5, 20*150);
+			workSheet.setColumnWidth(6, 20*256);
+			workSheet.setColumnWidth(7, 20*256);
+			workSheet.setColumnWidth(8, 20*256);
+			workSheet.setColumnWidth(9, 20*256);
+			workSheet.trackAllColumnsForAutoSizing();
+	        Font font = workbook.createFont();
+
+			font.setBold(true);
+			font.setFontHeightInPoints((short) 10);
+		
+
+			CellStyle cellStyle = workbook.createCellStyle();
+			cellStyle.setFillForegroundColor(HSSFColor.LIGHT_YELLOW.index);
+			cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+			cellStyle.setAlignment(HorizontalAlignment.CENTER);
+			cellStyle.setBorderBottom(BorderStyle.THICK);
+			cellStyle.setBorderLeft(BorderStyle.THICK);
+			cellStyle.setBorderTop(BorderStyle.THICK);
+			cellStyle.setBorderRight(BorderStyle.THICK);
+			cellStyle.setFont(font);
+
+			SXSSFCell cell1=row.createCell(0);
+			cell1.setCellValue("Order #");
+			cell1.setCellStyle(cellStyle);
+
+			SXSSFCell cell2=row.createCell(1);
+			cell2.setCellValue("Unit");
+			cell2.setCellStyle(cellStyle);
+			
+			SXSSFCell cell3=row.createCell(2);
+			cell3.setCellValue("Program Name");
+			cell3.setCellStyle(cellStyle);
+			
+			SXSSFCell cell4=row.createCell(3);
+			cell4.setCellValue("Region");
+			cell4.setCellStyle(cellStyle);
+
+			SXSSFCell cell5=row.createCell(4);
+			cell5.setCellValue("Area");
+			cell5.setCellStyle(cellStyle);
+
+			SXSSFCell cell6=row.createCell(5);
+			cell6.setCellValue("District");
+			cell6.setCellStyle(cellStyle);
+
+			SXSSFCell cell7=row.createCell(6);
+			cell7.setCellValue("District Name");
+			cell7.setCellStyle(cellStyle);
+
+			SXSSFCell cell8=row.createCell(7);
+			cell8.setCellValue("Requested Delivery Date");
+			cell8.setCellStyle(cellStyle);
+
+			SXSSFCell cell9=row.createCell(8);
+			cell9.setCellValue("Production Slot");
+			cell9.setCellStyle(cellStyle);
+
+			SXSSFCell cell10=row.createCell(9);
+			cell10.setCellValue("Production Date");
+			cell10.setCellStyle(cellStyle);
+		}
+		
+		/**
+		 * Method for formatting the date cell
+		 * @param workbook
+		 * @param cell
+		 */
+		private void formatDateCell(SXSSFWorkbook workbook, SXSSFCell cell) {
+	        CellStyle cellStyle = workbook.createCellStyle();
+	        CreationHelper creationHelper = workbook.getCreationHelper();
+	        cellStyle.setDataFormat(creationHelper.createDataFormat().getFormat("M/dd/yyyy"));
+	        cell.setCellStyle(cellStyle);
+	    }
 }

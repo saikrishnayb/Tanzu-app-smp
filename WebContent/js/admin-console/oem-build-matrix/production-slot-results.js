@@ -41,3 +41,10 @@ $slotResultsDataTable = $slotResultsTable.DataTable({
 $('#slot-search').on('keyup', function() {
 	$slotResultsDataTable.search($(this).val()).draw() ;
 });
+
+function exportSlotResults() {
+
+	var buildId = parseInt($('#buildId').val());
+	DownloadUtil.downloadFileAsFormPost(baseAppUrl + '/admin-console/oem-build-matrix/exportToExcel.htm', 'ProductionSlotResults-Template.xlsx', 'buildId', buildId);
+
+}
