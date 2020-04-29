@@ -3,7 +3,7 @@ var $submitBtn = $('#submit-btn');
 
 $('.attribute-container').each(function(){
 	var $container = $(this);
-	var isReefer = "REEFERMAKE" == $container.data('attribute-key');
+/*	var isReefer = "REEFERMAKE" == $container.data('attribute-key');
 	var isRearDoor = "REARDOORMAKE" == $container.data('attribute-key');
 	var isLiftgate = "LIFTGATEMAKE" == $container.data('attribute-key');
 	
@@ -16,7 +16,7 @@ $('.attribute-container').each(function(){
 		
 		var percentage = calculatePercentage(units, $container, isReefer, isRearDoor, isLiftgate);
 		$row.find('.attribute-percentage').val(percentage);
-	});
+	});*/
 	
 	calculateTotals($container);
 });

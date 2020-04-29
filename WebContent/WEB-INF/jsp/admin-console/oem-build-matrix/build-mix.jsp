@@ -86,7 +86,7 @@
 			      										<tr class="attribute-value-row ${rowClass}" data-attribute-value="${attributeValue.attributeValue}">
 			      											<td class="attribute-value-td">${attributeValue.attributeValue}</td>
 			      											<td class="attribute-percentage-td unit-percent-input">
-			      												<input type="text" class="attribute-percentage text-align-right numbers-only" value="0" />
+			      												<input type="text" class="attribute-percentage text-align-right numbers-only" value="${attributeValue.defaultPercentage}" />
 			      												<span class="percent-sign">%</span>
 			      											</td>
 			      											<!-- <td>%<td> -->
