@@ -3,6 +3,7 @@ package com.penske.apps.buildmatrix.domain;
 import java.util.Date;
 
 public class ProductionSlotResult {
+	private int runId;
 	private long orderId;
 	private String unitNumber;
 	private String programName;
@@ -55,6 +56,10 @@ public class ProductionSlotResult {
 		return productionDate;
 	}
 
+	public int getRunId() {
+		return runId;
+	}
+
 	// setters
 	public void setOrderId(long orderId) {
 		this.orderId = orderId;
@@ -94,6 +99,10 @@ public class ProductionSlotResult {
 
 	public void setProductionDate(String productionDate) {
 		this.productionDate = productionDate;
+	}
+
+	public void setRunId(int runId) {
+		this.runId = runId;
 	}
 
 }

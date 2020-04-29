@@ -42,10 +42,10 @@
 	<div class="save-update">
 		<c:choose>
 					<c:when test="${editPopup eq true}">
-					<a class="buttonPrimary" id="update-dimension" href="#" onclick="">Update</a>
+					<a class="buttonPrimary" id="update-dimension" onclick="">Update</a>
 					</c:when>
 					<c:otherwise>
-					<a class="buttonPrimary create-dimension" href="#" onclick="">Save</a>
+					<a class="buttonPrimary create-dimension"  onclick="">Save</a>
 					</c:otherwise>
 		</c:choose>
 	</div>

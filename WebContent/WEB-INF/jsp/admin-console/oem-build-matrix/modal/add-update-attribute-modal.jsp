@@ -68,14 +68,14 @@
 			<c:when test="${editPopup eq true}">
 				<div class="save-attribute">
 					<a class="buttonPrimary buttonDisabled floatRight"
-						id="update-attr" data-save-attr-id="${buildAttribute.attributeId}" href="#"
+						id="update-attr" data-save-attr-id="${buildAttribute.attributeId}"
 						onclick="">Save</a>
 				</div>
 			</c:when>
 			<c:otherwise>
 				<div class="save-attribute">
 					<a class="buttonPrimary floatRight" id="create-attr"
-						data-save-attr-id="${buildAttribute.attributeId}" href="#" onclick="">Save</a>
+						data-save-attr-id="${buildAttribute.attributeId}" onclick="">Save</a>
 				</div>
 			</c:otherwise>
 		</c:choose>

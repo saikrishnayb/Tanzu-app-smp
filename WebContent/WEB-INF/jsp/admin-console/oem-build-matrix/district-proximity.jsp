@@ -35,7 +35,7 @@
 									type="text" placeholder="" />
 								<ul id="list1" class="filterable">
 									<c:forEach items="${freightMileageData}" var="freightMileage">
-										<li><label> ${freightMileage.area}</label>
+										<li><label class="dist-proximity-lbl"> ${freightMileage.area}</label>
 											<ul>
 												<fieldset class="fieldset">
 													<legend class="legend-view"></legend>
@@ -73,7 +73,7 @@
 									type="text" placeholder="">
 								<ul id="list2" class="filterable">
 									<c:forEach items="${freightMileageData}" var="freightMileage">
-										<li><label> ${freightMileage.area}</label>
+										<li><label class="dist-proximity-lbl"> ${freightMileage.area}</label>
 											<ul>
 												<fieldset class="fieldset">
 													<legend class="legend-view"></legend>
@@ -112,7 +112,7 @@
 
 								<ul id="list3" class="filterable">
 									<c:forEach items="${freightMileageData}" var="freightMileage">
-										<li><label> ${freightMileage.area}</label>
+										<li><label class="dist-proximity-lbl"> ${freightMileage.area}</label>
 											<ul>
 												<fieldset class="fieldset">
 													<legend class="legend-view"></legend>
@@ -165,7 +165,7 @@
 						<a
 							href="${baseAppUrl}/admin-console/oem-build-matrix/maintenance-summary.htm"
 							onclick="javascript:loadProcessImage();" class="buttonSecondary">Cancel</a>
-						<a id="save-proximitybtn" href="#"
+						<a id="save-proximitybtn" 
 							class="buttonPrimary buttonDisabled">Save</a>
 					</div>
 				</c:when>

@@ -112,6 +112,7 @@
 	<!-- PRODUCTION SLOT RESULTS -->
 	<select id="getProductionSlotResults" resultType="com.penske.apps.buildmatrix.domain.ProductionSlotResult">
 		SELECT
+			slot_req.RUN_ID AS runId,
 			slot_req.ORDER_ID AS orderId,
 			slot_reserve.UNIT_NUMBER AS unitNumber,
 			slot_req.PROGRAM_NAME AS programName,
