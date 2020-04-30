@@ -1,6 +1,8 @@
 var $orderSummaryTable = $('#order-summary-table');
 var $addToBuildBtn = $('#add-to-build');
 
+selectCurrentNavigation("tab-oem-build-matrix", "");
+
 var $orderSummaryDataTable = $orderSummaryTable.DataTable({ //All of the below are optional
 		"bPaginate" : true, //enable pagination
 		"bStateSave" : false, //To retrieve the data on click of back button

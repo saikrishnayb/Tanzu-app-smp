@@ -1,3 +1,5 @@
+selectCurrentNavigation("tab-oem-build-matrix", "");
+
 /****************** Datatables Initialization ******************/
 var eligibleUnitsTable = $('#eligible-unit-table').DataTable({
   "paging": false,

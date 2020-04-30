@@ -1,6 +1,8 @@
 var bodiesOnOrder = $('.build-mix-top').data('bodies-on-order');
 var $submitBtn = $('#submit-btn');
 
+selectCurrentNavigation("tab-oem-build-matrix", "");
+
 $('.attribute-container').each(function(){
 	var $container = $(this);
 /*	var isReefer = "REEFERMAKE" == $container.data('attribute-key');

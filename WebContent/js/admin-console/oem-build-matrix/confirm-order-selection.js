@@ -1,5 +1,7 @@
 var $confirmSelectionTable = $('#confirm-selection-table');
 
+selectCurrentNavigation("tab-oem-build-matrix", "");
+
 var $confirmSelectionDataTable = $confirmSelectionTable.DataTable({ //All of the below are optional
 		"bPaginate" : true, //enable pagination
 		"bStateSave" : true, //To retrieve the data on click of back button
