@@ -131,24 +131,24 @@ function calculateUnits(percentage, $container, isReefer, isRearDoor, isLiftgate
 		if(reeferUnits == 0)
 			return 0.00;
 		else
-			return Math.floor(reeferUnits * (percentage/100));
+			return Math.floor(reeferUnits * (percentage/100) + 0.5);
 	}
 	else if(isRearDoor) {
 		var rearDoorUnits = $container.data('reardoor-units');
 		if(rearDoorUnits == 0)
 			return 0.00;
 		else
-			return Math.floor(rearDoorUnits * (percentage/100));
+			return Math.floor(rearDoorUnits * (percentage/100)  + 0.5);
 	}
 	else if(isLiftgate) {
 		var liftgateUnits = $container.data('liftgate-units');
 		if(liftgateUnits == 0)
 			return 0.00;
 		else
-			return Math.floor(liftgateUnits * (percentage/100));
+			return Math.floor(liftgateUnits * (percentage/100)  + 0.5);
 	}
 	else{
-		return Math.floor(bodiesOnOrder * (percentage/100));
+		return Math.floor(bodiesOnOrder * (percentage/100)  + 0.5);
 	}
 }
 
