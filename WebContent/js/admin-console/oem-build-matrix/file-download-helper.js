@@ -1,10 +1,10 @@
 var DownloadUtil = (function() {
-  
-  var downloadFileAsFormPost = function downloadFile(url, fileName, parameterName, parameter) {
 
-   // $loadingOverlay.addClass('ajax-loading');
+	var downloadFileAsFormPost = function downloadFile(url, fileName, parameterName, parameter) {
 
-    var xhr = new XMLHttpRequest();
+		showLoading();
+
+	var xhr = new XMLHttpRequest();
     xhr.open('POST', url);
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhr.responseType = 'blob';
@@ -59,12 +59,12 @@ var DownloadUtil = (function() {
       xhr.send(parameterName + '=' + parameter);
 
   };
-  
-  var _clearSpinners = function() {
-   // $loadingOverlay.removeClass('ajax-loading');
-  }
-  
-  return {
+
+	var _clearSpinners = function() {
+		hideLoading();
+	}
+
+	return {
     downloadFileAsFormPost:downloadFileAsFormPost
   };
   
