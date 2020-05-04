@@ -32,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.penske.apps.adminconsole.util.ApplicationConstants;
 import com.penske.apps.buildmatrix.dao.BuildMatrixSmcDAO;
 import com.penske.apps.buildmatrix.domain.ApprovedOrder;
 import com.penske.apps.buildmatrix.domain.BodyPlantCapability;
@@ -344,7 +345,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	}
 	 private Workbook generateProductionSlotResultsExcel(List<ProductionSlotResult> productionSlotResult) throws IOException, ParseException {
 	        SXSSFWorkbook workbook = new SXSSFWorkbook();
-	        SXSSFSheet  workSheet = workbook.createSheet("Production Slot Results"); // creating new work sheet
+	        SXSSFSheet  workSheet = workbook.createSheet(ApplicationConstants.PRODUCTION_SLOT_RESULTS); // creating new work sheet
 	        
 	        workbook.setCompressTempFiles(true);
 	        createHeader(workbook,workSheet);
@@ -436,43 +437,43 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 			cellStyle.setFont(font);
 
 			SXSSFCell cell1=row.createCell(0);
-			cell1.setCellValue("Order #");
+			cell1.setCellValue(ApplicationConstants.ORDER_NUMBER);
 			cell1.setCellStyle(cellStyle);
 
 			SXSSFCell cell2=row.createCell(1);
-			cell2.setCellValue("Unit");
+			cell2.setCellValue(ApplicationConstants.UNIT);
 			cell2.setCellStyle(cellStyle);
 			
 			SXSSFCell cell3=row.createCell(2);
-			cell3.setCellValue("Program Name");
+			cell3.setCellValue(ApplicationConstants.PROGRAM_NAME);
 			cell3.setCellStyle(cellStyle);
 			
 			SXSSFCell cell4=row.createCell(3);
-			cell4.setCellValue("Region");
+			cell4.setCellValue(ApplicationConstants.REGION);
 			cell4.setCellStyle(cellStyle);
 
 			SXSSFCell cell5=row.createCell(4);
-			cell5.setCellValue("Area");
+			cell5.setCellValue(ApplicationConstants.AREA);
 			cell5.setCellStyle(cellStyle);
 
 			SXSSFCell cell6=row.createCell(5);
-			cell6.setCellValue("District");
+			cell6.setCellValue(ApplicationConstants.DISTRICT);
 			cell6.setCellStyle(cellStyle);
 
 			SXSSFCell cell7=row.createCell(6);
-			cell7.setCellValue("District Name");
+			cell7.setCellValue(ApplicationConstants.DISTRICT_NAME);
 			cell7.setCellStyle(cellStyle);
 
 			SXSSFCell cell8=row.createCell(7);
-			cell8.setCellValue("Requested Delivery Date");
+			cell8.setCellValue(ApplicationConstants.REQUESTED_DELIVERY_DATE);
 			cell8.setCellStyle(cellStyle);
 
 			SXSSFCell cell9=row.createCell(8);
-			cell9.setCellValue("Production Slot");
+			cell9.setCellValue(ApplicationConstants.PRODUCTION_SLOT);
 			cell9.setCellStyle(cellStyle);
 
 			SXSSFCell cell10=row.createCell(9);
-			cell10.setCellValue("Production Date");
+			cell10.setCellValue(ApplicationConstants.PRODUCTION_DATE);
 			cell10.setCellStyle(cellStyle);
 		}
 		
@@ -484,7 +485,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		private void formatDateCell(SXSSFWorkbook workbook, SXSSFCell cell) {
 	        CellStyle cellStyle = workbook.createCellStyle();
 	        CreationHelper creationHelper = workbook.getCreationHelper();
-	        cellStyle.setDataFormat(creationHelper.createDataFormat().getFormat("MM/dd/yyyy"));
+	        cellStyle.setDataFormat(creationHelper.createDataFormat().getFormat(ApplicationConstants.DATE_FORMAT));
 	        cell.setCellStyle(cellStyle);
 	    }
 		
@@ -493,7 +494,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		 * @param productionDate
 		 */
 		private Date convertStringToDate(String productionDateString) {
-			SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+			SimpleDateFormat dateFormat = new SimpleDateFormat(ApplicationConstants.DATE_FORMAT);
 			Date parsedDate = new Date();
 			try {
 			parsedDate = dateFormat.parse(productionDateString);

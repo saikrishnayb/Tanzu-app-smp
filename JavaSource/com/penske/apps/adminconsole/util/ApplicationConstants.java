@@ -36,11 +36,24 @@ public class ApplicationConstants {
 	public static final String BLANK="";
 	
 	//Excel download
+	public static final String PRODUCTION_SLOT_RESULTS = "Production Slot Results";
 	public static final String EXCEL_CONTENT_TYPE = "application/vnd.ms-excel";
 	public static final String EXCEL_CONTENT_TYPE_XLSX = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 	public static final String CONTENT_DISPOSITION_HEADER = "Content-Disposition";
 	public static final String UNITDETAIL_CONTENT_DISPOSITION = "attachment;filename=\"Unit Details-Template.xlsx\"";
 	public static final String EXCEL_HEADER_TYPE = "public";
 	public static final String EXCEL_EXPIRES = "3600";
+	public static final String DATE_FORMAT = "MM/dd/yyyy";
+	public static final String ORDER_NUMBER = "Order #";
+	public static final String UNIT = "Unit";
+	public static final String PROGRAM_NAME = "Program Name";
+	public static final String REGION = "Region";
+	public static final String AREA = "Area";
+	public static final String DISTRICT = "District";
+	public static final String DISTRICT_NAME = "District Name";
+	public static final String REQUESTED_DELIVERY_DATE = "Requested Delivery Date";
+	public static final String PRODUCTION_SLOT = "Production Slot";
+	public static final String PRODUCTION_DATE = "Production Date";
+	
 	
 }
