@@ -68,7 +68,9 @@
 										<td class="leftAlign">${unit.districtName}</td>
 										<td class="leftAlign"><fmt:formatDate pattern = "MM/dd/yyyy" value = "${unit.requestedDeliveryDate}" /></td>
 										<td class="leftAlign">${unit.productionSlot}</td>
-										<td class="leftAlign">${unit.productionDate}</td>
+										<td class="leftAlign"><fmt:parseDate pattern="MM/dd/yyyy" value="${unit.productionDate}" var="parsedProductionDate" />
+										<fmt:formatDate pattern="MM/dd/yyyy" value="${parsedProductionDate}"  />
+										</td>
 								</tr>
 							</c:forEach>
 						</tbody>
