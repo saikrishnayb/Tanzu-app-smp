@@ -4,14 +4,18 @@ import static java.util.stream.Collectors.summingInt;
 import static java.util.stream.Collectors.toList;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -49,11 +53,12 @@ import com.penske.apps.buildmatrix.model.BusinessAwardForm;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm.BusinessAwardRow;
 import com.penske.apps.smccore.base.util.Util;
 import com.penske.apps.suppliermgmt.model.UserContext;
-import com.penske.apps.webservice.util.json.ParseException;
 
 @Service
 public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 
+	private static Logger logger = Logger.getLogger(DefaultBuildMatrixSmcService.class);
+	
 	@Autowired
 	BuildMatrixSmcDAO buildMatrixSmcDAO;
 	
@@ -373,14 +378,21 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 				datacell7.setCellValue(ProductionSlotResultData.getDistrictName());
 	
 				SXSSFCell datacell8=dataRow.createCell(7);
-				datacell8.setCellValue(ProductionSlotResultData.getRequestedDeliveryDate());
-				formatDateCell(workbook, datacell8);
+				if (ProductionSlotResultData.getRequestedDeliveryDate() != null && !ProductionSlotResultData.getRequestedDeliveryDate().equals("")) {
+				    datacell8.setCellValue(ProductionSlotResultData.getRequestedDeliveryDate());
+				    formatDateCell(workbook, datacell8);
+				}
 	
 				SXSSFCell datacell9=dataRow.createCell(8);
 				datacell9.setCellValue(ProductionSlotResultData.getProductionSlot());
 	
 				SXSSFCell datacell10=dataRow.createCell(9);
-				datacell10.setCellValue(ProductionSlotResultData.getProductionDate());
+				String productionDateString = ProductionSlotResultData.getProductionDate();
+				if (productionDateString != null && productionDateString != "") {
+					Date productionDate = convertStringToDate(productionDateString);
+					datacell10.setCellValue(productionDate);
+					formatDateCell(workbook, datacell10);
+				}
 				rowId++;
 		    }
 	        return workbook;
@@ -472,7 +484,23 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		private void formatDateCell(SXSSFWorkbook workbook, SXSSFCell cell) {
 	        CellStyle cellStyle = workbook.createCellStyle();
 	        CreationHelper creationHelper = workbook.getCreationHelper();
-	        cellStyle.setDataFormat(creationHelper.createDataFormat().getFormat("M/dd/yyyy"));
+	        cellStyle.setDataFormat(creationHelper.createDataFormat().getFormat("MM/dd/yyyy"));
 	        cell.setCellStyle(cellStyle);
 	    }
+		
+		/**
+		 * Method for converting string to date
+		 * @param productionDate
+		 */
+		private Date convertStringToDate(String productionDateString) {
+			SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+			Date parsedDate = new Date();
+			try {
+			parsedDate = dateFormat.parse(productionDateString);
+			} catch (ParseException ex) {
+				logger.error(ex);
+			}
+			return parsedDate;
+	    }
+		
 }
