@@ -41,7 +41,9 @@ public interface BuildMatrixSmcDAO {
 	
 	public BuildMatrixBodyPlant getPlantData(int plantId);
 	
-	public int saveOfflineDates(BuildMatrixBodyPlant plantData);
+	public void saveOfflineDates(BuildMatrixBodyPlant plantData);
+	
+	public boolean removeOfflineDates(@Param("offlineDateToRemove")List<Integer> offlineDateToRemove);
 	
 	public List<String> getDropdownOptionGrpList();
 

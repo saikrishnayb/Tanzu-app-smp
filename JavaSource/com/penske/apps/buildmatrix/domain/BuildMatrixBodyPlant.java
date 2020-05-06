@@ -1,10 +1,6 @@
 package com.penske.apps.buildmatrix.domain;
 
-import java.util.Date;
-
-import org.apache.commons.lang3.StringUtils;
-
-import com.penske.apps.smccore.base.util.DateUtil;
+import java.util.List;
 
 public class BuildMatrixBodyPlant {
 	
@@ -16,8 +12,9 @@ public class BuildMatrixBodyPlant {
 	private String zip;
 	private String country;
 	private String city;
-	private Date offlineStartDate;
-	private Date offlineEndDate;
+	private List<PlantOfflineDate> offlineDates;
+	private List<Integer> offlineDateToRemove;
+	
 	public int getPlantId() {
 		return plantId;
 	}
@@ -39,11 +36,11 @@ public class BuildMatrixBodyPlant {
 	public String getCountry() {
 		return country;
 	}
-	public Date getOfflineStartDate() {
-		return offlineStartDate;
+	public String getCity() {
+		return city;
 	}
-	public Date getOfflineEndDate() {
-		return offlineEndDate;
+	public List<PlantOfflineDate> getOfflineDates() {
+		return offlineDates;
 	}
 	public void setPlantId(int plantId) {
 		this.plantId = plantId;
@@ -66,23 +63,18 @@ public class BuildMatrixBodyPlant {
 	public void setCountry(String country) {
 		this.country = country;
 	}
-	public void setOfflineStartDate(Date offlineStartDate) {
-		this.offlineStartDate = offlineStartDate;
-	}
-	public void setOfflineEndDate(Date offlineEndDate) {
-		this.offlineEndDate = offlineEndDate;
-	}
-	public String getFormattedOfflineStartDate() {
-	        return StringUtils.defaultString(DateUtil.formatDateUS(offlineStartDate));
-	}
-	public String getFormattedOfflineEndDate() {
-        return StringUtils.defaultString(DateUtil.formatDateUS(offlineEndDate));
-	}
-	public String getCity() {
-		return city;
-	}
 	public void setCity(String city) {
 		this.city = city;
 	}
+	public void setOfflineDates(List<PlantOfflineDate> offlineDates) {
+		this.offlineDates = offlineDates;
+	}
+	public List<Integer> getOfflineDateToRemove() {
+		return offlineDateToRemove;
+	}
+	public void setOfflineDateToRemove(List<Integer> offlineDateToRemove) {
+		this.offlineDateToRemove = offlineDateToRemove;
+	}
+	
 	    
 }

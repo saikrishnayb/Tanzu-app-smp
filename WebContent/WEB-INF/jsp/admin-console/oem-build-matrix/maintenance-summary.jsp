@@ -53,12 +53,16 @@
 							<td>${plant.state}</td>
 							<td>${plant.plantName}</td>
 							<td>
-							<c:choose>
-							 <c:when test="${fn:trim(plant.offlineStartDate) ne '' and fn:trim(plant.offlineEndDate) ne '' }">
-							 <fmt:formatDate pattern = "MM/dd/yyyy" value = "${plant.offlineStartDate}" /> - <fmt:formatDate pattern = "MM/dd/yyyy" value = "${plant.offlineEndDate}" />
-						     </c:when>
-						     <c:otherwise>No Offline Dates</c:otherwise>
-							</c:choose>
+								<c:choose>
+									 <c:when test="${fn:length(plant.offlineDates) gt 1}">Multiple Dates</c:when>
+								     <c:when test="${fn:length(plant.offlineDates) eq 1}">
+									     <c:forEach items="${plant.offlineDates}" var="offlineDate">
+									     		<fmt:formatDate pattern = "MM/dd/yyyy" value = "${offlineDate.offlineStartDate}" /> - <fmt:formatDate pattern = "MM/dd/yyyy" value = "${offlineDate.offlineEndDate}" />
+									     		
+									     </c:forEach>
+								      </c:when>
+								     <c:otherwise>No Offline Dates</c:otherwise>
+								</c:choose>
 							</td>
 						</tr>
 					</c:forEach>

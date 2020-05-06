@@ -215,21 +215,39 @@ table.dataTable thead th{
   width: 72px;
 }
 
-.advanced-date+.ui-datepicker-trigger {
+/* .advanced-date+.ui-datepicker-trigger {
   position: absolute;
   margin-top: -9px;
   margin-left: -2px;
 }
-
+ */
 .padding-8{
     padding-top: 16px;
 }
-.right-padding{
-padding-right: 53px;
+.right-padding {
+	padding-right: 53px;
 }
-.left-padding{
-padding-left: 0;
+
+.left-padding {
+	padding-left: 0;
 }
-.actionsheader{
-width: 80px;
+
+.actionsheader {
+	width: 80px;
+}
+
+#offline-dates-table {
+	width: 100%;
+}
+
+.start-date {
+	width: 80px;
+}
+
+.end-date {
+	width: 80px;
+}
+
+.dateLbl {
+	font-weight: bold;
 }

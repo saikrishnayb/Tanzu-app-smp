@@ -71,7 +71,19 @@
 	</update>
 	
 	<!-- Plant Maintenance workflow -->
-	<select id="getAllBodyPlants" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant">
+	<resultMap id="bodyplantResultmap" type="com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant">
+		<result property="plantId" column="plantId" />
+		<result property="plantMfrCode" column="plantMfrCode" />
+		<result property="plantManufacturer" column="plantManufacturer" />
+		<result property="plantName" column="plantName" />
+		<result property="state" column="state" />
+		<result property="zip" column="zip" />
+		<result property="country" column="country" />
+		<result property="city" column="city" />
+		<collection property="offlineDates" column="{plantId=plantId}" select="getPlantOfflineDates"></collection>
+	</resultMap>
+	
+	<select id="getAllBodyPlants" resultMap="bodyplantResultmap">
 		SELECT
 			PLANT_ID AS plantId,
 			PLANT_MFR_CODE AS plantMfrCode,
@@ -80,13 +92,11 @@
 			PLANT_STATE AS state,
 			PLANT_ZIP AS zip,
 			PLANT_COUNTRY AS country,
-			PLANT_CITY AS city,
-			OFFLINE_START AS offlineStartDate,
-			OFFLINE_END AS offlineEndDate
+			PLANT_CITY AS city
 		from OBM_PLANTS
 	</select>
 	
-	<select id="getPlantData" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant">
+	<select id="getPlantData" resultMap="bodyplantResultmap">
 		SELECT
 			PLANT_ID AS plantId,
 			PLANT_MFR_CODE AS plantMfrCode,
@@ -95,20 +105,60 @@
 			PLANT_STATE AS state,
 			PLANT_ZIP AS zip,
 			PLANT_COUNTRY AS country,
-			PLANT_CITY AS city,
+			PLANT_CITY AS city
+		from OBM_PLANTS
+		WHERE PLANT_ID=#{plantId}
+	</select>
+	
+	<select id="getPlantOfflineDates" resultType="com.penske.apps.buildmatrix.domain.PlantOfflineDate">
+		SELECT
+			OFFLINE_DATE_ID AS offlineDateId,
+			PLANT_ID AS plantId,
 			OFFLINE_START AS offlineStartDate,
 			OFFLINE_END AS offlineEndDate
-		from OBM_PLANTS
+		FROM OBM_PLANTS_OFFLINE_DATES
 		WHERE PLANT_ID=#{plantId}
 	</select>
 	
 	<update id="saveOfflineDates">
-		UPDATE OBM_PLANTS 
-		SET OFFLINE_START=#{offlineStartDate},
-			OFFLINE_END=#{offlineEndDate}
-		WHERE PLANT_ID=#{plantId}
+		MERGE INTO SMC.OBM_PLANTS_OFFLINE_DATES AS offlineDates USING
+		(
+		VALUES
+		<foreach collection="offlineDates" item="offlineDate" separator="," >
+			(
+				CAST(#{offlineDate.offlineDateId} AS INTEGER),
+				CAST(#{offlineDate.plantId} AS INTEGER),
+				CAST(#{offlineDate.offlineStartDate} AS DATE),
+				CAST(#{offlineDate.offlineEndDate} AS DATE)
+			)
+		</foreach>
+		)
+		AS input
+		(
+			OFFLINE_DATE_ID,PLANT_ID,OFFLINE_START,OFFLINE_END
+		)
+		ON offlineDates.OFFLINE_DATE_ID=input.OFFLINE_DATE_ID 
+		WHEN MATCHED THEN UPDATE SET offlineDates.OFFLINE_START= input.OFFLINE_START , offlineDates.OFFLINE_END= input.OFFLINE_END
+		WHEN NOT MATCHED THEN
+		INSERT
+			(
+			PLANT_ID,
+			OFFLINE_START,
+			OFFLINE_END
+			)
+		 VALUES
+			(
+			input.PLANT_ID,
+			input.OFFLINE_START,
+			input.OFFLINE_END
+			)
 	</update>
-
+	
+	<update id="removeOfflineDates">
+		DELETE OBM_PLANTS_OFFLINE_DATES
+		WHERE OFFLINE_DATE_ID IN
+			<foreach collection="offlineDateToRemove" item="offlineDateId" separator="," open="(" close=")">#{offlineDateId}</foreach>
+	</update>
 	<!-- PRODUCTION SLOT RESULTS -->
 	<select id="getProductionSlotResults" resultType="com.penske.apps.buildmatrix.domain.ProductionSlotResult">
 		SELECT

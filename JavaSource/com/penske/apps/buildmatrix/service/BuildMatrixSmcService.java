@@ -38,7 +38,7 @@ public interface BuildMatrixSmcService {
 	
 	public BuildMatrixBodyPlant getPlantData(int plantId);
 	
-	public int saveOfflineDates(BuildMatrixBodyPlant plantData);
+	public void saveOfflineDates(BuildMatrixBodyPlant plantData);
 	
 	public BuildAttributeValue addAttribute(int attributeId, String attributeValue);
 	
