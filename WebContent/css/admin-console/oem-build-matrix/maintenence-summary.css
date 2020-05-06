@@ -225,7 +225,9 @@ table.dataTable thead th{
     padding-top: 16px;
 }
 .right-padding {
-	padding-right: 53px;
+	padding-right: 20px;
+    padding-top: 20px;
+    padding-bottom: 0px;
 }
 
 .left-padding {
