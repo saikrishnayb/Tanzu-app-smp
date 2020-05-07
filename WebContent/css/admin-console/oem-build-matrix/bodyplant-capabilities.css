@@ -1,13 +1,17 @@
-.selected-dimension {
+.non-selected-attrvalue {
 	border-radius: 10px;
-	background-color: #98FB98;
+	background-color: lightgreen !important;
 	min-width: 40px !important;
 	color: black !important;
 }
+.non-selected-attrvalue:hover
+{
+	background-color: lightgreen;
+}
 
-.non-selected-dimension {
+.selected-attrvalue {
 	border-radius: 10px;
-	background-color: #FFC0CB;
+	background-color: lightpink !important;
 	min-width: 40px !important;
 	color: black !important;
 }
@@ -31,4 +35,25 @@
 
 #term {
   padding-top: 65px;
+}
+
+.editHeader{
+width: 80px;
+}
+
+.button-div-bottom {
+	margin-bottom: 10px;
+}
+
+.attribute-values-lbl{
+  padding-left: 50px;
+}
+
+.attribute-values li {
+  list-style: none;
+  margin-bottom: 0.4rem;
+}
+
+.attribute-values-display{
+  padding-left: 54px;
 }

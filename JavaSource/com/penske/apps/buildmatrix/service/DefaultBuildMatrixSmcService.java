@@ -91,45 +91,6 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		return new ArrayList<String>(Arrays.asList("AB - AMERITRANS BUS CO","AC - ARCTIC CAT","ACC - AMERICAN COLEMAN"));
 	}
 	
-	@Override
-	public List<BodyPlantCapability> getAllBuildMatrixCapabilities() {
-		List<BodyPlantCapability> bodyPlantCapabilityList=getAllCapabilitymockDataService();
-		//List<BodyPlantCapability> bodyPlantCapabilityList=buildMatrixSmcDAO.getAllBuildMatrixCapabilities();
-		return bodyPlantCapabilityList;
-	}
-	
-	@Override
-	public BodyPlantCapability getCapabilityDetails(int capabilityId) {
-		BodyPlantCapability capability=getCapabilityMockService(capabilityId);
-		//BodyPlantCapability capability=buildMatrixSmcDAO.getCapabilityDetails(capabilityId);
-		return capability;
-	}
-	
-	//Mock service methods
-	private List<BodyPlantCapability> getAllCapabilitymockDataService() {
-		bodyPlantCapabilityList.clear();
-		BodyPlantCapability attribute=new BodyPlantCapability(1,"BODY","Length",new ArrayList<String>(Arrays.asList("16'","18'","20'","26'")),new ArrayList<String>(Arrays.asList("16'","18'","20'")));
-		BodyPlantCapability attribute1=new BodyPlantCapability(2,"BODY","Width",new ArrayList<String>(Arrays.asList("96'","102'")),new ArrayList<String>(Arrays.asList("96'")));
-		BodyPlantCapability attribute2=new BodyPlantCapability(3,"BODY","Height",new ArrayList<String>(Arrays.asList("91'","97'","103'")),new ArrayList<String>(Arrays.asList("91'","97'")));
-		BodyPlantCapability attribute3=new BodyPlantCapability(4,"BODY","Walkramp",new ArrayList<String>(Arrays.asList("YES","NO")),new ArrayList<String>(Arrays.asList("YES","NO")));
-		BodyPlantCapability attribute4=new BodyPlantCapability(5,"BODY","Side Door",new ArrayList<String>(Arrays.asList("YES","NO")),new ArrayList<String>(Arrays.asList("YES","NO")));
-		bodyPlantCapabilityList.add(attribute);
-		bodyPlantCapabilityList.add(attribute1);
-		bodyPlantCapabilityList.add(attribute2);
-		bodyPlantCapabilityList.add(attribute3);
-		bodyPlantCapabilityList.add(attribute4);
-		return bodyPlantCapabilityList;
-	}
-	
-	private BodyPlantCapability getCapabilityMockService(int capabilityId) {
-		BodyPlantCapability resultCapability=null;
-		for(BodyPlantCapability capability:bodyPlantCapabilityList)
-		{
-			if(capability.getCapabilityId()==capabilityId)
-				resultCapability=capability;
-		}
-		return resultCapability;
-	}
 	//***** DISTRICT PROXIMITY WORKFLOW *****//
 	@Override
 	public List<FreightMileage> getFreightMileageData(int plantId) {
@@ -349,165 +310,182 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
         }
         return workbook;
 	}
-	 private Workbook generateProductionSlotResultsExcel(List<ProductionSlotResult> productionSlotResult) throws IOException, ParseException {
-	        SXSSFWorkbook workbook = new SXSSFWorkbook();
-	        SXSSFSheet  workSheet = workbook.createSheet(ApplicationConstants.PRODUCTION_SLOT_RESULTS); // creating new work sheet
-	        
-	        workbook.setCompressTempFiles(true);
-	        createHeader(workbook,workSheet);
-	        
-	        int rowId = 1;
-	        if(productionSlotResult == null)
-	        	productionSlotResult = Collections.emptyList();	
-			for(ProductionSlotResult ProductionSlotResultData :productionSlotResult ){
-			
+
+	private Workbook generateProductionSlotResultsExcel(List<ProductionSlotResult> productionSlotResult)
+			throws IOException, ParseException {
+		SXSSFWorkbook workbook = new SXSSFWorkbook();
+		SXSSFSheet workSheet = workbook.createSheet(ApplicationConstants.PRODUCTION_SLOT_RESULTS); // creating new work sheet
+		
+		workbook.setCompressTempFiles(true);
+		createHeader(workbook, workSheet);
+
+		int rowId = 1;
+		if (productionSlotResult == null)
+			productionSlotResult = Collections.emptyList();
+		for (ProductionSlotResult ProductionSlotResultData : productionSlotResult) {
+
 			SXSSFRow dataRow = workSheet.createRow(rowId);
-			
-				SXSSFCell datacell1=dataRow.createCell(0);
-				datacell1.setCellValue(ProductionSlotResultData.getOrderId());
-	
-				SXSSFCell datacell2=dataRow.createCell(1);
-				datacell2.setCellValue(ProductionSlotResultData.getUnitNumber());
-	
-				SXSSFCell datacell3=dataRow.createCell(2);
-				datacell3.setCellValue(ProductionSlotResultData.getProgramName());
-				
-				SXSSFCell datacell4=dataRow.createCell(3);
-				datacell4.setCellValue(ProductionSlotResultData.getRegion());
-	
-				SXSSFCell datacell5=dataRow.createCell(4);
-				datacell5.setCellValue(ProductionSlotResultData.getArea());
-	
-				SXSSFCell datacell6=dataRow.createCell(5);
-				datacell6.setCellValue(ProductionSlotResultData.getDistrictNumber());
-	
-				SXSSFCell datacell7=dataRow.createCell(6);
-				datacell7.setCellValue(ProductionSlotResultData.getDistrictName());
-	
-				SXSSFCell datacell8=dataRow.createCell(7);
-				if (ProductionSlotResultData.getRequestedDeliveryDate() != null && !ProductionSlotResultData.getRequestedDeliveryDate().equals("")) {
-				    datacell8.setCellValue(ProductionSlotResultData.getRequestedDeliveryDate());
-				    formatDateCell(workbook, datacell8);
-				}
-	
-				SXSSFCell datacell9=dataRow.createCell(8);
-				datacell9.setCellValue(ProductionSlotResultData.getProductionSlot());
-	
-				SXSSFCell datacell10=dataRow.createCell(9);
-				String productionDateString = ProductionSlotResultData.getProductionDate();
-				if (productionDateString != null && productionDateString != "") {
-					Date productionDate = convertStringToDate(productionDateString);
-					datacell10.setCellValue(productionDate);
-					formatDateCell(workbook, datacell10);
-				}
-				rowId++;
-		    }
-	        return workbook;
-	    }
-	 
-	 /**
-		 * Method for creating the header
-		 * @param workbook
-		 * @param workSheet
-		 */
-		private void createHeader(SXSSFWorkbook workbook,SXSSFSheet  workSheet)
-		{
-			SXSSFRow row = workSheet.createRow(0);
-			row.setHeight((short)550);
 
-			workSheet.setColumnWidth(0, 20*150);
-			workSheet.setColumnWidth(1, 20*150);
-			workSheet.setColumnWidth(2, 20*256);
-			workSheet.setColumnWidth(3, 20*150);
-			workSheet.setColumnWidth(4, 20*150);
-			workSheet.setColumnWidth(5, 20*150);
-			workSheet.setColumnWidth(6, 20*256);
-			workSheet.setColumnWidth(7, 20*256);
-			workSheet.setColumnWidth(8, 20*256);
-			workSheet.setColumnWidth(9, 20*256);
-			workSheet.trackAllColumnsForAutoSizing();
-	        Font font = workbook.createFont();
+			SXSSFCell datacell1 = dataRow.createCell(0);
+			datacell1.setCellValue(ProductionSlotResultData.getOrderId());
 
-			font.setBold(true);
-			font.setFontHeightInPoints((short) 10);
-		
+			SXSSFCell datacell2 = dataRow.createCell(1);
+			datacell2.setCellValue(ProductionSlotResultData.getUnitNumber());
 
-			CellStyle cellStyle = workbook.createCellStyle();
-			cellStyle.setFillForegroundColor(HSSFColor.LIGHT_YELLOW.index);
-			cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-			cellStyle.setAlignment(HorizontalAlignment.CENTER);
-			cellStyle.setBorderBottom(BorderStyle.THICK);
-			cellStyle.setBorderLeft(BorderStyle.THICK);
-			cellStyle.setBorderTop(BorderStyle.THICK);
-			cellStyle.setBorderRight(BorderStyle.THICK);
-			cellStyle.setFont(font);
+			SXSSFCell datacell3 = dataRow.createCell(2);
+			datacell3.setCellValue(ProductionSlotResultData.getProgramName());
 
-			SXSSFCell cell1=row.createCell(0);
-			cell1.setCellValue(ApplicationConstants.ORDER_NUMBER);
-			cell1.setCellStyle(cellStyle);
+			SXSSFCell datacell4 = dataRow.createCell(3);
+			datacell4.setCellValue(ProductionSlotResultData.getRegion());
 
-			SXSSFCell cell2=row.createCell(1);
-			cell2.setCellValue(ApplicationConstants.UNIT);
-			cell2.setCellStyle(cellStyle);
-			
-			SXSSFCell cell3=row.createCell(2);
-			cell3.setCellValue(ApplicationConstants.PROGRAM_NAME);
-			cell3.setCellStyle(cellStyle);
-			
-			SXSSFCell cell4=row.createCell(3);
-			cell4.setCellValue(ApplicationConstants.REGION);
-			cell4.setCellStyle(cellStyle);
+			SXSSFCell datacell5 = dataRow.createCell(4);
+			datacell5.setCellValue(ProductionSlotResultData.getArea());
 
-			SXSSFCell cell5=row.createCell(4);
-			cell5.setCellValue(ApplicationConstants.AREA);
-			cell5.setCellStyle(cellStyle);
+			SXSSFCell datacell6 = dataRow.createCell(5);
+			datacell6.setCellValue(ProductionSlotResultData.getDistrictNumber());
 
-			SXSSFCell cell6=row.createCell(5);
-			cell6.setCellValue(ApplicationConstants.DISTRICT);
-			cell6.setCellStyle(cellStyle);
+			SXSSFCell datacell7 = dataRow.createCell(6);
+			datacell7.setCellValue(ProductionSlotResultData.getDistrictName());
 
-			SXSSFCell cell7=row.createCell(6);
-			cell7.setCellValue(ApplicationConstants.DISTRICT_NAME);
-			cell7.setCellStyle(cellStyle);
-
-			SXSSFCell cell8=row.createCell(7);
-			cell8.setCellValue(ApplicationConstants.REQUESTED_DELIVERY_DATE);
-			cell8.setCellStyle(cellStyle);
-
-			SXSSFCell cell9=row.createCell(8);
-			cell9.setCellValue(ApplicationConstants.PRODUCTION_SLOT);
-			cell9.setCellStyle(cellStyle);
-
-			SXSSFCell cell10=row.createCell(9);
-			cell10.setCellValue(ApplicationConstants.PRODUCTION_DATE);
-			cell10.setCellStyle(cellStyle);
-		}
-		
-		/**
-		 * Method for formatting the date cell
-		 * @param workbook
-		 * @param cell
-		 */
-		private void formatDateCell(SXSSFWorkbook workbook, SXSSFCell cell) {
-	        CellStyle cellStyle = workbook.createCellStyle();
-	        CreationHelper creationHelper = workbook.getCreationHelper();
-	        cellStyle.setDataFormat(creationHelper.createDataFormat().getFormat(ApplicationConstants.DATE_FORMAT));
-	        cell.setCellStyle(cellStyle);
-	    }
-		
-		/**
-		 * Method for converting string to date
-		 * @param productionDate
-		 */
-		private Date convertStringToDate(String productionDateString) {
-			SimpleDateFormat dateFormat = new SimpleDateFormat(ApplicationConstants.DATE_FORMAT);
-			Date parsedDate = new Date();
-			try {
-			parsedDate = dateFormat.parse(productionDateString);
-			} catch (ParseException ex) {
-				logger.error(ex);
+			SXSSFCell datacell8 = dataRow.createCell(7);
+			if (ProductionSlotResultData.getRequestedDeliveryDate() != null
+					&& !ProductionSlotResultData.getRequestedDeliveryDate().equals("")) {
+				datacell8.setCellValue(ProductionSlotResultData.getRequestedDeliveryDate());
+				formatDateCell(workbook, datacell8);
 			}
-			return parsedDate;
-	    }
+
+			SXSSFCell datacell9 = dataRow.createCell(8);
+			datacell9.setCellValue(ProductionSlotResultData.getProductionSlot());
+
+			SXSSFCell datacell10 = dataRow.createCell(9);
+			String productionDateString = ProductionSlotResultData.getProductionDate();
+			if (productionDateString != null && productionDateString != "") {
+				Date productionDate = convertStringToDate(productionDateString);
+				datacell10.setCellValue(productionDate);
+				formatDateCell(workbook, datacell10);
+			}
+			rowId++;
+		}
+		return workbook;
+	}
+
+	/**
+	 * Method for creating the header
+	 * 
+	 * @param workbook
+	 * @param workSheet
+	 */
+	private void createHeader(SXSSFWorkbook workbook, SXSSFSheet workSheet) {
+		SXSSFRow row = workSheet.createRow(0);
+		row.setHeight((short) 550);
+
+		workSheet.setColumnWidth(0, 20 * 150);
+		workSheet.setColumnWidth(1, 20 * 150);
+		workSheet.setColumnWidth(2, 20 * 256);
+		workSheet.setColumnWidth(3, 20 * 150);
+		workSheet.setColumnWidth(4, 20 * 150);
+		workSheet.setColumnWidth(5, 20 * 150);
+		workSheet.setColumnWidth(6, 20 * 256);
+		workSheet.setColumnWidth(7, 20 * 256);
+		workSheet.setColumnWidth(8, 20 * 256);
+		workSheet.setColumnWidth(9, 20 * 256);
+		workSheet.trackAllColumnsForAutoSizing();
+		Font font = workbook.createFont();
+
+		font.setBold(true);
+		font.setFontHeightInPoints((short) 10);
+
+		CellStyle cellStyle = workbook.createCellStyle();
+		cellStyle.setFillForegroundColor(HSSFColor.LIGHT_YELLOW.index);
+		cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		cellStyle.setAlignment(HorizontalAlignment.CENTER);
+		cellStyle.setBorderBottom(BorderStyle.THICK);
+		cellStyle.setBorderLeft(BorderStyle.THICK);
+		cellStyle.setBorderTop(BorderStyle.THICK);
+		cellStyle.setBorderRight(BorderStyle.THICK);
+		cellStyle.setFont(font);
+
+		SXSSFCell cell1 = row.createCell(0);
+		cell1.setCellValue(ApplicationConstants.ORDER_NUMBER);
+		cell1.setCellStyle(cellStyle);
+
+		SXSSFCell cell2 = row.createCell(1);
+		cell2.setCellValue(ApplicationConstants.UNIT);
+		cell2.setCellStyle(cellStyle);
+
+		SXSSFCell cell3 = row.createCell(2);
+		cell3.setCellValue(ApplicationConstants.PROGRAM_NAME);
+		cell3.setCellStyle(cellStyle);
+
+		SXSSFCell cell4 = row.createCell(3);
+		cell4.setCellValue(ApplicationConstants.REGION);
+		cell4.setCellStyle(cellStyle);
+
+		SXSSFCell cell5 = row.createCell(4);
+		cell5.setCellValue(ApplicationConstants.AREA);
+		cell5.setCellStyle(cellStyle);
+
+		SXSSFCell cell6 = row.createCell(5);
+		cell6.setCellValue(ApplicationConstants.DISTRICT);
+		cell6.setCellStyle(cellStyle);
+
+		SXSSFCell cell7 = row.createCell(6);
+		cell7.setCellValue(ApplicationConstants.DISTRICT_NAME);
+		cell7.setCellStyle(cellStyle);
+
+		SXSSFCell cell8 = row.createCell(7);
+		cell8.setCellValue(ApplicationConstants.REQUESTED_DELIVERY_DATE);
+		cell8.setCellStyle(cellStyle);
+
+		SXSSFCell cell9 = row.createCell(8);
+		cell9.setCellValue(ApplicationConstants.PRODUCTION_SLOT);
+		cell9.setCellStyle(cellStyle);
+
+		SXSSFCell cell10 = row.createCell(9);
+		cell10.setCellValue(ApplicationConstants.PRODUCTION_DATE);
+		cell10.setCellStyle(cellStyle);
+	}
+
+	/**
+	 * Method for formatting the date cell
+	 * 
+	 * @param workbook
+	 * @param cell
+	 */
+	private void formatDateCell(SXSSFWorkbook workbook, SXSSFCell cell) {
+		CellStyle cellStyle = workbook.createCellStyle();
+		CreationHelper creationHelper = workbook.getCreationHelper();
+		cellStyle.setDataFormat(creationHelper.createDataFormat().getFormat(ApplicationConstants.DATE_FORMAT));
+		cell.setCellStyle(cellStyle);
+	}
+
+	/**
+	 * Method for converting string to date
+	 * 
+	 * @param productionDate
+	 */
+	private Date convertStringToDate(String productionDateString) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat(ApplicationConstants.DATE_FORMAT);
+		Date parsedDate = new Date();
+		try {
+			parsedDate = dateFormat.parse(productionDateString);
+		} catch (ParseException ex) {
+			logger.error(ex);
+		}
+		return parsedDate;
+	}
+		
+		//*****BODY PLANT EXCEPTIONS WORKFLOW *****//
+	@Override
+	public List<BodyPlantCapability> getAllBuildMatrixCapabilities() {
+		List<BodyPlantCapability> bodyPlantCapabilityList = buildMatrixSmcDAO.getAllBuildMatrixCapabilities();
+		return bodyPlantCapabilityList;
+	}
+
+	@Override
+	public BodyPlantCapability getAllBuildMatrixExceptions(int plantId) {
+		BodyPlantCapability bodyPlantCapability = buildMatrixSmcDAO.getAllBuildMatrixExceptions(plantId);
+		return bodyPlantCapability;
+	}
 		
 }

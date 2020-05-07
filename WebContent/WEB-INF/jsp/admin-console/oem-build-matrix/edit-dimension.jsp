@@ -1,53 +1,38 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<html>
-<head>
-<title>Edit Dimension</title>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta http-equiv="pragma" content="no-cache" />
-<script src="${baseUrl}/js/admin-console/oem-build-matrix/edit-dimension.js" type="text/javascript"></script>
-<link href="${baseUrl}/css/admin-console/oem-build-matrix/attribute-maintenance.css" rel="stylesheet" type="text/css" />
-<link href="${commonStaticUrl}/css/jQueryUI/jquery-ui-1.8.21.custom.css" rel="stylesheet" type="text/css" />
-</head>
-
-<body>
-	<div id="attribute-view">
-		<div class="dimension-class">
-			<label>Select all which are applicable</label>
+<c:set var="modalName" value="Edit Dimension" />
+<div class="modal-content col-xs-12" data-modal-title="${modalName} - ${buildAttribute.attributeName}" data-modal-width="400">
+	<div class="row modal-body">
+		<form id="editAttributeForm" class="editAttributeForm form-horizontal data-save-attr-id="${buildAttribute.attributeId}">
+			<div class="error col-xs-12" id="errorMessage" style="display: none">
+				<img src="${commonStaticUrl}/images/warning.png" /> 
+				<span class="errorMsg"></span>
+			</div>
+			<input type="hidden" value="${buildAttribute.attributeId}" class="attributeId" name="attributeId" /> <input type="hidden"
+				value="${buildAttribute.getAttributeValueList()}"
+				class="attr-original-values">
+			<div class="col-xs-12">
+				<div class="col-xs-10">
+					<label class="attribute-values-lbl">Select all which are applicable</label>
+				</div>
+				<div class="form-group">
+					<div class="col-xs-7">
+						<c:forEach items="${buildAttribute.attributeValues}"
+							var="attrValue">
+							<ul class="attribute-values">
+								<li class="attribute-values-display"><input type="checkbox"
+									value="${attrValue.attributeValueId}" />${attrValue.attributeValue}</li>
+							</ul>
+						</c:forEach>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<div class="save-attribute">
+			<a class="buttonPrimary buttonDisabled floatRight" id="update-attr"
+				data-save-attr-id="${buildAttribute.attributeId}" onclick="">Save</a>
 		</div>
-		<table id="attribute-view">
-	    	<tbody>
-	    	<tr>
-	        <td id="tdata1"></td>
-	        <td id="tdata2">
-	        <c:set var="contains" value="false" />
-				<c:forEach items="${bodyPlantCapability.dimensionValues}" var="dimension">
-					<c:forEach var="item" items="${bodyPlantCapability.selectedDimensions}">
-						<c:if test="${item eq dimension}">
-							<c:set var="contains" value="true" />
-						</c:if>
-					</c:forEach>
-					<input type="checkbox" id="checkbox-display" class="dimensionSelect" 
-						name="dimension" value="${dimension }" <c:if test="contains == true">checked</c:if> />
-					${dimension}
-					<br />
-				</c:forEach>
-	        </td>
-	        <td id="tdata2"></td>
-	   		</tr>
-			</tbody>
-		</table>
 	</div>
-	<div class="save-update">
-		<c:choose>
-					<c:when test="${editPopup eq true}">
-					<a class="buttonPrimary" id="update-dimension" onclick="">Update</a>
-					</c:when>
-					<c:otherwise>
-					<a class="buttonPrimary create-dimension"  onclick="">Save</a>
-					</c:otherwise>
-		</c:choose>
-	</div>
-</body>
-</html>
+</div>
+<script src="${baseUrl}/js/admin-console/oem-build-matrix/edit-dimension.js" type="text/javascript"></script>

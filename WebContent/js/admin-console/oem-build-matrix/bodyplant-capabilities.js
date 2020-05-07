@@ -1,6 +1,5 @@
 var allNodes;
 $(document).ready(function() {
-	selectCurrentNavigation("tab-oem-build-matrix", "left-nav-bodyplant-capabilities");
 
 	$table = $('#plant-capablity-table').dataTable({ //All of the below are optional
 		"bPaginate" : true, //enable pagination
@@ -42,14 +41,14 @@ $(document).ready(function() {
 			}
 		}
 	});
-	
-	var strHTML='<div style="float: right; text-align: right;margin-bottom: 1%;">'+
-		'<a href="maintenance-summary.htm" class="buttonSecondary clear-left back" style="margin-right: 7px;">Back</a>'+
-		'<a href="#" id="savePage" class="buttonPrimary">Save</a></div>';
-	
+
+	var strHTML = '<div class="button-div-bottom floatRight">' +
+		'<a href="' + baseBuildMatrixUrl + '/maintenance-summary" onclick="javascript:loadProcessImage();" class="buttonSecondary floatRight">Back</a>' +
+		'</div>';
+
 	$("#plant-capablity-table_wrapper").prepend(strHTML);
 
-	$('#edit-dimension-popup').dialog({
+	$('#edit-dimension-popup-modal').dialog({
 		autoOpen : false,
 		cache : false,
 		modal : true,
@@ -64,9 +63,6 @@ $(document).ready(function() {
 		title : 'Edit Dimension- Body Length',
 		closeOnEscape : false
 	});
-
-
-
 });
 
 function getContextRoot() {
@@ -74,15 +70,17 @@ function getContextRoot() {
 }
 
 function loadEditDimensionForm(capabilityId) {
-	var url = getContextRoot() + "/admin-console/oem-build-matrix/load-edit-dimension-popup.htm";
+	var url = getContextRoot() + "/admin-console/oem-build-matrix/load-edit-dimension-popup-modal.htm";
 	$.ajax({
 		url : url,
 		cache : false,
 		type : "POST",
-		data:{capabilityId:capabilityId},
+		data : {
+			capabilityId : capabilityId
+		},
 		success : function(data) {
-			$("#edit-dimension-popup").html(data);
-			$('#edit-dimension-popup').dialog('open');
+			$("#edit-dimension-popup-modal").html(data);
+			$('#edit-dimension-popup-modal').dialog('open');
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
 			if (jqXHR.status == 500) {
@@ -91,5 +89,4 @@ function loadEditDimensionForm(capabilityId) {
 			return;
 		}
 	});
-
 }

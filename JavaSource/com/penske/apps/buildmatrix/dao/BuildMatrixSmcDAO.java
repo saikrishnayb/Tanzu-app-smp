@@ -27,10 +27,6 @@ import com.penske.apps.suppliermgmt.annotation.DBSmc;
 @DBSmc
 public interface BuildMatrixSmcDAO {
 	
-	public List<BodyPlantCapability> getAllBuildMatrixCapabilities();
-
-	public BodyPlantCapability getCapabilityDetails(int capabilityId);
-	
 	public List<FreightMileage> getFreightMileageData(int plantId);
 	
 	public List<PlantProximity> getPlantProximity(int plantId);
@@ -106,5 +102,10 @@ public interface BuildMatrixSmcDAO {
 	public BuildAttribute getBuildAttributeById(@Param("attributeId") int attributeId);
 	
 	public void updateAttributeValues(@Param("attributeId") int attributeId, @Param("attrValueIds") List<Integer> attrValueIds);
+	
+	// BODY PLANT EXCEPTIONS //
+	public List<BodyPlantCapability> getAllBuildMatrixCapabilities();
+	
+	public BodyPlantCapability getAllBuildMatrixExceptions(@Param("plantId") int plantId);
 	
 }

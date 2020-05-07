@@ -24,10 +24,6 @@ public interface BuildMatrixSmcService {
 	
 	public List<String> getAllOEMNames();
 
-	public List<BodyPlantCapability> getAllBuildMatrixCapabilities();
-
-	public BodyPlantCapability getCapabilityDetails(int capabilityId);
-	
     public List<FreightMileage> getFreightMileageData(int plantId);
 	
     public List<PlantProximity> getPlantProximity(int plantId);
@@ -88,5 +84,9 @@ public interface BuildMatrixSmcService {
 	void updateAttribute(int attributeId, List<Integer> attrValueIds);
 	
 	public Workbook downloadProductionSlotResultsDocument(int buildId) throws Exception;
-
+	
+	// BODY PLANT EXCEPTIONS //
+	public List<BodyPlantCapability> getAllBuildMatrixCapabilities();
+	
+	public BodyPlantCapability getAllBuildMatrixExceptions(int plantId);
 }

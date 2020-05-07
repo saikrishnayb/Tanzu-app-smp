@@ -28,6 +28,7 @@ import com.penske.apps.adminconsole.enums.Tab.SubTab;
 import com.penske.apps.adminconsole.util.ApplicationConstants;
 import com.penske.apps.adminconsole.util.CommonUtils;
 import com.penske.apps.buildmatrix.domain.ApprovedOrder;
+import com.penske.apps.buildmatrix.domain.BodyPlantCapability;
 import com.penske.apps.buildmatrix.domain.BuildAttribute;
 import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
@@ -116,28 +117,38 @@ public class BuildMatrixController {
 	 */
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping("/bodyplant-capabilities")
-	public ModelAndView getAttributeMaintenance() {
+	public ModelAndView getBodyPlantCapabilities(@RequestParam("plantId") int plantId) {
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/bodyplant-capabilities");
-		model.addObject("capabilityList", buildMatrixSmcService.getAllBuildMatrixCapabilities());
+		List<BodyPlantCapability> attributeList = buildMatrixSmcService.getAllBuildMatrixCapabilities();
+		BodyPlantCapability bodyPlantCapability = buildMatrixSmcService.getAllBuildMatrixExceptions(plantId);
+
+		model.addObject("attributeList", attributeList);
+		model.addObject("plantData", buildMatrixSmcService.getPlantData(plantId));
+		model.addObject("bodyPlantCapability", bodyPlantCapability);
+
 		return model;
 	}
 
 	/**
-	 * Method to Loads Edit Dimension Popup
+	 * Method to Loads Edit Dimension Popup Modal
 	 * 
-	 * @param request
+	 * @param attributeId
 	 * 
 	 * @return ModelAndView
 	 */
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
-	@RequestMapping(value = "/load-edit-dimension-popup", method = { RequestMethod.POST })
-	public ModelAndView loadEditDimensionPopup(@RequestParam("capabilityId") int capabilityId, HttpServletResponse response) {
+	@RequestMapping(value = "/load-edit-dimension-popup-modal", method = { RequestMethod.POST })
+	public ModelAndView loadEditDimensionPopup(@RequestParam("attributeId") int attributeId, HttpServletResponse response) {
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/edit-dimension");
-		model.addObject("bodyPlantCapability",buildMatrixSmcService.getCapabilityDetails(capabilityId));
-		model.addObject("editPopup", true);
+		BuildAttribute buildAttribute = buildMatrixSmcService.getBuildAttributeById(attributeId);
+		try {
+			model.addObject("editPopup", true);
+			model.addObject("buildAttribute", buildAttribute);
+		} catch (Exception e) {
+			LOGGER.error("Error in loading Edit Dimension popup".concat(e.getLocalizedMessage()));
+		}
 		return model;
 	}
-	
 
 	/**
 	 * method to load maintenance summary screen
