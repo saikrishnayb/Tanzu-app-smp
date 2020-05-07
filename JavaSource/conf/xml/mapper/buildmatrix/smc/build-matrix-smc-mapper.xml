@@ -486,16 +486,14 @@
 	</insert>
 	
  	<select id="getAllAttributeValues" resultType="String">
- 		SELECT 
-				TRIM(ATTRIBUTE_VALUE)
-		FROM
-				SMC.OBM_ATTRIBUTE_VALUE
-		WHERE
-				ATTRIBUTE_ID=#{attributeId} 
+	 	SELECT   TRIM(ATTRIBUTE_VALUE)
+		FROM     SMC.OBM_ATTRIBUTE_VALUE
+		WHERE    ATTRIBUTE_ID=#{attributeId}
 	</select>
 	
 	<select id="getAllBuildMatrixCapabilities" resultMap="BodyPlantCapabilityMap">
 		SELECT   ATTRIBUTE_ID AS attributeId,
+		         ATTRIBUTE_KEY AS attributeKey,
 		         ATTRIBUTE_NAME AS attributeName,
 		         '' AS attributeType
 		FROM     OBM_ATTRIBUTE
@@ -503,37 +501,37 @@
 
 	<resultMap id="BodyPlantCapabilityMap" type="com.penske.apps.buildmatrix.domain.BodyPlantCapability" >
 		<result property="attributeId"   	column="attributeId"/>
+		<result property="attributeKey"   	column="attributeKey"/>
 		<result property="attributeName" 	column="attributeName"/>
 		<result property="attributeValue" 	column="attributeValue"/>
 		<collection property="values" 		column="attributeId" select="getAllAttributeValues"></collection>
 	</resultMap>
 
 	<select id="getAllBuildMatrixExceptions" resultType="com.penske.apps.buildmatrix.domain.BodyPlantCapability">
-		SELECT
-				DISALLOW_LIFTGATE_INSTALL AS liftgateInstalled,
-				DISALLOW_REAR_DOOR_INSTALL AS rearDoorInstalled,
-				DISALLOW_REEFER_INSTALL AS reeferInstalled,
-				DISALLOW_VEHICLE_TYPE AS vehicleType,
-				DISALLOW_CHASSIS_MAKE AS chassisMake,
-				DISALLOW_GVW AS gvw,
-				DISALLOW_BODY_MAKE AS bodyMake,
-				DISALLOW_REAR_DOOR_MAKE AS rearDoorMake,
-				DISALLOW_LIFTGATE_MAKE AS liftgateMake,
-				DISALLOW_LIFTGATE_TYPE AS liftgateType,
-				DISALLOW_FUEL_TYPE AS fuelType,
-				DISALLOW_CHASSIS_COLOR AS chassisColor,
-				DISALLOW_CHASSIS_LENGTH AS chassisLength,
-				DISALLOW_WHEELBASE AS wheelbase,
-				DISALLOW_WHEEL_MATERIAL AS wheelMaterial,
-				DISALLOW_CORP AS corp,
-				DISALLOW_CHASSIS_MODEL AS chassisModel,
-				DISALLOW_CHASSIS_MODEL_YEAR AS chassisModelYear,
-				DISALLOW_TRANSMISSION_MAKE AS transmissionMake,
-				DISALLOW_BRAKE_TYPE AS brakeType,
-				DISALLOW_SUSPENSION_TYPE AS suspensionType,
-				DISALLOW_REEFER_MAKE AS reeferMake
-		FROM SMC.OBM_PLANT_CAPABILITY 
-		WHERE PLANT_ID=#{plantId}
+		SELECT   DISALLOW_LIFTGATE_INSTALL AS liftgateInstalled,
+		         DISALLOW_REAR_DOOR_INSTALL AS rearDoorInstalled,
+		         DISALLOW_REEFER_INSTALL AS reeferInstalled,
+		         DISALLOW_VEHICLE_TYPE AS vehicleType,
+		         DISALLOW_CHASSIS_MAKE AS chassisMake,
+		         DISALLOW_GVW AS gvw,
+		         DISALLOW_BODY_MAKE AS bodyMake,
+		         DISALLOW_REAR_DOOR_MAKE AS rearDoorMake,
+		         DISALLOW_LIFTGATE_MAKE AS liftgateMake,
+		         DISALLOW_LIFTGATE_TYPE AS liftgateType,
+		         DISALLOW_FUEL_TYPE AS fuelType,
+		         DISALLOW_CHASSIS_COLOR AS chassisColor,
+		         DISALLOW_CHASSIS_LENGTH AS chassisLength,
+		         DISALLOW_WHEELBASE AS wheelbase,
+		         DISALLOW_WHEEL_MATERIAL AS wheelMaterial,
+		         DISALLOW_CORP AS corp,
+		         DISALLOW_CHASSIS_MODEL AS chassisModel,
+		         DISALLOW_CHASSIS_MODEL_YEAR AS chassisModelYear,
+		         DISALLOW_TRANSMISSION_MAKE AS transmissionMake,
+		         DISALLOW_BRAKE_TYPE AS brakeType,
+		         DISALLOW_SUSPENSION_TYPE AS suspensionType,
+		         DISALLOW_REEFER_MAKE AS reeferMake
+		FROM     SMC.OBM_PLANT_CAPABILITY
+		WHERE    PLANT_ID=#{plantId}
 	</select>
 	
 </mapper>

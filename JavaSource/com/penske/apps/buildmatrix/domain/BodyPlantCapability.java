@@ -1,6 +1,8 @@
 package com.penske.apps.buildmatrix.domain;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BodyPlantCapability {
 	
@@ -32,6 +34,9 @@ public class BodyPlantCapability {
 	private String brakeType;
 	private String suspensionType;
 	private String reeferMake;
+	private String breakType;
+	private String sideDoorInstalled;
+	private Map<String, Boolean> attributeValuesMap = new LinkedHashMap<String, Boolean>();
 	
 	protected BodyPlantCapability() {}
 	
@@ -265,6 +270,30 @@ public class BodyPlantCapability {
 	
 	public void setCapabilityId(int capabilityId) {
 		this.capabilityId = capabilityId;
+	}
+
+	public String getBreakType() {
+		return breakType;
+	}
+
+	public void setBreakType(String breakType) {
+		this.breakType = breakType;
+	}
+
+	public String getSideDoorInstalled() {
+		return sideDoorInstalled;
+	}
+
+	public void setSideDoorInstalled(String sideDoorInstalled) {
+		this.sideDoorInstalled = sideDoorInstalled;
+	}
+
+	public Map<String, Boolean> getAttributeValuesMap() {
+		return attributeValuesMap;
+	}
+
+	public void setAttributeValuesMap(Map<String, Boolean> attributeValuesMap) {
+		this.attributeValuesMap = attributeValuesMap;
 	}
 	
 }

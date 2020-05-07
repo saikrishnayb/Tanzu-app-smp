@@ -12,8 +12,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.util.HSSFColor;
@@ -481,11 +484,122 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		List<BodyPlantCapability> bodyPlantCapabilityList = buildMatrixSmcDAO.getAllBuildMatrixCapabilities();
 		return bodyPlantCapabilityList;
 	}
-
+	
 	@Override
-	public BodyPlantCapability getAllBuildMatrixExceptions(int plantId) {
+	public List<BodyPlantCapability> getAllBuildMatrixExceptions(int plantId) {
 		BodyPlantCapability bodyPlantCapability = buildMatrixSmcDAO.getAllBuildMatrixExceptions(plantId);
-		return bodyPlantCapability;
+		
+		List<BodyPlantCapability> bodyPlantCapabilityList = getAllBuildMatrixCapabilities();
+		
+		for(BodyPlantCapability plantCapability : bodyPlantCapabilityList) {
+			String disallowedPlantCapability = getDisallowedPlantCapability(plantCapability.getAttributeKey(), bodyPlantCapability);
+					
+			List<String> disallowedPlantCapabilityList = Stream.of(disallowedPlantCapability.split(","))
+					  										   .map(String::trim)
+					  										   .collect(Collectors.toList());
+			
+			List<String> attributeValues = plantCapability.getValues();
+
+			/*
+			 * This map is prepared to show the attribute values in green or
+			 * pink based on Disallowed Attributes already selected for a plant
+			 */
+			Map<String, Boolean> attributeValuesMap = attributeValues.stream().collect(Collectors.toMap(attributeValue -> attributeValue, 
+																										attributeValue -> disallowedPlantCapabilityList.contains(attributeValue) ? true : false,
+																										(oldValue, newValue) -> oldValue,
+																										LinkedHashMap::new));
+			plantCapability.setAttributeValuesMap(attributeValuesMap);
+		}
+		
+		return bodyPlantCapabilityList;
+	}
+	
+	/**
+	 * Since there is no mapping between OBM_ATTRIBUTE and OBM_PLANT_CAPABILITY,
+	 * we've to manually identify which attribute matched with capability table columns.
+	 * 
+	 * If any new attribute is added, we should add a case statement
+	 * 
+	 * @param attributeKey
+	 * @param bodyPlantCapability
+	 * @return
+	 */
+	private String getDisallowedPlantCapability(String attributeKey, BodyPlantCapability bodyPlantCapability) {
+		String disallowedValue = "";
+		
+		switch (attributeKey) {
+		case "WHEELBASE":
+			disallowedValue = bodyPlantCapability.getWheelbase();
+			break;
+		case "GVW":
+			disallowedValue = bodyPlantCapability.getGvw();
+			break;
+		case "WHEELMATERIAL":
+			disallowedValue = bodyPlantCapability.getWheelMaterial();
+			break;
+		case "COLOR":
+			disallowedValue = bodyPlantCapability.getChassisColor();
+			break;
+		case "FUELTYPE":
+			disallowedValue = bodyPlantCapability.getFuelType();
+			break;
+		case "LIFTGATEMAKE":
+			disallowedValue = bodyPlantCapability.getLiftgateMake();
+			break;
+		case "LIFTGATETYPE":
+			disallowedValue = bodyPlantCapability.getLiftgateType();
+			break;
+		case "CHASSISMAKE":
+			disallowedValue = bodyPlantCapability.getChassisMake();
+			break;
+		case "REARDOORMAKE":
+			disallowedValue = bodyPlantCapability.getRearDoorMake();
+			break;
+		case "VEHICLETYPE":
+			disallowedValue = bodyPlantCapability.getVehicleType();
+			break;
+		case "REARDOORINSTALLED":
+			disallowedValue = bodyPlantCapability.getRearDoorInstalled();
+			break;
+		case "LIFTGATEINSTALLED":
+			disallowedValue = bodyPlantCapability.getLiftgateInstalled();
+			break;
+		case "REEFERINSTALLED":
+			disallowedValue = bodyPlantCapability.getReeferInstalled();
+			break;
+		case "BODYMAKE":
+			disallowedValue = bodyPlantCapability.getBodyMake();
+			break;
+		case "CHASSISLENGTH":
+			disallowedValue = bodyPlantCapability.getChassisLength();
+			break;
+		case "CORP":
+			disallowedValue = bodyPlantCapability.getCorp();
+			break;
+		case "CHASSISMODEL":
+			disallowedValue = bodyPlantCapability.getChassisModel();
+			break;
+		case "CHASSISMODELYEAR":
+			disallowedValue = bodyPlantCapability.getChassisModelYear();
+			break;
+		case "TRANSMISSIONMAKE":
+			disallowedValue = bodyPlantCapability.getTransmissionMake();
+			break;
+		case "REEFERMAKE":
+			disallowedValue = bodyPlantCapability.getReeferMake();
+			break;
+		case "SIDEDOORINSTALLED":
+			disallowedValue = bodyPlantCapability.getSideDoorInstalled();
+			break;
+		case "BRAKETYPE":
+			disallowedValue = bodyPlantCapability.getBreakType();
+			break;
+		case "SUSPENSIONTYPE":
+			disallowedValue = bodyPlantCapability.getSuspensionType();
+			break;
+		}
+		
+		return disallowedValue != null ? disallowedValue : "";
 	}
 		
 }

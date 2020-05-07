@@ -88,5 +88,5 @@ public interface BuildMatrixSmcService {
 	// BODY PLANT EXCEPTIONS //
 	public List<BodyPlantCapability> getAllBuildMatrixCapabilities();
 	
-	public BodyPlantCapability getAllBuildMatrixExceptions(int plantId);
+	public List<BodyPlantCapability> getAllBuildMatrixExceptions(int plantId);
 }

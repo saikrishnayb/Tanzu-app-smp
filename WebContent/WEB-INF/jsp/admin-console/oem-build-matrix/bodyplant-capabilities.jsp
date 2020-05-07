@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib uri="/WEB-INF/tld/taglib.tld" prefix="tl"%>
 <html>
 <head>
@@ -12,13 +12,11 @@
 <body style="overflow-y:visible;">
 	<%@ include file="../../../jsp/jsp-fragment/global/header.jsp"%>
 	<div id="mainContent" class="borderTop">
-		<%@ include
-			file="../../../jsp/jsp-fragment/admin-console/oem-build-matrix/left-nav.jsp"%>
+		<%@ include file="../../../jsp/jsp-fragment/admin-console/oem-build-matrix/left-nav.jsp"%>
 		<div class="leftNavAdjacentContainer">
 			<span class="floatRight addRow push-right"> </span>
 			<div id="PopupError" style="display:none">
-				<span class="errorMsg"> Hmm, something went wrong. See if you
-					could try again. </span>
+				<span class="errorMsg"> Hmm, something went wrong. See if you could try again. </span>
 			</div>
 			<div class="row">
 				<div class="col-xs-12">
@@ -37,7 +35,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							<c:forEach items="${attributeList}" var="attribute">
+							<%-- <c:forEach items="${attributeList}" var="attribute">
 								<tr class="user-row"
 									data-attribute-id="${attribute.attributeId}">
 									<td class="editable centerAlign"><a
@@ -48,6 +46,26 @@
 									<td class="value-td"><c:forEach
 											items="${attribute.values}" var="value">
 											<span class="badge non-selected-attrvalue">${value}</span>
+										</c:forEach></td>
+								</tr>
+							</c:forEach> --%>
+							
+							<c:forEach items="${bodyPlantCapability}" var="attribute">
+								<tr class="user-row" data-attribute-id="${attribute.attributeId}">
+									<td class="editable centerAlign">
+										<a onclick="loadEditDimensionForm(${attribute.attributeId})"
+											class="rightMargin edit-button" id="edit-capability"> Edit
+										</a>
+									</td>
+									<td>${attribute.attributeName}</td>
+									<td class="value-td">
+										<c:forEach items="${attribute.attributeValuesMap}" var="attributeValue">
+											<c:if test="${attributeValue.value}">
+												<span class="badge selected-attrvalue">${attributeValue.key}</span>
+											</c:if>
+											<c:if test="${!attributeValue.value}">
+												<span class="badge non-selected-attrvalue">${attributeValue.key}</span>
+											</c:if>
 										</c:forEach></td>
 								</tr>
 							</c:forEach>

@@ -119,12 +119,12 @@ public class BuildMatrixController {
 	@RequestMapping("/bodyplant-capabilities")
 	public ModelAndView getBodyPlantCapabilities(@RequestParam("plantId") int plantId) {
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/bodyplant-capabilities");
-		List<BodyPlantCapability> attributeList = buildMatrixSmcService.getAllBuildMatrixCapabilities();
-		BodyPlantCapability bodyPlantCapability = buildMatrixSmcService.getAllBuildMatrixExceptions(plantId);
+		//List<BodyPlantCapability> attributeList = buildMatrixSmcService.getAllBuildMatrixCapabilities();
+		List<BodyPlantCapability> bodyPlantCapabilityList = buildMatrixSmcService.getAllBuildMatrixExceptions(plantId);
 
-		model.addObject("attributeList", attributeList);
+		//model.addObject("attributeList", attributeList);
 		model.addObject("plantData", buildMatrixSmcService.getPlantData(plantId));
-		model.addObject("bodyPlantCapability", bodyPlantCapability);
+		model.addObject("bodyPlantCapability", bodyPlantCapabilityList);
 
 		return model;
 	}
