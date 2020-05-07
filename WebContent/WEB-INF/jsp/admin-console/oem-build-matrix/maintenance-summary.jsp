@@ -42,7 +42,7 @@
 								</a>
 								<input type="hidden" class="plant-id" value="${plant.plantId}" />
 								<ul class="dropdown-menu">
-									<li><a href="bodyplant-capabilities.htm" >Body Plant Exceptions</a></li>
+									<li><a onclick="processingImageAndTextHandler('visible','Loading data...');" href="bodyplant-capabilities.htm?plantId=${plant.plantId}">Body Plant Exceptions</a></li>
 									<li><a onclick="processingImageAndTextHandler('visible','Loading data...');" href="district-proximity.htm?plantId=${plant.plantId}">Proximity Configuration</a></li> 
 									<li><a class="set-offline-date" onclick="setOfflineDates(${plant.plantId})" href="#">Plant Off-line Dates</a></li>
 								</ul>
