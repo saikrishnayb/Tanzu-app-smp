@@ -69,14 +69,14 @@ function getContextRoot() {
 	return window.sessionStorage.getItem('baseAppUrl');
 }
 
-function loadEditDimensionForm(capabilityId) {
+function loadEditDimensionForm(attributeId) {
 	var url = getContextRoot() + "/admin-console/oem-build-matrix/load-edit-dimension-popup-modal.htm";
 	$.ajax({
 		url : url,
 		cache : false,
 		type : "POST",
 		data : {
-			capabilityId : capabilityId
+			attributeId : attributeId
 		},
 		success : function(data) {
 			$("#edit-dimension-popup-modal").html(data);
