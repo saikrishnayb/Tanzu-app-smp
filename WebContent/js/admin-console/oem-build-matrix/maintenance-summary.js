@@ -98,55 +98,56 @@ $setOfflineDatesModal.on("click", '#save-offline-dates', function() {
 						var plantIdCheck = $(this).val();
 						var plantIdMatch = (plantIdCheck == plantId);
 
-						if (plantIdMatch) {
-							var stringToAppend = "";
-							if (plantOfflineDateList.length == 1) {
-								if (plantOfflineDate['offlineStartDate'] == null || plantOfflineDate['offlineStartDate'] == "")
-									stringToAppend = "No Offline Dates";
+							if (plantIdMatch) {
+								var stringToAppend = "";
+								if (plantOfflineDateList.length == 1) {
+									if (plantOfflineDate['offlineStartDate'] == null || plantOfflineDate['offlineStartDate'] == "")
+										stringToAppend = "";
+									else
+										stringToAppend = startDate + ' - ' + endDate;
+
+								} else if (plantOfflineDateList.length > 0)
+									stringToAppend = "Multiple Dates";
 								else
-									stringToAppend = startDate + ' - ' + endDate;
+									stringToAppend = "";
 
-							} else if (plantOfflineDateList.length > 0)
-								stringToAppend = "Multiple Dates";
-							else
-								stringToAppend = "No Offline Dates";
+								var $bodyPlantRow = $(this).closest('tr');
+								var nRow = $bodyPlantRow[0];
+								$bodyPlantTable.dataTable().fnUpdate(stringToAppend, nRow, 5, false);
 
-							var $bodyPlantRow = $(this).closest('tr');
-							var nRow = $bodyPlantRow[0];
-							$bodyPlantTable.dataTable().fnUpdate(stringToAppend, nRow, 5, false);
+							}
+						});
+						//closeModal($setOfflineDatesModal);
+						ModalUtil.closeModal($setOfflineDatesModal);
+						hideLoading();
+					},
+					error : function(XMLHttpRequest, textStatus, errorThrown) {
+						if (XMLHttpRequest.responseText.indexOf('Error Processing the Setting Offline dates') > 0) {
+							$('.errorMsg').text("Error Processing the Setting Offline dates.");
+							$('.error').show();
 
 						}
-					});
-					//closeModal($setOfflineDatesModal);
-					ModalUtil.closeModal($setOfflineDatesModal);
-					hideLoading();
-				},
-				error : function(XMLHttpRequest, textStatus, errorThrown) {
-					if (XMLHttpRequest.responseText.indexOf('Error Processing the Setting Offline dates') > 0) {
-						$('.errorMsg').text("Error Processing the Setting Offline dates.");
-						$('.error').show();
-
+						hideLoading();
 					}
-					hideLoading();
-				}
-			});
+				});
+			}
+			// If an error was found, display it to the user and do not submit the form data.
+			else {
+
+				$('.errorMsg').text(errorMsg);
+				$('.error').show();
+				hideLoading();
+			}
 		}
-		// If an error was found, display it to the user and do not submit the form data.
-		else {
-			$('.errorMsg').text(errorMsg);
-			$('.error').show();
-			hideLoading();
-		}
-	}
 });
 
 $setOfflineDatesModal.on("click", '#add-new-row', function() {
 	debugger;
 	var newRow = "<tr class='row'><td class='col-xs-3'><span class='dateLbl'>Date</span></td>" +
 		"<td class='col-xs-7'>" +
-		"<input name='startDate' class='start-date' class='common-form-control date-picker numeric numeric-jquery-date advanced-date' type='text' />" +
-		"<input  name='offlineStartDate' type='hidden' class='datepickerStartHidden'/> - " +
-		"<input name='endDate' class='end-date' class='common-form-control date-picker numeric numeric-jquery-date advanced-date' type='text' />" +
+		"<input name='startDate' class='start-date' class='common-form-control date-picker numeric numeric-jquery-date advanced-date' type='text' disabled/>" +
+		"<input  name='offlineStartDate' type='hidden' class='datepickerStartHidden'/> <span class='dateLbl'> - </span> " +
+		"<input name='endDate' class='end-date' class='common-form-control date-picker numeric numeric-jquery-date advanced-date' type='text' disabled />" +
 		"<input  name='offlineEndDate' type='hidden' class='datepickerEndHidden' />" +
 		"</td>" +
 		"<td class='col-xs-2'>" +
@@ -157,12 +158,14 @@ $setOfflineDatesModal.on("click", '#add-new-row', function() {
 	$("#offline-dates-table tbody").append(newRow);
 	initializeDatePicker();
 });
-
 $setOfflineDatesModal.on("click", '.deleteRow', function() {
 	var $offlineDaterRow = $(this).parents("tr");
 	var offlineDateId = $offlineDaterRow.attr('offlineDateId');
 	if (offlineDateId != '' && offlineDateId != 0)
+		{
 		removeOfflineDate.push(offlineDateId);
+		$('#save-offline-dates').removeClass("buttonDisabled");
+		}
 	$(this).parents("tr").remove();
 });
 

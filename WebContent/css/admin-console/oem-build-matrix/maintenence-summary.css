@@ -253,3 +253,6 @@ table.dataTable thead th{
 .dateLbl {
 	font-weight: bold;
 }
+button.ui-datepicker-close {
+    display: inline-block !important;
+}
