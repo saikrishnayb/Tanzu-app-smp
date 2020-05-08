@@ -78,14 +78,12 @@ $setOfflineDatesModal.on("click", '#save-offline-dates', function() {
 	input['plantId'] = $form.find('.plantId').val();
 	input['offlineDates'] = plantOfflineDateList;
 	input['offlineDateToRemove'] = removeOfflineDate;
-	if (plantOfflineDateList.length != 0 || removeOfflineDate.length != 0) {
-		var errorMsg = '';
-
-		// Validate the form.
-		errorMsg = validateOfflineDateForm($form);
-
-		// If no error message was returned, hide any errors and submit the form data.
-		if (errorMsg.length == 0) {
+	var errorMsg = '';
+	// Validate the form.
+	errorMsg = validateOfflineDateForm($form);
+	// If no error message was returned, hide any errors and submit the form data.
+	if (errorMsg.length == 0) {
+		if (plantOfflineDateList.length != 0 || removeOfflineDate.length != 0) {
 			var $saveOfflineDatesPromise = $.ajax({
 				type : "POST",
 				url : './save-offline-dates.htm',
@@ -130,14 +128,17 @@ $setOfflineDatesModal.on("click", '#save-offline-dates', function() {
 					}
 				});
 			}
-			// If an error was found, display it to the user and do not submit the form data.
-			else {
-
-				$('.errorMsg').text(errorMsg);
-				$('.error').show();
+			else{
 				hideLoading();
 			}
 		}
+		// If an error was found, display it to the user and do not submit the form data.
+		else {
+			$('.errorMsg').text(errorMsg);
+			$('.error').show();
+			hideLoading();
+		}
+		
 });
 
 $setOfflineDatesModal.on("click", '#add-new-row', function() {

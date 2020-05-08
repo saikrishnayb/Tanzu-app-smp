@@ -1,6 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<c:set var="modalName" value="Offline Dates - ${plantData.plantName} - ${plantData.city}, ${plantData.state}" />
+<c:set var="modalName" value="Offline Dates - ${plantData.plantManufacturer} - ${plantData.city}, ${plantData.state}" />
 <div class="modal-content col-xs-12" data-modal-title="${modalName}" data-modal-width="470">
 	<div class="row modal-body">
 		<form id="set-offline-date-form">
