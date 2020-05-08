@@ -5,7 +5,7 @@
 	<div class="row modal-body">
 		<form id="set-offline-date-form">
 			<span class="floatLeft clear-left errorMsg"></span>
-			
+			<input type="text" autofocus="autofocus" class="display-none">
 			<input type="hidden" value="${plantData.plantId}" class="plantId" name="plantId"/>
 			<table id="offline-dates-table">
 				<tbody>

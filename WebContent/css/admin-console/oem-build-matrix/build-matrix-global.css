@@ -16,3 +16,7 @@ table.dataTable th {
 .error-input {
 	background-color: #F7D9D9 !important;
 }
+
+.display-none{
+	display: none;
+}
