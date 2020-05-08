@@ -29,11 +29,11 @@
 					</c:forEach>
 					<c:if test="${fn:length(plantData.offlineDates) eq 0}">
 						<tr class="row">
-							<td class="col-xs-3">Date</td>
+							<td class="col-xs-3"><span class="dateLbl">Date</span></td>
 							<td class="col-xs-7">
-								<input name="startDate" class="start-date" class="common-form-control date-picker numeric numeric-jquery-date advanced-date" type="text"  />
-								<input  name="offlineStartDate" type="hidden" class="datepickerStartHidden"  />-
-								<input name="endDate" class="end-date" class="common-form-control date-picker numeric numeric-jquery-date advanced-date" type="text" />
+								<input name="startDate" class="start-date" class="common-form-control date-picker numeric numeric-jquery-date advanced-date" type="text" disabled />
+								<input  name="offlineStartDate" type="hidden" class="datepickerStartHidden"  /><span class="dateLbl"> - </span>
+								<input name="endDate" class="end-date" class="common-form-control date-picker numeric numeric-jquery-date advanced-date" type="text" disabled/>
 								<input  name="offlineEndDate" type="hidden" class="datepickerEndHidden"  />
 							</td>
 							<td class="col-xs-2">
@@ -44,7 +44,7 @@
 			</table>
 			<div class="row floatRight offline-row right-padding">
 				<a class="secondaryLink" id="add-new-row">Add Additional Offline Date</a>
-				<a class="buttonPrimary  clear-left round-corner-btn-cls buttonDisabled" id="save-offline-dates" tabindex=8>Save</a>
+				<a class="buttonPrimary  clear-left  buttonDisabled" id="save-offline-dates" tabindex=8>Save</a>
 		     </div>
 			
 		</form>
