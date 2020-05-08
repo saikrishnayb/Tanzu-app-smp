@@ -58,6 +58,7 @@ $setOfflineDatesModal.on("click", '#save-offline-dates', function() {
 	var plantOfflineDateList = [];
 	var startDate;
 	var endDate;
+	
 	$.each(rows, function(index, row) {
 		var offlineDateId = $(row).attr('offlineDateId');
 		if ( $(row).find('.start-date').val() != '' &&  $(row).find('.end-date').val() != '') {
@@ -74,6 +75,7 @@ $setOfflineDatesModal.on("click", '#save-offline-dates', function() {
 		}
 
 	});
+	
 	var input = {};
 	input['plantId'] = $form.find('.plantId').val();
 	input['offlineDates'] = plantOfflineDateList;
@@ -128,7 +130,7 @@ $setOfflineDatesModal.on("click", '#save-offline-dates', function() {
 					}
 				});
 			}
-			else{
+			else {
 				hideLoading();
 			}
 		}
@@ -158,14 +160,16 @@ $setOfflineDatesModal.on("click", '#add-new-row', function() {
 	$("#offline-dates-table tbody").append(newRow);
 	initializeDatePicker();
 });
+
 $setOfflineDatesModal.on("click", '.deleteRow', function() {
 	var $offlineDaterRow = $(this).parents("tr");
 	var offlineDateId = $offlineDaterRow.attr('offlineDateId');
-	if (offlineDateId != '' && offlineDateId != undefined)
-		{
+	
+	if (offlineDateId != '' && offlineDateId != undefined) {
 		removeOfflineDate.push(offlineDateId);
 		$('#save-offline-dates').removeClass("buttonDisabled");
-		}
+	}
+	
 	$(this).parents("tr").remove();
 });
 
