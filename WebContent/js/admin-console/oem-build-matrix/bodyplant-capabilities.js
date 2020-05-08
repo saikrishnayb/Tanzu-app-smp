@@ -1,7 +1,7 @@
 var allNodes;
 $(document).ready(function() {
-
-	$table = $('#plant-capablity-table').dataTable({ //All of the below are optional
+	selectCurrentNavigation("tab-oem-build-matrix", "left-nav-maintenance-summary");
+	$table = $('#plant-capablity-table').DataTable({ //All of the below are optional
 		"bPaginate" : true, //enable pagination
 		"bStateSave" : true, //To retrieve the data on click of back button
 		"sPaginationType" : "two_button",

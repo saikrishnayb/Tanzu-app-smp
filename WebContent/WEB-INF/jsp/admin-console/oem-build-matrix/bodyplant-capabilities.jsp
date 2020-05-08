@@ -35,21 +35,6 @@
 							</tr>
 						</thead>
 						<tbody>
-							<%-- <c:forEach items="${attributeList}" var="attribute">
-								<tr class="user-row"
-									data-attribute-id="${attribute.attributeId}">
-									<td class="editable centerAlign"><a
-										onclick="loadEditDimensionForm(${attribute.attributeId})"
-										class="rightMargin edit-button" id="edit-capability"> Edit
-									</a></td>
-									<td>${attribute.attributeName}</td>
-									<td class="value-td"><c:forEach
-											items="${attribute.values}" var="value">
-											<span class="badge non-selected-attrvalue">${value}</span>
-										</c:forEach></td>
-								</tr>
-							</c:forEach> --%>
-							
 							<c:forEach items="${bodyPlantCapability}" var="attribute">
 								<tr class="user-row" data-attribute-id="${attribute.attributeId}">
 									<td class="editable centerAlign">
