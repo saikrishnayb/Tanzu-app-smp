@@ -5,23 +5,10 @@ selectCurrentNavigation("tab-oem-build-matrix", "");
 
 $('.attribute-container').each(function(){
 	var $container = $(this);
-/*	var isReefer = "REEFERMAKE" == $container.data('attribute-key');
-	var isRearDoor = "REARDOORMAKE" == $container.data('attribute-key');
-	var isLiftgate = "LIFTGATEMAKE" == $container.data('attribute-key');
-	
-	$container.find('.attribute-value-row').each(function(){
-		var $row = $(this);
-		var $unitsInput = $row.find('.attribute-units');
-		var unitsText = $unitsInput.val();
-		unitsText = unitsText.trim() == '' ? 0 : unitsText;
-		var units = parseInt(unitsText);
-		
-		var percentage = calculatePercentage(units, $container, isReefer, isRearDoor, isLiftgate);
-		$row.find('.attribute-percentage').val(percentage);
-	});*/
-	
 	calculateTotals($container);
 });
+
+ritsu.storeInitialFormValues('input');
 
 $('.attribute-container').on('input', '.attribute-units', function(){
 	var $unitsInput = $(this);
@@ -55,6 +42,15 @@ $('.attribute-container').on('input', '.attribute-percentage', function(){
 	
 	var units = calculateUnits(percentage, $container, isReefer, isRearDoor, isLiftgate);
 	$attributeValueRow.find('.attribute-units').val(units);
+	
+	calculateTotals($container);
+});
+
+$('.attribute-container').on('click', '.reset-link', function(){
+	var $resetLink = $(this);
+	var $container = $resetLink.closest('.attribute-container');
+	
+	ritsu.resetInitialFormValues($container);
 	
 	calculateTotals($container);
 });
