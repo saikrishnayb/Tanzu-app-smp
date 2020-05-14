@@ -13,9 +13,9 @@
 						<tr class="row" offlineDateId="${offlineDate.offlineDateId}">
 							<td class="col-xs-3"><span class="dateLbl">Date</span></td>
 							<td class="col-xs-7">
-								<input name="startDate" class="start-date" class="common-form-control date-picker numeric numeric-jquery-date advanced-date" type="text" value="${offlineDate.formattedOfflineStartDate}" disabled />
+								<input name="startDate" class="start-date offline-date" class="common-form-control date-picker numeric numeric-jquery-date advanced-date" type="text" value="${offlineDate.formattedOfflineStartDate}" />
 								<input  name="offlineStartDate" type="hidden" class="datepickerStartHidden" value="${offlineDate.formattedOfflineStartDate}"  /><span class="dateLbl"> - </span> 
-								<input name="endDate" class="end-date" class="common-form-control date-picker numeric numeric-jquery-date advanced-date" type="text" value="${offlineDate.formattedOfflineEndDate}" disabled />
+								<input name="endDate" class="end-date offline-date" class="common-form-control date-picker numeric numeric-jquery-date advanced-date" type="text" value="${offlineDate.formattedOfflineEndDate}" />
 								<input  name="offlineEndDate" type="hidden" class="datepickerEndHidden" value="${offlineDate.formattedOfflineEndDate}" />
 							</td>
 							<td class="col-xs-2">
@@ -31,9 +31,9 @@
 						<tr class="row">
 							<td class="col-xs-3"><span class="dateLbl">Date</span></td>
 							<td class="col-xs-7">
-								<input name="startDate" class="start-date" class="common-form-control date-picker numeric numeric-jquery-date advanced-date" type="text" disabled />
+								<input name="startDate" class="start-date offline-date" class="common-form-control date-picker numeric numeric-jquery-date advanced-date" type="text"/>
 								<input  name="offlineStartDate" type="hidden" class="datepickerStartHidden"  /><span class="dateLbl"> - </span>
-								<input name="endDate" class="end-date" class="common-form-control date-picker numeric numeric-jquery-date advanced-date" type="text" disabled/>
+								<input name="endDate" class="end-date offline-date" class="common-form-control date-picker numeric numeric-jquery-date advanced-date" type="text"/>
 								<input  name="offlineEndDate" type="hidden" class="datepickerEndHidden"  />
 							</td>
 							<td class="col-xs-2">

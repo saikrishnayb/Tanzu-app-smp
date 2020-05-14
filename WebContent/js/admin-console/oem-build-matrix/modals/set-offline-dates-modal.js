@@ -16,20 +16,12 @@ function initializeDatePicker() {
 		altFormat : "mm/dd/yy",
 		onSelect : function(dateText, inst) {
 			$(this).datepicker('option', 'buttonImage', '../../../images/calendar.png');
-			$('#save-offline-dates').removeClass("buttonDisabled");
 		},
 		onClose : function(dateText, inst) {
 			$(this).datepicker('option', 'buttonImage', '../../../images/calendar.png');
 		},
-		closeText:'Clear',
 		beforeShow : function(input, inst) {
 			$(this).datepicker('option', 'buttonImage', '../../../images/calendar_selected.png');
-			setTimeout(function() {
-				var clearButton = $(input )
-					.datepicker( "widget" )
-					.find( ".ui-datepicker-close" );
-				clearButton.unbind("click").bind("click",function(){$.datepicker._clearDate( input );});
-				}, 1 );
 		}
 	});
 
@@ -47,20 +39,12 @@ function initializeDatePicker() {
 		altFormat : "mm/dd/yy",
 		onSelect : function(dateText, inst) {
 			$(this).datepicker('option', 'buttonImage', '../../../images/calendar.png');
-			$('#save-offline-dates').removeClass("buttonDisabled");
 		},
 		onClose : function(dateText, inst) {
 			$(this).datepicker('option', 'buttonImage', '../../../images/calendar.png');
 		},
-		closeText:'Clear',
 		beforeShow : function(input, inst) {
 			$(this).datepicker('option', 'buttonImage', '../../../images/calendar_selected.png');
-			setTimeout(function() {
-				var clearButton = $(input )
-					.datepicker( "widget" )
-					.find( ".ui-datepicker-close" );
-				clearButton.unbind("click").bind("click",function(){$.datepicker._clearDate( input );});
-				}, 1 );
 		}
 	});
 

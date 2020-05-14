@@ -144,12 +144,11 @@ $setOfflineDatesModal.on("click", '#save-offline-dates', function() {
 });
 
 $setOfflineDatesModal.on("click", '#add-new-row', function() {
-	debugger;
 	var newRow = "<tr class='row'><td class='col-xs-3'><span class='dateLbl'>Date</span></td>" +
 		"<td class='col-xs-7'>" +
-		"<input name='startDate' class='start-date' class='common-form-control date-picker numeric numeric-jquery-date advanced-date' type='text' disabled/>" +
+		"<input name='startDate' class='start-date offline-date' class='common-form-control date-picker numeric numeric-jquery-date advanced-date' type='text'/>" +
 		"<input  name='offlineStartDate' type='hidden' class='datepickerStartHidden'/> <span class='dateLbl'> - </span> " +
-		"<input name='endDate' class='end-date' class='common-form-control date-picker numeric numeric-jquery-date advanced-date' type='text' disabled />" +
+		"<input name='endDate' class='end-date offline-date' class='common-form-control date-picker numeric numeric-jquery-date advanced-date' type='text'/>" +
 		"<input  name='offlineEndDate' type='hidden' class='datepickerEndHidden' />" +
 		"</td>" +
 		"<td class='col-xs-2'>" +
@@ -172,6 +171,10 @@ $setOfflineDatesModal.on("click", '.deleteRow', function() {
 	
 	$(this).parents("tr").remove();
 });
+
+$('#set-offline-dates-modal').on('input', '.offline-date', function(){
+	$('#save-offline-dates').removeClass("buttonDisabled");
+})
 
 
 function validateOfflineDateForm($form) {
