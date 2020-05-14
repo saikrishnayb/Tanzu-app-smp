@@ -176,6 +176,9 @@ $('#set-offline-dates-modal').on('input', '.offline-date', function(){
 	$('#save-offline-dates').removeClass("buttonDisabled");
 })
 
+$('#set-offline-dates-modal').on('change', '.offline-date', function(){
+	$('#save-offline-dates').removeClass("buttonDisabled");
+})
 
 function validateOfflineDateForm($form) {
 	var errorMsg = '';
