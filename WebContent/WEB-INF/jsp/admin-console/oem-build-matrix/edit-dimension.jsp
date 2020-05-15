@@ -23,7 +23,8 @@
 									<li class="attribute-values-display">
 										<c:if test="${attributeValue.value}">
 											<input type="checkbox" name="type" class="attibute-values-checkbox" value="${attributeValue.key}" id="attribute-values" />${attributeValue.key}
-										</c:if> <c:if test="${!attributeValue.value}">
+										</c:if> 
+										<c:if test="${!attributeValue.value}">
 											<input type="checkbox" class="disallow-attibute-values-checkbox" value="${attributeValue.key}" id="attribute-values" checked />${attributeValue.key}
 										</c:if>
 									</li>
@@ -41,6 +42,5 @@
 		</div>
 	</div>
 </div>
-<script
-	src="${baseUrl}/js/admin-console/oem-build-matrix/edit-dimension.js"
-	type="text/javascript"></script>
+
+<script	src="${baseUrl}/js/admin-console/oem-build-matrix/edit-dimension.js" type="text/javascript"></script>

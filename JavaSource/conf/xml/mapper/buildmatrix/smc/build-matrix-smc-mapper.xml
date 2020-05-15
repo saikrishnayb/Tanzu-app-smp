@@ -533,7 +533,8 @@
 		         DISALLOW_TRANSMISSION_MAKE AS transmissionMake,
 		         DISALLOW_BRAKE_TYPE AS brakeType,
 		         DISALLOW_SUSPENSION_TYPE AS suspensionType,
-		         DISALLOW_REEFER_MAKE AS reeferMake
+		         DISALLOW_REEFER_MAKE AS reeferMake,
+		         DISALLOW_SIDE_DOOR_INSTALL AS sideDoorInstalled
 		FROM     SMC.OBM_PLANT_CAPABILITY
 		WHERE    PLANT_ID = #{plantId}
 	</select>
