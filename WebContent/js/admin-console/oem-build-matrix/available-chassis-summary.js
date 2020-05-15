@@ -45,7 +45,7 @@ var excludedUnitsTable = $('#excluded-units-table').DataTable({
   responsive: true
 });
 
-updateQuantities()
+updateQuantities();
 
 /****************** Modal Initialization ******************/
 var $oemBuildMatrixModal = $('#modal-oem-build-matrix');
@@ -461,9 +461,26 @@ function updateSelectedUnitQuantity() {
   $('#selected-unit-quantity').html(selectedUnitQuantity);
 }
 
+function checkCounts(){
+	var $chassisAvailableBadge = $('.chassis-available-badge');
+	var chassisAvailable = parseInt($chassisAvailableBadge.text());
+	
+	var $bodiesOnOrderBadge = $('.bodies-on-order-badge');
+	var bodiesOnOrder = parseInt($bodiesOnOrderBadge.text());
+	if(bodiesOnOrder > chassisAvailable) {
+		$('.too-many-bodies-div').removeClass('hidden');
+		$('#continue').addClass('buttonDisabled');
+	}
+	else {
+		$('.too-many-bodies-div').addClass('hidden');
+		$('#continue').removeClass('buttonDisabled');
+	}
+}
+
 function updateQuantities() {
   updateSelectedUnitQuantity();
   updateExcludedQuantity();
+  checkCounts();
 }
 
 /** Delete Excluded Rows **/

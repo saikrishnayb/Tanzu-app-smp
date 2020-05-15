@@ -15,7 +15,6 @@
 		<div id="mainContent">
 			<%@ include file="../../../jsp/jsp-fragment/admin-console/oem-build-matrix/left-nav.jsp"%>
 			<div class="leftNavAdjacentContainer">
-				<c:set var="tooManyBodies" value="${bodiesOnOrder > chassisAvailable}"/>
 				<div class="container-fluid">
 					<div id="PopupError" style="display:none">
 						<span class="errorMsg"> Hmm, something went wrong. See if you could try again. </span>
@@ -28,14 +27,12 @@
 		      		<div class="row">
 		        		<div class="col-xs-12 available-units-table-top" data-build-id="${buildId}">
 		        			<div class='badge-div'>
-		          				<label>Bodies on Order</label> <span class="badge">${bodiesOnOrder}</span>
+		          				<label>Bodies on Order</label> <span class="badge bodies-on-order-badge">${bodiesOnOrder}</span>
 		          				<label>Chassis Available</label> <span class="badge chassis-available-badge" data-chassis-available="${chassisAvailable}">${chassisAvailable}</span>
 		          			</div>
-		          			<c:if test="${tooManyBodies}">
-			          			<div class='too-many-bodies-div'>
-			          				There are not enough available Chassis to match the Body Orders selected. Please modify your selection and try again.
-			          			</div>
-		          			</c:if>
+		          			<div class='too-many-bodies-div hidden'>
+		          				There are not enough available Chassis to match the Body Orders selected. Please modify your body selection or unexclude chassis to continue.
+		          			</div>
 		          			<div class="btn-div floatRight">
 		          				<a id="back-btn" href="${baseAppUrl}/admin-console/oem-build-matrix/back-to-confirm?buildId=${buildId}" onclick="javascript:loadProcessImage();" class="buttonSecondary">Back</a>
 		          				<a id="continue" href="${baseAppUrl}/admin-console/oem-build-matrix/build-mix?buildId=${buildId}" onclick="javascript:loadProcessImage();" class="buttonSecondary <c:if test="${tooManyBodies}"> buttonDisabled</c:if>">Continue</a>

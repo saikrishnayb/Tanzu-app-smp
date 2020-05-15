@@ -32,12 +32,12 @@
 		          			</div>
 		          			<c:if test="${tooManyBodies}">
 			          			<div class='too-many-bodies-div'>
-			          				There are not enough available Chassis to match the Body Orders selected. Please modify your selection and try again.
+			          				There are not enough available chassis to match the Body Orders selected. Please modify your body selection or unexclude chassis on the next screen.
 			          			</div>
 		          			</c:if>
 		          			<div class="btn-div floatRight">
 		          				<a id="back-btn" href="${baseAppUrl}/admin-console/oem-build-matrix/order-summary?buildId=${buildId}" onclick="javascript:loadProcessImage();" class="buttonSecondary" >Back</a>
-		          				<a id="continue" href="${baseAppUrl}/admin-console/oem-build-matrix/available-chassis-summary?buildId=${buildId}" onclick="javascript:loadProcessImage();" class="buttonSecondary <c:if test="${tooManyBodies}"> buttonDisabled</c:if>">Continue</a>
+		          				<a id="continue" href="${baseAppUrl}/admin-console/oem-build-matrix/available-chassis-summary?buildId=${buildId}" onclick="javascript:loadProcessImage();" class="buttonSecondary">Continue</a>
 		          			</div>
 		        		</div>
 		      		</div>
