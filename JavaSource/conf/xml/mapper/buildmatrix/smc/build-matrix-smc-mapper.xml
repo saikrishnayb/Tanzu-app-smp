@@ -494,9 +494,8 @@
 	<select id="getAllBuildMatrixCapabilities" resultMap="BodyPlantCapabilityMap">
 		SELECT   ATTRIBUTE_ID AS attributeId,
 		         ATTRIBUTE_KEY AS attributeKey,
-		         ATTRIBUTE_NAME AS attributeName,
-		         '' AS attributeType
-		FROM     OBM_ATTRIBUTE
+		         ATTRIBUTE_NAME AS attributeName
+		FROM     SMC.OBM_ATTRIBUTE
 	</select>
 
 	<resultMap id="BodyPlantCapabilityMap" type="com.penske.apps.buildmatrix.domain.BodyPlantCapability" >
@@ -531,7 +530,45 @@
 		         DISALLOW_SUSPENSION_TYPE AS suspensionType,
 		         DISALLOW_REEFER_MAKE AS reeferMake
 		FROM     SMC.OBM_PLANT_CAPABILITY
-		WHERE    PLANT_ID=#{plantId}
+		WHERE    PLANT_ID = #{plantId}
 	</select>
+
+	<select id="getAttributesbyId" resultMap="BodyPlantCapabilityMap">
+		SELECT   ATTRIBUTE_ID AS attributeId,
+		         ATTRIBUTE_KEY AS attributeKey,
+		         ATTRIBUTE_NAME AS attributeName
+		FROM     SMC.OBM_ATTRIBUTE
+		WHERE 	 ATTRIBUTE_ID =  #{attributeId}
+	</select>
+	
+	<update id="updateCapability">
+		UPDATE SMC.OBM_PLANT_CAPABILITY
+		SET
+		<if test="attributeKey.equals('WHEELBASE')">DISALLOW_WHEELBASE = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('GVW')">DISALLOW_GVW = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('WHEELMATERIAL')">DISALLOW_WHEEL_MATERIAL = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('COLOR')">DISALLOW_CHASSIS_COLOR = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('FUELTYPE')">DISALLOW_FUEL_TYPE = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('LIFTGATEMAKE')">DISALLOW_LIFTGATE_MAKE = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('LIFTGATETYPE')">DISALLOW_LIFTGATE_TYPE = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('CHASSISMAKE')">DISALLOW_CHASSIS_MAKE = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('REARDOORMAKE')">DISALLOW_REEFER_MAKE = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('VEHICLETYPE')">DISALLOW_VEHICLE_TYPE = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('REARDOORINSTALLED')">DISALLOW_REAR_DOOR_INSTALL = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('LIFTGATEINSTALLED')">DISALLOW_LIFTGATE_INSTALL = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('REEFERINSTALLED')">DISALLOW_REEFER_INSTALL = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('BODYMAKE')">DISALLOW_BODY_MAKE = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('CHASSISLENGTH')">DISALLOW_CHASSIS_LENGTH = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('CORP')">DISALLOW_CORP = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('CHASSISMODEL')">DISALLOW_CHASSIS_MODEL = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('CHASSISMODELYEAR')">DISALLOW_CHASSIS_MODEL_YEAR = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('TRANSMISSIONMAKE')">DISALLOW_TRANSMISSION_MAKE = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('REEFERMAKE')">DISALLOW_REEFER_MAKE = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('SIDEDOORINSTALLED')">DISALLOW_SIDE_DOOR_INSTALL = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('BRAKETYPE')">DISALLOW_BRAKE_TYPE = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('SUSPENSIONTYPE')">DISALLOW_SUSPENSION_TYPE = #{disallowedAttributeValues}</if>
+	    WHERE
+	    	PLANT_ID = #{plantId}
+	</update>
 	
 </mapper>

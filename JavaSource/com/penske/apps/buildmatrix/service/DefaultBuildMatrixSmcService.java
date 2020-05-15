@@ -491,6 +491,13 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		
 		List<BodyPlantCapability> bodyPlantCapabilityList = getAllBuildMatrixCapabilities();
 		
+		getAttributeValuesMap(bodyPlantCapabilityList, bodyPlantCapability);
+		
+		return bodyPlantCapabilityList;
+	}
+	
+	@Override
+	public BodyPlantCapability getAttributeValuesMap(List<BodyPlantCapability> bodyPlantCapabilityList, BodyPlantCapability bodyPlantCapability) {
 		for(BodyPlantCapability plantCapability : bodyPlantCapabilityList) {
 			String disallowedPlantCapability = getDisallowedPlantCapability(plantCapability.getAttributeKey(), bodyPlantCapability);
 					
@@ -510,8 +517,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 																										LinkedHashMap::new));
 			plantCapability.setAttributeValuesMap(attributeValuesMap);
 		}
-		
-		return bodyPlantCapabilityList;
+		return bodyPlantCapability;
 	}
 	
 	/**
@@ -527,6 +533,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	private String getDisallowedPlantCapability(String attributeKey, BodyPlantCapability bodyPlantCapability) {
 		String disallowedValue = "";
 		
+		if(bodyPlantCapability != null){
 		switch (attributeKey) {
 		case "WHEELBASE":
 			disallowedValue = bodyPlantCapability.getWheelbase();
@@ -599,7 +606,25 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 			break;
 		}
 		
+		}
 		return disallowedValue != null ? disallowedValue : "";
 	}
-		
+	
+	public void updateCapability(int plantId, String attributeKey, String disallowedAttributeValues) {
+		buildMatrixSmcDAO.updateCapability(plantId, attributeKey, disallowedAttributeValues);
+	}
+
+	@Override
+	public List<BodyPlantCapability> getAttributesbyId(int attributeId) {
+		return buildMatrixSmcDAO.getAttributesbyId(attributeId);
+	}
+
+	@Override
+	public List<BodyPlantCapability> getBodyPlantExceptionsById(int plantId, int attributeId) {
+		BodyPlantCapability bodyPlantCapability = buildMatrixSmcDAO.getAllBuildMatrixExceptions(plantId);
+		List<BodyPlantCapability> bodyPlantCapabilityList = getAttributesbyId(attributeId);
+		getAttributeValuesMap(bodyPlantCapabilityList, bodyPlantCapability);
+		return bodyPlantCapabilityList;
+	}
+
 }

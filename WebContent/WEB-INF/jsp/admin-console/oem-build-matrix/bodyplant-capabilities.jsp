@@ -38,7 +38,7 @@
 							<c:forEach items="${bodyPlantCapability}" var="attribute">
 								<tr class="user-row" data-attribute-id="${attribute.attributeId}">
 									<td class="editable centerAlign">
-										<a onclick="loadEditDimensionForm(${attribute.attributeId})"
+										<a onclick="loadEditDimensionForm(${attribute.attributeId}, ${plantData.plantId}, '${attribute.attributeKey}', '${attribute.attributeName}')"
 											class="rightMargin edit-button" id="edit-capability"> Edit
 										</a>
 									</td>
@@ -46,10 +46,10 @@
 									<td class="value-td">
 										<c:forEach items="${attribute.attributeValuesMap}" var="attributeValue">
 											<c:if test="${attributeValue.value}">
-												<span class="badge selected-attrvalue">${attributeValue.key}</span>
+												<span class="badge selected-attrvalue" data-attribute-value-id="${attributeValue.key}" value="${attributeValue.key}">${attributeValue.key}</span>
 											</c:if>
 											<c:if test="${!attributeValue.value}">
-												<span class="badge non-selected-attrvalue">${attributeValue.key}</span>
+												<span class="badge non-selected-attrvalue" data-attribute-value-id="${attributeValue.key}" value="${attributeValue.key}">${attributeValue.key}</span>
 											</c:if>
 										</c:forEach></td>
 								</tr>

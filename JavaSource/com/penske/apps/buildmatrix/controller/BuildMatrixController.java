@@ -111,18 +111,17 @@ public class BuildMatrixController {
 	}
 
 	/**
-	 * method to load bodyplant capabilities screen
+	 * method to load Body Plant Exceptions screen
 	 * 
+	 * @param plantId
 	 * @return ModelAndView
 	 */
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping("/bodyplant-capabilities")
 	public ModelAndView getBodyPlantCapabilities(@RequestParam("plantId") int plantId) {
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/bodyplant-capabilities");
-		//List<BodyPlantCapability> attributeList = buildMatrixSmcService.getAllBuildMatrixCapabilities();
 		List<BodyPlantCapability> bodyPlantCapabilityList = buildMatrixSmcService.getAllBuildMatrixExceptions(plantId);
 
-		//model.addObject("attributeList", attributeList);
 		model.addObject("plantData", buildMatrixSmcService.getPlantData(plantId));
 		model.addObject("bodyPlantCapability", bodyPlantCapabilityList);
 
@@ -132,20 +131,50 @@ public class BuildMatrixController {
 	/**
 	 * Method to Loads Edit Dimension Popup Modal
 	 * 
-	 * @param attributeId
+	 * @param attributeId, plantId, key
 	 * 
 	 * @return ModelAndView
 	 */
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping(value = "/load-edit-dimension-popup-modal", method = { RequestMethod.POST })
-	public ModelAndView loadEditDimensionPopup(@RequestParam("attributeId") int attributeId, HttpServletResponse response) {
+	public ModelAndView loadEditDimensionPopup(@RequestParam("attributeId") int attributeId,
+											   @RequestParam("plantId") int plantId, @RequestParam("key") String key,
+											   @RequestParam("attributeName") String attributeName, HttpServletResponse response) {
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/edit-dimension");
-		BuildAttribute buildAttribute = buildMatrixSmcService.getBuildAttributeById(attributeId);
+		List<BodyPlantCapability> bodyPlantCapability = buildMatrixSmcService.getBodyPlantExceptionsById(plantId, attributeId);
+
 		try {
-			model.addObject("editPopup", true);
-			model.addObject("buildAttribute", buildAttribute);
+			model.addObject("plantId", plantId);
+			model.addObject("attributeId", attributeId);
+			model.addObject("attributeKey", key);
+			model.addObject("attributeName", attributeName);
+			model.addObject("bodyPlantCapability", bodyPlantCapability);
 		} catch (Exception e) {
 			LOGGER.error("Error in loading Edit Dimension popup".concat(e.getLocalizedMessage()));
+		}
+		return model;
+	}
+
+	/**
+	 * method to update capability
+	 * 
+	 * @param plantId,
+	 *            attributeKey, capabilityUpdatelist[]
+	 * @return ModelAndView
+	 */
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping("/update-capability")
+	public ModelAndView updateCapability(@RequestParam("plantId") int plantId,
+										 @RequestParam("attributeKey") String attributeKey,
+										 @RequestParam("capabilityUpdatelist[]") List<String> capabilityUpdatelist, HttpServletResponse response) throws Exception {
+		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/edit-dimension");
+		try {
+			String attributesCommaSeparated = capabilityUpdatelist.stream().collect(Collectors.joining(","));
+			buildMatrixSmcService.updateCapability(plantId, attributeKey, attributesCommaSeparated);
+		} catch (Exception e) {
+			LOGGER.error("Error while updating capability" + e.getMessage(), e);
+			CommonUtils.getCommonErrorAjaxResponse(response, "Error Processing the Update Capability.");
+			model = null;
 		}
 		return model;
 	}
