@@ -344,6 +344,11 @@
  			</foreach>
 	</insert>
 	
+	<delete id="deleteBusinessAwards">
+		DELETE FROM SMC.OBM_BUSINESS_AWARD
+ 		WHERE RUN_ID = #{buildId}
+	</delete>
+	
 	<!-- OEM MIX MAINTENANCE -->
 	<select id="getBusinessAwardDefaults" resultType="com.penske.apps.buildmatrix.domain.BusinessAwardDefault">
 		SELECT	

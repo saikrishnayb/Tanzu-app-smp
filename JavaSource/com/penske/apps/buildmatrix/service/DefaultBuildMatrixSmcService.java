@@ -226,6 +226,9 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 			awardsToInsert.add(award);
 		}
 		
+		//delete any existing rows associated with this build
+		buildMatrixSmcDAO.deleteBusinessAwards(buildId);
+		
 		buildMatrixSmcDAO.insertBusinessAwards(awardsToInsert);
 		buildMatrixSmcDAO.submitBuild(buildId, BuildStatus.SUBMITTED, userContext.getUserSSO());
 	}

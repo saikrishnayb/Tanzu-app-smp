@@ -87,6 +87,8 @@ public interface BuildMatrixSmcDAO {
 	// BUSINESS AWARDS //
 	public void insertBusinessAwards(@Param("awardsToInsert") List<BusinessAward> awardsToInsert);
 	
+	public void deleteBusinessAwards(@Param("buildId") Integer buildId);
+	
 	//***** OEM MIX MAINTENANCE *****//
 	public List<BusinessAwardDefault> getBusinessAwardDefaults();
 
