@@ -1,6 +1,5 @@
 var $rolePermissions = $('#role-permissions');
 var $roleHierarchy = $('#role-hierarchy');
-var $renameRoleModal = $('#rename-role-modal');
 var $newRoleForm = $('#new-role-form');
 
 $(document).ready(function() { 

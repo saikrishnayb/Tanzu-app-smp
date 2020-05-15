@@ -1,35 +1,24 @@
 <!DOCTYPE html>
-
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <html>  
 <head>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
- <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
- <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<title>SMC Home</title>
-	<%@ include file="../../../jsp/jsp-fragment/global/default-head-block.jsp"%>
+	<title>SMC Home</title>
+	<%@ include file="../../../jsp/global/v1/header.jsp" %>
 	
-	
-	<link href="${commonStaticUrl}/css/jQueryUI/jquery-ui-1.8.21.custom.css" rel="stylesheet" type="text/css"/>
-	<script src="${commonStaticUrl}/js/jquery.dataTables.min.js" type="text/javascript"></script>
-	<link href="${commonStaticUrl}/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
-	<script src="${commonStaticUrl}/js/jquery.maskedinput-1.3.min.js" type="text/javascript"></script>
-	<link href="${commonStaticUrl}/css/jquery.dataTables.css"rel="stylesheet" type="text/css" />
+	<link href="${baseUrl}/css/global/v1/legacy-do-not-use/jstree-do-not-use/style-do-not-use.css" rel="stylesheet" type="text/css"/>
 	<link href="${baseUrl}/css/admin-console/security/org.css"rel="stylesheet" type="text/css" />
 	<link href="${baseUrl}/css/admin-console/security/create-user.css"rel="stylesheet" type="text/css" />
 
-<Script>
-	var isCreatePage='${isCreatePage}';
-</Script>
 	</head>
 	
 <!-- *******************************user account table************************** -->
 <body>
-	<%@ include file="../../../jsp/jsp-fragment/global/header.jsp"%>
+	<%@ include file="../../../jsp/global/navigation/sub-nav.jsp" %>
 	<div id="mainContent" class="borderTop">
-		<%@ include file="../../../jsp/jsp-fragment/admin-console/security/left-nav.jsp"%>
+		<%@ include file="../../../jsp/global/navigation/admin-console/security/left-nav.jsp"%>
 		<div class="leftNavAdjacentContainer">
-			<%@ include file="../../../jsp/jsp-fragment/admin-console/security/org-form.jsp"%>
+			<%@ include file="../../../jsp/admin-console/security/includes/org-form.jsp"%>
 			<div class="edit-buttons">
 				<a class="secondaryLink back" tabIndex="5">Cancel</a> 
 				<c:if test="${isCreatePage eq true}">
@@ -45,18 +34,18 @@
 			</div>
 		</div>
 	</div>
+	
+	<script>
+		var isCreatePage='${isCreatePage}';
+	</script>
+	<%@ include file="../../../jsp/global/v1/footer.jsp" %>
+	<script src="${baseUrl}/js/global/v1/legacy-do-not-use/jquery-do-not-use-3.4.1.min.js"></script>
+	<script>
+		var j = jQuery.noConflict();
+	</script>
+	<script src="${baseUrl}/js/global/v1/legacy-do-not-use/jstree-do-not-use.min.js" type="text/javascript"></script>
+	<script src="${baseUrl}/js/admin-console/security/create-org.js" type="text/javascript"></script>
+	<script src="${baseUrl}/js/admin-console/security/vendor-hierarchy.js" type="text/javascript"></script>
+	<script src="${baseUrl}/js/admin-console/security/org-form.js" type="text/javascript"></script>
 </body>
-<!-- Scripts -->
-<script src="${commonStaticUrl}/js/jquery.dataTables.min.js"type="text/javascript"></script>
-<script src="${commonStaticUrl}/js/jquery.maskedinput-1.3.min.js" type="text/javascript"></script>
-<script src="${baseUrl}/js/admin-console/security/create-org.js" type="text/javascript"></script>
-<script src="${baseUrl}/js/jstree/jquery-1.10.2.min.js" type="text/javascript"></script>
-<Script>
-var j = jQuery.noConflict();
-</Script>
-<script src="//code.jquery.com/jquery-migrate-1.2.1.js"></script>
-<link href="${baseUrl}/js/jstree/css/style.min.css" rel="stylesheet" type="text/css"/>
-<script src="${baseUrl}/js/jstree/jstree.min.js" type="text/javascript"></script>
-<script src="${baseUrl}/js/admin-console/security/vendor-hierarchy.js" type="text/javascript"></script>
-<script src="${baseUrl}/js/admin-console/security/org-form.js" type="text/javascript"></script>
 </html>

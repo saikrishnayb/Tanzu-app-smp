@@ -1,16 +1,14 @@
 <!DOCTYPE html>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib uri="/WEB-INF/tld/taglib.tld" prefix="tl"%>
 <html>
 	<head> 
 	    <title>SMC Home</title>
-	    <%@ include file="../../jsp/jsp-fragment/global/default-head-block.jsp" %>
+	    <%@ include file="../../jsp/global/v1/header.jsp" %>
 	    
 	    <link href="${baseUrl}/css/home/home.css" rel="stylesheet" type="text/css" />
-		<script src="${commonStaticUrl}/js/jquery.tooltip.js" type="text/javascript"></script>
 		<link href="${commonStaticUrl}/css/jquery.tooltip.css" rel="stylesheet" type="text/css"/>
-		<script src="<c:out value='${baseUrl}'/>/jQuery/jquery.blockUI.js" type="text/javascript"></script>
-		<script src="${baseUrl}/js/home/home.js" type="text/javascript"></script>
 	</head>
 	<body style="overflow-y:hidden;">
 		<c:set var = "flag" value = "Y"></c:set>
@@ -166,5 +164,9 @@
 				</div>			
 		</div> 
 		
+		<%@ include file="../../jsp/global/v1/footer.jsp" %>
+		<script src="${commonStaticUrl}/js/jquery.tooltip.js" type="text/javascript"></script>
+		<script src="${baseUrl}/js/global/v1/jquery/jquery.blockUI.js" type="text/javascript"></script>
+		<script src="${baseUrl}/js/home/home.js" type="text/javascript"></script>
   </body>
 </html>

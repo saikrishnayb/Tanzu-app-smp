@@ -1,24 +1,21 @@
 <!DOCTYPE html>
-<%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
-<%@ taglib uri="/WEB-INF/tld/taglib.tld" prefix="tl"%>
- <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
- <%@ taglib uri = "http://java.sun.com/jsp/jstl/fmt" prefix = "fmt"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/fmt" prefix = "fmt"%>
 <html>
 <head>
 	<title>OEM Build Matrix</title>
-	<%@ include file="../../../jsp/jsp-fragment/global/new/default-head-block.jsp"%>
+	
+	<%@ include file="../../global/v2/header.jsp"%>
 	<link href="${baseUrl}/css/admin-console/oem-build-matrix/production-slot-results.css" rel="stylesheet" type="text/css" />
-	<link href="${baseUrl}/css/admin-console/oem-build-matrix/build-matrix-global.css" rel="stylesheet" type="text/css" />
 </head>
 
-<body style="overflow-y:visible;">
-	<%@ include file="../../../jsp/jsp-fragment/global/header.jsp"%>
+<body>
+	<%@ include file="../../global/navigation/sub-nav.jsp"%>
 	<div id="mainContent" class="borderTop">
-		<%@ include file="../../../jsp/jsp-fragment/admin-console/oem-build-matrix/left-nav.jsp"%>
+		<%@ include file="../../global/navigation/admin-console/oem-build-matrix/left-nav.jsp"%>
 		<div class="leftNavAdjacentContainer">
-			<div id="PopupError" style="display:none">
-				<span class="errorMsg"> Hmm, something went wrong. See if you could try again. </span>
-			</div>
+			<%@ include file="../../global/v2/page-error-container.jsp"%>
 			<div class="row">
         		<div class="col-xs-12">
           			<h1>Production Slot Results</h1>
@@ -31,8 +28,7 @@
           				<label>Search: </label> <input type="text" id="slot-search"/>
           			</div>
           			<div class="btn-div floatRight">
-          				<a href="${baseAppUrl}/admin-console/oem-build-matrix/build-history.htm"
-							onclick="javascript:loadProcessImage();" class="buttonSecondary">Back</a>
+          				<a href="${baseAppUrl}/admin-console/oem-build-matrix/build-history.htm" class="buttonSecondary">Back</a>
           			<c:if test="${fn:length(slotResults) ne 0}">
           				<a id="export-slot-results" class="buttonPrimary" onclick="exportSlotResults();return false;">Accept and Export</a>
           			</c:if>
@@ -81,9 +77,8 @@
 		
 	</div>
 	
-	<%@ include file="../../../jsp/jsp-fragment/global/new/global-scripts.jsp"%>
-	<script src="${baseUrl}/js/admin-console/oem-build-matrix/production-slot-results.js" type="text/javascript"></script>
-	<script src="${baseUrl}/js/admin-console/oem-build-matrix/build-matrix-global.js" type="text/javascript"></script>
+	<%@ include file="../../global/v2/footer.jsp" %>
 	<script src="${baseUrl}/js/admin-console/oem-build-matrix/file-download-helper.js" type="text/javascript"></script>
+	<script src="${baseUrl}/js/admin-console/oem-build-matrix/production-slot-results.js" type="text/javascript"></script>
 </body>
 </html>

@@ -2,7 +2,7 @@ package com.penske.apps.buildmatrix.service;
 
 import java.util.List;
 
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 import com.penske.apps.buildmatrix.domain.ApprovedOrder;
 import com.penske.apps.buildmatrix.domain.BodyPlantCapability;
@@ -83,7 +83,7 @@ public interface BuildMatrixSmcService {
 
 	void updateAttribute(int attributeId, List<Integer> attrValueIds);
 	
-	public Workbook downloadProductionSlotResultsDocument(int buildId) throws Exception;
+	public SXSSFWorkbook downloadProductionSlotResultsDocument(int buildId);
 	
 	// BODY PLANT EXCEPTIONS //
 	public List<BodyPlantCapability> getAllBuildMatrixCapabilities();

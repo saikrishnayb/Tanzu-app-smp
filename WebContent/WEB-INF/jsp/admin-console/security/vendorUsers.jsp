@@ -1,15 +1,12 @@
 <!DOCTYPE html>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
 	<title>SMC Home</title>
-	<%@ include file="../../../jsp/jsp-fragment/global/default-head-block.jsp"%>
-	<link href="${commonStaticUrl}/css/jQueryUI/jquery-ui-1.8.21.custom.css" rel="stylesheet" type="text/css"/>
-	<script src="${commonStaticUrl}/js/jquery.dataTables.min.js" type="text/javascript"></script>
-	<link href="${commonStaticUrl}/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
-	<script src="${commonStaticUrl}/js/jquery.maskedinput-1.3.min.js" type="text/javascript"></script>
+	<%@ include file="../../../jsp/global/v1/header.jsp" %>
+	<link href="${baseUrl}/css/global/v1/jquery/jquery.multiselect.css"rel="stylesheet" type="text/css" />
 	<link href="${baseUrl}/css/admin-console/security/users.css" rel="stylesheet" type="text/css"/>
-	<link href="${baseUrl}/css/jquery.multiselect.css"rel="stylesheet" type="text/css" />
-	<link href="${baseUrl}/css/jquery.multiselect.filter.css"rel="stylesheet" type="text/css" />
+	<link href="${baseUrl}/css/global/v1/jquery/jquery.multiselect.filter.css"rel="stylesheet" type="text/css" />
 </head>
 
 <!-- ******************************edit modal******************************** -->
@@ -20,9 +17,9 @@
 </div>
 <!-- *******************************user account table************************** -->
 <body>
-	<%@ include file="../../../jsp/jsp-fragment/global/header.jsp"%>
+	<%@ include file="../../../jsp/global/navigation/sub-nav.jsp" %>
 	<div id="mainContent" class="borderTop">
-		<%@ include file="../../../jsp/jsp-fragment/admin-console/security/left-nav.jsp"%>
+		<%@ include file="../../../jsp/global/navigation/admin-console/security/left-nav.jsp"%>
 		<div class="leftNavAdjacentContainer">
 <c:choose>
     <c:when test="${accessVendor eq true}">				
@@ -152,9 +149,11 @@
 		</div>
 	</div>
 	<input type="hidden" id="tabNavUser" value="left-nav-vendor-users">
+	
+	<%@ include file="../../../jsp/global/v1/footer.jsp" %>
+	<script type="text/javascript" src="${baseUrl}/js/global/v1/jquery/jquery.multiselect.js"></script>
+	<script type="text/javascript" src="${baseUrl}/js/global/v1/jquery/jquery.multiselect.filter.js"></script>
+	<script src="${baseUrl}/js/admin-console/security/users.js" type="text/javascript"></script>
 </body>
-<!-- Scripts -->
-<script src="${baseUrl}/js/admin-console/security/users.js" type="text/javascript"></script>
-<script type="text/javascript" src="${baseUrl}/jQuery/jquery.multiselect.js"></script>
-<script type="text/javascript" src="${baseUrl}/jQuery/jquery.multiselect.filter.js"></script>
+
 </html>

@@ -1,22 +1,17 @@
 <!DOCTYPE html>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
 	<title>Loadsheet Sequence</title>
-	<%@ include file="../../../jsp/jsp-fragment/global/default-head-block.jsp"%>
-	<link href="${commonStaticUrl}/css/jQueryUI/jquery-ui-1.8.21.custom.css" rel="stylesheet" type="text/css"/>
-	<script src="${commonStaticUrl}/js/jquery.dataTables.min.js" type="text/javascript"></script>
-	<link href="${commonStaticUrl}/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
-	<script src="${commonStaticUrl}/js/jquery.maskedinput-1.3.min.js" type="text/javascript"></script>
+	<%@ include file="../../../jsp/global/v1/header.jsp" %>
 	<link href="${baseUrl}/css/admin-console/security/org.css" rel="stylesheet" type="text/css"/>
 </head>
 
 <!-- ***************************deactivate modal********************************** -->
-<div id="Sequence-modal" class="Sequence modal" title="Loadsheet Sequence">
-</div>
 <body>
-	<%@ include file="../../../jsp/jsp-fragment/global/header.jsp"%>
+	<%@ include file="../../../jsp/global/navigation/sub-nav.jsp" %>
 	<div id="mainContent" class="borderTop">
-		<%@ include file="../../../jsp/jsp-fragment/admin-console/app-config/left-nav.jsp"%>
+		<%@ include file="../../../jsp/global/navigation/admin-console/app-config/left-nav.jsp" %>
 		<div class="leftNavAdjacentContainer">
 			<div class="full-width">
 			<h1 style="display: inline-block;">Loadsheet Sequencing</h1>
@@ -83,15 +78,16 @@
 		</div>
 	</div>
 	<!-- Delete Sequence Confirmation Popup -->
-		<div id="confirmDeleteModal">
-			<p id="deleteMessage"></p>
-	
-			<div style="position:absolute;bottom:3px;right:5px;">
-				<a href="javascript:void(0)" class="secondaryLink" onclick="closeConfirmDialog();"tabIndex="-1">No</a> 
-				<a href="javascript:void(0)" class="buttonPrimary" onclick="confirmDeleteSequence()" tabIndex="-1">Yes</a>
-			</div>
+	<div id="confirmDeleteModal">
+		<p id="deleteMessage"></p>
+
+		<div style="position:absolute;bottom:3px;right:5px;">
+			<a href="javascript:void(0)" class="secondaryLink" onclick="closeConfirmDialog();"tabIndex="-1">No</a> 
+			<a href="javascript:void(0)" class="buttonPrimary" onclick="confirmDeleteSequence()" tabIndex="-1">Yes</a>
 		</div>
+	</div>
+	
+	<%@ include file="../../../jsp/global/v1/footer.jsp" %>
+	<script src="${baseUrl}/js/admin-console/app-config/loadsheet-sequence.js"	type="text/javascript"></script>
 </body>
-<!-- Scripts -->		
-<script src="${baseUrl}/js/admin-console/app-config/loadsheet-sequence.js"	type="text/javascript"></script>
 </html>

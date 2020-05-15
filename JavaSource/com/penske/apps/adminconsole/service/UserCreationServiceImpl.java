@@ -87,7 +87,6 @@ public class UserCreationServiceImpl implements UserCreationService {
 			throw userException;
 		}		
 		catch (Exception e) {
-			logger.error("Exception occured while creating user  " + userObj.getUserName(), e);
 			throw new UserServiceException(e.getMessage());
 		}
 		

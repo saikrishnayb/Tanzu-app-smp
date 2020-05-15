@@ -25,10 +25,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.penske.apps.smccore.base.exception.HumanReadableException;
+import com.penske.apps.suppliermgmt.annotation.Version1Controller;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.model.ErrorModel;
 import com.penske.apps.suppliermgmt.model.LookUp;
@@ -36,7 +36,7 @@ import com.penske.apps.suppliermgmt.model.UserContext;
 import com.penske.apps.suppliermgmt.util.ApplicationConstants;
 import com.penske.apps.suppliermgmt.util.LookupManager;
 
-@Controller
+@Version1Controller
 public class BaseController {
 	 private static Logger LOGGER = Logger.getLogger(BaseController.class);
 	
@@ -64,7 +64,7 @@ public class BaseController {
     		}
     	}
 		
-		ModelAndView mv = new ModelAndView("error/GlobalErrorPage");
+		ModelAndView mv = new ModelAndView("error/v1/GlobalErrorPage");
 		ErrorModel model = new ErrorModel();
 		try{
 			//getting support num from lookup
@@ -93,7 +93,7 @@ public class BaseController {
 
     public ModelAndView handleHumanReadableException(HumanReadableException ex)
     {    	
-    	ModelAndView mv = new ModelAndView("error/GlobalErrorPage");
+    	ModelAndView mv = new ModelAndView("error/v1/GlobalErrorPage");
         ErrorModel model = new ErrorModel();
         try {
             UserContext userContext = sessionBean.getUserContext();

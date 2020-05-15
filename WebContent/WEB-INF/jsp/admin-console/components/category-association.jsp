@@ -1,20 +1,16 @@
 <!DOCTYPE html>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 	<head> 
 	    <title>SMC Home</title>
-	    <%@ include file="../../../jsp/jsp-fragment/global/default-head-block.jsp" %>
-	    
-	 
+	    <%@ include file="../../../jsp/global/v1/header.jsp" %>
 	
-		<script src="${commonStaticUrl}/js/jquery.dataTables.min.js" type="text/javascript"></script>
-		<link href="${commonStaticUrl}/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
-		
 		<link href="${baseUrl}/css/admin-console/components/category-association.css" rel="stylesheet" type="text/css"/> 
 	</head>
 	<body>
-		<%@ include file="../../../jsp/jsp-fragment/global/header.jsp" %>
+		<%@ include file="../../../jsp/global/navigation/sub-nav.jsp" %>
 		<div id="mainContent" class="borderTop">
-			<%@ include file="../../../jsp/jsp-fragment/admin-console/components/left-nav.jsp" %>
+			<%@ include file="../../global/navigation/admin-console/components/left-nav.jsp" %>
 
 			<div class="leftNavAdjacentContainer">
 <c:choose>
@@ -116,9 +112,9 @@
 </c:choose>					
 					
 			</div>
-		</div> 
+		</div>
+		
+		<%@ include file="../../../jsp/global/v1/footer.jsp" %>
+		<script src="${baseUrl}/js/admin-console/components/category-association.js" type="text/javascript"></script> 
 	</body>
-
-	<!-- Scripts -->
-	<script src="${baseUrl}/js/admin-console/components/category-association.js" type="text/javascript"></script>
 </html>

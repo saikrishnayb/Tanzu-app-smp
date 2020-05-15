@@ -187,11 +187,11 @@ table{
 .notification{
 	color: #FF6319;
 	font-weight: bold;
-	background: transparent url(../images/email.png) center left no-repeat;
+	background: transparent url(images/email.png) center left no-repeat;
 	padding-left: 14px;
 }
 .notification.alert {
-	background-image: url(../images/email_new.png);
+	background-image: url(images/email_new.png);
 }
 #header {
 	position: relative;
@@ -965,12 +965,12 @@ span.addRow{
 }
 
 .expandedImage{
-	background: url('../images/expanded.png') no-repeat center left;
+	background: url('images/expanded.png') no-repeat center left;
 	padding-left: 12px;
 }
 			
 .collapsedImage{
-	background: url('../images/collapsed.png') no-repeat center left;
+	background: url('images/collapsed.png') no-repeat center left;
 	padding-left: 12px;
 }
 
@@ -999,26 +999,26 @@ div.tablescroll_wrapper > table.tablescroll_body > tbody > tr > td{
 	
 }
 table.tablescroll_head thead tr .headerSortUp {
-	background-image: url(../images/ascending.png);
+	background-image: url(images/ascending.png);
 	background-repeat: no-repeat;
 	background-position: center right;
 	cursor: pointer;
 }
 table.tablescroll_head thead tr .headerSortDown {
-	background-image: url(../images/descending.png);
+	background-image: url(images/descending.png);
 	background-repeat: no-repeat;
 	background-position: center right;
 	cursor: pointer;
 }
 
 table.tablesorter thead tr .headerSortUp {
-	background-image: url(../images/ascending.png);
+	background-image: url(images/ascending.png);
 	background-repeat: no-repeat;
 	background-position: center right;
 	cursor: pointer;
 }
 table.tablesorter thead tr .headerSortDown {
-	background-image: url(../images/descending.png);
+	background-image: url(images/descending.png);
 	background-repeat: no-repeat;
 	background-position: center right;
 	cursor: pointer;
@@ -1104,17 +1104,17 @@ td > a.ui-state-hover{
 
 .ui-datepicker-prev > span.ui-icon-circle-triangle-w{
 	background-position: 0px !important;
-	background-image: url(../images/previous.png) !important;
+	background-image: url(images/previous.png) !important;
 }
 
 .ui-datepicker-next > span.ui-icon-circle-triangle-e{
 	background-position: 0px !important;
-	background-image: url(../images/next.png) !important;
+	background-image: url(images/next.png) !important;
 }
 
 .ui-datepicker-prev-hover {
 	background-position: 0px;
-	background-image: url(../images/previous.png);
+	background-image: url(images/previous.png);
 	background-color: #ffffff !important;
 	border: 1px solid #ffffff !important; 
 	background: none !important;
@@ -1122,7 +1122,7 @@ td > a.ui-state-hover{
 
 .ui-datepicker-next-hover {
 	background-position: 0px;
-	background-image: url(../images/next.png);
+	background-image: url(images/next.png);
 	background-color:#ffffff !important;
 	border: 1px solid #ffffff !important; 
 	background: none !important;
@@ -1275,7 +1275,7 @@ div#header .collapsed {
 }
 
 .collapsed {
-	background-image: url(../images/collapsed.png);
+	background-image: url(images/collapsed.png);
 	background-repeat: no-repeat;
 	background-position: 107px 6px;
 	cursor: pointer;
@@ -1294,7 +1294,7 @@ div#header li.active a.collapsed {
 
 li.active a.collapsed {
 	background-color: #F3F3F3 !important; 
-	background-image: url(../images/expanded.png);
+	background-image: url(images/expanded.png);
 	background-repeat: no-repeat;
 	background-position: 105px 10px !important;
 	padding-right: 13px !important;
@@ -1329,7 +1329,7 @@ li.ui-state-default{
 	border: 0px !important;
 }
 li.ui-state-default.ui-tabs-active{
-	background: #2d73cf url("images/ui-bg_flat_75_2d73cf_40x100.png") 50% 50% repeat-x !important;
+	background: #2d73cf url("jquery/images/ui-bg_flat_75_2d73cf_40x100.png") 50% 50% repeat-x !important;
 }
 li.ui-state-default a{
 	color: #2D73CF !important;
@@ -1381,11 +1381,11 @@ div.ui-tabs > div.ui-tabs-panel{
 	background-color: #C8050A;
 }
 .ui-dialog .ui-widget-header .ui-icon {
-  background-image: url("jQueryUI/images/ui-icons_2e83ff_256x240.png");
+  background-image: url("images/ui-icons_2e83ff_256x240.png");
 }
 .errorModal .ui-widget-header .ui-icon,
 .infoModal .ui-widget-header .ui-icon {
-  background-image: url("jQueryUI/images/ui-icons_ffffff_256x240.png");
+  background-image: url("images/ui-icons_ffffff_256x240.png");
 }
 .ui-dialog .ui-dialog-titlebar-close {
   height: 16px;
@@ -1412,10 +1412,10 @@ div.ui-tabs > div.ui-tabs-panel{
   overflow: initial;
 }
 .infoModal .ui-dialog-content {
-  background-image: url(../images/information.png);
+  background-image: url(images/information.png);
 }
 .errorModal .ui-dialog-content {
-  background-image: url(../images/warning.png);
+  background-image: url(images/warning.png);
 }
 .ui-dialog {
 	margin-top: 10%;
@@ -1508,7 +1508,7 @@ div.dataTables_scrollBody > table.dataTable > thead > tr > th{
 	right: 0;
 	bottom: 0;
 	z-index: 1500;
-	background: #000000 url(jQueryUI/images/ui-bg_flat_100_000000_40x100.png) 50% 50% repeat-x; 
+	background: #000000 url(jquery/images/ui-bg_flat_100_000000_40x100.png) 50% 50% repeat-x; 
 	opacity: .20;
 	filter:Alpha(Opacity=20); 	
 }
@@ -1518,7 +1518,7 @@ div.dataTables_scrollBody > table.dataTable > thead > tr > th{
 	z-index: 2000;
 	height:100%;
 	width:100%;
-	background-image: url(../images/spinner-large.gif);
+	background-image: url(images/spinner-large.gif);
 	background-position: center;
 	background-repeat:no-repeat;
 }

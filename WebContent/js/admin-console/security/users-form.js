@@ -493,17 +493,19 @@ $(document).ready(function() {
 		var userType = $('#user-type').val();
 		var currentTimeStamp = new Date().getTime();
 		//var $ssoUserLookup = $.get('sso-user-lookup.htm', {ssoId: ssoId});
+		showLoading();
 		$.ajax({
 			  type: "GET",
 			  url: "./sso-user-lookup-refresh.htm?userId="+ userId + '&userType='+userType+ '&_=' + currentTimeStamp, 
-			
+			  global: false,
 			  success: function(data){
-				 
+				 hideLoading();
 					  $("#sso-updated-information").html(data);
 				 
 				
 			  },
 			  error: function(XMLHttpRequest, textStatus, errorThrown) {
+				  hideLoading();
 				  if(XMLHttpRequest.responseText.indexOf('SSO')>0){
 					  $errMsg.text('SSO doesnot exist.');
 					  $('.error-messages-container').removeClass('displayNone');
@@ -642,11 +644,14 @@ $('#signature-add').on('click', function(){
 	$('.ssolookup').on("click", function(){
 		var ssoId = $('#sso-id').val();
 		//var $ssoUserLookup = $.get('sso-user-lookup.htm', {ssoId: ssoId});
+		showLoading();
 		$.ajax({
 			  type: "GET",
 			  url: "./sso-user-lookup.htm",
 			  data: {ssoId: ssoId},
+			  global: false,
 			  success: function(data){
+				  hideLoading();
 				  var $userForm = $('.user-form-container');
 					var vendorIds = [];
 					
@@ -659,6 +664,7 @@ $('#signature-add').on('click', function(){
 			          $("#ge-sso-id").val(data["gessouid"]);
 			  },
 			  error: function(XMLHttpRequest, textStatus, errorThrown) {
+				  hideLoading();
 				  if(XMLHttpRequest.responseText.indexOf('SSO')>0){
 					  $errMsg.text('SSO doesnot exist.');
 					  $('.error-messages-container').removeClass('displayNone');

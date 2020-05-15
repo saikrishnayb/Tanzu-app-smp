@@ -3,12 +3,17 @@
  */
 package com.penske.apps.buildmatrix.controller;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,8 +21,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.penske.apps.adminconsole.util.ApplicationConstants;
+import com.penske.apps.buildmatrix.domain.BodyPlantCapability;
 import com.penske.apps.buildmatrix.domain.BuildAttribute;
 import com.penske.apps.buildmatrix.domain.BuildAttributeValue;
+import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
+import com.penske.apps.buildmatrix.domain.PlantProximity;
 import com.penske.apps.buildmatrix.model.BuildMixForm;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm;
 import com.penske.apps.buildmatrix.service.BuildMatrixSmcService;
@@ -32,8 +41,6 @@ import com.penske.apps.suppliermgmt.model.UserContext;
 @RestController
 @RequestMapping(value = "/admin-console/oem-build-matrix")
 public class BuildMatrixRestController {
-	
-	private static final Logger LOGGER = Logger.getLogger(BuildMatrixRestController.class);
 	
 	@Autowired
 	private BuildMatrixSmcService buildMatrixSmcService;
@@ -73,6 +80,45 @@ public class BuildMatrixRestController {
 		buildMatrixSmcService.submitBuild(buildMixForm, userContext);
 	}
 	
+	// EXPORT TO EXCEL //
+	/**************************************************************************************************************
+	 * Method to load data into excel file.
+	 * @param request
+	 * @param response
+	 * @param confirmationSearch
+	 ***************************************************************************************************************
+	 */
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping(value="/exportToExcel",method = {RequestMethod.POST })
+	public void exportToExcel(HttpServletResponse response,@ModelAttribute("buildId")int buildId)
+	{
+		SXSSFWorkbook workbook = buildMatrixSmcService.downloadProductionSlotResultsDocument(buildId);
+		if(workbook != null){
+			try(OutputStream out = response.getOutputStream()) {
+				if(buildId!=0){
+					response.setHeader("Set-Cookie", "fileDownload=true; path=/");
+
+					response.setContentType(ApplicationConstants.EXCEL_CONTENT_TYPE_XLSX);
+					response.setHeader(ApplicationConstants.CONTENT_DISPOSITION_HEADER,"attachment;filename=\"Order Confirmation-Template.xlsx\"");
+					response.setHeader("Pragma",ApplicationConstants.EXCEL_HEADER_TYPE);
+					response.setHeader("Expires",ApplicationConstants.EXCEL_EXPIRES);
+					response.setContentType(ApplicationConstants.EXCEL_CONTENT_TYPE);
+					workbook.write(out);
+				}
+				else{
+					response.getWriter().write("Production slot results not available to process the template");
+					response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+				}
+
+
+			} catch(IOException ex) {
+				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+				throw new RuntimeException(ex.getMessage(), ex);
+			}finally{
+				workbook.dispose();
+			}
+		}
+	}
 	//***** OEM MIX MAINTENACE *****//
 	/**
 	 * Method to save OEM Mix Maintenance page
@@ -93,15 +139,11 @@ public class BuildMatrixRestController {
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping(value = "/get-add-attribute-content",method = { RequestMethod.GET })
 	@ResponseBody
-	public ModelAndView getAddAttributeContent(@RequestParam("attributeId") int attributeId, HttpServletResponse response) {
+	public ModelAndView getAddAttributeContent(@RequestParam("attributeId") int attributeId) {
 		BuildAttribute buildAttribute = buildMatrixSmcService.getBuildAttributeById(attributeId);
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/modal/add-update-attribute-modal");
-		try {
-			model.addObject("addPopup", true);
-			model.addObject("buildAttribute", buildAttribute);
-		} catch (Exception e) {
-			LOGGER.error("Error in loading Add Attribute Value popup" .concat(e.getLocalizedMessage()) );
-		}
+		model.addObject("addPopup", true);
+		model.addObject("buildAttribute", buildAttribute);
 		return model;
 	}
 	
@@ -114,15 +156,12 @@ public class BuildMatrixRestController {
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping(value = "/get-edit-attribute-content",method = { RequestMethod.GET })
 	@ResponseBody
-	public ModelAndView getEditAttributeContent(@RequestParam("attributeId") int attributeId, HttpServletResponse response) {
+	public ModelAndView getEditAttributeContent(@RequestParam("attributeId") int attributeId) {
+
 		BuildAttribute buildAttribute = buildMatrixSmcService.getBuildAttributeById(attributeId);
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/modal/add-update-attribute-modal");
-		try {
-			model.addObject("editPopup", true);
-			model.addObject("buildAttribute", buildAttribute);
-		} catch (Exception e) {
-			LOGGER.error("Error in loading Edit Attribute popup" .concat(e.getLocalizedMessage()) );
-		}
+		model.addObject("editPopup", true);
+		model.addObject("buildAttribute", buildAttribute);
 		return model;
 	}
 	
@@ -134,7 +173,7 @@ public class BuildMatrixRestController {
 	
 	@SmcSecurity(securityFunction = SecurityFunction.OEM_BUILD_MATRIX)
     @RequestMapping(value="add-attribute")
-    public BuildAttributeValue addAttribute(@RequestParam(value="attributeId") int attributeId, @RequestParam(value="attributeValue") String attributeValue) throws Exception {
+    public BuildAttributeValue addAttribute(@RequestParam(value="attributeId") int attributeId, @RequestParam(value="attributeValue") String attributeValue) {
         BuildAttributeValue attrValue = buildMatrixSmcService.addAttribute(attributeId,attributeValue);
         return attrValue;
     }
@@ -151,4 +190,77 @@ public class BuildMatrixRestController {
 		isUnique = buildMatrixSmcService.checkForUniqueAttributeValue(attributeId, attributeValue);
         return isUnique;
     }
+
+	///***** PLANT MAINTENANCE *****//
+	/**
+	 *Method to load offline dates setup model 
+	 */
+	@SmcSecurity(securityFunction = SecurityFunction.OEM_BUILD_MATRIX)
+    @RequestMapping(value = "/get-offline-date-setup-modal", method = RequestMethod.POST)
+    public ModelAndView getModalData(@RequestParam("plantId") int plantId)
+	{
+		ModelAndView mav = new ModelAndView("/admin-console/oem-build-matrix/modal/set-offline-dates-modal");
+		mav.addObject("plantData", buildMatrixSmcService.getPlantData(plantId));
+		return mav;
+	}
+	
+	/**
+	 * Method to save offline dates for a plant
+	 */
+	@SmcSecurity(securityFunction = SecurityFunction.OEM_BUILD_MATRIX)
+    @RequestMapping(value="save-offline-dates")
+    public void saveOfflineDates(@RequestBody BuildMatrixBodyPlant plantData) {
+       	buildMatrixSmcService.saveOfflineDates(plantData);
+    }
+
+	/**
+	 * method to save proximity configuration
+	 * @return 
+	 */
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping("/save-district-proximity")
+	public void saveDistrictProximity(@RequestBody List<PlantProximity> plantProximityList) {
+		 buildMatrixSmcService.saveDistrictProximity(plantProximityList);
+	}
+
+	/**
+	 * Method to Loads Edit Dimension Popup Modal
+	 * 
+	 * @param attributeId, plantId, key
+	 * 
+	 * @return ModelAndView
+	 */
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping(value = "/load-edit-dimension-popup-modal", method = { RequestMethod.POST })
+	public ModelAndView loadEditDimensionPopup(@RequestParam("attributeId") int attributeId,
+											   @RequestParam("plantId") int plantId, @RequestParam("key") String key,
+											   @RequestParam("attributeName") String attributeName) {
+		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/edit-dimension");
+		List<BodyPlantCapability> bodyPlantCapability = buildMatrixSmcService.getBodyPlantExceptionsById(plantId, attributeId);
+
+		model.addObject("plantId", plantId);
+		model.addObject("attributeId", attributeId);
+		model.addObject("attributeKey", key);
+		model.addObject("attributeName", attributeName);
+		model.addObject("bodyPlantCapability", bodyPlantCapability);
+		return model;
+	}
+	
+	/**
+	 * method to update capability
+	 * 
+	 * @param plantId,
+	 *            attributeKey, capabilityUpdatelist[]
+	 * @return ModelAndView
+	 */
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping("/update-capability")
+	public ModelAndView updateCapability(@RequestParam("plantId") int plantId,
+										 @RequestParam("attributeKey") String attributeKey,
+										 @RequestParam("capabilityUpdatelist[]") List<String> capabilityUpdatelist) {
+		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/edit-dimension");
+		String attributesCommaSeparated = capabilityUpdatelist.stream().collect(Collectors.joining(","));
+		buildMatrixSmcService.updateCapability(plantId, attributeKey, attributesCommaSeparated);
+		return model;
+	}
 }

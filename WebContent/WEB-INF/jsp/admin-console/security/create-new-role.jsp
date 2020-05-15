@@ -1,24 +1,20 @@
 <!DOCTYPE html>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 	<head> 
 	    <title>SMC Home</title>
+	    <%@ include file="../../../jsp/global/v1/header.jsp" %>
 	    
-	    <%@ include file="../../../jsp/jsp-fragment/global/default-head-block.jsp" %>
+	    <link href="${baseUrl}/css/global/v1/jquery/jquery.multiselect.css"rel="stylesheet" type="text/css" />
 		<link href="${baseUrl}/css/admin-console/security/roles.css" rel="stylesheet" type="text/css"/>
 		<link href="${baseUrl}/css/admin-console/security/edit-create-role.css" rel="stylesheet" type="text/css"/>
-		<link href="${commonStaticUrl}/css/jQueryUI/jquery-ui-1.8.21.custom.css" rel="stylesheet" type="text/css"/>
-		<link href="${baseUrl}/css/jquery.multiselect.css"rel="stylesheet" type="text/css" />
-		<script type="text/javascript" src="${baseUrl}/jQuery/jquery.multiselect.js"></script>
-		<script src="${commonStaticUrl}/js/jquery.jstree.js" type="text/javascript"></script>
-		<script src="${commonStaticUrl}/js/jquery.dataTables.min.js" type="text/javascript"></script>
-		<link href="${commonStaticUrl}/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
 	</head>
 	
 	<body style="overflow-y: auto;">
-		<%@ include file="../../../jsp/jsp-fragment/global/header.jsp" %>
+		<%@ include file="../../../jsp/global/navigation/sub-nav.jsp" %>
 		
 		<div id="mainContent" class="borderTop floatLeft">
-			<%@ include file="../../../jsp/jsp-fragment/admin-console/security/left-nav.jsp" %>
+			<%@ include file="../../../jsp/global/navigation/admin-console/security/left-nav.jsp" %>
 			
 			<div class="leftNavAdjacentContainer">
 				<div id="column-one" class="floatLeft clear-left" style="width:40%">
@@ -60,8 +56,10 @@
 				</div>
 			</div>
 		</div>
-			
+		
+		<%@ include file="../../../jsp/global/v1/footer.jsp" %>
+		<script src="${commonStaticUrl}/js/jquery.jstree.js" type="text/javascript"></script>
+		<script type="text/javascript" src="${baseUrl}/js/global/v1/jquery/jquery.multiselect.js"></script>
+		<script src="${baseUrl}/js/admin-console/security/create-new-role.js" type="text/javascript"></script>
 	</body>
-	<!-- Scripts -->
-	<script src="${baseUrl}/js/admin-console/security/create-new-role.js" type="text/javascript"></script>
 </html>

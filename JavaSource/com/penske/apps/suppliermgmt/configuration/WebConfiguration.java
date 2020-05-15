@@ -2,6 +2,7 @@ package com.penske.apps.suppliermgmt.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
@@ -18,7 +19,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import com.penske.apps.smccore.base.configuration.ProfileType;
 import com.penske.apps.smccore.base.plugins.TimingBean;
 import com.penske.apps.smccore.base.plugins.TimingBeanImpl;
+import com.penske.apps.suppliermgmt.aspect.AspectMarker;
 import com.penske.apps.suppliermgmt.beans.DefaultSuppliermgmtSessionBean;
+import com.penske.apps.suppliermgmt.beans.LoggingHandlerExceptionResolver;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.interceptor.CommonModelAttributesHandlerInterceptor;
 import com.penske.apps.suppliermgmt.interceptor.RequestLoggingHandlerInterceptor;
@@ -33,6 +36,9 @@ import com.penske.apps.suppliermgmt.interceptor.SmcSecurityInterceptor;
 @Import(value={ApplicationConfiguration.class})
 @EnableWebMvc
 @Profile(ProfileType.NOT_TEST)
+@ComponentScan(basePackageClasses={
+	AspectMarker.class
+})
 public class WebConfiguration extends WebMvcConfigurerAdapter {	
     
     @Autowired
@@ -83,5 +89,11 @@ public class WebConfiguration extends WebMvcConfigurerAdapter {
     @Profile(ProfileType.NOT_PRODUCTION)
     public TimingBean timingRequestBean() {
     	return new TimingBeanImpl();
+    }
+
+    @Bean
+    public LoggingHandlerExceptionResolver loggingExceptionResolver()
+    {
+    	return new LoggingHandlerExceptionResolver();
     }
 }

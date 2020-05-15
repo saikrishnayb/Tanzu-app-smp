@@ -1,12 +1,5 @@
 var jroleHierarchy;
 var jeditVendor;
-j(document).ready(function() {
-	//jroleHierarchy.unbind();
-	//$("#loading").show();
-	/* --------------- Declare the jstree. --------------- */
-	//createVendorTree();
-	//editVendorTree();
-});
 function createVendorTree(){
 	jroleHierarchy=j('#vendor-hierarchy');
 	jroleHierarchy.jstree({

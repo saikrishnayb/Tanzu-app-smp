@@ -1,4 +1,5 @@
 var $addRuleAssociationModal = $('#rule-association-modal');
+
 $(document).ready(function() {
 	selectCurrentNavigation("tab-app-config", "left-nav-loadsheet-management");
 	$templateTable=$("#component-table");

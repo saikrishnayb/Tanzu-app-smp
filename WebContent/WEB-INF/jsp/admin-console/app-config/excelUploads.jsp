@@ -1,17 +1,17 @@
 <!DOCTYPE html>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 	<head> 
-	    <title>SMC Dynamic Rules</title>
-	    <%@ include file="../../../jsp/jsp-fragment/global/default-head-block.jsp" %>
+	    <title>Excel Uploads</title>
+	    <%@ include file="../../../jsp/global/v1/header.jsp" %>
 	    
 		<link href="${baseUrl}/css/admin-console/app-config/dynamic-rules.css" rel="stylesheet" type="text/css"/>
-		<link href="${commonStaticUrl}/css/jQueryUI/jquery-ui-1.8.21.custom.css" rel="stylesheet" type="text/css"/>
 	</head>
 	<body>
-		<%@ include file="../../../jsp/jsp-fragment/global/header.jsp" %>
+		<%@ include file="../../../jsp/global/navigation/sub-nav.jsp" %>
 		
 		<div id="mainContent" class="borderTop">
-			<%@ include file="../../../jsp/jsp-fragment/admin-console/app-config/left-nav.jsp" %>
+			<%@ include file="../../../jsp/global/navigation/admin-console/app-config/left-nav.jsp" %>
 
 			<div class="leftNavAdjacentContainer">
 				<c:choose>
@@ -57,5 +57,6 @@
 			</div>
 		</div>
 	</body>
+	<%@ include file="../../../jsp/global/v1/footer.jsp" %>
 	<script src="${baseUrl}/js/admin-console/app-config/excel-uploads.js" type="text/javascript"></script>
 </html>

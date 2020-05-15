@@ -1,20 +1,18 @@
 <!DOCTYPE html>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 	<head>
 	    <title>SMC Alerts</title>
-	    <%@ include file="../../../jsp/jsp-fragment/global/default-head-block.jsp" %>
+	    <%@ include file="../../../jsp/global/v1/header.jsp" %>
 	    
 		<link href="${baseUrl}/css/admin-console/app-config/alerts.css" rel="stylesheet" type="text/css"/>
-		<link href="${commonStaticUrl}/css/jQueryUI/jquery-ui-1.8.21.custom.css" rel="stylesheet" type="text/css"/>
-		<script src="${commonStaticUrl}/js/jquery.dataTables.min.js" type="text/javascript"></script>
-		<link href="${commonStaticUrl}/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
 	</head>
 	
 	<body>
-		<%@ include file="../../../jsp/jsp-fragment/global/header.jsp" %>
+		<%@ include file="../../../jsp/global/navigation/sub-nav.jsp" %>
 		
 		<div id="mainContent" class="borderTop">
-			<%@ include file="../../../jsp/jsp-fragment/admin-console/app-config/left-nav.jsp" %>
+			<%@ include file="../../../jsp/global/navigation/admin-console/app-config/left-nav.jsp" %>
 			
 			<div class="leftNavAdjacentContainer">
 				<!-- Alert/Alert Header Datatable -->
@@ -62,15 +60,15 @@
 				</table>
 				
 				<!-- Alert Header Modal -->
-				<div id="edit-header-modal" class="modal"><%@ include file="../../../jsp/jsp-fragment/admin-console/app-config/edit-alert-header-modal.jsp" %></div>
+				<div id="edit-header-modal" class="modal">
+				<%@ include file="../../../jsp/admin-console/app-config/modal/edit-alert-header-modal.jsp" %></div>
 				
 				<!-- Alert Detail Modal -->
 				<div id="edit-detail-modal" class="modal"></div>
 			</div>
 		</div> 
 		
-		<%@ include file="../../../jsp/jsp-fragment/global/footer.jsp" %>
+		<%@ include file="../../../jsp/global/v1/footer.jsp" %>
+		<script src="${baseUrl}/js/admin-console/app-config/alerts.js" type="text/javascript"></script>
 	</body>
-	<!-- Scripts -->
-	<script src="${baseUrl}/js/admin-console/app-config/alerts.js" type="text/javascript"></script>
 </html>

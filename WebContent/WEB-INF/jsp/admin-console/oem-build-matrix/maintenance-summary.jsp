@@ -1,24 +1,21 @@
 <!DOCTYPE html>
-<%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
-<%@ taglib uri="/WEB-INF/tld/taglib.tld" prefix="tl"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib  uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %> 
 <html>
 <head>
-<title>OEM Build Matrix</title>
-<%@ include file="../../../jsp/jsp-fragment/global/new/default-head-block.jsp"%>
-<link href="${baseUrl}/css/admin-console/oem-build-matrix/maintenence-summary.css" rel="stylesheet" type="text/css" />
-<link href="${baseUrl}/css/admin-console/oem-build-matrix/build-matrix-global.css" rel="stylesheet" type="text/css" />
+	<title>OEM Build Matrix</title>
+
+	<%@ include file="../../global/v2/header.jsp"%>
+	<link href="${baseUrl}/css/admin-console/oem-build-matrix/maintenence-summary.css" rel="stylesheet" type="text/css" />
 </head>
-<body style="overflow-y:visible;">
-	<%@ include file="../../../jsp/jsp-fragment/global/header.jsp"%>
+<body>
+	<%@ include file="../../global/navigation/sub-nav.jsp"%>
 	<div id="mainContent" class="borderTop">
-		<%@ include file="../../../jsp/jsp-fragment/admin-console/oem-build-matrix/left-nav.jsp"%>
+		<%@ include file="../../global/navigation/admin-console/oem-build-matrix/left-nav.jsp"%>
 		<div class="leftNavAdjacentContainer">
+			<%@ include file="../../global/v2/page-error-container.jsp"%>
 			<span class="floatRight addRow push-right"> </span>
-			<div id="PopupError" style="display:none">
-				<span class="errorMsg"> Hmm, something went wrong. See if you could try again. </span>
-			</div>
 			<h1>Plant Maintenance</h1>
 
 			<table id="body-plant-maint-table" class="plant-view">
@@ -42,8 +39,8 @@
 								</a>
 								<input type="hidden" class="plant-id" value="${plant.plantId}" />
 								<ul class="dropdown-menu">
-									<li><a onclick="processingImageAndTextHandler('visible','Loading data...');" href="bodyplant-capabilities.htm?plantId=${plant.plantId}">Body Plant Exceptions</a></li>
-									<li><a onclick="processingImageAndTextHandler('visible','Loading data...');" href="district-proximity.htm?plantId=${plant.plantId}">Proximity Configuration</a></li> 
+									<li><a href="bodyplant-capabilities.htm?plantId=${plant.plantId}">Body Plant Exceptions</a></li>
+									<li><a href="district-proximity.htm?plantId=${plant.plantId}">Proximity Configuration</a></li> 
 									<li><a class="set-offline-date" onclick="setOfflineDates(${plant.plantId})" href="#">Plant Off-line Dates</a></li>
 								</ul>
 							</div>
@@ -70,9 +67,8 @@
 			</table>
 		</div>
 	</div>
-	<div id="set-offline-dates-modal" class="modal"></div>
-	<%@ include file="../../../jsp/jsp-fragment/global/new/global-scripts.jsp"%>
+	<div id="set-offline-dates-modal" class="modal row"></div>
+	<%@ include file="../../global/v2/footer.jsp" %>
 	<script src="${baseUrl}/js/admin-console/oem-build-matrix/maintenance-summary.js" type="text/javascript"></script>
-	<script src="${baseUrl}/js/plugins/jquery.mask.min.js"></script>
 </body>
 </html>

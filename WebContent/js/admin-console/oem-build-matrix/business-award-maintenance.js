@@ -1,4 +1,5 @@
 selectCurrentNavigation("tab-oem-build-matrix", "left-nav-business-award-maint");
+
 var $businessAwardMainTable = $('#business-award-maint-table');
 var $saveBtn = $('#save-oem-mix');
 var $oemMixModal = $('#oem-mix-modal');
@@ -229,3 +230,7 @@ function updateTotals() {
 		$totalRow.find('.total-percentage').val(totalPercentage);
 	})
 }
+
+$('.numbers-only').on('input', function () { 
+    this.value = this.value.replace(/[^0-9\.]/g,'');
+});

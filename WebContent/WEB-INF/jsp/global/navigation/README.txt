@@ -1,0 +1,2 @@
+The navigation files in this folder are intended for use by both the v1 and v2 page templates.
+Thus, their structure must remain be usable by both, as long as both templates are part of the application.

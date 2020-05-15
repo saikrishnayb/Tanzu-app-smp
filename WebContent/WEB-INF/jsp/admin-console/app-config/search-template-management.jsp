@@ -1,19 +1,17 @@
 <!DOCTYPE html>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 	<head> 
 	    <title>SMC Template Management</title>
-	    <%@ include file="../../../jsp/jsp-fragment/global/default-head-block.jsp" %>
+	    <%@ include file="../../../jsp/global/v1/header.jsp" %>
 	    
 		<link href="${baseUrl}/css/admin-console/app-config/search-template-management.css" rel="stylesheet" type="text/css"/>
-		<link href="${commonStaticUrl}/css/jQueryUI/jquery-ui-1.8.21.custom.css" rel="stylesheet" type="text/css"/>
-		<script src="${commonStaticUrl}/js/jquery.dataTables.min.js" type="text/javascript"></script>
-		<link href="${commonStaticUrl}/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
 	</head>
 	
 	<body>
-		<%@ include file="../../../jsp/jsp-fragment/global/header.jsp" %>
+		<%@ include file="../../../jsp/global/navigation/sub-nav.jsp" %>
 		<div id="mainContent" class="borderTop">
-			<%@ include file="../../../jsp/jsp-fragment/admin-console/app-config/left-nav.jsp" %>
+			<%@ include file="../../../jsp/global/navigation/admin-console/app-config/left-nav.jsp" %>
 			
 			<div class="leftNavAdjacentContainer">
 				<table id="templateTable" >
@@ -60,14 +58,7 @@
 			</div>
 		</div> 
 		
-		<%@ include file="../../../jsp/jsp-fragment/global/footer.jsp" %>
+		<%@ include file="../../../jsp/global/v1/footer.jsp" %>
+		<script src="${baseUrl}/js/admin-console/app-config/search-template-management.js" type="text/javascript"></script>
 	</body>
-	
-	<!-- Scripts -->
-	<script src="${baseUrl}/js/admin-console/app-config/search-template-management.js" type="text/javascript"></script>
-	<script src="${commonStaticUrl}/js/jquery-1.7.2.min.js" type="text/javascript"></script>
-	<script src="${commonStaticUrl}/js/jquery-ui-1.8.21.custom.min.js" type="text/javascript"></script>
-	<script src="${commonStaticUrl}/js/jquery.fixedMenu.js" type="text/javascript"></script>
-	<script src="${commonStaticUrl}/js/jquery.dataTables.min.js" type="text/javascript"></script>
-	<script src="${commonStaticUrl}/js/common.js" type="text/javascript"></script>
 </html>

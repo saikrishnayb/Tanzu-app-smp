@@ -71,10 +71,11 @@ public class ApplicationConstants {
 	
 	public static final String ACTIVE = "A";
 	
-	/**support num**/
-	public static final String SUPP_NUM="SUPPORT_NUM";
+	//Support phone number - NOTE: at some point, we should convert suppliermgmt to use the LookupManager from the SMC Core JAR. At that point, this phone number should be pulled from the LookupManager.
+	public static final String SUPPORT_NUMBER = "1-866-926-7240";
 	
 	/*** Look up data ***/
+	public static final String SUPP_NUM="SUPPORT_NUM";
 	public static final String HELP_LINK="HELP_LINK";
 	public static final String MAX_CREATED_DATE="MAX_CREATED_DATE";
 	public static final String MAX_MODIFIED_DATE="MAX_MODIFIED_DATE";

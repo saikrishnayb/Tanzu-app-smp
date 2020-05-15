@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +35,7 @@ import com.penske.apps.adminconsole.service.LoadSheetManagementService;
 import com.penske.apps.adminconsole.util.CommonUtils;
 import com.penske.apps.suppliermgmt.annotation.SmcSecurity;
 import com.penske.apps.suppliermgmt.annotation.SmcSecurity.SecurityFunction;
+import com.penske.apps.suppliermgmt.annotation.Version1Controller;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.model.UserContext;
 
@@ -48,7 +48,7 @@ import com.penske.apps.suppliermgmt.model.UserContext;
  * 
  */
 
-@Controller
+@Version1Controller
 @RequestMapping("/admin-console/components")
 public class ComponentsRestController {
 
@@ -79,7 +79,7 @@ public class ComponentsRestController {
     public ModelAndView getEditSubCategoryContent(@RequestParam("subCategoryId") int subCategoryId) {
 
         SubCategory subCategory =categoryManagementService.getSelectedSubCategory(subCategoryId);
-        ModelAndView mav =new ModelAndView("/jsp-fragment/admin-console/components/edit-sub-category-modal");
+        ModelAndView mav =new ModelAndView("/admin-console/components/modal/edit-sub-category-modal");
         mav.addObject("category", subCategory);
         return mav;
     }
@@ -109,7 +109,7 @@ public class ComponentsRestController {
     @ResponseBody
     public ModelAndView addSubCategoryContent() {
 
-        ModelAndView mav =new ModelAndView("/jsp-fragment/admin-console/components/add-sub-category-modal");
+        ModelAndView mav =new ModelAndView("/admin-console/components/modal/add-sub-category-modal");
         return mav;
     }
 
@@ -152,7 +152,7 @@ public class ComponentsRestController {
     public ModelAndView getAddCategoryAssociationContent() {
 
         List<PoCategory> categoryList = componentVendorTemplateService.getPoCategories();
-        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/components/add-category-association-content");
+        ModelAndView mav = new ModelAndView("/admin-console/components/modal/add-category-association-content");
         mav.addObject("categoryList",categoryList);
         mav.addObject("isEditPage",false);
         return mav;
@@ -164,7 +164,7 @@ public class ComponentsRestController {
     public ModelAndView getEditCategoryAssociationContent(int associationId) {
 
         CategoryAssociation categoryAssociation = categoryManagementService.getEditCategoryAssociation(associationId);
-        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/components/add-category-association-content");
+        ModelAndView mav = new ModelAndView("/admin-console/components/modal/add-category-association-content");
         mav.addObject("categoryAssociation",categoryAssociation);
         mav.addObject("isEditPage",true);
         return mav;
@@ -300,7 +300,7 @@ public class ComponentsRestController {
     @RequestMapping("get-deactivate-template-modal-content")
     @ResponseBody
     public ModelAndView getDeactivateTemplateInfo(@RequestParam(value="templateName") String templateName, @RequestParam(value="templateId") String templateId) {
-        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/components/deactivate-template-modal-content");
+        ModelAndView mav = new ModelAndView("/admin-console/components/modal/deactivate-template-modal-content");
         mav.addObject("templateName", templateName);
         mav.addObject("templateId", templateId);
 
@@ -327,7 +327,7 @@ public class ComponentsRestController {
     @ResponseBody
     public ModelAndView getTemplateComponents(@RequestParam("templateId") int templateId){
 
-        ModelAndView mav = new ModelAndView("/admin-console/components/excel-sequence-components");
+        ModelAndView mav = new ModelAndView("/admin-console/components/modal/excel-sequence-components");
 
         Template template = componentVendorTemplateService.getExcelSeqTemplate(templateId);
 
@@ -415,7 +415,7 @@ public class ComponentsRestController {
     @RequestMapping(value = "/check-iscomponent-associatedToRules")
     @ResponseBody
     public ModelAndView checkIsComponentHasRules(@RequestParam(value="templateId") int templateId,@RequestParam(value="componentId") int componentId, @RequestParam(value="componentName") String componentName) {
-        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/components/view-rules-associtaed-to-component-modal-alert");
+        ModelAndView mav = new ModelAndView("/admin-console/components/modal/view-rules-associtaed-to-component-modal-alert");
         List<String> ruleList= new  ArrayList<String>();
         ruleList=loadsheetManagementService.getRulesByComponentIdAndTemplateId(templateId,componentId);
         mav.addObject("ruleList", ruleList);
@@ -427,7 +427,7 @@ public class ComponentsRestController {
     @RequestMapping(value={"/get-rule-popup"})
     public ModelAndView editRuleDefinitions(@RequestParam("templateComponentId")int templateComponentId,@RequestParam("templateId") int templateId,HttpServletResponse response) throws Exception {
 
-        ModelAndView mav = new ModelAndView("/admin-console/components/template-rule");
+        ModelAndView mav = new ModelAndView("/admin-console/components/modal/template-rule");
         List<RuleMaster> rulesList= new  ArrayList<RuleMaster>();
         try{
         rulesList=loadsheetManagementService.getRulesByTemplateComponentId(templateComponentId);
@@ -452,7 +452,7 @@ public class ComponentsRestController {
     
     @RequestMapping(value={"/get-rule-details"})
     public ModelAndView getRuleDetails(@RequestParam("ruleId")int ruleId,@RequestParam("templateComponentId") int templateComponentId,@RequestParam("templateId") int templateId,HttpServletResponse response) throws Exception {
-    	ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/components/ruleDetails");
+    	ModelAndView mav = new ModelAndView("/admin-console/components/modal/ruleDetails");
     	try{
     	String requestFrom="templateRule";
         RuleMaster ruleMaster=loadsheetManagementService.getRuleDetails(ruleId,requestFrom);//ruleId null check to be done
@@ -473,7 +473,7 @@ public class ComponentsRestController {
 /*    ==============Create Rule===================*/
     @RequestMapping("/load-create-rule")
     public ModelAndView openCreateRule(@RequestParam("templateComponentId") int templateComponentId,@RequestParam("templateId") int templateId){
-        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/components/ruleDetails");
+        ModelAndView mav = new ModelAndView("/admin-console/components/modal/ruleDetails");
         RuleMaster ruleMaster=new RuleMaster();
         List<RuleDefinitions> ruleDefLst=new ArrayList<RuleDefinitions>();
         RuleDefinitions ruleDef=new RuleDefinitions();

@@ -109,8 +109,6 @@ $('#add-to-build').on('click', function(){
 	if($(this).hasClass('buttonDisabled'))
 		return false;
 	
-	loadProcessImage();
-	
 	var selectedRows = [];
 	
 	$($orderSummaryDataTable.rows().nodes()).each(function(){

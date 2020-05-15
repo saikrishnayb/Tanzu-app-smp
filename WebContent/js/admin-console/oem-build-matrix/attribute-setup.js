@@ -1,4 +1,3 @@
-var allNodes;
 var $addUpdateAttributeModal = $('#add-update-attribute-modal');
 
 ModalUtil.initializeModal($addUpdateAttributeModal);
@@ -47,18 +46,6 @@ $attributeTable = $('#attribute-table').DataTable({ //All of the below are optio
 	}
 });
 
-/*$("#values").multiselect({
-	close : function() {},
-	minWidth : 150,
-	noneSelectedText : "",
-	open : function() {
-		//Code added to increase the width of drop down content
-		$(".ui-multiselect-menu ").css('width', '169px');
-	}
-});
-
-$(".ui-multiselect-menu ").css('width', '169px');*/
-
 $('#attribute-table').on("click",'.edit-attribute',function(){
 		
 		var $this =$(this);
@@ -92,18 +79,24 @@ $('#attribute-search').on("input", function(){
 });
 
 $addUpdateAttributeModal.on("click",'#update-attr',function(){
-	showLoading();
 	var attributeId = $(this).data('save-attr-id');
+	var $form = $('#editAttributeForm[data-save-attr-id="'+attributeId+'"]');
 	var attrValueIds = $addUpdateAttributeModal.find('#values').val();
 	var notSelectedIds = [];
 	$('#values').find('option').not(':selected').each(function() {
 		notSelectedIds.push($(this).val());
 	});
 	
+	var isValid = ritsu.validate($form);
+	if(!isValid) {
+		//We need to show the error messages explicitly here since we're using a jQuery multiselect, which hides the element ritsu would normally highlight
+		ritsu.showErrorMessages($form);
+		return;
+	}
+	
 	var $updateAttributePromise = $.ajax({
 			type: "POST",
 			url:'./update-attribute.htm',
-			global: false,
 			data: {attributeId: attributeId, attrValueIds: attrValueIds}
 		});
 	$updateAttributePromise.done(function(data){
@@ -122,22 +115,11 @@ $addUpdateAttributeModal.on("click",'#update-attr',function(){
 //						
 //					}
 //				});
-		closeModal($addUpdateAttributeModal);
-		hideLoading();
+		ModalUtil.closeModal($addUpdateAttributeModal);
 	});
-	$updateAttributePromise.fail(function(xhr, ajaxOptions, thrownError) {
-				  if(xhr.responseText.indexOf('Error Processing the updating Attribute')>0){
-					  $('.errorMsg').text("Error Processing the updating Attribute.");
-						 $('.error').show();
-				  }
-				  hideLoading();
-	});
-	
-	
 });
 
 $addUpdateAttributeModal.on("click",'#create-attr',function(){
-	showLoading();
 	var attributeId = $(this).data('save-attr-id');
 	var $form = $('#editAttributeForm[data-save-attr-id="'+attributeId+'"]');
 	var attributeData = $form.serialize();
@@ -145,8 +127,7 @@ $addUpdateAttributeModal.on("click",'#create-attr',function(){
 	var attributeName = $form.find('#attributeName').val();
 	var attributeValue = $addUpdateAttributeModal.find('#attributeValue').val().toUpperCase();
 	
-	
-	var isValid = validateAttributeValue($form);
+	var isValid = ritsu.validate($form);
 	if(isValid){
 	$.ajax({
 		  type: "POST",
@@ -155,49 +136,24 @@ $addUpdateAttributeModal.on("click",'#create-attr',function(){
 		  data: {attributeId : attributeId, attributeValue: attributeValue},
 		  success: function(isUnique){
 			  if(isUnique){
-				  	showLoading();
 				$.ajax({
 					url : './add-attribute.htm',
 					type: "POST",  
 					data: {attributeId : attributeId, attributeValue: attributeValue},
 					success : function(attrValue) {
-							showLoading();
 							var $attributeRow = $('#attribute-table').find('.attribute-row[data-attribute-id="' + attributeId + '"]');
 							$attributeRow.find('.value-td').append('<span class="badge non-selected-attrvalue" data-attribute-value-id="' + attrValue.attributeValueId + '">' + attrValue.attributeValue + '</span>');
-							closeModal($addUpdateAttributeModal);
-							hideLoading();
+							ModalUtil.closeModal($addUpdateAttributeModal);
 					},
 				}); 
 				
 			  }else{
-				hideLoading();
-				$("#ErrorMsg span").text("Provided attribute value already exists, check the data and try again");
-				$("#ErrorMsg").show();
-				$("#attributeValue").addClass("errorMsgInput");
-				}
+				addErrorMessage("Provided attribute value already exists, check the data and try again");
+				$("#attributeValue").closest('form-group').addClass('has-error');
+			  }
 		  },
 		});
-}
-	else{
-		hideLoading();
-		}
+	}
 });
 
-function validate($form){
-	var valid = validateFormTextFields($form);
-	if(!valid){
-		$('.errorMsg').text("please enter valid value");
-		$('.error').show();
-	}
-	var attrOptionGrp =$form.find('#optionGroup').val();
-	var attrName=$form.find('#attributeName').val();
-	var attrValues=$form.find('#values').val();
-	
-	if(attrOptionGrp == ''||attrName=='' || attrValues=='')
-		{
-		$('.errorMsg').text("please enter required fields");
-		$('.error').show();
-		}
-
-return valid;
-}
+//# sourceURL=attribute-setup.js

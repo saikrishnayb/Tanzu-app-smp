@@ -1,23 +1,21 @@
 <!DOCTYPE html>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 	<head> 
 	    <title>SMC Dynamic Rules</title>
-	    <%@ include file="../../../jsp/jsp-fragment/global/default-head-block.jsp" %>
+	    <%@ include file="../../../jsp/global/v1/header.jsp" %>
 	    
 		<link href="${baseUrl}/css/admin-console/app-config/dynamic-rules.css" rel="stylesheet" type="text/css"/>
-		<link href="${commonStaticUrl}/css/jQueryUI/jquery-ui-1.8.21.custom.css" rel="stylesheet" type="text/css"/>
-		<script src="${commonStaticUrl}/js/jquery.dataTables.min.js" type="text/javascript"></script>
-		<link href="${commonStaticUrl}/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
 	</head>
 	<body>
-		<%@ include file="../../../jsp/jsp-fragment/global/header.jsp" %>
+		<%@ include file="../../../jsp/global/navigation/sub-nav.jsp" %>
 		
 		<div id="mainContent" class="borderTop">
-			<%@ include file="../../../jsp/jsp-fragment/admin-console/app-config/left-nav.jsp" %>
+			<%@ include file="../../../jsp/global/navigation/admin-console/app-config/left-nav.jsp" %>
 
 			<div class="leftNavAdjacentContainer">
-<c:choose>
-    <c:when test="${access eq true}">
+			<c:choose>
+			    <c:when test="${access eq true}">
 				<span id="noteSpan" class="bold">Note: These Rules will be used for Get Next Deal Process. Buyers will receive Deals matching against Priority Order.</span>
 				
 				<!-- Rule Table -->
@@ -100,17 +98,17 @@
 				
 				<!-- Add Rule Modal -->
 				<div id="add-rule-modal" class="modal"></div>
-</c:when>
-	<c:otherwise>
-	       <span style="float: center;color: #CC0000" >
-				You are not authorized to see the dynamic rule page. Please Contact Support for further assistance.
-			</span> 
-	 </c:otherwise>
-</c:choose>				
+			</c:when>
+				<c:otherwise>
+				       <span style="float: center;color: #CC0000" >
+							You are not authorized to see the dynamic rule page. Please Contact Support for further assistance.
+						</span> 
+				 </c:otherwise>
+			</c:choose>				
 			</div>
 		</div> 
 		
+		<%@ include file="../../../jsp/global/v1/footer.jsp" %>
+		<script src="${baseUrl}/js/admin-console/app-config/dynamic-rules.js" type="text/javascript"></script>
 	</body>
-	<!-- Scripts -->
-	<script src="${baseUrl}/js/admin-console/app-config/dynamic-rules.js" type="text/javascript"></script>
 </html>

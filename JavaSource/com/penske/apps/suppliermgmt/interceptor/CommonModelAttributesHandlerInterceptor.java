@@ -15,6 +15,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.penske.apps.suppliermgmt.annotation.CommonStaticUrl;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
+import com.penske.apps.suppliermgmt.util.ApplicationConstants;
 
 /**
  * A Spring HandlerInterceptor that adds named objects to the model that need to be globally available for all pages,
@@ -46,16 +47,24 @@ public class CommonModelAttributesHandlerInterceptor extends HandlerInterceptorA
 		{
 			addAttributeIfAbsent(request, modelAndView, "commonStaticUrl", staticUrl.toString());
 			
+			//User object, to print user info on pages
+			addAttributeIfAbsent(request, modelAndView, "currentUser", sessionBean.getUserContext());
+			
 			//baseUrl contains the URL segment that should be prepended to static resources (ex: JavaScript, CSS, images) in JSP pages
 			addAttributeIfAbsent(request, modelAndView, "baseUrl", sessionBean.getBaseUrl());
 			//baseAppUrl contains the URL segment that should be prepended to AJAX calls and other requests that reference Spring-mapped URLs.
 			addAttributeIfAbsent(request, modelAndView, "baseAppUrl", sessionBean.getBaseUrl() + "/app");
+			
+			addAttributeIfAbsent(request, modelAndView, "baseAdminConsoleUrl", sessionBean.getBaseUrl() + "/app/admin-console");
+			addAttributeIfAbsent(request, modelAndView, "baseBuildMatrixUrl", sessionBean.getBaseUrl() + "/app/admin-console/oem-build-matrix");
 
 			addAttributeIfAbsent(request, modelAndView, "formattedUserLoginDate", sessionBean.getFormattedUserLoginDate());
 			addAttributeIfAbsent(request, modelAndView, "hasBuddies", sessionBean.isBuddyListApplied());
 			addAttributeIfAbsent(request, modelAndView, "hasVendors", sessionBean.isVendorFilterApplied());
 			if(sessionBean.isVendorFilterApplied())
 				addAttributeIfAbsent(request, modelAndView, "hasVendorFilterActivated", sessionBean.isVendorFilterActive());
+			
+			addAttributeIfAbsent(request, modelAndView, "supportNum", ApplicationConstants.SUPPORT_NUMBER);
 		}
 	}
 	

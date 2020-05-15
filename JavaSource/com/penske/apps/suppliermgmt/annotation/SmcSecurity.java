@@ -45,7 +45,6 @@ public @interface SmcSecurity {
         LOADSHEET_MANAGEMENT, 
         LOADSHEET_RULES, 
         LOADSHEET_SEQUENCES,
-        SHIP_THRU_LEAD_TIME,
         
         OEM_BUILD_MATRIX;
     	

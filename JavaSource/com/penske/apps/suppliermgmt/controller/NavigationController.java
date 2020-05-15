@@ -11,7 +11,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,6 +23,7 @@ import com.penske.apps.adminconsole.enums.Tab.SubTab;
 import com.penske.apps.smccore.base.configuration.ProfileType;
 import com.penske.apps.suppliermgmt.annotation.SmcSecurity.SecurityFunction;
 import com.penske.apps.suppliermgmt.annotation.VendorAllowed;
+import com.penske.apps.suppliermgmt.annotation.Version1Controller;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.model.UserContext;
 import com.penske.apps.suppliermgmt.service.HelpService;
@@ -40,7 +40,7 @@ import com.penske.apps.suppliermgmt.util.ApplicationConstants;
  * @Description : Class for redirecting to different application
  * @History : 
  ************************************************************************************/
-@Controller
+@Version1Controller
 @RequestMapping("/navigation")
 public class NavigationController extends BaseController {
 
@@ -150,7 +150,7 @@ public class NavigationController extends BaseController {
             userContext = sessionBean.getUserContext();
             String help = helpService.getHelp(userContext.getUserType());
             model.addObject("helpContent", help);
-            model.setViewName("home/help");
+            model.setViewName("app-container/modal/help");
 
         } catch (Exception e) {
             model = handleException(e);
@@ -161,7 +161,7 @@ public class NavigationController extends BaseController {
     @VendorAllowed
     @RequestMapping(value = "/getHowTo")
     protected ModelAndView getHowTo() {
-        return new ModelAndView("home/howTo");
+        return new ModelAndView("app-container/modal/howTo");
     }
 
     private boolean isDevOrLocalEvironment()

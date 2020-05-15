@@ -3,7 +3,6 @@ package com.penske.apps.buildmatrix.service;
 import static java.util.stream.Collectors.summingInt;
 import static java.util.stream.Collectors.toList;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -26,7 +25,6 @@ import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFCell;
 import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
@@ -308,8 +306,8 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		return buildAttribute;
 	}
 	@Override
-	public Workbook downloadProductionSlotResultsDocument(int buildId) throws  Exception{
-		Workbook workbook = null;
+	public SXSSFWorkbook downloadProductionSlotResultsDocument(int buildId){
+		SXSSFWorkbook workbook = null;
 		List<ProductionSlotResult> productionSlotResult = buildMatrixSmcDAO.getProductionSlotResults(buildId);
 		 if(productionSlotResult!=null && !productionSlotResult.isEmpty()){
 			workbook = generateProductionSlotResultsExcel(productionSlotResult);
@@ -317,8 +315,8 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
         return workbook;
 	}
 
-	private Workbook generateProductionSlotResultsExcel(List<ProductionSlotResult> productionSlotResult)
-			throws IOException, ParseException {
+	private SXSSFWorkbook generateProductionSlotResultsExcel(List<ProductionSlotResult> productionSlotResult)
+	{
 		SXSSFWorkbook workbook = new SXSSFWorkbook();
 		SXSSFSheet workSheet = workbook.createSheet(ApplicationConstants.PRODUCTION_SLOT_RESULTS); // creating new work sheet
 		

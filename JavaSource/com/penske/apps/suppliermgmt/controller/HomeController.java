@@ -6,7 +6,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.penske.apps.suppliermgmt.annotation.VendorAllowed;
+import com.penske.apps.suppliermgmt.annotation.Version1Controller;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.model.AlertHeader;
 import com.penske.apps.suppliermgmt.model.LookUp;
@@ -37,7 +37,7 @@ import com.penske.apps.suppliermgmt.util.LookupManager;
  *
  ************************************************************************************/
 
-@Controller
+@Version1Controller
 @RequestMapping("/home")
 public class HomeController extends BaseController{
 

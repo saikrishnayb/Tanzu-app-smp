@@ -48,11 +48,9 @@ var excludedUnitsTable = $('#excluded-units-table').DataTable({
 updateQuantities();
 
 /****************** Modal Initialization ******************/
-var $oemBuildMatrixModal = $('#modal-oem-build-matrix');
 var $clearExcludeConfirmationModal = $('#modal-clear-exclude-confirmation');
 
-ModalUtil.initializeModal($oemBuildMatrixModal, "auto");
-ModalUtil.initializeModal($clearExcludeConfirmationModal, "auto");
+ModalUtil.initializeModal($clearExcludeConfirmationModal);
 
 /****************** Global variables ******************/
 var rowUpdatedTimer;
@@ -65,9 +63,9 @@ $('.unit-quantity-textbox').on('keyup', function() {
   var row = $(this).closest('tr');
   var unitQuantity = row.find('td.quantity-cell').html().trim();
   if(parseInt(this.value) > parseInt(unitQuantity))
-    $(this).addClass('errorMsgInput');
+    $(this).addClass('error-input');
   else {
-    $(this).removeClass('errorMsgInput');
+    $(this).removeClass('error-input');
   }
 });
 
@@ -89,6 +87,9 @@ $('#unit-search').on('keyup', function() {
     function(settings, data, dataIndex) {
       //parse the array contained in the rows data-unit-array attribute
       var unitArray = JSON.parse(eligibleUnitsTable.row(dataIndex).node().getAttribute('data-unit-array'));
+      if(!unitArray)
+    	  return false;
+      
       var valInUnitArray = false;
       //loop over strings in the array to see if value entered is in the string
       unitArray.forEach(function(unit) {
@@ -112,7 +113,7 @@ $('#select-all-unit-ranges').on('click', function() {
         var quantityTextBox = $(this).closest('tr').find('#select-unit-quantity')
         quantityTextBox.prop('disabled', true);
         quantityTextBox.val("");
-        quantityTextBox.removeClass('errorMsgInput');
+        quantityTextBox.removeClass('error-input');
       }
     });
     $('#multi-exclude-btn').removeClass('buttonDisabled');
@@ -153,7 +154,7 @@ $('.select-unit-range').on('click', function() {
   if($(this).prop('checked')===true) {
     row.find('#select-unit-quantity').prop('disabled', true);
     row.find('#select-unit-quantity').val("");
-    row.find('#select-unit-quantity').removeClass('errorMsgInput');
+    row.find('#select-unit-quantity').removeClass('error-input');
   }
   else {
     if(parseInt(row.find('.quantity-cell').html().trim()) != 1)
@@ -454,7 +455,7 @@ function updateSelectedUnitQuantity() {
     if(entireRowSelected) {
       selectedUnitQuantity += parseInt($(this).find('td.quantity-cell').html());
     }
-    if(unitQuantity != '' && !$(this).find('#select-unit-quantity').hasClass('errorMsgInput'))
+    if(unitQuantity != '' && !$(this).find('#select-unit-quantity').hasClass('error-input'))
       selectedUnitQuantity += parseInt(unitQuantity);
   });
   

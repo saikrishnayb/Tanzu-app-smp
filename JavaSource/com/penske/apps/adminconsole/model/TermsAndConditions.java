@@ -2,6 +2,8 @@ package com.penske.apps.adminconsole.model;
 
 import java.util.Date;
 
+import com.penske.apps.smccore.base.util.DateUtil;
+
 /**
  * Model object for holding information about terms and conditions.
  * 
@@ -29,6 +31,16 @@ public class TermsAndConditions {
 		return endDate;
 	}
 
+	public String getFormattedStartDate()
+	{
+		return DateUtil.formatDateUS(startDate);
+	}
+	
+	public String getFormattedEndDate()
+	{
+		return DateUtil.formatDateUS(endDate);
+	}
+	
 	public int getStatus() {
 		return status;
 	}

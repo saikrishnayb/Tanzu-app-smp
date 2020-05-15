@@ -22,6 +22,13 @@ function initializeDatePicker() {
 		},
 		beforeShow : function(input, inst) {
 			$(this).datepicker('option', 'buttonImage', '../../../images/calendar_selected.png');
+		},
+		//Override for beforeShowDay, since this can't be after the selected end date
+		beforeShowDay: function (date) {
+			var endDatepicker = $(this).closest('.row').find('.end-date');
+			var endDate = endDatepicker.datepicker('getDate');
+			var dayIsSelectable = !endDate || date.getTime() <= endDate.getTime();
+			return [dayIsSelectable, ""];
 		}
 	});
 
@@ -45,6 +52,13 @@ function initializeDatePicker() {
 		},
 		beforeShow : function(input, inst) {
 			$(this).datepicker('option', 'buttonImage', '../../../images/calendar_selected.png');
+		},
+		//Override for beforeShowDay, since this can't be before the selected end date
+		beforeShowDay: function (date) {
+			var startDatepicker = $(this).closest('.row').find('.start-date');
+			var startDate = startDatepicker.datepicker('getDate');
+			var dayIsSelectable = !startDate || date.getTime() >= startDate.getTime();
+			return [dayIsSelectable, ""];
 		}
 	});
 
@@ -52,3 +66,4 @@ function initializeDatePicker() {
 	$(".end-date").mask("99/99/9999");
 
 }
+//# sourceURL=set-offline-dates-modal.js

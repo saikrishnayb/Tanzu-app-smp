@@ -2,6 +2,23 @@ $(document).ready(function() {
 	selectCurrentNavigation("tab-oem-build-matrix", "left-nav-maintenance-summary");
 	var proximityChangeCnt = 0;
 	var proximityUpdateList = [];
+	
+	$("fieldset").selectAll({
+		buttonParent : "legend",
+		buttonWrapperHTML : "",
+
+		buttonSelectBeforeHTML : "<span class='ui-icon ui-icon-check' id='check-uncheck-display'></span>",
+		buttonSelectText : "",
+		buttonSelectAfterHTML : "<a class='no-text-decoration' id='check-uncheck-display'>Check All</a>",
+
+		buttonDeSelectBeforeHTML : "<span id='right-padding'></span><span class='ui-icon ui-icon-closethick' id='check-uncheck-display'></span>",
+		buttonDeSelectText : "",
+		buttonDeSelectAfterHTML : "<a class='no-text-decoration' id='check-uncheck-display'>Uncheck All</a>",
+
+		buttonExtraClasses : "select-deselect-all"
+	});
+	
+	$('.filter').accordionLiveFilter();
 
 	$("#tier1, #tier2, #tier3").on("keyup", function() {
 		var tierNumber = $(this).attr("id").split("tier")[1];
@@ -20,7 +37,6 @@ $(document).ready(function() {
 	});
 
 	$('.district-checkbox').on("change", function() {
-		debugger;
 		var plantId = parseInt($('#plantId').val());
 		var area = $(this).attr('area');
 		var tier = parseInt($(this).attr('tier'));
@@ -80,23 +96,14 @@ $(document).ready(function() {
 	//Saves the proximity data
 	$('#save-proximitybtn').on("click",function() {
 		if (proximityUpdateList && proximityUpdateList.length != 0) {
-			showLoading();
 			var $saveProximityPromise = $.ajax({
 				type : "POST",
 				url : './save-district-proximity.htm',
-				global : false,
 				data : JSON.stringify(proximityUpdateList),
 				contentType : 'application/json'
 			});
 			$saveProximityPromise.done(function(data) {
 				window.location.href = "maintenance-summary.htm";
-			});
-			$saveProximityPromise.fail(function(xhr, ajaxOptions, thrownError) {
-				if (xhr.responseText.indexOf('Error Processing the Save proximity configuration.') > 0) {
-					$('.errorMsg').text("Error Processing the Save proximity configuration.");
-					$('#PopupError').show();
-				}
-				hideLoading();
 			});
 		}
 	});
@@ -163,3 +170,4 @@ function setMaxVericalLineHeight(obj) {
 		$(".vertical-line, #tier3-div").height(defaultVerticalLineHeight + 20 + "px");
 	}
 }
+//# sourceURL=district-proximity.js

@@ -2,7 +2,6 @@ var $rolePermissions = $('#role-permissions');
 var $roleHierarchy = $('#role-hierarchy');
 var roleId = $('input[name="roleId"]').val();
 var tempBaseRoleId=$('#tempBaseRoleId').val();
-var $renameRoleModal = $('#rename-role-modal');
 var $deactivateModal = $('#deactivate-modal');
 var $editRoleForm = $('#edit-role-form');
 var $editOrCopy = $('#editOrCopy').val();
@@ -30,17 +29,6 @@ $(document).ready(function() {
 	});
 	
 	/* -------------- Modal Declarations --------------- */
-	$renameRoleModal.dialog({
-		autoOpen: false,
-		modal: true,
-		dialogClass: 'popupModal',
-		width: 350,
-		minHeight: 100,
-		resizable: false,
-		title: 'Rename Role',
-		closeOnEscape: false
-	});
-	
 	$deactivateModal.dialog({
 		autoOpen: false,
 		modal: true,
@@ -106,12 +94,6 @@ $(document).ready(function() {
 		}
 	});
 	
-	
-	$('#rename-role').on('click', function() {
-		$renameRoleModal.find('input[name="new-role-name"]').val($('span#role-name').text());
-		
-		$renameRoleModal.dialog('open');
-	});
 	
 	$('a#deactivate-role').on('click', function() {
 		$.get('./deactivate-role.htm',

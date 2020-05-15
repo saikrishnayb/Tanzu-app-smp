@@ -4,7 +4,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.pensle.apps.adminconsole.domain.ShipThruLeadTimeTest;
 import com.pensle.apps.adminconsole.model.TransportUploadHandlerTest;
 
 @RunWith(Suite.class)
@@ -12,7 +11,6 @@ import com.pensle.apps.adminconsole.model.TransportUploadHandlerTest;
 	//Utility classes
 	
 	//Domain Classes
-    ShipThruLeadTimeTest.class,
 	
 	//Service Tests
     

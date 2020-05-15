@@ -1,21 +1,20 @@
 <!DOCTYPE html>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
   <head>
-  	<%@ include file="../../../jsp/jsp-fragment/global/default-head-block.jsp"%>
-  	<link href="${commonStaticUrl}/css/jQueryUI/jquery-ui-1.8.21.custom.css" rel="stylesheet" type="text/css"/>
-  	<link href="${commonStaticUrl}/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
-  	<link href="${baseUrl}/css/admin-console/security/org.css" rel="stylesheet" type="text/css"/>
-    
+  	<%@ include file="../../../jsp/global/v1/header.jsp" %>
+  	
+  	<link href="${baseUrl}/css/admin-console/security/org.css" rel="stylesheet" type="text/css"/>    
     <link href="${baseUrl}/css/admin-console/components/template.css" rel="stylesheet" type="text/css"/>
   </head>
 
   <body>
 
-    <%@ include file="../../../jsp/jsp-fragment/global/header.jsp"%>
+    <%@ include file="../../../jsp/global/navigation/sub-nav.jsp" %>
     
     <div id="mainContent">
     
-      <%@ include file="../../../jsp/jsp-fragment/admin-console/components/left-nav.jsp"%>
+      <%@ include file="../../global/navigation/admin-console/components/left-nav.jsp"%>
       
       <div class="leftNavAdjacentContainer">
         <div class="full-width">
@@ -78,10 +77,8 @@
 			<a class="buttonPrimary activate-confirm" tabIndex="-1">Yes, Activate</a>
 		</div>
 </div>
-    <!-- Scripts -->
-    <script src="${baseUrl}/js/global/modal-util.js" type="text/javascript"></script>
-    <script src="${commonStaticUrl}/js/jquery.dataTables.min.js" type="text/javascript"></script>
-    <script src="${commonStaticUrl}/js/jquery.maskedinput-1.3.min.js" type="text/javascript"></script>
+    <%@ include file="../../../jsp/global/v1/footer.jsp" %>
+    <script src="${baseUrl}/js/global/v1/legacy-do-not-use/modal-util-do-not-use.js" type="text/javascript"></script>
     <script src="${baseUrl}/js/admin-console/components/template-form.js"   type="text/javascript"></script>
   </body>
 

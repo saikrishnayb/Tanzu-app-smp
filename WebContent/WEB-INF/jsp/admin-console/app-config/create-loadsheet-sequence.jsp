@@ -1,20 +1,18 @@
 <!DOCTYPE html>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <html>
 <head>
-<title>SMC Loadsheet Sequencing</title>
-<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
-<%@ include file="../../../jsp/jsp-fragment/global/default-head-block.jsp"%>
-
-<link href="${baseUrl}/css/admin-console/app-config/create-loadsheet-sequence.css" rel="stylesheet" type="text/css" />
-<script src="${baseUrl}/js/admin-console/components/excel-sequence-components.js" type="text/javascript"></script>
-
+	<title>SMC Loadsheet Sequencing</title>
+	<%@ include file="../../../jsp/global/v1/header.jsp" %>
+	
+	<link href="${baseUrl}/css/admin-console/app-config/create-loadsheet-sequence.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-	<%@ include file="../../../jsp/jsp-fragment/global/header.jsp"%>
+	<%@ include file="../../../jsp/global/navigation/sub-nav.jsp" %>
 	<div id="mainContent" class="borderTop">
-		<%@ include file="../../../jsp/jsp-fragment/admin-console/app-config/left-nav.jsp"%>
+		<%@ include file="../../../jsp/global/navigation/admin-console/app-config/left-nav.jsp" %>
 		<div class="leftNavAdjacentContainer">
 			<form:form id="loadsheet-sequencing-form" modelAttribute="seqMaster" method="POST">
 			<form:input path="id" id="seqMasterId" type="hidden" />
@@ -279,14 +277,18 @@
 			</div>
 		</div>
 	<input type="hidden" id="numberOfGroups" value="${fn:length(seqMaster.groupMasterList)}"/>
-	<script src="${baseUrl}/js/v2/jquery-3.4.1.min.js"></script>
-	<Script>
+	
+	<%@ include file="../../../jsp/global/v1/footer.jsp" %>
+	<script src="${baseUrl}/js/admin-console/components/excel-sequence-components.js" type="text/javascript"></script>
+	
+	<script src="${baseUrl}/js/global/v1/legacy-do-not-use/jquery-do-not-use-3.4.1.min.js"></script>
+	<script>
 		var j2 = jQuery.noConflict();
-	</Script>
-	<script src="${baseUrl}/js/v2/jquery-ui.min.js"></script>
-	<Script>
+	</script>
+	<script src="${baseUrl}/js/global/v1/legacy-do-not-use/jquery-ui-do-not-use.min.js"></script>
+	<script>
 		var j1 = jQuery.noConflict();
-	</Script>
+	</script>
 	<script src="${baseUrl}/js/admin-console/app-config/create-loadsheet-sequence.js" type="text/javascript"></script>
 
 

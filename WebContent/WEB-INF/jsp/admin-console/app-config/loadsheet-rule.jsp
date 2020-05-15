@@ -2,18 +2,14 @@
 <html>
 	<head> 
 	    <title>SMC Loadsheet Rule</title>
-	    <%@ include file="../../../jsp/jsp-fragment/global/default-head-block.jsp" %>
-	    	<!-- Scripts -->
-		<script src="${baseUrl}/js/admin-console/app-config/loadsheet-rule.js" type="text/javascript"></script>
-		<link href="${commonStaticUrl}/css/jQueryUI/jquery-ui-1.8.21.custom.css" rel="stylesheet" type="text/css"/>
-		<script src="${commonStaticUrl}/js/jquery.dataTables.min.js" type="text/javascript"></script>
-		<link href="${commonStaticUrl}/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
+	    <%@ include file="../../../jsp/global/v1/header.jsp" %>
+	    
 		<link href="${baseUrl}/css/admin-console/app-config/delay-management.css" rel="stylesheet" type="text/css"/>
 	</head>
 	<body>
-		<%@ include file="../../../jsp/jsp-fragment/global/header.jsp" %>
+		<%@ include file="../../../jsp/global/navigation/sub-nav.jsp" %>
 		<div id="mainContent" class="borderTop">
-			<%@ include file="../../../jsp/jsp-fragment/admin-console/app-config/left-nav.jsp" %>
+			<%@ include file="../../../jsp/global/navigation/admin-console/app-config/left-nav.jsp" %>
 			<div class="leftNavAdjacentContainer">
 				<span class="floatRight addRow push-right">
 				</span> 
@@ -66,5 +62,8 @@
 				<a href="javascript:void(0)" class="buttonPrimary" onclick="confirmDeleteRule()" tabIndex="-1">Yes</a>
 			</div>
 		</div>
+		
+		<%@ include file="../../../jsp/global/v1/footer.jsp" %>
+		<script src="${baseUrl}/js/admin-console/app-config/loadsheet-rule.js" type="text/javascript"></script>
 </body>
 </html>

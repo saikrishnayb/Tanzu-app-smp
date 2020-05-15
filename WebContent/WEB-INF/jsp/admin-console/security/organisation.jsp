@@ -1,16 +1,11 @@
 <!DOCTYPE html>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
 	<title>SMC Home</title>
-	<%@ include file="../../../jsp/jsp-fragment/global/default-head-block.jsp"%>
-	<link href="${commonStaticUrl}/css/jQueryUI/jquery-ui-1.8.21.custom.css" rel="stylesheet" type="text/css"/>
-	<script src="${commonStaticUrl}/js/jquery.dataTables.min.js" type="text/javascript"></script>
-	<link href="${commonStaticUrl}/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
-	<script src="${commonStaticUrl}/js/jquery.maskedinput-1.3.min.js" type="text/javascript"></script>
+	<%@ include file="../../../jsp/global/v1/header.jsp" %>
+	
 	<link href="${baseUrl}/css/admin-console/security/org.css" rel="stylesheet" type="text/css"/>
-	<Script>
-	var isCreatePage='${isCreatePage}';
-	</Script>
 </head>
 <!-- ******************************edit modal******************************** -->
 <div id="edit-modal" class="modal edit-org-modal" title="Edit org Information"></div>
@@ -20,9 +15,9 @@
 </div>
 <!-- *******************************org account table************************** -->
 <body>
-	<%@ include file="../../../jsp/jsp-fragment/global/header.jsp"%>
+	<%@ include file="../../../jsp/global/navigation/sub-nav.jsp" %>
 	<div id="mainContent" class="borderTop">
-		<%@ include file="../../../jsp/jsp-fragment/admin-console/security/left-nav.jsp"%>
+		<%@ include file="../../../jsp/global/navigation/admin-console/security/left-nav.jsp"%>
 		<div class="leftNavAdjacentContainer">
 			
 		<!--  ********************************search criteria******************************** -->
@@ -100,16 +95,12 @@
 			</div>
 		</div>
 	</div>
+	
+	<script>
+		var isCreatePage='${isCreatePage}';
+	</script>
+	<%@ include file="../../../jsp/global/v1/footer.jsp" %>
+	<script src="${baseUrl}/js/admin-console/security/org-form.js"	type="text/javascript"></script>
+	<script src="${baseUrl}/js/admin-console/security/organisation.js" type="text/javascript"></script>
 </body>
-<!-- Scripts -->
-<script src="${baseUrl}/js/jstree/jquery-1.10.2.min.js" type="text/javascript"></script>
-<Script>
-var j = jQuery.noConflict();
-</Script>
-<script src="//code.jquery.com/jquery-migrate-1.2.1.js"></script>
-<link href="${baseUrl}/js/jstree/css/style.min.css" rel="stylesheet" type="text/css"/>
-<script src="${baseUrl}/js/jstree/jstree.min.js" type="text/javascript"></script>
-<script src="${baseUrl}/js/admin-console/security/vendor-hierarchy.js" type="text/javascript"></script>				
-<script src="${baseUrl}/js/admin-console/security/org-form.js"	type="text/javascript"></script>
-<script src="${baseUrl}/js/admin-console/security/organisation.js" type="text/javascript"></script>
 </html>

@@ -1,27 +1,21 @@
 <!DOCTYPE html>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <html>
 	<head> 
 	    <title>SMC Loadsheet Rule</title>
-	    <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-	    <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-	    <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
-	    <%@ include file="../../../jsp/jsp-fragment/global/default-head-block.jsp" %>
-	    	<!-- Scripts -->
+
+	    <%@ include file="../../../jsp/global/v1/header.jsp" %>
 	    	
-	    <script src="${baseUrl}/jQuery/chosen.jquery.min.js" type="text/javascript"></script>
-	    <script src="${baseUrl}/js/v2/jquery.dataTables.min.js" type="text/javascript"></script>
-	    <script src="${baseUrl}/js/admin-console/app-config/create-rule.js" type="text/javascript"></script>
-		<link href="${commonStaticUrl}/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
+	    <link href="${baseUrl}/css/global/v1/legacy-do-not-use/chosen-do-not-use.css" rel="stylesheet" type="text/css"/>
 		<link href="${baseUrl}/css/admin-console/app-config/delay-management.css" rel="stylesheet" type="text/css"/>
-		<link href="${baseUrl}/css/chosen.css" rel="stylesheet" type="text/css"/>
 		<link href="${baseUrl}/css/admin-console/app-config/create-rule.css" rel="stylesheet" type="text/css"/>
-		
-		
 	</head>
 	<body>
-		<%@ include file="../../../jsp/jsp-fragment/global/header.jsp" %>
+		<%@ include file="../../../jsp/global/navigation/sub-nav.jsp" %>
 		<div id="mainContent" class="borderTop">
-			<%@ include file="../../../jsp/jsp-fragment/admin-console/app-config/left-nav.jsp" %>
+			<%@ include file="../../../jsp/global/navigation/admin-console/app-config/left-nav.jsp" %>
 			<div class="leftNavAdjacentContainer">
 			<form:form method="post"  modelAttribute="ruleMaster" id="create-rule-form">
 			<form:input path="ruleType" id="ruleType" type="hidden" value="L"/>	
@@ -184,5 +178,10 @@
 		                   		<option value="${component.componentId}-${component.componentType}">${component.componentGroup}<c:if test="${not empty  component.subGroup}"> ${component.subGroup}</c:if> - ${component.componentName} (ID: ${component.componentId})</option>
 		                   	</c:forEach>
 		</select>
+		
+		<%@ include file="../../../jsp/global/v1/footer.jsp" %>
+		<script src="${baseUrl}/js/global/v1/legacy-do-not-use/jquery.dataTables-do-not-use.min.js" type="text/javascript"></script>
+		<script src="${baseUrl}/js/global/v1/legacy-do-not-use/chosen.jquery-do-not-use.min.js" type="text/javascript"></script>
+	    <script src="${baseUrl}/js/admin-console/app-config/create-rule.js" type="text/javascript"></script>
 	</body>
 </html>

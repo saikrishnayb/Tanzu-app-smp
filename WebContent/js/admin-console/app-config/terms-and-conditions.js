@@ -3,8 +3,6 @@ $(document).ready(function() {
 	
 	//Cache selectors
 	var $tandcTable = $('#t-and-c-table');
-	var $startDates = $('.start-date');
-	var $endDates = $('.end-date');
 	var $saveFrequency = $('.save-frequency');
 	var $viewModal = $('#tandc-view-modal');
 	var $okButton = $('.okay');
@@ -62,10 +60,6 @@ $(document).ready(function() {
 		closeOnEscape: false,
 		position: { my: "center top", at: "center top"}
 	});
-	
-	//Formats the dates in the table
-	formatMillisToLocalizedTime($startDates);
-	formatMillisToLocalizedTime($endDates);
 	
 	//Saves the frequency to which users should be prompted to confirm the T&C
 	$saveFrequency.on("click", function() {

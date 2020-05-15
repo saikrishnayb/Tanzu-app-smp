@@ -27,6 +27,6 @@
     </div>
     
     <%@ include file="includes/footer.jspf"%>
-    <script src="${baseUrl}/js/global/iframe-resizer.js"></script>
+    <script src="${baseUrl}/js/app-container/includes/iframe-resizer.js"></script>
   </body>
 </html>

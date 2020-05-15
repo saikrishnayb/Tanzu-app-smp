@@ -22,10 +22,10 @@ import com.penske.apps.adminconsole.service.SecurityService;
 import com.penske.apps.adminconsole.service.VendorService;
 import com.penske.apps.adminconsole.util.ApplicationConstants;
 import com.penske.apps.adminconsole.util.CommonUtils;
-import com.penske.apps.suppliermgmt.annotation.DefaultController;
 import com.penske.apps.suppliermgmt.annotation.SmcSecurity;
 import com.penske.apps.suppliermgmt.annotation.SmcSecurity.SecurityFunction;
 import com.penske.apps.suppliermgmt.annotation.VendorAllowed;
+import com.penske.apps.suppliermgmt.annotation.Version1Controller;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.model.UserContext;
 
@@ -34,7 +34,7 @@ import com.penske.apps.suppliermgmt.model.UserContext;
  * @author erik.munoz 600139451
  *
  */
-@DefaultController
+@Version1Controller
 @RequestMapping("/admin-console/security")
 public class SecurityController {
 

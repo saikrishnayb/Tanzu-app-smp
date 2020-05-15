@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,11 +30,12 @@ import com.penske.apps.adminconsole.util.IUserConstants;
 import com.penske.apps.suppliermgmt.annotation.SmcSecurity;
 import com.penske.apps.suppliermgmt.annotation.SmcSecurity.SecurityFunction;
 import com.penske.apps.suppliermgmt.annotation.VendorAllowed;
+import com.penske.apps.suppliermgmt.annotation.Version1Controller;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.exception.SMCException;
 import com.penske.apps.suppliermgmt.model.UserContext;
 
-@Controller
+@Version1Controller
 @RequestMapping("/admin-console/security")
 public class SecurityRestController {
 
@@ -58,7 +58,7 @@ public class SecurityRestController {
     @RequestMapping(value ="get-edit-user-modal-content")
     @ResponseBody
     public ModelAndView getEditInfo(@RequestParam(value="userId") String userId, @RequestParam(value="userType") String userType, @RequestParam(value="roleId") String roleId) {
-        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/security/edit-user-modal-content");
+        ModelAndView mav = new ModelAndView("/admin-console/security/modal/edit-user-modal-content");
         UserContext userContext = sessionBean.getUserContext();
         User editableUser = securityService.getEditInfo(userId, userType);
 
@@ -97,7 +97,7 @@ public class SecurityRestController {
     @RequestMapping(value ="get-edit-vendor-user-modal-content")
     @ResponseBody
     public ModelAndView getEditVendorInfo(@RequestParam(value="userId") String userId, @RequestParam(value="userType") String userType, @RequestParam(value="roleId") String roleId) {
-        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/security/edit-vendor-user-modal-content");
+        ModelAndView mav = new ModelAndView("/admin-console/security/modal/edit-vendor-user-modal-content");
         UserContext userContext = sessionBean.getUserContext();
         boolean isVendor = userContext.isVendorUser();
         User editableUser = securityService.getEditInfo(userId, userType);
@@ -123,7 +123,7 @@ public class SecurityRestController {
     @RequestMapping(value ="get-permissions-accordion-content")
     @ResponseBody
     public ModelAndView getPermissionsInfo(@RequestParam(value="roleId") String roleId) {
-        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/security/permissions-accordion");
+        ModelAndView mav = new ModelAndView("/admin-console/security/modal/permissions-accordion");
 
         mav.addObject("tabPermissionsMap", securityService.getPermissions(roleId));
 
@@ -157,7 +157,7 @@ public class SecurityRestController {
     @ResponseBody
     public ModelAndView getDeactivateInfo(@RequestParam(value="email") String email, @RequestParam(value="userId") String userId,
             @RequestParam(value="isVendorUser") boolean isVendorUser) {
-        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/security/deactivate-user-modal-content");
+        ModelAndView mav = new ModelAndView("/admin-console/security/modal/deactivate-user-modal-content");
 
         mav.addObject("email", email);
         mav.addObject("userId", userId);
@@ -170,7 +170,7 @@ public class SecurityRestController {
     @RequestMapping("get-deactivate-org-modal-content")
     @ResponseBody
     public ModelAndView getDeactivateOrgInfo(@RequestParam(value="orgName") String orgName, @RequestParam(value="orgId") int orgId) {
-        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/security/deactivate-org-modal-content");
+        ModelAndView mav = new ModelAndView("/admin-console/security/modal/deactivate-org-modal-content");
         boolean canDelete=securityService.checkForUsers(orgId);
         mav.addObject("canDelete", canDelete);
         mav.addObject("orgName", orgName);
@@ -434,7 +434,7 @@ public class SecurityRestController {
     @RequestMapping("get-create-role-hierarchy")
     @ResponseBody
     public ModelAndView getCreateRoleHierarchy(@RequestParam("roleId") int roleId) {
-        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/security/role-hierarchy");
+        ModelAndView mav = new ModelAndView("/admin-console/security/includes/role-hierarchy");
         UserContext userContext = sessionBean.getUserContext();
         if (roleId != 0) {
             mav.addObject("role", roleService.getCreateRoleHierarchy(roleId,userContext.getOrgId()));
@@ -448,7 +448,7 @@ public class SecurityRestController {
     @RequestMapping("get-edit-role-hierarchy")
     @ResponseBody
     public ModelAndView getEditRoleHierarchy(@RequestParam("roleId") int roleId, @RequestParam("flag") int flag) {
-        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/security/role-hierarchy");
+        ModelAndView mav = new ModelAndView("/admin-console/security/includes/role-hierarchy");
         UserContext userContext = sessionBean.getUserContext();
         mav.addObject("role", roleService.getEditRoleHierarchy(roleId, flag, userContext.getOrgId()));
 
@@ -460,7 +460,7 @@ public class SecurityRestController {
     @RequestMapping("get-edit-role-permissions")
     @ResponseBody
     public ModelAndView getEditRolePermissions(@RequestParam("roleId") int roleId) {
-        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/security/role-permissions");
+        ModelAndView mav = new ModelAndView("/admin-console/security/includes/role-permissions");
         mav.addObject("tabs", roleService.getEditRolePermissions(roleId));
 
         return mav;
@@ -471,7 +471,7 @@ public class SecurityRestController {
     @RequestMapping("get-role-permissions")
     @ResponseBody
     public ModelAndView getRolePermissions(@RequestParam("roleId") int roleId) {
-        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/security/role-permissions");
+        ModelAndView mav = new ModelAndView("/admin-console/security/includes/role-permissions");
 
         mav.addObject("tabs", roleService.getCreateRolePermissions(roleId));
 
@@ -533,10 +533,10 @@ public class SecurityRestController {
         UserContext userContext = sessionBean.getUserContext();
         // If any users are found with the role.
         if (roleService.checkForUsers(roleId)) {
-            mav.setViewName("/jsp-fragment/admin-console/security/deactivate-role-error-modal");
+            mav.setViewName("/admin-console/security/modal/deactivate-role-error-modal");
         }
         else {
-            mav.setViewName("/jsp-fragment/admin-console/security/deactivate-role-modal");
+            mav.setViewName("/admin-console/security/modal/deactivate-role-modal");
             List<Role> subRoles=roleService.getMyDescendRoleByRoleIdOrgId(roleId, userContext.getOrgId());
             if(subRoles !=null && !subRoles.isEmpty()){
                 Role baseRole=subRoles.get(0);
@@ -567,7 +567,7 @@ public class SecurityRestController {
     @RequestMapping("edit-vendor")
     @ResponseBody
     public ModelAndView getEditVendorInformation(@RequestParam("vendorId") int vendorId) {
-        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/security/edit-vendor-modal");
+        ModelAndView mav = new ModelAndView("/admin-console/security/modal/edit-vendor-modal");
 
         mav.addObject("vendor", vendorService.getEditVendorInformation(vendorId));
         mav.addObject("analysts", vendorService.getAllPlanningAnalysts());
@@ -580,7 +580,7 @@ public class SecurityRestController {
     @RequestMapping("view-vendor")
     @ResponseBody
     public ModelAndView getViewVendorInformation(@RequestParam("vendorId") int vendorId) {
-        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/security/view-vendor-modal");
+        ModelAndView mav = new ModelAndView("/admin-console/security/modal/view-vendor-modal");
 
         mav.addObject("vendor", vendorService.getViewVendorInformation(vendorId));
 
@@ -591,7 +591,7 @@ public class SecurityRestController {
     @RequestMapping("get-analysts-and-specialists")
     @ResponseBody
     public ModelAndView getAllAnalystsAndSpecialists() {
-        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/security/mass-update-vendor-modal");
+        ModelAndView mav = new ModelAndView("/admin-console/security/modal/mass-update-vendor-modal");
 
         mav.addObject("analysts", vendorService.getAllPlanningAnalysts());
         mav.addObject("specialists", vendorService.getAllSupplySpecialists());
@@ -702,7 +702,7 @@ public class SecurityRestController {
     @RequestMapping("sso-user-lookup-refresh")
     @ResponseBody
     public ModelAndView ssoLookupRefresh(@RequestParam(value="userId") String userId, @RequestParam(value="userType") String userType,HttpServletResponse response) {
-        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/security/sso-refresh-modal-content");
+        ModelAndView mav = new ModelAndView("/admin-console/security/modal/sso-refresh-modal-content");
 
         if("1".equalsIgnoreCase(userType)){
             userType = "Penske";
@@ -844,7 +844,7 @@ public class SecurityRestController {
     @RequestMapping(value ="/get-vendor-hierarchy-page")
     @ResponseBody
     public ModelAndView getVendorHierarchyPage(@RequestParam(value="parentOrg") int parentOrg) {
-        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/security/vendor-hierarchy");
+        ModelAndView mav = new ModelAndView("/admin-console/security/includes/vendor-hierarchy");
         mav.addObject("vendorList", securityService.getVendorList("","",parentOrg));
         return mav;
     }
@@ -854,7 +854,7 @@ public class SecurityRestController {
     @RequestMapping(value ="filter-vendor-list")
     @ResponseBody
     public ModelAndView filterVendorList( @RequestParam(value="corp") String corp, @RequestParam(value="parentOrg") int parentOrg,@RequestParam(value="vendor") String vendor){
-        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/security/vendor-hierarchy");
+        ModelAndView mav = new ModelAndView("/admin-console/security/includes/vendor-hierarchy");
         mav.addObject("vendorList", securityService.getVendorList(corp,vendor,parentOrg));//0- Filter Flow
         return mav;
     }

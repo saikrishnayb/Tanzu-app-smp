@@ -1,22 +1,20 @@
 <!DOCTYPE html>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 	<head> 
 	    <title>SMC Home</title>
 	    
-	    <%@ include file="../../../jsp/jsp-fragment/global/default-head-block.jsp" %>
+	    <%@ include file="../../../jsp/global/v1/header.jsp" %>
 		<link href="${baseUrl}/css/admin-console/security/roles.css" rel="stylesheet" type="text/css"/>
 		<link href="${baseUrl}/css/admin-console/security/edit-create-role.css" rel="stylesheet" type="text/css"/>
-		<script src="${commonStaticUrl}/js/jquery.jstree.js" type="text/javascript"></script>
-		<link href="${commonStaticUrl}/css/jQueryUI/jquery-ui-1.8.21.custom.css" rel="stylesheet" type="text/css"/>
-		<script src="${commonStaticUrl}/js/jquery.dataTables.min.js" type="text/javascript"></script>
-		<link href="${commonStaticUrl}/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
+		
 	</head>
 	
 	<body style="overflow-y: auto;">
-		<%@ include file="../../../jsp/jsp-fragment/global/header.jsp" %>
+		<%@ include file="../../../jsp/global/navigation/sub-nav.jsp" %>
 		
 		<div id="mainContent" class="borderTop floatLeft">
-			<%@ include file="../../../jsp/jsp-fragment/admin-console/security/left-nav.jsp" %>
+			<%@ include file="../../../jsp/global/navigation/admin-console/security/left-nav.jsp" %>
 			
 			<div class="leftNavAdjacentContainer">
 				<div id="column-one" class="floatLeft clear-left">
@@ -64,7 +62,7 @@
 					</form> 					
 					<h3 class="floatLeft clear-left">Role Hierarchy</h3>
 					<div id="role-hierarchy" class="floatLeft clear-left jstree">
-						<%@ include file="../../../jsp/jsp-fragment/admin-console/security/role-hierarchy.jsp" %>
+						<%@ include file="includes/role-hierarchy.jsp" %>
 					</div>
 					
 					<div id="edit-links" class="floatLeft clear-left width-full">
@@ -74,7 +72,7 @@
 				<div id="column-two" class="floatLeft margin-bottom-10">
 					<h1 class="floatLeft clear-left">Role Permissions</h1>
 					<div class=" floatLeft clear-left width-full" id="role-permissions">
-						<%@ include file="../../../jsp/jsp-fragment/admin-console/security/role-permissions.jsp" %>
+						<%@ include file="includes/role-permissions.jsp" %>
 					</div>
 					
 					<div id="modify-role-buttons" class="floatRight button-div">
@@ -87,17 +85,13 @@
 					</div>
 				</div>
 				
-				<!-- Rename Modal -->
-				<div id="rename-role-modal" class="modal">
-					<%@ include file="../../../jsp/jsp-fragment/admin-console/security/rename-role-modal.jsp" %>
-				</div>
-				
 				<!-- Deactivate Role Modal -->
 				<div class="modal" id="deactivate-modal"></div>
 			</div>
 		</div>
-			
+
+		<%@ include file="../../../jsp/global/v1/footer.jsp" %>
+		<script src="${commonStaticUrl}/js/jquery.jstree.js" type="text/javascript"></script>
+		<script src="${baseUrl}/js/admin-console/security/modify-role.js" type="text/javascript"></script>			
 	</body>
-	<!-- Scripts -->
-	<script src="${baseUrl}/js/admin-console/security/modify-role.js" type="text/javascript"></script>
 </html>

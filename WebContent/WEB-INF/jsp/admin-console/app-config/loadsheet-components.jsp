@@ -1,27 +1,22 @@
 <!DOCTYPE html>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
 	<title>Loadsheet Components</title>
-	<%@ include file="../../../jsp/jsp-fragment/global/default-head-block.jsp"%>
-	<link href="${commonStaticUrl}/css/jQueryUI/jquery-ui-1.8.21.custom.css" rel="stylesheet" type="text/css"/>
-    <script src="${baseUrl}/js/admin-console/app-config/loadsheet-components.js"	type="text/javascript"></script>
-	<script src="${commonStaticUrl}/js/jquery.dataTables.min.js" type="text/javascript"></script>
 	
-	<link href="${commonStaticUrl}/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
-	<script src="${commonStaticUrl}/js/jquery.maskedinput-1.3.min.js" type="text/javascript"></script>
+	<%@ include file="../../../jsp/global/v1/header.jsp" %>
+	
 	<link href="${baseUrl}/css/admin-console/security/org.css" rel="stylesheet" type="text/css"/>
 	<link href="${baseUrl}/css/admin-console/app-config/delay-management.css" rel="stylesheet" type="text/css"/>
-	<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-    <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 </head>
 
 <!-- ***************************deactivate modal********************************** -->
 <div id="Component-modal" class="comonent-modal modal" title="Component Rules">
 </div>
 <body>
-	<%@ include file="../../../jsp/jsp-fragment/global/header.jsp"%>
+	<%@ include file="../../../jsp/global/navigation/sub-nav.jsp" %>
 	<div id="mainContent" class="borderTop">
-		<%@ include file="../../../jsp/jsp-fragment/admin-console/app-config/left-nav.jsp"%>
+		<%@ include file="../../../jsp/global/navigation/admin-console/app-config/left-nav.jsp" %>
 		<div class="leftNavAdjacentContainer">
 		<h1 style="display: inline-block;">Loadsheet Management - ${category} - ${type}</h1>
 			<div class="full-width">
@@ -65,17 +60,19 @@
 			</div>
 		</div>
 		
-<!-- popup for Rule Association -->
-<div id="rule-association-modal" class="modal"></div>
-</div>
-<!-- Hidden fields to auto open the rule Association popup -->
-<input type="hidden" id="componentId" value="${componentId }"/>
-<input type="hidden" id="componentIdforAddRule" value=""/>
-<input type="hidden" id="visibilityId" value="${visibilityId}"/>
-<input type="hidden" id="viewMode" value="${viewMode}"/>
-
-<input type="hidden" id="selectedComponentId" value="${selectedComponentId}"/>
-<input type="hidden" id="compRequestedFrom" value="${compRequestedFrom}"/>
-
+	<!-- popup for Rule Association -->
+	<div id="rule-association-modal" class="modal"></div>
+	</div>
+	<!-- Hidden fields to auto open the rule Association popup -->
+	<input type="hidden" id="componentId" value="${componentId }"/>
+	<input type="hidden" id="componentIdforAddRule" value=""/>
+	<input type="hidden" id="visibilityId" value="${visibilityId}"/>
+	<input type="hidden" id="viewMode" value="${viewMode}"/>
+	
+	<input type="hidden" id="selectedComponentId" value="${selectedComponentId}"/>
+	<input type="hidden" id="compRequestedFrom" value="${compRequestedFrom}"/>
+	
+	<%@ include file="../../../jsp/global/v1/footer.jsp" %>
+	<script src="${baseUrl}/js/admin-console/app-config/loadsheet-components.js"	type="text/javascript"></script>
 </body>
 </html>

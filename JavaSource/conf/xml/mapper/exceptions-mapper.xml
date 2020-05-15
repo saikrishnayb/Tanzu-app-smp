@@ -75,7 +75,7 @@
 	        	 AND UM.PO_NUMBER = #{poNumber}
 	        </if>
         </where> 
-        ORDER BY modifiedDate desc  
+        ORDER BY modifiedDate desc
       </select>
 	
 	<delete id="deleteGlobalException">

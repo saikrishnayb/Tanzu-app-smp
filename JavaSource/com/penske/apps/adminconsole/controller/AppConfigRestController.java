@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -34,6 +33,7 @@ import com.penske.apps.adminconsole.service.TermsAndConditionsService;
 import com.penske.apps.adminconsole.util.CommonUtils;
 import com.penske.apps.suppliermgmt.annotation.SmcSecurity;
 import com.penske.apps.suppliermgmt.annotation.SmcSecurity.SecurityFunction;
+import com.penske.apps.suppliermgmt.annotation.Version1Controller;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.model.AppConfigSessionData;
 import com.penske.apps.suppliermgmt.model.AppConfigSessionData.LoadSheetCategoryDetails;
@@ -45,7 +45,7 @@ import com.penske.apps.suppliermgmt.model.UserContext;
  * @author 600132441 M.Leis
  *
  */
-@Controller
+@Version1Controller
 @RequestMapping("/admin-console/app-config")
 public class AppConfigRestController {
 
@@ -81,7 +81,7 @@ public class AppConfigRestController {
     @ResponseBody
     public ModelAndView getGlobalExceptionsEditModal(@RequestParam(value = "exceptionId") int exceptionId,@RequestParam(value="unitNumber", required=false) String unitNumber,@RequestParam(value="poNumber",required=false) int poNumber) {
 
-        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/app-config/edit-global-exceptions-modal");
+        ModelAndView mav = new ModelAndView("/admin-console/app-config/modal/edit-global-exceptions-modal");
         List<GlobalException> exception = exceptionService.getException(exceptionId);
         mav.addObject("poNumber", poNumber);
         mav.addObject("unitNumber", unitNumber);
@@ -102,7 +102,7 @@ public class AppConfigRestController {
     @RequestMapping("get-global-exceptions-delete-modal")
     @ResponseBody
     public ModelAndView getGlobalExceptionsDeleteModal(@RequestParam(value = "exceptionId") int exceptionId) {
-        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/app-config/delete-global-exception-modal");
+        ModelAndView mav = new ModelAndView("/admin-console/app-config/modal/delete-global-exception-modal");
         List<GlobalException> exception = exceptionService.getException(exceptionId);
         mav.addObject("exception", exception);
         return mav;
@@ -121,7 +121,7 @@ public class AppConfigRestController {
     @RequestMapping(value = "/get-rule-modal-data", method = RequestMethod.POST)
     @ResponseBody
     public ModelAndView getModalData(@RequestParam("make") String make, @RequestParam("modalName") String modalName) {
-        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/app-config/" + modalName + "-rule-modal");
+        ModelAndView mav = new ModelAndView("/admin-console/app-config/modal/" + modalName + "-rule-modal");
 
         mav.addObject("corpCodes", dynamicRuleService.getAllCorpCodes());
         mav.addObject("makes", dynamicRuleService.getAllVehicleMakes());
@@ -140,7 +140,7 @@ public class AppConfigRestController {
     @RequestMapping(value = "/get-models-by-make", method = RequestMethod.POST)
     @ResponseBody
     public ModelAndView getVehicleModelsByMake(@RequestParam("make") String make, @RequestParam("modalName") String modalName) {
-        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/app-config/" + modalName + "-rule-modal");
+        ModelAndView mav = new ModelAndView("/admin-console/app-config/modal/" + modalName + "-rule-modal");
 
         mav.addObject("models", dynamicRuleService.getVehicleModelsByMake(make));
 
@@ -204,7 +204,7 @@ public class AppConfigRestController {
     @RequestMapping("get-search-template-modal-content")
     @ResponseBody
     public ModelAndView getSearchTemplateModalContent(@RequestParam(value = "templateId") int templateId) {
-        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/app-config/search-template-modal-content");
+        ModelAndView mav = new ModelAndView("/admin-console/app-config/modal/search-template-modal-content");
 
         SearchTemplate searchTemplate = searchTemplateService.getSearchTemplate(templateId);
 
@@ -244,7 +244,7 @@ public class AppConfigRestController {
     @RequestMapping("/get-search-templates")
     @ResponseBody
     public ModelAndView getSearchTemplates() {
-        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/app-config/edit-alert-detail-modal");
+        ModelAndView mav = new ModelAndView("/admin-console/app-config/modal/edit-alert-detail-modal");
 
         // Load the Alerts and Alert Headers for the datatable.
         mav.addObject("templates", alertService.getAllTemplateNames());
@@ -296,7 +296,7 @@ public class AppConfigRestController {
     @RequestMapping(value = "/get-rule-association-modal-data", method = RequestMethod.POST)
     @ResponseBody
     public ModelAndView getRuleAssociationModalData(@ModelAttribute("componentRule") ComponentRuleAssociation componentRule, @RequestParam("componentId") int componentId, @RequestParam("componentVisibleId") int componentVisibleId, @RequestParam(value = "viewMode") String viewMode, @RequestParam(value = "displayName") String displayName) {
-        ModelAndView mav = new ModelAndView("/jsp-fragment/admin-console/app-config/add-rule-association-modal");
+        ModelAndView mav = new ModelAndView("/admin-console/app-config/modal/add-rule-association-modal");
         componentRule.setRule(loadsheetManagementService.getComponentVisibilityRules(componentVisibleId));
         componentRule.setComponentVisibilityId(componentVisibleId);
         componentRule.setDisplayName(displayName);

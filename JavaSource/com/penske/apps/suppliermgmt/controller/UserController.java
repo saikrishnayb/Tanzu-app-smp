@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,8 +16,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.penske.apps.suppliermgmt.annotation.SmcSecurity;
-import com.penske.apps.suppliermgmt.annotation.VendorAllowed;
 import com.penske.apps.suppliermgmt.annotation.SmcSecurity.SecurityFunction;
+import com.penske.apps.suppliermgmt.annotation.VendorAllowed;
+import com.penske.apps.suppliermgmt.annotation.Version1Controller;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.model.Buddies;
 import com.penske.apps.suppliermgmt.model.LabelValue;
@@ -29,7 +29,7 @@ import com.penske.apps.suppliermgmt.model.VendorFilter;
 import com.penske.apps.suppliermgmt.service.UserService;
 import com.penske.apps.suppliermgmt.util.ApplicationConstants;
 
-@Controller
+@Version1Controller
 @RequestMapping(value = "/userController")
 public class UserController extends BaseController {
 
@@ -66,7 +66,7 @@ public class UserController extends BaseController {
         }catch(Exception e){
             model=handleException(e);
         }
-        model.setViewName("home/buddy");
+        model.setViewName("app-container/modal/buddy");
         return model;
     }
 
@@ -120,7 +120,7 @@ public class UserController extends BaseController {
     @ResponseBody
     public ModelAndView getVendorFilterModalContent() {
 
-        ModelAndView modelAndView = new ModelAndView("global/modal/vendor-filter-modal");
+        ModelAndView modelAndView = new ModelAndView("app-container/modal/vendor-filter-modal");
 
         List<OrgFilter> allOrgFilters = userService.getAllOrgFilters();
 

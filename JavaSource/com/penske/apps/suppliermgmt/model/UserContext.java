@@ -118,6 +118,11 @@ public class UserContext implements Serializable {
         this.roleId = roleId;
     }
 
+    public String getSso()
+    {
+    	return userSSO;
+    }
+    
     public String getUserSSO() {
         return userSSO;
     }

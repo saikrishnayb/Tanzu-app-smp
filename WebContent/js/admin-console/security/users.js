@@ -241,21 +241,6 @@ $(document).ready(function() {
 	
 	//penske user deactivate modal
 	$usersTable.on("click", ".deactivate", function(){
-		/*
-		var $this =  $(this);
-		var email = $this.closest('.user-row').find('.user-email').text();
-		var userId = $this.closest('.user-row').find('.user-id').val();
-		var $getDeactivateUserModalContentPromise = $.get('get-deactivate-user-modal-content.htm', {email:email, userId:userId});
-		
-		
-		$getDeactivateUserModalContentPromise.done(function(data){
-			$confirmAccountDeactivationModal.html(data);
-			openModal($confirmAccountDeactivationModal);
-			
-		});
-		
-		openModal($confirmAccountDeactivationModal);
-		*/
 		var $this =  $(this);
 		var $isVendorUser=false;
 		deactivteUser($this,$isVendorUser,$confirmAccountDeactivationModal);

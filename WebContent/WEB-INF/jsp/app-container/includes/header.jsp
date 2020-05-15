@@ -67,7 +67,7 @@
 <div id="helpPopup" style="display: none;"></div>
 
 <div id="buddyPopup" style="display: none;">
-	<jsp:include page="/WEB-INF/jsp/home/buddy.jsp" ></jsp:include>
+	<jsp:include page="/WEB-INF/jsp/app-container/modal/buddy.jsp" ></jsp:include>
 </div>
 <!-- Pop UP for Session Time out  -->
 		<div id="sessionTimeoutPopup" style="display:none;">

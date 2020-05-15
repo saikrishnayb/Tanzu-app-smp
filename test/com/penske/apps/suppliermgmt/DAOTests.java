@@ -18,7 +18,6 @@ import com.pensle.apps.adminconsole.dao.ExceptionDaoTest;
 import com.pensle.apps.adminconsole.dao.GlobalSettingsDaoTest;
 import com.pensle.apps.adminconsole.dao.LoadsheetManagementDaoTest;
 import com.pensle.apps.adminconsole.dao.RoleDaoTest;
-import com.pensle.apps.adminconsole.dao.ShipThruLeadTimeDAOTest;
 
 /**
  * Tests that require a database connection (generally to an in-memory database, like HSQLDB)
@@ -34,9 +33,7 @@ import com.pensle.apps.adminconsole.dao.ShipThruLeadTimeDAOTest;
 	ExceptionDaoTest.class,
 	GlobalSettingsDaoTest.class,
 	LoadsheetManagementDaoTest.class,
-	RoleDaoTest.class,
-	ShipThruLeadTimeDAOTest.class,
-	
+	RoleDaoTest.class,	
 	
 	//suppliermgmt
 	HelpDAOTest.class,

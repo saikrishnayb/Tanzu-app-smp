@@ -10,6 +10,10 @@ $('.attribute-container').each(function(){
 
 ritsu.storeInitialFormValues('input');
 
+$('.numbers-only').on('input', function () { 
+    this.value = this.value.replace(/[^0-9\.]/g,'');
+});
+
 $('.attribute-container').on('input', '.attribute-units', function(){
 	var $unitsInput = $(this);
 	var $attributeValueRow = $unitsInput.closest('.attribute-value-row');
@@ -117,7 +121,6 @@ $submitBtn.on('click', function(){
 	});
 	
 	$.post(baseBuildMatrixUrl + '/submit-build', buildMixForm.serialize()).done(function(){
-		loadProcessImage();
     	window.location.href = baseBuildMatrixUrl + "/build-history";
     })
 	

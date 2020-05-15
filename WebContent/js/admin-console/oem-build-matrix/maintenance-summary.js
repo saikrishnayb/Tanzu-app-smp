@@ -36,11 +36,11 @@ $bodyPlantTable = $('#body-plant-maint-table').dataTable({ //All of the below ar
 		} else {
 			paginateRow.css("display", "none");
 		}
-		
+
 		//This will hide "Showing 1 to 5 of 11 entries" if we have 0 rows.
 		var infoRow = $(this).parent().children('div.dataTables_info');
 		var rowCount = this.fnSettings().fnRecordsDisplay();
-		
+
 		if (rowCount > 0) {
 			infoRow.css("display", "block");
 		} else {
@@ -50,7 +50,6 @@ $bodyPlantTable = $('#body-plant-maint-table').dataTable({ //All of the below ar
 });
 
 $setOfflineDatesModal.on("click", '#save-offline-dates', function() {
-	showLoading();
 	var $form = $('#set-offline-date-form');
 	var plantId = $form.find('.plantId').val();
 	var rows = $form.find('#offline-dates-table .row')
@@ -58,7 +57,7 @@ $setOfflineDatesModal.on("click", '#save-offline-dates', function() {
 	var plantOfflineDateList = [];
 	var startDate;
 	var endDate;
-	
+
 	$.each(rows, function(index, row) {
 		var offlineDateId = $(row).attr('offlineDateId');
 		if ( $(row).find('.start-date').val() != '' &&  $(row).find('.end-date').val() != '') {
@@ -75,7 +74,7 @@ $setOfflineDatesModal.on("click", '#save-offline-dates', function() {
 		}
 
 	});
-	
+
 	var input = {};
 	input['plantId'] = $form.find('.plantId').val();
 	input['offlineDates'] = plantOfflineDateList;
@@ -89,7 +88,6 @@ $setOfflineDatesModal.on("click", '#save-offline-dates', function() {
 			var $saveOfflineDatesPromise = $.ajax({
 				type : "POST",
 				url : './save-offline-dates.htm',
-				global : false,
 				data : JSON.stringify(input),
 				contentType : 'application/json',
 				success : function(data) {
@@ -97,65 +95,49 @@ $setOfflineDatesModal.on("click", '#save-offline-dates', function() {
 						var plantIdCheck = $(this).val();
 						var plantIdMatch = (plantIdCheck == plantId);
 
-							if (plantIdMatch) {
-								var stringToAppend = "";
-								if (plantOfflineDateList.length == 1) {
-									if (plantOfflineDate['offlineStartDate'] == null || plantOfflineDate['offlineStartDate'] == "")
-										stringToAppend = "";
-									else
-										stringToAppend = startDate + ' - ' + endDate;
-
-								} else if (plantOfflineDateList.length > 0)
-									stringToAppend = "Multiple Dates";
-								else
+						if (plantIdMatch) {
+							var stringToAppend = "";
+							if (plantOfflineDateList.length == 1) {
+								if (plantOfflineDate['offlineStartDate'] == null || plantOfflineDate['offlineStartDate'] == "")
 									stringToAppend = "";
+								else
+									stringToAppend = startDate + ' - ' + endDate;
 
-								var $bodyPlantRow = $(this).closest('tr');
-								var nRow = $bodyPlantRow[0];
-								$bodyPlantTable.dataTable().fnUpdate(stringToAppend, nRow, 5, false);
+							} else if (plantOfflineDateList.length > 0)
+								stringToAppend = "Multiple Dates";
+							else
+								stringToAppend = "";
 
-							}
-						});
-						//closeModal($setOfflineDatesModal);
-						ModalUtil.closeModal($setOfflineDatesModal);
-						hideLoading();
-					},
-					error : function(XMLHttpRequest, textStatus, errorThrown) {
-						if (XMLHttpRequest.responseText.indexOf('Error Processing the Setting Offline dates') > 0) {
-							$('.errorMsg').text("Error Processing the Setting Offline dates.");
-							$('.error').show();
+							var $bodyPlantRow = $(this).closest('tr');
+							var nRow = $bodyPlantRow[0];
+							$bodyPlantTable.dataTable().fnUpdate(stringToAppend, nRow, 5, false);
 
 						}
-						hideLoading();
-					}
-				});
-			}
-			else {
-				hideLoading();
-			}
+					});
+					ModalUtil.closeModal($setOfflineDatesModal);
+				}
+			});
 		}
+	} else {
 		// If an error was found, display it to the user and do not submit the form data.
-		else {
-			$('.errorMsg').text(errorMsg);
-			$('.error').show();
-			hideLoading();
-		}
-		
+		clearErrorAndWarningLabels();
+		addErrorMessage(errorMsg);
+	}
 });
 
 $setOfflineDatesModal.on("click", '#add-new-row', function() {
 	var newRow = "<tr class='row'><td class='col-xs-3'><span class='dateLbl'>Date</span></td>" +
-		"<td class='col-xs-7'>" +
-		"<input name='startDate' class='start-date offline-date' class='common-form-control date-picker numeric numeric-jquery-date advanced-date' type='text'/>" +
-		"<input  name='offlineStartDate' type='hidden' class='datepickerStartHidden'/> <span class='dateLbl'> - </span> " +
-		"<input name='endDate' class='end-date offline-date' class='common-form-control date-picker numeric numeric-jquery-date advanced-date' type='text'/>" +
-		"<input  name='offlineEndDate' type='hidden' class='datepickerEndHidden' />" +
-		"</td>" +
-		"<td class='col-xs-2'>" +
-		"<a class='deleteRow' ><img src='" + commonStaticUrl + "/images/delete.png'" +
-		" class='centerImage rightMargin delete-button'/></a>" +
-		"</td>" +
-		"</tr>";
+	"<td class='col-xs-7'>" +
+	"<input name='startDate' class='start-date offline-date common-form-control date-picker numeric numeric-jquery-date advanced-date' required type='text'/>" +
+	"<input  name='offlineStartDate' type='hidden' class='datepickerStartHidden'/> <span class='dateLbl'> - </span> " +
+	"<input name='endDate' class='end-date offline-date common-form-control date-picker numeric numeric-jquery-date advanced-date' required type='text'/>" +
+	"<input  name='offlineEndDate' type='hidden' class='datepickerEndHidden' />" +
+	"</td>" +
+	"<td class='col-xs-2'>" +
+	"<a class='deleteRow' ><img src='" + commonStaticUrl + "/images/delete.png'" +
+	" class='centerImage rightMargin delete-button'/></a>" +
+	"</td>" +
+	"</tr>";
 	$("#offline-dates-table tbody").append(newRow);
 	initializeDatePicker();
 });
@@ -163,12 +145,12 @@ $setOfflineDatesModal.on("click", '#add-new-row', function() {
 $setOfflineDatesModal.on("click", '.deleteRow', function() {
 	var $offlineDaterRow = $(this).parents("tr");
 	var offlineDateId = $offlineDaterRow.attr('offlineDateId');
-	
+
 	if (offlineDateId != '' && offlineDateId != undefined) {
 		removeOfflineDate.push(offlineDateId);
 		$('#save-offline-dates').removeClass("buttonDisabled");
 	}
-	
+
 	$(this).parents("tr").remove();
 });
 
@@ -186,10 +168,10 @@ function validateOfflineDateForm($form) {
 	$.each(rows, function(index, row) {
 		if (errorMsg != '')
 			return errorMsg;
-		
+
 		var offlineStartDate = $(row).find('.start-date').val();
 		var offlineEndDate = $(row).find('.end-date').val();
-		
+
 		if (offlineStartDate.length != 0 && offlineEndDate.length == 0) {
 			errorMsg = "Row -" + (parseInt(index) + 1) + ": Offline End date is required.";
 		} else if (offlineStartDate.length == 0 && offlineEndDate.length != 0) {
@@ -199,9 +181,9 @@ function validateOfflineDateForm($form) {
 				errorMsg = "Row -" + (parseInt(index) + 1) + ": Invalid Start date.";
 			else if (!validateDate(offlineEndDate))
 				errorMsg = "Row -" + (parseInt(index) + 1) + ": Invalid End date.";else {
-				if (new Date(offlineStartDate) > new Date(offlineEndDate))
-					errorMsg = "Row -" + (parseInt(index) + 1) + ": Start date is greater than End date. ";
-			}
+					if (new Date(offlineStartDate) > new Date(offlineEndDate))
+						errorMsg = "Row -" + (parseInt(index) + 1) + ": Start date is greater than End date. ";
+				}
 		}
 	});
 
@@ -210,15 +192,15 @@ function validateOfflineDateForm($form) {
 
 function setOfflineDates(plantId) {
 	$.post('./get-offline-date-setup-modal.htm',
-		{
-			'plantId' : plantId
-		},
-		function(data) {
-			$setOfflineDatesModal.html(data);
-			$setOfflineDatesModal.find('.error').hide();
-			$('.errorMsgInput').removeClass('errorMsgInput');
-			ModalUtil.openModal($setOfflineDatesModal);
-		}
+			{
+		'plantId' : plantId
+			},
+			function(data) {
+				$setOfflineDatesModal.html(data);
+				$setOfflineDatesModal.find('.error').hide();
+				$('.errorMsgInput').removeClass('errorMsgInput');
+				ModalUtil.openModal($setOfflineDatesModal);
+			}
 	);
 }
 
@@ -241,3 +223,4 @@ function validateDate(input) {
 		}
 	}
 }
+//# sourceURL=maintenance-summary.js

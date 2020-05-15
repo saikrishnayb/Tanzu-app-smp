@@ -37,7 +37,7 @@ $buildHistoryDataTable = $buildHistoryTable.DataTable({ //All of the below are o
 	"initComplete": function() {
 		var showStartBuildBtn = $buildHistoryTable.data('show-start-build-btn');
 		if(showStartBuildBtn){
-			$('.build-history-table-top').append('<a href="' + baseBuildMatrixUrl + '/order-summary" onclick="javascript:loadProcessImage();" class="buttonSecondary floatRight">Start Build</a>');
+			$('.build-history-table-top').append('<a href="' + baseBuildMatrixUrl + '/order-summary" class="buttonSecondary floatRight">Start Build</a>');
 		}
 	}
 });
