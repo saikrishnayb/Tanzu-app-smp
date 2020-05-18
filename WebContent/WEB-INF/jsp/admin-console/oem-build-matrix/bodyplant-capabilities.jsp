@@ -25,7 +25,7 @@
 						<thead>
 							<tr>
 								<th class="editHeader"></th>
-								<th class="">Attribute Name</th>
+								<th class="">Attribute</th>
 								<th class="">Attribute Values</th>
 							</tr>
 						</thead>

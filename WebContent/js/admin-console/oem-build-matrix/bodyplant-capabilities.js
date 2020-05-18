@@ -51,25 +51,26 @@ ModalUtil.initializeModal($EditDimensionModal);
 	$("#plant-capablity-table_wrapper").prepend(strHTML);
 
 function loadEditDimensionForm(attributeId, plantId, attributeKey, attributeName) {
-	$.ajax({
-		url : "/load-edit-dimension-popup-modal.htm",
-		type : "POST",
-		ignorePreFilter: true,
-		data : {
+
+	$.post('./load-edit-dimension-popup-modal.htm',
+		{
 			'attributeId' : attributeId,
 			'plantId' : plantId,
 			'key' : attributeKey,
 			'attributeName' : attributeName
 		},
-		success : function(data) {
+		function(data) {
 			$EditDimensionModal.html(data);
+			$EditDimensionModal.find('.error').hide();
+			$('.errorMsgInput').removeClass('errorMsgInput');
 			ModalUtil.openModal($EditDimensionModal);
-		},
-	});
+		}
+		);
 }
 
 $EditDimensionModal.on("click", '#update-capability', function() {
 
+	var capabilityUpdatelist = [];
 	$('input[type=checkbox]:not(:checked)').each(function() {
 		capabilityUpdatelist.push($(this).val());
 	});

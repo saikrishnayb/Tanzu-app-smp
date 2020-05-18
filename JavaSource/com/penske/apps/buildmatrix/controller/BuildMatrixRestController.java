@@ -235,7 +235,7 @@ public class BuildMatrixRestController {
 	public ModelAndView loadEditDimensionPopup(@RequestParam("attributeId") int attributeId,
 											   @RequestParam("plantId") int plantId, @RequestParam("key") String key,
 											   @RequestParam("attributeName") String attributeName) {
-		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/edit-dimension");
+		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/modal/edit-dimension");
 		List<BodyPlantCapability> bodyPlantCapability = buildMatrixSmcService.getBodyPlantExceptionsById(plantId, attributeId);
 
 		model.addObject("plantId", plantId);
