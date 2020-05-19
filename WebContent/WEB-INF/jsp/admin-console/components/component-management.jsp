@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <html>
 <head>
 	<title>Component Management</title>
@@ -24,16 +25,19 @@
 							<th>Sub Component</th>
 							<th>Visible</th>
 							<th>Allow Duplicates</th>
+							<th>Payment Holds</th>
 						</tr>
 					</thead>
 					<tbody>
 						<c:forEach items="${componentList}" var="component">
+							<c:set var="holdPayments" value="${holdPaymentsByCompId.get(component.componentId)}" />
 							<tr class="component-row" data-component-id="${component.componentId}" data-component-group-id="${component.componentGroupId}">
 								<td>${component.componentGroup}</td>
 								<td>${component.subGroup}</td>
 								<td>${component.subComponentName}</td>
 								<td><input type="checkbox" class="visible-component-check" <c:if test="${component.visible}">checked disabled</c:if>></td>
 								<td><input type="checkbox" class="allow-duplicate-check" <c:if test="${component.allowDuplicates}">checked</c:if> <c:if test="${component.visible == false}">disabled</c:if>></td>
+								<td><a class="secondaryLink hold-payment-link">Payment Holds<c:if test="${not empty holdPayments}"> (${fn:length(holdPayments)})</c:if></a></td>
 							</tr>
 						</c:forEach>
 					</tbody>
@@ -42,6 +46,8 @@
 			</div>
 
 		</div>
+
+		<div id="component-modal" class="component-modal modal"></div>
 
 	</div>
 

@@ -315,4 +315,41 @@
 	<select id="getAllAlerts" resultType="com.penske.apps.adminconsole.model.Alert">
 		Select ALERT_KEY as alertType,ALERT_NAME as alertName from smc.V_SMC_ALERTS WHERE HEADER_KEY='HDR_OF_VENDACTITEMS'
 	</select>
+	
+	<select id="getAllViewVendorInfo" resultType="com.penske.apps.adminconsole.model.Vendor">
+		SELECT	d.DMNAME AS companyName,
+				vl.CORP AS corpCode,
+				vl.VENDOR_NUMBER AS vendorNumber,
+				vn.PVNAME AS vendorName,
+				vn.PVADDR AS vendorAddress,
+				vn.PVATTN AS attention,
+				TRIM(vn.PVCTST) AS city,
+				vn.PVSTAT AS state,
+				vn.PVZIPA AS zipCode,
+				p.PVTRMS AS paymentTerms,
+				p.PVONAM AS orderName,
+				p.PVOAD1 AS mailingAddress1,
+				p.PVOAD2 AS mailingAddress2,
+				p.PVOCTY AS mailingCity,
+				p.PVOST AS mailingState,
+				p.PVOZIP AS mailingZipCode,
+				p.PVSAD1 AS shippingAddress1,
+				p.PVSAD2 AS shippingAddress2,
+				p.PVSCTY AS shippingCity,
+				p.PVSST AS shippingState,
+				p.PVSZIP AS shippingZipCode,
+                vl.VENDOR_ID
+		
+		FROM	SMC.SMC_VENDOR_MASTER vl
+				LEFT OUTER JOIN CORP.FPURVND p
+				ON	vl.CORP = p.PVCORP
+				AND	vl.VENDOR_NUMBER = p.PVNBR
+				LEFT OUTER JOIN PENSKE.VENNAM vn
+				ON	vn.PVCORP = p.PVCORP
+				AND	vn.PVACCT = p.PVNBR,
+				CORP.FDSTMST d
+		
+		WHERE	vl.CORP = d.DMCORP
+		AND		d.DMTYPE = 'COMPANY'
+	</select>
 </mapper>

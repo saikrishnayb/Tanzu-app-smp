@@ -2,9 +2,12 @@ package com.penske.apps.adminconsole.controller;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,19 +23,24 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.penske.apps.adminconsole.enums.PoCategoryType;
 import com.penske.apps.adminconsole.model.CategoryAssociation;
+import com.penske.apps.adminconsole.model.Component;
 import com.penske.apps.adminconsole.model.ComponentSequence;
 import com.penske.apps.adminconsole.model.Components;
+import com.penske.apps.adminconsole.model.HoldPayment;
 import com.penske.apps.adminconsole.model.PoCategory;
 import com.penske.apps.adminconsole.model.RuleDefinitions;
 import com.penske.apps.adminconsole.model.RuleMaster;
 import com.penske.apps.adminconsole.model.SubCategory;
 import com.penske.apps.adminconsole.model.Template;
 import com.penske.apps.adminconsole.model.TemplateComponent;
+import com.penske.apps.adminconsole.model.Vendor;
 import com.penske.apps.adminconsole.service.CategoryManagementService;
 import com.penske.apps.adminconsole.service.ComponentService;
 import com.penske.apps.adminconsole.service.ComponentVendorTemplateService;
 import com.penske.apps.adminconsole.service.LoadSheetManagementService;
+import com.penske.apps.adminconsole.service.VendorService;
 import com.penske.apps.adminconsole.util.CommonUtils;
+import com.penske.apps.smccore.base.domain.enums.CorpCode;
 import com.penske.apps.suppliermgmt.annotation.SmcSecurity;
 import com.penske.apps.suppliermgmt.annotation.SmcSecurity.SecurityFunction;
 import com.penske.apps.suppliermgmt.annotation.Version1Controller;
@@ -68,6 +76,9 @@ public class ComponentsRestController {
 
     @Autowired
     private ComponentService componentService;
+    
+    @Autowired
+    private VendorService vendorService;
     
     @Autowired
     private LoadSheetManagementService loadsheetManagementService;
@@ -501,5 +512,38 @@ public class ComponentsRestController {
     	}
     	return status;
     	
+    }
+    
+    /*==============Hold Payment===================*/
+    @RequestMapping("/get-hold-payment-content")
+    public ModelAndView getHoldPayment(@RequestParam("componentId") int componentId){
+        ModelAndView mav = new ModelAndView("/admin-console/components/modal/hold-payment-modal");
+        UserContext user = sessionBean.getUserContext();
+        Component component = componentService.getComponentById(componentId);
+        List<CorpCode> corpCodes = Arrays.asList(CorpCode.values());
+        Map<String, CorpCode> corpByCorpCode = corpCodes.stream()
+        		.collect(Collectors.toMap(CorpCode::getCode, c->c));
+        List<HoldPayment> holdPayments = componentService.getHoldPaymentsByComponentId(componentId);
+        Map<Integer, HoldPayment> holdpaymentsByVendorId = holdPayments.stream()
+        		.collect(Collectors.toMap(HoldPayment::getVendorId, hp->hp));
+        List<Vendor> vendors = vendorService.getAllVendors(user.getOrgId());
+        
+        mav.addObject("component", component);
+        mav.addObject("holdpaymentsByVendorId", holdpaymentsByVendorId);
+        mav.addObject("vendors", vendors);
+        mav.addObject("corpByCorpCode", corpByCorpCode);
+        return mav;
+    }
+    
+    @RequestMapping("/save-hold-payment")
+    public void saveHoldPayment(@RequestParam("componentId") int componentId, @RequestParam(value="vendorIds[]", required=false) List<Integer> vendorIds){
+        UserContext user = sessionBean.getUserContext();
+        Component component = componentService.getComponentById(componentId);
+        if(component == null)
+        	throw new IllegalArgumentException("Component not found");
+        if(vendorIds == null)
+        	vendorIds = Collections.emptyList();
+        
+        componentService.saveHoldPayments(component, vendorIds, user);
     }
 }

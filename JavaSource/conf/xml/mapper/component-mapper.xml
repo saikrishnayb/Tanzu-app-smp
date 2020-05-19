@@ -214,5 +214,55 @@
 		WHERE 
 		CID.COMPONENT_ID= #{componentId}
 	</update>
+	
+	<select id="getComponentById"  resultType="com.penske.apps.adminconsole.model.Component">
+  	SELECT SGF.COMPONENT_GROUP, 
+               SGF.SUB_GROUP, 
+               SGF.SUB_COMPONENT_NAME, 
+               SGF.COMPONENT_ID, 
+  		   SGF.COMPONENT_GROUP_ID,
+               SGF.COMPONENT_TYPE, 
+               SGF.DISPLAY_SEQUENCE, 
+               CASE WHEN CID.COMPONENT_ID IS NULL THEN 'FALSE' ELSE 'TRUE' END AS VISIBLE,
+               CASE WHEN CID.ALLOW_DUPLICATES = 'Y' THEN 'TRUE' ELSE 'FALSE' END AS allowDuplicates 
+          FROM CORP.VEHCMPSGF SGF
+     LEFT JOIN SMC.SMC_COMPONENT_INFO_DETAILS CID
+  		   ON SGF.COMPONENT_ID = CID.COMPONENT_ID
+  	WHERE SGF.COMPONENT_ID = #{componentId}
+  </select>
+	
+	<select id="getAllHoldPayments" resultType="com.penske.apps.adminconsole.model.HoldPayment">
+		SELECT  
+			HOLD_PAYMENT_ID AS holdPayementId,
+            COMPONENT_ID AS componentId,
+            VENDOR_ID AS vendorId
+       FROM SMC.SMC_COMPONENT_HOLD_PAYMENT
+	</select>
+	
+	<select id="getHoldPaymentsByComponentId" resultType="com.penske.apps.adminconsole.model.HoldPayment">
+		SELECT  
+			HOLD_PAYMENT_ID AS holdPayementId,
+            COMPONENT_ID AS componentId,
+            VENDOR_ID AS vendorId
+       FROM SMC.SMC_COMPONENT_HOLD_PAYMENT
+       WHERE COMPONENT_ID = #{componentId}
+	</select>
+	
+	<insert id="addHoldPayments">
+		INSERT INTO SMC.SMC_COMPONENT_HOLD_PAYMENT (COMPONENT_ID, VENDOR_ID, CREATED_BY,CREATED_DATE,MODIFIED_BY,MODIFIED_DATE)
+		VALUES 
+			<foreach collection="holdPaymentstoAdd" item="holdPayment" separator="," >
+				(#{holdPayment.componentId}, #{holdPayment.vendorId}, #{user.userSSO}, CURRENT_TIMESTAMP, #{user.userSSO}, CURRENT_TIMESTAMP)
+			</foreach>
+	</insert>
+	
+	<delete id="deleteHoldPayments">
+		DELETE FROM SMC.SMC_COMPONENT_HOLD_PAYMENT 
+		WHERE HOLD_PAYMENT_ID IN (
+			<foreach collection="holdPaymentsToDelete" item="holdPayment" separator="," >
+				#{holdPayment.holdPaymentId}
+			</foreach>
+		)
+	</delete>
     
 </mapper>

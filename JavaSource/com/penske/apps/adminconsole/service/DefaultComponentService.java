@@ -1,7 +1,11 @@
 package com.penske.apps.adminconsole.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,10 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.penske.apps.adminconsole.dao.ComponentDao;
 import com.penske.apps.adminconsole.model.Component;
 import com.penske.apps.adminconsole.model.Components;
+import com.penske.apps.adminconsole.model.HoldPayment;
 import com.penske.apps.adminconsole.model.LoadSheetComponentDetails;
 import com.penske.apps.adminconsole.model.Template;
 import com.penske.apps.adminconsole.model.TemplatePoAssociation;
 import com.penske.apps.suppliermgmt.domain.ComponentGroup;
+import com.penske.apps.suppliermgmt.model.UserContext;
 
 /**
  * 
@@ -207,5 +213,56 @@ public class DefaultComponentService implements ComponentService {
     public void allowDuplicateComponents(int componentId,boolean allowDuplicates){
        
         componentDao.allowDuplicateComponents(componentId,allowDuplicates);
+    }
+    
+    @Override
+    public Component getComponentById(int componentId) {
+    	return componentDao.getComponentById(componentId);
+    }
+    
+    @Override
+    public Map<Integer, List<HoldPayment>> getAllHoldPayments(){
+    	List<HoldPayment> holdPayments = componentDao.getAllHoldPayments();
+    	Map<Integer, List<HoldPayment>> holdPaymentsByCompId = new HashMap<>();
+    	
+    	for(HoldPayment holdPayment: holdPayments) {
+    		List<HoldPayment> list = holdPaymentsByCompId.computeIfAbsent(holdPayment.getComponentId(), l -> new ArrayList<>());
+    		list.add(holdPayment);
+    	}
+    	
+    	return holdPaymentsByCompId;
+    }
+    
+    @Override
+    public List<HoldPayment> getHoldPaymentsByComponentId(int componentId) {
+    	return componentDao.getHoldPaymentsByComponentId(componentId);
+    }
+    
+    @Override
+    public void saveHoldPayments(Component component, List<Integer> vendorIds, UserContext user) {
+    	List<HoldPayment> holdPayments = componentDao.getHoldPaymentsByComponentId(component.getComponentId());
+    	Map<Integer, HoldPayment> holdPaymentsByVendorId = holdPayments.stream()
+    			.collect(Collectors.toMap(HoldPayment::getVendorId, hp->hp));
+    	
+    	List<HoldPayment> holdPaymentstoAdd = new ArrayList<>();
+    	for(int vendorId: vendorIds) {
+    		if(!holdPaymentsByVendorId.containsKey(vendorId))
+    			holdPaymentstoAdd.add(new HoldPayment(component.getComponentId(), vendorId));
+    	}
+    	
+    	List<HoldPayment> holdPaymentsToDelete = new ArrayList<>();
+    	for(Entry<Integer, HoldPayment> entry: holdPaymentsByVendorId.entrySet()) {
+    		int vendorId = entry.getKey();
+    		HoldPayment holdPayment = entry.getValue();
+    		
+    		if(!vendorIds.contains(vendorId))
+    			holdPaymentsToDelete.add(holdPayment);
+    	}
+    	
+    	if(!holdPaymentstoAdd.isEmpty())
+    		componentDao.addHoldPayments(holdPaymentstoAdd, user);
+    	
+    	if(!holdPaymentsToDelete.isEmpty())
+    		componentDao.deleteHoldPayments(holdPaymentsToDelete);
     }
 }

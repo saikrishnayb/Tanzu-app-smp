@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.penske.apps.adminconsole.model.Component;
 import com.penske.apps.adminconsole.model.Components;
+import com.penske.apps.adminconsole.model.HoldPayment;
 import com.penske.apps.adminconsole.model.LoadSheetComponentDetails;
 import com.penske.apps.adminconsole.model.Template;
 import com.penske.apps.adminconsole.model.TemplatePoAssociation;
@@ -13,6 +14,7 @@ import com.penske.apps.smccore.base.annotation.NonVendorQuery;
 import com.penske.apps.smccore.base.annotation.SkipQueryTest;
 import com.penske.apps.suppliermgmt.annotation.DBSmc;
 import com.penske.apps.suppliermgmt.domain.ComponentGroup;
+import com.penske.apps.suppliermgmt.model.UserContext;
 /**
  * 
  * @author 600144005
@@ -86,6 +88,17 @@ public interface ComponentDao {
     
     @NonVendorQuery
     public void allowDuplicateComponents(@Param("componentId") int componentId,@Param("allowDuplicates")boolean allowDuplicates);
-
     
+    @NonVendorQuery
+    public Component getComponentById(@Param("componentId") int componentId);
+
+    @NonVendorQuery
+    public List<HoldPayment> getAllHoldPayments();
+    
+    @NonVendorQuery
+    public List<HoldPayment> getHoldPaymentsByComponentId(@Param("componentId") int componentId);
+
+	public void addHoldPayments(@Param("holdPaymentstoAdd") List<HoldPayment> holdPaymentstoAdd, @Param("user") UserContext user);
+
+	public void deleteHoldPayments(@Param("holdPaymentsToDelete") List<HoldPayment> holdPaymentsToDelete);
 }

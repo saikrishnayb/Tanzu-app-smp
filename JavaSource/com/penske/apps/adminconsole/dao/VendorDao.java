@@ -44,4 +44,7 @@ public interface VendorDao {
 
     @NonVendorQuery
     public List<Alert> getAllAlerts();
+    
+    @NonVendorQuery
+    public List<Vendor> getAllViewVendorInfo();
 }

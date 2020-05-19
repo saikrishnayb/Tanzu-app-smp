@@ -1,4 +1,7 @@
 var $componentManagementTable = $('#component-management-table');
+var $componentModal = $("#component-modal");
+
+ModalUtil.initializeModal($componentModal);
 
 /******* Listeners ************************************************************/
 $componentManagementTable.on('click', '.visible-component-check', function() {
@@ -21,6 +24,18 @@ $componentManagementTable.on('click', '.allow-duplicate-check', function() {
 	  var isAllowDuplicateChecked = $(checkbox).prop('checked');
 	  var componentId = $(checkbox).closest('tr').attr('data-component-id');
 	  var $allowDuplictaeComponentPromise = $.post('allow-duplicate-components.htm', {componentId : componentId,allowDuplicates:isAllowDuplicateChecked});
+});
+
+$('.hold-payment-link').on('click', function() {
+	var $this = $(this);
+	var $componentRow = $this.closest('.component-row');
+	var componentId = $componentRow.data('component-id');
+	
+	var $getHoldPaymentContentPromise =$.get("get-hold-payment-content", {componentId:componentId});
+	$getHoldPaymentContentPromise.done(function(data){
+		$componentModal.html(data);
+		ModalUtil.openModal($componentModal);
+	});
 });
 
 /******* Initialization *******************************************************/

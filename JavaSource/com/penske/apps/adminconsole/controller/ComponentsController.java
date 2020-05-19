@@ -1,6 +1,7 @@
 package com.penske.apps.adminconsole.controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -12,7 +13,9 @@ import org.springframework.web.servlet.ModelAndView;
 import com.penske.apps.adminconsole.enums.LeftNav;
 import com.penske.apps.adminconsole.enums.Tab.SubTab;
 import com.penske.apps.adminconsole.model.CategoryAssociation;
+import com.penske.apps.adminconsole.model.Component;
 import com.penske.apps.adminconsole.model.Components;
+import com.penske.apps.adminconsole.model.HoldPayment;
 import com.penske.apps.adminconsole.model.PoCategory;
 import com.penske.apps.adminconsole.model.SubCategory;
 import com.penske.apps.adminconsole.model.Template;
@@ -69,9 +72,11 @@ public class ComponentsController {
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_COMPONENTS)
     @RequestMapping(value={"/component-management"})
     public ModelAndView getComponentManagementPage(){
-
         ModelAndView mav = new ModelAndView("/admin-console/components/component-management");
-        mav.addObject("componentList", componentService.loadAllAvailableComponents());
+        List<Component> componentList = componentService.loadAllAvailableComponents();
+        Map<Integer, List<HoldPayment>> holdPaymentsByCompId = componentService.getAllHoldPayments();
+        mav.addObject("componentList", componentList);
+        mav.addObject("holdPaymentsByCompId", holdPaymentsByCompId);
         return mav;
     }
 

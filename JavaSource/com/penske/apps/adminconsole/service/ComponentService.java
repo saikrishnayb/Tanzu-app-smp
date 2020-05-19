@@ -1,12 +1,15 @@
 package com.penske.apps.adminconsole.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.penske.apps.adminconsole.model.Component;
 import com.penske.apps.adminconsole.model.Components;
+import com.penske.apps.adminconsole.model.HoldPayment;
 import com.penske.apps.adminconsole.model.LoadSheetComponentDetails;
 import com.penske.apps.adminconsole.model.Template;
 import com.penske.apps.adminconsole.model.TemplatePoAssociation;
+import com.penske.apps.suppliermgmt.model.UserContext;
 
 /**
  * 
@@ -47,4 +50,11 @@ public interface ComponentService {
 	public void allowDuplicateComponents(int componentId,boolean allowDuplicates);
 
 //COMPONENT VISIBILITY OVERRIDES -- End
+	public Map<Integer, List<HoldPayment>> getAllHoldPayments();
+	
+	public List<HoldPayment> getHoldPaymentsByComponentId(int componentId);
+
+	public Component getComponentById(int componentId);
+
+	public void saveHoldPayments(Component component, List<Integer> vendorIds, UserContext user);
 }

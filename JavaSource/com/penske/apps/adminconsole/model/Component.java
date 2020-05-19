@@ -1,5 +1,7 @@
 package com.penske.apps.adminconsole.model;
 
+import java.util.List;
+
 public class Component {
 	private String componentGroup;
 	private String subGroup;
@@ -11,6 +13,8 @@ public class Component {
 	private Integer displaySequence;
 	private boolean visible;
 	private boolean allowDuplicates;
+	
+	private List<HoldPayment> holdPayments;
 	 
 	public String getComponentGroup() {
 		return componentGroup;
@@ -67,6 +71,11 @@ public class Component {
 	public void setAllowDuplicates(boolean allowDuplicates) {
 		this.allowDuplicates = allowDuplicates;
 	}
+	
+	public List<HoldPayment> getHoldPayments() {
+		return holdPayments;
+	}
+	
 	@Override
 	public String toString() {
 
