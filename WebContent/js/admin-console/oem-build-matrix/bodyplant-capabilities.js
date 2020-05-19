@@ -99,6 +99,7 @@ $EditDimensionModal.on("click", '#update-capability', function() {
 				$('#plant-capablity-table').find('.non-selected-attrvalue[data-attribute-value-id="' + id + '"]').addClass('selected-attrvalue badge-danger');
 			});
 			capabilityNotUpdatelist.forEach(function(id) {
+				$('#plant-capablity-table').find('.selected-attrvalue[data-attribute-value-id="' + id + '"]').addClass('non-selected-attrvalue badge');
 				$('#plant-capablity-table').find('.selected-attrvalue[data-attribute-value-id="' + id + '"]').removeClass('selected-attrvalue badge-danger');
 				$('#plant-capablity-table').find('.selected-attrvalue[data-attribute-value-id="' + id + '"]').addClass('non-selected-attrvalue badge');
 			});
