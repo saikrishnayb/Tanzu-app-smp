@@ -378,17 +378,13 @@ public class BuildMatrixController {
  	@RequestMapping("/prod-slot-maintenance")
  	public ModelAndView getProdSlotMaintenance(@RequestParam("slotType") String slotTypeId,@RequestParam("year") String selectedYear) 
  	{
- 		ModelAndView model;
+ 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/prod-slot-maintenance");
  		List<BuildMatrixSlotType> buildMatrixSlotTypes=buildMatrixSmcService.getAllVehicleTypes();
  		List<Integer> yearsForDropdown=buildMatrixSmcService.getYearsforSLotMaintenance();
  		if(StringUtils.equals(slotTypeId, ApplicationConstants.String_ZERO))
  		{
- 			model = new ModelAndView("/admin-console/oem-build-matrix/prod-slot-maintenance");
  			slotTypeId=String.valueOf(buildMatrixSlotTypes.get(0).getSlotTypeId());
  			selectedYear=String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
- 		}
- 		else{
- 			model = new ModelAndView("redirect:/app/admin-console/oem-build-matrix/prod-slot-maintenance");
  		}
  		model.addObject("vehicleTypes",buildMatrixSlotTypes );
  		model.addObject("years",yearsForDropdown);

@@ -7,7 +7,7 @@ $(document).ready(function() {
 	$slotMaintenanceDataTable = $slotMaintenanceTable.DataTable({
 		"bPaginate" : true, //enable pagination
 		"bStateSave" : true, //To retrieve the data on click of back button
-		"sScrollY"  : "271px",//enable scroll 
+		"sScrollY"  : "333px",//enable scroll 
 		"sScrollX"  : "100%",
 		"sPaginationType" : "two_button",
 		"bLengthChange" : true, //enable change of records per page, not recommended
@@ -48,27 +48,13 @@ $(document).ready(function() {
 		}
 	});
 
-	$vehicleTypeDrpdwn.on("change", function() {
-		var slotTypeId=$(this).val();
+	$("#vehicletype-drpdwn, #year-drpdwn").on("change", function() {
+		var slotTypeId=$('#vehicletype-drpdwn').val();
 		var selectedYear=$('#year-drpdwn').val();
 		$.ajax({
 			type : "POST",
 			url : './prod-slot-maintenance.htm',
 			data: {slotType: slotTypeId,year:selectedYear},
-			 success: function(data){
-				 window.location.reload(true);
-			 }
-		});
-		
-	});
-
-	$yearDrpdwn.on("change", function() {
-		var slotTypeId=$('#vehicletype-drpdwn').val();
-		var selectedYear=$(this).val();
-		$.ajax({
-			type : "POST",
-			url : './prod-slot-maintenance.htm',
-			data: {slotType: slotTypeId,year:selectedYear}
 		});
 	});
 });
