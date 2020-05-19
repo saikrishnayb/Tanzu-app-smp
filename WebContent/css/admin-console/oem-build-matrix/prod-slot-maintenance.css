@@ -1,0 +1,17 @@
+.slot-maintenance-table-top {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.slot-maintenance-table-top  div {
+	display: inline-block;
+}
+
+.available-slot-input{
+	width: 70px;
+    text-align: center;
+}
+
+.year-div{
+	padding-left: 35px;
+}

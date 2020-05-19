@@ -3,12 +3,14 @@ package com.penske.apps.buildmatrix.controller;
 import static java.util.stream.Collectors.toMap;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,9 +18,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.penske.apps.adminconsole.enums.LeftNav;
 import com.penske.apps.adminconsole.enums.Tab.SubTab;
+import com.penske.apps.adminconsole.util.ApplicationConstants;
 import com.penske.apps.buildmatrix.domain.ApprovedOrder;
 import com.penske.apps.buildmatrix.domain.BodyPlantCapability;
 import com.penske.apps.buildmatrix.domain.BuildAttribute;
+import com.penske.apps.buildmatrix.domain.BuildMatrixSlotType;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.CroOrderKey;
 import com.penske.apps.buildmatrix.domain.FreightMileage;
@@ -363,4 +367,36 @@ public class BuildMatrixController {
 		model.addObject("attributes", buildMatrixSmcService.getAttributesForBuild());
 		return model;
 	}
+   
+	//***** Slot maintenance *****//
+ 	/**
+ 	 * method to production slot maintenance screen
+ 	 * 
+ 	 * @return
+ 	 */
+ 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+ 	@RequestMapping("/prod-slot-maintenance")
+ 	public ModelAndView getProdSlotMaintenance(@RequestParam("slotType") String slotTypeId,@RequestParam("year") String selectedYear) 
+ 	{
+ 		ModelAndView model;
+ 		List<BuildMatrixSlotType> buildMatrixSlotTypes=buildMatrixSmcService.getAllVehicleTypes();
+ 		List<Integer> yearsForDropdown=buildMatrixSmcService.getYearsforSLotMaintenance();
+ 		if(StringUtils.equals(slotTypeId, ApplicationConstants.String_ZERO))
+ 		{
+ 			model = new ModelAndView("/admin-console/oem-build-matrix/prod-slot-maintenance");
+ 			slotTypeId=String.valueOf(buildMatrixSlotTypes.get(0).getSlotTypeId());
+ 			selectedYear=String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
+ 		}
+ 		else{
+ 			model = new ModelAndView("redirect:/app/admin-console/oem-build-matrix/prod-slot-maintenance");
+ 		}
+ 		model.addObject("vehicleTypes",buildMatrixSlotTypes );
+ 		model.addObject("years",yearsForDropdown);
+ 		model.addObject("bodyplantList", buildMatrixSmcService.getAllBodyPlantsforSlotMaintenance());
+ 		model.addObject("slotMaintenanceSummary", buildMatrixSmcService.getSlotMaintenanceSummary(Integer.valueOf(slotTypeId),Integer.valueOf(selectedYear)));
+ 		model.addObject("slotTypeId",Integer.valueOf(slotTypeId));
+ 		model.addObject("selectedYear",selectedYear);
+ 		return model;
+ 	}
+  
 }

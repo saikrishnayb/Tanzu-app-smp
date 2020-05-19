@@ -10,6 +10,8 @@ import com.penske.apps.buildmatrix.domain.BuildAttribute;
 import com.penske.apps.buildmatrix.domain.BuildAttributeValue;
 import com.penske.apps.buildmatrix.domain.BuildMatrixAttribute;
 import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
+import com.penske.apps.buildmatrix.domain.BuildMatrixSlotDate;
+import com.penske.apps.buildmatrix.domain.BuildMatrixSlotType;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.BusinessAward;
 import com.penske.apps.buildmatrix.domain.BusinessAwardDefault;
@@ -113,5 +115,14 @@ public interface BuildMatrixSmcDAO {
 	public void updateCapability(@Param("plantId") int plantId, @Param("attributeKey") String attributeKey, @Param("disallowedAttributeValues") String disallowedAttributeValues);
 
 	public List<BodyPlantCapability> getAttributesbyId(int attributeId);
+	
+	//PRODUCTION SLOT MAINTENANCE//
+	public List<BuildMatrixSlotType> getAllVehicleTypes();
+	
+	public List<Integer> getYearsforSLotMaintenance();
+	
+	public List<BuildMatrixBodyPlant> getAllBodyPlantsforSlotMaintenance();
+	
+	public List<BuildMatrixSlotDate> getSlotMaintenanceSummary(@Param("slotTypeId") int slotTypeId,@Param("selectedYear")int selectedYear);
 	
 }

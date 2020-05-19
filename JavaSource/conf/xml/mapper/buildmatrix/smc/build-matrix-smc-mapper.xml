@@ -538,7 +538,7 @@
 		FROM     SMC.OBM_PLANT_CAPABILITY
 		WHERE    PLANT_ID = #{plantId}
 	</select>
-
+	
 	<select id="getAttributesbyId" resultMap="BodyPlantCapabilityMap">
 		SELECT   ATTRIBUTE_ID AS attributeId,
 		         ATTRIBUTE_KEY AS attributeKey,
@@ -576,5 +576,67 @@
 	    WHERE
 	    	PLANT_ID = #{plantId}
 	</update>
+	
+	<!-- PRODUCTION SLOT AVAILBILITY MAINTENANCE -->
+	<select id="getAllVehicleTypes" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlotType">
+		SELECT
+			SLOT_TYPE_ID AS slotTypeId,
+			SLOT_DESCRIPTION AS slotTypeDesc, 
+			SLOT_TYPE AS slotType
+		FROM smc.OBM_SLOT_TYPES
+		ORDER BY SLOT_TYPE_ID ASC
+	</select>
+	
+	<select id="getYearsforSLotMaintenance" resultType="int">
+		SELECT DISTINCT SLOT_YEAR FROM SMC.OBM_SLOT_DATES
+	</select>
+	
+	<select id="getAllBodyPlantsforSlotMaintenance" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant">
+		SELECT
+			PLANT_ID AS plantId,
+			PLANT_MFR_CODE AS plantMfrCode,
+			PLANT_MANUFACTURER AS plantManufacturer,
+			PLANT_NAME AS plantName,
+			PLANT_STATE AS state,
+			PLANT_ZIP AS zip,
+			PLANT_COUNTRY AS country,
+			PLANT_CITY AS city
+		FROM OBM_PLANTS
+		ORDER by PLANT_MANUFACTURER, PLANT_CITY
+	</select>
+	
+	<resultMap id="slotMaintenanceMap" type="com.penske.apps.buildmatrix.domain.BuildMatrixSlotDate" >
+		<result column="SLOT_DATE_ID"  property="slotDateId"/>
+		<result column="SLOT_DATE_D"  property="slotDate"/>
+		<result column="SLOT_YEAR" 	property="slotYear"/>
+		<result column="WEEK_OF_YEAR" property="weekOfYear"/>
+		<collection property="buildSlots" column="{slotDateId=SLOT_DATE_ID,slotTypeId=stypeId}" select="getSlotAvailability"></collection>
+	</resultMap>
+	
+	<select id="getSlotMaintenanceSummary" parameterType="int" resultMap="slotMaintenanceMap">
+		SELECT 
+			CAST(#{slotTypeId} AS INTEGER) as stypeId,
+			SLOT_DATE_ID,
+			SLOT_YEAR,
+			WEEK_OF_YEAR,
+			DATE(to_date(SLOT_DATE,'MM/DD/YYYY')) AS SLOT_DATE_D
+		FROM smc.OBM_SLOT_DATES
+		WHERE SLOT_YEAR=#{selectedYear}
+	</select>
+	
+	<select id="getSlotAvailability" resultType="com.penske.apps.buildmatrix.domain.BuildMarixSlot">
+		SELECT
+				SLOT_ID AS slotId,
+				SLOT_TYPE_ID AS slotTypeId,
+				plant.PLANT_ID AS plantId,
+				SLOT_AVAILABLE AS availableSlots,
+				SLOT_RESERVED AS reservedSlots
+		FROM smc.OBM_SLOTS slot
+		JOIN smc.OBM_PLANTS plant 
+			ON slot.PLANT_ID = plant.PLANT_ID
+		WHERE SLOT_TYPE_ID=CAST(#{slotTypeId} AS INTEGER)
+			AND SLOT_DATE_ID=#{slotDateId}
+		ORDER BY plant.PLANT_MANUFACTURER, plant.PLANT_CITY
+	</select>
 	
 </mapper>

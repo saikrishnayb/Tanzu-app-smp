@@ -55,5 +55,6 @@ public class ApplicationConstants {
 	public static final String PRODUCTION_SLOT = "Production Slot";
 	public static final String PRODUCTION_DATE = "Production Date";
 	
-	
+	//OEM Build Matrix
+	public static final String String_ZERO="0";
 }

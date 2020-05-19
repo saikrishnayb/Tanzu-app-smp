@@ -9,6 +9,8 @@ import com.penske.apps.buildmatrix.domain.BodyPlantCapability;
 import com.penske.apps.buildmatrix.domain.BuildAttribute;
 import com.penske.apps.buildmatrix.domain.BuildAttributeValue;
 import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
+import com.penske.apps.buildmatrix.domain.BuildMatrixSlotDate;
+import com.penske.apps.buildmatrix.domain.BuildMatrixSlotType;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.CroOrderKey;
 import com.penske.apps.buildmatrix.domain.FreightMileage;
@@ -97,5 +99,14 @@ public interface BuildMatrixSmcService {
 	public List<BodyPlantCapability> getBodyPlantExceptionsById(int plantId, int attributeId);
 
 	public BodyPlantCapability getAttributeValuesMap(List<BodyPlantCapability> bodyPlantCapabilityList, BodyPlantCapability bodyPlantCapability);
-
+	
+	//PRODUCTION SLOT MAINTENANCE//
+	public List<BuildMatrixSlotType> getAllVehicleTypes();
+	
+	public List<Integer> getYearsforSLotMaintenance();
+	
+	public List<BuildMatrixBodyPlant> getAllBodyPlantsforSlotMaintenance();
+	
+	public List<BuildMatrixSlotDate> getSlotMaintenanceSummary(int slotTypeId,int selectedYear);
+	
 }

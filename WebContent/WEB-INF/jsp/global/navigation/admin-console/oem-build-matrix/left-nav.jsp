@@ -6,7 +6,9 @@
 		</tl:penskeOnly>
 		<div class="leftNavGroup"><a href="${baseAppUrl}/admin-console/oem-build-matrix/business-award-maint.htm" id="left-nav-business-award-maint">OEM Mix Maintenance</a></div>
 		<div class="leftNavGroup"><a href="${baseAppUrl}/admin-console/oem-build-matrix/maintenance-summary.htm" id="left-nav-maintenance-summary">Plant Maintenance</a></div>
-		<div class="leftNavGroup"><a id="left-nav-prod-slot-maintenance">Production Slot Maintenance</a></div>
+		<tl:penskeOnly>
+		<div class="leftNavGroup"><a href="${baseAppUrl}/admin-console/oem-build-matrix/prod-slot-maintenance.htm?slotType=0&year=0" id="left-nav-prod-slot-maintenance" >Production Slot Maintenance</a></div>
+		</tl:penskeOnly>
 		<!-- <div class="leftNavGroup"><a id="left-nav-slot-utilization" >Slot Utilization</a></div> -->
 		<%-- <div class="leftNavGroup"><a href="${baseAppUrl}/admin-console/oem-build-matrix/bodyplant-capabilities.htm" id="left-nav-bodyplant-capabilities">Body Plant Capabilities</a></div> --%>
 </div>

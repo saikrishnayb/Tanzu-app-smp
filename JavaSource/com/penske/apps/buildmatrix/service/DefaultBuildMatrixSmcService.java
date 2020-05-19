@@ -41,6 +41,8 @@ import com.penske.apps.buildmatrix.domain.BuildAttribute;
 import com.penske.apps.buildmatrix.domain.BuildAttributeValue;
 import com.penske.apps.buildmatrix.domain.BuildMatrixAttribute;
 import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
+import com.penske.apps.buildmatrix.domain.BuildMatrixSlotDate;
+import com.penske.apps.buildmatrix.domain.BuildMatrixSlotType;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.BusinessAward;
 import com.penske.apps.buildmatrix.domain.BusinessAwardDefault;
@@ -627,5 +629,26 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		getAttributeValuesMap(bodyPlantCapabilityList, bodyPlantCapability);
 		return bodyPlantCapabilityList;
 	}
-
+	
+	// PRODUCTION SLOT MAINTENANCE//
+	public List<BuildMatrixSlotType> getAllVehicleTypes() {
+		List<BuildMatrixSlotType> vehicleTypes=buildMatrixSmcDAO.getAllVehicleTypes();
+		return vehicleTypes;
+	}
+	
+	public List<Integer> getYearsforSLotMaintenance(){
+		List<Integer> years=buildMatrixSmcDAO.getYearsforSLotMaintenance();
+		return years;
+	}
+	
+	public List<BuildMatrixBodyPlant> getAllBodyPlantsforSlotMaintenance(){
+		List<BuildMatrixBodyPlant> bodyPlantSummary = buildMatrixSmcDAO.getAllBodyPlantsforSlotMaintenance();
+		return bodyPlantSummary;
+	}
+	
+	public List<BuildMatrixSlotDate> getSlotMaintenanceSummary(int slotTypeId,int selectedYear){
+		List<BuildMatrixSlotDate> buildMatrixSlotSummary = buildMatrixSmcDAO.getSlotMaintenanceSummary(slotTypeId,selectedYear);
+		return buildMatrixSlotSummary;
+	}
+	
 }
