@@ -51,7 +51,7 @@ ModalUtil.initializeModal($EditDimensionModal);
 	$("#plant-capablity-table_wrapper").prepend(strHTML);
 
 function loadEditDimensionForm(attributeId, plantId, attributeKey, attributeName) {
-
+	
 	$.post('./load-edit-dimension-popup-modal.htm',
 		{
 			'attributeId' : attributeId,
@@ -74,6 +74,11 @@ $EditDimensionModal.on("click", '#update-capability', function() {
 	$('input[type=checkbox]:not(:checked)').each(function() {
 		capabilityUpdatelist.push($(this).val());
 	});
+	
+	var capabilityNotUpdatelist = [];
+	 $('#attribute-values-div input:checked').each(function() {
+		 capabilityNotUpdatelist.push($(this).val());
+     });
 
 	if (capabilityUpdatelist && capabilityUpdatelist.length != 0) {
 		var plantId = $EditDimensionModal.find('.plantId').val();
@@ -89,8 +94,17 @@ $EditDimensionModal.on("click", '#update-capability', function() {
 			}
 		});
 		$updateCapabilityPromise.done(function(data) {
-			window.location.href = "bodyplant-capabilities.htm?plantId=" + plantId;
+			capabilityUpdatelist.forEach(function(id) {
+				$('#plant-capablity-table').find('.selected-attrvalue[data-attribute-value-id="' + id + '"]').addClass('selected-attrvalue badge-danger');
+				$('#plant-capablity-table').find('.non-selected-attrvalue[data-attribute-value-id="' + id + '"]').addClass('selected-attrvalue badge-danger');
+			});
+			capabilityNotUpdatelist.forEach(function(id) {
+				$('#plant-capablity-table').find('.selected-attrvalue[data-attribute-value-id="' + id + '"]').removeClass('selected-attrvalue badge-danger');
+				$('#plant-capablity-table').find('.selected-attrvalue[data-attribute-value-id="' + id + '"]').addClass('non-selected-attrvalue badge');
+			});
+
 			ModalUtil.closeModal($EditDimensionModal);
+
 		});
 	} else {
 		addErrorMessage("Error Processing the Body Plant Exception update.");
