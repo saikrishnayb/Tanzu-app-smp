@@ -16,7 +16,7 @@
 			<span class="floatRight addRow push-right"> </span>
 			<div class="row">
 				<div class="col-xs-12">
-					<h1>Body Plant Exceptions - ${plantData.plantName} - ${plantData.city}, ${plantData.state}</h1>
+					<h1>Body Plant Exceptions - ${plantData.plantManufacturer} - ${plantData.city}, ${plantData.state}</h1>
 				</div>
 			</div>
 			<div class="row">

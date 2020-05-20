@@ -237,15 +237,18 @@ public class BuildMatrixRestController {
 											   @RequestParam("attributeName") String attributeName) {
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/modal/edit-dimension");
 		List<BodyPlantCapability> bodyPlantCapability = buildMatrixSmcService.getBodyPlantExceptionsById(plantId, attributeId);
-
+		
+		if (!bodyPlantCapability.get(0).getAttributeValuesMap().isEmpty()) {
+			model.addObject("isDataAvailable", true);
+			model.addObject("bodyPlantCapability", bodyPlantCapability);
+		}
 		model.addObject("plantId", plantId);
 		model.addObject("attributeId", attributeId);
 		model.addObject("attributeKey", key);
 		model.addObject("attributeName", attributeName);
-		model.addObject("bodyPlantCapability", bodyPlantCapability);
 		return model;
 	}
-	
+
 	/**
 	 * method to update capability
 	 * 
