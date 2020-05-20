@@ -98,7 +98,9 @@ public interface ComponentDao {
     @NonVendorQuery
     public List<HoldPayment> getHoldPaymentsByComponentId(@Param("componentId") int componentId);
 
+    @NonVendorQuery
 	public void addHoldPayments(@Param("holdPaymentstoAdd") List<HoldPayment> holdPaymentstoAdd, @Param("user") UserContext user);
 
+    @NonVendorQuery
 	public void deleteHoldPayments(@Param("holdPaymentsToDelete") List<HoldPayment> holdPaymentsToDelete);
 }
