@@ -10,8 +10,13 @@
 .available-slot-input{
 	width: 70px;
     text-align: center;
+    -webkit-appearance: none;
 }
 
 .year-div{
 	padding-left: 35px;
+}
+
+.slot-table-header{
+	width: 75px;
 }

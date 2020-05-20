@@ -24,9 +24,10 @@
       		<div class="row">
         		<div class="col-xs-12 slot-maintenance-table-top">
         			<div class='search-div'>
-        				<div>
+        				<form id="filter-slots-form" action="./prod-slot-maintenance.htm" method="GET">
+        				<div class="vehicletype-div">
         					<label>Vehicle Type</label>
-	          				<select id="vehicletype-drpdwn">
+	          				<select id="vehicletype-drpdwn" name="slotType">
 		          				<c:forEach items="${vehicleTypes}" var="type">
 		          					<option value="${type.slotTypeId}" 
 		          					<c:if test="${type.slotTypeId eq slotTypeId}">selected="selected"</c:if>
@@ -36,7 +37,7 @@
         				</div>
           				<div class="year-div">
           					<label>Year</label>
-	          				<select id="year-drpdwn">
+	          				<select id="year-drpdwn" name="year">
 	          					<c:forEach items="${years}" var="year">
 		          					<option value="${year}" 
 		          					<c:if test="${year eq selectedYear}">selected="selected"</c:if>
@@ -44,7 +45,7 @@
 		          				</c:forEach>
 	          				</select>
           				</div>
-          				
+          				</form>
           				
           			</div>
           			<div class="btn-div floatRight">
@@ -58,9 +59,9 @@
 					<table id="slot-maintenance-table">
 						<thead>
 								<tr>
-								<th id="prod-date">Production Date</th>
+								<th class="centerAlign slot-table-header" id="prod-date">Production Date</th>
 								<c:forEach items="${bodyplantList}" var="plantData">
-									<th id="${plantData.plantId}"> ${plantData.plantManufacturer} - ${plantData.city}, ${plantData.state}</th>	
+									<th class="centerAlign slot-table-header no-sort" id="${plantData.plantId}"> ${plantData.plantManufacturer} - ${plantData.city}, ${plantData.state}</th>	
 								</c:forEach>
 								</tr>
 						</thead>

@@ -7,7 +7,7 @@ $(document).ready(function() {
 	$slotMaintenanceDataTable = $slotMaintenanceTable.DataTable({
 		"bPaginate" : true, //enable pagination
 		"bStateSave" : true, //To retrieve the data on click of back button
-		"sScrollY"  : "333px",//enable scroll 
+		"sScrollY"  : "300px",//enable scroll 
 		"sScrollX"  : "100%",
 		"sPaginationType" : "two_button",
 		"bLengthChange" : true, //enable change of records per page, not recommended
@@ -19,8 +19,9 @@ $(document).ready(function() {
 		"iDisplayLength" : 100, //number of records per page for pagination
 		"aoColumnDefs" : [ {
 			'bSortable' : true,
-			'aTargets' : [ 0 ]
-		} ],
+			'aTargets' : [ 0 ] },
+			{"aTargets": ['no-sort'], 'bSortable': false}
+			],
 		"responsive":false,
 		"fnDrawCallback" : function() { //This will hide the pagination menu if we only have 1 page.
 			var paginateRow = $(this).parent().children('div.dataTables_paginate');
@@ -49,12 +50,7 @@ $(document).ready(function() {
 	});
 
 	$("#vehicletype-drpdwn, #year-drpdwn").on("change", function() {
-		var slotTypeId=$('#vehicletype-drpdwn').val();
-		var selectedYear=$('#year-drpdwn').val();
-		$.ajax({
-			type : "POST",
-			url : './prod-slot-maintenance.htm',
-			data: {slotType: slotTypeId,year:selectedYear},
-		});
+		var $filterSlotsForm = $('#filter-slots-form');
+		$filterSlotsForm.submit();
 	});
 });
