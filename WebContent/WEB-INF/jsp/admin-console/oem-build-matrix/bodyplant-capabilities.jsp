@@ -16,7 +16,7 @@
 			<span class="floatRight addRow push-right"> </span>
 			<div class="row">
 				<div class="col-xs-12">
-					<h1>Body Plant Exceptions - ${plantData.plantManufacturer} - ${plantData.city}, ${plantData.state}</h1>
+					<h1>Body Plant Exceptions - ${plantData.plantName} - ${plantData.city}, ${plantData.state}</h1>
 				</div>
 			</div>
 			<div class="row">
@@ -32,10 +32,14 @@
 						<tbody>
 							<c:forEach items="${bodyPlantCapability}" var="attribute">
 								<tr class="user-row" data-attribute-id="${attribute.attributeId}">
+								
 									<td class="editable centerAlign">
-										<a onclick="loadEditDimensionForm(${attribute.attributeId}, ${plantData.plantId}, '${attribute.attributeKey}', '${attribute.attributeName}')"
-											class="rightMargin edit-button" id="edit-capability"> Edit
-										</a>
+									<a class="rightMargin edit-button" id="edit-capability"> Edit</a>
+										<input type="hidden" class="edit-attribute-id" value="${attribute.attributeId}" />
+										<input type="hidden" class="edit-plant-id" value="${plantData.plantId}" />
+										<input type="hidden" class="edit-attribute-key" value="${attribute.attributeKey}" />
+										<input type="hidden" class="edit-attribute-name" value="${attribute.attributeName}" />
+										<input type="hidden" class="attribute-values-map" value="${attribute.attributeValuesMap}"/> 
 									</td>
 									<td>${attribute.attributeName}</td>
 									<td class="value-td">
@@ -46,7 +50,8 @@
 											<c:if test="${!attributeValue.value}">
 												<span class="badge non-selected-attrvalue" data-attribute-value-id="${attributeValue.key}" value="${attributeValue.key}">${attributeValue.key}</span>
 											</c:if>
-										</c:forEach></td>
+										</c:forEach>
+									</td>
 								</tr>
 							</c:forEach>
 						</tbody>

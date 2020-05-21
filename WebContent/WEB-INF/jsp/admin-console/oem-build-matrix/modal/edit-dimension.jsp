@@ -1,6 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="modalName" value="Edit Dimension" />
-<div class="modal-content col-xs-12" data-modal-title="${modalName} - ${attributeName}" data-modal-width="420">
+<div class="modal-content col-xs-12" data-modal-title="${modalName} - ${attributeName}" data-modal-width="400">
 	<div class="row modal-body">
 		<form id="editAttributeForm" class="editAttributeForm form-horizontal" data-save-attr-id="${attributeId}">
 			<input type="hidden" autofocus="autofocus" class="display-none">
@@ -19,15 +19,16 @@
 						</div>
 						<div class="form-group">
 							<div class="col-xs-7" id="attribute-values-div">
-								<c:forEach items="${bodyPlantCapability}" var="attribute">
-									<c:forEach items="${attribute.attributeValuesMap}" var="attributeValue">
+								<%-- <c:forEach items="${bodyPlantCapability}" var="attribute">
+									<c:forEach items="${attribute.attributeValuesMap}" var="attributeValue"> --%>
+									<c:forEach items="${attributeValuesMap}" var="attributeValue">
 										<ul class="attribute-values">
 											<li class="attribute-values-display">
-												<c:if test="${attributeValue.value}">
+												<c:if test="${attributeValue.value eq true}">
 													<input type="checkbox" class="attibute-values-checkbox" 
 														value="${attributeValue.key}" id="attribute-values" />${attributeValue.key}
 												</c:if> 
-												<c:if test="${!attributeValue.value}">
+												<c:if test="${attributeValue.value ne true}">
 													<input type="checkbox" class="disallow-attibute-values-checkbox"
 														value="${attributeValue.key}" id="attribute-values"
 														checked />${attributeValue.key}
@@ -35,13 +36,13 @@
 											</li>
 										</ul>
 									</c:forEach>
-								</c:forEach>
+								<%-- </c:forEach> --%>
 							</div>
 						</div>
 					</c:when>
 					<c:otherwise>
 						<div class="col-xs-10">
-							<label class="attribute-values-lbl">No Records Found</label>
+							<label class="attribute-values-lbl">No Attribute Values Found for ${attributeName}</label>
 						</div>
 					</c:otherwise>
 				</c:choose>
