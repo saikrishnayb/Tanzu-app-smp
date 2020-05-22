@@ -1,6 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="modalName" value="Edit Dimension" />
-<div class="modal-content col-xs-12" data-modal-title="${modalName} - ${attributeName}" data-modal-width="400">
+<div class="modal-content col-xs-12" data-modal-title="${modalName} - ${attributeName}" data-modal-width="420">
 	<div class="row modal-body">
 		<form id="editAttributeForm" class="editAttributeForm form-horizontal" data-save-attr-id="${attributeId}">
 			<input type="hidden" autofocus="autofocus" class="display-none">

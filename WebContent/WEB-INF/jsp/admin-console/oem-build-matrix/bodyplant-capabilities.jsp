@@ -34,7 +34,8 @@
 								<tr class="user-row" data-attribute-id="${attribute.attributeId}">
 								
 									<td class="editable centerAlign">
-									<a class="rightMargin edit-button" id="edit-capability"> Edit</a>
+									<a class="rightMargin edit-button" id="edit-capability" edit-attribute-id="${attribute.attributeId}" 
+									   attribute-values-map="${attribute.attributeValuesMap}"> Edit</a>
 										<input type="hidden" class="edit-attribute-id" value="${attribute.attributeId}" />
 										<input type="hidden" class="edit-plant-id" value="${plantData.plantId}" />
 										<input type="hidden" class="edit-attribute-key" value="${attribute.attributeKey}" />

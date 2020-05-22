@@ -616,19 +616,6 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	public void updateCapability(int plantId, String attributeKey, String disallowedAttributeValues) {
 		buildMatrixSmcDAO.updateCapability(plantId, attributeKey, disallowedAttributeValues);
 	}
-
-	@Override
-	public List<BodyPlantCapability> getAttributesbyId(int attributeId) {
-		return buildMatrixSmcDAO.getAttributesbyId(attributeId);
-	}
-
-	@Override
-	public List<BodyPlantCapability> getBodyPlantExceptionsById(int plantId, int attributeId) {
-		BodyPlantCapability bodyPlantCapability = buildMatrixSmcDAO.getAllBuildMatrixExceptions(plantId);
-		List<BodyPlantCapability> bodyPlantCapabilityList = getAttributesbyId(attributeId);
-		getAttributeValuesMap(bodyPlantCapabilityList, bodyPlantCapability);
-		return bodyPlantCapabilityList;
-	}
 	
 	// PRODUCTION SLOT MAINTENANCE//
 	public List<BuildMatrixSlotType> getAllVehicleTypes() {

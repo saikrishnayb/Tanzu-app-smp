@@ -6,6 +6,7 @@ package com.penske.apps.buildmatrix.controller;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -239,18 +240,19 @@ public class BuildMatrixRestController {
 											   @RequestParam("attributeName") String attributeName,
 											   @RequestParam("attributeValues") String attributeValues) {
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/modal/edit-dimension");
-		/*List<BodyPlantCapability> bodyPlantCapability = buildMatrixSmcService.getBodyPlantExceptionsById(plantId, attributeId);
-		if (!bodyPlantCapability.get(0).getAttributeValuesMap().isEmpty()) {
-		model.addObject("isDataAvailable", true);
-		model.addObject("bodyPlantCapability", bodyPlantCapability);
-		}*/
+		
 		if (!attributeValues.isEmpty()) {
 		Map<String, String> reconstructedAttributeMap = Arrays.stream(attributeValues.split(","))
 	            											  .map(s -> s.split("="))
 	            											  .collect(Collectors.toMap(s -> s[0], s -> s[1]));
 		
+		LinkedHashMap<String, String> sortedMap = new LinkedHashMap<>();
+		 
+		reconstructedAttributeMap.entrySet().stream().sorted(Map.Entry.comparingByKey())
+		    					 			.forEachOrdered(x -> sortedMap.put(x.getKey(), x.getValue()));
+		
 			model.addObject("isDataAvailable", true);
-			model.addObject("attributeValuesMap", reconstructedAttributeMap);
+			model.addObject("attributeValuesMap", sortedMap);
 		}
 		model.addObject("plantId", plantId);
 		model.addObject("attributeId", attributeId);

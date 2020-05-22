@@ -94,10 +94,6 @@ public interface BuildMatrixSmcService {
 
 	public void updateCapability(int plantId, String attributeKey, String disalloAttributeValues);
 
-	public List<BodyPlantCapability> getAttributesbyId(int attributeId);
-
-	public List<BodyPlantCapability> getBodyPlantExceptionsById(int plantId, int attributeId);
-
 	public BodyPlantCapability getAttributeValuesMap(List<BodyPlantCapability> bodyPlantCapabilityList, BodyPlantCapability bodyPlantCapability);
 	
 	//PRODUCTION SLOT MAINTENANCE//

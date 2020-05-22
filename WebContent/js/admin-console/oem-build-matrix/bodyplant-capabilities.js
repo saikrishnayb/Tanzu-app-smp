@@ -56,8 +56,9 @@ $('#plant-capablity-table').on("click", '#edit-capability', function() {
 	var plantId = row.find('.edit-plant-id').val();
 	var attributeKey = row.find('.edit-attribute-key').val();
 	var attributeName = row.find('.edit-attribute-name').val();
-	var attributeValues = row.find('.attribute-values-map').val();
-	var attributeValuesById = attributeValues.slice(1, -1).replace(/\s*,\s*/ig, ',');
+	var attributeValues = $(this).attr('attribute-values-map');
+	var attributeValuesDisplay = attributeValues.slice(1, -1).replace(/\s*,\s*/ig, ',');
+	var attributeValuesById = attributeValuesDisplay.replace(/[\[\]']/g, '').replace(/"/g, "").replace(/,true/g, "=true").replace(/,false/g, "=false");
 
 	var $getEditDimensionPromise = $.get("load-edit-dimension-popup-modal", {
 		attributeId : attributeId,
@@ -88,6 +89,7 @@ $EditDimensionModal.on("click", '#update-capability', function() {
 	if (capabilityUpdatelist && capabilityUpdatelist.length != 0) {
 		var plantId = $EditDimensionModal.find('.plantId').val();
 		var attributeKey = $EditDimensionModal.find('.attributeKey').val();
+		var attributeId = $EditDimensionModal.find('.attributeId').val();
 
 		var $updateCapabilityPromise = $.ajax({
 			type : "POST",
@@ -99,24 +101,28 @@ $EditDimensionModal.on("click", '#update-capability', function() {
 			}
 		});
 		$updateCapabilityPromise.done(function(data) {
+			var $editAttribute = $('#plant-capablity-table').find('.user-row[data-attribute-id="' + attributeId + '"]');
 			capabilityUpdatelist.forEach(function(id) {
-				$('#plant-capablity-table').find('.selected-attrvalue[data-attribute-value-id="' + id + '"]').addClass('selected-attrvalue badge-danger');
-				$('#plant-capablity-table').find('.non-selected-attrvalue[data-attribute-value-id="' + id + '"]').addClass('selected-attrvalue badge-danger');
+				$editAttribute.find('.selected-attrvalue[data-attribute-value-id="' + id + '"]').addClass('selected-attrvalue badge-danger');
+				$editAttribute.find('.non-selected-attrvalue[data-attribute-value-id="' + id + '"]').addClass('selected-attrvalue badge-danger');
 			});
 			capabilityNotUpdatelist.forEach(function(id) {
-				$('#plant-capablity-table').find('.selected-attrvalue[data-attribute-value-id="' + id + '"]').addClass('non-selected-attrvalue badge');
-				$('#plant-capablity-table').find('.selected-attrvalue[data-attribute-value-id="' + id + '"]').removeClass('selected-attrvalue badge-danger');
-				$('#plant-capablity-table').find('.selected-attrvalue[data-attribute-value-id="' + id + '"]').addClass('non-selected-attrvalue badge');
+				$editAttribute.find('.selected-attrvalue[data-attribute-value-id="' + id + '"]').addClass('non-selected-attrvalue badge');
+				$editAttribute.find('selected-attrvalue[data-attribute-value-id="' + id + '"]').removeClass('selected-attrvalue badge-danger');
+				$editAttribute.find('.selected-attrvalue[data-attribute-value-id="' + id + '"]').removeClass('selected-attrvalue');
+				$editAttribute.find('.selected-attrvalue[data-attribute-value-id="' + id + '"]').addClass('non-selected-attrvalue badge');
+
 			});
 
 			var attributeValuesMap = new Map();
 			capabilityUpdatelist.forEach(function(id) {
-				attributeValuesMap.set(id, false);
-			});
-			capabilityNotUpdatelist.forEach(function(id) {
 				attributeValuesMap.set(id, true);
 			});
-
+			capabilityNotUpdatelist.forEach(function(id) {
+				attributeValuesMap.set(id, false);
+			});
+			$editLink = $('#plant-capablity-table').find('#edit-capability[edit-attribute-id="' + attributeId + '"]');
+			$editLink.attr('attribute-values-map', (JSON.stringify(attributeValuesMap)));
 			ModalUtil.closeModal($EditDimensionModal);
 
 		});

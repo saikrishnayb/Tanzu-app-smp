@@ -494,6 +494,7 @@
 	 	SELECT   TRIM(ATTRIBUTE_VALUE)
 		FROM     SMC.OBM_ATTRIBUTE_VALUE
 		WHERE    ATTRIBUTE_ID=#{attributeId}
+		ORDER BY ATTRIBUTE_VALUE ASC
 	</select>
 	
 	<select id="getAllBuildMatrixCapabilities" resultMap="BodyPlantCapabilityMap">
@@ -537,14 +538,6 @@
 		         DISALLOW_SIDE_DOOR_INSTALL AS sideDoorInstalled
 		FROM     SMC.OBM_PLANT_CAPABILITY
 		WHERE    PLANT_ID = #{plantId}
-	</select>
-	
-	<select id="getAttributesbyId" resultMap="BodyPlantCapabilityMap">
-		SELECT   ATTRIBUTE_ID AS attributeId,
-		         ATTRIBUTE_KEY AS attributeKey,
-		         ATTRIBUTE_NAME AS attributeName
-		FROM     SMC.OBM_ATTRIBUTE
-		WHERE 	 ATTRIBUTE_ID =  #{attributeId}
 	</select>
 	
 	<update id="updateCapability">
