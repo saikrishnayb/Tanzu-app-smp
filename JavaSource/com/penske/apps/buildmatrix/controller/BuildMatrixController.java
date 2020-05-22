@@ -377,22 +377,23 @@ public class BuildMatrixController {
  	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
  	@RequestMapping("/prod-slot-maintenance")
  	public ModelAndView getProdSlotMaintenance(@RequestParam("slotType") String slotTypeId,@RequestParam("year") String selectedYear) 
- 	{
- 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/prod-slot-maintenance");
- 		List<BuildMatrixSlotType> buildMatrixSlotTypes=buildMatrixSmcService.getAllVehicleTypes();
- 		List<Integer> yearsForDropdown=buildMatrixSmcService.getYearsforSLotMaintenance();
- 		if(StringUtils.equals(slotTypeId, ApplicationConstants.String_ZERO))
- 		{
- 			slotTypeId=String.valueOf(buildMatrixSlotTypes.get(0).getSlotTypeId());
- 			selectedYear=String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
- 		}
- 		model.addObject("vehicleTypes",buildMatrixSlotTypes );
- 		model.addObject("years",yearsForDropdown);
- 		model.addObject("bodyplantList", buildMatrixSmcService.getAllBodyPlantsforSlotMaintenance());
- 		model.addObject("slotMaintenanceSummary", buildMatrixSmcService.getSlotMaintenanceSummary(Integer.valueOf(slotTypeId),Integer.valueOf(selectedYear)));
- 		model.addObject("slotTypeId",Integer.valueOf(slotTypeId));
- 		model.addObject("selectedYear",selectedYear);
- 		return model;
- 	}
+	{
+		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/prod-slot-maintenance");
+		List<BuildMatrixSlotType> buildMatrixSlotTypes = buildMatrixSmcService.getAllVehicleTypes();
+		List<Integer> yearsForDropdown = buildMatrixSmcService.getYearsforSLotMaintenance();
+		if (StringUtils.equals(slotTypeId, ApplicationConstants.String_ZERO)) 
+		{
+			slotTypeId = String.valueOf(buildMatrixSlotTypes.get(0).getSlotTypeId());
+			selectedYear = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
+		}
+		model.addObject("vehicleTypes", buildMatrixSlotTypes);
+		model.addObject("years", yearsForDropdown);
+		model.addObject("bodyplantList", buildMatrixSmcService.getAllBodyPlantsforSlotMaintenance());
+		model.addObject("slotMaintenanceSummary", buildMatrixSmcService
+				.getSlotMaintenanceSummary(Integer.valueOf(slotTypeId), Integer.valueOf(selectedYear)));
+		model.addObject("slotTypeId", Integer.valueOf(slotTypeId));
+		model.addObject("selectedYear", selectedYear);
+		return model;
+	}
   
 }

@@ -49,8 +49,8 @@
           				
           			</div>
           			<div class="btn-div floatRight">
-          				<a onclick="javascript:loadProcessImage();" class="buttonSecondary">Import</a>
-          				<a onclick="javascript:loadProcessImage();" class="buttonSecondary">Export</a>
+          				<a  class="buttonSecondary">Import</a>
+          				<a  class="buttonSecondary">Export</a>
           			</div>
         		</div>
       		</div>

@@ -2,13 +2,13 @@ $(document).ready(function() {
 	selectCurrentNavigation("tab-oem-build-matrix", "left-nav-prod-slot-maintenance");
 
 	var $slotMaintenanceTable = $('#slot-maintenance-table');
-	var $vehicleTypeDrpdwn =$("#vehicletype-drpdwn");
-	var $yearDrpdwn =$("#year-drpdwn");
+	var $vehicleTypeDrpdwn = $("#vehicletype-drpdwn");
+	var $yearDrpdwn = $("#year-drpdwn");
 	$slotMaintenanceDataTable = $slotMaintenanceTable.DataTable({
 		"bPaginate" : true, //enable pagination
 		"bStateSave" : true, //To retrieve the data on click of back button
-		"sScrollY"  : "300px",//enable scroll 
-		"sScrollX"  : "100%",
+		"sScrollY" : "300px", //enable scroll 
+		"sScrollX" : "100%",
 		"sPaginationType" : "two_button",
 		"bLengthChange" : true, //enable change of records per page, not recommended
 		"bFilter" : true, //Allows dynamic filtering of results, do not enable if using ajax for pagination
@@ -19,10 +19,14 @@ $(document).ready(function() {
 		"iDisplayLength" : 100, //number of records per page for pagination
 		"aoColumnDefs" : [ {
 			'bSortable' : true,
-			'aTargets' : [ 0 ] },
-			{"aTargets": ['no-sort'], 'bSortable': false}
-			],
-		"responsive":false,
+			'aTargets' : [ 0 ]
+			},
+			{
+				"aTargets" : [ 'no-sort' ],
+				'bSortable' : false
+			}
+		],
+		"responsive" : false,
 		"fnDrawCallback" : function() { //This will hide the pagination menu if we only have 1 page.
 			var paginateRow = $(this).parent().children('div.dataTables_paginate');
 			var pageCount = Math.ceil((this.fnSettings().fnRecordsDisplay()) / this.fnSettings()._iDisplayLength);
@@ -41,11 +45,11 @@ $(document).ready(function() {
 				infoRow.css("display", "none");
 			}
 			//This change would allow the data table 
-	    	//to adjust with dynamically after the page has been loaded
-	    	$(".dataTables_scrollHead").css("width","99.8%");
-	    	$(".dataTables_scrollHeadInner").css("width","98.5%");
-	    	$(".dataTable").css("width","99.8%");
-	    	$(".dataTables_scrollBody").css("width","100%"); 
+			//to adjust with dynamically after the page has been loaded
+			$(".dataTables_scrollHead").css("width", "99.8%");
+			$(".dataTables_scrollHeadInner").css("width", "98.5%");
+			$(".dataTable").css("width", "99.8%");
+			$(".dataTables_scrollBody").css("width", "100%");
 		}
 	});
 
