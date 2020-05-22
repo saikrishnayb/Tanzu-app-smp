@@ -25,7 +25,7 @@
 								<c:set var="holdPayment" value="${holdpaymentsByVendorId.get(vendor.vendorId)}" />
 								<c:set var="corp" value="${corpByCorpCode.get(vendor.corpCode)}" />
 								<option value="${vendor.vendorId}" <c:if test="${not empty holdPayment}">selected</c:if>>
-									${vendor.vendorId} (${corp.description}) - ${vendor.vendorName} - ${vendor.city}, ${vendor.state}
+									${vendor.vendorNumber} (${corp.description}) - ${vendor.vendorName} - ${vendor.city}, ${vendor.state}
 								</option>
 							</c:forEach>
 						</select>
