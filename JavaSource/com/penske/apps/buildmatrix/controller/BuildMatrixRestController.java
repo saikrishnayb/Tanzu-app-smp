@@ -5,10 +5,7 @@ package com.penske.apps.buildmatrix.controller;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
@@ -25,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.penske.apps.adminconsole.util.ApplicationConstants;
+import com.penske.apps.buildmatrix.domain.BodyPlantCapability;
 import com.penske.apps.buildmatrix.domain.BuildAttribute;
 import com.penske.apps.buildmatrix.domain.BuildAttributeValue;
 import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
@@ -228,7 +226,7 @@ public class BuildMatrixRestController {
 	/**
 	 * Method to Loads Edit Dimension Popup Modal
 	 * 
-	 * @param attributeId, plantId, key
+	 * @param attributeId, plantId, key, attributeName
 	 * 
 	 * @return ModelAndView
 	 */
@@ -237,28 +235,20 @@ public class BuildMatrixRestController {
 	public ModelAndView loadEditDimensionPopup(@RequestParam("attributeId") int attributeId,
 											   @RequestParam("plantId") int plantId, 
 											   @RequestParam("key") String key,
-											   @RequestParam("attributeName") String attributeName,
-											   @RequestParam("attributeValues") String attributeValues) {
+											   @RequestParam("attributeName") String attributeName) {
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/modal/edit-dimension");
+		List<BodyPlantCapability> bodyPlantCapability = buildMatrixSmcService.getBodyPlantExceptionsById(plantId, attributeId);
 		
-		if (!attributeValues.isEmpty()) {
-		Map<String, String> reconstructedAttributeMap = Arrays.stream(attributeValues.split(","))
-	            											  .map(s -> s.split("="))
-	            											  .collect(Collectors.toMap(s -> s[0], s -> s[1]));
-		
-		LinkedHashMap<String, String> sortedMap = new LinkedHashMap<>();
-		 
-		reconstructedAttributeMap.entrySet().stream().sorted(Map.Entry.comparingByKey())
-		    					 			.forEachOrdered(x -> sortedMap.put(x.getKey(), x.getValue()));
-		
+		if (!bodyPlantCapability.get(0).getAttributeValuesMap().isEmpty()) {
 			model.addObject("isDataAvailable", true);
-			model.addObject("attributeValuesMap", sortedMap);
+			model.addObject("bodyPlantCapability", bodyPlantCapability);
 		}
+		
 		model.addObject("plantId", plantId);
 		model.addObject("attributeId", attributeId);
 		model.addObject("attributeKey", key);
 		model.addObject("attributeName", attributeName);
-		
+
 		return model;
 	}
 
@@ -272,8 +262,8 @@ public class BuildMatrixRestController {
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping("/update-capability")
 	public void updateCapability(@RequestParam("plantId") int plantId,
-										 @RequestParam("attributeKey") String attributeKey,
-										 @RequestParam("capabilityUpdatelist[]") List<String> capabilityUpdatelist) {
+								 @RequestParam("attributeKey") String attributeKey,
+							     @RequestParam("capabilityUpdatelist[]") List<String> capabilityUpdatelist) {
 		String attributesCommaSeparated = capabilityUpdatelist.stream().collect(Collectors.joining(","));
 		buildMatrixSmcService.updateCapability(plantId, attributeKey, attributesCommaSeparated);
 	}

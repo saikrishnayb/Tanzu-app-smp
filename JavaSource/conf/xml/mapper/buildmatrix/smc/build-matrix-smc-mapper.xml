@@ -540,6 +540,14 @@
 		WHERE    PLANT_ID = #{plantId}
 	</select>
 	
+	<select id="getAttributesbyId" resultMap="BodyPlantCapabilityMap">
+		SELECT   ATTRIBUTE_ID AS attributeId,
+		         ATTRIBUTE_KEY AS attributeKey,
+		         ATTRIBUTE_NAME AS attributeName
+		FROM     SMC.OBM_ATTRIBUTE
+		WHERE 	 ATTRIBUTE_ID =  #{attributeId}
+	</select>
+	
 	<update id="updateCapability">
 		UPDATE SMC.OBM_PLANT_CAPABILITY
 		SET

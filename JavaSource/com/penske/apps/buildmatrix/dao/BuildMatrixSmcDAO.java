@@ -114,6 +114,8 @@ public interface BuildMatrixSmcDAO {
 	
 	public void updateCapability(@Param("plantId") int plantId, @Param("attributeKey") String attributeKey, @Param("disallowedAttributeValues") String disallowedAttributeValues);
 
+	public List<BodyPlantCapability> getAttributesbyId(int attributeId);
+	
 	//PRODUCTION SLOT MAINTENANCE//
 	public List<BuildMatrixSlotType> getAllVehicleTypes();
 	

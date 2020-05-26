@@ -19,24 +19,23 @@
 						</div>
 						<div class="form-group">
 							<div class="col-xs-7" id="attribute-values-div">
-								<%-- <c:forEach items="${bodyPlantCapability}" var="attribute">
-									<c:forEach items="${attribute.attributeValuesMap}" var="attributeValue"> --%>
-									<c:forEach items="${attributeValuesMap}" var="attributeValue">
+								<c:forEach items="${bodyPlantCapability}" var="attribute">
+									<c:forEach items="${attribute.attributeValuesMap}" var="attributeValue">
 										<ul class="attribute-values">
 											<li class="attribute-values-display">
-												<c:if test="${attributeValue.value eq true}">
-													<input type="checkbox" class="attibute-values-checkbox" 
+												<c:if test="${attributeValue.value}">
+													<input type="checkbox" class="disallow-attibute-values-checkbox" 
 														value="${attributeValue.key}" id="attribute-values" />${attributeValue.key}
 												</c:if> 
-												<c:if test="${attributeValue.value ne true}">
-													<input type="checkbox" class="disallow-attibute-values-checkbox"
+												<c:if test="${!attributeValue.value}">
+													<input type="checkbox" class="attibute-values-checkbox"
 														value="${attributeValue.key}" id="attribute-values"
 														checked />${attributeValue.key}
 												</c:if>
 											</li>
 										</ul>
 									</c:forEach>
-								<%-- </c:forEach> --%>
+								</c:forEach>
 							</div>
 						</div>
 					</c:when>
