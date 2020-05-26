@@ -29,9 +29,8 @@
         					<label>Vehicle Type</label>
 	          				<select id="vehicletype-drpdwn" name="slotType">
 		          				<c:forEach items="${vehicleTypes}" var="type">
-		          					<option value="${type.slotTypeId}" 
-		          					<c:if test="${type.slotTypeId eq slotTypeId}">selected="selected"</c:if>
-		          					 >${type.slotTypeDesc }</option>
+		          					<c:set var="vehicleselected">${type.slotTypeId eq slotTypeId}</c:set>
+		          					<option value="${type.slotTypeId}" ${vehicleselected?'selected="selected"':'' } >${type.slotTypeDesc }</option>
 		          				</c:forEach>
 	          				</select>
         				</div>
@@ -39,9 +38,8 @@
           					<label>Year</label>
 	          				<select id="year-drpdwn" name="year">
 	          					<c:forEach items="${years}" var="year">
-		          					<option value="${year}" 
-		          					<c:if test="${year eq selectedYear}">selected="selected"</c:if>
-		          					 >${year}</option>
+	          						<c:set var="yearselected">${year eq selectedYear}</c:set>
+		          					<option value="${year}" ${yearselected?'selected="selected"':'' }>${year}</option>
 		          				</c:forEach>
 	          				</select>
           				</div>
@@ -70,17 +68,17 @@
 							<c:choose>
 								<c:when test="${fn:length(productionSlot.buildSlots) ne 0}">
 									<tr>
-										<td class="centerAlign" headers="prod-date">${productionSlot.formattedSlotDate}</td>
+										<td class="centerAlign slot-table-header" headers="prod-date">${productionSlot.formattedSlotDate}</td>
 										<c:forEach items="${productionSlot.buildSlots}" var="slotForplant">
-											<td class="centerAlign" headers="${slotForplant.plantId}"><input class ="available-slot-input" type="number" value="${slotForplant.availableSlots}"/></td>
+											<td class="centerAlign slot-table-header" headers="${slotForplant.plantId}"><input class ="available-slot-input" type="number" value="${slotForplant.availableSlots}"/></td>
 										</c:forEach>
 									</tr>
 								</c:when>
 								<c:otherwise>
 									<tr>
-										<td class="centerAlign" headers="prod-date">${productionSlot.formattedSlotDate}</td>
+										<td class="centerAlign slot-table-header" headers="prod-date">${productionSlot.formattedSlotDate}</td>
 										<c:forEach items="${bodyplantList}" var="plantData">
-											<td class="centerAlign" headers="${plantData.plantId}"><input class ="available-slot-input" type="number" value="0" /></td>
+											<td class="centerAlign slot-table-header" headers="${plantData.plantId}"><input class ="available-slot-input" type="number" value="0" /></td>
 										</c:forEach>
 									</tr>
 								</c:otherwise>

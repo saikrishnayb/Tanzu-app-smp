@@ -46,9 +46,6 @@ $(document).ready(function() {
 			}
 			//This change would allow the data table 
 			//to adjust with dynamically after the page has been loaded
-			$(".dataTables_scrollHead").css("width", "99.8%");
-			$(".dataTables_scrollHeadInner").css("width", "98.5%");
-			$(".dataTable").css("width", "99.8%");
 			$(".dataTables_scrollBody").css("width", "100%");
 		}
 	});
