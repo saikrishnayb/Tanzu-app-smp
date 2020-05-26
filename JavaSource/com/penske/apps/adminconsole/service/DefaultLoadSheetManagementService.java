@@ -160,7 +160,7 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 				createOrUpdateTemplateComponentRules(rule,'I');
 			}
 		}catch(IllegalArgumentException e){
-			throw new IllegalArgumentException("Error occurred during creation of rule for the templateComponentId: "+rule.getTemplateComponentId());
+			throw new IllegalArgumentException("Error occurred during creation of rule for the templateComponentId: "+rule.getTemplateComponentId(), e);
 		}
 		
 		return rule.getRuleId();
