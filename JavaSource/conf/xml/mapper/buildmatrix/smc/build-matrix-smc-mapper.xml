@@ -93,7 +93,7 @@
 			PLANT_ZIP AS zip,
 			PLANT_COUNTRY AS country,
 			PLANT_CITY AS city
-		from OBM_PLANTS
+		from SMC.OBM_PLANTS
 	</select>
 	
 	<select id="getPlantData" resultMap="bodyplantResultmap">
@@ -106,7 +106,7 @@
 			PLANT_ZIP AS zip,
 			PLANT_COUNTRY AS country,
 			PLANT_CITY AS city
-		from OBM_PLANTS
+		from SMC.OBM_PLANTS
 		WHERE PLANT_ID=#{plantId}
 	</select>
 	
@@ -116,7 +116,7 @@
 			PLANT_ID AS plantId,
 			OFFLINE_START AS offlineStartDate,
 			OFFLINE_END AS offlineEndDate
-		FROM OBM_PLANTS_OFFLINE_DATES
+		FROM SMC.OBM_PLANTS_OFFLINE_DATES
 		WHERE PLANT_ID=#{plantId}
 	</select>
 	
@@ -155,7 +155,7 @@
 	</update>
 	
 	<update id="removeOfflineDates">
-		DELETE OBM_PLANTS_OFFLINE_DATES
+		DELETE SMC.OBM_PLANTS_OFFLINE_DATES
 		WHERE OFFLINE_DATE_ID IN
 			<foreach collection="offlineDateToRemove" item="offlineDateId" separator="," open="(" close=")">#{offlineDateId}</foreach>
 	</update>
@@ -174,7 +174,7 @@
 			plant.PLANT_MFR_CODE ||'-' ||plant.PLANT_CITY ||',' ||plant.PLANT_STATE AS productionSlot,
 			slot_dates.SLOT_DATE AS productionDate
 		FROM 
-			OBM_RUN_SUMMARY run_summary
+			SMC.OBM_RUN_SUMMARY run_summary
 			JOIN smc.OBM_SLOT_REQUEST slot_req
 			    ON slot_req.RUN_ID=run_summary.RUN_ID
 			JOIN smc.OBM_SLOT_RESERVATION slot_reserve 
@@ -469,13 +469,13 @@
 	</select>
 	
 	<update id="updateAttribute">
-		UPDATE OBM_ATTRIBUTE SET ATTRIBUTE_NAME=#{attributeName}
+		UPDATE SMC.OBM_ATTRIBUTE SET ATTRIBUTE_NAME=#{attributeName}
 		WHERE ATTRIBUTE_ID=#{attributeId}
 	</update>
 	
 	<delete id="updateAttributeValues">
 		DELETE
-		FROM 	OBM_ATTRIBUTE_VALUE
+		FROM 	SMC.OBM_ATTRIBUTE_VALUE
 		WHERE 	ATTRIBUTE_ID=#{attributeId}
 		 <if test="attrValueIds != null">
            	AND 	ATTRIBUTE_VALUE_ID NOT IN 
