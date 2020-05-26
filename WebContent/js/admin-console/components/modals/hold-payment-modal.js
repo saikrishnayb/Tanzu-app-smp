@@ -7,7 +7,7 @@ $('#save-hold-payments-btn').on('click', function(){
 	var componentId = $(this).data('component-id');
 	var vendorIds = $('#hold-payment-form').find('#vendors').val();
 	
-	var $getHoldPaymentContentPromise = $.get("save-hold-payment", {componentId:componentId, vendorIds:vendorIds});
+	var $getHoldPaymentContentPromise = $.post("save-hold-payment", {componentId:componentId, vendorIds:vendorIds});
 	$getHoldPaymentContentPromise.done(function(data){
 		var $componentRow = $('.component-row[data-component-id="' + componentId + '"]');
 		var vendorSize = vendorIds.length;

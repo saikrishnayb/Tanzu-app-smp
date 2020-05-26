@@ -241,7 +241,7 @@
 	
 	<select id="getHoldPaymentsByComponentId" resultType="com.penske.apps.adminconsole.model.HoldPayment">
 		SELECT  
-			HOLD_PAYMENT_ID AS holdPayementId,
+			HOLD_PAYMENT_ID AS holdPaymentId,
             COMPONENT_ID AS componentId,
             VENDOR_ID AS vendorId
        FROM SMC.SMC_COMPONENT_HOLD_PAYMENT

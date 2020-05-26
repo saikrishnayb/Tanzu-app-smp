@@ -54,6 +54,7 @@
             ON ediVendor.EDI_VENDOR = vend.VENDOR_NUMBER
             AND ediVendor.EDI_CORP = vend.CORP
 				WHERE org.ORG_ID=#{orgId} and vend.STATUS = 'A'
+		ORDER BY vend.VENDOR_NAME
 	</select>
 	
 	<select id="getAllPlanningAnalysts" resultType="com.penske.apps.adminconsole.model.User">

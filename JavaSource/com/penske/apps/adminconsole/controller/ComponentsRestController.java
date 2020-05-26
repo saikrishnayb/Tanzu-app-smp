@@ -535,7 +535,7 @@ public class ComponentsRestController {
         return mav;
     }
     
-    @RequestMapping("/save-hold-payment")
+    @RequestMapping(value="/save-hold-payment", method = RequestMethod.POST)
     public void saveHoldPayment(@RequestParam("componentId") int componentId, @RequestParam(value="vendorIds[]", required=false) List<Integer> vendorIds){
         UserContext user = sessionBean.getUserContext();
         Component component = componentService.getComponentById(componentId);
