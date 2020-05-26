@@ -536,7 +536,7 @@ public class ComponentsRestController {
     }
     
     @RequestMapping(value="/save-hold-payment", method = RequestMethod.POST)
-    public void saveHoldPayment(@RequestParam("componentId") int componentId, @RequestParam(value="vendorIds[]", required=false) List<Integer> vendorIds){
+    public void saveHoldPayment(@RequestParam("componentId") int componentId, @RequestParam(value="vendorIds[]", required=false) List<Integer> vendorIds, HttpServletResponse response){
         UserContext user = sessionBean.getUserContext();
         Component component = componentService.getComponentById(componentId);
         if(component == null)
@@ -544,6 +544,12 @@ public class ComponentsRestController {
         if(vendorIds == null)
         	vendorIds = Collections.emptyList();
         
-        componentService.saveHoldPayments(component, vendorIds, user);
+        try{
+        	componentService.saveHoldPayments(component, vendorIds, user);
+        }catch (Exception e) {
+       	 LOGGER.error("Error :" + e.getMessage(),e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+        
     }
 }
