@@ -89,27 +89,6 @@ public class BuildMatrixController {
 	}
 	
 	/**
-	 * method to load Body Plant Exceptions screen
-	 * 
-	 * @param plantId
-	 * @return ModelAndView
-	 */
-	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
-	@RequestMapping("/bodyplant-capabilities")
-	public ModelAndView getBodyPlantCapabilities(@RequestParam("plantId") int plantId) {
-		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/bodyplant-capabilities");
-		//List<BodyPlantCapability> attributeList = buildMatrixSmcService.getAllBuildMatrixCapabilities();
-		List<BodyPlantCapability> bodyPlantCapabilityList = buildMatrixSmcService.getAllBuildMatrixExceptions(plantId);
-
-		//model.addObject("attributeList", attributeList);
-		model.addObject("plantData", buildMatrixSmcService.getPlantData(plantId));
-		model.addObject("bodyPlantCapability", bodyPlantCapabilityList);
-
-		return model;
-	}
-
-
-	/**
 	 * method to load maintenance summary screen
 	 * 
 	 * @return
