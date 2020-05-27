@@ -89,6 +89,7 @@ $EditDimensionModal.on("click", '#update-capability', function() {
 	if (capabilityUpdatelist && capabilityUpdatelist.length != 0) {
 		var plantId = $EditDimensionModal.find('.plantId').val();
 		var attributeKey = $EditDimensionModal.find('.attributeKey').val();
+		var attributeId = $EditDimensionModal.find('.attributeId').val();
 
 		var $updateCapabilityPromise = $.ajax({
 			type : "POST",
@@ -100,14 +101,15 @@ $EditDimensionModal.on("click", '#update-capability', function() {
 			}
 		});
 		$updateCapabilityPromise.done(function(data) {
+			var $editAttribute = $('#plant-capablity-table').find('.user-row[data-attribute-id="' + attributeId + '"]');
 			capabilityUpdatelist.forEach(function(id) {
-				$('#plant-capablity-table').find('.selected-attrvalue[data-attribute-value-id="' + id + '"]').addClass('selected-attrvalue badge-danger');
-				$('#plant-capablity-table').find('.non-selected-attrvalue[data-attribute-value-id="' + id + '"]').addClass('selected-attrvalue badge-danger');
+				$editAttribute.find('.selected-attrvalue[data-attribute-value-id="' + id + '"]').addClass('selected-attrvalue badge-danger');
+				$editAttribute.find('.non-selected-attrvalue[data-attribute-value-id="' + id + '"]').addClass('selected-attrvalue badge-danger');
 			});
 			capabilityNotUpdatelist.forEach(function(id) {
-				$('#plant-capablity-table').find('.selected-attrvalue[data-attribute-value-id="' + id + '"]').addClass('non-selected-attrvalue badge');
-				$('#plant-capablity-table').find('.selected-attrvalue[data-attribute-value-id="' + id + '"]').removeClass('selected-attrvalue badge-danger');
-				$('#plant-capablity-table').find('.selected-attrvalue[data-attribute-value-id="' + id + '"]').addClass('non-selected-attrvalue badge');
+				$editAttribute.find('.selected-attrvalue[data-attribute-value-id="' + id + '"]').addClass('non-selected-attrvalue badge');
+				$editAttribute.find('.selected-attrvalue[data-attribute-value-id="' + id + '"]').removeClass('selected-attrvalue badge-danger');
+				$editAttribute.find('.selected-attrvalue[data-attribute-value-id="' + id + '"]').addClass('non-selected-attrvalue badge');
 			});
 
 			ModalUtil.closeModal($EditDimensionModal);
