@@ -154,6 +154,17 @@ $setOfflineDatesModal.on("click", '.deleteRow', function() {
 	$(this).parents("tr").remove();
 });
 
+$setOfflineDatesModal.on("click", '#clear-row', function() {
+	var $offlineDaterRow = $(this).parents("tr");
+	if( $offlineDaterRow.find('.start-date').val() != '' || $offlineDaterRow.find('.end-date').val() != '')
+	{
+		$('#save-offline-dates').removeClass("buttonDisabled");
+	}
+	$offlineDaterRow.find('.start-date').val("");
+	$offlineDaterRow.find('.end-date').val("");
+	
+});
+
 $('#set-offline-dates-modal').on('input', '.offline-date', function(){
 	$('#save-offline-dates').removeClass("buttonDisabled");
 })

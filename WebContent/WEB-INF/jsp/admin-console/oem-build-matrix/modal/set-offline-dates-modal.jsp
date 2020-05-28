@@ -24,13 +24,18 @@
 								</div>
 								<input  name="offlineEndDate" type="hidden" class="datepickerEndHidden" value="${offlineDate.formattedOfflineEndDate}" />
 							</td>
-							<td class="col-xs-2">
-							<c:if test="${loop.index ne 0 }">
-								<a class="deleteRow">
-								<img src="${commonStaticUrl}/images/delete.png" class="centerImage rightMargin delete-button" /> 
-								</a>
+							<c:if test="${loop.index eq 0 }">
+								<td class="col-xs-2">
+									<a class="secondaryLink" id="clear-row">Clear</a>
+								</td>
 							</c:if>
-							</td>
+							<c:if test="${loop.index ne 0 }">
+								<td class="col-xs-2">
+									<a class="deleteRow">
+									<img src="${commonStaticUrl}/images/delete.png" class="centerImage rightMargin delete-button" /> 
+									</a>
+								</td>
+							</c:if>
 						</tr>
 					</c:forEach>
 					<c:if test="${fn:length(plantData.offlineDates) eq 0}">
@@ -47,6 +52,7 @@
 								<input  name="offlineEndDate" type="hidden" class="datepickerEndHidden"  />
 							</td>
 							<td class="col-xs-2">
+								<a class="secondaryLink" id="clear-row">Clear</a>
 							</td>
 						</tr>
 					</c:if>
