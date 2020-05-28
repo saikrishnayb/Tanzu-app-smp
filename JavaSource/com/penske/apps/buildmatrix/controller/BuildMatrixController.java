@@ -20,7 +20,6 @@ import com.penske.apps.adminconsole.enums.LeftNav;
 import com.penske.apps.adminconsole.enums.Tab.SubTab;
 import com.penske.apps.adminconsole.util.ApplicationConstants;
 import com.penske.apps.buildmatrix.domain.ApprovedOrder;
-import com.penske.apps.buildmatrix.domain.BodyPlantCapability;
 import com.penske.apps.buildmatrix.domain.BuildAttribute;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlotType;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
