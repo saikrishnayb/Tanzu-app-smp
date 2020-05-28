@@ -20,6 +20,7 @@ import com.penske.apps.adminconsole.enums.LeftNav;
 import com.penske.apps.adminconsole.enums.Tab.SubTab;
 import com.penske.apps.adminconsole.util.ApplicationConstants;
 import com.penske.apps.buildmatrix.domain.ApprovedOrder;
+import com.penske.apps.buildmatrix.domain.BodyPlantCapability;
 import com.penske.apps.buildmatrix.domain.BuildAttribute;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlotType;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
@@ -85,6 +86,24 @@ public class BuildMatrixController {
 		}
 
 		return new ModelAndView("/admin-console/security/noAccess");
+	}
+	
+	/**
+	 * method to load Body Plant Exceptions screen
+	 * 
+	 * @param plantId
+	 * @return ModelAndView
+	 */
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping("/bodyplant-capabilities")
+	public ModelAndView getBodyPlantCapabilities(@RequestParam("plantId") int plantId) {
+		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/bodyplant-capabilities");
+		List<BodyPlantCapability> bodyPlantCapabilityList = buildMatrixSmcService.getAllBuildMatrixExceptions(plantId);
+
+		model.addObject("plantData", buildMatrixSmcService.getPlantData(plantId));
+		model.addObject("bodyPlantCapability", bodyPlantCapabilityList);
+
+		return model;
 	}
 	
 	/**
