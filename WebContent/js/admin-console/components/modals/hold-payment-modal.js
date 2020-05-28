@@ -1,6 +1,14 @@
 $('#vendors').multiselect({
 	minWidth : 150,
 	noneSelectedText : "",
+	beforeopen: function(event, ui) {
+	    
+	    $("#vendors").find('option:selected').each(function () {
+	      $(this).prependTo($("#vendors"));
+	    });
+	    
+	    $("#vendors").multiselect("refresh");
+	  }
 }).multiselectfilter();
 
 $('#save-hold-payments-btn').on('click', function(){
