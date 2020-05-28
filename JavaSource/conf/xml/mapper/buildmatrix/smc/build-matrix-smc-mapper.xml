@@ -419,6 +419,7 @@
 			ON awardDefs.ITEM_ID = val.ATTRIBUTE_VALUE_ID
 		LEFT JOIN SMC.OBM_BUSINESS_AWARD_GROUP awardGroup
 			ON awardGroup.ATTRIBUTE_ID = val.ATTRIBUTE_ID
+		WHERE val.IS_DELETED = 'N'
 		ORDER BY attribute.ATTRIBUTE_ID
 	</select>
 	
@@ -467,6 +468,8 @@
 			ON awardGroup.ATTRIBUTE_ID = val.ATTRIBUTE_ID
 		WHERE
 			attribute.ATTRIBUTE_ID = #{attributeId}
+		AND
+		 	val.IS_DELETED = 'N'		
 	</select>
 	
 	<update id="updateAttribute">
@@ -474,15 +477,14 @@
 		WHERE ATTRIBUTE_ID=#{attributeId}
 	</update>
 	
-	<delete id="updateAttributeValues">
-		DELETE
-		FROM 	SMC.OBM_ATTRIBUTE_VALUE
-		WHERE 	ATTRIBUTE_ID=#{attributeId}
-		 <if test="attrValueIds != null">
+	<update id="updateAttributeValues">
+		UPDATE 		SMC.OBM_ATTRIBUTE_VALUE SET IS_DELETED = 'Y'
+		WHERE  		ATTRIBUTE_ID = #{attributeId}
+		<if test="attrValueIds != null">
            	AND 	ATTRIBUTE_VALUE_ID NOT IN 
 		   	<foreach collection="attrValueIds" item="id" separator="," open="(" close=")">#{id}</foreach>
          </if>
-	</delete>
+	</update>
 	
 	<insert id="addAttribute" useGeneratedKeys="true" keyProperty="attributeValue.attributeValueId">
 		INSERT INTO 
