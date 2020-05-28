@@ -478,10 +478,11 @@
 	</update>
 	
 	<update id="updateAttributeValues">
-		UPDATE 		SMC.OBM_ATTRIBUTE_VALUE SET IS_DELETED = 'Y'
-		WHERE  		ATTRIBUTE_ID = #{attributeId}
+		UPDATE 	SMC.OBM_ATTRIBUTE_VALUE 
+		SET 	IS_DELETED = 'Y'
+		WHERE  	ATTRIBUTE_ID = #{attributeId}
 		<if test="attrValueIds != null">
-           	AND 	ATTRIBUTE_VALUE_ID NOT IN 
+           	AND ATTRIBUTE_VALUE_ID NOT IN 
 		   	<foreach collection="attrValueIds" item="id" separator="," open="(" close=")">#{id}</foreach>
          </if>
 	</update>
