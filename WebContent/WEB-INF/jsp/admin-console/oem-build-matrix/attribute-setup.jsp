@@ -48,7 +48,7 @@
 									<td>${attribute.attributeName}</td>
 									<td class="value-td">
 										<c:forEach items="${attribute.attributeValues}" var="value">
-										<span class="badge non-selected-attrvalue" data-attribute-value-id="${value.attributeValueId}">${value.attributeValue}</span>	
+										<span class="badge non-selected-attrvalue" data-attribute-value-id="${value.attributeValue}">${value.attributeValue}</span>	
 										</c:forEach>
 									</td>
 								</tr>

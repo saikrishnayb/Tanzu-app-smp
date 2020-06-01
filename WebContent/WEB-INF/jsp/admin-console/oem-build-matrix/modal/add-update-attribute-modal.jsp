@@ -31,7 +31,7 @@
 							<div class="col-xs-7">
 								<select id="values" name="values" style="width:175px;" multiple onchange="enableUpdate()" required>
 									<c:forEach items="${buildAttribute.attributeValues}" var="attrValue">
-										<option value="${attrValue.attributeValueId}" selected>${attrValue.attributeValue}</option>
+										<option value="${attrValue.attributeValue}" selected>${attrValue.attributeValue}</option>
 									</c:forEach>
 								</select>
 							</div>

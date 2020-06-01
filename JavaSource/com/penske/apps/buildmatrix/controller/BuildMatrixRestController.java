@@ -167,14 +167,14 @@ public class BuildMatrixRestController {
 	
 	@SmcSecurity(securityFunction = SecurityFunction.OEM_BUILD_MATRIX)
     @RequestMapping(value="update-attribute")
-    public void updateAttribute(@RequestParam("attributeId") int attributeId, @RequestParam("attrValueIds[]") List<Integer> attrValueIds) {
-        	buildMatrixSmcService.updateAttribute(attributeId, attrValueIds);
+    public void updateAttribute(@RequestParam("attributeId") int attributeId, @RequestParam("attributeValues[]") List<String> attributeValues) {
+        	buildMatrixSmcService.updateAttribute(attributeId, attributeValues);
     }
 	
 	@SmcSecurity(securityFunction = SecurityFunction.OEM_BUILD_MATRIX)
     @RequestMapping(value="add-attribute")
     public BuildAttributeValue addAttribute(@RequestParam(value="attributeId") int attributeId, @RequestParam(value="attributeValue") String attributeValue) {
-        BuildAttributeValue attrValue = buildMatrixSmcService.addAttribute(attributeId,attributeValue);
+        BuildAttributeValue attrValue = buildMatrixSmcService.addOrUpdateAttribute(attributeId, attributeValue);
         return attrValue;
     }
 	

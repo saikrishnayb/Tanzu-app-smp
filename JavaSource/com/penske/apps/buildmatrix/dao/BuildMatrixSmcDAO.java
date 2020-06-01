@@ -49,7 +49,7 @@ public interface BuildMatrixSmcDAO {
 	
 	public void updateAttribute(BuildMatrixAttribute attributeData);
 	
-	public void addAttribute(@Param("attributeId") int attributeId, @Param("attributeValue") BuildAttributeValue attributeValue);
+	public void addOrUpdateAttribute(@Param("attributeId") int attributeId, @Param("attributeValue") BuildAttributeValue attributeValue);
 	
     public List<String> getAllAttributeValues(@Param("attributeId") int attributeId);
     
@@ -105,7 +105,9 @@ public interface BuildMatrixSmcDAO {
 	
 	public BuildAttribute getBuildAttributeById(@Param("attributeId") int attributeId);
 	
-	public void updateAttributeValues(@Param("attributeId") int attributeId, @Param("attrValueIds") List<Integer> attrValueIds);
+	public void updateAttributeValues(@Param("attributeId") int attributeId, @Param("attributeValues") List<String> attributeValues);
+	
+	public String getDeletedFlagValue(@Param("attributeId") int attributeId, @Param("attributeValue") String attributeValue);
 	
 	// BODY PLANT EXCEPTIONS //
 	public List<BodyPlantCapability> getAllBuildMatrixCapabilities();

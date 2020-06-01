@@ -144,21 +144,19 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	}
 
 	@Override
-	public void updateAttribute(int attributeId, List<Integer> attrValueIds) {
-		// attributeDao.updateAttribute(attributeData); //need to confirm attribute name update
-		buildMatrixSmcDAO.updateAttributeValues(attributeId, attrValueIds);
+	public void updateAttribute(int attributeId, List<String> attributeValues) {
+		buildMatrixSmcDAO.updateAttributeValues(attributeId, attributeValues);
 	}
 	
 	@Override
 	public boolean checkForUniqueAttributeValue(int attributeId, String attributeValue){
-		List<String> existingNames=null;
-		boolean isUnique=true;
-		existingNames = buildMatrixSmcDAO.getAllAttributeValues(attributeId);
-		
-		for(String name:existingNames){
-			if(name.equalsIgnoreCase(attributeValue.trim())){
-				isUnique=false;
-			}
+		String deletedFlagValue = null;
+		boolean isUnique = true;
+		deletedFlagValue = buildMatrixSmcDAO.getDeletedFlagValue(attributeId, attributeValue);
+		if (deletedFlagValue != null && deletedFlagValue.equalsIgnoreCase("N")) {
+				isUnique = false;
+		} else {
+			isUnique = true;
 		}
 		return isUnique;
 	}
@@ -169,9 +167,9 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	}
 	
 	@Override
-	public BuildAttributeValue addAttribute(int attributeId, String attributeValue) {
+	public BuildAttributeValue addOrUpdateAttribute(int attributeId, String attributeValue) {
 		BuildAttributeValue attrValue = new BuildAttributeValue(attributeValue);
-		buildMatrixSmcDAO.addAttribute(attributeId, attrValue);
+		buildMatrixSmcDAO.addOrUpdateAttribute(attributeId, attrValue);
 		return attrValue;
 	}
 	

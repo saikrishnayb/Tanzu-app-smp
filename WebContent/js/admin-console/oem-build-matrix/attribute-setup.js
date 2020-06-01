@@ -81,12 +81,12 @@ $('#attribute-search').on("input", function(){
 $addUpdateAttributeModal.on("click",'#update-attr',function(){
 	var attributeId = $(this).data('save-attr-id');
 	var $form = $('#editAttributeForm[data-save-attr-id="'+attributeId+'"]');
-	var attrValueIds = $addUpdateAttributeModal.find('#values').val();
-	var notSelectedIds = [];
-	$('#values').find('option').not(':selected').each(function() {
-		notSelectedIds.push($(this).val());
-	});
 	
+	var notSelectedAttributeValues = [];
+	$('input[type=checkbox]:not(:checked)').each(function() {
+		notSelectedAttributeValues.push($(this).val());
+	});
+
 	var isValid = ritsu.validate($form);
 	if(!isValid) {
 		//We need to show the error messages explicitly here since we're using a jQuery multiselect, which hides the element ritsu would normally highlight
@@ -97,24 +97,14 @@ $addUpdateAttributeModal.on("click",'#update-attr',function(){
 	var $updateAttributePromise = $.ajax({
 			type: "POST",
 			url:'./update-attribute.htm',
-			data: {attributeId: attributeId, attrValueIds: attrValueIds}
+			data: {attributeId: attributeId, attributeValues: notSelectedAttributeValues}
 		});
 	$updateAttributePromise.done(function(data){
-		notSelectedIds.forEach(function(id){
-			$('#attribute-table').find('.non-selected-attrvalue[data-attribute-value-id="' + id + '"]').remove();;
+		var $attributeRow = $('#attribute-table').find('.attribute-row[data-attribute-id="' + attributeId + '"]');
+		notSelectedAttributeValues.forEach(function(id){
+			$attributeRow.find('.non-selected-attrvalue[data-attribute-value-id="' + id + '"]').remove();;
 		})
-//				$('#attribute-table').find('.edit-attribute-id').each(function(){
-//					var attributeIdCheck = $(this).val();
-//					var attributeIdMatch = (attributeIdCheck ==attributeId) ;
-//				
-//					if(attributeIdMatch){
-//						
-//						var $attributeRow = $(this).closest('tr');
-//						var nRow = $attributeRow[0];
-//						$attributeTable.dataTable().fnUpdate( attrValuesString, nRow, 2, false);
-//						
-//					}
-//				});
+
 		ModalUtil.closeModal($addUpdateAttributeModal);
 	});
 });
@@ -124,7 +114,6 @@ $addUpdateAttributeModal.on("click",'#create-attr',function(){
 	var $form = $('#editAttributeForm[data-save-attr-id="'+attributeId+'"]');
 	var attributeData = $form.serialize();
 	$form.find('.attributeId').val();
-	var attributeName = $form.find('#attributeName').val();
 	var attributeValue = $addUpdateAttributeModal.find('#attributeValue').val().toUpperCase();
 	
 	var isValid = ritsu.validate($form);
@@ -142,7 +131,7 @@ $addUpdateAttributeModal.on("click",'#create-attr',function(){
 					data: {attributeId : attributeId, attributeValue: attributeValue},
 					success : function(attrValue) {
 							var $attributeRow = $('#attribute-table').find('.attribute-row[data-attribute-id="' + attributeId + '"]');
-							$attributeRow.find('.value-td').append('<span class="badge non-selected-attrvalue" data-attribute-value-id="' + attrValue.attributeValueId + '">' + attrValue.attributeValue + '</span>');
+							$attributeRow.find('.value-td').append('<span class="badge non-selected-attrvalue" data-attribute-value-id="' + attrValue.attributeValue + '">' + attrValue.attributeValue + '</span>');
 							ModalUtil.closeModal($addUpdateAttributeModal);
 					},
 				}); 
@@ -155,5 +144,3 @@ $addUpdateAttributeModal.on("click",'#create-attr',function(){
 		});
 	}
 });
-
-//# sourceURL=attribute-setup.js

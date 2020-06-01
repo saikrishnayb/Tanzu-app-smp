@@ -472,27 +472,51 @@
 		 	val.IS_DELETED = 'N'		
 	</select>
 	
-	<update id="updateAttribute">
-		UPDATE SMC.OBM_ATTRIBUTE SET ATTRIBUTE_NAME=#{attributeName}
-		WHERE ATTRIBUTE_ID=#{attributeId}
-	</update>
-	
 	<update id="updateAttributeValues">
 		UPDATE 	SMC.OBM_ATTRIBUTE_VALUE 
 		SET 	IS_DELETED = 'Y'
 		WHERE  	ATTRIBUTE_ID = #{attributeId}
-		<if test="attrValueIds != null">
-           	AND ATTRIBUTE_VALUE_ID NOT IN 
-		   	<foreach collection="attrValueIds" item="id" separator="," open="(" close=")">#{id}</foreach>
-         </if>
+        AND 	ATTRIBUTE_VALUE IN 
+		<foreach collection="attributeValues" item="id" separator="," open="(" close=")">#{id}</foreach>
 	</update>
 	
-	<insert id="addAttribute" useGeneratedKeys="true" keyProperty="attributeValue.attributeValueId">
-		INSERT INTO 
-					SMC.OBM_ATTRIBUTE_VALUE 
-					(ATTRIBUTE_ID, ATTRIBUTE_VALUE)
- 		VALUES 		(#{attributeId}, #{attributeValue.attributeValue})
-	</insert>
+	<update id="addOrUpdateAttribute">
+		MERGE INTO SMC.OBM_ATTRIBUTE_VALUE AS attributeValues USING
+		(
+		VALUES
+			( 
+				CAST(#{attributeId} AS INTEGER),
+				CAST(#{attributeValue.attributeValue} AS VARCHAR(30))
+			)
+		)
+		AS input
+		(
+			ATTRIBUTE_ID, ATTRIBUTE_VALUE
+		)
+		ON   input.ATTRIBUTE_ID = attributeValues.ATTRIBUTE_ID  
+		AND  input.ATTRIBUTE_VALUE = attributeValues.ATTRIBUTE_VALUE
+		WHEN MATCHED THEN UPDATE SET attributeValues.IS_DELETED= 'N'
+		WHEN NOT MATCHED THEN
+		INSERT
+			(
+			ATTRIBUTE_ID,
+			ATTRIBUTE_VALUE,
+			IS_DELETED
+			)
+		 VALUES
+			(
+			input.ATTRIBUTE_ID,
+			input.ATTRIBUTE_VALUE,
+			'N'
+			)
+	</update>
+	
+	<select id="getDeletedFlagValue" resultType="String">
+	 	SELECT   IS_DELETED AS deletedFlag
+		FROM     SMC.OBM_ATTRIBUTE_VALUE
+		WHERE    ATTRIBUTE_ID=#{attributeId}
+		AND 	 ATTRIBUTE_VALUE = #{attributeValue}
+	</select> 
 	
  	<select id="getAllAttributeValues" resultType="String">
 	 	SELECT   TRIM(ATTRIBUTE_VALUE)

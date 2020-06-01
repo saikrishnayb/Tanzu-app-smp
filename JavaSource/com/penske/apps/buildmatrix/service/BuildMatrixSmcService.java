@@ -38,7 +38,7 @@ public interface BuildMatrixSmcService {
 	
 	public void saveOfflineDates(BuildMatrixBodyPlant plantData);
 	
-	public BuildAttributeValue addAttribute(int attributeId, String attributeValue);
+	public BuildAttributeValue addOrUpdateAttribute(int attributeId, String attributeValue);
 	
 	public boolean checkForUniqueAttributeValue(int attributeId, String attributeValue);
 	
@@ -83,7 +83,7 @@ public interface BuildMatrixSmcService {
 
 	BuildAttribute getBuildAttributeById(int attributeId);
 
-	void updateAttribute(int attributeId, List<Integer> attrValueIds);
+	void updateAttribute(int attributeId, List<String> attributeValues);
 	
 	public SXSSFWorkbook downloadProductionSlotResultsDocument(int buildId);
 	
