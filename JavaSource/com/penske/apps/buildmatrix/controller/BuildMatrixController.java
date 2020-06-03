@@ -24,6 +24,7 @@ import com.penske.apps.buildmatrix.domain.BodyPlantCapability;
 import com.penske.apps.buildmatrix.domain.BuildAttribute;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlotType;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
+import com.penske.apps.buildmatrix.domain.BusinessAward;
 import com.penske.apps.buildmatrix.domain.CroOrderKey;
 import com.penske.apps.buildmatrix.domain.FreightMileage;
 import com.penske.apps.buildmatrix.domain.PlantProximity;
@@ -320,6 +321,8 @@ public class BuildMatrixController {
 		int chassisAvailable = totalChassis - excludedChassis;
 		List<BuildAttribute> attributes = buildMatrixSmcService.getAttributesForBuild();
 		
+		Map<String,Map<String,BusinessAward>> buildMixMap = buildMatrixSmcService.getExistingBuildMixData(existingBuild.getBuildId());
+		
 		int reeferUnits = selectedOrders.stream().filter(order->order.isHasReeferUnits()).collect(Collectors.summingInt(order->order.getOrderTotalQuantity()));
 		int reardoorUnits = selectedOrders.stream().filter(order->order.isHasReardoorUnits()).collect(Collectors.summingInt(order->order.getOrderTotalQuantity()));
 		int liftgateUnits = selectedOrders.stream().filter(order->order.isHasLiftgateUnits()).collect(Collectors.summingInt(order->order.getOrderTotalQuantity()));
@@ -330,7 +333,8 @@ public class BuildMatrixController {
 		model.addObject("attributes", attributes);
 		model.addObject("reeferUnits", reeferUnits);
 		model.addObject("reardoorUnits", reardoorUnits);
-		model.addObject("liftgateUnits", liftgateUnits); 
+		model.addObject("liftgateUnits", liftgateUnits);
+		model.addObject("buildMixMap", buildMixMap);
 		
 		return model;
 	}

@@ -1,6 +1,7 @@
 package com.penske.apps.buildmatrix.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
@@ -12,6 +13,7 @@ import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlotDate;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlotType;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
+import com.penske.apps.buildmatrix.domain.BusinessAward;
 import com.penske.apps.buildmatrix.domain.CroOrderKey;
 import com.penske.apps.buildmatrix.domain.FreightMileage;
 import com.penske.apps.buildmatrix.domain.PlantProximity;
@@ -110,5 +112,7 @@ public interface BuildMatrixSmcService {
 	public List<BuildMatrixSlotDate> getSlotMaintenanceSummary(int slotTypeId,int selectedYear);
 
 	public void updateBuildParams(BuildSummary summary);
+
+	public Map<String, Map<String, BusinessAward>> getExistingBuildMixData(int buildId);
 	
 }

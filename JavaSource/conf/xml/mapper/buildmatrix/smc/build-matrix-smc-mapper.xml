@@ -367,6 +367,19 @@
  		WHERE RUN_ID = #{buildId}
 	</delete>
 	
+	<select id="getBusinessAwards" resultType="com.penske.apps.buildmatrix.domain.BusinessAward">
+		SELECT	
+			RUN_ID as buildId,
+			GROUP_KEY as groupKey, 
+			AWARD_KEY as attributeValueKey, 
+			AWARD_KEY_ORDER as awardOrder, 
+			AWARD_PERCENTAGE as percentage, 
+			AWARD_QUANTITY as quantity, 
+			AWARD_TYPE as awardType
+		FROM
+			SMC.OBM_BUSINESS_AWARD
+		WHERE RUN_ID = #{buildId}
+	</select>
 	<!-- OEM MIX MAINTENANCE -->
 	<select id="getBusinessAwardDefaults" resultType="com.penske.apps.buildmatrix.domain.BusinessAwardDefault">
 		SELECT	

@@ -49,6 +49,7 @@
 	      				<c:set var="isLiftgate" value="${false}" />
 	      				<c:set var="isRearDoor" value="${false}" />
 	      				<c:set var="isReefer" value="${false}" />
+	      				<c:set var="awardByAttributeKey" value="${buildMixMap.get(attribute.groupKey)}" />
 	      				<c:choose>
 							<c:when test='${attribute.attributeKey eq "LIFTGATEMAKE"}'>
 								<c:set var="isLiftgate" value="${true}" />
@@ -90,28 +91,44 @@
 		      												<c:set var="rowClass" value="even"/>
 		      											</c:otherwise>
 		      										</c:choose>
+		      										<c:set var="existingAward" value="${awardByAttributeKey.get(attributeValue.attributeValue)}"/>
+		      										<c:choose>
+		      											<c:when test="${!empty existingAward}">
+		      												<c:set var="percentValue" value="${existingAward.percentage}"/>
+		      											</c:when>
+		      											<c:otherwise>
+		      												<c:set var="percentValue" value="${attributeValue.defaultPercentage}"/>
+		      											</c:otherwise>
+		      										</c:choose>
 		      										<tr class="attribute-value-row ${rowClass}" data-attribute-value="${attributeValue.attributeValue}">
 		      											<td class="attribute-value-td">${attributeValue.attributeValue}</td>
 		      											<td class="attribute-percentage-td unit-percent-input">
-		      												<input type="text" class="attribute-percentage text-align-right numbers-only" value="${attributeValue.defaultPercentage}" />
+		      												<input type="text" class="attribute-percentage text-align-right numbers-only" value="${percentValue}" />
 		      												<span class="percent-sign">%</span>
 		      											</td>
 		      											<!-- <td>%<td> -->
 		      											<td class="attribute-units-td unit-percent-input">
 			      											<c:choose>
-			      												<c:when test="${isReefer}">
-			      													<c:set var="unitsValue" value="${attributeValue.getUnitsByPercentage(reeferUnits)}"/>
-			      												</c:when>
-			      												<c:when test="${isRearDoor}">
-			      													<c:set var="unitsValue" value="${attributeValue.getUnitsByPercentage(reardoorUnits)}"/>
-			      												</c:when>
-			      												<c:when test="${isLiftgate}">
-			      													<c:set var="unitsValue" value="${attributeValue.getUnitsByPercentage(liftgateUnits)}"/>
+			      												<c:when test="${!empty existingAward}">
+			      													<c:set var="unitsValue" value="${existingAward.quantity}"/>
 			      												</c:when>
 			      												<c:otherwise>
-			      													<c:set var="unitsValue" value="${attributeValue.getUnitsByPercentage(bodiesOnOrder)}"/>
-			      												</c:otherwise>
-			      											</c:choose>
+					      											<c:choose>
+					      												<c:when test="${isReefer}">
+					      													<c:set var="unitsValue" value="${attributeValue.getUnitsByPercentage(reeferUnits)}"/>
+					      												</c:when>
+					      												<c:when test="${isRearDoor}">
+					      													<c:set var="unitsValue" value="${attributeValue.getUnitsByPercentage(reardoorUnits)}"/>
+					      												</c:when>
+					      												<c:when test="${isLiftgate}">
+					      													<c:set var="unitsValue" value="${attributeValue.getUnitsByPercentage(liftgateUnits)}"/>
+					      												</c:when>
+					      												<c:otherwise>
+					      													<c:set var="unitsValue" value="${attributeValue.getUnitsByPercentage(bodiesOnOrder)}"/>
+					      												</c:otherwise>
+					      											</c:choose>
+					      										</c:otherwise>
+					      									</c:choose>
 			      											<input type="text" class="attribute-units text-align-right numbers-only" value="${unitsValue}"/>
 			      											<span class="units-label">Units</span>
 			      										</td>

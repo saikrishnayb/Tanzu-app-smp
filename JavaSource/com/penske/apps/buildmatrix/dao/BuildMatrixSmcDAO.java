@@ -132,5 +132,7 @@ public interface BuildMatrixSmcDAO {
 	public int getBuildMaximumWeeksAfter();
 
 	public void updateBuildParams(@Param("summary") BuildSummary summary);
+
+	public List<BusinessAward> getBusinessAwards(@Param("buildId") int buildId);
 	
 }

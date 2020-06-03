@@ -42,8 +42,8 @@
 									<td>
 										<c:choose>
 											<c:when test="${buildHistory.showReworkBtn()}">
-												<a class="buttonSecondary rework-btn">Rework Build</a>
-												<a class="buttonSecondary rework-btn">Cancel Build</a>
+												<a class="buttonSecondary rework-btn">Rework</a>
+												<a class="buttonSecondary rework-btn">Cancel</a>
 											</c:when>
 											<c:otherwise></c:otherwise>
 										</c:choose>

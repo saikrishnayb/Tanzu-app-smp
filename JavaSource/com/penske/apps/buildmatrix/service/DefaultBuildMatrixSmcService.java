@@ -656,4 +656,18 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	public void updateBuildParams(BuildSummary summary) {
 		buildMatrixSmcDAO.updateBuildParams(summary);	
 	}
+	
+	@Override
+	public Map<String, Map<String, BusinessAward>> getExistingBuildMixData(int buildId) {
+		List<BusinessAward> businessAwards = buildMatrixSmcDAO.getBusinessAwards(buildId);
+		Map<String, Map<String, BusinessAward>> buildMixMap = new HashMap<>();
+		
+		for(BusinessAward award: businessAwards) {
+			Map<String, BusinessAward> awardByAwardKey = buildMixMap.computeIfAbsent(award.getGroupKey(), map-> new HashMap<>());
+			awardByAwardKey.put(award.getAttributeValueKey(), award);
+			buildMixMap.put(award.getGroupKey(), awardByAwardKey);
+		}
+		
+		return buildMixMap;
+	}
 }
