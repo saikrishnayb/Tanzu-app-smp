@@ -256,3 +256,37 @@ table.dataTable thead th{
 button.ui-datepicker-close {
     display: inline-block !important;
 }
+.static-header {
+	font-weight: bold !important;
+}
+
+.sub-list {
+	list-style: none !important;
+	margin: 0px 0px 0px 30px !important
+}
+
+.sub-list-item {
+	padding: 4px;
+}
+
+.sub-list-item a {
+	clear: both;
+	font-weight: normal;
+	line-height: 1.42857143;
+	color: #333;
+}
+
+.sub-list-item a:hover{
+    text-decoration: none;
+    color: #262626;
+    background-color: #f5f5f5;
+}
+
+#region-div{
+	text-align: left;
+}
+
+.region-value{
+	list-style: none;
+	padding-bottom: 10px;
+}
