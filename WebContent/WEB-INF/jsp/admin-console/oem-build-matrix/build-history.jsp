@@ -24,6 +24,7 @@
 					<table id="build-history-table" class="plant-view" data-show-start-build-btn="${showStartBuildBtn}">
 						<thead>
 							<tr>
+								<th></th>
 								<th class="leftAlign" id="build-number">Build #</th>
 								<th class="leftAlign">Unit Qty</th>
 								<th class="leftAlign">Status</th>
@@ -38,6 +39,15 @@
 						<tbody>
 							<c:forEach items="${buildHistoryList}" var="buildHistory">
 								<tr class="user-row">
+									<td>
+										<c:choose>
+											<c:when test="${buildHistory.showReworkBtn()}">
+												<a class="buttonSecondary rework-btn">Rework Build</a>
+												<a class="buttonSecondary rework-btn">Cancel Build</a>
+											</c:when>
+											<c:otherwise></c:otherwise>
+										</c:choose>
+									</td>
 									<td class="leftAlign">
 										<c:choose>
 											<c:when test='${buildHistory.buildStatus.code eq "P"}'>

@@ -185,7 +185,10 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	@Override
 	public BuildSummary startNewBuild(List<ApprovedOrder> selectedOrders, UserContext userContext) {
 		int bodiesOnOrder = selectedOrders.stream().collect(summingInt(order->order.getOrderTotalQuantity()));
-		BuildSummary newBuild = new BuildSummary(bodiesOnOrder, userContext);
+		int maxBeforeWeeks = buildMatrixSmcDAO.getBuildMaximumWeeksBefore();
+		int maxAfterWeeks = buildMatrixSmcDAO.getBuildMaximumWeeksAfter();
+		
+		BuildSummary newBuild = new BuildSummary(bodiesOnOrder, userContext, maxBeforeWeeks, maxAfterWeeks);
 		buildMatrixSmcDAO.insertNewBuild(newBuild);
 		int buildId = newBuild.getBuildId();
 		for(ApprovedOrder order: selectedOrders) {
@@ -649,4 +652,8 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		return buildMatrixSlotSummary;
 	}
 	
+	@Override
+	public void updateBuildParams(BuildSummary summary) {
+		buildMatrixSmcDAO.updateBuildParams(summary);	
+	}
 }

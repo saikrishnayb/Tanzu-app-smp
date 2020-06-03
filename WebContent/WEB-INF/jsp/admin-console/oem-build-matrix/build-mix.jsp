@@ -23,14 +23,23 @@
 	      		</div>
 	      		<div class="row">
 	        		<div class="col-xs-12 build-mix-top" data-bodies-on-order="${bodiesOnOrder}" >
-	        			<div class='badge-div' >
-	          				<label>Bodies on Order</label> <span class="badge">${bodiesOnOrder}</span>
-	          				<label>Chassis Available</label> <span class="badge">${chassisAvailable}</span>
-	          			</div>
-	          			<div class="btn-div floatRight">
-	          				<a id="back-btn" href="${baseAppUrl}/admin-console/oem-build-matrix/available-chassis-summary?buildId=${buildId}" class="buttonSecondary">Back</a>
-	          				<a id="submit-btn" class="buttonPrimary buttonDisabled" data-build-id="${buildId}">Submit</a>
-	          			</div>
+		        		<div class="row">
+		        			<div class='badge-div col-lg-4' >
+		          				<label>Bodies on Order</label> <span class="badge">${bodiesOnOrder}</span>
+		          				<label>Chassis Available</label> <span class="badge">${chassisAvailable}</span>
+		          			</div>
+		          			<div class='weeks-badge-div col-lg-4' >
+		          				<label>Build Weeks Before</label> <span class="badge max-weeks-before-badge">${summary.maxWeeksBefore}</span>
+		          				<label>Build Weeks After</label> <span class="badge max-weeks-after-badge">${summary.maxWeeksAfter}</span>
+		          			</div>
+		          			<div class="btn-div col-lg-4">
+		          				<div class="floatRight">
+			          				<a id="update-build-btn" class="secondaryLink">Update Build Parameters</a>
+			          				<a id="back-btn" href="${baseAppUrl}/admin-console/oem-build-matrix/available-chassis-summary?buildId=${summary.buildId}" class="buttonSecondary">Back</a>
+			          				<a id="submit-btn" class="buttonPrimary buttonDisabled" data-build-id="${summary.buildId}">Submit</a>
+			          			</div>
+		          			</div>
+		        		</div>
 	        		</div>
 	      		</div>
 	      		<div class="row">
@@ -162,7 +171,8 @@
 	      			</c:forEach>
 	      			</div> 			
 	      		</div>
-				<form id="build-mix-form" name="buildMixForm" data-build-id="${buildId}"></form>
+				<form id="build-mix-form" name="buildMixForm" data-build-id="${summary.buildId}"></form>
+				<div id="build-mix-modal" class="modal"></div>
 			</div>
 		</div>
 	</div>

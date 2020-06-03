@@ -7,10 +7,16 @@ $buildHistoryDataTable = $buildHistoryTable.DataTable({ //All of the below are o
 	"bStateSave" : false, //To retrieve the data on click of back button
 	"sPaginationType" : "two_button",
 	"aaSorting" : [], //default sort column
-	"aoColumnDefs" : [ {
-		'bSortable' : false,
-		'aTargets' : [ 8 ]
-	} ],
+	"aoColumnDefs" : [ 
+		{
+			'bSortable' : false,
+			'aTargets' : [ 0,8 ]
+		},
+		{
+			'width': 210,
+			'aTargets':[0]
+				
+		}],
 	"dom": '<"build-history-table-top"l>tipr',
 	"bLengthChange" : true, //enable change of records per page, not recommended
 	"bFilter" : false, //Allows dynamic filtering of results, do not enable if using ajax for pagination

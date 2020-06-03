@@ -108,5 +108,7 @@ public interface BuildMatrixSmcService {
 	public List<BuildMatrixBodyPlant> getAllBodyPlantsforSlotMaintenance();
 	
 	public List<BuildMatrixSlotDate> getSlotMaintenanceSummary(int slotTypeId,int selectedYear);
+
+	public void updateBuildParams(BuildSummary summary);
 	
 }

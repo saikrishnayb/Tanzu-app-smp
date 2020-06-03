@@ -2,11 +2,12 @@
 	margin-bottom: 10px;
 }
 
-.build-mix-top  div {
-	display: inline-block;
+.badge-div {
+	margin-bottom: 10px;
 }
 
-.build-mix-top .badge-div .badge {
+.build-mix-top .badge-div .badge,
+.build-mix-top .weeks-badge-div .badge{
 	margin-right: 10px;
 }
 

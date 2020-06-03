@@ -206,7 +206,9 @@
 	        submitter.FIRST_NAME||' '||submitter.LAST_NAME AS submittedByName,
 	        SUBMITTED_DATE as submittedDate,
 	        RUN_START_DATE as runStartDate,
-	        RUN_END_DATE as runEndDate
+	        RUN_END_DATE as runEndDate,
+	        MAXIMUM_WEEKS_BEFORE_ALLOWED as maxWeeksBefore,
+			MAXIMUM_WEEKS_AFTER_ALLOWED as maxWeeksAfter
 		FROM SMC.OBM_RUN_SUMMARY runSummary
 		LEFT JOIN SMC.SMC_USER_MASTER starter ON starter.SSO = runSummary.STARTED_BY
 		LEFT JOIN SMC.SMC_USER_MASTER submitter ON submitter.SSO = runSummary.SUBMITTED_BY
@@ -224,12 +226,16 @@
  			RUN_STATUS,
  			UNIT_QTY,
  			STARTED_BY,
- 			STARTED_DATE
+ 			STARTED_DATE,
+ 			MAXIMUM_WEEKS_BEFORE_ALLOWED,
+			MAXIMUM_WEEKS_AFTER_ALLOWED
  		) VALUES (
  			#{newBuild.buildStatus.code},
  			#{newBuild.quantity},
  			#{newBuild.startedBySso},
- 			CURRENT TIMESTAMP
+ 			CURRENT TIMESTAMP,
+ 			#{newBuild.maxWeeksBefore},
+ 			#{newBuild.maxWeeksAfter}
  		)
 	</insert>
 	
@@ -258,7 +264,9 @@
 	        submitter.FIRST_NAME||' '||submitter.LAST_NAME AS submittedByName,
 	        SUBMITTED_DATE as submittedDate,
 	        RUN_START_DATE as runStartDate,
-	        RUN_END_DATE as runEndDate
+	        RUN_END_DATE as runEndDate,
+	        MAXIMUM_WEEKS_BEFORE_ALLOWED as maxWeeksBefore,
+			MAXIMUM_WEEKS_AFTER_ALLOWED as maxWeeksAfter
 		FROM SMC.OBM_RUN_SUMMARY runSummary
 		LEFT JOIN SMC.SMC_USER_MASTER starter ON starter.SSO = runSummary.STARTED_BY
 		LEFT JOIN SMC.SMC_USER_MASTER submitter ON submitter.SSO = runSummary.SUBMITTED_BY
@@ -273,6 +281,15 @@
 			SUBMITTED_DATE = CURRENT_TIMESTAMP
 		WHERE
 			RUN_ID = #{buildId}
+	</update>
+	
+	<update id="updateBuildParams">
+		UPDATE SMC.OBM_RUN_SUMMARY
+		SET
+			MAXIMUM_WEEKS_BEFORE_ALLOWED = #{summary.maxWeeksBefore},
+			MAXIMUM_WEEKS_AFTER_ALLOWED = #{summary.maxWeeksAfter}
+		WHERE
+			RUN_ID = #{summary.buildId}
 	</update>
 	
 	<!-- CRO BUILD REQUESTS -->
@@ -663,4 +680,17 @@
 		ORDER BY PLANT.PLANT_MANUFACTURER, PLANT.PLANT_CITY
 	</select>
 	
+	<select id="getBuildMaximumWeeksBefore" resultType="int">
+		SELECT
+		MAXIMUM_WEEKS_BEFORE_ALLOWED 
+		FROM SMC.OBM_RUN_WEEK_THRESHOLD
+		FETCH FIRST 1 ROWS ONLY
+	</select>
+	
+	<select id="getBuildMaximumWeeksAfter" resultType="int">
+		SELECT
+		MAXIMUM_WEEKS_AFTER_ALLOWED 
+		FROM SMC.OBM_RUN_WEEK_THRESHOLD
+		FETCH FIRST 1 ROWS ONLY
+	</select>
 </mapper>

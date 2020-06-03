@@ -1,5 +1,8 @@
 var bodiesOnOrder = $('.build-mix-top').data('bodies-on-order');
 var $submitBtn = $('#submit-btn');
+var $buildMixModal = $('#build-mix-modal');
+
+ModalUtil.initializeModal($buildMixModal);
 
 selectCurrentNavigation("tab-oem-build-matrix", "");
 
@@ -125,6 +128,20 @@ $submitBtn.on('click', function(){
     })
 	
 });
+
+$('#update-build-btn').on('click', function(){
+	var buildId = $('#build-mix-form').data('build-id');
+	
+	var $getUpdateBuildContentPromise = $.ajax({
+		type: "GET",
+		url: baseBuildMatrixUrl + '/get-update-build-params',
+		data: {buildId: buildId}
+	});
+	$getUpdateBuildContentPromise.done(function(data){
+		$buildMixModal.html(data);
+	    ModalUtil.openModal($buildMixModal);
+	});
+})
 
 function calculateUnits(percentage, $container, isReefer, isRearDoor, isLiftgate){
 	if(isReefer) {

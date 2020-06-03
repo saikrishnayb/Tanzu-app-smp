@@ -26,6 +26,7 @@ import com.penske.apps.buildmatrix.domain.BodyPlantCapability;
 import com.penske.apps.buildmatrix.domain.BuildAttribute;
 import com.penske.apps.buildmatrix.domain.BuildAttributeValue;
 import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
+import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.PlantProximity;
 import com.penske.apps.buildmatrix.model.BuildMixForm;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm;
@@ -266,5 +267,34 @@ public class BuildMatrixRestController {
 							     @RequestParam("capabilityUpdatelist[]") List<String> capabilityUpdatelist) {
 		String attributesCommaSeparated = capabilityUpdatelist.stream().collect(Collectors.joining(","));
 		buildMatrixSmcService.updateCapability(plantId, attributeKey, attributesCommaSeparated);
+	}
+	
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping("/get-update-build-params")
+	public ModelAndView getUpdateBuildParams(@RequestParam("buildId") int buildId) {
+		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/modal/update-build-params");
+		BuildSummary summary = buildMatrixSmcService.getBuildSummary(buildId);
+		
+		if(summary == null)
+			throw new IllegalArgumentException("Could not find build with the provided Build ID - " + buildId);
+		
+		model.addObject("summary", summary);
+		model.addObject("buildId", buildId);
+
+		return model;
+	}
+	
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping("/update-build-params")
+	public void updateBuildParams(@RequestParam("buildId") int buildId, @RequestParam("maxWeeksBefore") int maxWeeksBefore, @RequestParam("maxWeeksAfter") int maxWeeksAfter) {
+		BuildSummary summary = buildMatrixSmcService.getBuildSummary(buildId);
+		
+		if(summary == null)
+			throw new IllegalArgumentException("Could not find build with the provided Build ID - " + buildId);
+		
+		summary.setMaxWeeksBefore(maxWeeksBefore);
+		summary.setMaxWeeksAfter(maxWeeksAfter);
+		
+		buildMatrixSmcService.updateBuildParams(summary);
 	}
 }

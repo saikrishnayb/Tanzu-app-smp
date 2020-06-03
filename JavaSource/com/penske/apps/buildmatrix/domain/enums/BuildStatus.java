@@ -8,6 +8,7 @@ public enum BuildStatus implements MappedEnum
 	SUBMITTED("S", "Submitted", "Build was submitted and waiting to be picked up by the reservation rules engine"),
 	RUNNING("R", "Running", "Reservation engine is working to generate a build plan based on the OEM mix,Plant Rules,Dates,and District proximity"),
 	COMPLETED("C", "Completed", "Build has run successfully and all requests have been fulfilled"),
+	APPROVED("A", "Approved", "Build has run completed and approved by vehicle supply"),
 	FAILED("F", "Failed", "A technical / IT error occured during the build process - We don't anticipate this to be a common outcome but are calling out any possible outcomes on this page"),
 	;
 

@@ -17,14 +17,18 @@ public class BuildSummary {
 	private Date submittedDate;
 	private Date runStartDate;
 	private Date runEndDate;
+	private int maxWeeksBefore;
+	private int maxWeeksAfter;
 	
 	protected BuildSummary() {}
 	
-	public BuildSummary(int quantity, UserContext userContext) {
+	public BuildSummary(int quantity, UserContext userContext, int maxWeeksBefore, int maxWeeksAfter) {
 		this.quantity = quantity;
 		this.buildStatus = BuildStatus.STARTED;
 		this.startedByName = userContext.getFirstName() + " " + userContext.getLastName();
 		this.startedBySso = userContext.getUserSSO();
+		this.maxWeeksBefore = maxWeeksBefore;
+		this.maxWeeksAfter = maxWeeksAfter;
 	}
 	
 	@Override
@@ -41,7 +45,14 @@ public class BuildSummary {
 	}
 	
 	public boolean showViewReportBtn() {
-		if(BuildStatus.COMPLETED == buildStatus)
+		if(BuildStatus.COMPLETED == buildStatus || BuildStatus.APPROVED == buildStatus)
+			return true;
+		else
+			return false;
+	}
+	
+	public boolean showReworkBtn() {
+		if(BuildStatus.COMPLETED == buildStatus && BuildStatus.APPROVED != buildStatus)
 			return true;
 		else
 			return false;
@@ -95,4 +106,21 @@ public class BuildSummary {
 	public void setQuantity(int quantity) {
 		this.quantity = quantity;
 	}
+
+	public int getMaxWeeksBefore() {
+		return maxWeeksBefore;
+	}
+
+	public void setMaxWeeksBefore(int maxWeeksBefore) {
+		this.maxWeeksBefore = maxWeeksBefore;
+	}
+
+	public int getMaxWeeksAfter() {
+		return maxWeeksAfter;
+	}
+
+	public void setMaxWeeksAfter(int maxWeeksAfter) {
+		this.maxWeeksAfter = maxWeeksAfter;
+	}
+	
 }

@@ -326,7 +326,7 @@ public class BuildMatrixController {
 		
 		model.addObject("bodiesOnOrder", bodiesOnOrder);
 		model.addObject("chassisAvailable", chassisAvailable);
-		model.addObject("buildId", buildId);
+		model.addObject("summary", existingBuild);
 		model.addObject("attributes", attributes);
 		model.addObject("reeferUnits", reeferUnits);
 		model.addObject("reardoorUnits", reardoorUnits);

@@ -127,4 +127,10 @@ public interface BuildMatrixSmcDAO {
 	
 	public List<BuildMatrixSlotDate> getSlotMaintenanceSummary(@Param("slotTypeId") int slotTypeId,@Param("selectedYear")int selectedYear);
 	
+	public int getBuildMaximumWeeksBefore();
+
+	public int getBuildMaximumWeeksAfter();
+
+	public void updateBuildParams(@Param("summary") BuildSummary summary);
+	
 }
