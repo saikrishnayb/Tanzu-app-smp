@@ -18,6 +18,7 @@ import com.penske.apps.buildmatrix.domain.CroOrderKey;
 import com.penske.apps.buildmatrix.domain.FreightMileage;
 import com.penske.apps.buildmatrix.domain.PlantProximity;
 import com.penske.apps.buildmatrix.domain.ProductionSlotResult;
+import com.penske.apps.buildmatrix.domain.RegionPlantAssociation;
 import com.penske.apps.buildmatrix.model.BuildMixForm;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm;
 import com.penske.apps.suppliermgmt.model.UserContext;
@@ -28,6 +29,7 @@ public interface BuildMatrixSmcService {
 	
 	public List<String> getAllOEMNames();
 
+	// PLANT MAINTENANCE WORKFLOW //
     public List<FreightMileage> getFreightMileageData(int plantId);
 	
     public List<PlantProximity> getPlantProximity(int plantId);
@@ -40,6 +42,11 @@ public interface BuildMatrixSmcService {
 	
 	public void saveOfflineDates(BuildMatrixBodyPlant plantData);
 	
+	public List<RegionPlantAssociation> getRegionAssociationData(int plantId);
+	
+	public void savePlantRegionAssociation(List<RegionPlantAssociation> regionPlantAssociationList);
+	
+	// ATTRIBUTE MAINTENANCE //
 	public BuildAttributeValue addOrUpdateAttribute(int attributeId, String attributeValue);
 	
 	public boolean checkForUniqueAttributeValue(int attributeId, String attributeValue);

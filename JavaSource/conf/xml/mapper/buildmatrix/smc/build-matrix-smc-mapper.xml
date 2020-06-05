@@ -160,6 +160,51 @@
 			<foreach collection="offlineDateToRemove" item="offlineDateId" separator="," open="(" close=")">#{offlineDateId}</foreach>
 	</update>
 	
+	<select id="getRegionAssociationData" resultType="com.penske.apps.buildmatrix.domain.RegionPlantAssociation">
+		SELECT
+			DISTINCT mileage.REGION AS region,
+			mileage.REGION_DESC AS regionDesc,
+			reg.ASSOC_ID AS regionAssociationId,
+			mileage.PLANT_ID AS plantId,
+			CASE WHEN reg.REGION <![CDATA[<>]]> '' THEN 'Y' ELSE 'N' END as isAssociated
+		FROM OBM_FREIGHT_MILEAGE mileage
+			LEFT JOIN OBM_REGION_PLANT_ASSOCIATION reg ON mileage.REGION =reg.REGION
+			AND mileage.PLANT_ID =reg.PLANT_ID
+		WHERE mileage.PLANT_ID=#{plantId}
+			AND mileage.REGION <![CDATA[<>]]> ''
+		ORDER BY mileage.REGION
+	</select>
+	
+	<update id="savePlantRegionAssociation">
+		MERGE INTO SMC.OBM_REGION_PLANT_ASSOCIATION AS regionPlntAsso USING
+		(
+		VALUES
+		<foreach collection="regionPlantAssociationData" item="data" separator="," >
+			(
+				CAST(#{data.plantId} AS INTEGER),
+				CAST(#{data.region} AS VARCHAR(50))
+			)
+		</foreach>
+		)
+		AS input
+		(
+			PLANT_ID,REGION
+		)
+		ON regionPlntAsso.PLANT_ID=input.PLANT_ID AND regionPlntAsso.REGION=input.REGION
+		WHEN MATCHED THEN DELETE
+		WHEN NOT MATCHED THEN
+		INSERT
+			(
+			PLANT_ID,
+			REGION
+			)
+		 VALUES
+			(
+			input.PLANT_ID,
+			input.REGION
+			)
+	</update>
+	
 	<!-- PRODUCTION SLOT RESULTS -->
 	<select id="getProductionSlotResults" resultType="com.penske.apps.buildmatrix.domain.ProductionSlotResult">
 		SELECT

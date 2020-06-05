@@ -43,7 +43,7 @@
 									<li><a class="set-offline-date" onclick="setOfflineDates(${plant.plantId})" href="#">Plant Off-line Dates</a></li>
 									<li><a class="static-header">Geographical Configuration</a>
 										<ul class="sub-list">
-											<li class="sub-list-item"><a id="region-association" plantId="${plant.plantId}">Region Association</a></li>
+											<li class="sub-list-item"><a class="region-association" plantId="${plant.plantId}">Region Association</a></li>
 											<li class="sub-list-item"><a href="district-proximity.htm?plantId=${plant.plantId}">Proximity Configuration</a></li>
 										</ul>
 									</li>

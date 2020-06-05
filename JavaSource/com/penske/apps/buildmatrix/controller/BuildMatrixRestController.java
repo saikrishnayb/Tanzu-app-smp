@@ -28,6 +28,7 @@ import com.penske.apps.buildmatrix.domain.BuildAttributeValue;
 import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.PlantProximity;
+import com.penske.apps.buildmatrix.domain.RegionPlantAssociation;
 import com.penske.apps.buildmatrix.model.BuildMixForm;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm;
 import com.penske.apps.buildmatrix.service.BuildMatrixSmcService;
@@ -267,6 +268,29 @@ public class BuildMatrixRestController {
 							     @RequestParam("capabilityUpdatelist[]") List<String> capabilityUpdatelist) {
 		String attributesCommaSeparated = capabilityUpdatelist.stream().collect(Collectors.joining(","));
 		buildMatrixSmcService.updateCapability(plantId, attributeKey, attributesCommaSeparated);
+	}
+
+	/**
+	 * Method to load plant region association setup model
+	 */
+	@SmcSecurity(securityFunction = SecurityFunction.OEM_BUILD_MATRIX)
+	@RequestMapping(value = "/get-region-association-modal", method = RequestMethod.POST)
+	public ModelAndView getRegionAssociationModalData(@RequestParam("plantId") int plantId) {
+		ModelAndView mav = new ModelAndView("/admin-console/oem-build-matrix/modal/region-association-modal");
+		mav.addObject("plantData", buildMatrixSmcService.getPlantData(plantId));
+		mav.addObject("regionData", buildMatrixSmcService.getRegionAssociationData(plantId));
+		return mav;
+	}
+
+	/**
+	 * method to save plant region association
+	 * 
+	 * @return
+	 */
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping("/save-region-association")
+	public void savePlantRegionAssociation(@RequestBody List<RegionPlantAssociation> regionPlantAssociationList) {
+		buildMatrixSmcService.savePlantRegionAssociation(regionPlantAssociationList);
 	}
 	
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })

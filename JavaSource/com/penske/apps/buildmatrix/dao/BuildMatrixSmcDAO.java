@@ -19,6 +19,7 @@ import com.penske.apps.buildmatrix.domain.CroOrderKey;
 import com.penske.apps.buildmatrix.domain.FreightMileage;
 import com.penske.apps.buildmatrix.domain.PlantProximity;
 import com.penske.apps.buildmatrix.domain.ProductionSlotResult;
+import com.penske.apps.buildmatrix.domain.RegionPlantAssociation;
 import com.penske.apps.buildmatrix.domain.enums.BuildStatus;
 import com.penske.apps.suppliermgmt.annotation.DBSmc;
 
@@ -28,7 +29,7 @@ import com.penske.apps.suppliermgmt.annotation.DBSmc;
  */
 @DBSmc
 public interface BuildMatrixSmcDAO {
-	
+	// PLANT MAINTENANCE WORKFLOW //
 	public List<FreightMileage> getFreightMileageData(int plantId);
 	
 	public List<PlantProximity> getPlantProximity(int plantId);
@@ -43,6 +44,11 @@ public interface BuildMatrixSmcDAO {
 	
 	public boolean removeOfflineDates(@Param("offlineDateToRemove")List<Integer> offlineDateToRemove);
 	
+	public List<RegionPlantAssociation> getRegionAssociationData(int plantId);
+	
+	public void savePlantRegionAssociation(@Param("regionPlantAssociationData")List<RegionPlantAssociation> regionPlantAssociationList);
+	
+	// ATTRIBUTE MAINTENANCE WORKFLOW //
 	public List<String> getDropdownOptionGrpList();
 
 	public List<String> getDropdownAttrValueList();

@@ -50,6 +50,7 @@ import com.penske.apps.buildmatrix.domain.CroOrderKey;
 import com.penske.apps.buildmatrix.domain.FreightMileage;
 import com.penske.apps.buildmatrix.domain.PlantProximity;
 import com.penske.apps.buildmatrix.domain.ProductionSlotResult;
+import com.penske.apps.buildmatrix.domain.RegionPlantAssociation;
 import com.penske.apps.buildmatrix.domain.enums.BuildStatus;
 import com.penske.apps.buildmatrix.model.BuildMixForm;
 import com.penske.apps.buildmatrix.model.BuildMixForm.AttributeRow;
@@ -134,6 +135,16 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		
 		if(!plantData.getOfflineDates().isEmpty())
 			buildMatrixSmcDAO.saveOfflineDates(plantData);
+	}
+
+	@Override
+	public List<RegionPlantAssociation> getRegionAssociationData(int plantId) {
+		return buildMatrixSmcDAO.getRegionAssociationData(plantId);
+	}
+
+	@Override
+	public void savePlantRegionAssociation(List<RegionPlantAssociation> regionPlantAssociationList) {
+		buildMatrixSmcDAO.savePlantRegionAssociation(regionPlantAssociationList);
 	}
 
 	//*****ATTRIBUTE MAINENANCE WORKFLOW *****//

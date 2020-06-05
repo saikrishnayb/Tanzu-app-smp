@@ -1,11 +1,16 @@
 var $setOfflineDatesModal = $('#set-offline-dates-modal');
+var $regionAssociationModal =$('#region-association-modal');
 var $addNewRow = $('#add-new-row');
 var commonStaticUrl = window.sessionStorage.getItem('commonStaticContainerUrl');
 var removeOfflineDate = [];
+var $saveRegionAssociation=$("#save-region-association");
+var regionChangeCnt = 0;
+var regionAssociationUpdateList = [];
 
 selectCurrentNavigation("tab-oem-build-matrix", "left-nav-maintenance-summary");
 
 ModalUtil.initializeModal($setOfflineDatesModal);
+ModalUtil.initializeModal($regionAssociationModal);
 $bodyPlantTable = $('#body-plant-maint-table').dataTable({ //All of the below are optional
 	"bPaginate" : true, //enable pagination
 	"bStateSave" : true, //To retrieve the data on click of back button
@@ -234,4 +239,92 @@ function validateDate(input) {
 		}
 	}
 }
+
+$('.region-association').on("click", function() {
+	var plantId = $(this).attr('plantId');
+	$.ajax({
+		type : "POST",
+		url : "./get-region-association-modal.htm",
+		cache : false,
+		data : {
+			plantId : plantId
+		},
+		success : function(data) {
+			$regionAssociationModal.html(data);
+			var regionData = $('.regionData').val();
+			if (regionData.length > 2) {
+				$regionAssociationModal.find('.error').hide();
+				$('.errorMsgInput').removeClass('errorMsgInput');
+				ModalUtil.openModal($regionAssociationModal);
+				regionAssociationUpdateList = [];
+			} else {
+				addErrorMessage("No region available for the plant, check the data and try again");
+			}
+		},
+	});
+});
+
+$regionAssociationModal.on("change", '.region-value-input', function() {
+	var plantId = parseInt($('.plantId').val());
+	var region = $(this).val();
+	var regionAssociationId = ($(this).attr('region-association-id') != "" && $(this).attr('region-association-id') != undefined) ? parseInt($(this).attr('region-association-id')) : "";
+	var regionPlantAssociation = {};
+	regionPlantAssociation['plantId'] = plantId;
+	regionPlantAssociation['region'] = region;
+	regionPlantAssociation['regionDesc'] = $(this).attr('region-desc');
+
+	if ($(this).is(':checked')) //user selects a region
+	{
+		if (regionAssociationId == 0 || regionAssociationId == "") {
+			//selected region needs to be inserted
+			regionPlantAssociation['isAssociated'] = 'Y';
+			regionAssociationUpdateList.push(regionPlantAssociation);
+			regionChangeCnt++;
+		} else { //in this case,user reverts selection
+			regionAssociationUpdateList = $.grep(regionAssociationUpdateList, function(e) {
+				return e.region != region;
+			});
+			regionChangeCnt--;
+		}
+	} else { //user de-selects a  region
+		if (regionAssociationId != 0 || regionAssociationId != "") {
+			//selected region needs to be deleted
+			regionPlantAssociation['isAssociated'] = 'N';
+			regionAssociationUpdateList.push(regionPlantAssociation);
+			regionChangeCnt++;
+		} else { //in this case,user reverts selection
+			regionAssociationUpdateList = $.grep(regionAssociationUpdateList, function(e) {
+				return e.region != region;
+			});
+			regionChangeCnt--;
+		}
+	}
+	//enable/disable save button
+	if (regionAssociationUpdateList.length != 0) {
+		$("#save-region-association").removeClass("buttonDisabled");
+	} else {
+		$("#save-region-association").addClass("buttonDisabled");
+	}
+
+});
+
+$regionAssociationModal.on("click", "#save-region-association", function() {
+	if (regionAssociationUpdateList && regionAssociationUpdateList.length != 0) {
+		var $saveRegionPromise = $.ajax({
+			type : "POST",
+			url : './save-region-association.htm',
+			data : JSON.stringify(regionAssociationUpdateList),
+			contentType : 'application/json'
+		});
+		$saveRegionPromise.done(function(data) {
+			ModalUtil.closeModal($regionAssociationModal);
+		});
+	}
+
+});
+
+$regionAssociationModal.on("click", "#cancel-btn", function() {
+	ModalUtil.closeModal($regionAssociationModal);
+});
+
 //# sourceURL=maintenance-summary.js
