@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.penske.apps.buildmatrix.domain.ApprovedOrder;
 import com.penske.apps.buildmatrix.domain.CroOrderKey;
+import com.penske.apps.buildmatrix.domain.ReportResultOptionModel;
 
 public interface BuildMatrixCroService {
 	
@@ -14,4 +15,8 @@ public interface BuildMatrixCroService {
 
 	public List<ApprovedOrder> getApprovedOrdersByIds(List<CroOrderKey> selectedOrderKeys);
 
+	/**
+	 * Returns a list of all the options that are on orders for the Order Report.
+	 */
+	public List<ReportResultOptionModel> getOrderReportOptions(List<Integer> orderIds);
 }

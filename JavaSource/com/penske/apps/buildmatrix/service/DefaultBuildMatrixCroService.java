@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.penske.apps.buildmatrix.dao.BuildMatrixCroDAO;
 import com.penske.apps.buildmatrix.domain.ApprovedOrder;
 import com.penske.apps.buildmatrix.domain.CroOrderKey;
+import com.penske.apps.buildmatrix.domain.ReportResultOptionModel;
 
 @Service
 public class DefaultBuildMatrixCroService implements BuildMatrixCroService {
@@ -33,6 +34,11 @@ public class DefaultBuildMatrixCroService implements BuildMatrixCroService {
 			approvedOrders.addAll(buildMatrixCroDAO.getApprovedOrdersByIds(list));
 		}
 		return approvedOrders;
+	}
+
+	@Override
+	public List<ReportResultOptionModel> getOrderReportOptions(List<Integer> orderIds) {
+		return buildMatrixCroDAO.getOrderReportOptions(orderIds);
 	}
 
 }

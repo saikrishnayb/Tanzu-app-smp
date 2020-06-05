@@ -17,14 +17,19 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.util.CellUtil;
 import org.apache.poi.xssf.streaming.SXSSFCell;
 import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
@@ -34,6 +39,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.penske.apps.adminconsole.util.ApplicationConstants;
+import com.penske.apps.buildmatrix.dao.BuildMatrixCroDAO;
 import com.penske.apps.buildmatrix.dao.BuildMatrixSmcDAO;
 import com.penske.apps.buildmatrix.domain.ApprovedOrder;
 import com.penske.apps.buildmatrix.domain.BodyPlantCapability;
@@ -50,6 +56,7 @@ import com.penske.apps.buildmatrix.domain.CroOrderKey;
 import com.penske.apps.buildmatrix.domain.FreightMileage;
 import com.penske.apps.buildmatrix.domain.PlantProximity;
 import com.penske.apps.buildmatrix.domain.ProductionSlotResult;
+import com.penske.apps.buildmatrix.domain.ReportResultOptionModel;
 import com.penske.apps.buildmatrix.domain.RegionPlantAssociation;
 import com.penske.apps.buildmatrix.domain.enums.BuildStatus;
 import com.penske.apps.buildmatrix.model.BuildMixForm;
@@ -66,6 +73,9 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	
 	@Autowired
 	BuildMatrixSmcDAO buildMatrixSmcDAO;
+	
+	@Autowired
+	BuildMatrixCroDAO buildMatrixCroDAO;
 	
 	static List<BodyPlantCapability> bodyPlantCapabilityList = new ArrayList<BodyPlantCapability>();
 	static List<BuildMatrixAttribute> buildMatrixAttributeList = new ArrayList<BuildMatrixAttribute>();
@@ -323,19 +333,55 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	public SXSSFWorkbook downloadProductionSlotResultsDocument(int buildId){
 		SXSSFWorkbook workbook = null;
 		List<ProductionSlotResult> productionSlotResult = buildMatrixSmcDAO.getProductionSlotResults(buildId);
-		 if(productionSlotResult!=null && !productionSlotResult.isEmpty()){
-			workbook = generateProductionSlotResultsExcel(productionSlotResult);
-        }
-        return workbook;
+		if (productionSlotResult != null && !productionSlotResult.isEmpty()) {
+			List<Integer> orderIds = new ArrayList<>();
+			for (ProductionSlotResult psr : productionSlotResult) {
+				if (psr != null) {
+					Integer orderId = (int) psr.getOrderId();
+					if (!orderIds.contains(orderId)) {
+						orderIds.add(orderId);
+					}
+				}
+			}
+			List<ReportResultOptionModel> reportResultOptions = buildMatrixCroDAO.getOrderReportOptions(orderIds);
+			workbook = generateProductionSlotResultsExcel(productionSlotResult, reportResultOptions);
+		}
+		return workbook;
 	}
 
-	private SXSSFWorkbook generateProductionSlotResultsExcel(List<ProductionSlotResult> productionSlotResult)
+	private SXSSFWorkbook generateProductionSlotResultsExcel(List<ProductionSlotResult> productionSlotResult, List<ReportResultOptionModel> reportResultOptions)
 	{
 		SXSSFWorkbook workbook = new SXSSFWorkbook();
 		SXSSFSheet workSheet = workbook.createSheet(ApplicationConstants.PRODUCTION_SLOT_RESULTS); // creating new work sheet
 		
 		workbook.setCompressTempFiles(true);
-		createHeader(workbook, workSheet);
+		int headerColIndex = createHeader(workbook, workSheet);
+
+		//Create a map to hold the option group description and the column offset
+		// This will allow us to map each option group to an appropriate column
+		//Also cache the options by order ID, too, for faster lookup
+		Map<Integer, Integer> groupAndColumn = new HashMap<Integer, Integer>();
+		Map<Integer, List<ReportResultOptionModel>> optionsByOrderId = new HashMap<>();
+		for(ReportResultOptionModel reportResultOptionModel : reportResultOptions)
+		{
+			Integer groupId = reportResultOptionModel.getOptionGroupId();
+			Integer orderId = reportResultOptionModel.getOrderId();
+			
+			//Add a new list if we don't have any for this order ID yet, and then add the option into the corresponding list.
+			optionsByOrderId.computeIfAbsent(orderId, k -> new ArrayList<>()).add(reportResultOptionModel);
+			
+			if(groupAndColumn.containsKey(groupId))
+				continue;
+			
+			String groupDescription = reportResultOptionModel.getOptionGroupDescription();
+			
+			workSheet.setColumnWidth(headerColIndex, 20 * 200);
+			getCell(workSheet, 0, headerColIndex).setCellValue(groupDescription);
+			//Add the column index to our map of column index by option group IDs
+			groupAndColumn.put(groupId, headerColIndex);
+			
+			headerColIndex++;
+		}
 
 		int rowId = 1;
 		if (productionSlotResult == null)
@@ -382,9 +428,40 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 				datacell10.setCellValue(productionDate);
 				formatDateCell(workbook, datacell10);
 			}
+
+			//For each of the selected options, map it to the right column
+			for (ReportResultOptionModel option : reportResultOptions)
+			{
+				if (option.getOrderId() != ProductionSlotResultData.getOrderId()) {
+					continue;
+				}
+
+				int optionColumnIndex = groupAndColumn.get(option.getOptionGroupId());
+				Cell cell = getCell(workSheet, rowId, optionColumnIndex);
+
+				//If the cell is empty, just write the value
+				if(StringUtils.isBlank(cell.getStringCellValue()))
+					cell.setCellValue(option.getOptionDescription());
+				else
+				{
+					//Otherwise, store the value, append the extra value
+					// (for multi-select groups), and write them both to the cell
+					StringBuilder sb = new StringBuilder()
+						.append(cell.getStringCellValue())
+						.append(", ")
+						.append(option.getOptionDescription());
+					cell.setCellValue(sb.toString());
+				}
+			}
+
 			rowId++;
 		}
 		return workbook;
+	}
+
+	private Cell getCell(Sheet sheet, int rowIndex, int colIndex) {
+		Row row = CellUtil.getRow(rowIndex, sheet);
+		return CellUtil.getCell(row, colIndex);
 	}
 
 	/**
@@ -393,7 +470,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	 * @param workbook
 	 * @param workSheet
 	 */
-	private void createHeader(SXSSFWorkbook workbook, SXSSFSheet workSheet) {
+	private int createHeader(SXSSFWorkbook workbook, SXSSFSheet workSheet) {
 		SXSSFRow row = workSheet.createRow(0);
 		row.setHeight((short) 550);
 
@@ -462,6 +539,8 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		SXSSFCell cell10 = row.createCell(9);
 		cell10.setCellValue(ApplicationConstants.PRODUCTION_DATE);
 		cell10.setCellStyle(cellStyle);
+		
+		return 10;
 	}
 
 	/**

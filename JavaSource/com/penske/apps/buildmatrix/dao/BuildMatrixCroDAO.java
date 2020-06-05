@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.penske.apps.buildmatrix.domain.ApprovedOrder;
 import com.penske.apps.buildmatrix.domain.CroOrderKey;
+import com.penske.apps.buildmatrix.domain.ReportResultOptionModel;
 import com.penske.apps.suppliermgmt.annotation.DBCro;
 
 /**
@@ -22,4 +23,8 @@ public interface BuildMatrixCroDAO {
 
 	public List<ApprovedOrder> getApprovedOrdersByIds(@Param("orderKeys") List<CroOrderKey> orderKeys);
 
+	/**
+	 * Returns a list of all the options that are on orders for the Order Report.
+	 */
+	public List<ReportResultOptionModel> getOrderReportOptions(@Param("orderIds") List<Integer> orderIds);
 }

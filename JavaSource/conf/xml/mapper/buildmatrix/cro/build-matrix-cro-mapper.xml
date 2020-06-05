@@ -55,4 +55,22 @@
 			ON v.orderId = keys.orderId AND v.deliveryId = keys.deliveryId
 	</select>
 	
+	<select id="getOrderReportOptions" resultType="com.penske.apps.buildmatrix.domain.ReportResultOptionModel">
+		SELECT
+			ord.OrderId,
+			opt.OptionDesc AS optionDescription,
+			opt.OptionGroupId,
+			optGrp.GroupDescription AS optionGroupDescription
+		FROM t_Order ord
+		JOIN t_OrderSelectedOptions selectedOpt ON selectedOpt.OrderId = ord.OrderId
+		JOIN t_Options opt ON opt.OptionId = selectedOpt.OptionId AND opt.PackageId = ord.PackageId AND opt.VersionId = ord.VersionId
+		JOIN t_OptionGroup optGrp ON optGrp.GroupId = opt.OptionGroupId
+		<if test="orderIds != null">
+			WHERE ord.OrderId IN (
+				<foreach collection="orderIds" item="orderId" separator=",">#{orderId}</foreach>
+			)
+		</if>
+		ORDER BY ord.OrderId, opt.OptionGroupId
+		
+	</select>
 </mapper>
