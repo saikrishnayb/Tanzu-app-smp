@@ -1,0 +1,51 @@
+.slot-utilization-table-top {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.slot-utilization-table-top  div {
+	display: inline-block;
+}
+
+#slot-utilization-table td,
+.dataTables_scrollHead th {
+	text-align: center !important;
+}
+
+/* #slot-utilization-table thead { 
+	position: sticky;
+	display: block;
+	top: 0;
+	z-index:999;
+}
+ */
+.available-badge {
+	background-color: #2D73CF;
+}
+
+.issued-badge {
+	background-color: #CDCDCD;
+	color: #454545;
+}
+
+.year-div{
+	padding-left: 35px;
+}
+
+/* .first-col {
+	min-width: 100px;
+} */
+
+.region-row .first-col {
+	background-color: inherit;
+}
+
+.region-row th,
+.plant-header-row th{
+	border-radius: 5px;
+	border: 2px solid white;
+}
+
+.badge-row th {
+	background-color: inherit;
+}
