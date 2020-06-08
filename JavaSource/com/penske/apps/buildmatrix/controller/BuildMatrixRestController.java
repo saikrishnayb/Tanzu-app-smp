@@ -321,4 +321,15 @@ public class BuildMatrixRestController {
 		
 		buildMatrixSmcService.updateBuildParams(summary);
 	}
+	
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping("/get-release-units-modal")
+	public ModelAndView getReleaseUnitsModal(@RequestParam("regionId") String regionId,
+			@RequestParam("dateId") String dateId,
+			@RequestParam("plantId") String plantId) {
+		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/modal/release-units-modal");
+		
+		return model;
+	}
+	
 }

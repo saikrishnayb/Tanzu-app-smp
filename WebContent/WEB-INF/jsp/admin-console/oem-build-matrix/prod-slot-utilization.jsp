@@ -88,7 +88,11 @@
 											<c:set var="rowClass" value="odd" />
 										</c:otherwise>
 									</c:choose>
-									<tr class="date-unit-row ${rowClass}" data-prod-slot-id="${slotDateId}">
+									<tr class="date-unit-row ${rowClass}" 
+										data-prod-slot-id="${slotDateId}"
+										data-region-id=""
+										data-date-id=""
+										data-plant-id="">
 										<td class="first-col prod-date">${productionSlot.formattedSlotDate}</td>
 										<c:forEach items="${productionSlot.buildSlots}" var="slotForplant">
 											<td class="available-units">5</td>
@@ -101,7 +105,8 @@
 						</table>
 					</div>
 				</div>
-			</div>	
+			</div>
+			<div id="prod-slot-utilization" class="modal"></div>	
 		</div>
 		
 	</div>
