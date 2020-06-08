@@ -290,3 +290,7 @@ button.ui-datepicker-close {
 	list-style: none;
 	padding-bottom: 10px;
 }
+
+#cancel-btn{
+	padding-right: 8px
+}

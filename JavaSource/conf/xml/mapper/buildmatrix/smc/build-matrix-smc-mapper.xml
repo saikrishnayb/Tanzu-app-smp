@@ -165,13 +165,14 @@
 			DISTINCT mileage.REGION AS region,
 			mileage.REGION_DESC AS regionDesc,
 			reg.ASSOC_ID AS regionAssociationId,
-			mileage.PLANT_ID AS plantId,
-			CASE WHEN reg.REGION <![CDATA[<>]]> '' THEN 'Y' ELSE 'N' END as isAssociated
+			CASE WHEN reg.REGION <![CDATA[<>]]> '' AND reg.PLANT_ID = #{plantId}
+				 THEN 'Y' 
+				 ELSE 'N' 
+			END as isAssociated
 		FROM OBM_FREIGHT_MILEAGE mileage
-			LEFT JOIN OBM_REGION_PLANT_ASSOCIATION reg ON mileage.REGION =reg.REGION
-			AND mileage.PLANT_ID =reg.PLANT_ID
-		WHERE mileage.PLANT_ID=#{plantId}
-			AND mileage.REGION <![CDATA[<>]]> ''
+			LEFT JOIN OBM_REGION_PLANT_ASSOCIATION reg 
+			ON mileage.REGION = reg.REGION AND reg.PLANT_ID = #{plantId}
+		WHERE mileage.REGION <![CDATA[<>]]> ''
 		ORDER BY mileage.REGION
 	</select>
 	
