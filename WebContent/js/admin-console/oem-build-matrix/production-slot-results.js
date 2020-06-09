@@ -43,8 +43,22 @@ $('#slot-search').on('keyup', function() {
 });
 
 function exportSlotResults() {
-
 	var buildId = parseInt($('#buildId').val());
-	DownloadUtil.downloadFileAsFormPost(baseAppUrl + '/admin-console/oem-build-matrix/exportToExcel.htm', 'ProductionSlotResults-Template.xlsx', 'buildId', buildId);
+	var today = new Date();
+	var filename = 'Run_' + buildId + '_Results_' + today.getFullYear();
+
+	var mm = today.getMonth() + 1;
+	if (mm < 10) {
+		mm = '0' + mm;
+	}
+	filename += mm;
+	
+	var dd = today.getDate();
+	if (dd < 10) {
+		dd = '0' + dd;
+	}
+	filename += dd;
+
+	DownloadUtil.downloadFileAsFormPost(baseAppUrl + '/admin-console/oem-build-matrix/exportToExcel.htm', filename + '.xlsx', 'buildId', buildId);
 
 }

@@ -362,6 +362,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		//Also cache the options by order ID, too, for faster lookup
 		Map<Integer, Integer> groupAndColumn = new HashMap<Integer, Integer>();
 		Map<Integer, List<ReportResultOptionModel>> optionsByOrderId = new HashMap<>();
+		CellStyle cellStyle = getCellStyle(workbook);
 		for(ReportResultOptionModel reportResultOptionModel : reportResultOptions)
 		{
 			Integer groupId = reportResultOptionModel.getOptionGroupId();
@@ -376,7 +377,9 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 			String groupDescription = reportResultOptionModel.getOptionGroupDescription();
 			
 			workSheet.setColumnWidth(headerColIndex, 20 * 200);
-			getCell(workSheet, 0, headerColIndex).setCellValue(groupDescription);
+			Cell cell = getCell(workSheet, 0, headerColIndex);
+			cell.setCellValue(StringUtils.trimToEmpty(groupDescription));
+			cell.setCellStyle(cellStyle);
 			//Add the column index to our map of column index by option group IDs
 			groupAndColumn.put(groupId, headerColIndex);
 			
@@ -441,7 +444,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 
 				//If the cell is empty, just write the value
 				if(StringUtils.isBlank(cell.getStringCellValue()))
-					cell.setCellValue(option.getOptionDescription());
+					cell.setCellValue(StringUtils.trimToEmpty(option.getOptionDescription()));
 				else
 				{
 					//Otherwise, store the value, append the extra value
@@ -449,7 +452,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 					StringBuilder sb = new StringBuilder()
 						.append(cell.getStringCellValue())
 						.append(", ")
-						.append(option.getOptionDescription());
+						.append(StringUtils.trimToEmpty(option.getOptionDescription()));
 					cell.setCellValue(sb.toString());
 				}
 			}
@@ -462,6 +465,24 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	private Cell getCell(Sheet sheet, int rowIndex, int colIndex) {
 		Row row = CellUtil.getRow(rowIndex, sheet);
 		return CellUtil.getCell(row, colIndex);
+	}
+
+	private CellStyle getCellStyle(SXSSFWorkbook workbook) {
+		Font font = workbook.createFont();
+		font.setBold(true);
+		font.setFontHeightInPoints((short) 10);
+
+		CellStyle cellStyle = workbook.createCellStyle();
+		cellStyle.setFillForegroundColor(HSSFColor.LIGHT_YELLOW.index);
+		cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		cellStyle.setAlignment(HorizontalAlignment.CENTER);
+		cellStyle.setBorderBottom(BorderStyle.THICK);
+		cellStyle.setBorderLeft(BorderStyle.THICK);
+		cellStyle.setBorderTop(BorderStyle.THICK);
+		cellStyle.setBorderRight(BorderStyle.THICK);
+		cellStyle.setFont(font);
+
+		return cellStyle;
 	}
 
 	/**
@@ -485,20 +506,8 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		workSheet.setColumnWidth(8, 20 * 256);
 		workSheet.setColumnWidth(9, 20 * 256);
 		workSheet.trackAllColumnsForAutoSizing();
-		Font font = workbook.createFont();
 
-		font.setBold(true);
-		font.setFontHeightInPoints((short) 10);
-
-		CellStyle cellStyle = workbook.createCellStyle();
-		cellStyle.setFillForegroundColor(HSSFColor.LIGHT_YELLOW.index);
-		cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-		cellStyle.setAlignment(HorizontalAlignment.CENTER);
-		cellStyle.setBorderBottom(BorderStyle.THICK);
-		cellStyle.setBorderLeft(BorderStyle.THICK);
-		cellStyle.setBorderTop(BorderStyle.THICK);
-		cellStyle.setBorderRight(BorderStyle.THICK);
-		cellStyle.setFont(font);
+		CellStyle cellStyle = getCellStyle(workbook);
 
 		SXSSFCell cell1 = row.createCell(0);
 		cell1.setCellValue(ApplicationConstants.ORDER_NUMBER);

@@ -52,8 +52,8 @@ public class ApplicationConstants {
 	public static final String DISTRICT = "District";
 	public static final String DISTRICT_NAME = "District Name";
 	public static final String REQUESTED_DELIVERY_DATE = "Requested Delivery Date";
-	public static final String PRODUCTION_SLOT = "Production Slot";
-	public static final String PRODUCTION_DATE = "Production Date";
+	public static final String PRODUCTION_SLOT = "Body Plant";
+	public static final String PRODUCTION_DATE = "Body Prod Date";
 	
 	//OEM Build Matrix
 	public static final String String_ZERO="0";
