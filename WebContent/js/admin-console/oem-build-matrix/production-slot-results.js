@@ -111,13 +111,30 @@ function initializeDatePicker() {
 	});
 }
 
+$(function () {
+    if (localStorage && localStorage["checked"]) {
+        var localStoredData = JSON.parse(localStorage["checked"]);
+        var checkboxes = $("input[name='filters']");
+        for (var i = 0; i < checkboxes.length; i++) {
+            for (var j = 0; j < localStoredData.length; j++) {
+                if (checkboxes[i].value == localStoredData[j]) {
+                    checkboxes[i].checked = true;
+                }
+            }
+        }
+        localStorage.removeItem('checked');
+    }
+});
+    
 $('.Filter-div').on("change", function() {
 
 	var selectedFiltersList = [];
 	$('#filter-checkbox input:checked').each(function() {
 		selectedFiltersList.push($(this).val());
 	});
-
+	
+	var data = $("input[name='filters']:checked").map(function () {return this.value;}).get();
+	localStorage['checked'] = JSON.stringify(data);
 	document.getElementById("selectedFiltersList").value = selectedFiltersList;
 	
 	var $filterSlotsForm = $('#filter-slots-form');
