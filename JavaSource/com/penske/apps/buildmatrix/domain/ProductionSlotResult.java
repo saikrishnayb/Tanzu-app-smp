@@ -7,6 +7,7 @@ public class ProductionSlotResult {
 	private int runId;
 	private long orderId;
 	private String unitNumber;
+	private String vehicleType;
 	private String programName;
 	private String region;
 	private String area;
@@ -15,6 +16,17 @@ public class ProductionSlotResult {
 	private Date requestedDeliveryDate;
 	private String productionSlot;
 	private String productionDate;
+	private String chassisMake;
+	private String chassisModel;
+	private int chassisModelYear;
+	private String chassisColor;
+	private String bodyMake;
+	private String chassisLength;
+	private String rearDoorMake;
+	private String reeferMake;
+	private String liftgateInstalled;
+	private String liftgateMake;
+	private String liftgateType;
 	private String reservationStatus;
 	private List<String> productionSlotList;
 
@@ -25,6 +37,10 @@ public class ProductionSlotResult {
 
 	public String getUnitNumber() {
 		return unitNumber;
+	}
+
+	public String getVehicleType() {
+		return vehicleType;
 	}
 
 	public String getProgramName() {
@@ -71,6 +87,50 @@ public class ProductionSlotResult {
 		return productionSlotList;
 	}
 	
+	public String getChassisMake() {
+		return chassisMake;
+	}
+
+	public String getChassisModel() {
+		return chassisModel;
+	}
+
+	public int getChassisModelYear() {
+		return chassisModelYear;
+	}
+
+	public String getChassisColor() {
+		return chassisColor;
+	}
+
+	public String getBodyMake() {
+		return bodyMake;
+	}
+
+	public String getChassisLength() {
+		return chassisLength;
+	}
+
+	public String getRearDoorMake() {
+		return rearDoorMake;
+	}
+
+	public String getReeferMake() {
+		return reeferMake;
+	}
+
+	public String getLiftgateInstalled() {
+		return liftgateInstalled;
+	}
+
+	public String getLiftgateMake() {
+		return liftgateMake;
+	}
+
+	public String getLiftgateType() {
+		return liftgateType;
+	}
+
 	// setters
 	public void setOrderId(long orderId) {
 		this.orderId = orderId;

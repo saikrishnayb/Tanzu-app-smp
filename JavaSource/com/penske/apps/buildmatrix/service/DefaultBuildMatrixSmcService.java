@@ -402,45 +402,45 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		for (ProductionSlotResult ProductionSlotResultData : productionSlotResult) {
 
 			SXSSFRow dataRow = workSheet.createRow(rowId);
+			int column = 0;
 
-			SXSSFCell datacell1 = dataRow.createCell(0);
-			datacell1.setCellValue(ProductionSlotResultData.getOrderId());
+			dataRow.createCell(column++).setCellValue(ProductionSlotResultData.getOrderId());
+			dataRow.createCell(column++).setCellValue(ProductionSlotResultData.getUnitNumber());
+			dataRow.createCell(column++).setCellValue(ProductionSlotResultData.getVehicleType());
+			dataRow.createCell(column++).setCellValue(ProductionSlotResultData.getProgramName());
+			dataRow.createCell(column++).setCellValue(ProductionSlotResultData.getRegion());
+			dataRow.createCell(column++).setCellValue(ProductionSlotResultData.getArea());
+			dataRow.createCell(column++).setCellValue(ProductionSlotResultData.getDistrictNumber());
+			dataRow.createCell(column++).setCellValue(ProductionSlotResultData.getDistrictName());
 
-			SXSSFCell datacell2 = dataRow.createCell(1);
-			datacell2.setCellValue(ProductionSlotResultData.getUnitNumber());
-
-			SXSSFCell datacell3 = dataRow.createCell(2);
-			datacell3.setCellValue(ProductionSlotResultData.getProgramName());
-
-			SXSSFCell datacell4 = dataRow.createCell(3);
-			datacell4.setCellValue(ProductionSlotResultData.getRegion());
-
-			SXSSFCell datacell5 = dataRow.createCell(4);
-			datacell5.setCellValue(ProductionSlotResultData.getArea());
-
-			SXSSFCell datacell6 = dataRow.createCell(5);
-			datacell6.setCellValue(ProductionSlotResultData.getDistrictNumber());
-
-			SXSSFCell datacell7 = dataRow.createCell(6);
-			datacell7.setCellValue(ProductionSlotResultData.getDistrictName());
-
-			SXSSFCell datacell8 = dataRow.createCell(7);
+			SXSSFCell datacell8 = dataRow.createCell(column++);
 			if (ProductionSlotResultData.getRequestedDeliveryDate() != null
 					&& !ProductionSlotResultData.getRequestedDeliveryDate().equals("")) {
 				datacell8.setCellValue(ProductionSlotResultData.getRequestedDeliveryDate());
 				formatDateCell(workbook, datacell8);
 			}
 
-			SXSSFCell datacell9 = dataRow.createCell(8);
-			datacell9.setCellValue(ProductionSlotResultData.getProductionSlot());
+			dataRow.createCell(column++).setCellValue(ProductionSlotResultData.getProductionSlot());
 
-			SXSSFCell datacell10 = dataRow.createCell(9);
+			SXSSFCell datacell10 = dataRow.createCell(column++);
 			String productionDateString = ProductionSlotResultData.getProductionDate();
 			if (productionDateString != null && productionDateString != "") {
 				Date productionDate = convertStringToDate(productionDateString);
 				datacell10.setCellValue(productionDate);
 				formatDateCell(workbook, datacell10);
 			}
+
+			dataRow.createCell(column++).setCellValue(ProductionSlotResultData.getChassisMake());
+			dataRow.createCell(column++).setCellValue(ProductionSlotResultData.getChassisModel());
+			dataRow.createCell(column++).setCellValue(ProductionSlotResultData.getChassisModelYear());
+			dataRow.createCell(column++).setCellValue(ProductionSlotResultData.getChassisColor());
+			dataRow.createCell(column++).setCellValue(ProductionSlotResultData.getBodyMake());
+			dataRow.createCell(column++).setCellValue(ProductionSlotResultData.getChassisLength());
+			dataRow.createCell(column++).setCellValue(ProductionSlotResultData.getRearDoorMake());
+			dataRow.createCell(column++).setCellValue(ProductionSlotResultData.getReeferMake());
+			dataRow.createCell(column++).setCellValue(ProductionSlotResultData.getLiftgateInstalled());
+			dataRow.createCell(column++).setCellValue(ProductionSlotResultData.getLiftgateMake());
+			dataRow.createCell(column++).setCellValue(ProductionSlotResultData.getLiftgateType());
 
 			//For each of the selected options, map it to the right column
 			for (ReportResultOptionModel option : reportResultOptions)
@@ -495,6 +495,12 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		return cellStyle;
 	}
 
+	private void createHeaderCell(int column, String value, CellStyle style, SXSSFRow row) {
+		SXSSFCell cell = row.createCell(column);
+		cell.setCellValue(value);
+		cell.setCellStyle(style);
+	}
+
 	/**
 	 * Method for creating the header
 	 * 
@@ -505,61 +511,57 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		SXSSFRow row = workSheet.createRow(0);
 		row.setHeight((short) 550);
 
-		workSheet.setColumnWidth(0, 20 * 150);
-		workSheet.setColumnWidth(1, 20 * 150);
-		workSheet.setColumnWidth(2, 20 * 256);
-		workSheet.setColumnWidth(3, 20 * 150);
-		workSheet.setColumnWidth(4, 20 * 150);
-		workSheet.setColumnWidth(5, 20 * 150);
-		workSheet.setColumnWidth(6, 20 * 256);
-		workSheet.setColumnWidth(7, 20 * 256);
-		workSheet.setColumnWidth(8, 20 * 256);
-		workSheet.setColumnWidth(9, 20 * 256);
-		workSheet.trackAllColumnsForAutoSizing();
+		//workSheet.trackAllColumnsForAutoSizing();
 
 		CellStyle cellStyle = getCellStyle(workbook);
+		int column = 0;
 
-		SXSSFCell cell1 = row.createCell(0);
-		cell1.setCellValue(ApplicationConstants.ORDER_NUMBER);
-		cell1.setCellStyle(cellStyle);
+		workSheet.setColumnWidth(column, 20 * 150);
+		createHeaderCell(column++, ApplicationConstants.ORDER_NUMBER, cellStyle, row);
+		workSheet.setColumnWidth(column, 20 * 150);
+		createHeaderCell(column++, ApplicationConstants.UNIT, cellStyle, row);
+		workSheet.setColumnWidth(column, 20 * 150);
+		createHeaderCell(column++, ApplicationConstants.VEHICLE_TYPE, cellStyle, row);
+		workSheet.setColumnWidth(column, 20 * 256);
+		createHeaderCell(column++, ApplicationConstants.PROGRAM_NAME, cellStyle, row);
+		workSheet.setColumnWidth(column, 20 * 150);
+		createHeaderCell(column++, ApplicationConstants.REGION, cellStyle, row);
+		workSheet.setColumnWidth(column, 20 * 150);
+		createHeaderCell(column++, ApplicationConstants.AREA, cellStyle, row);
+		workSheet.setColumnWidth(column, 20 * 150);
+		createHeaderCell(column++, ApplicationConstants.DISTRICT, cellStyle, row);
+		workSheet.setColumnWidth(column, 20 * 256);
+		createHeaderCell(column++, ApplicationConstants.DISTRICT_NAME, cellStyle, row);
+		workSheet.setColumnWidth(column, 20 * 256);
+		createHeaderCell(column++, ApplicationConstants.REQUESTED_DELIVERY_DATE, cellStyle, row);
+		workSheet.setColumnWidth(column, 20 * 256);
+		createHeaderCell(column++, ApplicationConstants.PRODUCTION_SLOT, cellStyle, row);
+		workSheet.setColumnWidth(column, 20 * 256);
+		createHeaderCell(column++, ApplicationConstants.PRODUCTION_DATE, cellStyle, row);
+		workSheet.setColumnWidth(column, 20 * 200);
+		createHeaderCell(column++, ApplicationConstants.CHASSIS_MAKE, cellStyle, row);
+		workSheet.setColumnWidth(column, 20 * 200);
+		createHeaderCell(column++, ApplicationConstants.CHASSIS_MODEL, cellStyle, row);
+		workSheet.setColumnWidth(column, 20 * 200);
+		createHeaderCell(column++, ApplicationConstants.CHASSIS_MODEL_YEAR, cellStyle, row);
+		workSheet.setColumnWidth(column, 20 * 200);
+		createHeaderCell(column++, ApplicationConstants.CHASSIS_COLOR, cellStyle, row);
+		workSheet.setColumnWidth(column, 20 * 200);
+		createHeaderCell(column++, ApplicationConstants.BODY_MAKE, cellStyle, row);
+		workSheet.setColumnWidth(column, 20 * 200);
+		createHeaderCell(column++, ApplicationConstants.CHASSIS_LENGTH, cellStyle, row);
+		workSheet.setColumnWidth(column, 20 * 200);
+		createHeaderCell(column++, ApplicationConstants.REAR_DOOR_MAKE, cellStyle, row);
+		workSheet.setColumnWidth(column, 20 * 200);
+		createHeaderCell(column++, ApplicationConstants.REEFER_MAKE, cellStyle, row);
+		workSheet.setColumnWidth(column, 20 * 200);
+		createHeaderCell(column++, ApplicationConstants.LIFTGATE_INSTALLED, cellStyle, row);
+		workSheet.setColumnWidth(column, 20 * 200);
+		createHeaderCell(column++, ApplicationConstants.LIFTGATE_MAKE, cellStyle, row);
+		workSheet.setColumnWidth(column, 20 * 200);
+		createHeaderCell(column++, ApplicationConstants.LIFTGATE_TYPE, cellStyle, row);
 
-		SXSSFCell cell2 = row.createCell(1);
-		cell2.setCellValue(ApplicationConstants.UNIT);
-		cell2.setCellStyle(cellStyle);
-
-		SXSSFCell cell3 = row.createCell(2);
-		cell3.setCellValue(ApplicationConstants.PROGRAM_NAME);
-		cell3.setCellStyle(cellStyle);
-
-		SXSSFCell cell4 = row.createCell(3);
-		cell4.setCellValue(ApplicationConstants.REGION);
-		cell4.setCellStyle(cellStyle);
-
-		SXSSFCell cell5 = row.createCell(4);
-		cell5.setCellValue(ApplicationConstants.AREA);
-		cell5.setCellStyle(cellStyle);
-
-		SXSSFCell cell6 = row.createCell(5);
-		cell6.setCellValue(ApplicationConstants.DISTRICT);
-		cell6.setCellStyle(cellStyle);
-
-		SXSSFCell cell7 = row.createCell(6);
-		cell7.setCellValue(ApplicationConstants.DISTRICT_NAME);
-		cell7.setCellStyle(cellStyle);
-
-		SXSSFCell cell8 = row.createCell(7);
-		cell8.setCellValue(ApplicationConstants.REQUESTED_DELIVERY_DATE);
-		cell8.setCellStyle(cellStyle);
-
-		SXSSFCell cell9 = row.createCell(8);
-		cell9.setCellValue(ApplicationConstants.PRODUCTION_SLOT);
-		cell9.setCellStyle(cellStyle);
-
-		SXSSFCell cell10 = row.createCell(9);
-		cell10.setCellValue(ApplicationConstants.PRODUCTION_DATE);
-		cell10.setCellStyle(cellStyle);
-		
-		return 10;
+		return column;
 	}
 
 	/**

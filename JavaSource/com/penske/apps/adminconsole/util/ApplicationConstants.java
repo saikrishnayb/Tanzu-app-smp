@@ -46,6 +46,7 @@ public class ApplicationConstants {
 	public static final String DATE_FORMAT = "MM/dd/yyyy";
 	public static final String ORDER_NUMBER = "Order #";
 	public static final String UNIT = "Unit";
+	public static final String VEHICLE_TYPE = "Vehicle Type";
 	public static final String PROGRAM_NAME = "Program Name";
 	public static final String REGION = "Region";
 	public static final String AREA = "Area";
@@ -54,6 +55,17 @@ public class ApplicationConstants {
 	public static final String REQUESTED_DELIVERY_DATE = "Requested Delivery Date";
 	public static final String PRODUCTION_SLOT = "Body Plant";
 	public static final String PRODUCTION_DATE = "Body Prod Date";
+	public static final String CHASSIS_MAKE = "Chassis Make";
+	public static final String CHASSIS_MODEL = "Chassis Model";
+	public static final String CHASSIS_MODEL_YEAR = "Model Year";
+	public static final String CHASSIS_COLOR = "Color";
+	public static final String BODY_MAKE = "Body Make";
+	public static final String CHASSIS_LENGTH = "Body Length";
+	public static final String REAR_DOOR_MAKE = "Rear Door Make";
+	public static final String REEFER_MAKE = "Reefer Make";
+	public static final String LIFTGATE_INSTALLED = "Liftgate Installed";
+	public static final String LIFTGATE_MAKE = "Liftgate Make";
+	public static final String LIFTGATE_TYPE = "Liftgate Type";
 	
 	//OEM Build Matrix
 	public static final String String_ZERO="0";
