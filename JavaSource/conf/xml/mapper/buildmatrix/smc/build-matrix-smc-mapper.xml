@@ -225,7 +225,7 @@
 		<collection property="productionSlotList" column="{buildId=runId,unitNumber=unitNumber}" select="getProductionSlotList"></collection>
 	</resultMap>
 	
-	<select id="getProductionSlotResults" resultMap="slotResultsMap">
+	<select id="getProductionSlotResults" resultType="com.penske.apps.buildmatrix.domain.ProductionSlotResult">
 		SELECT
 			SLOT_REQ.RUN_ID AS runId,
 			SLOT_REQ.ORDER_ID AS orderId,
