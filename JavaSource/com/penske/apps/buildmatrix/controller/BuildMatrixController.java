@@ -180,10 +180,17 @@ public class BuildMatrixController {
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping("/view-slot-results-filter")
 	public ModelAndView viewSlotResultsByFilters(@RequestParam("buildId") int buildId,
-												 @RequestParam("selectedFiltersList") String selectedFiltersList) {
+												 @RequestParam("selectedFiltersList") String selectedFiltersList,
+												 @RequestParam("checkedFilter") String checkedFilter) {
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/production-slot-results");
-		List<String> selectedFilters = Arrays.asList(selectedFiltersList.split(","));;
+		List<String> selectedFilters = Arrays.asList(selectedFiltersList.split(","));
 		model.addObject("slotResults", buildMatrixSmcService.getSlotResultsByFilter(buildId, selectedFilters));
+		if (StringUtils.equals(checkedFilter, ApplicationConstants.String_ZERO)) {
+			model.addObject("checkedFilter", true);
+		}
+		else {
+			model.addObject("checkedFilter", false);
+		}
 		model.addObject("plantList", buildMatrixSmcService.getAllPlants());
 		model.addObject("buildId", buildId);
 		return model;

@@ -30,10 +30,20 @@
 						<form id="filter-slots-form" action="./view-slot-results-filter.htm" method="GET">
 							<input type="hidden" id="buildId" value="${buildId}" name="buildId"> 
 							<input type="hidden" id="selectedFiltersList" value="${selectedFiltersList}" name="selectedFiltersList"> 
+							<input type="hidden" id="checkedFilter" value="1" name="checkedFilter">
 							<span> <label>Filter Results</label> 
-								<span><input type="checkbox" id="Matched" value="A" name="filters" /><label>Matched</label></span> 
-								<span><input type="checkbox" id="Exceptions" value="E" name="filters" /><label>Exceptions</label></span>
-								<span><input type="checkbox" id="Unmatched" value="P" name="filters" /><label>Unmatched</label></span>
+								<c:choose>
+									<c:when test= "${checkedFilter eq true}">
+										<span><input type="checkbox" id="Matched" value="A" name="filters" checked/><label>Matched</label></span> 
+										<span><input type="checkbox" id="Exceptions" value="E" name="filters" checked/><label>Exceptions</label></span>
+										<span><input type="checkbox" id="Unmatched" value="P" name="filters" checked/><label>Unmatched</label></span>
+									</c:when>
+									<c:otherwise>
+										<span><input type="checkbox" id="Matched" value="A" name="filters" /><label>Matched</label></span> 
+										<span><input type="checkbox" id="Exceptions" value="E" name="filters" /><label>Exceptions</label></span>
+										<span><input type="checkbox" id="Unmatched" value="P" name="filters" /><label>Unmatched</label></span>
+									</c:otherwise>
+								</c:choose>
 							</span>
 						</form>
 					</div>
