@@ -96,18 +96,20 @@
 											<c:if test="${unit.reservationStatus eq 'A'}">${unit.productionSlot}
 											</c:if>
 											<c:if test="${unit.reservationStatus eq 'E'}">
-												<select class="production-slot width-200" id="values" multiple>
-													<c:forEach items="${unit.productionSlotList}" var="productionSlot">
-														<option value="${productionSlot}">${productionSlot}</option>
-													</c:forEach>
-												</select>
-											</c:if>
-											<c:if test="${unit.reservationStatus eq 'P'}">
-												<select class="production-slot width-200" multiple>
-													<c:forEach items="${plantList}" var="plants">
-														<option value="${plants}">${plants}</option>
-													</c:forEach>
-												</select>
+                                                <select class="production-slot width-200" id="values" multiple>
+                                                    <c:forEach items="${unit.productionSlotList}" var="productionSlot">
+                                                        <c:set var="isSlotselected">${unit.productionSlot eq productionSlot}</c:set>
+                                                        <option value="${productionSlot}"  ${isSlotselected?'selected="selected"':'' }>${productionSlot}</option>
+                                                    </c:forEach>
+                                                </select>
+                                            </c:if>
+                                            <c:if test="${unit.reservationStatus eq 'P'}">
+                                                <select class="production-slot width-200" multiple>
+                                                    <c:forEach items="${plantList}" var="plants">
+                                                        <c:set var="isPlantselected">${unit.productionSlot eq plants}</c:set>
+                                                        <option value="${plants}"  ${isPlantselected?'selected="selected"':'' }>${plants}</option>
+                                                    </c:forEach>
+                                                </select>
 											</c:if>
 										</div>
 									</td>

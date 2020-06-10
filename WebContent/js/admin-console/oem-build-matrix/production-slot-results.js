@@ -67,13 +67,14 @@ function exportSlotResults() {
 }
 
 $('.production-slot').multiselect({
-	minWidth : 150, 
-	header : [ '' ],
-	open : function() {
-		$(".ui-multiselect-menu ").css('width', '210px');
-	}
+    minWidth : 150,
+    header : [ '' ],
+    selectedList: 1,
+    open : function() {
+        $(".ui-multiselect-menu ").css('width', '210px');
+    }
 }).multiselectfilter({
-	width : 130
+    width : 130
 });
 
 /* Added this line of code to make the Multi-select box values in normal font instead of bold (Default)*/
