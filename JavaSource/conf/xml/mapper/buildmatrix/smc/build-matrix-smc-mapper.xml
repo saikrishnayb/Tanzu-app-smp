@@ -209,11 +209,28 @@
 	</update>
 	
 	<!-- PRODUCTION SLOT RESULTS -->
-	<select id="getProductionSlotResults" resultType="com.penske.apps.buildmatrix.domain.ProductionSlotResult">
+	<resultMap id="slotResultsMap" type="com.penske.apps.buildmatrix.domain.ProductionSlotResult" >
+		<result column="runId"  				  property="runId"/>
+		<result column="orderId"  				  property="orderId"/>
+		<result column="unitNumber" 			  property="unitNumber"/>
+		<result column="reservationStatus" 		  property="reservationStatus"/>
+		<result column="programName"  			  property="programName"/>
+		<result column="REGION"  				  property="region"/>
+		<result column="AREA" 					  property="area"/>
+		<result column="districtNumber" 		  property="districtNumber"/>
+		<result column="districtName"  			  property="districtName"/>
+		<result column="requestedDeliveryDate"    property="requestedDeliveryDate"/>
+		<result column="productionSlot" 		  property="productionSlot"/>
+		<result column="productionDate" 		  property="productionDate"/>
+		<collection property="productionSlotList" column="{buildId=runId,unitNumber=unitNumber}" select="getProductionSlotList"></collection>
+	</resultMap>
+	
+	<select id="getProductionSlotResults" resultMap="slotResultsMap">
 		SELECT
 			SLOT_REQ.RUN_ID AS runId,
 			SLOT_REQ.ORDER_ID AS orderId,
 			SLOT_RESERVE.UNIT_NUMBER AS unitNumber,
+			SLOT_RESERVE.RESERVATION_STATUS AS reservationStatus,
 			SLOT_REQ.PROGRAM_NAME AS programName,
 			MILEAGE.REGION AS region,
 			MILEAGE.AREA AS area,
@@ -237,8 +254,61 @@
 			LEFT JOIN SMC.OBM_SLOT_DATES SLOT_DATES 
 				ON SLOT_DATES.SLOT_DATE_ID = SLOT.SLOT_DATE_ID
 		WHERE
-			 RUN_SUMMARY.RUN_ID=#{buildId} AND SLOT_RESERVE.UNIT_NUMBER <![CDATA[<>]]>''
+			 RUN_SUMMARY.RUN_ID=#{buildId} 
+			 SLOT_RESERVE.UNIT_NUMBER <![CDATA[<>]]>''
 	</select>
+	
+	<select id="getSlotResultsByFilter" resultMap="slotResultsMap">
+		SELECT
+			SLOT_REQ.RUN_ID AS runId,
+			SLOT_REQ.ORDER_ID AS orderId,
+			SLOT_RESERVE.UNIT_NUMBER AS unitNumber,
+			SLOT_RESERVE.RESERVATION_STATUS AS reservationStatus,
+			SLOT_REQ.PROGRAM_NAME AS programName,
+			MILEAGE.REGION AS region,
+			MILEAGE.AREA AS area,
+			SLOT_REQ.DESTINATION_DISTRICT AS districtNumber,
+			SLOT_REQ.DESTINATION_DISTRICT_NAME AS districtName,
+			SLOT_REQ.DESTINATION_DELIVERY_DATE AS requestedDeliveryDate,
+			PLANT.PLANT_MFR_CODE ||'-' ||PLANT.PLANT_CITY ||',' ||PLANT.PLANT_STATE AS productionSlot,
+			SLOT_DATES.SLOT_DATE AS productionDate
+		FROM 
+			SMC.OBM_RUN_SUMMARY RUN_SUMMARY
+			JOIN SMC.OBM_SLOT_REQUEST SLOT_REQ
+			    ON SLOT_REQ.RUN_ID=RUN_SUMMARY.RUN_ID
+			JOIN SMC.OBM_SLOT_RESERVATION SLOT_RESERVE 
+				ON SLOT_RESERVE.SLOT_REQUEST_ID = SLOT_REQ.SLOT_REQUEST_ID
+			LEFT JOIN SMC.OBM_SLOTS SLOT 
+				ON SLOT.SLOT_ID=SLOT_RESERVE.SLOT_ID
+			LEFT JOIN SMC.OBM_PLANTS PLANT 
+				ON PLANT.PLANT_ID = SLOT.PLANT_ID
+			LEFT JOIN SMC.OBM_FREIGHT_MILEAGE MILEAGE 
+				ON MILEAGE.PLANT_ID = PLANT.PLANT_ID AND MILEAGE.DISTRICT = SLOT_REQ.DESTINATION_DISTRICT
+			LEFT JOIN SMC.OBM_SLOT_DATES SLOT_DATES 
+				ON SLOT_DATES.SLOT_DATE_ID = SLOT.SLOT_DATE_ID
+		WHERE
+			 RUN_SUMMARY.RUN_ID=#{buildId} 
+		<if test="selectedFilters != null and selectedFilters.size > 0">
+		 AND SLOT_RESERVE.RESERVATION_STATUS IN 
+		<foreach collection="selectedFilters" item="id" separator="," open="(" close=")">#{id}</foreach>
+		</if>
+	</select>
+	<select id="getProductionSlotList" resultType="String">
+		SELECT 
+					PLANT.PLANT_MFR_CODE ||'-' ||PLANT.PLANT_CITY ||',' ||PLANT.PLANT_STATE
+		FROM 		SMC.OBM_PLANTS PLANT
+		LEFT JOIN  	SMC.OBM_SLOT_RESERVATION_EXCEPTION RESERVE_EXCEPTION
+		ON 			RESERVE_EXCEPTION.PLANT_ID = PLANT.PLANT_ID
+		WHERE		RESERVE_EXCEPTION.RUN_ID = #{buildId} 
+		AND			RESERVE_EXCEPTION.UNIT_NUMBER = #{unitNumber}
+	</select>
+	
+	<select id="getAllPlants" resultType="String">
+		SELECT 
+					PLANT.PLANT_MFR_CODE ||'-' ||PLANT.PLANT_CITY ||',' ||PLANT.PLANT_STATE
+		FROM 		SMC.OBM_PLANTS PLANT
+	</select>
+		
 	<!--***** BUILD MATRIX WORKFLOW *****-->
 	
 	<!-- BUILD HISTROY -->

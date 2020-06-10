@@ -3,6 +3,7 @@ package com.penske.apps.buildmatrix.controller;
 import static java.util.stream.Collectors.toMap;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -165,12 +166,25 @@ public class BuildMatrixController {
 	}
 	
 	// VIEW SLOT RESULTS //
-	
+	//This method used to get data for Export functionality
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping("/view-slot-results")
 	public ModelAndView viewSlotResults(@RequestParam("buildId") int buildId) {
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/production-slot-results");
 		model.addObject("slotResults", buildMatrixSmcService.getProductionSlotResults(buildId));
+		model.addObject("plantList", buildMatrixSmcService.getAllPlants());
+		model.addObject("buildId", buildId);
+		return model;
+	}
+	
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping("/view-slot-results-filter")
+	public ModelAndView viewSlotResultsByFilters(@RequestParam("buildId") int buildId,
+												 @RequestParam("selectedFiltersList") String selectedFiltersList) {
+		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/production-slot-results");
+		List<String> selectedFilters = Arrays.asList(selectedFiltersList.split(","));;
+		model.addObject("slotResults", buildMatrixSmcService.getSlotResultsByFilter(buildId, selectedFilters));
+		model.addObject("plantList", buildMatrixSmcService.getAllPlants());
 		model.addObject("buildId", buildId);
 		return model;
 	}

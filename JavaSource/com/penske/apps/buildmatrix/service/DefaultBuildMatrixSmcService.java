@@ -187,6 +187,16 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		return productionSlotResults;
 	}
 	
+	public List<ProductionSlotResult> getSlotResultsByFilter(int buildId, List<String> selectedFilters) {
+		List<ProductionSlotResult> SlotResultsByFilter = buildMatrixSmcDAO.getSlotResultsByFilter(buildId, selectedFilters);
+		return SlotResultsByFilter;
+	}
+	
+	public List<String> getAllPlants() {
+		List<String> allPlants = buildMatrixSmcDAO.getAllPlants();
+		return allPlants;
+	}
+	
 	@Override
 	public BuildAttributeValue addOrUpdateAttribute(int attributeId, String attributeValue) {
 		BuildAttributeValue attrValue = new BuildAttributeValue(attributeValue);

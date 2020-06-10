@@ -1,5 +1,8 @@
 selectCurrentNavigation("tab-oem-build-matrix", "left-nav-build-history");
+
 var $slotResultsTable = $('#slot-results-table');
+
+initializeDatePicker();
 
 $slotResultsDataTable = $slotResultsTable.DataTable({
 	"bPaginate" : true, //enable pagination
@@ -62,3 +65,61 @@ function exportSlotResults() {
 	DownloadUtil.downloadFileAsFormPost(baseAppUrl + '/admin-console/oem-build-matrix/exportToExcel.htm', filename + '.xlsx', 'buildId', buildId);
 
 }
+
+$('.production-slot').multiselect({
+	minWidth : 150, 
+	header : [ '' ],
+	open : function() {
+		$(".ui-multiselect-menu ").css('width', '210px');
+	}
+}).multiselectfilter({
+	width : 130
+});
+
+/* Added this line of code to make the Multi-select box values in normal font instead of bold (Default)*/
+$(".ui-multiselect-checkboxes label").removeAttr('font-weight').css("font-weight", "normal"); 
+
+
+$(document).ready(initializeDatePicker);
+
+function initializeDatePicker() {
+	$(".production-date").datepicker({
+		dateFormat : 'mm/dd/yy',
+		changeMonth : true,
+		changeYear : true,
+		showOn : "button",
+		buttonImage : "../../../images/calendar.png",
+		buttonImageOnly : true,
+		monthNamesShort : $.datepicker._defaults.monthNames,
+		showButtonPanel : true,
+		buttonText : "Open Calendar",
+		altField : ".datepickerStartHidden",
+		altFormat : "mm/dd/yy",
+		onSelect : function(dateText, inst) {
+			$(this).datepicker('option', 'buttonImage', '../../../images/calendar.png');
+		},
+		onClose : function(dateText, inst) {
+			$(this).datepicker('option', 'buttonImage', '../../../images/calendar.png');
+		},
+		beforeShow : function(input, inst) {
+			$(this).datepicker('option', 'buttonImage', '../../../images/calendar_selected.png');
+		},
+		//Override for beforeShowDay, since all monday only should enable
+		beforeShowDay : function(date) {
+			return [ date.getDay() == 1, "" ]
+		}
+	});
+}
+
+$('.Filter-div').on("change", function() {
+
+	var selectedFiltersList = [];
+	$('#filter-checkbox input:checked').each(function() {
+		selectedFiltersList.push($(this).val());
+	});
+
+	document.getElementById("selectedFiltersList").value = selectedFiltersList;
+	
+	var $filterSlotsForm = $('#filter-slots-form');
+	$filterSlotsForm.submit();
+});

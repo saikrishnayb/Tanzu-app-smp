@@ -1,6 +1,7 @@
 package com.penske.apps.buildmatrix.domain;
 
 import java.util.Date;
+import java.util.List;
 
 public class ProductionSlotResult {
 	private int runId;
@@ -14,6 +15,8 @@ public class ProductionSlotResult {
 	private Date requestedDeliveryDate;
 	private String productionSlot;
 	private String productionDate;
+	private String reservationStatus;
+	private List<String> productionSlotList;
 
 	// getters
 	public long getOrderId() {
@@ -59,7 +62,15 @@ public class ProductionSlotResult {
 	public int getRunId() {
 		return runId;
 	}
-
+	
+	public String getReservationStatus() {
+		return reservationStatus;
+	}
+	
+	public List<String> getProductionSlotList() {
+		return productionSlotList;
+	}
+	
 	// setters
 	public void setOrderId(long orderId) {
 		this.orderId = orderId;
@@ -103,6 +114,14 @@ public class ProductionSlotResult {
 
 	public void setRunId(int runId) {
 		this.runId = runId;
+	}
+	
+	public void setReservationStatus(String reservationStatus) {
+		this.reservationStatus = reservationStatus;
+	}
+	
+	public void setProductionSlotList(List<String> productionSlotList) {
+		this.productionSlotList = productionSlotList;
 	}
 
 }

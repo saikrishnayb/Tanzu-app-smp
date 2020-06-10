@@ -6,3 +6,15 @@
 .slot-results-table-top  div {
 	display: inline-block;
 }
+
+.Filter-div {
+  margin-left: 50px;
+}
+
+.width-75 {
+	width: 75px;
+}
+
+.width-55 {
+	width: 60px;
+}

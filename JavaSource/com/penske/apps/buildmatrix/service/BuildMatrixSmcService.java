@@ -54,6 +54,10 @@ public interface BuildMatrixSmcService {
 	// PRODUCTION SLOT RESULTS //
 	public List<ProductionSlotResult> getProductionSlotResults(int buildId);
 	
+	public List<ProductionSlotResult> getSlotResultsByFilter(int buildId, List<String> selectedFilters);
+	
+	public List<String> getAllPlants();
+	
 	//***** BUILD MATRIX WORKFLOW *****//
 	
 	// BUILD HISTROY //
