@@ -4,13 +4,11 @@ package com.penske.apps.buildmatrix.model;
 import static java.util.stream.Collectors.toMap;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
@@ -18,7 +16,6 @@ import com.penske.apps.buildmatrix.domain.BuildMatrixSlot;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlotDate;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlotRegionAvailability;
 import com.penske.apps.buildmatrix.domain.RegionPlantAssociation;
-import com.penske.apps.smccore.base.util.DateUtil;
 
 public class ProductionSlotsUtilizationSummary {
 	
