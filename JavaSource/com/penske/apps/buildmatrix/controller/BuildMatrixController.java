@@ -166,17 +166,6 @@ public class BuildMatrixController {
 	}
 	
 	// VIEW SLOT RESULTS //
-	//This method used to get data for Export functionality
-	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
-	@RequestMapping("/view-slot-results")
-	public ModelAndView viewSlotResults(@RequestParam("buildId") int buildId) {
-		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/production-slot-results");
-		model.addObject("slotResults", buildMatrixSmcService.getProductionSlotResults(buildId));
-		model.addObject("plantList", buildMatrixSmcService.getAllPlants());
-		model.addObject("buildId", buildId);
-		return model;
-	}
-	
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping("/view-slot-results-filter")
 	public ModelAndView viewSlotResultsByFilters(@RequestParam("buildId") int buildId,
