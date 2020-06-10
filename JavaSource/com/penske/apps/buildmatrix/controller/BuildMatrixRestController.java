@@ -26,6 +26,7 @@ import com.penske.apps.buildmatrix.domain.BodyPlantCapability;
 import com.penske.apps.buildmatrix.domain.BuildAttribute;
 import com.penske.apps.buildmatrix.domain.BuildAttributeValue;
 import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
+import com.penske.apps.buildmatrix.domain.BuildMatrixSlotDate;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.PlantProximity;
 import com.penske.apps.buildmatrix.domain.RegionPlantAssociation;
@@ -324,10 +325,23 @@ public class BuildMatrixRestController {
 	
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping("/get-release-units-modal")
-	public ModelAndView getReleaseUnitsModal(@RequestParam("regionId") String regionId,
-			@RequestParam("dateId") String dateId,
-			@RequestParam("plantId") String plantId) {
+	public ModelAndView getReleaseUnitsModal(@RequestParam("region") String region,
+			@RequestParam("dateId") int dateId,
+			@RequestParam("plantId") int plantId,
+			@RequestParam("slotId") int slotId,
+			@RequestParam("slotRegionId") int slotRegionId,
+			@RequestParam("regionDesc") String regionDesc) {
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/modal/release-units-modal");
+		
+		BuildMatrixBodyPlant bodyPlant = buildMatrixSmcService.getBodyPlantById(plantId);
+		BuildMatrixSlotDate slotDate = buildMatrixSmcService.getSlotDate(dateId);
+		List<String> unitNumbers = buildMatrixSmcService.getReservedUnitNumbers(slotId, region);
+		
+		model.addObject("region", region);
+		model.addObject("regionDesc", regionDesc);
+		model.addObject("slotDate", slotDate);
+		model.addObject("bodyPlant", bodyPlant);
+		model.addObject("unitNumbers", unitNumbers);
 		
 		return model;
 	}

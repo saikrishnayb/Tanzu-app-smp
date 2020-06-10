@@ -21,6 +21,7 @@ import com.penske.apps.buildmatrix.domain.ProductionSlotResult;
 import com.penske.apps.buildmatrix.domain.RegionPlantAssociation;
 import com.penske.apps.buildmatrix.model.BuildMixForm;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm;
+import com.penske.apps.buildmatrix.model.ProductionSlotsUtilizationSummary;
 import com.penske.apps.suppliermgmt.model.UserContext;
 
 public interface BuildMatrixSmcService {
@@ -125,5 +126,13 @@ public interface BuildMatrixSmcService {
 	public void updateBuildParams(BuildSummary summary);
 
 	public Map<String, Map<String, BusinessAward>> getExistingBuildMixData(int buildId);
+
+	public ProductionSlotsUtilizationSummary getUtilizationSummary(Integer integer, Integer integer2);
+
+	public BuildMatrixBodyPlant getBodyPlantById(int plantId);
+
+	public BuildMatrixSlotDate getSlotDate(int slotDateId);
+
+	public List<String> getReservedUnitNumbers(int slotId, String region);
 	
 }

@@ -53,6 +53,7 @@
 <script type="text/javascript" src="${baseUrl}/js/global/v2/jquery/jquery.multiselect.filter-2.0.1.js" type="text/javascript"></script>
 <script type="text/javascript" src="${baseUrl}/js/global/v2/jquery/jquery.mask-1.7.7.min.js"></script>
 <script type="text/javascript" src="${baseUrl}/js/global/v2/bootstrap/bootstrap.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="${baseUrl}/js/global/v2/jquery/dataTables.fixedColumns.min.js"></script>
 
 <script type="text/javascript" src="${baseUrl}/js/global/v2/modal-util.js"></script>
 <script type="text/javascript" src="${baseUrl}/js/global/v2/loading-util.js"></script>

@@ -11,9 +11,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -47,7 +49,9 @@ import com.penske.apps.buildmatrix.domain.BuildAttribute;
 import com.penske.apps.buildmatrix.domain.BuildAttributeValue;
 import com.penske.apps.buildmatrix.domain.BuildMatrixAttribute;
 import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
+import com.penske.apps.buildmatrix.domain.BuildMatrixSlot;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlotDate;
+import com.penske.apps.buildmatrix.domain.BuildMatrixSlotRegionAvailability;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlotType;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.BusinessAward;
@@ -62,6 +66,7 @@ import com.penske.apps.buildmatrix.domain.enums.BuildStatus;
 import com.penske.apps.buildmatrix.model.BuildMixForm;
 import com.penske.apps.buildmatrix.model.BuildMixForm.AttributeRow;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm;
+import com.penske.apps.buildmatrix.model.ProductionSlotsUtilizationSummary;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm.BusinessAwardRow;
 import com.penske.apps.smccore.base.util.Util;
 import com.penske.apps.suppliermgmt.model.UserContext;
@@ -129,6 +134,11 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	public List<BuildMatrixBodyPlant> getAllBodyPlants() {
 		List<BuildMatrixBodyPlant> bodyPlantSummary = buildMatrixSmcDAO.getAllBodyPlants();
 		return bodyPlantSummary;
+	}
+	
+	@Override
+	public BuildMatrixBodyPlant getBodyPlantById(int plantId) {
+		return buildMatrixSmcDAO.getPlantData(plantId);
 	}
 	
 	@Override
@@ -780,5 +790,32 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		}
 		
 		return buildMixMap;
+	}
+	
+	@Override
+	public ProductionSlotsUtilizationSummary getUtilizationSummary(Integer slotTypeId, Integer selectedYear) {
+		List<RegionPlantAssociation> regionPlantList = buildMatrixSmcDAO.getAllRegionAssociationData();
+		List<BuildMatrixBodyPlant> bodyPlantSummary = buildMatrixSmcDAO.getAllBodyPlantsforSlotMaintenance();
+		List<BuildMatrixSlotDate> slotDates = buildMatrixSmcDAO.getSlotMaintenanceSummary(slotTypeId, selectedYear);
+		
+		Set<Integer> slotIds = new HashSet<>();
+		for(BuildMatrixSlotDate date: slotDates) {
+			List<Integer> idList = date.getBuildSlots().stream().map(slot->slot.getSlotId()).collect(toList());
+			slotIds.addAll(idList);
+		}
+		List<BuildMatrixSlotRegionAvailability> regionAvailability = buildMatrixSmcDAO.getRegionAvailability(slotIds);
+		ProductionSlotsUtilizationSummary summary = new ProductionSlotsUtilizationSummary(regionPlantList, bodyPlantSummary, slotDates, regionAvailability);
+		
+		return summary;
+	}
+	
+	@Override
+	public BuildMatrixSlotDate getSlotDate(int slotDateId) {
+		return buildMatrixSmcDAO.getSlotDate(slotDateId);
+	}
+	
+	@Override
+	public List<String> getReservedUnitNumbers(int slotId, String region) {
+		return buildMatrixSmcDAO.getReservedUnitNumbers(slotId, region);
 	}
 }

@@ -1,6 +1,6 @@
 package com.penske.apps.buildmatrix.domain;
 
-public class BuildMarixSlot {
+public class BuildMatrixSlot {
 	private int slotId;
 	private int slotTypeId;
 	private int plantId;

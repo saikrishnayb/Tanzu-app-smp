@@ -29,7 +29,7 @@
 }
 
 .year-div{
-	padding-left: 35px;
+	padding-left: 35px;#
 }
 
 /* .first-col {
@@ -48,4 +48,9 @@
 
 .badge-row th {
 	background-color: inherit;
+}
+
+/* fix for fixed columns *shrug emoji* */
+.DTFC_LeftBodyWrapper:nth-child(2) .dataTable.no-footer.DTFC_Cloned thead{
+	display: none;
 }

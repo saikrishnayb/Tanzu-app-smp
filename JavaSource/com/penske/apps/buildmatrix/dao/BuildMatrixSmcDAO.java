@@ -1,6 +1,7 @@
 package com.penske.apps.buildmatrix.dao;
 
 import java.util.List;
+import java.util.Set;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -10,7 +11,9 @@ import com.penske.apps.buildmatrix.domain.BuildAttribute;
 import com.penske.apps.buildmatrix.domain.BuildAttributeValue;
 import com.penske.apps.buildmatrix.domain.BuildMatrixAttribute;
 import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
+import com.penske.apps.buildmatrix.domain.BuildMatrixSlot;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlotDate;
+import com.penske.apps.buildmatrix.domain.BuildMatrixSlotRegionAvailability;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlotType;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.BusinessAward;
@@ -144,5 +147,13 @@ public interface BuildMatrixSmcDAO {
 	public void updateBuildParams(@Param("summary") BuildSummary summary);
 
 	public List<BusinessAward> getBusinessAwards(@Param("buildId") int buildId);
+
+	public List<RegionPlantAssociation> getAllRegionAssociationData();
+	
+	public List<BuildMatrixSlotRegionAvailability> getRegionAvailability(@Param("slotIds") Set<Integer> slotIds);
+	
+	public BuildMatrixSlotDate getSlotDate(@Param("slotDateId") int slotDateId);
+
+	public List<String> getReservedUnitNumbers(@Param("slotId") int slotId, @Param("region") String region);
 	
 }

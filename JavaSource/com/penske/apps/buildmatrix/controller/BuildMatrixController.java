@@ -29,9 +29,11 @@ import com.penske.apps.buildmatrix.domain.BusinessAward;
 import com.penske.apps.buildmatrix.domain.CroOrderKey;
 import com.penske.apps.buildmatrix.domain.FreightMileage;
 import com.penske.apps.buildmatrix.domain.PlantProximity;
+import com.penske.apps.buildmatrix.domain.RegionPlantAssociation;
 import com.penske.apps.buildmatrix.domain.enums.BuildStatus;
 import com.penske.apps.buildmatrix.model.AvailableChassisSummaryModel;
 import com.penske.apps.buildmatrix.model.OrderSelectionForm;
+import com.penske.apps.buildmatrix.model.ProductionSlotsUtilizationSummary;
 import com.penske.apps.buildmatrix.model.ProximityViewModel;
 import com.penske.apps.buildmatrix.service.BuildMatrixCorpService;
 import com.penske.apps.buildmatrix.service.BuildMatrixCroService;
@@ -407,6 +409,7 @@ public class BuildMatrixController {
 		return model;
 	}
  	
+ 	//***** Slot utilization *****//
  	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
  	@RequestMapping("/prod-slot-utilization")
  	public ModelAndView getProdSlotUtilization(@RequestParam("slotType") String slotTypeId,@RequestParam("year") String selectedYear) 
@@ -419,11 +422,11 @@ public class BuildMatrixController {
 			slotTypeId = String.valueOf(buildMatrixSlotTypes.get(0).getSlotTypeId());
 			selectedYear = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
 		}
+		
+		ProductionSlotsUtilizationSummary summary = buildMatrixSmcService.getUtilizationSummary(Integer.valueOf(slotTypeId), Integer.valueOf(selectedYear));
+		model.addObject("summary", summary);
 		model.addObject("vehicleTypes", buildMatrixSlotTypes);
 		model.addObject("years", yearsForDropdown);
-		model.addObject("bodyplantList", buildMatrixSmcService.getAllBodyPlantsforSlotMaintenance());
-		model.addObject("slotMaintenanceSummary", buildMatrixSmcService
-				.getSlotMaintenanceSummary(Integer.valueOf(slotTypeId), Integer.valueOf(selectedYear)));
 		model.addObject("slotTypeId", Integer.valueOf(slotTypeId));
 		model.addObject("selectedYear", selectedYear);
 		return model;

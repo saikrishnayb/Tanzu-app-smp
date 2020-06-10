@@ -12,6 +12,7 @@
 <link href="${baseUrl}/css/global/v2/font-awesome.min.css" rel="stylesheet" type="text/css"/>
 <link href="${baseUrl}/css/global/v2/common.css" rel="stylesheet" type="text/css"/>
 <link href="${baseUrl}/css/global/v2/global.css" rel="stylesheet" type="text/css"/>
+<link href="${baseUrl}/css/global/v2/jquery/fixedColumns.dataTables.min.css" rel="stylesheet" type="text/css"/>
 
 <%-- Most scripts get put in the footer of the page, but the main jQuery script has to be in the header, since the $ is very occasionally referenced in page bodies. (ex: $.parseJSON()) --%>
 <script src="${baseUrl}/js/global/v2/jquery/jquery-3.4.1.min.js"></script>

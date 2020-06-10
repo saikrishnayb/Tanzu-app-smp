@@ -10,33 +10,38 @@
 			</div>
 			<div class="col-xs-12">
 				<div class="form-group">
-					<div class="col-xs-6">
+					<div class="col-xs-5 text-right">
+						<label class="control-label">Region</label>
+					</div>
+					<div class="col-xs-7">
+						${region} - ${regionDesc}
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-xs-5 text-right">
 						<label class="control-label">Plant</label>
 					</div>
-					<div class="col-xs-6">
-						MORGAN - RYDAL, GA
+					<div class="col-xs-7">
+						${bodyPlant.plantManufacturer} - ${bodyPlant.city}, ${bodyPlant.state}
 					</div>
 				</div>
 				<div class="form-group">
-					<div class="col-xs-6">
-						<label class="control-label">Slot</label>
+					<div class="col-xs-5 text-right">
+						<label class="control-label">Slot Date</label>
 					</div>
-					<div class="col-xs-6">
-						02/18/2019
+					<div class="col-xs-7">
+						${slotDate.formattedSlotDate}
 					</div>
 				</div>
 				<div class="form-group">
-					<div class="col-xs-6">
+					<div class="col-xs-5 text-right">
 						<label class="control-label">Select Unit</label>
 					</div>
-					<div class="col-xs-6">
-						<select id="release-unit" class="common-form-control">
-							<option value=""></option>
-							<option value="">377681</option>
-							<option value="">377682</option>
-							<option value="">377683</option>
-							<option value="">377684</option>
-							<option value="">377685</option>
+					<div class="col-xs-7">
+						<select id="release-units" name="releaseUnits" multiple onchange="enableUpdate()" class="common-form-control">
+							<c:forEach items="${unitNumbers}" var="unitNumber">
+								<option value="${unitNumber}">${unitNumber}</option>
+							</c:forEach>
 						</select>
 					</div>
 				</div>
@@ -51,4 +56,4 @@
 		</div>
 	</div>
 </div>
-<script src="${baseUrl}/js/admin-console/oem-build-matrix/modals/update-build-params.js" type="text/javascript"></script>
+<script src="${baseUrl}/js/admin-console/oem-build-matrix/modals/release-units-modal.js" type="text/javascript"></script>

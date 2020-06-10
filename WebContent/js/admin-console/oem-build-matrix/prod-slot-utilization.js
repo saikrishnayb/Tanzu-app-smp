@@ -9,11 +9,14 @@ ModalUtil.initializeModal($prodSlotUtilizationModal);
 
 var $slotUtilizationTable = $('#slot-utilization-table');
 var $slotUtilizationDataTable = $slotUtilizationTable.DataTable({
+	'fixedColumns': {
+        leftColumns: 1
+    },
 	'paging': false,
 	'ordering': false,
 	'info': false,
 	'scrollX': true,
-	'scrollY': '60vh',
+	'scrollY': '500px',
 	'lengthChange': false,
 	'searching': false,
 	'fixedHeader': true,
@@ -31,19 +34,26 @@ $("#vehicletype-drpdwn, #year-drpdwn").on("change", function() {
 
 $('.release-units-link').on('click', function(){
 	var $this = $(this);
+	var $td = $this.closest('td');
 	var $row = $this.closest('tr');
 	
-	var regionId = $row.data('region-id');
-	var dateId = $row.data('date-id');
-	var plantId = $row.data('plant-id');
+	var region = $td.data('region');
+	var dateId = $row.data('prod-slot-date-id');
+	var plantId = $td.data('plant-id');
+	var slotId = $td.data('slot-id');
+	var slotRegionId = $td.data('slot-region-id');
+	var regionDesc = $td.data('region-desc');
 	
 	var $getReleaseUnitsContentPromise = $.ajax({
 		type: "GET",
 		url: baseBuildMatrixUrl + '/get-release-units-modal',
 		data: {
-			regionId: regionId,
+			region: region,
 			dateId: dateId,
-			plantId: plantId
+			plantId: plantId,
+			slotId: slotId,
+			slotRegionId: slotRegionId,
+			regionDesc: regionDesc
 		}
 	});
 	$getReleaseUnitsContentPromise.done(function(data){

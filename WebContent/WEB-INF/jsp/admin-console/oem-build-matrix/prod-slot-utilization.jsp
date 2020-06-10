@@ -59,27 +59,40 @@
 							<thead>
 								<tr class="region-row">
 									<th class="first-col"></th>
-									<th colspan="12">Northeast Region</th>
-									<th colspan="12">Southeast Region</th>
-									<th colspan="12">Northwest Region</th>
+									<c:forEach items="${summary.plantAssociationsByRegion}" var="entry">
+										<c:set var="region" value="${entry.key}" />
+										<c:set var="associationList" value="${entry.value}" />
+										<c:set var="associationListSize" value="${fn:length(associationList)}" />
+										<c:set var="exampleBodyPlant" value="${associationList.get(0)}" />
+										<th colspan="${associationListSize * 3}">${exampleBodyPlant.region} - ${exampleBodyPlant.regionDesc}</th>
+									</c:forEach>
 								</tr>
 								<tr class="plant-header-row">
 									<th class="first-col">Production Date</th>
-									<c:forEach items="${bodyplantList}" var="plantData">
-										<th colspan="3" id="${plantData.plantId}"> ${plantData.plantManufacturer} <br> ${plantData.city}, ${plantData.state}</th>	
+									<c:forEach items="${summary.plantAssociationsByRegion}" var="entry">
+										<c:set var="region" value="${entry.key}" />
+										<c:set var="associationList" value="${entry.value}" />
+										<c:forEach items="${associationList}" var="association">
+											<c:set var="bodyPlant" value="${summary.bodyPlantById.get(association.plantId)}" />
+											<th colspan="3" id="${bodyPlant.plantId}"> ${bodyPlant.plantManufacturer} <br> ${bodyPlant.city}, ${bodyPlant.state}</th>
+										</c:forEach>	
 									</c:forEach>
 								</tr>
 								<tr class="badge-row">
 									<th class="first-col"></th>
-									<c:forEach items="${bodyplantList}" var="plantData">
-										<th><span class="badge available-badge">Available</span></th>
-										<th><span class="badge reserved-badge">Reserved</span></th>
-										<th><span class="badge issued-badge">Issued</span></th>
+									<c:forEach items="${summary.plantAssociationsByRegion}" var="entry">
+										<c:set var="region" value="${entry.key}" />
+										<c:set var="associationList" value="${entry.value}" />
+										<c:forEach items="${associationList}" var="association">
+											<th><span class="badge available-badge">Available</span></th>
+											<th><span class="badge reserved-badge">Reserved</span></th>
+											<th><span class="badge issued-badge">Issued</span></th>
+										</c:forEach>
 									</c:forEach>
 								</tr>
 							</thead>
 							<tbody>
-								<c:forEach items="${slotMaintenanceSummary}" var="productionSlot" varStatus="loop">
+								<c:forEach items="${summary.rows}" var="row" varStatus="loop">
 									<c:choose>
 										<c:when test="${loop.count % 2 eq 0}">
 											<c:set var="rowClass" value="even" />
@@ -88,16 +101,27 @@
 											<c:set var="rowClass" value="odd" />
 										</c:otherwise>
 									</c:choose>
-									<tr class="date-unit-row ${rowClass}" 
-										data-prod-slot-id="${slotDateId}"
-										data-region-id=""
-										data-date-id=""
-										data-plant-id="">
-										<td class="first-col prod-date">${productionSlot.formattedSlotDate}</td>
-										<c:forEach items="${productionSlot.buildSlots}" var="slotForplant">
-											<td class="available-units">5</td>
-											<td class="reserved-units"><a class="secondaryLink release-units-link">5</a></td>
-											<td class="issued-units">5</td>
+									<c:set var="slotDateId" value="${row.slotDate.slotDateId}" />
+									<tr class="date-unit-row ${rowClass}" data-prod-slot-date-id="${slotDateId}">
+										<td class="first-col prod-date">${row.slotDate.formattedSlotDate}</td>
+										<c:forEach items="${row.cells}" var="cell">
+											<td class="available-units">${cell.regionAvailability.slotAvailable}</td>
+											<c:choose>
+												<c:when test="${cell.regionAvailability.slotReserved gt 0}">
+													<td class="reserved-units"
+														data-plant-id="${cell.bodyPlant.plantId}"
+														data-region="${cell.regionAvailability.region}" 
+														data-slot-id="${cell.slot.slotId}" 
+														data-slot-region-id="${cell.regionAvailability.slotRegionId}" 
+														data-region-desc="${cell.regionPlantAssociation.regionDesc}" >
+															<a class="secondaryLink release-units-link">${cell.regionAvailability.slotReserved}</a>
+													</td>
+												</c:when>
+												<c:otherwise>
+													<td class="reserved-units">${cell.regionAvailability.slotReserved}</td>
+												</c:otherwise>
+											</c:choose>
+											<td class="issued-units">${cell.regionAvailability.slotAccepted}</td>
 										</c:forEach>
 									</tr>
 								</c:forEach>

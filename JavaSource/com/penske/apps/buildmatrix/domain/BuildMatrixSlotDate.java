@@ -12,7 +12,7 @@ public class BuildMatrixSlotDate {
 	private String slotYear;
 	private Date slotDate;
 	private int weekOfYear;
-	private List<BuildMarixSlot> buildSlots;
+	private List<BuildMatrixSlot> buildSlots;
 
 	public int getSlotDateId() {
 		return slotDateId;
@@ -30,7 +30,7 @@ public class BuildMatrixSlotDate {
 		return weekOfYear;
 	}
 
-	public List<BuildMarixSlot> getBuildSlots() {
+	public List<BuildMatrixSlot> getBuildSlots() {
 		return buildSlots;
 	}
 
@@ -50,7 +50,7 @@ public class BuildMatrixSlotDate {
 		this.weekOfYear = weekOfYear;
 	}
 
-	public void setBuildSlots(List<BuildMarixSlot> buildSlots) {
+	public void setBuildSlots(List<BuildMatrixSlot> buildSlots) {
 		this.buildSlots = buildSlots;
 	}
 

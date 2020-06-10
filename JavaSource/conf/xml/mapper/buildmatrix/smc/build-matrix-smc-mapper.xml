@@ -167,6 +167,7 @@
 			DISTINCT mileage.REGION AS region,
 			mileage.REGION_DESC AS regionDesc,
 			reg.ASSOC_ID AS regionAssociationId,
+			reg.PLANT_ID AS plantId,
 			CASE WHEN reg.REGION <![CDATA[<>]]> '' AND reg.PLANT_ID = #{plantId}
 				 THEN 'Y' 
 				 ELSE 'N' 
@@ -174,6 +175,23 @@
 		FROM OBM_FREIGHT_MILEAGE mileage
 			LEFT JOIN OBM_REGION_PLANT_ASSOCIATION reg 
 			ON mileage.REGION = reg.REGION AND reg.PLANT_ID = #{plantId}
+		WHERE mileage.REGION <![CDATA[<>]]> ''
+		ORDER BY mileage.REGION
+	</select>
+	
+	<select id="getAllRegionAssociationData" resultType="com.penske.apps.buildmatrix.domain.RegionPlantAssociation">
+		SELECT
+			DISTINCT mileage.REGION AS region,
+			mileage.REGION_DESC AS regionDesc,
+			reg.ASSOC_ID AS regionAssociationId,
+			reg.PLANT_ID AS plantId,
+			CASE WHEN reg.REGION <![CDATA[<>]]> ''
+				 THEN 'Y' 
+				 ELSE 'N' 
+			END as isAssociated
+		FROM OBM_FREIGHT_MILEAGE mileage
+			LEFT JOIN OBM_REGION_PLANT_ASSOCIATION reg 
+			ON mileage.REGION = reg.REGION
 		WHERE mileage.REGION <![CDATA[<>]]> ''
 		ORDER BY mileage.REGION
 	</select>
@@ -206,9 +224,7 @@
 			input.PLANT_ID,
 			input.REGION
 			)
-	</update>
-	
-	<!-- PRODUCTION SLOT RESULTS -->
+	</update>	<!-- PRODUCTION SLOT RESULTS -->
 	<resultMap id="slotResultsMap" type="com.penske.apps.buildmatrix.domain.ProductionSlotResult" >
 		<result column="runId"  				  property="runId"/>
 		<result column="orderId"  				  property="orderId"/>
@@ -236,7 +252,7 @@
 			MILEAGE.REGION AS region,
 			MILEAGE.AREA AS area,
 			SLOT_REQ.DESTINATION_DISTRICT AS districtNumber,
-			SLOT_REQ.DESTINATION_DISTRICT_NAME AS districtName,
+			SLOT_REQ.DESTINATION_DISTRICT_DESC AS districtName,
 			SLOT_REQ.DESTINATION_DELIVERY_DATE AS requestedDeliveryDate,
 			PLANT.PLANT_MFR_CODE ||'-' ||PLANT.PLANT_CITY ||',' ||PLANT.PLANT_STATE AS productionSlot,
 			SLOT_DATES.SLOT_DATE AS productionDate,
@@ -281,7 +297,7 @@
 			MILEAGE.REGION AS region,
 			MILEAGE.AREA AS area,
 			SLOT_REQ.DESTINATION_DISTRICT AS districtNumber,
-			SLOT_REQ.DESTINATION_DISTRICT_NAME AS districtName,
+			SLOT_REQ.DESTINATION_DISTRICT_DESC AS districtName,
 			SLOT_REQ.DESTINATION_DELIVERY_DATE AS requestedDeliveryDate,
 			PLANT.PLANT_MFR_CODE ||'-' ||PLANT.PLANT_CITY ||',' ||PLANT.PLANT_STATE AS productionSlot,
 			SLOT_DATES.SLOT_DATE AS productionDate
@@ -811,7 +827,16 @@
 		WHERE    SLOT_YEAR=#{selectedYear}
 	</select>
 	
-	<select id="getSlotAvailability" resultType="com.penske.apps.buildmatrix.domain.BuildMarixSlot">
+	<select id="getSlotDate" parameterType="int" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlotDate">
+		SELECT   SLOT_DATE_ID,
+		         SLOT_YEAR,
+		         WEEK_OF_YEAR,
+		         DATE(to_date(SLOT_DATE,'MM/DD/YYYY')) AS SLOT_DATE
+		FROM     SMC.OBM_SLOT_DATES
+		WHERE    SLOT_DATE_ID=#{slotDateId}
+	</select>
+	
+	<select id="getSlotAvailability" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlot">
 		SELECT   SLOT_ID AS slotId,
 		         SLOT_TYPE_ID AS slotTypeId,
 		         plant.PLANT_ID AS plantId,
@@ -822,6 +847,24 @@
 		WHERE    SLOT_TYPE_ID=CAST(#{slotTypeId} AS INTEGER)
 		AND      SLOT_DATE_ID=#{slotDateId}
 		ORDER BY PLANT.PLANT_MANUFACTURER, PLANT.PLANT_CITY
+	</select>
+	
+	<select id="getRegionAvailability" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlotRegionAvailability">
+		SELECT 
+			SLOT_REGION_ID,
+			SLOT_ID,
+			REGION,
+			SLOT_AVAILABLE,
+			SLOT_RESERVED,
+			SLOT_ACCEPTED
+		FROM
+			SMC.OBM_SLOTS_BY_REGION
+		WHERE
+			SLOT_ID IN (
+				<foreach collection="slotIds" item="slotId" separator="," open="" close="">
+	 				#{slotId}
+	 			</foreach>
+			)
 	</select>
 	
 	<select id="getBuildMaximumWeeksBefore" resultType="int">
@@ -836,5 +879,14 @@
 		MAXIMUM_WEEKS_AFTER_ALLOWED 
 		FROM SMC.OBM_RUN_WEEK_THRESHOLD
 		FETCH FIRST 1 ROWS ONLY
+	</select>
+	
+	<select id="getReservedUnitNumbers" resultType="String">
+		SELECT 
+			TRIM(UNIT_NUMBER)
+		FROM SMC.OBM_SLOT_RESERVATION
+		WHERE SLOT_ID = #{slotId}
+		AND REGION = #{region}
+		ORDER BY UNIT_NUMBER
 	</select>
 </mapper>
