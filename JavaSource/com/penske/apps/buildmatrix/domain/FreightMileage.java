@@ -1,12 +1,14 @@
 package com.penske.apps.buildmatrix.domain;
 
 import java.util.List;
+import java.util.Map;
 
 public class FreightMileage {
 
 	private int plantId;
 	private String area;
-	private List<String> districts;
+	private String areaDesc;
+	private List<Map<String,String>> districts;
 	
 	public int getPlantId() {
 		return plantId;
@@ -14,7 +16,7 @@ public class FreightMileage {
 	public String getArea() {
 		return area;
 	}
-	public List<String> getDistricts() {
+	public List<Map<String,String>> getDistricts() {
 		return districts;
 	}
 	
@@ -24,8 +26,14 @@ public class FreightMileage {
 	public void setArea(String area) {
 		this.area = area;
 	}
-	public void setDistricts(List<String> districts) {
+	public void setDistricts(List<Map<String,String>> districts) {
 		this.districts = districts;
+	}
+	public String getAreaDesc() {
+		return areaDesc;
+	}
+	public void setAreaDesc(String areaDesc) {
+		this.areaDesc = areaDesc;
 	}
 	
 }

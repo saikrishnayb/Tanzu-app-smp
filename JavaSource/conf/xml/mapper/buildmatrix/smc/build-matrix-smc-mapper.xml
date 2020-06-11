@@ -7,34 +7,41 @@
 	<resultMap id="freightMileageMap" type="com.penske.apps.buildmatrix.domain.FreightMileage">
 		<result property="plantId" column="plantId" />
 		<result property="area" column="area" />
+		<result property="areaDesc" column="areaDesc"/>
 		<collection property="districts" column="{plantId=plantId,area=area}" select="getFreightMileageDistricts"></collection>
 	</resultMap>
 
-	<select id="getFreightMileageDistricts" resultType="String">
-		SELECT   OFM.DISTRICT AS districtValues
+	<select id="getFreightMileageDistricts" resultType="hashmap">
+		SELECT   OFM.DISTRICT AS districtValues,
+				 OFM.DIST_DESC AS distDesc
 		FROM     SMC.OBM_FREIGHT_MILEAGE OFM
 		WHERE    OFM.PLANT_ID = #{plantId}
 		AND      OFM.AREA = #{area}
 	</select>
 
 	<select id="getPlantProximity" resultType="com.penske.apps.buildmatrix.domain.PlantProximity">
-		SELECT   PROXIMITY_ID as proximityId,
-		         PLANT_ID as plantId,
-		         TIER as tier,
-		         DISTRICT as district
-		FROM     SMC.OBM_PLANT_PROXIMITY
-		WHERE    PLANT_ID =#{plantId}
+		SELECT   proximity.PROXIMITY_ID as proximityId,
+		         proximity.PLANT_ID as plantId,
+		         proximity.TIER as tier,
+		         proximity.DISTRICT as district,
+		         mileage.DIST_DESC as distDesc
+		FROM     SMC.OBM_PLANT_PROXIMITY proximity
+		LEFT JOIN  SMC.OBM_FREIGHT_MILEAGE mileage 
+			ON mileage.PLANT_ID = proximity.PLANT_ID 
+			AND proximity.DISTRICT = mileage.DISTRICT
+		WHERE  proximity.PLANT_ID = #{plantId}
 	</select>
 
 	<select id="getFreightMileageData" resultMap="freightMileageMap">
 		SELECT   OFM.PLANT_ID AS plantId,
-		         OFM.AREA AS area
+		         OFM.AREA AS area,
+		         OFM.AREA_DESC AS areaDesc
 		FROM     SMC.OBM_FREIGHT_MILEAGE OFM
 		JOIN 	 SMC.OBM_REGION_PLANT_ASSOCIATION reg 
 				 ON reg.PLANT_ID = OFM.PLANT_ID AND reg.REGION =  OFM.REGION
 		WHERE    OFM.AREA <![CDATA[<>]]> ''
 		AND      OFM.PLANT_ID = #{plantId}
-		GROUP BY OFM.AREA, OFM.PLANT_ID
+		GROUP BY OFM.AREA, OFM.PLANT_ID ,OFM.AREA_DESC
 		ORDER BY OFM.AREA
 	</select>
 

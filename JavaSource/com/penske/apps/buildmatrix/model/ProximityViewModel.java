@@ -14,6 +14,7 @@ import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.penske.apps.adminconsole.util.ApplicationConstants;
 import com.penske.apps.buildmatrix.domain.FreightMileage;
 import com.penske.apps.buildmatrix.domain.PlantProximity;
 
@@ -78,8 +79,11 @@ public class ProximityViewModel
 				String area = freightMileage.getArea();
 				this.areas.put(area, new ProximityAreaViewModel(freightMileage));
 				
-				for(String district : freightMileage.getDistricts())
-					areasByDistrictNumber.put(district, area);
+				for(Map<String,String> district : freightMileage.getDistricts())
+					{
+					areasByDistrictNumber.put(district.get(ApplicationConstants.DISTRICT_STRING), area);
+					}
+					
 			}
 		}
 		
@@ -134,10 +138,10 @@ public class ProximityViewModel
 		private ProximityAreaViewModel(FreightMileage freightMileage)
 		{
 			this.freightMileage = freightMileage;
-			for(String district : freightMileage.getDistricts())
+			for(Map<String,String> district : freightMileage.getDistricts())
 			{
-				this.districtsInArea.add(district);
-				this.proximities.put(district, null);
+				this.districtsInArea.add(district.get(ApplicationConstants.DISTRICT_STRING));
+				this.proximities.put(district.get(ApplicationConstants.DISTRICT_STRING)+" - "+district.get(ApplicationConstants.DISTRICT_DESC), null);
 			}
 		}
 
@@ -148,9 +152,10 @@ public class ProximityViewModel
 		private void addProximity(PlantProximity proximity)
 		{
 			String district = proximity.getDistrict();
+			String districtDesc = proximity.getDistDesc();
 			if(!districtsInArea.contains(district))
 				throw new IllegalArgumentException("Can not add plant proximity for " + district + " to area " + freightMileage.getArea() + ". That district is not part of that area.");
-			proximities.put(district, proximity);
+			proximities.put(district+" - "+districtDesc, proximity);
 		}
 		
 		//***** MODIFIED ACCESSORS *****//

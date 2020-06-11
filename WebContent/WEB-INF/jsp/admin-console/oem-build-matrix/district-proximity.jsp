@@ -32,9 +32,9 @@
 									<ul id="list${tier}" class="filterable">
 										<c:forEach items="${tierModel.areas}" var="areaModel">
 											<c:set var="area" value="${areaModel.freightMileage.area}" />
-											
+											<c:set var="areaDesc" value="${areaModel.freightMileage.areaDesc}"></c:set>
 											<li>
-												<label class="dist-proximity-lbl">${area}</label>
+												<label class="dist-proximity-lbl">${area} - ${areaDesc}</label>
 												<ul>
 													<fieldset class="fieldset">
 														<legend class="legend-view"></legend>

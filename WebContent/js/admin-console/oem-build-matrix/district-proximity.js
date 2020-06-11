@@ -40,7 +40,8 @@ $(document).ready(function() {
 		var plantId = parseInt($('#plantId').val());
 		var area = $(this).attr('area');
 		var tier = parseInt($(this).attr('tier'));
-		var district = $(this).val();
+		var districtLbl = $(this).val();
+		var district =districtLbl.split(" ")[0];
 		var proximityId = ($(this).attr('proximityId') != "" && $(this).attr('proximityId') != undefined) ? parseInt($(this).attr('proximityId')) : "";
 		var proximityUpdateObj = {};
 		proximityUpdateObj['proximityId'] = proximityId;
