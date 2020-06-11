@@ -9,6 +9,7 @@
 		<tl:penskeOnly>
 		<div class="leftNavGroup">Production Slot</div>
 		<div><a href="${baseAppUrl}/admin-console/oem-build-matrix/prod-slot-maintenance.htm?slotType=0&year=0" id="left-nav-prod-slot-maintenance" >Maintenance</a></div>
+		<div><a href="${baseAppUrl}/admin-console/oem-build-matrix/prod-slot-region-maintenance.htm?slotType=0&year=0" id="left-nav-prod-slot-region-maintenance" >Region Maintenance</a></div>
 		<div><a href="${baseAppUrl}/admin-console/oem-build-matrix/prod-slot-utilization.htm?slotType=0&year=0" id="left-nav-prod-slot-utilization" >Utilization</a></div>
 		</tl:penskeOnly>
 		<!-- <div class="leftNavGroup"><a id="left-nav-slot-utilization" >Slot Utilization</a></div> -->

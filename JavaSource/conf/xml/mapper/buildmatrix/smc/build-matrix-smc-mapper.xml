@@ -627,6 +627,7 @@
 			ON awardDefs.ITEM_ID = val.ATTRIBUTE_VALUE_ID
 		JOIN SMC.OBM_BUSINESS_AWARD_GROUP awardGroup
 			ON awardGroup.ATTRIBUTE_ID = val.ATTRIBUTE_ID
+		WHERE val.IS_DELETED = 'N'
 		ORDER BY attribute.ATTRIBUTE_ID
 	</select>
 	
