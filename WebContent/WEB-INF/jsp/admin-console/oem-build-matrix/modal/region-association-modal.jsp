@@ -1,7 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
-<c:set var="modalName" value="Set Region Availability for plant:${plantData.plantName}" />
+<c:set var="modalName" value="Region Association - ${plantData.plantName}" />
 
 <%@ include file="../../../global/v2/modal-error-container.jsp"%>
 <div class="modal-content col-xs-12" data-modal-title="${modalName}" data-modal-width="470">
