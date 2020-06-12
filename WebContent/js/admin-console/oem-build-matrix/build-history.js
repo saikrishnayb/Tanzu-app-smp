@@ -49,13 +49,19 @@ $buildHistoryDataTable = $buildHistoryTable.DataTable({ //All of the below are o
 });
 
 $buildHistoryTable.on('click', '#rework-build', function() {
-	openConfirmModal();
-
+	openConfirmModal(false);
 });
 
-function openConfirmModal() {
+function openConfirmModal(isDeleteConfirmModal) {
+	if(isDeleteConfirmModal){
+			$("#reworkOrDeleteConfirm").html('Confirm');
+			$('#confirmMessage').text("By clicking on Confirm your results will be cleared out. Do you really want to delete build?");
+		}
+	else{
+			$("#reworkOrDeleteConfirm").html('Rework');
+			$('#confirmMessage').text("By clicking on Rework your results will be cleared out. Do you really want to rework build?");
+		}	
 	$('#confirmReworkOrDeleteModal').dialog('open');
-	$('#deleteMessage').text("By clicking on Rework your results will be cleared out. Do you really want to rework build?");
 }
 
 $('#confirmReworkOrDeleteModal').dialog({
@@ -75,3 +81,7 @@ $('#confirmReworkOrDeleteModal').dialog({
 function closeConfirmDialog() {
 	$('#confirmReworkOrDeleteModal').dialog('close');
 }
+
+$buildHistoryTable.on('click', '#cancel-build', function() {
+	openConfirmModal(true);
+});
