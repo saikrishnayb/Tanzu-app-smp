@@ -48,3 +48,30 @@ $buildHistoryDataTable = $buildHistoryTable.DataTable({ //All of the below are o
 	}
 });
 
+$buildHistoryTable.on('click', '#rework-build', function() {
+	openConfirmModal();
+
+});
+
+function openConfirmModal() {
+	$('#confirmReworkOrDeleteModal').dialog('open');
+	$('#deleteMessage').text("By clicking on Rework your results will be cleared out. Do you really want to rework build?");
+}
+
+$('#confirmReworkOrDeleteModal').dialog({
+	autoOpen : false,
+	modal : true,
+	dialogClass : 'popupModal',
+	width : 370,
+	minHeight : 150,
+	resizable : false,
+	title : 'Confirm',
+	closeOnEscape : false,
+	open : function(event, ui) {
+		$(this).closest('.ui-dialog').find('.ui-dialog-titlebar-close').show();
+	}
+});
+
+function closeConfirmDialog() {
+	$('#confirmReworkOrDeleteModal').dialog('close');
+}

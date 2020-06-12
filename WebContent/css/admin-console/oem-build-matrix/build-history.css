@@ -22,3 +22,10 @@
 .rework-btn { 
 	border-radius:10px;
 }
+
+.confirm-modal-btn { 
+	position:absolute;
+	bottom:3px;
+	right:5px;
+}
+

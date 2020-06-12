@@ -42,8 +42,8 @@
 									<td>
 										<c:choose>
 											<c:when test="${buildHistory.showReworkBtn()}">
-												<a class="buttonSecondary rework-btn">Rework</a>
-												<a class="buttonSecondary rework-btn">Cancel</a>
+												<a class="buttonSecondary rework-btn" id="rework-build">Rework Build</a>
+												<a class="buttonSecondary rework-btn">Cancel Build</a>
 											</c:when>
 											<c:otherwise></c:otherwise>
 										</c:choose>
@@ -91,6 +91,13 @@
 			</div>
 		</div>
 	</div>
+	<div id="confirmReworkOrDeleteModal">
+			<p id="deleteMessage"></p>
+			<div class="confirm-modal-btn">
+				<a href="javascript:void(0)" class="secondaryLink" onclick="closeConfirmDialog();">Cancel</a> 
+				<a href="javascript:void(0)" class="buttonPrimary" onclick="" >Rework</a>
+			</div>
+		</div>
 	
 	<%@ include file="../../global/v2/footer.jsp" %>
 	<script src="${baseUrl}/js/admin-console/oem-build-matrix/build-history.js" type="text/javascript"></script>
