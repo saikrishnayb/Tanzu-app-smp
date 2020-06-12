@@ -3,7 +3,8 @@
 	margin-bottom: 10px;
 }
 
-.slot-utilization-table-top  div {
+.slot-utilization-table-top  div,
+.now-viewing-row div{
 	display: inline-block;
 }
 
@@ -28,19 +29,23 @@
 	color: #454545;
 }
 
-.year-div{
-	padding-left: 35px;#
+.search-div div {
+	padding-right: 35px;
+}
+
+.now-viewing-row span {
+	padding-right: 10px;
 }
 
 /* .first-col {
 	min-width: 100px;
 } */
 
-.region-row .first-col {
+/* .region-row .first-col {
 	background-color: inherit;
-}
-
-.region-row th,
+} */
+/* 
+.region-row th, */
 .plant-header-row th{
 	border-radius: 5px;
 	border: 2px solid white;

@@ -19,28 +19,24 @@
 	z-index:999;
 }
  */
-.available-badge {
-	background-color: #2D73CF;
+
+.search-div div {
+	padding-right: 35px;
 }
 
-.issued-badge {
-	background-color: #CDCDCD;
-	color: #454545;
-}
-
-.year-div{
-	padding-left: 35px;#
+.now-viewing-row span {
+	padding-right: 10px;
 }
 
 /* .first-col {
 	min-width: 100px;
 } */
 
-.region-row .first-col {
+/* .region-row .first-col {
 	background-color: inherit;
 }
 
-.region-row th,
+.region-row th, */
 .plant-header-row th{
 	border-radius: 5px;
 	border: 2px solid white;

@@ -3,6 +3,7 @@ package com.penske.apps.buildmatrix.domain;
 public class BuildMatrixSlot {
 	private int slotId;
 	private int slotTypeId;
+	private int slotDateId;
 	private int plantId;
 	private int availableSlots;
 	private int reservedSlots;
@@ -45,5 +46,8 @@ public class BuildMatrixSlot {
 
 	public void setReservedSlots(int reservedSlots) {
 		this.reservedSlots = reservedSlots;
+	}
+	public int getSlotDateId() {
+		return slotDateId;
 	}
 }

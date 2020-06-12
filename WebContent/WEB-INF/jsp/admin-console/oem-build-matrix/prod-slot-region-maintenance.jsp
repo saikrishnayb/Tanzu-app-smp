@@ -43,8 +43,20 @@
 		          				</c:forEach>
 	          				</select>
           				</div>
+          				<div class="region-div">
+          					<label>Region</label>
+	          				<select id="region-drpdwn" name="region">
+	          					<c:forEach items="${regionMap}" var="entry">
+	          						<c:set var="regionSelected">${entry.key eq selectedRegion}</c:set>
+	          						<c:if test="${regionSelected}">
+		          						<c:set var="regionInfo" scope="page" value="${entry.value}" />
+		          					</c:if>
+		          					<option value="${entry.key}" ${regionSelected?'selected="selected"':'' }>${entry.value.region} - ${entry.value.regionDesc}</option>
+		          				</c:forEach>
+	          				</select>
+          				</div>
+          				<a class="buttonSecondary" id="search-button">Search</a>
           				</form>
-          				
           			</div>
           			<!-- <div class="btn-div floatRight">
           				<a  class="buttonSecondary">Import</a>
@@ -53,11 +65,17 @@
         		</div>
       		</div>
       		<div class="row">
+      			<div class="col-xs-12 now-viewing-row">
+      				<label>Now Viewing:</label>
+					<span>${slotType.slotTypeDesc}</span>
+					<span>${selectedYear}</span>
+					<span>${regionInfo.region} - ${regionInfo.regionDesc}</span>
+      			</div>
         		<div class="col-xs-12">
         			<div class="slot-region-maintenance-table-container">
 						<table id="slot-region-maintenance-table">
 							<thead>
-								<tr class="region-row">
+								<%-- <tr class="region-row">
 									<th class="first-col"></th>
 									<c:forEach items="${summary.plantAssociationsByRegion}" var="entry">
 										<c:set var="region" value="${entry.key}" />
@@ -66,7 +84,7 @@
 										<c:set var="exampleBodyPlant" value="${associationList.get(0)}" />
 										<th colspan="${associationListSize}">${exampleBodyPlant.region} - ${exampleBodyPlant.regionDesc}</th>
 									</c:forEach>
-								</tr>
+								</tr> --%>
 								<tr class="plant-header-row">
 									<th class="first-col">Production Date</th>
 									<c:forEach items="${summary.plantAssociationsByRegion}" var="entry">

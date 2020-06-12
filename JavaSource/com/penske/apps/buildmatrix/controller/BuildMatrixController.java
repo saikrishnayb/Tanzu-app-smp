@@ -29,6 +29,7 @@ import com.penske.apps.buildmatrix.domain.BusinessAward;
 import com.penske.apps.buildmatrix.domain.CroOrderKey;
 import com.penske.apps.buildmatrix.domain.FreightMileage;
 import com.penske.apps.buildmatrix.domain.PlantProximity;
+import com.penske.apps.buildmatrix.domain.RegionPlantAssociation;
 import com.penske.apps.buildmatrix.domain.enums.BuildStatus;
 import com.penske.apps.buildmatrix.model.AvailableChassisSummaryModel;
 import com.penske.apps.buildmatrix.model.OrderSelectionForm;
@@ -411,7 +412,7 @@ public class BuildMatrixController {
  	//***** Slot utilization *****//
  	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
  	@RequestMapping("/prod-slot-utilization")
- 	public ModelAndView getProdSlotUtilization(@RequestParam("slotType") String slotTypeId,@RequestParam("year") String selectedYear) 
+ 	public ModelAndView getProdSlotUtilization(@RequestParam("slotType") String slotTypeId,@RequestParam("year") String selectedYear, @RequestParam("region") String selectedRegion) 
 	{
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/prod-slot-utilization");
 		List<BuildMatrixSlotType> buildMatrixSlotTypes = buildMatrixSmcService.getAllVehicleTypes();
@@ -420,21 +421,29 @@ public class BuildMatrixController {
 		{
 			slotTypeId = String.valueOf(buildMatrixSlotTypes.get(0).getSlotTypeId());
 			selectedYear = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
+			selectedRegion = "";
 		}
 		
-		ProductionSlotsUtilizationSummary summary = buildMatrixSmcService.getUtilizationSummary(Integer.valueOf(slotTypeId), Integer.valueOf(selectedYear));
+		Map<String, RegionPlantAssociation> regionMap = buildMatrixSmcService.getRegionAssociationDataMap();
+		if(selectedRegion=="")
+			selectedRegion = regionMap.keySet().iterator().next();
+		
+		ProductionSlotsUtilizationSummary summary = buildMatrixSmcService.getUtilizationSummary(Integer.valueOf(slotTypeId), Integer.valueOf(selectedYear), selectedRegion);
+		
 		model.addObject("summary", summary);
 		model.addObject("vehicleTypes", buildMatrixSlotTypes);
 		model.addObject("years", yearsForDropdown);
 		model.addObject("slotTypeId", Integer.valueOf(slotTypeId));
 		model.addObject("selectedYear", selectedYear);
+		model.addObject("selectedRegion", selectedRegion);
+		model.addObject("regionMap", regionMap);
 		return model;
 	}
  	
  	//
  	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
  	@RequestMapping("/prod-slot-region-maintenance")
- 	public ModelAndView getProdSlotRegionMaintenance(@RequestParam("slotType") String slotTypeId,@RequestParam("year") String selectedYear) 
+ 	public ModelAndView getProdSlotRegionMaintenance(@RequestParam("slotType") String slotTypeId,@RequestParam("year") String selectedYear, @RequestParam("region") String selectedRegion) 
 	{
  		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/prod-slot-region-maintenance");
 		List<BuildMatrixSlotType> buildMatrixSlotTypes = buildMatrixSmcService.getAllVehicleTypes();
@@ -443,14 +452,22 @@ public class BuildMatrixController {
 		{
 			slotTypeId = String.valueOf(buildMatrixSlotTypes.get(0).getSlotTypeId());
 			selectedYear = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
+			selectedRegion = "";
 		}
 		
-		ProductionSlotsUtilizationSummary summary = buildMatrixSmcService.getUtilizationSummary(Integer.valueOf(slotTypeId), Integer.valueOf(selectedYear));
+		Map<String, RegionPlantAssociation> regionMap = buildMatrixSmcService.getRegionAssociationDataMap();
+		if(selectedRegion=="")
+			selectedRegion = regionMap.keySet().iterator().next();
+		
+		ProductionSlotsUtilizationSummary summary = buildMatrixSmcService.getUtilizationSummary(Integer.valueOf(slotTypeId), Integer.valueOf(selectedYear), selectedRegion);
+		
 		model.addObject("summary", summary);
 		model.addObject("vehicleTypes", buildMatrixSlotTypes);
 		model.addObject("years", yearsForDropdown);
 		model.addObject("slotTypeId", Integer.valueOf(slotTypeId));
 		model.addObject("selectedYear", selectedYear);
+		model.addObject("selectedRegion", selectedRegion);
+		model.addObject("regionMap", regionMap);
 		return model;
 	}
   

@@ -127,12 +127,14 @@ public interface BuildMatrixSmcService {
 
 	public Map<String, Map<String, BusinessAward>> getExistingBuildMixData(int buildId);
 
-	public ProductionSlotsUtilizationSummary getUtilizationSummary(Integer integer, Integer integer2);
+	public ProductionSlotsUtilizationSummary getUtilizationSummary(Integer slotTypeId, Integer year, String region);
 
 	public BuildMatrixBodyPlant getBodyPlantById(int plantId);
 
 	public BuildMatrixSlotDate getSlotDate(int slotDateId);
 
 	public List<String> getReservedUnitNumbers(int slotId, String region);
+
+	public Map<String, RegionPlantAssociation> getRegionAssociationDataMap();
 	
 }

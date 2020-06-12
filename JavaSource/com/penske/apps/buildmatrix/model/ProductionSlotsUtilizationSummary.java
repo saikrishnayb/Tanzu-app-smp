@@ -26,7 +26,8 @@ public class ProductionSlotsUtilizationSummary {
 	public ProductionSlotsUtilizationSummary(List<RegionPlantAssociation> regionPlantAsscoiationList, 
 			List<BuildMatrixBodyPlant> bodyPlantList, 
 			List<BuildMatrixSlotDate> slotDates, 
-			List<BuildMatrixSlotRegionAvailability> regionAvailabilityList) {
+			List<BuildMatrixSlotRegionAvailability> regionAvailabilityList, 
+			List<BuildMatrixSlot> slots) {
 		
 		Map<String, List<RegionPlantAssociation>> plantAssociationsByRegion = new HashMap<>();
 		for(RegionPlantAssociation rpa: regionPlantAsscoiationList) {
@@ -38,9 +39,16 @@ public class ProductionSlotsUtilizationSummary {
 		Map<Integer, BuildMatrixBodyPlant> bodyPlantById = bodyPlantList.stream().collect(toMap(BuildMatrixBodyPlant::getPlantId, bmbp -> bmbp));
 		this.bodyPlantById = bodyPlantById;
 		
+		Map<Integer, List<BuildMatrixSlot>> slotsByDateId = new HashMap<>();
+		for(BuildMatrixSlot slot: slots) {
+			List<BuildMatrixSlot> list = slotsByDateId.computeIfAbsent(slot.getSlotDateId(), l-> new ArrayList<>());
+			list.add(slot);
+		}
+		
 		Map<Pair<Integer, Integer>, BuildMatrixSlot> slotsByDateIdandPlantId = new HashMap<>();
 		for(BuildMatrixSlotDate slotDate: slotDates) {
-			for(BuildMatrixSlot slot: slotDate.getBuildSlots()) {
+			List<BuildMatrixSlot> dateSlots = slotsByDateId.get(slotDate.getSlotDateId());
+			for(BuildMatrixSlot slot: dateSlots) {
 				slotsByDateIdandPlantId.put(Pair.of(slotDate.getSlotDateId(), slot.getPlantId()), slot);
 			}
 		}

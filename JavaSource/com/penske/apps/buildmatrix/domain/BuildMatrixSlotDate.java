@@ -30,9 +30,9 @@ public class BuildMatrixSlotDate {
 		return weekOfYear;
 	}
 
-	public List<BuildMatrixSlot> getBuildSlots() {
-		return buildSlots;
-	}
+
+	public List<BuildMatrixSlot> getBuildSlots() { return buildSlots; }
+
 
 	public void setSlotDateId(int slotDateId) {
 		this.slotDateId = slotDateId;
@@ -50,9 +50,11 @@ public class BuildMatrixSlotDate {
 		this.weekOfYear = weekOfYear;
 	}
 
-	public void setBuildSlots(List<BuildMatrixSlot> buildSlots) {
+	
+	public void setBuildSlots(List<BuildMatrixSlot> buildSlots) { 
 		this.buildSlots = buildSlots;
 	}
+	
 
 	public String getFormattedSlotDate() {
 		return StringUtils.defaultString(DateUtil.formatDateUS(slotDate));

@@ -27,7 +27,7 @@ var $slotRegionMaintenanceDataTable = $slotRegionMaintenanceTable.DataTable({
 	]
 });
 
-$("#vehicletype-drpdwn, #year-drpdwn").on("change", function() {
+$("#search-button").on("click", function() {
 	var $filterSlotsForm = $('#filter-slots-form');
 	$filterSlotsForm.submit();
 });

@@ -11,6 +11,7 @@ import com.penske.apps.buildmatrix.domain.BuildAttribute;
 import com.penske.apps.buildmatrix.domain.BuildAttributeValue;
 import com.penske.apps.buildmatrix.domain.BuildMatrixAttribute;
 import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
+import com.penske.apps.buildmatrix.domain.BuildMatrixSlot;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlotDate;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlotRegionAvailability;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlotType;
@@ -154,5 +155,13 @@ public interface BuildMatrixSmcDAO {
 	public BuildMatrixSlotDate getSlotDate(@Param("slotDateId") int slotDateId);
 
 	public List<String> getReservedUnitNumbers(@Param("slotId") int slotId, @Param("region") String region);
+
+	public List<RegionPlantAssociation> getRegionAssociationDataByRegion(@Param("region") String region);
+
+	public List<BuildMatrixBodyPlant> getBodyPlantsByPlantIds(@Param("plantIds") List<Integer> plantIds);
+	
+	public List<BuildMatrixSlot> getSlotsBySlotDates(@Param("slotTypeId") int slotTypeId, @Param("slotDateIds") List<Integer> slotDateIds);
+	
+	public List<BuildMatrixSlotDate> getSlotDatesForYear(@Param("year") int year);
 	
 }

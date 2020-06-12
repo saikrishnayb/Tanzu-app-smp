@@ -2,6 +2,7 @@ package com.penske.apps.buildmatrix.service;
 
 import static java.util.stream.Collectors.summingInt;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -11,7 +12,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +49,7 @@ import com.penske.apps.buildmatrix.domain.BuildAttribute;
 import com.penske.apps.buildmatrix.domain.BuildAttributeValue;
 import com.penske.apps.buildmatrix.domain.BuildMatrixAttribute;
 import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
+import com.penske.apps.buildmatrix.domain.BuildMatrixSlot;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlotDate;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlotRegionAvailability;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlotType;
@@ -792,18 +793,15 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	}
 	
 	@Override
-	public ProductionSlotsUtilizationSummary getUtilizationSummary(Integer slotTypeId, Integer selectedYear) {
-		List<RegionPlantAssociation> regionPlantList = buildMatrixSmcDAO.getAllRegionAssociationData();
-		List<BuildMatrixBodyPlant> bodyPlantSummary = buildMatrixSmcDAO.getAllBodyPlantsforSlotMaintenance();
-		List<BuildMatrixSlotDate> slotDates = buildMatrixSmcDAO.getSlotMaintenanceSummary(slotTypeId, selectedYear);
+	public ProductionSlotsUtilizationSummary getUtilizationSummary(Integer slotTypeId, Integer selectedYear, String region) {
+		List<RegionPlantAssociation> regionPlantList = buildMatrixSmcDAO.getRegionAssociationDataByRegion(region);
+		List<BuildMatrixBodyPlant> bodyPlantSummary = buildMatrixSmcDAO.getBodyPlantsByPlantIds(regionPlantList.stream().map(RegionPlantAssociation::getPlantId).collect(toList()));
+		List<BuildMatrixSlotDate> slotDates = buildMatrixSmcDAO.getSlotDatesForYear(selectedYear);
+		List<BuildMatrixSlot> slots = buildMatrixSmcDAO.getSlotsBySlotDates(slotTypeId, slotDates.stream().map(BuildMatrixSlotDate::getSlotDateId).collect(toList()));
 		
-		Set<Integer> slotIds = new HashSet<>();
-		for(BuildMatrixSlotDate date: slotDates) {
-			List<Integer> idList = date.getBuildSlots().stream().map(slot->slot.getSlotId()).collect(toList());
-			slotIds.addAll(idList);
-		}
+		Set<Integer> slotIds = slots.stream().map(BuildMatrixSlot::getSlotId).collect(toSet());
 		List<BuildMatrixSlotRegionAvailability> regionAvailability = buildMatrixSmcDAO.getRegionAvailability(slotIds);
-		ProductionSlotsUtilizationSummary summary = new ProductionSlotsUtilizationSummary(regionPlantList, bodyPlantSummary, slotDates, regionAvailability);
+		ProductionSlotsUtilizationSummary summary = new ProductionSlotsUtilizationSummary(regionPlantList, bodyPlantSummary, slotDates, regionAvailability, slots);
 		
 		return summary;
 	}
@@ -816,5 +814,18 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	@Override
 	public List<String> getReservedUnitNumbers(int slotId, String region) {
 		return buildMatrixSmcDAO.getReservedUnitNumbers(slotId, region);
+	}
+	
+	@Override
+	public Map<String, RegionPlantAssociation> getRegionAssociationDataMap() {
+		List<RegionPlantAssociation> regionPlantList = buildMatrixSmcDAO.getAllRegionAssociationData();
+		Map<String, RegionPlantAssociation> regionMap = new HashMap<>();
+		for(RegionPlantAssociation rpa: regionPlantList) {
+			if(regionMap.containsKey(rpa.getRegion()))
+				continue;
+			else
+				regionMap.put(rpa.getRegion(), rpa);
+		}
+		return regionMap;
 	}
 }
