@@ -777,36 +777,145 @@
 		FROM     SMC.OBM_ATTRIBUTE
 		WHERE 	 ATTRIBUTE_ID =  #{attributeId}
 	</select>
-	
+
 	<update id="updateCapability">
-		UPDATE SMC.OBM_PLANT_CAPABILITY
-		SET
-		<if test="attributeKey.equals('WHEELBASE')">DISALLOW_WHEELBASE = #{disallowedAttributeValues}</if>
-		<if test="attributeKey.equals('GVW')">DISALLOW_GVW = #{disallowedAttributeValues}</if>
-		<if test="attributeKey.equals('WHEELMATERIAL')">DISALLOW_WHEEL_MATERIAL = #{disallowedAttributeValues}</if>
-		<if test="attributeKey.equals('COLOR')">DISALLOW_CHASSIS_COLOR = #{disallowedAttributeValues}</if>
-		<if test="attributeKey.equals('FUELTYPE')">DISALLOW_FUEL_TYPE = #{disallowedAttributeValues}</if>
-		<if test="attributeKey.equals('LIFTGATEMAKE')">DISALLOW_LIFTGATE_MAKE = #{disallowedAttributeValues}</if>
-		<if test="attributeKey.equals('LIFTGATETYPE')">DISALLOW_LIFTGATE_TYPE = #{disallowedAttributeValues}</if>
-		<if test="attributeKey.equals('CHASSISMAKE')">DISALLOW_CHASSIS_MAKE = #{disallowedAttributeValues}</if>
-		<if test="attributeKey.equals('REARDOORMAKE')">DISALLOW_REEFER_MAKE = #{disallowedAttributeValues}</if>
-		<if test="attributeKey.equals('VEHICLETYPE')">DISALLOW_VEHICLE_TYPE = #{disallowedAttributeValues}</if>
-		<if test="attributeKey.equals('REARDOORINSTALLED')">DISALLOW_REAR_DOOR_INSTALL = #{disallowedAttributeValues}</if>
-		<if test="attributeKey.equals('LIFTGATEINSTALLED')">DISALLOW_LIFTGATE_INSTALL = #{disallowedAttributeValues}</if>
-		<if test="attributeKey.equals('REEFERINSTALLED')">DISALLOW_REEFER_INSTALL = #{disallowedAttributeValues}</if>
-		<if test="attributeKey.equals('BODYMAKE')">DISALLOW_BODY_MAKE = #{disallowedAttributeValues}</if>
-		<if test="attributeKey.equals('CHASSISLENGTH')">DISALLOW_CHASSIS_LENGTH = #{disallowedAttributeValues}</if>
-		<if test="attributeKey.equals('CORP')">DISALLOW_CORP = #{disallowedAttributeValues}</if>
-		<if test="attributeKey.equals('CHASSISMODEL')">DISALLOW_CHASSIS_MODEL = #{disallowedAttributeValues}</if>
-		<if test="attributeKey.equals('CHASSISMODELYEAR')">DISALLOW_CHASSIS_MODEL_YEAR = #{disallowedAttributeValues}</if>
-		<if test="attributeKey.equals('TRANSMISSIONMAKE')">DISALLOW_TRANSMISSION_MAKE = #{disallowedAttributeValues}</if>
-		<if test="attributeKey.equals('REEFERMAKE')">DISALLOW_REEFER_MAKE = #{disallowedAttributeValues}</if>
-		<if test="attributeKey.equals('SIDEDOORINSTALLED')">DISALLOW_SIDE_DOOR_INSTALL = #{disallowedAttributeValues}</if>
-		<if test="attributeKey.equals('BRAKETYPE')">DISALLOW_BRAKE_TYPE = #{disallowedAttributeValues}</if>
-		<if test="attributeKey.equals('SUSPENSIONTYPE')">DISALLOW_SUSPENSION_TYPE = #{disallowedAttributeValues}</if>
-	    WHERE	PLANT_ID = #{plantId}
+		MERGE INTO SMC.OBM_PLANT_CAPABILITY AS capability USING
+		(
+		VALUES
+			( 
+				CAST(#{plantId} AS INTEGER)
+			)
+		)
+		AS input
+		(
+			PLANT_ID
+		)
+		ON   input.PLANT_ID = capability.PLANT_ID  
+		WHEN MATCHED THEN UPDATE SET 
+		<if test="attributeKey.equals('WHEELBASE')">capability.DISALLOW_WHEELBASE = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('GVW')">capability.DISALLOW_GVW = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('WHEELMATERIAL')">capability.DISALLOW_WHEEL_MATERIAL = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('COLOR')">capability.DISALLOW_CHASSIS_COLOR = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('FUELTYPE')">capability.DISALLOW_FUEL_TYPE = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('LIFTGATEMAKE')">capability.DISALLOW_LIFTGATE_MAKE = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('LIFTGATETYPE')">capability.DISALLOW_LIFTGATE_TYPE = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('CHASSISMAKE')">capability.DISALLOW_CHASSIS_MAKE = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('REARDOORMAKE')">capability.DISALLOW_REEFER_MAKE = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('VEHICLETYPE')">capability.DISALLOW_VEHICLE_TYPE = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('REARDOORINSTALLED')">capability.DISALLOW_REAR_DOOR_INSTALL = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('LIFTGATEINSTALLED')">capability.DISALLOW_LIFTGATE_INSTALL = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('REEFERINSTALLED')">capability.DISALLOW_REEFER_INSTALL = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('BODYMAKE')">capability.DISALLOW_BODY_MAKE = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('CHASSISLENGTH')">capability.DISALLOW_CHASSIS_LENGTH = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('CORP')">capability.DISALLOW_CORP = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('CHASSISMODEL')">capability.DISALLOW_CHASSIS_MODEL = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('CHASSISMODELYEAR')">capability.DISALLOW_CHASSIS_MODEL_YEAR = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('TRANSMISSIONMAKE')">capability.DISALLOW_TRANSMISSION_MAKE = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('REEFERMAKE')">capability.DISALLOW_REEFER_MAKE = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('SIDEDOORINSTALLED')">capability.DISALLOW_SIDE_DOOR_INSTALL = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('BRAKETYPE')">capability.DISALLOW_BRAKE_TYPE = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('SUSPENSIONTYPE')">capability.DISALLOW_SUSPENSION_TYPE = #{disallowedAttributeValues}</if>
+		WHEN NOT MATCHED THEN
+		INSERT
+		(
+ 			PLANT_ID,
+ 			DISALLOW_LIFTGATE_INSTALL,
+ 			DISALLOW_REAR_DOOR_INSTALL,
+ 			DISALLOW_SIDE_DOOR_INSTALL,
+ 			DISALLOW_REEFER_INSTALL,
+			DISALLOW_VEHICLE_TYPE,
+ 			DISALLOW_CHASSIS_MAKE,
+ 			DISALLOW_GVW,
+ 			DISALLOW_BODY_MAKE,
+			DISALLOW_REAR_DOOR_MAKE,
+			DISALLOW_LIFTGATE_MAKE,
+ 			DISALLOW_LIFTGATE_TYPE,
+ 			DISALLOW_FUEL_TYPE,
+ 			DISALLOW_CHASSIS_COLOR,
+			DISALLOW_CHASSIS_LENGTH,
+			DISALLOW_WHEELBASE,
+			DISALLOW_WHEEL_MATERIAL,
+			DISALLOW_CORP,
+ 			DISALLOW_CHASSIS_MODEL,
+ 			DISALLOW_CHASSIS_MODEL_YEAR,
+ 			DISALLOW_TRANSMISSION_MAKE,
+			DISALLOW_BRAKE_TYPE,
+			DISALLOW_SUSPENSION_TYPE,
+			DISALLOW_REEFER_MAKE
+ 		) VALUES (
+ 			#{plantId},
+ 			<choose><when test="attributeKey.equals('LIFTGATEINSTALLED')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('REARDOORINSTALLED')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('SIDEDOORINSTALLED')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('REEFERINSTALLED')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('VEHICLETYPE')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('CHASSISMAKE')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('GVW')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('BODYMAKE')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('REARDOORMAKE')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('LIFTGATEMAKE')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('LIFTGATETYPE')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('FUELTYPE')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('COLOR')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('CHASSISLENGTH')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('WHEELBASE')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('WHEELMATERIAL')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('CORP')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('CHASSISMODEL')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('CHASSISMODELYEAR')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('TRANSMISSIONMAKE')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('BRAKETYPE')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('SUSPENSIONTYPE')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('REEFERMAKE')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>	
+ 		)
 	</update>
-	
+
 	<!-- PRODUCTION SLOT AVAILBILITY MAINTENANCE -->
 	<select id="getAllVehicleTypes" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlotType">
 		SELECT   SLOT_TYPE_ID AS slotTypeId,
