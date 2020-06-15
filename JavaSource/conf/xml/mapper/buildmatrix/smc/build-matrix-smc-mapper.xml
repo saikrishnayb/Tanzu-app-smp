@@ -722,8 +722,9 @@
 	 	SELECT   TRIM(ATTRIBUTE_VALUE)
 		FROM     SMC.OBM_ATTRIBUTE_VALUE
 		WHERE    ATTRIBUTE_ID=#{attributeId}
+		AND      IS_DELETED = 'N'
 		ORDER BY ATTRIBUTE_VALUE ASC
-		WHERE IS_DELETED = 'N'
+		
 	</select>
 	
 	<select id="getAllBuildMatrixCapabilities" resultMap="BodyPlantCapabilityMap">
