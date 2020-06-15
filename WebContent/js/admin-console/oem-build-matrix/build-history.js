@@ -1,7 +1,7 @@
 selectCurrentNavigation("tab-oem-build-matrix", "left-nav-build-history");
 
 var $buildHistoryTable = $('#build-history-table');
-
+var $confirmReworkOrDeleteModal=$('#confirmReworkOrDeleteModal')
 $buildHistoryDataTable = $buildHistoryTable.DataTable({ //All of the below are optional
 	"bPaginate" : true, //enable pagination
 	"bStateSave" : false, //To retrieve the data on click of back button
@@ -49,20 +49,47 @@ $buildHistoryDataTable = $buildHistoryTable.DataTable({ //All of the below are o
 });
 
 $buildHistoryTable.on('click', '#rework-build', function() {
-	openConfirmModal(false);
+	openConfirmModal(false,$(this).attr('build-id'));
 });
 
-function openConfirmModal(isDeleteConfirmModal) {
+$buildHistoryTable.on('click', '#cancel-build', function() {
+	openConfirmModal(true,$(this).attr('build-id'));
+	
+});
+
+function openConfirmModal(isDeleteConfirmModal,buildId) {
 	if(isDeleteConfirmModal){
 			$("#reworkOrDeleteConfirm").html('Confirm');
-			$('#confirmMessage').text("By clicking on Confirm your results will be cleared out. Do you really want to delete build?");
+			$("#reworkOrDeleteConfirm").attr("delete","Y");
+			$('#confirmMessage').text("Cancelling this build will delete all results and cannot be undone. Do you want to continue?");
 		}
 	else{
 			$("#reworkOrDeleteConfirm").html('Rework');
 			$('#confirmMessage').text("By clicking on Rework your results will be cleared out. Do you really want to rework build?");
-		}	
+		}
+	$("#build-id").val(buildId);
 	$('#confirmReworkOrDeleteModal').dialog('open');
 }
+
+$confirmReworkOrDeleteModal.on("click", '#reworkOrDeleteConfirm', function() {
+	var isDeleteBuild=$("#reworkOrDeleteConfirm").attr("delete");
+	var buildId=parseInt($("#build-id").val());
+	if(isDeleteBuild=="Y") //delete Build flow
+		{
+		$.ajax({
+			type : "POST",
+			url : "./delete-build.htm",
+			cache : false,
+			data : {
+				buildId : buildId
+			},
+			success : function(data) {
+				alert("success");
+				$('#confirmReworkOrDeleteModal').dialog('close');
+			},
+		});
+		}
+});
 
 $('#confirmReworkOrDeleteModal').dialog({
 	autoOpen : false,
@@ -82,6 +109,3 @@ function closeConfirmDialog() {
 	$('#confirmReworkOrDeleteModal').dialog('close');
 }
 
-$buildHistoryTable.on('click', '#cancel-build', function() {
-	openConfirmModal(true);
-});

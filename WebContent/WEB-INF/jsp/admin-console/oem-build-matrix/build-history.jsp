@@ -42,8 +42,8 @@
 									<td>
 										<c:choose>
 											<c:when test="${buildHistory.showReworkBtn()}">
-												<a class="buttonSecondary rework-btn" id="rework-build">Rework Build</a>
-												<a class="buttonSecondary rework-btn" id="cancel-build">Cancel Build</a>
+												<a class="buttonSecondary rework-btn" id="rework-build" build-id="${buildHistory.buildId}">Rework Build</a>
+												<a class="buttonSecondary rework-btn" id="cancel-build" build-id="${buildHistory.buildId}">Cancel Build</a>
 											</c:when>
 											<c:otherwise></c:otherwise>
 										</c:choose>
@@ -91,11 +91,12 @@
 			</div>
 		</div>
 	</div>
-	<div id="confirmReworkOrDeleteModal">
+	<div id="confirmReworkOrDeleteModal" >
 		<p id="confirmMessage"></p>
+		<input type="hidden" id="build-id">
 		<div class="confirm-modal-btn">
 			<a href="javascript:void(0)" class="secondaryLink" onclick="closeConfirmDialog();">Cancel</a> 
-			<a href="javascript:void(0)" class="buttonPrimary" id="reworkOrDeleteConfirm" onclick="" >Rework</a>
+			<a href="javascript:void(0)" class="buttonPrimary" delete="N" id="reworkOrDeleteConfirm">Rework</a>
 		</div>
 	</div>
 	

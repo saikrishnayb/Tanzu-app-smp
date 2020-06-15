@@ -828,4 +828,9 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		}
 		return regionMap;
 	}
+
+	@Override
+	public void deleteBuild(int buildId) {
+		buildMatrixSmcDAO.deleteBuild(buildId);
+	}
 }

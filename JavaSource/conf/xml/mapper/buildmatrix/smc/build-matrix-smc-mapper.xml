@@ -1069,4 +1069,13 @@
 		AND REGION = #{region}
 		ORDER BY UNIT_NUMBER
 	</select>
+	
+	<select id="deleteBuild" statementType="CALLABLE" parameterType="int">
+	   {
+	        CALL SMC.SMC_DELETE_RUN
+	       	(
+	        	#{runId, mode=IN, jdbcType=INTEGER}
+	       	) 
+	    }      
+	</select>
 </mapper>

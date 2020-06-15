@@ -346,4 +346,9 @@ public class BuildMatrixRestController {
 		return model;
 	}
 	
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping("/delete-build")
+	public void deleteBuild(@RequestParam("buildId") int buildId) {
+		buildMatrixSmcService.deleteBuild(buildId);
+	}
 }
