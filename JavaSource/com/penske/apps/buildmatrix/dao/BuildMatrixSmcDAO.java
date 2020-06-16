@@ -165,4 +165,6 @@ public interface BuildMatrixSmcDAO {
 	public List<BuildMatrixSlotDate> getSlotDatesForYear(@Param("year") int year);
 	
 	public void deleteBuild(@Param("runId")int buildId);
+	
+	public void reworkBuild(@Param("runId")int buildId); 
 }

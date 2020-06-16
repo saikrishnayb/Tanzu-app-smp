@@ -1078,4 +1078,13 @@
 	       	) 
 	    }      
 	</select>
+	
+	<select id="reworkBuild" statementType="CALLABLE" parameterType="int">
+	   {
+	        CALL SMC.SMC_REWORK_RUN
+	       	(
+	        	#{runId, mode=IN, jdbcType=INTEGER}
+	       	) 
+	    }      
+	</select>
 </mapper>

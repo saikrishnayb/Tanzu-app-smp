@@ -138,4 +138,6 @@ public interface BuildMatrixSmcService {
 	public Map<String, RegionPlantAssociation> getRegionAssociationDataMap();
 	
 	public void deleteBuild(int buildId);
+	
+	public void reworkBuild(int buildId);
 }

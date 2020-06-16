@@ -833,4 +833,10 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	public void deleteBuild(int buildId) {
 		buildMatrixSmcDAO.deleteBuild(buildId);
 	}
+	
+	@Override
+	public void reworkBuild(int buildId) {
+		buildMatrixSmcDAO.reworkBuild(buildId);
+	}
+	
 }

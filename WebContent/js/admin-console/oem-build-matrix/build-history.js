@@ -1,23 +1,22 @@
 selectCurrentNavigation("tab-oem-build-matrix", "left-nav-build-history");
 
 var $buildHistoryTable = $('#build-history-table');
-var $confirmReworkOrDeleteModal=$('#confirmReworkOrDeleteModal')
+var $confirmReworkOrDeleteModal = $('#confirmReworkOrDeleteModal')
 $buildHistoryDataTable = $buildHistoryTable.DataTable({ //All of the below are optional
 	"bPaginate" : true, //enable pagination
 	"bStateSave" : false, //To retrieve the data on click of back button
 	"sPaginationType" : "two_button",
 	"aaSorting" : [], //default sort column
-	"aoColumnDefs" : [ 
+	"aoColumnDefs" : [
 		{
 			'bSortable' : false,
-			'aTargets' : [ 0,8 ]
+			'aTargets' : [ 0, 8 ]
 		},
 		{
-			'width': 210,
-			'aTargets':[0]
-				
-		}],
-	"dom": '<"build-history-table-top"l>tipr',
+			'width' : 210,
+			'aTargets' : [ 0 ]
+		} ],
+	"dom" : '<"build-history-table-top"l>tipr',
 	"bLengthChange" : true, //enable change of records per page, not recommended
 	"bFilter" : false, //Allows dynamic filtering of results, do not enable if using ajax for pagination
 	"bAutoWidth" : false,
@@ -40,42 +39,41 @@ $buildHistoryDataTable = $buildHistoryTable.DataTable({ //All of the below are o
 			paginateRow.css("display", "none");
 		}
 	},
-	"initComplete": function() {
+	"initComplete" : function() {
 		var showStartBuildBtn = $buildHistoryTable.data('show-start-build-btn');
-		if(showStartBuildBtn){
+		if (showStartBuildBtn) {
 			$('.build-history-table-top').append('<a href="' + baseBuildMatrixUrl + '/order-summary" class="buttonSecondary floatRight">Start Build</a>');
 		}
 	}
 });
 
 $buildHistoryTable.on('click', '#rework-build', function() {
-	openConfirmModal(false,$(this).attr('build-id'));
+	openConfirmModal(false, $(this).attr('build-id'));
 });
 
 $buildHistoryTable.on('click', '#cancel-build', function() {
-	openConfirmModal(true,$(this).attr('build-id'));
-	
+	openConfirmModal(true, $(this).attr('build-id'));
+
 });
 
-function openConfirmModal(isDeleteConfirmModal,buildId) {
-	if(isDeleteConfirmModal){
-			$("#reworkOrDeleteConfirm").html('Confirm');
-			$("#reworkOrDeleteConfirm").attr("delete","Y");
-			$('#confirmMessage').text("Cancelling this build will delete all results and cannot be undone. Do you want to continue?");
-		}
-	else{
-			$("#reworkOrDeleteConfirm").html('Rework');
-			$('#confirmMessage').text("By clicking on Rework your results will be cleared out. Do you really want to rework build?");
-		}
+function openConfirmModal(isDeleteConfirmModal, buildId) {
+	if (isDeleteConfirmModal) {
+		$("#reworkOrDeleteConfirm").html('Confirm');
+		$("#reworkOrDeleteConfirm").attr("delete", "Y");
+		$('#confirmMessage').text("Cancelling this build will delete all results and cannot be undone. Do you want to continue?");
+	} else {
+		$("#reworkOrDeleteConfirm").html('Rework');
+		$('#confirmMessage').text("Reworking this build will clear previous match results and cannot be undone. Do you want to continue?");
+	}
 	$("#build-id").val(buildId);
 	$('#confirmReworkOrDeleteModal').dialog('open');
 }
 
 $confirmReworkOrDeleteModal.on("click", '#reworkOrDeleteConfirm', function() {
-	var isDeleteBuild=$("#reworkOrDeleteConfirm").attr("delete");
-	var buildId=parseInt($("#build-id").val());
-	if(isDeleteBuild=="Y") //delete Build flow
-		{
+	var isDeleteBuild = $("#reworkOrDeleteConfirm").attr("delete");
+	var buildId = parseInt($("#build-id").val());
+	if (isDeleteBuild == "Y") //delete Build flow
+	{
 		$.ajax({
 			type : "POST",
 			url : "./delete-build.htm",
@@ -88,7 +86,27 @@ $confirmReworkOrDeleteModal.on("click", '#reworkOrDeleteConfirm', function() {
 				$('#confirmReworkOrDeleteModal').dialog('close');
 			},
 		});
-		}
+	} else //Rework Build flow
+	{
+		$.ajax({
+			type : "POST",
+			url : "./rework-build.htm",
+			cache : false,
+			data : {
+				buildId : buildId
+			},
+			success : function(data) {
+				$.ajax({
+					type : "POST",
+					url : "./build-history.htm",
+					cache : false,
+					success : function(data) {
+						$('#confirmReworkOrDeleteModal').dialog('close');
+					},
+				});
+			},
+		});
+	}
 });
 
 $('#confirmReworkOrDeleteModal').dialog({
@@ -108,4 +126,3 @@ $('#confirmReworkOrDeleteModal').dialog({
 function closeConfirmDialog() {
 	$('#confirmReworkOrDeleteModal').dialog('close');
 }
-
