@@ -82,8 +82,14 @@ $confirmReworkOrDeleteModal.on("click", '#reworkOrDeleteConfirm', function() {
 				buildId : buildId
 			},
 			success : function(data) {
-				alert("success");
-				$('#confirmReworkOrDeleteModal').dialog('close');
+				$.ajax({
+					type : "POST",
+					url : "./build-history.htm",
+					cache : false,
+					success : function(data) {
+						$('#confirmReworkOrDeleteModal').dialog('close');
+					},
+				});
 			},
 		});
 	} else //Rework Build flow

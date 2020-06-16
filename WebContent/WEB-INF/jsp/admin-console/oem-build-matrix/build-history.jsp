@@ -43,7 +43,7 @@
 										<c:choose>
 											<c:when test="${buildHistory.showReworkBtn()}">
 												<a class="buttonSecondary rework-btn" id="rework-build" build-id="${buildHistory.buildId}">Rework Build</a>
-												<a class="buttonSecondary rework-btn" id="cancel-build" build-id="${buildHistory.buildId}">Cancel Build</a>
+												<a class="buttonSecondary rework-btn" id="cancel-build" build-id="${buildHistory.buildId}">Delete Build</a>
 											</c:when>
 											<c:otherwise></c:otherwise>
 										</c:choose>
