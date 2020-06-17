@@ -82,14 +82,9 @@ $confirmReworkOrDeleteModal.on("click", '#reworkOrDeleteConfirm', function() {
 				buildId : buildId
 			},
 			success : function(data) {
-				$.ajax({
-					type : "POST",
-					url : "./build-history.htm",
-					cache : false,
-					success : function(data) {
-						$('#confirmReworkOrDeleteModal').dialog('close');
-					},
-				});
+				$('#confirmReworkOrDeleteModal').dialog('close');
+				location.assign('./build-history.htm');
+				
 			},
 		});
 	} else //Rework Build flow
@@ -102,14 +97,8 @@ $confirmReworkOrDeleteModal.on("click", '#reworkOrDeleteConfirm', function() {
 				buildId : buildId
 			},
 			success : function(data) {
-				$.ajax({
-					type : "POST",
-					url : "./build-history.htm",
-					cache : false,
-					success : function(data) {
-						$('#confirmReworkOrDeleteModal').dialog('close');
-					},
-				});
+				$('#confirmReworkOrDeleteModal').dialog('close');
+				location.assign('./build-history.htm');
 			},
 		});
 	}
