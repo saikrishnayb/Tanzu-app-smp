@@ -355,6 +355,6 @@ public class BuildMatrixRestController {
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping("/rework-build")
 	public void reworkBuild(@RequestParam("buildId") int buildId) {
-		buildMatrixSmcService.deleteBuild(buildId);
+		buildMatrixSmcService.reworkBuild(buildId);
 	}
 }
