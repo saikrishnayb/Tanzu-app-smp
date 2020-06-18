@@ -24,7 +24,10 @@ var $slotRegionMaintenanceDataTable = $slotRegionMaintenanceTable.DataTable({
 	'responsive': false,
 	'columnDefs': [
 		{targets: [0], width: '100px'}
-	]
+	],
+	"language": {
+	      "emptyTable": "Slots have not been created for the selected year and vehicle type combination. Create slots to continue"
+	 }
 });
 
 $("#search-button").on("click", function() {

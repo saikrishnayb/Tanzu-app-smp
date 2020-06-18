@@ -808,7 +808,11 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		List<BuildMatrixSlot> slots = buildMatrixSmcDAO.getSlotsBySlotDates(slotTypeId, slotDates.stream().map(BuildMatrixSlotDate::getSlotDateId).collect(toList()));
 		
 		Set<Integer> slotIds = slots.stream().map(BuildMatrixSlot::getSlotId).collect(toSet());
-		List<BuildMatrixSlotRegionAvailability> regionAvailability = buildMatrixSmcDAO.getRegionAvailability(slotIds);
+		List<BuildMatrixSlotRegionAvailability> regionAvailability = new ArrayList<>();
+		if(slots.isEmpty() || slots == null)
+			regionAvailability = Collections.emptyList();
+		else
+			regionAvailability = buildMatrixSmcDAO.getRegionAvailability(slotIds);
 		ProductionSlotsUtilizationSummary summary = new ProductionSlotsUtilizationSummary(regionPlantList, bodyPlantSummary, slotDates, regionAvailability, slots);
 		
 		return summary;

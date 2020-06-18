@@ -30,6 +30,9 @@ $(document).ready(function() {
 				'bSortable' : false
 			}
 		],
+		"language": {
+		      "emptyTable": "Slots have not been created for the selected year and vehicle type combination. Create slots to continue"
+		 },
 		"responsive" : false,
 		"fnDrawCallback" : function() { //This will hide the pagination menu if we only have 1 page.
 			var paginateRow = $(this).parent().children('div.dataTables_paginate');
