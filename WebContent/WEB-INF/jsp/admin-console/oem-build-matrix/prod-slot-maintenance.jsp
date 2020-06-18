@@ -67,7 +67,7 @@
 						<tbody id="slot-maintenance-tablebody">
 							<c:forEach items="${summary.rows}" var="row">
 								<tr>
-									<td class="centerAlign slot-table-header" headers="prod-date">${productionSlot.formattedSlotDate}</td>
+									<td class="centerAlign slot-table-header" headers="prod-date">${row.slotDate.formattedSlotDate}</td>
 									<c:forEach items="${row.cells}" var="cell">
 										<td class="centerAlign slot-table-header" headers="${cell.bodyPlant.plantId}"><input class ="available-slot-input" type="number" value="${cell.slot.availableSlots}"/></td>
 									</c:forEach>
