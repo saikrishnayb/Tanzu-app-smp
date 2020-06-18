@@ -68,7 +68,16 @@
 									<td>
 										<c:choose>
 											<c:when test="${buildHistory.showViewReportBtn()}">
-												<a href="view-slot-results-filter.htm?buildId=${buildHistory.buildId}&selectedFiltersList=A,E,P&checkedFilter=0">View Slot Results</a>
+												<c:if test='${buildHistory.buildStatus.code eq "A"}'>
+													<a
+														href="view-slot-results-filter.htm?buildId=${buildHistory.buildId}&selectedFiltersList=A&checkedFilter=0">View
+														Slot Results</a>
+												</c:if>
+												<c:if test='${buildHistory.buildStatus.code ne "A"}'>
+													<a
+														href="view-slot-results-filter.htm?buildId=${buildHistory.buildId}&selectedFiltersList=A,E,P&checkedFilter=0">View
+														Slot Results</a>
+												</c:if>
 											</c:when>
 											<c:otherwise></c:otherwise>
 										</c:choose>
