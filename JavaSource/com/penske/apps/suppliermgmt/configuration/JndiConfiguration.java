@@ -19,6 +19,7 @@ import com.penske.apps.smccore.base.annotation.qualifier.CoreDataSourceQualifier
 import com.penske.apps.smccore.base.configuration.ProfileType;
 import com.penske.apps.suppliermgmt.annotation.CommonStaticUrl;
 import com.penske.apps.suppliermgmt.annotation.DBCro;
+import com.penske.apps.suppliermgmt.annotation.DBSalesnet;
 import com.penske.apps.suppliermgmt.annotation.DBSmc;
 import com.penske.apps.suppliermgmt.annotation.UserCreationServiceUrl;
 
@@ -56,6 +57,20 @@ public class JndiConfiguration {
 		} catch (NameNotFoundException exception) {
 			logger.info(exception);
 			return (DataSource) context.lookup("java:comp/env/jdbc/ds_cro"); //Tomcat
+		}
+	}
+	
+	@Bean
+    @DBSalesnet
+	public DataSource salesnetImportDataSource() throws NamingException
+	{
+    	InitialContext context = new InitialContext();
+    	
+    	try {
+			return (DataSource) context.lookup("jdbc/ds_smcof_salesnet"); // Websphere
+		} catch (NameNotFoundException exception) {
+			logger.info(exception);
+			return (DataSource) context.lookup("java:comp/env/jdbc/ds_smcof_salesnet"); //Tomcat
 		}
 	}
 

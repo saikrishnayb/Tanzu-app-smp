@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.2//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.penske.apps.suppliermgmt.dao.SalesnetDAO">
+ 	<delete id = "deleteBuddyList" parameterType = "com.penske.apps.suppliermgmt.model.Buddies"> 
+ 		DELETE FROM t_smc_buddies 
+ 		WHERE 
+ 		SSO = #{userSso}
+ 	</delete>
+ 	
+	<!-- if random users selected in buddies -->			
+	<insert id = "addBuddyList" parameterType="list">
+ 		INSERT INTO t_smc_buddies(SSO, BuddySSO, UserDept, CreatedById, DateCreated, SelectionType)
+ 		VALUES
+ 		<foreach item="item"  collection="list" separator=",">
+ 	 		(#{item.sso},#{item.buddySso}, #{item.userDept}, #{item.sso},CURRENT_TIMESTAMP,#{item.selectionType})
+ 		</foreach>
+ 	</insert>	
+ 	
+ 	<!-- if all users selected in buddies -->
+ 	<insert id = "addBuddyBasedOnselectionType" parameterType="com.penske.apps.suppliermgmt.model.Buddies">
+ 		INSERT INTO t_smc_buddies(SSO, BuddySSO, UserDept, CreatedById, DateCreated, SelectionType)
+ 		VALUES
+ 		
+ 	 		(#{sso},#{buddySso}, #{userDept}, #{sso},CURRENT_TIMESTAMP,#{selectionType})
+ 		
+ 	</insert>
+ 		
+</mapper>
+

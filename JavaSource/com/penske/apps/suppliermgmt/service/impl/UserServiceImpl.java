@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 
 import com.penske.apps.adminconsole.model.Vendor;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
+import com.penske.apps.suppliermgmt.dao.SalesnetDAO;
 import com.penske.apps.suppliermgmt.dao.UserDAO;
 import com.penske.apps.suppliermgmt.domain.Organization;
 import com.penske.apps.suppliermgmt.domain.UserVendorFilterSelection;
@@ -53,6 +54,9 @@ public class UserServiceImpl implements UserService {
 	private UserDAO userDao;
 	
 	@Autowired
+	private SalesnetDAO salesnetDao;
+	
+	@Autowired
 	private SuppliermgmtSessionBean sessionBean;
 	
 	@Override
@@ -71,6 +75,8 @@ public class UserServiceImpl implements UserService {
 	public void addBuddyList(List<Buddies> newBuddyList) throws SMCException {
 		try {
     		userDao.addBuddyList(newBuddyList);
+    		salesnetDao.addBuddyList(newBuddyList);
+    		
     	} catch(SQLException ex){
     		throw new SMCException(ex.getErrorCode(),ex.getMessage(),ex);
     	}catch(Exception e){
@@ -81,6 +87,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void addBuddyBasedOnselectionType(Buddies buddy) {
 		userDao.addBuddyBasedOnselectionType(buddy);
+		salesnetDao.addBuddyBasedOnselectionType(buddy);
 	}
 	
 	@Override
@@ -88,6 +95,7 @@ public class UserServiceImpl implements UserService {
 		try
 		{
 			userDao.deleteBuddyList(userSSO);
+			salesnetDao.deleteBuddyList(userSSO);
 		}
 		catch(SQLException ex)
 		{

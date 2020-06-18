@@ -31,7 +31,7 @@ import com.penske.apps.suppliermgmt.util.SpringBeanHelper;
  * (such as @Autowired and friends)
  */
 @Configuration
-@Import(value = {CoreConfiguration.class, RemotingConfiguration.class, SmcMapperConfiguration.class, BatchMapperConfiguration.class, BuildMatrixSmcMapperConfiguration.class, BuildMatrixCroMapperConfiguration.class})
+@Import(value = {CoreConfiguration.class, RemotingConfiguration.class, SmcMapperConfiguration.class, BatchMapperConfiguration.class, BuildMatrixSmcMapperConfiguration.class, BuildMatrixCroMapperConfiguration.class, SalesnetMapperConfiguration.class})
 @ComponentScan(basePackageClasses={
 	//Admin Console packages
 	AdminControllerMarker.class, AdminServiceMarker.class, MapperMarker.class,
