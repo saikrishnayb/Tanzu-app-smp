@@ -5,6 +5,7 @@ package com.penske.apps.buildmatrix.controller;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,6 +28,7 @@ import com.penske.apps.buildmatrix.domain.BuildAttribute;
 import com.penske.apps.buildmatrix.domain.BuildAttributeValue;
 import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlotDate;
+import com.penske.apps.buildmatrix.domain.BuildMatrixSlotType;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.PlantProximity;
 import com.penske.apps.buildmatrix.domain.RegionPlantAssociation;
@@ -356,5 +358,32 @@ public class BuildMatrixRestController {
 	@RequestMapping("/rework-build")
 	public void reworkBuild(@RequestParam("buildId") int buildId) {
 		buildMatrixSmcService.reworkBuild(buildId);
+	}
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping("/get-create-slots-modal")
+	public ModelAndView getCreateSlotsModal() {
+		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/modal/create-slots-modal");
+		
+		List<BuildMatrixSlotType> buildMatrixSlotTypes = buildMatrixSmcService.getAllVehicleTypes();
+		
+		int currentYear = LocalDate.now().getYear();
+				
+		model.addObject("buildMatrixSlotTypes", buildMatrixSlotTypes);
+		model.addObject("currentYear", currentYear);
+		return model;
+	}
+	
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping("/check-slots-exist")
+	public boolean checkSlotsExist(@RequestParam("year") int year, @RequestParam("slotTypeId") int slotTypeId) {
+		boolean result = buildMatrixSmcService.checkSlotsExist(year, slotTypeId);
+		
+		return result;
+	}
+	
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping("/create-slots")
+	public void createSlots(@RequestParam("year") int year, @RequestParam("slotTypeId") int slotTypeId) {
+		buildMatrixSmcService.createSlots(year, slotTypeId);
 	}
 }

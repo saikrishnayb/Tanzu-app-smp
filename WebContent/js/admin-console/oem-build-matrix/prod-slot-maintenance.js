@@ -1,5 +1,9 @@
 $(document).ready(function() {
 	selectCurrentNavigation("tab-oem-build-matrix", "left-nav-prod-slot-maintenance");
+	
+	var $prodSlotMaintenanceModal = $('#prod-slot-maintenance-modal');
+
+	ModalUtil.initializeModal($prodSlotMaintenanceModal);
 
 	var $slotMaintenanceTable = $('#slot-maintenance-table');
 	var $vehicleTypeDrpdwn = $("#vehicletype-drpdwn");
@@ -53,5 +57,16 @@ $(document).ready(function() {
 	$("#vehicletype-drpdwn, #year-drpdwn").on("change", function() {
 		var $filterSlotsForm = $('#filter-slots-form');
 		$filterSlotsForm.submit();
+	});
+	
+	$('#create-slots-btn').on('click', function(){
+		var $getCreateSlotsContentPromise = $.ajax({
+			type: "GET",
+			url: baseBuildMatrixUrl + '/get-create-slots-modal'
+		});
+		$getCreateSlotsContentPromise.done(function(data){
+			$prodSlotMaintenanceModal.html(data);
+		    ModalUtil.openModal($prodSlotMaintenanceModal);
+		});
 	});
 });

@@ -920,10 +920,20 @@
 	<select id="getAllVehicleTypes" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlotType">
 		SELECT   SLOT_TYPE_ID AS slotTypeId,
 		         SLOT_DESCRIPTION AS slotTypeDesc,
-		         SLOT_TYPE AS slotType
+		         SLOT_TYPE AS slotType,
+		         CHASSIS_LEAD_TIME as chassisLeadTime
 		FROM     SMC.OBM_SLOT_TYPES
 		ORDER BY SLOT_TYPE_ID ASC
 
+	</select>
+	
+	<select id="getVehicleTypeById" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlotType">
+		SELECT   SLOT_TYPE_ID AS slotTypeId,
+		         SLOT_DESCRIPTION AS slotTypeDesc,
+		         SLOT_TYPE AS slotType,
+		         CHASSIS_LEAD_TIME as chassisLeadTime
+		FROM     SMC.OBM_SLOT_TYPES
+		WHERE SLOT_TYPE_ID = #{slotTypeId}
 	</select>
 	
 	<select id="getYearsforSLotMaintenance" resultType="int">
@@ -962,24 +972,6 @@
 		ORDER BY PLANT_MANUFACTURER, PLANT_CITY
 	</select>
 	
-	<resultMap id="slotMaintenanceMap" type="com.penske.apps.buildmatrix.domain.BuildMatrixSlotDate" >
-		<result column="SLOT_DATE_ID"  property="slotDateId"/>
-		<result column="SLOT_DATE_D"  property="slotDate"/>
-		<result column="SLOT_YEAR" 	property="slotYear"/>
-		<result column="WEEK_OF_YEAR" property="weekOfYear"/>
-		<collection property="buildSlots" column="{slotDateId=SLOT_DATE_ID,slotTypeId=stypeId}" select="getSlotAvailability"></collection>
-	</resultMap>
-	
-	<select id="getSlotMaintenanceSummary" parameterType="int" resultMap="slotMaintenanceMap">
-		SELECT   CAST(#{slotTypeId} AS INTEGER) AS stypeId,
-		         SLOT_DATE_ID,
-		         SLOT_YEAR,
-		         WEEK_OF_YEAR,
-		         DATE(to_date(SLOT_DATE,'MM/DD/YYYY')) AS SLOT_DATE_D
-		FROM     SMC.OBM_SLOT_DATES
-		WHERE    SLOT_YEAR=#{selectedYear}
-	</select>
-	
 	<select id="getSlotDatesForYear" parameterType="int" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlotDate">
 		SELECT   SLOT_DATE_ID,
 		         SLOT_YEAR,
@@ -996,19 +988,6 @@
 		         DATE(to_date(SLOT_DATE,'MM/DD/YYYY')) AS SLOT_DATE
 		FROM     SMC.OBM_SLOT_DATES
 		WHERE    SLOT_DATE_ID=#{slotDateId}
-	</select>
-	
-	<select id="getSlotAvailability" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlot">
-		SELECT   SLOT_ID AS slotId,
-		         SLOT_TYPE_ID AS slotTypeId,
-		         plant.PLANT_ID AS plantId,
-		         SLOT_AVAILABLE AS availableSlots,
-		         SLOT_RESERVED AS reservedSlots
-		FROM     SMC.OBM_SLOTS SLOT 
-		         JOIN SMC.OBM_PLANTS PLANT ON SLOT.PLANT_ID = PLANT.PLANT_ID
-		WHERE    SLOT_TYPE_ID=CAST(#{slotTypeId} AS INTEGER)
-		AND      SLOT_DATE_ID=#{slotDateId}
-		ORDER BY PLANT.PLANT_MANUFACTURER, PLANT.PLANT_CITY
 	</select>
 	
 	<select id="getSlotsBySlotDates" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlot">
@@ -1070,6 +1049,81 @@
 		ORDER BY UNIT_NUMBER
 	</select>
 	
+	<select id="checkSlotsExist" resultType="int">
+		SELECT 
+			COUNT(*) 
+		FROM 
+			SMC.OBM_SLOTS slots
+		JOIN 
+			SMC.OBM_SLOT_DATES slotDates
+		ON 
+			slots.SLOT_DATE_ID = slotDates.SLOT_DATE_ID
+		WHERE 
+			SLOT_TYPE_ID = #{slotTypeId}
+			AND SLOT_YEAR = #{year}
+	</select>
+	
+	<insert id="insertSlotDates" useGeneratedKeys="true" keyProperty="slotDateId">
+		INSERT INTO SMC.OBM_SLOT_DATES (
+			SLOT_YEAR,
+			SLOT_DATE,
+			WEEK_OF_YEAR
+		) VALUES
+		<foreach collection="list" item="slotDate" separator=",">
+		(
+			#{slotDate.slotYear},
+			#{slotDate.formattedSlotDate},
+			#{slotDate.weekOfYear}
+		)
+		</foreach>
+	</insert>
+	
+	<insert id="insertSlots" useGeneratedKeys="true" keyProperty="slotId">
+		INSERT INTO SMC.OBM_SLOTS (
+			SLOT_TYPE_ID,
+			PLANT_ID,
+			SLOT_DATE_ID,
+			SLOT_AVAILABLE,
+			SLOT_RESERVED,
+			CHASSIS_ARRIVAL_DATE,
+			CHASSIS_ARRIVAL_WEEK_OF_YEAR,
+			CHASSIS_ARRIVAL_YEAR,
+			SLOT_ACCEPTED
+		) VALUES
+		<foreach collection="list" item="slot" separator=",">
+		(
+			#{slot.slotTypeId},
+			#{slot.plantId},
+			#{slot.slotDateId},
+			#{slot.availableSlots},
+			#{slot.reservedSlots},
+			#{slot.formattedChassisArrivalDate},
+			#{slot.chassisArrivalWeekOfYear},
+			#{slot.chassisArrivalYear},
+			#{slot.acceptedSlots}
+		)
+		</foreach>
+	</insert>
+	
+	<insert id="insertSlotRegionAvailabilities" useGeneratedKeys="true" keyProperty="slotRegionId">
+		INSERT INTO SMC.OBM_SLOTS_BY_REGION (
+			SLOT_ID,
+			REGION,
+			SLOT_AVAILABLE,
+			SLOT_RESERVED,
+			SLOT_ACCEPTED
+		) VALUES
+		<foreach collection="list" item="availability" separator=",">
+		(
+			#{availability.slotId},
+			#{availability.region},
+			#{availability.slotAvailable},
+			#{availability.slotReserved},
+			#{availability.slotAccepted}
+		)
+		</foreach>
+	</insert>
+	
 	<select id="deleteBuild" statementType="CALLABLE" parameterType="int">
 	   {
 	        CALL SMC.SMC_DELETE_RUN
@@ -1087,4 +1141,4 @@
 	       	) 
 	    }      
 	</select>
-</mapper>
+	</mapper>

@@ -23,6 +23,7 @@ import com.penske.apps.adminconsole.util.ApplicationConstants;
 import com.penske.apps.buildmatrix.domain.ApprovedOrder;
 import com.penske.apps.buildmatrix.domain.BodyPlantCapability;
 import com.penske.apps.buildmatrix.domain.BuildAttribute;
+import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlotType;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.BusinessAward;
@@ -33,6 +34,7 @@ import com.penske.apps.buildmatrix.domain.RegionPlantAssociation;
 import com.penske.apps.buildmatrix.domain.enums.BuildStatus;
 import com.penske.apps.buildmatrix.model.AvailableChassisSummaryModel;
 import com.penske.apps.buildmatrix.model.OrderSelectionForm;
+import com.penske.apps.buildmatrix.model.ProductionSlotsMaintenanceSummary;
 import com.penske.apps.buildmatrix.model.ProductionSlotsUtilizationSummary;
 import com.penske.apps.buildmatrix.model.ProximityViewModel;
 import com.penske.apps.buildmatrix.service.BuildMatrixCorpService;
@@ -399,11 +401,14 @@ public class BuildMatrixController {
 			slotTypeId = String.valueOf(buildMatrixSlotTypes.get(0).getSlotTypeId());
 			selectedYear = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
 		}
+		
+		ProductionSlotsMaintenanceSummary summary = buildMatrixSmcService.getSlotMaintenanceSummary(Integer.valueOf(slotTypeId), Integer.valueOf(selectedYear));
+		List<BuildMatrixBodyPlant> bodyplantList = buildMatrixSmcService.getAllBodyPlantsforSlotMaintenance();
+		
 		model.addObject("vehicleTypes", buildMatrixSlotTypes);
 		model.addObject("years", yearsForDropdown);
-		model.addObject("bodyplantList", buildMatrixSmcService.getAllBodyPlantsforSlotMaintenance());
-		model.addObject("slotMaintenanceSummary", buildMatrixSmcService
-				.getSlotMaintenanceSummary(Integer.valueOf(slotTypeId), Integer.valueOf(selectedYear)));
+		model.addObject("bodyplantList", bodyplantList);
+		model.addObject("summary", summary);
 		model.addObject("slotTypeId", Integer.valueOf(slotTypeId));
 		model.addObject("selectedYear", selectedYear);
 		return model;

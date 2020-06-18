@@ -138,8 +138,6 @@ public interface BuildMatrixSmcDAO {
 	
 	public List<BuildMatrixBodyPlant> getAllBodyPlantsforSlotMaintenance();
 	
-	public List<BuildMatrixSlotDate> getSlotMaintenanceSummary(@Param("slotTypeId") int slotTypeId,@Param("selectedYear")int selectedYear);
-	
 	public int getBuildMaximumWeeksBefore();
 
 	public int getBuildMaximumWeeksAfter();
@@ -163,8 +161,19 @@ public interface BuildMatrixSmcDAO {
 	public List<BuildMatrixSlot> getSlotsBySlotDates(@Param("slotTypeId") int slotTypeId, @Param("slotDateIds") List<Integer> slotDateIds);
 	
 	public List<BuildMatrixSlotDate> getSlotDatesForYear(@Param("year") int year);
+
+	public int checkSlotsExist(@Param("year") int year, @Param("slotTypeId") int slotTypeId);
+
+	public void insertSlotDates(@Param("list") List<BuildMatrixSlotDate> slotDates);
+
+	public void insertSlots(@Param("list") List<BuildMatrixSlot> slots);
+
+	public void insertSlotRegionAvailabilities(@Param("list") List<BuildMatrixSlotRegionAvailability> regionAvailabilityList);
 	
 	public void deleteBuild(@Param("runId")int buildId);
 	
 	public void reworkBuild(@Param("runId")int buildId); 
+	
+	public BuildMatrixSlotType getVehicleTypeById(@Param("slotTypeId") int slotTypeId);
+	
 }

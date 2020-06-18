@@ -10,6 +10,14 @@ public class BuildMatrixSlotRegionAvailability {
 
 	protected BuildMatrixSlotRegionAvailability() {}
 
+	public BuildMatrixSlotRegionAvailability(BuildMatrixSlot slot, RegionPlantAssociation assoc) {
+		this.slotId = slot.getSlotId();
+		this.region = assoc.getRegion();
+		this.slotAvailable = 0;
+		this.slotReserved = 0;
+		this.slotAccepted = 0;
+	}
+
 	public int getSlotRegionId() {
 		return slotRegionId;
 	}

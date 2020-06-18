@@ -7,6 +7,9 @@ import static java.util.stream.Collectors.toSet;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.temporal.ChronoField;
+import java.time.temporal.IsoFields;
+import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -67,7 +70,9 @@ import com.penske.apps.buildmatrix.model.BuildMixForm;
 import com.penske.apps.buildmatrix.model.BuildMixForm.AttributeRow;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm.BusinessAwardRow;
+import com.penske.apps.buildmatrix.model.ProductionSlotsMaintenanceSummary;
 import com.penske.apps.buildmatrix.model.ProductionSlotsUtilizationSummary;
+import com.penske.apps.smccore.base.util.BatchRunnable;
 import com.penske.apps.smccore.base.util.Util;
 import com.penske.apps.suppliermgmt.model.UserContext;
 
@@ -768,9 +773,12 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		return bodyPlantSummary;
 	}
 	
-	public List<BuildMatrixSlotDate> getSlotMaintenanceSummary(int slotTypeId,int selectedYear){
-		List<BuildMatrixSlotDate> buildMatrixSlotSummary = buildMatrixSmcDAO.getSlotMaintenanceSummary(slotTypeId,selectedYear);
-		return buildMatrixSlotSummary;
+	public ProductionSlotsMaintenanceSummary getSlotMaintenanceSummary(int slotTypeId,int selectedYear){
+		List<BuildMatrixSlotDate> slotDates = buildMatrixSmcDAO.getSlotDatesForYear(selectedYear);
+		List<BuildMatrixSlot> slots = buildMatrixSmcDAO.getSlotsBySlotDates(slotTypeId, slotDates.stream().map(BuildMatrixSlotDate::getSlotDateId).collect(toList()));
+		List<BuildMatrixBodyPlant> bodyPlantList = buildMatrixSmcDAO.getAllBodyPlantsforSlotMaintenance();
+		ProductionSlotsMaintenanceSummary summary = new ProductionSlotsMaintenanceSummary(bodyPlantList, slotDates, slots);
+		return summary;
 	}
 	
 	@Override
@@ -828,7 +836,6 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		}
 		return regionMap;
 	}
-
 	@Override
 	public void deleteBuild(int buildId) {
 		buildMatrixSmcDAO.deleteBuild(buildId);
@@ -838,5 +845,75 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	public void reworkBuild(int buildId) {
 		buildMatrixSmcDAO.reworkBuild(buildId);
 	}
+	@Override
+	public boolean checkSlotsExist(int year, int slotTypeId) {
+		int count = buildMatrixSmcDAO.checkSlotsExist(year, slotTypeId);
+		if(count > 0)
+			return true;
+		else
+			return false;
+	}
 	
+	@Override
+	public void createSlots(int year, int slotTypeId) {
+		BuildMatrixSlotType slotType = buildMatrixSmcDAO.getVehicleTypeById(slotTypeId);
+		
+		List<BuildMatrixSlotDate> slotDatesForYear = buildMatrixSmcDAO.getSlotDatesForYear(year);
+		if(slotDatesForYear == null || slotDatesForYear.isEmpty()) {
+			slotDatesForYear = new ArrayList<>();
+			WeekFields weekFields = WeekFields.ISO;
+			LocalDate date = LocalDate.now().with(IsoFields.WEEK_BASED_YEAR, year)
+	                .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, 1)
+	                .with(ChronoField.DAY_OF_WEEK, 1);
+			long maxWeekOfYear = weekFields.weekOfWeekBasedYear().rangeRefinedBy(date).getMaximum();
+			
+			List<LocalDate> dates = new ArrayList<>();
+			dates.add(date);
+			for(int i=1; i<maxWeekOfYear; i++) {
+				LocalDate newDate = date;
+				dates.add(newDate.plusWeeks(i));
+			}
+			
+			for(LocalDate localDate: dates) {
+				slotDatesForYear.add(new BuildMatrixSlotDate(localDate));
+			}
+			buildMatrixSmcDAO.insertSlotDates(slotDatesForYear);
+		}
+		
+		List<BuildMatrixBodyPlant> plants = buildMatrixSmcDAO.getAllBodyPlants();
+		List<BuildMatrixSlot> slots = new ArrayList<>();
+		for(BuildMatrixSlotDate slotDate: slotDatesForYear) {
+			for(BuildMatrixBodyPlant plant: plants) {
+				slots.add(new BuildMatrixSlot(slotType, slotDate, plant));
+			}
+		}
+		new BatchRunnable<BuildMatrixSlot>(slots, 500) {
+            @Override protected void runBatch(List<BuildMatrixSlot> items){
+            	buildMatrixSmcDAO.insertSlots(items);
+            }
+		}.run();
+		
+		
+		Map<Integer, List<BuildMatrixSlot>> slotsByPlantId = new HashMap<>();
+		for(BuildMatrixSlot slot: slots) {
+			List<BuildMatrixSlot> list = slotsByPlantId.computeIfAbsent(slot.getPlantId(), l -> new ArrayList<>());
+			list.add(slot);
+		}
+		
+		List<RegionPlantAssociation> associationList = buildMatrixSmcDAO.getAllRegionAssociationData();
+		List<BuildMatrixSlotRegionAvailability> regionAvailabilityList = new ArrayList<>();
+		for(RegionPlantAssociation assoc: associationList) {
+			List<BuildMatrixSlot> slotList = slotsByPlantId.get(assoc.getPlantId());
+			for(BuildMatrixSlot slot: slotList) {
+				regionAvailabilityList.add(new BuildMatrixSlotRegionAvailability(slot, assoc));
+			}
+		}
+		
+		new BatchRunnable<BuildMatrixSlotRegionAvailability>(regionAvailabilityList, 500) {
+            @Override protected void runBatch(List<BuildMatrixSlotRegionAvailability> items){
+            	buildMatrixSmcDAO.insertSlotRegionAvailabilities(items);
+            }
+		}.run();
+		
+	}
 }

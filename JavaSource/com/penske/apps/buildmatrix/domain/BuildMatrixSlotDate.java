@@ -1,5 +1,8 @@
 package com.penske.apps.buildmatrix.domain;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.WeekFields;
 import java.util.Date;
 import java.util.List;
 
@@ -13,6 +16,16 @@ public class BuildMatrixSlotDate {
 	private Date slotDate;
 	private int weekOfYear;
 	private List<BuildMatrixSlot> buildSlots;
+
+	protected BuildMatrixSlotDate() {};
+	
+	public BuildMatrixSlotDate(LocalDate date) {
+		this.slotYear = String.valueOf(date.getYear());
+		this.slotDate = Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());
+		WeekFields weekFields = WeekFields.ISO;
+		int weekNumber = date.get(weekFields.weekOfWeekBasedYear());
+		this.weekOfYear = weekNumber;
+	}
 
 	public int getSlotDateId() {
 		return slotDateId;
@@ -32,29 +45,6 @@ public class BuildMatrixSlotDate {
 
 
 	public List<BuildMatrixSlot> getBuildSlots() { return buildSlots; }
-
-
-	public void setSlotDateId(int slotDateId) {
-		this.slotDateId = slotDateId;
-	}
-
-	public void setSlotYear(String slotYear) {
-		this.slotYear = slotYear;
-	}
-
-	public void setSlotDate(Date slotDate) {
-		this.slotDate = slotDate;
-	}
-
-	public void setWeekOfYear(int weekOfYear) {
-		this.weekOfYear = weekOfYear;
-	}
-
-	
-	public void setBuildSlots(List<BuildMatrixSlot> buildSlots) { 
-		this.buildSlots = buildSlots;
-	}
-	
 
 	public String getFormattedSlotDate() {
 		return StringUtils.defaultString(DateUtil.formatDateUS(slotDate));

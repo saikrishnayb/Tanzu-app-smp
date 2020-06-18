@@ -21,6 +21,7 @@ import com.penske.apps.buildmatrix.domain.ProductionSlotResult;
 import com.penske.apps.buildmatrix.domain.RegionPlantAssociation;
 import com.penske.apps.buildmatrix.model.BuildMixForm;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm;
+import com.penske.apps.buildmatrix.model.ProductionSlotsMaintenanceSummary;
 import com.penske.apps.buildmatrix.model.ProductionSlotsUtilizationSummary;
 import com.penske.apps.suppliermgmt.model.UserContext;
 
@@ -121,7 +122,7 @@ public interface BuildMatrixSmcService {
 	
 	public List<BuildMatrixBodyPlant> getAllBodyPlantsforSlotMaintenance();
 	
-	public List<BuildMatrixSlotDate> getSlotMaintenanceSummary(int slotTypeId,int selectedYear);
+	public ProductionSlotsMaintenanceSummary getSlotMaintenanceSummary(int slotTypeId,int selectedYear);
 
 	public void updateBuildParams(BuildSummary summary);
 
@@ -136,6 +137,10 @@ public interface BuildMatrixSmcService {
 	public List<String> getReservedUnitNumbers(int slotId, String region);
 
 	public Map<String, RegionPlantAssociation> getRegionAssociationDataMap();
+
+	public boolean checkSlotsExist(int year, int slotTypeId);
+
+	public void createSlots(int year, int slotTypeId);
 	
 	public void deleteBuild(int buildId);
 	

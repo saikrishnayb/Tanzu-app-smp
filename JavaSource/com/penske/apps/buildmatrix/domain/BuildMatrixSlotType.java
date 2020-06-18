@@ -4,6 +4,7 @@ public class BuildMatrixSlotType {
 	private int slotTypeId;
 	private String slotType;
 	private String slotTypeDesc;
+	private int chassisLeadTime;
 
 	public int getSlotTypeId() {
 		return slotTypeId;
@@ -27,6 +28,14 @@ public class BuildMatrixSlotType {
 
 	public void setSlotTypeDesc(String slotTypeDesc) {
 		this.slotTypeDesc = slotTypeDesc;
+	}
+
+	public int getChassisLeadTime() {
+		return chassisLeadTime;
+	}
+	
+	public int getNegativeChassisLeadTime() {
+		return -chassisLeadTime;
 	}
 
 }

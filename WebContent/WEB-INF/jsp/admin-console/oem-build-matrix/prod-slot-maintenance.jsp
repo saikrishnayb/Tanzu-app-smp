@@ -47,6 +47,7 @@
           				
           			</div>
           			<div class="btn-div floatRight">
+          				<a id="create-slots-btn" class="buttonSecondary">Create Slots</a>
           				<a  class="buttonSecondary">Import</a>
           				<a  class="buttonSecondary">Export</a>
           			</div>
@@ -64,30 +65,19 @@
 								</tr>
 						</thead>
 						<tbody id="slot-maintenance-tablebody">
-							<c:forEach items="${slotMaintenanceSummary}" var="productionSlot">
-							<c:choose>
-								<c:when test="${fn:length(productionSlot.buildSlots) ne 0}">
-									<tr>
-										<td class="centerAlign slot-table-header" headers="prod-date">${productionSlot.formattedSlotDate}</td>
-										<c:forEach items="${productionSlot.buildSlots}" var="slotForplant">
-											<td class="centerAlign slot-table-header" headers="${slotForplant.plantId}"><input class ="available-slot-input" type="number" value="${slotForplant.availableSlots}"/></td>
-										</c:forEach>
-									</tr>
-								</c:when>
-								<c:otherwise>
-									<tr>
-										<td class="centerAlign slot-table-header" headers="prod-date">${productionSlot.formattedSlotDate}</td>
-										<c:forEach items="${bodyplantList}" var="plantData">
-											<td class="centerAlign slot-table-header" headers="${plantData.plantId}"><input class ="available-slot-input" type="number" value="0" /></td>
-										</c:forEach>
-									</tr>
-								</c:otherwise>
-							</c:choose>
+							<c:forEach items="${summary.rows}" var="row">
+								<tr>
+									<td class="centerAlign slot-table-header" headers="prod-date">${productionSlot.formattedSlotDate}</td>
+									<c:forEach items="${row.cells}" var="cell">
+										<td class="centerAlign slot-table-header" headers="${cell.bodyPlant.plantId}"><input class ="available-slot-input" type="number" value="${cell.slot.availableSlots}"/></td>
+									</c:forEach>
+								</tr>
 							</c:forEach>
 						</tbody>
 					</table>
 				</div>
-			</div>	
+			</div>
+			<div id="prod-slot-maintenance-modal" class="modal"></div>	
 		</div>
 		
 	</div>
