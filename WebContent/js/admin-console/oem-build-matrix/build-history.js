@@ -44,15 +44,19 @@ $buildHistoryDataTable = $buildHistoryTable.DataTable({ //All of the below are o
 		if (showStartBuildBtn) {
 			$('.build-history-table-top').append('<a href="' + baseBuildMatrixUrl + '/order-summary" class="buttonSecondary floatRight">Start Build</a>');
 		}
+		else {
+			$('.cancel-btn').remove();
+			$('.rework-btn').remove();
+		}
 	}
 });
 
-$buildHistoryTable.on('click', '#rework-build', function() {
-	openConfirmModal(false, $(this).attr('build-id'));
+$buildHistoryTable.on('click', '.rework-btn', function() {
+	openConfirmModal(false, $(this).data('build-id'));
 });
 
-$buildHistoryTable.on('click', '#cancel-build', function() {
-	openConfirmModal(true, $(this).attr('build-id'));
+$buildHistoryTable.on('click', '.cancel-btn', function() {
+	openConfirmModal(true, $(this).data('build-id'));
 
 });
 
