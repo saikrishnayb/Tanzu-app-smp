@@ -76,13 +76,18 @@
 						<tbody>
 							<c:forEach items="${slotResults}" var="unit">
 								<tr class="result">
-									<td><a class="secondaryLink">${unit.orderId}</a></td>
+									<td>
+										<a class="secondaryLink">${unit.orderId}</a>
+									</td>
 									<c:choose>
 										<c:when test="${unit.reservationStatus eq 'P'}">
 											<td class="leftAlign"><input class="width-55" /></td>
 										</c:when>
 										<c:otherwise>
 											<td class="leftAlign">${unit.unitNumber}</td>
+											<c:if test=${unit.reservationStatus eq 'E'}>
+												<img rel="tooltip" class="centerImage" src="${commonStaticUrl}/images/warning.png" title="Exception"/>
+											</c:if>
 										</c:otherwise>
 									</c:choose>
 									<td class="leftAlign">${unit.programName}</td>
