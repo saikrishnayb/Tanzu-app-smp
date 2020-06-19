@@ -72,10 +72,10 @@ public class UserServiceImpl implements UserService {
 	}    		 
 
 	@Override
-	public void addBuddyList(List<Buddies> newBuddyList) throws SMCException {
+	public void addBuddyList(List<Buddies> newBuddyList, String sso) throws SMCException {
 		try {
     		userDao.addBuddyList(newBuddyList);
-    		salesnetDao.addBuddyList(newBuddyList);
+    		salesnetDao.addBuddyList(newBuddyList, sso);
     		
     	} catch(SQLException ex){
     		throw new SMCException(ex.getErrorCode(),ex.getMessage(),ex);
@@ -85,9 +85,17 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public void addBuddyBasedOnselectionType(Buddies buddy) {
-		userDao.addBuddyBasedOnselectionType(buddy);
-		salesnetDao.addBuddyBasedOnselectionType(buddy);
+	public void addBuddyBasedOnselectionType(Buddies buddy, String sso) throws SMCException {
+		try {
+			userDao.addBuddyBasedOnselectionType(buddy);
+			List<Buddies> buddyList = getExistingBuddiesList(sso);
+			salesnetDao.addBuddyList(buddyList, sso);
+		
+		} catch(SQLException ex){
+			throw new SMCException(ex.getErrorCode(),ex.getMessage(),ex);
+		}catch(Exception e){
+			throw new SMCException(0,e.getMessage(),e);
+		}
 	}
 	
 	@Override

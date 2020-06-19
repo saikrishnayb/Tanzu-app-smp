@@ -325,13 +325,13 @@ public class UserController extends BaseController {
                     StringUtils.equalsIgnoreCase(selectionType, ApplicationConstants.ALL_BUYER_SELECTION_TYPE)||
                     StringUtils.equalsIgnoreCase(selectionType, ApplicationConstants.ALL_PLANNING_SELECTION_TYPE)){
                 loggedInUser.setSelectionType(selectionType);
-                userService.addBuddyBasedOnselectionType(loggedInUser);
+                userService.addBuddyBasedOnselectionType(loggedInUser, loggedInUserSso);
                 if(!newRandomBuddyList.isEmpty()){
-                    userService.addBuddyList(newRandomBuddyList);
+                    userService.addBuddyList(newRandomBuddyList, loggedInUserSso);
                 }
 
             }else{
-                userService.addBuddyList(newBuddyList);
+                userService.addBuddyList(newBuddyList, loggedInUserSso);
             }
         }catch(Exception e){
             handleException(e);

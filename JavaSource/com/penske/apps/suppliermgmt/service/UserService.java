@@ -14,9 +14,7 @@ public interface UserService {
 
 	public List<User> getUserDetails(boolean active) throws SMCException;
 
-	public void  addBuddyList(List<Buddies> newBuddyList) throws SMCException;
-	
-	public void addBuddyBasedOnselectionType(Buddies buddy);
+	public void  addBuddyList(List<Buddies> newBuddyList, String sso) throws SMCException;
 	
 	public String getSelectionType(String loggedInSso);
 
@@ -33,5 +31,7 @@ public interface UserService {
 	public void saveUserVendorFilterSelections(Collection<Integer> vendorIds);
 
 	public void toggleVendorFilter();
+
+	void addBuddyBasedOnselectionType(Buddies buddy, String user) throws SMCException;
 
 }

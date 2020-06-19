@@ -8,22 +8,13 @@
  	</delete>
  	
 	<!-- if random users selected in buddies -->			
-	<insert id = "addBuddyList" parameterType="list">
+	<insert id = "addBuddyList">
  		INSERT INTO t_smc_buddies(SSO, BuddySSO, UserDept, CreatedById, DateCreated, SelectionType)
  		VALUES
- 		<foreach item="item"  collection="list" separator=",">
- 	 		(#{item.sso},#{item.buddySso}, #{item.userDept}, #{item.sso},CURRENT_TIMESTAMP,#{item.selectionType})
+ 		<foreach item="item"  collection="newBuddyList" separator=",">
+ 	 		(#{sso},#{item.buddySso}, #{item.userDept}, #{item.sso},CURRENT_TIMESTAMP,#{item.selectionType})
  		</foreach>
  	</insert>	
- 	
- 	<!-- if all users selected in buddies -->
- 	<insert id = "addBuddyBasedOnselectionType" parameterType="com.penske.apps.suppliermgmt.model.Buddies">
- 		INSERT INTO t_smc_buddies(SSO, BuddySSO, UserDept, CreatedById, DateCreated, SelectionType)
- 		VALUES
- 		
- 	 		(#{sso},#{buddySso}, #{userDept}, #{sso},CURRENT_TIMESTAMP,#{selectionType})
- 		
- 	</insert>
  		
 </mapper>
 
