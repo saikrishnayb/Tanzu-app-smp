@@ -388,6 +388,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		Map<Integer, Integer> groupAndColumn = new HashMap<Integer, Integer>();
 		Map<Integer, List<ReportResultOptionModel>> optionsByOrderId = new HashMap<>();
 		CellStyle cellStyle = getCellStyle(workbook);
+		CellStyle changeRequired = getChangeRequiredCellStyle(workbook);
 		for(ReportResultOptionModel reportResultOptionModel : reportResultOptions)
 		{
 			Integer groupId = reportResultOptionModel.getOptionGroupId();
@@ -446,9 +447,34 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 			}
 
 			dataRow.createCell(column++).setCellValue(ProductionSlotResultData.getChassisMake());
-			dataRow.createCell(column++).setCellValue(ProductionSlotResultData.getChassisModel());
-			dataRow.createCell(column++).setCellValue(ProductionSlotResultData.getChassisModelYear());
-			dataRow.createCell(column++).setCellValue(ProductionSlotResultData.getChassisColor());
+			
+			SXSSFCell modelCell = dataRow.createCell(column++);
+			modelCell.setCellValue(ProductionSlotResultData.getChassisModel());
+			SXSSFCell modelRequiredCell = dataRow.createCell(column++);
+			modelRequiredCell.setCellValue(ProductionSlotResultData.isChassisModelChangeRequired() ? "Yes" : "No");
+			if(ProductionSlotResultData.isChassisModelChangeRequired()) {
+				modelCell.setCellStyle(changeRequired);
+				modelRequiredCell.setCellStyle(changeRequired);
+			}
+			
+			SXSSFCell yearCell = dataRow.createCell(column++);
+			yearCell.setCellValue(ProductionSlotResultData.getChassisModelYear());
+			SXSSFCell yearRequiredCell = dataRow.createCell(column++);
+			yearRequiredCell.setCellValue(ProductionSlotResultData.isChassisModelYearChangeRequired() ? "Yes" : "No");
+			if(ProductionSlotResultData.isChassisModelYearChangeRequired()) {
+				yearCell.setCellStyle(changeRequired);
+				yearRequiredCell.setCellStyle(changeRequired);
+			}
+			
+			SXSSFCell colorCell = dataRow.createCell(column++);
+			colorCell.setCellValue(ProductionSlotResultData.getChassisColor());
+			SXSSFCell colorRequiredCell = dataRow.createCell(column++);
+			colorRequiredCell.setCellValue(ProductionSlotResultData.isChassisColorChangeRequired() ? "Yes" : "No");
+			if(ProductionSlotResultData.isChassisColorChangeRequired()) {
+				colorCell.setCellStyle(changeRequired);
+				colorRequiredCell.setCellStyle(changeRequired);
+			}
+			
 			dataRow.createCell(column++).setCellValue(ProductionSlotResultData.getBodyMake());
 			dataRow.createCell(column++).setCellValue(ProductionSlotResultData.getChassisLength());
 			dataRow.createCell(column++).setCellValue(ProductionSlotResultData.getRearDoorMake());
@@ -456,6 +482,15 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 			dataRow.createCell(column++).setCellValue(ProductionSlotResultData.getLiftgateInstalled());
 			dataRow.createCell(column++).setCellValue(ProductionSlotResultData.getLiftgateMake());
 			dataRow.createCell(column++).setCellValue(ProductionSlotResultData.getLiftgateType());
+			
+			SXSSFCell wheelCell = dataRow.createCell(column++);
+			wheelCell.setCellValue(ProductionSlotResultData.getWheelMaterial());
+			SXSSFCell wheelRequiredCell = dataRow.createCell(column++);
+			wheelRequiredCell.setCellValue(ProductionSlotResultData.isChassisWheelMatChangeRequired() ? "Yes" : "No");
+			if(ProductionSlotResultData.isChassisColorChangeRequired()) {
+				wheelCell.setCellStyle(changeRequired);
+				wheelRequiredCell.setCellStyle(changeRequired);
+			}
 
 			//For each of the selected options, map it to the right column
 			for (ReportResultOptionModel option : reportResultOptions)
@@ -509,6 +544,14 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 
 		return cellStyle;
 	}
+	
+	private CellStyle getChangeRequiredCellStyle(SXSSFWorkbook workbook) {
+		CellStyle cellStyle = workbook.createCellStyle();
+		cellStyle.setFillForegroundColor(HSSFColor.LIGHT_YELLOW.index);
+		cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+		return cellStyle;
+	}
 
 	private void createHeaderCell(int column, String value, CellStyle style, SXSSFRow row) {
 		SXSSFCell cell = row.createCell(column);
@@ -557,10 +600,16 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		createHeaderCell(column++, ApplicationConstants.CHASSIS_MAKE, cellStyle, row);
 		workSheet.setColumnWidth(column, 20 * 200);
 		createHeaderCell(column++, ApplicationConstants.CHASSIS_MODEL, cellStyle, row);
+		workSheet.setColumnWidth(column, 20 * 256);
+		createHeaderCell(column++, ApplicationConstants.CHASSIS_MODEL_CHANGE_REQUIRED, cellStyle, row);
 		workSheet.setColumnWidth(column, 20 * 200);
 		createHeaderCell(column++, ApplicationConstants.CHASSIS_MODEL_YEAR, cellStyle, row);
+		workSheet.setColumnWidth(column, 20 * 285);
+		createHeaderCell(column++, ApplicationConstants.CHASSIS_YEAR_CHANGE_REQUIRED, cellStyle, row);
 		workSheet.setColumnWidth(column, 20 * 200);
 		createHeaderCell(column++, ApplicationConstants.CHASSIS_COLOR, cellStyle, row);
+		workSheet.setColumnWidth(column, 20 * 256);
+		createHeaderCell(column++, ApplicationConstants.CHASSIS_COLOR_CHANGE_REQUIRED, cellStyle, row);
 		workSheet.setColumnWidth(column, 20 * 200);
 		createHeaderCell(column++, ApplicationConstants.BODY_MAKE, cellStyle, row);
 		workSheet.setColumnWidth(column, 20 * 200);
@@ -575,6 +624,10 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		createHeaderCell(column++, ApplicationConstants.LIFTGATE_MAKE, cellStyle, row);
 		workSheet.setColumnWidth(column, 20 * 200);
 		createHeaderCell(column++, ApplicationConstants.LIFTGATE_TYPE, cellStyle, row);
+		workSheet.setColumnWidth(column, 20 * 200);
+		createHeaderCell(column++, ApplicationConstants.WHEEL_MATERIAL, cellStyle, row);
+		workSheet.setColumnWidth(column, 20 * 256);
+		createHeaderCell(column++, ApplicationConstants.WHEEL_MATERIAL_CHANGE_REQUIRED, cellStyle, row);
 
 		return column;
 	}

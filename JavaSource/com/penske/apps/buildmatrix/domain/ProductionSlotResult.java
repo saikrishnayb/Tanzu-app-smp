@@ -28,7 +28,13 @@ public class ProductionSlotResult {
 	private String liftgateMake;
 	private String liftgateType;
 	private String reservationStatus;
+	private String wheelMaterial;
+	private boolean chassisModelChangeRequired;
+	private boolean chassisModelYearChangeRequired;
+	private boolean chassisColorChangeRequired;
+	private boolean chassisWheelMatChangeRequired;
 	private List<String> productionSlotList;
+	
 
 	// getters
 	public long getOrderId() {
@@ -129,6 +135,26 @@ public class ProductionSlotResult {
 
 	public String getLiftgateType() {
 		return liftgateType;
+	}
+	
+	public String getWheelMaterial() {
+		return wheelMaterial;
+	}
+	
+	public boolean isChassisColorChangeRequired() {
+		return chassisColorChangeRequired;
+	}
+	
+	public boolean isChassisModelChangeRequired() {
+		return chassisModelChangeRequired;
+	}
+	
+	public boolean isChassisModelYearChangeRequired() {
+		return chassisModelYearChangeRequired;
+	}
+	
+	public boolean isChassisWheelMatChangeRequired() {
+		return chassisWheelMatChangeRequired;
 	}
 
 	// setters

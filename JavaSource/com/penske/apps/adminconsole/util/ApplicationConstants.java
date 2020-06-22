@@ -66,9 +66,16 @@ public class ApplicationConstants {
 	public static final String LIFTGATE_INSTALLED = "Liftgate Installed";
 	public static final String LIFTGATE_MAKE = "Liftgate Make";
 	public static final String LIFTGATE_TYPE = "Liftgate Type";
+	public static final String CHASSIS_MODEL_CHANGE_REQUIRED = "Model Change Required";
+	public static final String CHASSIS_YEAR_CHANGE_REQUIRED = "Model Year Change Required";
+	public static final String CHASSIS_COLOR_CHANGE_REQUIRED = "Color Change Required";
+	public static final String WHEEL_MATERIAL = "Wheel Material";
+	public static final String WHEEL_MATERIAL_CHANGE_REQUIRED = "Wheel Change Required";
 	
 	//OEM Build Matrix
 	public static final String String_ZERO="0";
 	public static final String DISTRICT_STRING="DISTRICTVALUES";
 	public static final String DISTRICT_DESC="DISTDESC";
+	
+	
 }
