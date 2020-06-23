@@ -29,10 +29,12 @@ public class ProductionSlotResult {
 	private String liftgateType;
 	private String reservationStatus;
 	private String wheelMaterial;
+	private boolean changeRequired;
 	private boolean chassisModelChangeRequired;
 	private boolean chassisModelYearChangeRequired;
 	private boolean chassisColorChangeRequired;
 	private boolean chassisWheelMatChangeRequired;
+	private boolean vehicleTypeChangeRequired;
 	private List<String> productionSlotList;
 	
 
@@ -157,6 +159,14 @@ public class ProductionSlotResult {
 		return chassisWheelMatChangeRequired;
 	}
 
+	public boolean isChangeRequired() {
+		return changeRequired;
+	}
+	
+	public boolean isVehicleTypeChangeRequired() {
+		return vehicleTypeChangeRequired;
+	}
+	
 	// setters
 	public void setOrderId(long orderId) {
 		this.orderId = orderId;

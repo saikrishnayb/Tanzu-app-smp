@@ -84,10 +84,12 @@
 											<td class="leftAlign"><input class="width-55" /></td>
 										</c:when>
 										<c:otherwise>
-											<td class="leftAlign">${unit.unitNumber}</td>
-											<c:if test="${unit.reservationStatus eq 'E'}">
-												<img rel="tooltip" class="centerImage" src="${commonStaticUrl}/images/warning.png" title="Exception"/>
-											</c:if>
+											<td class="leftAlign">
+												${unit.unitNumber}
+												<c:if test="${unit.changeRequired}">
+												<img rel="tooltip" class="centerImage change-required" src="${commonStaticUrl}/images/warning.png" title="Change Required"/>
+												</c:if>
+											</td>
 										</c:otherwise>
 									</c:choose>
 									<td class="leftAlign">${unit.programName}</td>

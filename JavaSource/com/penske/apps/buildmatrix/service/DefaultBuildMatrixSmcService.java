@@ -422,7 +422,16 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 
 			dataRow.createCell(column++).setCellValue(ProductionSlotResultData.getOrderId());
 			dataRow.createCell(column++).setCellValue(ProductionSlotResultData.getUnitNumber());
-			dataRow.createCell(column++).setCellValue(ProductionSlotResultData.getVehicleType());
+			
+			SXSSFCell vehicleTypeCell = dataRow.createCell(column++);
+			vehicleTypeCell.setCellValue(ProductionSlotResultData.getVehicleType());
+			SXSSFCell vehicleTypeRequiredCell = dataRow.createCell(column++);
+			vehicleTypeRequiredCell.setCellValue(ProductionSlotResultData.isVehicleTypeChangeRequired() ? "Yes" : "No");
+			if(ProductionSlotResultData.isVehicleTypeChangeRequired()) {
+				vehicleTypeCell.setCellStyle(changeRequired);
+				vehicleTypeRequiredCell.setCellStyle(changeRequired);
+			}
+			
 			dataRow.createCell(column++).setCellValue(ProductionSlotResultData.getProgramName());
 			dataRow.createCell(column++).setCellValue(ProductionSlotResultData.getRegion());
 			dataRow.createCell(column++).setCellValue(ProductionSlotResultData.getArea());

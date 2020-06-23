@@ -260,6 +260,24 @@
 		<result column="requestedDeliveryDate"    property="requestedDeliveryDate"/>
 		<result column="productionSlot" 		  property="productionSlot"/>
 		<result column="productionDate" 		  property="productionDate"/>
+		<result column="chassisMake"						property="chassisMake"/>
+		<result column="chassisModel" 		  				property="chassisModel"/>
+		<result column="chassisModelYear" 		  			property="chassisModelYear"/>
+		<result column="chassisColor" 		  				property="chassisColor"/>
+		<result column="bodyMake" 		  					property="bodyMake"/>
+		<result column="chassisLength" 		 				property="chassisLength"/>
+		<result column="rearDoorMake" 		  				property="rearDoorMake"/>
+		<result column="reeferMake" 		  				property="reeferMake"/>
+		<result column="liftgateInstalled" 		  			property="liftgateInstalled"/>
+		<result column="liftgateMake" 		  				property="liftgateMake"/>
+		<result column="liftgateType" 		  				property="liftgateType"/>
+		<result column="wheelMaterial" 		  				property="wheelMaterial"/>
+		<result column="changeRequired" 		  			property="changeRequired"/>
+		<result column="vehicleTypeChangeRequired" 		  	property="vehicleTypeChangeRequired"/>
+		<result column="chassisModelChangeRequired" 		property="chassisModelChangeRequired"/>
+		<result column="chassisModelYearChangeRequired" 	property="chassisModelYearChangeRequired"/>
+		<result column="chassisColorChangeRequired" 		property="chassisColorChangeRequired"/>
+		<result column="chassisWheelMatChangeRequired"		property="chassisWheelMatChangeRequired"/>
 		<collection property="productionSlotList" column="{buildId=runId,unitNumber=unitNumber}" select="getProductionSlotList"></collection>
 	</resultMap>
 	
@@ -290,6 +308,8 @@
 			SLOT_RESERVE.LIFTGATE_MAKE AS liftgateMake,
 			SLOT_RESERVE.LIFTGATE_TYPE AS liftgateType,
 			SLOT_RESERVE.WHEEL_MATERIAL as wheelMaterial,
+			CASE WHEN SLOT_RESERVE.CHANGE_REQUIRED = 'Y' THEN 1 ELSE 0 END AS changeRequired,
+			CASE WHEN SLOT_RESERVE.VEHICLE_TYPE_CHANGE_REQUIRED = 'Y' THEN 1 ELSE 0 END AS vehicleTypeChangeRequired,
 			CASE WHEN SLOT_RESERVE.CHASSIS_MODEL_CHANGE_REQUIRED = 'Y' THEN 1 ELSE 0 END AS chassisModelChangeRequired,
 			CASE WHEN SLOT_RESERVE.CHASSIS_MODEL_YEAR_CHANGE_REQUIRED = 'Y' THEN 1 ELSE 0 END AS chassisModelYearChangeRequired,
 			CASE WHEN SLOT_RESERVE.CHASSIS_COLOR_CHANGE_REQUIRED = 'Y' THEN 1 ELSE 0 END AS chassisColorChangeRequired,
@@ -319,6 +339,7 @@
 			SLOT_REQ.RUN_ID AS runId,
 			SLOT_REQ.ORDER_ID AS orderId,
 			SLOT_RESERVE.UNIT_NUMBER AS unitNumber,
+			SLOT_RESERVE.VEHICLE_TYPE AS vehicleType,
 			SLOT_RESERVE.RESERVATION_STATUS AS reservationStatus,
 			SLOT_REQ.PROGRAM_NAME AS programName,
 			MILEAGE.REGION AS region,
@@ -327,7 +348,25 @@
 			SLOT_REQ.DESTINATION_DISTRICT_DESC AS districtName,
 			SLOT_REQ.DESTINATION_DELIVERY_DATE AS requestedDeliveryDate,
 			PLANT.PLANT_MFR_CODE ||'-' ||PLANT.PLANT_CITY ||',' ||PLANT.PLANT_STATE AS productionSlot,
-			SLOT_DATES.SLOT_DATE AS productionDate
+			SLOT_DATES.SLOT_DATE AS productionDate,
+			SLOT_RESERVE.CHASSIS_MAKE AS chassisMake,
+			SLOT_RESERVE.CHASSIS_MODEL AS chassisModel,
+			SLOT_RESERVE.CHASSIS_MODEL_YEAR AS chassisModelYear,
+			SLOT_RESERVE.CHASSIS_COLOR AS chassisColor,
+			SLOT_RESERVE.BODY_MAKE AS bodyMake,
+			SLOT_RESERVE.CHASSIS_LENGTH AS chassisLength,
+			SLOT_RESERVE.REAR_DOOR_MAKE AS rearDoorMake,
+			SLOT_RESERVE.REEFER_MAKE AS reeferMake,
+			SLOT_RESERVE.LIFTGATE_INSTALLED AS liftgateInstalled,
+			SLOT_RESERVE.LIFTGATE_MAKE AS liftgateMake,
+			SLOT_RESERVE.LIFTGATE_TYPE AS liftgateType,
+			SLOT_RESERVE.WHEEL_MATERIAL as wheelMaterial,
+			CASE WHEN SLOT_RESERVE.CHANGE_REQUIRED = 'Y' THEN 1 ELSE 0 END AS changeRequired,
+			CASE WHEN SLOT_RESERVE.VEHICLE_TYPE_CHANGE_REQUIRED = 'Y' THEN 1 ELSE 0 END AS vehicleTypeChangeRequired,
+			CASE WHEN SLOT_RESERVE.CHASSIS_MODEL_CHANGE_REQUIRED = 'Y' THEN 1 ELSE 0 END AS chassisModelChangeRequired,
+			CASE WHEN SLOT_RESERVE.CHASSIS_MODEL_YEAR_CHANGE_REQUIRED = 'Y' THEN 1 ELSE 0 END AS chassisModelYearChangeRequired,
+			CASE WHEN SLOT_RESERVE.CHASSIS_COLOR_CHANGE_REQUIRED = 'Y' THEN 1 ELSE 0 END AS chassisColorChangeRequired,
+			CASE WHEN SLOT_RESERVE.CHASSIS_WHEEL_MATERIAL_CHANGE_REQUIRED = 'Y' THEN 1 ELSE 0 END AS chassisWheelMatChangeRequired
 		FROM 
 			SMC.OBM_RUN_SUMMARY RUN_SUMMARY
 			JOIN SMC.OBM_SLOT_REQUEST SLOT_REQ
