@@ -71,11 +71,13 @@ public class ApplicationConstants {
 	public static final String CHASSIS_COLOR_CHANGE_REQUIRED = "Color Change Required";
 	public static final String WHEEL_MATERIAL = "Wheel Material";
 	public static final String WHEEL_MATERIAL_CHANGE_REQUIRED = "Wheel Change Required";
+	public static final String VEHICLE_TYPE_CHANGE_REQUIRED = "Vehicle Type Change Required";
 	
 	//OEM Build Matrix
 	public static final String String_ZERO="0";
 	public static final String DISTRICT_STRING="DISTRICTVALUES";
 	public static final String DISTRICT_DESC="DISTDESC";
+	
 	
 	
 }

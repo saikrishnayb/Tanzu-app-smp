@@ -589,6 +589,8 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		createHeaderCell(column++, ApplicationConstants.UNIT, cellStyle, row);
 		workSheet.setColumnWidth(column, 20 * 150);
 		createHeaderCell(column++, ApplicationConstants.VEHICLE_TYPE, cellStyle, row);
+		workSheet.setColumnWidth(column, 20 * 285);
+		createHeaderCell(column++, ApplicationConstants.VEHICLE_TYPE_CHANGE_REQUIRED, cellStyle, row);
 		workSheet.setColumnWidth(column, 20 * 256);
 		createHeaderCell(column++, ApplicationConstants.PROGRAM_NAME, cellStyle, row);
 		workSheet.setColumnWidth(column, 20 * 150);
