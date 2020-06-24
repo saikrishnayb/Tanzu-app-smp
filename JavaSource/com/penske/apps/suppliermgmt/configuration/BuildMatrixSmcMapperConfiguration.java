@@ -13,7 +13,6 @@ import com.penske.apps.buildmatrix.dao.BuildMatrixMapperMarker;
 import com.penske.apps.buildmatrix.domain.enums.ApprovalStatus;
 import com.penske.apps.buildmatrix.domain.enums.BuildStatus;
 import com.penske.apps.smccore.base.annotation.MappedEnumTypes;
-import com.penske.apps.suppliermgmt.annotation.DBCro;
 import com.penske.apps.suppliermgmt.annotation.DBSmc;
 
 /**
@@ -38,7 +37,7 @@ public class BuildMatrixSmcMapperConfiguration {
 	private DataSource dataSource;
 
 	@Bean
-	@DBCro
+	@DBSmc
 	public SqlSessionFactory sqlSessionFactory() throws Exception
 	{
 		String baseMapperPath = "classpath:conf/xml/mapper/buildmatrix/smc/";
