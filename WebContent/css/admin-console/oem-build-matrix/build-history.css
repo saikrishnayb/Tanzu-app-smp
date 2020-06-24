@@ -19,7 +19,8 @@
 	margin-top: 25px;
 }
 
-.rework-btn { 
+.rework-btn, 
+.cancel-btn { 
 	border-radius:10px;
 }
 

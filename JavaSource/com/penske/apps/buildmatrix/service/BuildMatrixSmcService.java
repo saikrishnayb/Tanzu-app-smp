@@ -134,8 +134,6 @@ public interface BuildMatrixSmcService {
 
 	public BuildMatrixSlotDate getSlotDate(int slotDateId);
 
-	public List<String> getReservedUnitNumbers(int slotId, String region);
-
 	public Map<String, RegionPlantAssociation> getRegionAssociationDataMap();
 
 	public boolean checkSlotsExist(int year, int slotTypeId);
@@ -145,4 +143,8 @@ public interface BuildMatrixSmcService {
 	public void deleteBuild(int buildId);
 	
 	public void reworkBuild(int buildId);
+
+	public List<ProductionSlotResult> getSlotReservationsByIdAndRegion(int slotId, String region);
+
+	public void releaseUnits(List<Integer> slotReservationIds);
 }

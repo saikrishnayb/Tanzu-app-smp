@@ -902,8 +902,8 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	}
 	
 	@Override
-	public List<String> getReservedUnitNumbers(int slotId, String region) {
-		return buildMatrixSmcDAO.getReservedUnitNumbers(slotId, region);
+	public List<ProductionSlotResult> getSlotReservationsByIdAndRegion(int slotId, String region) {
+		return buildMatrixSmcDAO.getSlotReservationsByIdAndRegion(slotId, region);
 	}
 	
 	@Override
@@ -997,5 +997,12 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
             }
 		}.run();
 		
+	}
+	
+	@Override
+	public void releaseUnits(List<Integer> slotReservationIds) {
+		for(Integer slotReservationId: slotReservationIds) {
+			buildMatrixSmcDAO.removeSlotResult(slotReservationId);
+		}
 	}
 }

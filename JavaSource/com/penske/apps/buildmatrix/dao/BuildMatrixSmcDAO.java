@@ -156,7 +156,7 @@ public interface BuildMatrixSmcDAO {
 	
 	public BuildMatrixSlotDate getSlotDate(@Param("slotDateId") int slotDateId);
 
-	public List<String> getReservedUnitNumbers(@Param("slotId") int slotId, @Param("region") String region);
+	public List<ProductionSlotResult> getSlotReservationsByIdAndRegion(@Param("slotId") int slotId, @Param("region") String region);
 
 	public List<RegionPlantAssociation> getRegionAssociationDataByRegion(@Param("region") String region);
 
@@ -179,5 +179,7 @@ public interface BuildMatrixSmcDAO {
 	public void reworkBuild(@Param("runId")int buildId); 
 	
 	public BuildMatrixSlotType getVehicleTypeById(@Param("slotTypeId") int slotTypeId);
+	
+	public void removeSlotResult(@Param("slotReservationId") int slotReservationId);
 	
 }

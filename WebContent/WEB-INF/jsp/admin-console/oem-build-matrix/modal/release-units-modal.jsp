@@ -39,8 +39,8 @@
 					</div>
 					<div class="col-xs-7">
 						<select id="release-units" name="releaseUnits" multiple onchange="enableUpdate()" class="common-form-control">
-							<c:forEach items="${unitNumbers}" var="unitNumber">
-								<option value="${unitNumber}">${unitNumber}</option>
+							<c:forEach items="${slotReservations}" var="slotReservation">
+								<option value="${slotReservation.slotReservationId}">${slotReservation.unitNumber}</option>
 							</c:forEach>
 						</select>
 					</div>
@@ -52,7 +52,10 @@
 		<div class="button-div">
 			<a class="buttonPrimary buttonDisabled floatRight"
 				id="release-units-btn"
-				onclick="">Release</a>
+				data-region="${region}" 
+				data-plant-id="${bodyPlant.plantId}" 
+				data-slot-date-id="${slotDate.slotDateId}"
+				>Release</a>
 		</div>
 	</div>
 </div>

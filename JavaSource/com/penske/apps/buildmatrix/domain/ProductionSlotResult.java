@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 public class ProductionSlotResult {
+	private int slotReservationId;
 	private int runId;
 	private long orderId;
 	private String unitNumber;
@@ -39,6 +40,10 @@ public class ProductionSlotResult {
 	
 
 	// getters
+	public int getSlotReservationId() {
+		return slotReservationId;
+	}
+	
 	public long getOrderId() {
 		return orderId;
 	}

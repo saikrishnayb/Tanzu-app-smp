@@ -31,6 +31,7 @@ import com.penske.apps.buildmatrix.domain.BuildMatrixSlotDate;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlotType;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.PlantProximity;
+import com.penske.apps.buildmatrix.domain.ProductionSlotResult;
 import com.penske.apps.buildmatrix.domain.RegionPlantAssociation;
 import com.penske.apps.buildmatrix.model.BuildMixForm;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm;
@@ -337,15 +338,21 @@ public class BuildMatrixRestController {
 		
 		BuildMatrixBodyPlant bodyPlant = buildMatrixSmcService.getBodyPlantById(plantId);
 		BuildMatrixSlotDate slotDate = buildMatrixSmcService.getSlotDate(dateId);
-		List<String> unitNumbers = buildMatrixSmcService.getReservedUnitNumbers(slotId, region);
+		List<ProductionSlotResult> slotReservations = buildMatrixSmcService.getSlotReservationsByIdAndRegion(slotId, region);
 		
 		model.addObject("region", region);
 		model.addObject("regionDesc", regionDesc);
 		model.addObject("slotDate", slotDate);
 		model.addObject("bodyPlant", bodyPlant);
-		model.addObject("unitNumbers", unitNumbers);
+		model.addObject("slotReservations", slotReservations);
 		
 		return model;
+	}
+	
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping("/release-units")
+	public void releaseUnits(@RequestParam("slotReservationIds[]") List<Integer> slotReservationIds) {
+		buildMatrixSmcService.releaseUnits(slotReservationIds);
 	}
 	
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
