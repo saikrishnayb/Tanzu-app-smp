@@ -1,16 +1,18 @@
 var $setOfflineDatesModal = $('#set-offline-dates-modal');
-var $regionAssociationModal =$('#region-association-modal');
+var $regionAssociationModal = $('#region-association-modal');
 var $addNewRow = $('#add-new-row');
 var commonStaticUrl = window.sessionStorage.getItem('commonStaticContainerUrl');
 var removeOfflineDate = [];
-var $saveRegionAssociation=$("#save-region-association");
+var $saveRegionAssociation = $("#save-region-association");
 var regionChangeCnt = 0;
 var regionAssociationUpdateList = [];
+var deleteRegion = false;
 
 selectCurrentNavigation("tab-oem-build-matrix", "left-nav-maintenance-summary");
 
 ModalUtil.initializeModal($setOfflineDatesModal);
 ModalUtil.initializeModal($regionAssociationModal);
+
 $bodyPlantTable = $('#body-plant-maint-table').dataTable({ //All of the below are optional
 	"bPaginate" : true, //enable pagination
 	"bStateSave" : true, //To retrieve the data on click of back button
@@ -65,7 +67,7 @@ $setOfflineDatesModal.on("click", '#save-offline-dates', function() {
 
 	$.each(rows, function(index, row) {
 		var offlineDateId = $(row).attr('offlineDateId');
-		if ( $(row).find('.start-date').val() != '' &&  $(row).find('.end-date').val() != '') {
+		if ($(row).find('.start-date').val() != '' && $(row).find('.end-date').val() != '') {
 			startDate = $(row).find('.start-date').val();
 			endDate = $(row).find('.end-date').val();
 			plantOfflineDate = {};
@@ -132,17 +134,17 @@ $setOfflineDatesModal.on("click", '#save-offline-dates', function() {
 
 $setOfflineDatesModal.on("click", '#add-new-row', function() {
 	var newRow = "<tr class='row'><td class='col-xs-3'><span class='dateLbl'>Date</span></td>" +
-	"<td class='col-xs-7'>" +
-	"<input name='startDate' class='start-date offline-date common-form-control date-picker numeric numeric-jquery-date advanced-date' required type='text'/>" +
-	"<input  name='offlineStartDate' type='hidden' class='datepickerStartHidden'/> <span class='dateLbl'> - </span> " +
-	"<input name='endDate' class='end-date offline-date common-form-control date-picker numeric numeric-jquery-date advanced-date' required type='text'/>" +
-	"<input  name='offlineEndDate' type='hidden' class='datepickerEndHidden' />" +
-	"</td>" +
-	"<td class='col-xs-2'>" +
-	"<a class='deleteRow' ><img src='" + commonStaticUrl + "/images/delete.png'" +
-	" class='centerImage rightMargin delete-button'/></a>" +
-	"</td>" +
-	"</tr>";
+		"<td class='col-xs-7'>" +
+		"<input name='startDate' class='start-date offline-date common-form-control date-picker numeric numeric-jquery-date advanced-date' required type='text'/>" +
+		"<input  name='offlineStartDate' type='hidden' class='datepickerStartHidden'/> <span class='dateLbl'> - </span> " +
+		"<input name='endDate' class='end-date offline-date common-form-control date-picker numeric numeric-jquery-date advanced-date' required type='text'/>" +
+		"<input  name='offlineEndDate' type='hidden' class='datepickerEndHidden' />" +
+		"</td>" +
+		"<td class='col-xs-2'>" +
+		"<a class='deleteRow' ><img src='" + commonStaticUrl + "/images/delete.png'" +
+		" class='centerImage rightMargin delete-button'/></a>" +
+		"</td>" +
+		"</tr>";
 	$("#offline-dates-table tbody").append(newRow);
 	initializeDatePicker();
 });
@@ -161,20 +163,19 @@ $setOfflineDatesModal.on("click", '.deleteRow', function() {
 
 $setOfflineDatesModal.on("click", '#clear-row', function() {
 	var $offlineDaterRow = $(this).parents("tr");
-	if( $offlineDaterRow.find('.start-date').val() != '' || $offlineDaterRow.find('.end-date').val() != '')
-	{
+	if ($offlineDaterRow.find('.start-date').val() != '' || $offlineDaterRow.find('.end-date').val() != '') {
 		$('#save-offline-dates').removeClass("buttonDisabled");
 	}
 	$offlineDaterRow.find('.start-date').val("");
 	$offlineDaterRow.find('.end-date').val("");
-	
+
 });
 
-$('#set-offline-dates-modal').on('input', '.offline-date', function(){
+$('#set-offline-dates-modal').on('input', '.offline-date', function() {
 	$('#save-offline-dates').removeClass("buttonDisabled");
 })
 
-$('#set-offline-dates-modal').on('change', '.offline-date', function(){
+$('#set-offline-dates-modal').on('change', '.offline-date', function() {
 	$('#save-offline-dates').removeClass("buttonDisabled");
 })
 
@@ -197,9 +198,9 @@ function validateOfflineDateForm($form) {
 				errorMsg = "Row -" + (parseInt(index) + 1) + ": Invalid Start date.";
 			else if (!validateDate(offlineEndDate))
 				errorMsg = "Row -" + (parseInt(index) + 1) + ": Invalid End date.";else {
-					if (new Date(offlineStartDate) > new Date(offlineEndDate))
-						errorMsg = "Row -" + (parseInt(index) + 1) + ": Start date is greater than End date. ";
-				}
+				if (new Date(offlineStartDate) > new Date(offlineEndDate))
+					errorMsg = "Row -" + (parseInt(index) + 1) + ": Start date is greater than End date. ";
+			}
 		}
 	});
 
@@ -208,15 +209,15 @@ function validateOfflineDateForm($form) {
 
 function setOfflineDates(plantId) {
 	$.post('./get-offline-date-setup-modal.htm',
-			{
-		'plantId' : plantId
-			},
-			function(data) {
-				$setOfflineDatesModal.html(data);
-				$setOfflineDatesModal.find('.error').hide();
-				$('.errorMsgInput').removeClass('errorMsgInput');
-				ModalUtil.openModal($setOfflineDatesModal);
-			}
+		{
+			'plantId' : plantId
+		},
+		function(data) {
+			$setOfflineDatesModal.html(data);
+			$setOfflineDatesModal.find('.error').hide();
+			$('.errorMsgInput').removeClass('errorMsgInput');
+			ModalUtil.openModal($setOfflineDatesModal);
+		}
 	);
 }
 
@@ -278,6 +279,7 @@ $regionAssociationModal.on("change", '.region-value-input', function() {
 		if (regionAssociationId == 0 || regionAssociationId == "") {
 			//selected region needs to be inserted
 			regionPlantAssociation['isAssociated'] = 'Y';
+			deleteRegion = false;
 			regionAssociationUpdateList.push(regionPlantAssociation);
 			regionChangeCnt++;
 		} else { //in this case,user reverts selection
@@ -290,6 +292,7 @@ $regionAssociationModal.on("change", '.region-value-input', function() {
 		if (regionAssociationId != 0 || regionAssociationId != "") {
 			//selected region needs to be deleted
 			regionPlantAssociation['isAssociated'] = 'N';
+			deleteRegion = true;
 			regionAssociationUpdateList.push(regionPlantAssociation);
 			regionChangeCnt++;
 		} else { //in this case,user reverts selection
@@ -308,7 +311,39 @@ $regionAssociationModal.on("change", '.region-value-input', function() {
 
 });
 
-$regionAssociationModal.on("click", "#save-region-association", function() {
+$regionAssociationModal.on("click", "#cancel-btn", function() {
+	ModalUtil.closeModal($regionAssociationModal);
+});
+
+$regionAssociationModal.on('click', '#save-region-association', function() {
+	if (deleteRegion == true) {
+		openConfirmModal();
+	} else {
+		confirmDeleteRegion();
+	}
+
+});
+
+function openConfirmModal() {
+	$('#deleteMessage').text("Associated proximity data will get delete for the region and cannot be undone. Do you want to continue?");
+	$('#confirmDeleteModal').dialog('open');
+}
+
+$('#confirmDeleteModal').dialog({
+	autoOpen : false,
+	modal : true,
+	dialogClass : 'popupModal',
+	width : 370,
+	minHeight : 150,
+	resizable : false,
+	title : 'Confirm',
+	closeOnEscape : false,
+	open : function(event, ui) {
+		$(this).closest('.ui-dialog').find('.ui-dialog-titlebar-close').show();
+	}
+});
+
+function confirmDeleteRegion() {
 	if (regionAssociationUpdateList && regionAssociationUpdateList.length != 0) {
 		var $saveRegionPromise = $.ajax({
 			type : "POST",
@@ -317,14 +352,14 @@ $regionAssociationModal.on("click", "#save-region-association", function() {
 			contentType : 'application/json'
 		});
 		$saveRegionPromise.done(function(data) {
+			$('#confirmDeleteModal').dialog('close');
 			ModalUtil.closeModal($regionAssociationModal);
 		});
 	}
+}
 
-});
-
-$regionAssociationModal.on("click", "#cancel-btn", function() {
-	ModalUtil.closeModal($regionAssociationModal);
-});
+function closeConfirmDialog() {
+	$('#confirmDeleteModal').dialog('close');
+}
 
 //# sourceURL=maintenance-summary.js

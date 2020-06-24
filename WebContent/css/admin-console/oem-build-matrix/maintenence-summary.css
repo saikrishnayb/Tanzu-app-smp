@@ -294,3 +294,9 @@ button.ui-datepicker-close {
 #cancel-btn{
 	padding-right: 8px
 }
+
+.confirm-modal-btn { 
+	position:absolute;
+	bottom:3px;
+	right:5px;
+}

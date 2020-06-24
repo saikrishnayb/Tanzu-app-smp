@@ -51,6 +51,10 @@ public interface BuildMatrixSmcDAO {
 	
 	public void savePlantRegionAssociation(@Param("regionPlantAssociationData")List<RegionPlantAssociation> regionPlantAssociationList);
 	
+	public List<String> getDistrictsFromFreightMileage(@Param("plantId") int plantId, @Param("regionsList")List<String> regionsList);
+	
+	public void deleteProximityDataForRegion(@Param("plantId") int plantId, @Param("districtsList")List<String> districtsList);
+	
 	// ATTRIBUTE MAINTENANCE WORKFLOW //
 	public List<String> getDropdownOptionGrpList();
 

@@ -74,6 +74,13 @@
 	</div>
 	<div id="set-offline-dates-modal" class="modal row"></div>
 	<div id="region-association-modal" class="modal row"></div>
+	<div id="confirmDeleteModal">
+		<p id="deleteMessage"></p>
+		<div class="confirm-modal-btn">
+			<a href="javascript:void(0)" class="secondaryLink" onclick="closeConfirmDialog();">Cancel</a> 
+			<a href="javascript:void(0)" class="buttonPrimary" onclick="confirmDeleteRegion()">Confirm</a>
+		</div>
+	</div>
 	<%@ include file="../../global/v2/footer.jsp" %>
 	<script src="${baseUrl}/js/admin-console/oem-build-matrix/maintenance-summary.js" type="text/javascript"></script>
 </body>

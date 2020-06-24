@@ -169,6 +169,20 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 
 	@Override
 	public void savePlantRegionAssociation(List<RegionPlantAssociation> regionPlantAssociationList) {
+		List<String> regionsList = new ArrayList<String>();
+		List<String> districtsList = new ArrayList<String>();
+		for (RegionPlantAssociation regionPlantAssociation : regionPlantAssociationList) {
+			if (regionPlantAssociation.getIsAssociated().equalsIgnoreCase("N")) {
+				regionsList.add(regionPlantAssociation.getRegion());
+			}
+		}
+		int plantId = regionPlantAssociationList.get(0).getPlantId();
+		if (regionsList != null && !regionsList.isEmpty()) {
+			districtsList = buildMatrixSmcDAO.getDistrictsFromFreightMileage(plantId, regionsList);
+			if (districtsList != null && !districtsList.isEmpty()) {
+				buildMatrixSmcDAO.deleteProximityDataForRegion(plantId, districtsList);
+			}
+		}
 		buildMatrixSmcDAO.savePlantRegionAssociation(regionPlantAssociationList);
 	}
 

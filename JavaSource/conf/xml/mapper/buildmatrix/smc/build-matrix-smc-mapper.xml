@@ -246,7 +246,25 @@
 			input.PLANT_ID,
 			input.REGION
 			)
-	</update>	<!-- PRODUCTION SLOT RESULTS -->
+	</update>
+	
+	<select id="getDistrictsFromFreightMileage" resultType="String">
+		SELECT	 TRIM(DISTRICT)
+		FROM     SMC.OBM_FREIGHT_MILEAGE 
+		WHERE    PLANT_ID = #{plantId} 
+		AND		 REGION IN
+		<foreach collection="regionsList" item="region" separator="," open="(" close=")">#{region}</foreach>
+	</select>
+	
+	<delete id="deleteProximityDataForRegion">
+		DELETE
+		FROM     SMC.OBM_PLANT_PROXIMITY
+		WHERE 	 PLANT_ID = #{plantId} 
+		AND 	 DISTRICT IN 
+		<foreach collection="districtsList" item="district" separator="," open="(" close=")">#{district}</foreach>
+	</delete>
+	
+	<!-- PRODUCTION SLOT RESULTS -->
 	<resultMap id="slotResultsMap" type="com.penske.apps.buildmatrix.domain.ProductionSlotResult" >
 		<result column="runId"  				  property="runId"/>
 		<result column="orderId"  				  property="orderId"/>
