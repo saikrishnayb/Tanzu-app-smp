@@ -172,7 +172,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		List<String> regionsList = new ArrayList<String>();
 		List<String> districtsList = new ArrayList<String>();
 		for (RegionPlantAssociation regionPlantAssociation : regionPlantAssociationList) {
-			if (regionPlantAssociation.getIsAssociated().equalsIgnoreCase("N")) {
+			if (regionPlantAssociation.getIsAssociated().equalsIgnoreCase(ApplicationConstants.NO)) {
 				regionsList.add(regionPlantAssociation.getRegion());
 			}
 		}

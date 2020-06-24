@@ -77,7 +77,6 @@ public class ApplicationConstants {
 	public static final String String_ZERO="0";
 	public static final String DISTRICT_STRING="DISTRICTVALUES";
 	public static final String DISTRICT_DESC="DISTDESC";
-	
-	
-	
+	public static final String NO = "N";
+		
 }
