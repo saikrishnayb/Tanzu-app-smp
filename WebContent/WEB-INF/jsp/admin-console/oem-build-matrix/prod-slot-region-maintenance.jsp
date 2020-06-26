@@ -30,6 +30,9 @@
 	          				<select id="vehicletype-drpdwn" name="slotType">
 		          				<c:forEach items="${vehicleTypes}" var="type">
 		          					<c:set var="vehicleselected">${type.slotTypeId eq slotTypeId}</c:set>
+		          					<c:if test="${vehicleselected}">
+		          						<c:set var="slotType" scope="page" value="${type}" />
+		          					</c:if>
 		          					<option value="${type.slotTypeId}" ${vehicleselected?'selected="selected"':'' } >${type.slotTypeDesc }</option>
 		          				</c:forEach>
 	          				</select>
@@ -58,10 +61,10 @@
           				<a class="buttonSecondary" id="search-button">Search</a>
           				</form>
           			</div>
-          			<!-- <div class="btn-div floatRight">
-          				<a  class="buttonSecondary">Import</a>
-          				<a  class="buttonSecondary">Export</a>
-          			</div> -->
+          			<div class="btn-div floatRight">
+          				<a id="import-btn" class="buttonSecondary">Import</a>
+          				<a id="export-btn" class="buttonSecondary">Export</a>
+          			</div>
         		</div>
       		</div>
       		<div class="row">

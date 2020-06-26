@@ -366,6 +366,7 @@ public class BuildMatrixRestController {
 	public void reworkBuild(@RequestParam("buildId") int buildId) {
 		buildMatrixSmcService.reworkBuild(buildId);
 	}
+	
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping("/get-create-slots-modal")
 	public ModelAndView getCreateSlotsModal() {
@@ -393,4 +394,56 @@ public class BuildMatrixRestController {
 	public void createSlots(@RequestParam("year") int year, @RequestParam("slotTypeId") int slotTypeId) {
 		buildMatrixSmcService.createSlots(year, slotTypeId);
 	}
+	
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping(value="get-import-slot-maintenance",method = {RequestMethod.GET })
+	public ModelAndView getImportSlotMaintenance(@RequestParam("year") String yearString, @RequestParam("slotTypeId")  String slotTypeIdString) {
+		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/modal/import-slot-maintenance");
+		
+		int year = Integer.parseInt(yearString);
+		int slotTypeId = Integer.parseInt(slotTypeIdString);
+		
+		BuildMatrixSlotType slotType = buildMatrixSmcService.getVehicleTypeById(slotTypeId);
+		
+		model.addObject("slotType", slotType);
+		model.addObject("year", year);
+		
+		return model;
+	}
+	
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping(value="export-slot-maintenance",method = {RequestMethod.POST })
+	public void exportSlotMaintenance(HttpServletResponse response, @RequestParam("list") List<String> list) {
+		int year = Integer.parseInt(list.get(0));
+		int slotTypeId = Integer.parseInt(list.get(1));
+		
+		SXSSFWorkbook workbook = buildMatrixSmcService.exportSlotMaintenance(year, slotTypeId);
+		if(workbook != null){
+			try(OutputStream out = response.getOutputStream()) {
+				if(year!=0){
+					response.setHeader("Set-Cookie", "fileDownload=true; path=/");
+
+					response.setContentType(ApplicationConstants.EXCEL_CONTENT_TYPE_XLSX);
+					response.setHeader(ApplicationConstants.CONTENT_DISPOSITION_HEADER,"attachment;filename=\"Order Confirmation-Template.xlsx\"");
+					response.setHeader("Pragma",ApplicationConstants.EXCEL_HEADER_TYPE);
+					response.setHeader("Expires",ApplicationConstants.EXCEL_EXPIRES);
+					response.setContentType(ApplicationConstants.EXCEL_CONTENT_TYPE);
+					workbook.write(out);
+				}
+				else{
+					response.getWriter().write("Production slot results not available to process the template");
+					response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+				}
+
+
+			} catch(IOException ex) {
+				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+				throw new RuntimeException(ex.getMessage(), ex);
+			}finally{
+				workbook.dispose();
+			}
+		}
+		
+	}
+	
 }

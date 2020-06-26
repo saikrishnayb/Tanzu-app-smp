@@ -10,7 +10,6 @@
 .available-slot-input{
 	width: 70px;
     text-align: center;
-    -webkit-appearance: none;
 }
 
 .year-div{
@@ -18,5 +17,10 @@
 }
 
 .slot-table-header{
-	width: 105px !important;
+	width: 150px !important;
+}
+
+/* fix for fixed columns *shrug emoji* */
+.DTFC_LeftBodyWrapper:nth-child(2) .dataTable.no-footer.DTFC_Cloned thead{
+	display: none;
 }

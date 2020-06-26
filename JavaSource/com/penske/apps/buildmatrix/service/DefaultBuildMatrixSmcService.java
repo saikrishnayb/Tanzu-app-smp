@@ -1005,4 +1005,17 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 			buildMatrixSmcDAO.removeSlotResult(slotReservationId);
 		}
 	}
+	
+	@Override
+	public BuildMatrixSlotType getVehicleTypeById(int slotTypeId) {
+		return buildMatrixSmcDAO.getVehicleTypeById(slotTypeId);
+	}
+	
+	@Override
+	public SXSSFWorkbook exportSlotMaintenance(int year, int slotTypeId) {
+		
+		//export logic here
+		
+		return null;
+	}
 }

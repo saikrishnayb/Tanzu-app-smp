@@ -1,75 +1,90 @@
-$(document).ready(function() {
-	selectCurrentNavigation("tab-oem-build-matrix", "left-nav-prod-slot-maintenance");
+selectCurrentNavigation("tab-oem-build-matrix", "left-nav-prod-slot-maintenance");
+
+var $prodSlotMaintenanceModal = $('#prod-slot-maintenance-modal');
+
+ModalUtil.initializeModal($prodSlotMaintenanceModal);
+
+var $slotMaintenanceTable = $('#slot-maintenance-table');
+var $vehicleTypeDrpdwn = $("#vehicletype-drpdwn");
+var $yearDrpdwn = $("#year-drpdwn");
+$slotMaintenanceDataTable = $slotMaintenanceTable.DataTable({
+	'fixedColumns': {
+        leftColumns: 1
+    },
+	'paging': false,
+	'ordering': false,
+	'info': false,
+	'scrollX': true,
+	'scrollY': '500px',
+	'lengthChange': false,
+	'searching': false,
+	'fixedHeader': true,
+	'autoWidth': true,
+	'responsive': false,
+	'columnDefs': [
+		{targets: [0], width: '100px'},
+		{targets: ['slot-table-header'], width: '120px'}
+	],
+	"language": {
+	      "emptyTable": "Slots have not been created for the selected year and vehicle type combination. Create slots to continue"
+	 }
+});
+
+$("#vehicletype-drpdwn, #year-drpdwn").on("change", function() {
+	var $filterSlotsForm = $('#filter-slots-form');
+	$filterSlotsForm.submit();
+});
+
+$('#create-slots-btn').on('click', function(){
+	var $getCreateSlotsContentPromise = $.ajax({
+		type: "GET",
+		url: baseBuildMatrixUrl + '/get-create-slots-modal'
+	});
+	$getCreateSlotsContentPromise.done(function(data){
+		$prodSlotMaintenanceModal.html(data);
+	    ModalUtil.openModal($prodSlotMaintenanceModal);
+	});
+});
+
+$('#import-btn').on('click', function(){
+	var vehicleType = $('#vehicletype-drpdwn').val();
+	var year = $('#year-drpdwn').val();
 	
-	var $prodSlotMaintenanceModal = $('#prod-slot-maintenance-modal');
-
-	ModalUtil.initializeModal($prodSlotMaintenanceModal);
-
-	var $slotMaintenanceTable = $('#slot-maintenance-table');
-	var $vehicleTypeDrpdwn = $("#vehicletype-drpdwn");
-	var $yearDrpdwn = $("#year-drpdwn");
-	$slotMaintenanceDataTable = $slotMaintenanceTable.DataTable({
-		"bPaginate" : true, //enable pagination
-		"bStateSave" : true, //To retrieve the data on click of back button
-		"sScrollY" : "300px", //enable scroll 
-		"sScrollX" : "100%",
-		"sPaginationType" : "two_button",
-		"bLengthChange" : true, //enable change of records per page, not recommended
-		"bFilter" : true, //Allows dynamic filtering of results, do not enable if using ajax for pagination
-		"bAutoWidth" : false,
-		"bSort" : true, //Allow sorting by column header
-		"bInfo" : true, //Showing 1 to 10 of 11 entries
-		"sPaginationType" : "full_numbers", //Shows first/previous 1,2,3,4 next/last buttons
-		"iDisplayLength" : 100, //number of records per page for pagination
-		"aoColumnDefs" : [ {
-			'bSortable' : true,
-			'aTargets' : [ 0 ]
-			},
-			{
-				"aTargets" : [ 'no-sort' ],
-				'bSortable' : false
-			}
-		],
-		"language": {
-		      "emptyTable": "Slots have not been created for the selected year and vehicle type combination. Create slots to continue"
-		 },
-		"responsive" : false,
-		"fnDrawCallback" : function() { //This will hide the pagination menu if we only have 1 page.
-			var paginateRow = $(this).parent().children('div.dataTables_paginate');
-			var pageCount = Math.ceil((this.fnSettings().fnRecordsDisplay()) / this.fnSettings()._iDisplayLength);
-
-			if (pageCount > 1) {
-				paginateRow.css("display", "block");
-			} else {
-				paginateRow.css("display", "none");
-			}
-			//This will hide "Showing 1 to 5 of 11 entries" if we have 0 rows.
-			var infoRow = $(this).parent().children('div.dataTables_info');
-			var rowCount = this.fnSettings().fnRecordsDisplay();
-			if (rowCount > 0) {
-				infoRow.css("display", "block");
-			} else {
-				infoRow.css("display", "none");
-			}
-			//This change would allow the data table 
-			//to adjust with dynamically after the page has been loaded
-			$(".dataTables_scrollBody").css("width", "100%");
+	var $getImportContentPromise = $.ajax({
+		type: "GET",
+		url: baseBuildMatrixUrl + '/get-import-slot-maintenance',
+		data: {
+			slotTypeId: vehicleType,
+			year: year
 		}
 	});
+	$getImportContentPromise.done(function(data){
+		$prodSlotMaintenanceModal.html(data);
+	    ModalUtil.openModal($prodSlotMaintenanceModal);
+	});
+});
 
-	$("#vehicletype-drpdwn, #year-drpdwn").on("change", function() {
-		var $filterSlotsForm = $('#filter-slots-form');
-		$filterSlotsForm.submit();
-	});
+$('#export-btn').on('click', function(){
+	var vehicleType = $('#vehicletype-drpdwn').val();
+	var vehicleTypeDesc = $('#vehicletype-drpdwn').find('option[selected="selected"]').text()
+	var year = $('#year-drpdwn').val();
 	
-	$('#create-slots-btn').on('click', function(){
-		var $getCreateSlotsContentPromise = $.ajax({
-			type: "GET",
-			url: baseBuildMatrixUrl + '/get-create-slots-modal'
-		});
-		$getCreateSlotsContentPromise.done(function(data){
-			$prodSlotMaintenanceModal.html(data);
-		    ModalUtil.openModal($prodSlotMaintenanceModal);
-		});
-	});
+	var today = new Date();
+	var filename = vehicleTypeDesc + '_' + year + '_Slots_';
+
+	var mm = today.getMonth() + 1;
+	if (mm < 10) {
+		mm = '0' + mm;
+	}
+	filename += mm;
+	
+	var dd = today.getDate();
+	if (dd < 10) {
+		dd = '0' + dd;
+	}
+	filename += dd;
+	
+	var list = [vehicleType, year];
+
+	DownloadUtil.downloadFileAsFormPost(baseBuildMatrixUrl + '/export-slot-maintenance.htm', filename + '.xlsx', 'list', list);
 });

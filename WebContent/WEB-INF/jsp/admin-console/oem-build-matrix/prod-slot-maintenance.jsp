@@ -48,8 +48,8 @@
           			</div>
           			<div class="btn-div floatRight">
           				<a id="create-slots-btn" class="buttonSecondary">Create Slots</a>
-          				<a  class="buttonSecondary">Import</a>
-          				<a  class="buttonSecondary">Export</a>
+          				<a id="import-btn" class="buttonSecondary">Import</a>
+          				<a id="export-btn" class="buttonSecondary">Export</a>
           			</div>
         		</div>
       		</div>
@@ -60,7 +60,7 @@
 								<tr>
 								<th class="centerAlign slot-table-header" id="prod-date">Production Date</th>
 								<c:forEach items="${bodyplantList}" var="plantData">
-									<th class="centerAlign slot-table-header no-sort" id="${plantData.plantId}"> ${plantData.plantManufacturer} - ${plantData.city}, ${plantData.state}</th>	
+									<th class="centerAlign slot-table-header no-sort" id="${plantData.plantId}"> ${plantData.plantManufacturer} <br> ${plantData.city}, ${plantData.state}</th>	
 								</c:forEach>
 								</tr>
 						</thead>

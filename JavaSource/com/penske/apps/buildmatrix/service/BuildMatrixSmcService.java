@@ -147,4 +147,8 @@ public interface BuildMatrixSmcService {
 	public List<ProductionSlotResult> getSlotReservationsByIdAndRegion(int slotId, String region);
 
 	public void releaseUnits(List<Integer> slotReservationIds);
+
+	public SXSSFWorkbook exportSlotMaintenance(int year, int slotTypeId);
+
+	public BuildMatrixSlotType getVehicleTypeById(int slotTypeId);
 }
