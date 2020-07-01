@@ -184,5 +184,9 @@ public interface BuildMatrixSmcDAO {
 	public BuildMatrixSlotType getVehicleTypeById(@Param("slotTypeId") int slotTypeId);
 	
 	public void removeSlotResult(@Param("slotReservationId") int slotReservationId);
+
+	public List<Integer> getSlotIdForPlantId(@Param("plantId")int plantId);
+	
+	public void deleteSlotDataForRegion(@Param("slotIdList") List<Integer> slotIdList, @Param("regionsList") List<String> regionsList);
 	
 }

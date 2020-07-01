@@ -172,6 +172,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	public void savePlantRegionAssociation(List<RegionPlantAssociation> regionPlantAssociationList) {
 		List<String> regionsList = new ArrayList<String>();
 		List<String> districtsList = new ArrayList<String>();
+		List<Integer> slotIdList = new ArrayList<Integer>();
 		for (RegionPlantAssociation regionPlantAssociation : regionPlantAssociationList) {
 			if (regionPlantAssociation.getIsAssociated().equalsIgnoreCase(ApplicationConstants.NO)) {
 				regionsList.add(regionPlantAssociation.getRegion());
@@ -182,6 +183,10 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 			districtsList = buildMatrixSmcDAO.getDistrictsFromFreightMileage(plantId, regionsList);
 			if (districtsList != null && !districtsList.isEmpty()) {
 				buildMatrixSmcDAO.deleteProximityDataForRegion(plantId, districtsList);
+			}
+			slotIdList = buildMatrixSmcDAO.getSlotIdForPlantId(plantId);
+			if (slotIdList != null && !slotIdList.isEmpty()) {
+				buildMatrixSmcDAO.deleteSlotDataForRegion(slotIdList, regionsList);
 			}
 		}
 		buildMatrixSmcDAO.savePlantRegionAssociation(regionPlantAssociationList);

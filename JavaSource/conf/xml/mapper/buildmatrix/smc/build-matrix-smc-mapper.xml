@@ -264,6 +264,23 @@
 		<foreach collection="districtsList" item="district" separator="," open="(" close=")">#{district}</foreach>
 	</delete>
 	
+	<select id="getSlotIdForPlantId" resultType="int">
+		SELECT  SLOT_ID 
+		FROM    SMC.OBM_SLOTS
+		WHERE 	PLANT_ID= #{plantId}
+	</select>
+	
+	<delete id="deleteSlotDataForRegion">
+		DELETE
+		FROM     SMC.OBM_SLOTS_BY_REGION
+		WHERE 	 SLOT_RESERVED = 0
+		AND      SLOT_ACCEPTED = 0
+		AND 	 SLOT_ID IN 
+				<foreach collection="slotIdList" item="slotId" separator="," open="(" close=")">#{slotId}</foreach>
+		AND		 REGION IN
+				<foreach collection="regionsList" item="region" separator="," open="(" close=")">#{region}</foreach>
+	</delete>
+	
 	<!-- PRODUCTION SLOT RESULTS -->
 	<resultMap id="slotResultsMap" type="com.penske.apps.buildmatrix.domain.ProductionSlotResult" >
 		<result column="runId"  				  property="runId"/>
