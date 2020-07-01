@@ -7,7 +7,8 @@ import com.penske.apps.suppliermgmt.model.UserContext;
 
 public class BuildSummary {
 	private Integer buildId;
-	private int quantity;
+	private int reqQty;
+	private int fulfilledQty;
 	private BuildStatus buildStatus;
 	private String startedBySso;
 	private String startedByName;
@@ -22,8 +23,8 @@ public class BuildSummary {
 	
 	protected BuildSummary() {}
 	
-	public BuildSummary(int quantity, UserContext userContext, int maxWeeksBefore, int maxWeeksAfter) {
-		this.quantity = quantity;
+	public BuildSummary(int reqQty, UserContext userContext, int maxWeeksBefore, int maxWeeksAfter) {
+		this.reqQty = reqQty;
 		this.buildStatus = BuildStatus.STARTED;
 		this.startedByName = userContext.getFirstName() + " " + userContext.getLastName();
 		this.startedBySso = userContext.getUserSSO();
@@ -33,7 +34,7 @@ public class BuildSummary {
 	
 	@Override
 	public String toString() {
-		return "BuildSummary (Build ID: " + buildId + "), Quantity: " + quantity + ", Status: " + buildStatus + ", Started By: " + startedByName;
+		return "BuildSummary (Build ID: " + buildId + "), Quantity: " + reqQty + ", Status: " + buildStatus + ", Started By: " + startedByName;
 	}
 
 	//***** MODIFIED ACCESSORS *****//
@@ -61,10 +62,6 @@ public class BuildSummary {
 	//***** DEFAULT ACCESSORS *****//
 	public Integer getBuildId() {
 		return buildId;
-	}
-
-	public int getQuantity() {
-		return quantity;
 	}
 
 	public BuildStatus getBuildStatus() {
@@ -103,10 +100,6 @@ public class BuildSummary {
 		return runEndDate;
 	}
 	
-	public void setQuantity(int quantity) {
-		this.quantity = quantity;
-	}
-
 	public int getMaxWeeksBefore() {
 		return maxWeeksBefore;
 	}
@@ -121,6 +114,22 @@ public class BuildSummary {
 
 	public void setMaxWeeksAfter(int maxWeeksAfter) {
 		this.maxWeeksAfter = maxWeeksAfter;
+	}
+
+	public int getFulfilledQty() {
+		return fulfilledQty;
+	}
+
+	public void setFulfilledQty(int fulfilledQty) {
+		this.fulfilledQty = fulfilledQty;
+	}
+
+	public int getReqQty() {
+		return reqQty;
+	}
+
+	public void setReqQty(int reqQty) {
+		this.reqQty = reqQty;
 	}
 	
 }

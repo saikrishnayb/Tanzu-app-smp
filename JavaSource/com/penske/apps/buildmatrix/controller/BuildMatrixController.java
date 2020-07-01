@@ -199,7 +199,8 @@ public class BuildMatrixController {
 	public ModelAndView getOrderSummary(@RequestParam(value="buildId", required=false) Integer buildId) {
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/order-summary");
 		List<ApprovedOrder> approvedOrders = buildMatrixCroService.getApprovedOrdersForBuildMatrix();
-		Map<CroOrderKey, ApprovedOrder> approvedOrdersByKey = approvedOrders.stream().collect(toMap(order->new CroOrderKey(order), order-> order));
+		List<ApprovedOrder> unFulfilledOrders = buildMatrixSmcService.getUnfulfilledOrders(approvedOrders);
+		Map<CroOrderKey, ApprovedOrder> approvedOrdersByKey = unFulfilledOrders.stream().collect(toMap(order->new CroOrderKey(order), order-> order));
 		int totalChassis = buildMatrixCorpService.getAvailableChasisCount();
 		int excludedChassis = buildMatrixSmcService.getExcludedUnitCount();
 		int chassisAvailable = totalChassis - excludedChassis;

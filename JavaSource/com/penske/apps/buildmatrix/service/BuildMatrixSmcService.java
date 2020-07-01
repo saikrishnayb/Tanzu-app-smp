@@ -77,6 +77,8 @@ public interface BuildMatrixSmcService {
 	// CRO BUILD REQUESTS //
 	public List<CroOrderKey> getCroOrderKeysForBuild(Integer buildId);
 	
+	public List<ApprovedOrder> getUnfulfilledOrders(List<ApprovedOrder> approvedOrders);
+	
 	// AVAILABLE CHASSIS //
 	public int getExcludedUnitCount();
 	

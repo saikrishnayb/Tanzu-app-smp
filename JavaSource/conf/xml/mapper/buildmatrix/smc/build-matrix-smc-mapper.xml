@@ -427,10 +427,28 @@
 	<!--***** BUILD MATRIX WORKFLOW *****-->
 	
 	<!-- BUILD HISTROY -->
-	<select id="getAllBuildHistory" resultType="com.penske.apps.buildmatrix.domain.BuildSummary">
+	<resultMap id="buildHistoryMap" type="com.penske.apps.buildmatrix.domain.BuildSummary" >
+		<result column="buildId"  				  property="buildId"/>
+		<result column="reqQty"  				  property="reqQty"/>
+		<result column="buildStatus" 			  property="buildStatus"/>
+		<result column="startedBySso" 		  property="startedBySso"/>
+		<result column="startedByName"  			  property="startedByName"/>
+		<result column="startedDate"  				  property="startedDate"/>
+		<result column="submittedBySso" 					  property="submittedBySso"/>
+		<result column="submittedByName" 		  property="submittedByName"/>
+		<result column="submittedDate"  			  property="submittedDate"/>
+		<result column="runStartDate"    property="runStartDate"/>
+		<result column="runEndDate" 		  property="runEndDate"/>
+		<result column="maxWeeksBefore" 		  property="maxWeeksBefore"/>
+		<result column="maxWeeksAfter"						property="maxWeeksAfter"/>
+		<collection property="fulfilledQty" column="{buildId=buildId}" select="getfulfilledQty"></collection>
+	</resultMap>
+	
+	
+	<select id="getAllBuildHistory" resultMap="buildHistoryMap">
 		SELECT
 			RUN_ID AS buildId,
-	        UNIT_QTY AS quantity,
+	        UNIT_QTY AS reqQty,
 		    RUN_STATUS AS buildStatus,
 	        starter.SSO as startedBySso,
 	        starter.FIRST_NAME||' '||starter.LAST_NAME AS startedByName,
@@ -451,6 +469,12 @@
 			(CASE WHEN buildStatus = 'R' THEN 0 ELSE 1 END), 
 			(CASE WHEN buildStatus = 'F' THEN 0 ELSE 1 END), 
 			buildId DESC
+	</select>
+	
+	<select id="getfulfilledQty" resultType="int">
+		SELECT SUM(QTY_FULFILLED) as fulfilledQty
+		FROM SMC.OBM_CRO_BUILD_REQUEST
+		WHERE RUN_ID =#{buildId}
 	</select>
 	
 	<!-- BUILD FUNCTIONS -->
@@ -549,6 +573,25 @@
  			DELIVERY_ID as deliveryId
 		FROM SMC.OBM_CRO_BUILD_REQUEST
 		WHERE RUN_ID = #{buildId}
+	</select>
+	
+	<select id="getCroOrdersForAllRuns" resultType="com.penske.apps.buildmatrix.domain.CROBuildRequest">
+		SELECT
+			CRO_BUILD_REQUEST_ID as croBuildRequestId,
+			RUN_ID as runId,
+			ORDER_ID as orderId,
+			DELIVERY_ID as deliveryId,
+			QTY_REQUESTED as requestedQty,
+			QTY_FULFILLED as fulfilledQty
+		FROM SMC.OBM_CRO_BUILD_REQUEST
+		WHERE 
+				(
+				<foreach collection="approvedOrders" item="order" separator="OR" >
+	 				(
+	 				 ORDER_ID=#{order.orderId} AND DELIVERY_ID=#{order.deliveryId} 
+	 				)
+	 			</foreach>
+				)
 	</select>
 	
 	<!-- AVAILABLE CHASSIS -->

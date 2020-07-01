@@ -26,7 +26,8 @@
 							<tr>
 								<th></th>
 								<th class="leftAlign" id="build-number">Build #</th>
-								<th class="leftAlign">Unit Qty</th>
+								<th class="leftAlign">Requested Qty</th>
+								<th class="leftAlign">Fulfilled Qty</th>
 								<th class="leftAlign">Status</th>
 								<th class="leftAlign">Started By</th>
 								<th class="leftAlign">Start Date</th>
@@ -58,7 +59,8 @@
 											</c:otherwise>
 										</c:choose>
 									</td>
-									<td class="leftAlign">${buildHistory.quantity}</td>
+									<td class="leftAlign">${buildHistory.reqQty}</td>
+									<td class="leftAlign">${buildHistory.fulfilledQty }</td>
 									<td class=""> ${buildHistory.buildStatus.label} </td>
 									<td>${buildHistory.startedByName}</td>
 									<td>${buildHistory.startedDate}</td>

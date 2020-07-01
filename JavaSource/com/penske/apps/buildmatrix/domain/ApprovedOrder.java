@@ -21,6 +21,7 @@ public class ApprovedOrder {
 	private boolean hasLiftgateUnits;
 	private boolean hasReeferUnits; 
 	private ApprovalStatus approvalStatus;
+	private int fulfilledQty;
 	
 	/** Null constructor - MyBatis only */
 	protected ApprovedOrder() {}
@@ -95,5 +96,13 @@ public class ApprovedOrder {
 	
 	public boolean isHasReeferUnits() {
 		return hasReeferUnits;
+	}
+
+	public int getFulfilledQty() {
+		return fulfilledQty;
+	}
+
+	public void setFulfilledQty(int fulfilledQty) {
+		this.fulfilledQty = fulfilledQty;
 	}
 }

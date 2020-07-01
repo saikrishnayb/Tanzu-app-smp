@@ -59,6 +59,7 @@ import com.penske.apps.buildmatrix.domain.BuildMatrixSlotType;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.BusinessAward;
 import com.penske.apps.buildmatrix.domain.BusinessAwardDefault;
+import com.penske.apps.buildmatrix.domain.CROBuildRequest;
 import com.penske.apps.buildmatrix.domain.CroOrderKey;
 import com.penske.apps.buildmatrix.domain.FreightMileage;
 import com.penske.apps.buildmatrix.domain.PlantProximity;
@@ -261,7 +262,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	public BuildSummary updateExistingBuild(Integer buildId, List<ApprovedOrder> selectedOrders) {
 		int bodiesOnOrder = selectedOrders.stream().collect(summingInt(order->order.getOrderTotalQuantity()));
 		BuildSummary existingBuild = buildMatrixSmcDAO.getBuildSummary(buildId);
-		existingBuild.setQuantity(bodiesOnOrder);
+		existingBuild.setReqQty(bodiesOnOrder);
 		buildMatrixSmcDAO.updateBuild(existingBuild);
 		Integer existingBuildId = existingBuild.getBuildId();
 		buildMatrixSmcDAO.deleteCroBuildRequestsFromBuild(existingBuildId);
@@ -298,6 +299,23 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	@Override
 	public List<CroOrderKey> getCroOrderKeysForBuild(Integer buildId) {
 		return buildMatrixSmcDAO.getCroOrderKeysForBuild(buildId);
+	}
+	
+	@Override
+	public List<ApprovedOrder> getUnfulfilledOrders(List<ApprovedOrder> approvedOrders){
+		List<CROBuildRequest> croOrdersForAllRuns = buildMatrixSmcDAO.getCroOrdersForAllRuns(approvedOrders);
+		for(ApprovedOrder order:approvedOrders)
+		{
+			for(CROBuildRequest croOrderReq: croOrdersForAllRuns)
+			{
+				if(order.getOrderId() == croOrderReq.getOrderId() && order.getDeliveryId() == croOrderReq.getDeliveryId())
+				{
+					order.setFulfilledQty(croOrderReq.getFulfilledQty());
+				}
+			}
+		}
+		approvedOrders.removeIf(order -> order.getFulfilledQty()==order.getOrderTotalQuantity());
+		return approvedOrders;
 	}
 	
 	// AVAILABLE CHASSIS //

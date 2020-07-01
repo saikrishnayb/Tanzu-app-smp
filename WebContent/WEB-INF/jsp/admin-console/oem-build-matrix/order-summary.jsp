@@ -49,7 +49,8 @@
 									<th class="">District</th>
 									<th class="">District Name</th>
 									<th class="">Program Name</th>
-									<th class="">Quantity</th>
+									<th class="">Requested Qty</th>
+									<th class="">Fulfilled Qty</th>
 									<th class="">Requested Delivery Date</th>
 								</tr>
 							</thead>
@@ -67,6 +68,7 @@
 										<td>${order.districtDesc}</td>
 										<td>${order.packageName}</td>
 										<td class="order-quantity">${order.orderTotalQuantity}</td>
+										<td>${order.fulfilledQty}</td>
 										<td>${order.deliveryDate}</td>
 									</tr>
 								</c:forEach>

@@ -18,6 +18,7 @@ import com.penske.apps.buildmatrix.domain.BuildMatrixSlotType;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.BusinessAward;
 import com.penske.apps.buildmatrix.domain.BusinessAwardDefault;
+import com.penske.apps.buildmatrix.domain.CROBuildRequest;
 import com.penske.apps.buildmatrix.domain.CroOrderKey;
 import com.penske.apps.buildmatrix.domain.FreightMileage;
 import com.penske.apps.buildmatrix.domain.PlantProximity;
@@ -93,6 +94,8 @@ public interface BuildMatrixSmcDAO {
 	public void deleteCroBuildRequestsFromBuild(@Param("existingBuildId") Integer existingBuildId);
 
 	public List<CroOrderKey> getCroOrderKeysForBuild(@Param("buildId") Integer buildId);
+	
+	public List<CROBuildRequest> getCroOrdersForAllRuns(@Param("approvedOrders")List<ApprovedOrder> approvedOrders);
 	
 	// AVAILABLE CHASSIS //
 	public int getExcludedUnitCount(@Param("year") int year);
