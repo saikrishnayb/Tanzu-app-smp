@@ -272,15 +272,19 @@
 	
 	<delete id="deleteSlotDataForRegion">
 		DELETE
-		FROM     SMC.OBM_SLOTS_BY_REGION
-		WHERE 	 SLOT_RESERVED = 0
-		AND      SLOT_ACCEPTED = 0
-		AND 	 SLOT_ID IN 
-				<foreach collection="slotIdList" item="slotId" separator="," open="(" close=")">#{slotId}</foreach>
-		AND		 REGION IN
-				<foreach collection="regionsList" item="region" separator="," open="(" close=")">#{region}</foreach>
+        FROM     SMC.OBM_SLOTS_BY_REGION
+        WHERE    
+            (
+               <foreach collection="slotIdList" item="SlotId" separator="OR" >
+                   <foreach collection="regionsList" item="region" separator="OR">
+                       (
+                          SLOT_ID=#{SlotId} AND REGION=#{region} AND SLOT_RESERVED = 0 AND  SLOT_ACCEPTED = 0
+                       )
+                   </foreach>
+              </foreach>
+            )
 	</delete>
-	
+	 
 	<!-- PRODUCTION SLOT RESULTS -->
 	<resultMap id="slotResultsMap" type="com.penske.apps.buildmatrix.domain.ProductionSlotResult" >
 		<result column="runId"  				  property="runId"/>
