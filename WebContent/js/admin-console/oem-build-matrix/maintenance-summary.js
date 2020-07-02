@@ -355,6 +355,8 @@ function confirmDeleteRegion() {
 			$('#confirmDeleteModal').dialog('close');
 			ModalUtil.closeModal($regionAssociationModal);
 		});
+		$('#confirmDeleteModal').dialog('close');
+		ModalUtil.closeModal($regionAssociationModal);
 	}
 }
 
