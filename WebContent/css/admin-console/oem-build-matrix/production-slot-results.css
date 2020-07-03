@@ -8,7 +8,7 @@
 }
 
 .Filter-div {
-  margin-left: 50px;
+    margin-left: 3px;
 }
 
 .width-75 {
@@ -33,4 +33,10 @@ color: #FFFFFF !important;
 
 .hideOption{
 	display:none !important;
+}
+#order-column{
+	width: 80px;
+}
+#slot-search{
+	width: 110px;
 }

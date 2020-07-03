@@ -72,7 +72,7 @@
 					<table id="slot-results-table">
 						<thead>
 							<tr>
-								<th>Order #</th>
+								<th id="order-column">Order #</th>
 								<th class="leftAlign">Unit</th>
 								<th class="leftAlign">Program Name</th>
 								<th class="leftAlign">Region</th>
