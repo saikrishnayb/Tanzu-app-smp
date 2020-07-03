@@ -3,6 +3,10 @@ package com.penske.apps.buildmatrix.domain;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
+import com.penske.apps.adminconsole.util.ApplicationConstants;
+
 public class ProductionSlotResult {
 	private int slotReservationId;
 	private int runId;
@@ -224,5 +228,10 @@ public class ProductionSlotResult {
 	public void setProductionSlotList(List<String> productionSlotList) {
 		this.productionSlotList = productionSlotList;
 	}
-
+	public boolean showAcceptBtn() {
+		if(StringUtils.equals(reservationStatus,ApplicationConstants.RESERVATION_STATUS_ASSIGNED))
+			return true;
+		else
+			return false;
+	}
 }

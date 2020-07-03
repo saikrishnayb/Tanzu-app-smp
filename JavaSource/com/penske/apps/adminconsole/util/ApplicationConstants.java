@@ -78,5 +78,5 @@ public class ApplicationConstants {
 	public static final String DISTRICT_STRING="DISTRICTVALUES";
 	public static final String DISTRICT_DESC="DISTDESC";
 	public static final String NO = "N";
-		
+	public static final String RESERVATION_STATUS_ASSIGNED = "A";
 }

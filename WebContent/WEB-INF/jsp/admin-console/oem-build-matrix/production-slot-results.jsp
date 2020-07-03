@@ -49,10 +49,21 @@
 					</div>
 					<div class="btn-div floatRight">
 						<a href="${baseAppUrl}/admin-console/oem-build-matrix/build-history.htm" class="buttonSecondary">Back</a>
+						<div id="actions-dpdown" class="buttonSecondary dropdown buttonDisabled">
+								<a class="bootStrapDropDown dropdown-toggle production-slot-actions"
+									data-toggle="dropdown"> Actions <span class="caret"></span>
+								</a>
+								<ul class="dropdown-menu">
+									<li><a>Delete Selected Reservations</a></li>
+									<li><a id="update-reservation">Update Selected Slot Reservations</a></li>
+								</ul>
+							</div>
 						<c:if test="${fn:length(slotResults) ne 0}">
 							<a id="export-slot-results" class="buttonPrimary" onclick="exportSlotResults();return false;">Export</a>
 						</c:if>
-						<a class="buttonSecondary">Accept</a>
+						<c:if test="${showAcceptBtn}">
+							<a class="buttonSecondary">Accept</a>
+						</c:if>
 					</div>
 				</div>
 			</div>
@@ -77,6 +88,7 @@
 							<c:forEach items="${slotResults}" var="unit">
 								<tr class="result">
 									<td>
+										<input class="unit-selection" type="checkbox" data-attribute-id="${unit.slotReservationId}" reservation-status="${unit.reservationStatus}" order-id="${unit.orderId}"/>
 										<a class="secondaryLink">${unit.orderId}</a>
 									</td>
 									<c:choose>

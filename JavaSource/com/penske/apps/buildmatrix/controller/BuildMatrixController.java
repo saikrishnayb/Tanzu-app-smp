@@ -30,6 +30,7 @@ import com.penske.apps.buildmatrix.domain.BusinessAward;
 import com.penske.apps.buildmatrix.domain.CroOrderKey;
 import com.penske.apps.buildmatrix.domain.FreightMileage;
 import com.penske.apps.buildmatrix.domain.PlantProximity;
+import com.penske.apps.buildmatrix.domain.ProductionSlotResult;
 import com.penske.apps.buildmatrix.domain.RegionPlantAssociation;
 import com.penske.apps.buildmatrix.domain.enums.BuildStatus;
 import com.penske.apps.buildmatrix.model.AvailableChassisSummaryModel;
@@ -177,13 +178,16 @@ public class BuildMatrixController {
 												 @RequestParam("checkedFilter") String checkedFilter) {
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/production-slot-results");
 		List<String> selectedFilters = Arrays.asList(selectedFiltersList.split(","));
-		model.addObject("slotResults", buildMatrixSmcService.getSlotResultsByFilter(buildId, selectedFilters));
+		List<ProductionSlotResult> slotResults=buildMatrixSmcService.getSlotResultsByFilter(buildId, selectedFilters);
+		boolean showAcceptBtn = !slotResults.stream().anyMatch(order->!order.showAcceptBtn());
 		if (StringUtils.equals(checkedFilter, ApplicationConstants.String_ZERO)) {
 			model.addObject("checkedFilter", true);
 		}
 		else {
 			model.addObject("checkedFilter", false);
 		}
+		model.addObject("slotResults",slotResults);
+		model.addObject("showAcceptBtn", showAcceptBtn);
 		model.addObject("plantList", buildMatrixSmcService.getAllPlants());
 		model.addObject("buildId", buildId);
 		return model;

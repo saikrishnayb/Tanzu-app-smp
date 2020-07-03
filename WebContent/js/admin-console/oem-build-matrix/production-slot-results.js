@@ -1,7 +1,8 @@
 selectCurrentNavigation("tab-oem-build-matrix", "left-nav-build-history");
 
 var $slotResultsTable = $('#slot-results-table');
-
+var orderSelectionCnt = 0;
+var orderSelectionList = [];
 initializeDatePicker();
 
 $slotResultsDataTable = $slotResultsTable.DataTable({
@@ -141,3 +142,43 @@ $('.Filter-div').on("change", function() {
 	var $filterSlotsForm = $('#filter-slots-form');
 	$filterSlotsForm.submit();
 });
+
+$('.unit-selection').on("change", function() {
+	var orderObj = {};
+	var slotReservationId=$(this).attr('data-attribute-id');
+	var slotReservationStatus = $(this).attr('reservation-status');
+	orderObj['slotReservationId'] = slotReservationId;
+	orderObj['orderId'] = $(this).attr('order-id');
+	orderObj['runId'] = $('#buildId').val();
+	orderObj['reservationStatus']=slotReservationStatus;
+	
+	
+	if ($(this).is(':checked')) {
+		orderSelectionList.push(orderObj);
+	}
+	else{
+		orderSelectionList = $.grep(orderSelectionList, function(e) {
+			return !(e.slotReservationId == slotReservationId) 
+		});
+	}
+	if(orderSelectionList.length>0)
+		{
+		if(!showUpdateButton(orderSelectionList))
+			$('#update-reservation').addClass('hideOption');
+		else
+			$('#update-reservation').removeClass('hideOption');
+		$("#actions-dpdown").removeClass("buttonDisabled");
+		}
+	else
+		$("#actions-dpdown").addClass("buttonDisabled");
+});
+
+function showUpdateButton(orderSelectionList)
+{
+	var showUpdateAction=true;
+	 for (var i = 0; i < orderSelectionList.length; i++) {
+		if(orderSelectionList[i].reservationStatus!='A' && orderSelectionList[i].reservationStatus!='E')
+				showUpdateAction=false;
+	}
+	return showUpdateAction;
+}

@@ -22,3 +22,15 @@
 .change-required {
 	margin-left: 5px;
 }
+
+.production-slot-actions {
+color: #FFFFFF !important;
+}
+
+.unit-selection{
+	padding-right: 2px;
+}
+
+.hideOption{
+	display:none !important;
+}
