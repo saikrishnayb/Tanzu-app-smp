@@ -62,7 +62,7 @@
 							<a id="export-slot-results" class="buttonPrimary" onclick="exportSlotResults();return false;">Export</a>
 						</c:if>
 						<c:if test="${showAcceptBtn}">
-							<a class="buttonSecondary">Accept</a>
+							<a class="buttonSecondary" id="accept-slot-results">Accept</a>
 						</c:if>
 					</div>
 				</div>
@@ -155,6 +155,13 @@
 			</div>
 		</div>
 
+	</div>
+	<div id="confirmDeleteModal">
+		<p id="deleteMessage"></p>
+		<div class="confirm-modal-btn">
+			<a href="javascript:void(0)" class="secondaryLink" onclick="closeConfirmDialog();">Cancel</a> 
+			<a href="javascript:void(0)" class="buttonPrimary" onclick="updateRunSummary()">Yes</a>
+		</div>
 	</div>
 
 	<%@ include file="../../global/v2/footer.jsp"%>

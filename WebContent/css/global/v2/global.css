@@ -520,3 +520,9 @@ td i {
 .error-input {
 	background-color: #F7D9D9 !important;
 }
+
+.confirm-modal-btn { 
+	position:absolute;
+	bottom:3px;
+	right:5px;
+}

@@ -444,6 +444,12 @@
 					PLANT.PLANT_MFR_CODE ||'-' ||PLANT.PLANT_CITY ||',' ||PLANT.PLANT_STATE
 		FROM 		SMC.OBM_PLANTS PLANT
 	</select>
+	
+	<update id="updateRunSummary">
+		UPDATE SMC.OBM_RUN_SUMMARY
+		SET    RUN_STATUS = 'A'
+		WHERE  RUN_ID = #{buildId}
+	</update>
 		
 	<!--***** BUILD MATRIX WORKFLOW *****-->
 	

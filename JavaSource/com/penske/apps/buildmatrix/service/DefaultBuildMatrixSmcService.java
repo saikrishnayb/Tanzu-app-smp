@@ -233,6 +233,11 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	}
 	
 	@Override
+	public void updateRunSummary(int buildId) {
+		buildMatrixSmcDAO.updateRunSummary(buildId);
+	}
+	
+	@Override
 	public BuildAttributeValue addOrUpdateAttribute(int attributeId, String attributeValue) {
 		BuildAttributeValue attrValue = new BuildAttributeValue(attributeValue);
 		buildMatrixSmcDAO.addOrUpdateAttribute(attributeId, attrValue);

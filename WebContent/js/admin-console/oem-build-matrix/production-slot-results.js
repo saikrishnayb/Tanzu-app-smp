@@ -182,3 +182,48 @@ function showUpdateButton(orderSelectionList)
 	}
 	return showUpdateAction;
 }
+
+$('#accept-slot-results').on("click", function() {
+	openConfirmModal();
+});
+
+function openConfirmModal() {
+	$('#deleteMessage').text("You are about to accept the outcomes of this build request. Your changes will be committed and reservations marked as approved.  This operation cannot be undone. Do you wish to continue?");
+	$('#confirmDeleteModal').dialog('open');
+}
+
+$('#confirmDeleteModal').dialog({
+	autoOpen : false,
+	modal : true,
+	dialogClass : 'popupModal',
+	width : 370,
+	minHeight : 170,
+	resizable : false,
+	title : 'Confirm',
+	closeOnEscape : false,
+	open : function(event, ui) {
+		$(this).closest('.ui-dialog').find('.ui-dialog-titlebar-close').show();
+	}
+});
+
+function updateRunSummary() {
+	var buildId = parseInt($('#buildId').val());
+
+	var $updateBuildStatusPromise = $.ajax({
+		type : "GET",
+		url : baseBuildMatrixUrl + '/update-run-status',
+		data : {
+			buildId : buildId
+		}
+	});
+
+	$updateBuildStatusPromise.done(function() {
+		$('#confirmDeleteModal').dialog('close');
+	});
+
+	$('#confirmDeleteModal').dialog('close');
+}
+
+function closeConfirmDialog() {
+	$('#confirmDeleteModal').dialog('close');
+}

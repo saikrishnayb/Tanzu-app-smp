@@ -446,4 +446,9 @@ public class BuildMatrixRestController {
 		
 	}
 	
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping(value="/update-run-status", method = {RequestMethod.GET })
+	public void updateRunSummary(@RequestParam("buildId") int buildId) {
+		buildMatrixSmcService.updateRunSummary(buildId);
+	}
 }

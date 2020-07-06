@@ -60,6 +60,8 @@ public interface BuildMatrixSmcService {
 	
 	public List<String> getAllPlants();
 	
+	public void updateRunSummary(int buildId);
+	
 	//***** BUILD MATRIX WORKFLOW *****//
 	
 	// BUILD HISTROY //

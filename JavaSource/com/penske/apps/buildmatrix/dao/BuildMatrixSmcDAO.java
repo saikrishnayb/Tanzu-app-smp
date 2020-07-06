@@ -73,6 +73,8 @@ public interface BuildMatrixSmcDAO {
     public List<ProductionSlotResult> getSlotResultsByFilter(@Param("buildId")int buildId, @Param("selectedFilters") List<String> selectedFilters);
     
     public List<String> getAllPlants();
+    
+    public void updateRunSummary(@Param("buildId") int buildId);
 	
 	//***** BUILD MATRIX WORKFLOW *****//
 	
