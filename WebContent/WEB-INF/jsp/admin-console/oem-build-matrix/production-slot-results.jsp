@@ -54,16 +54,14 @@
 									data-toggle="dropdown"> Actions <span class="caret"></span>
 								</a>
 								<ul class="dropdown-menu">
-									<li><a>Delete Selected Reservations</a></li>
+									<li><a id="delete-reservation">Delete Selected Reservations</a></li>
 									<li><a id="update-reservation">Update Selected Slot Reservations</a></li>
 								</ul>
 							</div>
 						<c:if test="${fn:length(slotResults) ne 0}">
 							<a id="export-slot-results" class="buttonPrimary" onclick="exportSlotResults();return false;">Export</a>
 						</c:if>
-						<c:if test="${showAcceptBtn}">
-							<a class="buttonSecondary" id="accept-slot-results">Accept</a>
-						</c:if>
+						<a id="accept-slot-results" class="buttonSecondary  <c:if test="${!showAcceptBtn or fn:length(slotResults) eq 0}"> buttonDisabled</c:if>">Accept</a>
 					</div>
 				</div>
 			</div>
@@ -154,7 +152,13 @@
 				</div>
 			</div>
 		</div>
-
+	</div>
+	<div id="confirmDeleteModal">
+		<p id="deleteMessage"></p>
+		<div class="confirm-modal-btn">
+			<a href="javascript:void(0)" class="secondaryLink" id="cancel-confirm">Cancel</a> 
+			<a href="javascript:void(0)" class="buttonPrimary" id="confirm-btn">Confirm</a>
+		</div>
 	</div>
 	<div id="confirmDeleteModal">
 		<p id="deleteMessage"></p>
@@ -163,7 +167,6 @@
 			<a href="javascript:void(0)" class="buttonPrimary" onclick="updateRunSummary()">Yes</a>
 		</div>
 	</div>
-
 	<%@ include file="../../global/v2/footer.jsp"%>
 	<script src="${baseUrl}/js/admin-console/oem-build-matrix/file-download-helper.js" type="text/javascript"></script>
 	<script src="${baseUrl}/js/admin-console/oem-build-matrix/production-slot-results.js" type="text/javascript"></script>

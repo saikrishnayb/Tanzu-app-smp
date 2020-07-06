@@ -41,6 +41,19 @@ $slotResultsDataTable = $slotResultsTable.DataTable({
 	}
 });
 
+$('#confirmDeleteModal').dialog({
+	autoOpen : false,
+	modal : true,
+	dialogClass : 'popupModal',
+	width : 370,
+	minHeight : 150,
+	resizable : false,
+	title : 'Confirm',
+	closeOnEscape : false,
+	open : function(event, ui) {
+		$(this).closest('.ui-dialog').find('.ui-dialog-titlebar-close').show();
+	}
+});
 
 $('#slot-search').on('keyup', function() {
 	$slotResultsDataTable.search($(this).val()).draw() ;
@@ -171,6 +184,19 @@ $('.unit-selection').on("change", function() {
 		}
 	else
 		$("#actions-dpdown").addClass("buttonDisabled");
+});
+
+$("#delete-reservation").on("click", function() {
+	$('#deleteMessage').text("Associated slot reservation data will get deleted for the run and cannot be undone. Do you want to continue?");
+	$('#confirmDeleteModal').dialog('open');
+});
+
+$("#cancel-confirm").on("click",function(){
+	$('#confirmDeleteModal').dialog('close');
+});
+
+$('#confirm-btn').on("click",function(){
+	
 });
 
 function showUpdateButton(orderSelectionList)
