@@ -881,7 +881,15 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	
 	public ProductionSlotsMaintenanceSummary getSlotMaintenanceSummary(int slotTypeId,int selectedYear){
 		List<BuildMatrixSlotDate> slotDates = buildMatrixSmcDAO.getSlotDatesForYear(selectedYear);
-		List<BuildMatrixSlot> slots = buildMatrixSmcDAO.getSlotsBySlotDates(slotTypeId, slotDates.stream().map(BuildMatrixSlotDate::getSlotDateId).collect(toList()));
+		List<BuildMatrixSlot> slots = new ArrayList<>();
+		if(slotDates.isEmpty() || slotDates == null) {
+			slotDates = Collections.emptyList();
+			slots = Collections.emptyList();
+		}
+		else {
+			slots = buildMatrixSmcDAO.getSlotsBySlotDates(slotTypeId, slotDates.stream().map(BuildMatrixSlotDate::getSlotDateId).collect(toList()));
+		}
+			
 		List<BuildMatrixBodyPlant> bodyPlantList = buildMatrixSmcDAO.getAllBodyPlantsforSlotMaintenance();
 		ProductionSlotsMaintenanceSummary summary = new ProductionSlotsMaintenanceSummary(bodyPlantList, slotDates, slots);
 		return summary;
@@ -909,9 +917,24 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	@Override
 	public ProductionSlotsUtilizationSummary getUtilizationSummary(Integer slotTypeId, Integer selectedYear, String region) {
 		List<RegionPlantAssociation> regionPlantList = buildMatrixSmcDAO.getRegionAssociationDataByRegion(region);
-		List<BuildMatrixBodyPlant> bodyPlantSummary = buildMatrixSmcDAO.getBodyPlantsByPlantIds(regionPlantList.stream().map(RegionPlantAssociation::getPlantId).collect(toList()));
+		List<BuildMatrixBodyPlant> bodyPlantSummary = new ArrayList<>();
+		if(regionPlantList.isEmpty() || regionPlantList == null) {
+			regionPlantList = Collections.emptyList();
+			bodyPlantSummary = Collections.emptyList();
+		}
+		else {
+			bodyPlantSummary = buildMatrixSmcDAO.getBodyPlantsByPlantIds(regionPlantList.stream().map(RegionPlantAssociation::getPlantId).collect(toList()));
+		}
+		 
 		List<BuildMatrixSlotDate> slotDates = buildMatrixSmcDAO.getSlotDatesForYear(selectedYear);
-		List<BuildMatrixSlot> slots = buildMatrixSmcDAO.getSlotsBySlotDates(slotTypeId, slotDates.stream().map(BuildMatrixSlotDate::getSlotDateId).collect(toList()));
+		List<BuildMatrixSlot> slots = new ArrayList<>();
+		if(slotDates.isEmpty() || slotDates == null) {
+			slotDates = Collections.emptyList();
+			slots = Collections.emptyList();
+		}
+		else {
+			slots = buildMatrixSmcDAO.getSlotsBySlotDates(slotTypeId, slotDates.stream().map(BuildMatrixSlotDate::getSlotDateId).collect(toList()));
+		}
 		
 		Set<Integer> slotIds = slots.stream().map(BuildMatrixSlot::getSlotId).collect(toSet());
 		List<BuildMatrixSlotRegionAvailability> regionAvailability = new ArrayList<>();
