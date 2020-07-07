@@ -55,6 +55,12 @@
 	background-color: inherit;
 }
 
+.no-plants-message{
+	font-weight: bold;
+	margin-top: 20px;
+	text-align: center;
+}
+
 /* fix for fixed columns *shrug emoji* */
 .DTFC_LeftBodyWrapper:nth-child(2) .dataTable.no-footer.DTFC_Cloned thead{
 	display: none;
