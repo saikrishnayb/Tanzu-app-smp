@@ -1037,8 +1037,10 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		List<BuildMatrixSlotRegionAvailability> regionAvailabilityList = new ArrayList<>();
 		for(RegionPlantAssociation assoc: associationList) {
 			List<BuildMatrixSlot> slotList = slotsByPlantId.get(assoc.getPlantId());
-			for(BuildMatrixSlot slot: slotList) {
-				regionAvailabilityList.add(new BuildMatrixSlotRegionAvailability(slot, assoc));
+			if(slotList != null) {
+				for(BuildMatrixSlot slot: slotList) {
+					regionAvailabilityList.add(new BuildMatrixSlotRegionAvailability(slot, assoc));
+				}
 			}
 		}
 		
