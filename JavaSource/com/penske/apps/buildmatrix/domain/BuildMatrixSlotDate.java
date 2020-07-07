@@ -19,8 +19,8 @@ public class BuildMatrixSlotDate {
 
 	protected BuildMatrixSlotDate() {};
 	
-	public BuildMatrixSlotDate(LocalDate date) {
-		this.slotYear = String.valueOf(date.getYear());
+	public BuildMatrixSlotDate(LocalDate date, int slotYear) {
+		this.slotYear = String.valueOf(slotYear);
 		this.slotDate = Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());
 		WeekFields weekFields = WeekFields.ISO;
 		int weekNumber = date.get(weekFields.weekOfWeekBasedYear());

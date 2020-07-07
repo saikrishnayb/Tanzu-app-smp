@@ -1008,7 +1008,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 			}
 			
 			for(LocalDate localDate: dates) {
-				slotDatesForYear.add(new BuildMatrixSlotDate(localDate));
+				slotDatesForYear.add(new BuildMatrixSlotDate(localDate, year));
 			}
 			buildMatrixSmcDAO.insertSlotDates(slotDatesForYear);
 		}

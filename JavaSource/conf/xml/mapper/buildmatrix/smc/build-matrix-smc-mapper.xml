@@ -515,7 +515,7 @@
 			MAXIMUM_WEEKS_AFTER_ALLOWED
  		) VALUES (
  			#{newBuild.buildStatus.code},
- 			#{newBuild.quantity},
+ 			#{newBuild.reqQty},
  			#{newBuild.startedBySso},
  			CURRENT TIMESTAMP,
  			#{newBuild.maxWeeksBefore},
@@ -526,7 +526,7 @@
 	<update id="updateBuild">
 		UPDATE SMC.OBM_RUN_SUMMARY
 		SET
-			UNIT_QTY = #{existingBuild.quantity},
+			UNIT_QTY = #{existingBuild.reqQty},
 		    RUN_STATUS = #{existingBuild.buildStatus},
 	        SUBMITTED_BY = #{existingBuild.submittedBySso},
 	        SUBMITTED_DATE = #{existingBuild.submittedDate},
@@ -539,7 +539,7 @@
 	<select id="getBuildSummary" resultType="com.penske.apps.buildmatrix.domain.BuildSummary">
 		SELECT
 			RUN_ID AS buildId,
-	        UNIT_QTY AS quantity,
+	        UNIT_QTY AS reqQty,
 		    RUN_STATUS AS buildStatus,
 	        starter.SSO as startedBySso,
 	        starter.FIRST_NAME||' '||starter.LAST_NAME AS startedByName,
