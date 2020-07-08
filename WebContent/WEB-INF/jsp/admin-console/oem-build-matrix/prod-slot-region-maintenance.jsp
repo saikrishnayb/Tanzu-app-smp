@@ -13,6 +13,7 @@
 <body>
 	<%@ include file="../../global/navigation/sub-nav.jsp"%>
 	<div id="mainContent" class="borderTop">
+		<c:set var="noRows" value="${empty summary.rows}" />
 		<%@ include file="../../global/navigation/admin-console/oem-build-matrix/left-nav.jsp"%>
 		<div class="leftNavAdjacentContainer">
 			<%@ include file="../../global/v2/page-error-container.jsp"%>
@@ -62,8 +63,8 @@
           				</form>
           			</div>
           			<div class="btn-div floatRight">
-          				<a id="import-btn" class="buttonSecondary">Import</a>
-          				<a id="export-btn" class="buttonSecondary">Export</a>
+          				<a id="import-btn" class="buttonSecondary<c:if test="${noRows}"> buttonDisabled</c:if>">Import</a>
+          				<a id="export-btn" class="buttonSecondary<c:if test="${noRows}"> buttonDisabled</c:if>">Export</a>
           			</div>
         		</div>
       		</div>

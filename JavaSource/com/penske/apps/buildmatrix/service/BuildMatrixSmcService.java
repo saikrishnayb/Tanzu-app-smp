@@ -152,7 +152,11 @@ public interface BuildMatrixSmcService {
 
 	public void releaseUnits(List<Integer> slotReservationIds);
 
-	public SXSSFWorkbook exportSlotMaintenance(int year, int slotTypeId);
+	public SXSSFWorkbook exportSlotMaintenance(int year, int slotTypeId, List<Integer> plantIds);
 
 	public BuildMatrixSlotType getVehicleTypeById(int slotTypeId);
+
+	public Map<String, String> getMfrListForExport();
+
+	public List<BuildMatrixBodyPlant> getBodyPlantsByMfrCode(String mfrCode);
 }

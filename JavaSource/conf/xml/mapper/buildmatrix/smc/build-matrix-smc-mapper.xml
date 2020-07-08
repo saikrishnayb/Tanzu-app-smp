@@ -1106,6 +1106,21 @@
 		ORDER BY PLANT_MANUFACTURER, PLANT_CITY
 	</select>
 	
+	<select id="getBodyPlantsByMfrCode" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant">
+		SELECT   PLANT_ID AS plantId,
+		         PLANT_MFR_CODE AS plantMfrCode,
+		         PLANT_MANUFACTURER AS plantManufacturer,
+		         PLANT_NAME AS plantName,
+		         PLANT_STATE AS state,
+		         PLANT_ZIP AS zip,
+		         PLANT_COUNTRY AS country,
+		         PLANT_CITY AS city
+		FROM     SMC.OBM_PLANTS
+		WHERE
+			PLANT_MFR_CODE = #{mfrCode}
+		ORDER BY PLANT_MANUFACTURER, PLANT_CITY
+	</select>
+	
 	<select id="getSlotDatesForYear" parameterType="int" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlotDate">
 		SELECT   SLOT_DATE_ID,
 		         SLOT_YEAR,
@@ -1139,6 +1154,29 @@
 	 				#{slotDateId}
 	 			</foreach>
 			)
+		ORDER BY PLANT.PLANT_MANUFACTURER, PLANT.PLANT_CITY
+	</select>
+	
+	<select id="getSlotsBySlotDatesAndPlantIds" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlot">
+		SELECT   SLOT_ID AS slotId,
+		         SLOT_TYPE_ID AS slotTypeId,
+		         plant.PLANT_ID AS plantId,
+		         SLOT_DATE_ID AS slotDateId,
+		         SLOT_AVAILABLE AS availableSlots,
+		         SLOT_RESERVED AS reservedSlots
+		FROM     SMC.OBM_SLOTS SLOT 
+		         JOIN SMC.OBM_PLANTS PLANT ON SLOT.PLANT_ID = PLANT.PLANT_ID
+		WHERE    SLOT_TYPE_ID=CAST(#{slotTypeId} AS INTEGER)
+		AND      SLOT_DATE_ID IN (
+				<foreach collection="slotDateIds" item="slotDateId" separator="," open="" close="">
+	 				#{slotDateId}
+	 			</foreach>
+			)
+		AND plant.PLANT_ID IN (
+				<foreach collection="plantIds" item="plantId" separator="," open="" close="">
+	 				#{plantId}
+	 			</foreach>
+		)
 		ORDER BY PLANT.PLANT_MANUFACTURER, PLANT.PLANT_CITY
 	</select>
 	

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
@@ -412,12 +413,37 @@ public class BuildMatrixRestController {
 	}
 	
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
-	@RequestMapping(value="export-slot-maintenance",method = {RequestMethod.POST })
-	public void exportSlotMaintenance(HttpServletResponse response, @RequestParam("list") List<String> list) {
-		int year = Integer.parseInt(list.get(0));
-		int slotTypeId = Integer.parseInt(list.get(1));
+	@RequestMapping(value="get-export-slot-maintenance",method = {RequestMethod.GET })
+	public ModelAndView getExportSlotMaintenance(@RequestParam("year") String yearString, @RequestParam("slotTypeId")  String slotTypeIdString) {
+		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/modal/export-slot-maintenance");
 		
-		SXSSFWorkbook workbook = buildMatrixSmcService.exportSlotMaintenance(year, slotTypeId);
+		int year = Integer.parseInt(yearString);
+		int slotTypeId = Integer.parseInt(slotTypeIdString);
+		
+		BuildMatrixSlotType slotType = buildMatrixSmcService.getVehicleTypeById(slotTypeId);
+		
+		Map<String, String> mfrMap = buildMatrixSmcService.getMfrListForExport();
+		
+		model.addObject("slotType", slotType);
+		model.addObject("year", year);
+		model.addObject("mfrMap", mfrMap);
+		
+		return model;
+	}
+	
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping(value="get-body-plants-by-mfr-code",method = {RequestMethod.GET })
+	public List<BuildMatrixBodyPlant> getBodyPlantsForMfr(@RequestParam("mfrCode") String mfrCode) {
+		return buildMatrixSmcService.getBodyPlantsByMfrCode(mfrCode);
+	}
+	
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping(value="export-slot-maintenance",method = {RequestMethod.POST })
+	public void exportSlotMaintenance(HttpServletResponse response, @RequestParam("slotTypeId") int slotTypeId, 
+			@RequestParam("year") int year,
+			@RequestParam("plantIds[]") List<Integer> plantIds) {
+		
+		SXSSFWorkbook workbook = buildMatrixSmcService.exportSlotMaintenance(year, slotTypeId, plantIds);
 		if(workbook != null){
 			try(OutputStream out = response.getOutputStream()) {
 				if(year!=0){
@@ -431,7 +457,7 @@ public class BuildMatrixRestController {
 					workbook.write(out);
 				}
 				else{
-					response.getWriter().write("Production slot results not available to process the template");
+					response.getWriter().write("Slot Maintenance not available to process the template");
 					response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 				}
 

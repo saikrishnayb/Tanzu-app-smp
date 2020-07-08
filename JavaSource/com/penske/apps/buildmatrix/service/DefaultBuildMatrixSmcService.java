@@ -72,6 +72,8 @@ import com.penske.apps.buildmatrix.model.BuildMixForm.AttributeRow;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm.BusinessAwardRow;
 import com.penske.apps.buildmatrix.model.ProductionSlotsMaintenanceSummary;
+import com.penske.apps.buildmatrix.model.ProductionSlotsMaintenanceSummary.ProductionSlotsMaintenanceCell;
+import com.penske.apps.buildmatrix.model.ProductionSlotsMaintenanceSummary.ProductionSlotsMaintenanceRow;
 import com.penske.apps.buildmatrix.model.ProductionSlotsUtilizationSummary;
 import com.penske.apps.smccore.base.util.BatchRunnable;
 import com.penske.apps.smccore.base.util.Util;
@@ -592,6 +594,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		cellStyle.setBorderTop(BorderStyle.THICK);
 		cellStyle.setBorderRight(BorderStyle.THICK);
 		cellStyle.setFont(font);
+		cellStyle.setLocked(true);
 
 		return cellStyle;
 	}
@@ -1065,10 +1068,86 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	}
 	
 	@Override
-	public SXSSFWorkbook exportSlotMaintenance(int year, int slotTypeId) {
+	public Map<String, String> getMfrListForExport() {
+		List<BuildMatrixBodyPlant> bodyPlantList  = buildMatrixSmcDAO.getAllBodyPlantsforSlotMaintenance();
+		Map<String, String> mfrMap = new HashMap<>();
 		
-		//export logic here
+		for(BuildMatrixBodyPlant plant: bodyPlantList) {
+			if(!mfrMap.containsKey(plant.getPlantMfrCode()))
+					mfrMap.put(plant.getPlantMfrCode(), plant.getPlantManufacturer());
+		}
+
+		return mfrMap;
+	}
+	
+	@Override
+	public List<BuildMatrixBodyPlant> getBodyPlantsByMfrCode(String mfrCode) {
+		return buildMatrixSmcDAO.getBodyPlantsByMfrCode(mfrCode);
+	}
+	
+	@Override
+	public SXSSFWorkbook exportSlotMaintenance(int year, int slotTypeId, List<Integer> plantIds) {
+		List<BuildMatrixSlotDate> slotDates = buildMatrixSmcDAO.getSlotDatesForYear(year);
+		List<BuildMatrixSlot> slots = new ArrayList<>();
+		if(slotDates.isEmpty() || slotDates == null) {
+			slotDates = Collections.emptyList();
+			slots = Collections.emptyList();
+		}
+		else {
+			slots = buildMatrixSmcDAO.getSlotsBySlotDatesAndPlantIds(slotTypeId, slotDates.stream().map(BuildMatrixSlotDate::getSlotDateId).collect(toList()), plantIds);
+		}
+			
+		List<BuildMatrixBodyPlant> bodyPlantList = buildMatrixSmcDAO.getBodyPlantsByPlantIds(plantIds);
+		ProductionSlotsMaintenanceSummary summary = new ProductionSlotsMaintenanceSummary(bodyPlantList, slotDates, slots);
 		
-		return null;
+		return generateSlotMaintenanceExcel(summary, bodyPlantList);
+	}
+	
+	private SXSSFWorkbook generateSlotMaintenanceExcel(ProductionSlotsMaintenanceSummary summary, List<BuildMatrixBodyPlant> bodyPlantList) {
+		SXSSFWorkbook workbook = new SXSSFWorkbook();
+		SXSSFSheet workSheet = workbook.createSheet(ApplicationConstants.SLOT_MAINTENANCE_RESULTS); // creating new work sheet
+		
+		workbook.setCompressTempFiles(true);
+		int headerColIndex = 0;
+		CellStyle cellStyle = getCellStyle(workbook);
+		
+		workSheet.setColumnWidth(headerColIndex, 20 * 300);
+		Cell dateHeaderCell = getCell(workSheet, 0, headerColIndex);
+		dateHeaderCell.setCellValue("Production Date");
+		dateHeaderCell.setCellStyle(cellStyle);
+		headerColIndex++;
+		
+		for(BuildMatrixBodyPlant plantData: bodyPlantList)
+		{
+			String cellContents = plantData.getPlantManufacturer() + " - " + plantData.getCity() + ", " + plantData.getState();
+			workSheet.setColumnWidth(headerColIndex, 20 * 300);
+			Cell cell = getCell(workSheet, 0, headerColIndex);
+			cell.setCellValue(cellContents);
+			cell.setCellStyle(cellStyle);
+			//Add the column index to our map of column index by option group IDs
+			
+			headerColIndex++;
+		}
+		
+		int rowId = 1;
+		for (ProductionSlotsMaintenanceRow slotRow : summary.getRows()) {
+
+			SXSSFRow dataRow = workSheet.createRow(rowId);
+			int column = 0;
+			
+			SXSSFCell dateCell = dataRow.createCell(column++);
+			dateCell.setCellStyle(cellStyle);
+			dateCell.setCellValue(slotRow.getSlotDate().getFormattedSlotDate());
+			
+			for(ProductionSlotsMaintenanceCell slotCell : slotRow.getCells()) {
+				dataRow.createCell(column++).setCellValue(slotCell.getSlot().getAvailableSlots());
+			}
+			
+			rowId++;
+		}
+		
+		workSheet.protectSheet("SMCAdm!n"); 
+		
+		return workbook;
 	}
 }

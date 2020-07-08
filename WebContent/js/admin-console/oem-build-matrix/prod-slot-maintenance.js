@@ -66,11 +66,27 @@ $('#import-btn').on('click', function(){
 
 $('#export-btn').on('click', function(){
 	var vehicleType = $('#vehicletype-drpdwn').val();
+	var year = $('#year-drpdwn').val();
+	
+	var $getExportContentPromise = $.ajax({
+		type: "GET",
+		url: baseBuildMatrixUrl + '/get-export-slot-maintenance',
+		data: {
+			slotTypeId: vehicleType,
+			year: year
+		}
+	});
+	$getExportContentPromise.done(function(data){
+		$prodSlotMaintenanceModal.html(data);
+	    ModalUtil.openModal($prodSlotMaintenanceModal);
+	});
+	
+	/*var vehicleType = $('#vehicletype-drpdwn').val();
 	var vehicleTypeDesc = $('#vehicletype-drpdwn').find('option[selected="selected"]').text()
 	var year = $('#year-drpdwn').val();
 	
 	var today = new Date();
-	var filename = vehicleTypeDesc + '_' + year + '_Slots_';
+	var filename = vehicleTypeDesc + '_' + year + '_Slot_Maintenance_';
 
 	var mm = today.getMonth() + 1;
 	if (mm < 10) {
@@ -82,9 +98,9 @@ $('#export-btn').on('click', function(){
 	if (dd < 10) {
 		dd = '0' + dd;
 	}
-	filename += dd;
+	filename += '-' + dd;
 	
 	var list = [vehicleType, year];
 
-	DownloadUtil.downloadFileAsFormPost(baseBuildMatrixUrl + '/export-slot-maintenance.htm', filename + '.xlsx', 'list', list);
+	DownloadUtil.downloadFileAsFormPost(baseBuildMatrixUrl + '/export-slot-maintenance.htm', filename + '.xlsx', 'list', list);*/
 });
