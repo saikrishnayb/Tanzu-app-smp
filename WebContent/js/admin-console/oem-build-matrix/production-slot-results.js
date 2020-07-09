@@ -4,6 +4,9 @@ var $slotResultsTable = $('#slot-results-table');
 var orderSelectionCnt = 0;
 var orderSelectionList = [];
 initializeDatePicker();
+var $confirmReservationModal = $('#confirm-delete-reservation-modal');
+
+ModalUtil.initializeModal($confirmReservationModal);
 
 $slotResultsDataTable = $slotResultsTable.DataTable({
 	"bPaginate" : true, //enable pagination
@@ -38,20 +41,6 @@ $slotResultsDataTable = $slotResultsTable.DataTable({
 		} else {
 			infoRow.css("display", "none");
 		}
-	}
-});
-
-$('#confirmDeleteModal').dialog({
-	autoOpen : false,
-	modal : true,
-	dialogClass : 'popupModal',
-	width : 370,
-	minHeight : 150,
-	resizable : false,
-	title : 'Confirm',
-	closeOnEscape : false,
-	open : function(event, ui) {
-		$(this).closest('.ui-dialog').find('.ui-dialog-titlebar-close').show();
 	}
 });
 
@@ -187,16 +176,25 @@ $('.unit-selection').on("change", function() {
 });
 
 $("#delete-reservation").on("click", function() {
-	$('#deleteMessage').text("Associated slot reservation data will get deleted for the run and cannot be undone. Do you want to continue?");
-	$('#confirmDeleteModal').dialog('open');
+	ModalUtil.openModal($confirmReservationModal);
 });
 
 $("#cancel-confirm").on("click",function(){
-	$('#confirmDeleteModal').dialog('close');
+	ModalUtil.closeModal($confirmReservationModal);
 });
 
 $('#confirm-btn').on("click",function(){
-	
+	$.ajax({
+		type : "POST",
+		url : "./delete-reservation-data.htm",
+		cache : false,
+		data : JSON.stringify(orderSelectionList),
+		contentType : 'application/json',
+		success : function(data) {
+			ModalUtil.closeModal($confirmReservationModal);
+			location.assign('view-slot-results-filter.htm?buildId='+$('#buildId').val()+'&selectedFiltersList=A,E,P&checkedFilter=0');
+		},
+	});
 });
 
 function showUpdateButton(orderSelectionList)

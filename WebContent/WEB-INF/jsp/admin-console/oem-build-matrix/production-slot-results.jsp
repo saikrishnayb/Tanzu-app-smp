@@ -153,13 +153,24 @@
 			</div>
 		</div>
 	</div>
-	<div id="confirmDeleteModal">
-		<p id="deleteMessage"></p>
-		<div class="confirm-modal-btn">
-			<a href="javascript:void(0)" class="secondaryLink" id="cancel-confirm">Cancel</a> 
-			<a href="javascript:void(0)" class="buttonPrimary" id="confirm-btn">Confirm</a>
-		</div>
-	</div>
+	
+	<div class="modal row" id="confirm-delete-reservation-modal">
+      <div class="modal-content col-xs-12" data-modal-title="Confirm" data-modal-max-width="350" data-keep-contents="true">
+        <div class="row">
+          <div class="col-xs-12">
+           Associated slot reservation data will get deleted for the run and cannot be undone. Do you want to continue?
+          </div>
+          
+          <div class="delete-confrim-button-row col-xs-12">
+            <div class="pull-right">
+              <a id="cancel-confirm" class="buttonSecondary btn">Cancel</a>
+              <a id="confirm-btn"class="buttonPrimary btn">Confirm</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
 	<div id="confirmDeleteModal">
 		<p id="deleteMessage"></p>
 		<div class="confirm-modal-btn">

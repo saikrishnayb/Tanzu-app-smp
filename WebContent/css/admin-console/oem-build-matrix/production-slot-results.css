@@ -40,3 +40,6 @@ color: #FFFFFF !important;
 #slot-search{
 	width: 110px;
 }
+.delete-confrim-button-row{
+  padding-top: 10px;
+}

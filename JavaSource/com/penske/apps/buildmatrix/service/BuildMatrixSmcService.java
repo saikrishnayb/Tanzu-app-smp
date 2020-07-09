@@ -159,4 +159,6 @@ public interface BuildMatrixSmcService {
 	public Map<String, String> getMfrListForExport();
 
 	public List<BuildMatrixBodyPlant> getBodyPlantsByMfrCode(String mfrCode);
+
+	public void deleteReservationData(List<ProductionSlotResult> orderSelectionList);
 }

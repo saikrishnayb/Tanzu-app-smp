@@ -477,4 +477,10 @@ public class BuildMatrixRestController {
 	public void updateRunSummary(@RequestParam("buildId") int buildId) {
 		buildMatrixSmcService.updateRunSummary(buildId);
 	}
+	
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping("/delete-reservation-data")
+	public void deleteReservationData(@RequestBody List<ProductionSlotResult> orderSelectionList) {
+		buildMatrixSmcService.deleteReservationData(orderSelectionList);
+	}
 }
