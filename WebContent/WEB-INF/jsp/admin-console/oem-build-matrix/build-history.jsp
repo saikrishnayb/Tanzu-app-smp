@@ -102,15 +102,22 @@
 			</div>
 		</div>
 	</div>
-	<div id="confirmReworkOrDeleteModal" >
-		<p id="confirmMessage"></p>
-		<input type="hidden" id="build-id">
-		<div class="confirm-modal-btn">
-			<a href="javascript:void(0)" class="secondaryLink" onclick="closeConfirmDialog();">Cancel</a> 
-			<a href="javascript:void(0)" class="buttonPrimary" delete="N" id="reworkOrDeleteConfirm">Rework</a>
-		</div>
-	</div>
-	
+	<div class="modal row" id="confirmReworkOrDeleteModal">
+      <div class="modal-content confirm-modal-content col-xs-12" data-modal-title="Confirm" data-modal-max-width="350" data-keep-contents="true">
+        <div class="row">
+          <input type="hidden" id="build-id">
+          <div id="confirmMessage" class="col-xs-12">
+          </div>
+          <div class="confrim-button-row col-xs-12">
+            <div class="pull-right">
+              <a onclick="closeConfirmDialog();" class="secondaryLink">Cancel</a>
+              <a id="reworkOrDeleteConfirm"  delete="N" class="buttonPrimary btn">Confirm</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
 	<%@ include file="../../global/v2/footer.jsp" %>
 	<script src="${baseUrl}/js/admin-console/oem-build-matrix/build-history.js" type="text/javascript"></script>
 </body>

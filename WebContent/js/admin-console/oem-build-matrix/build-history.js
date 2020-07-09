@@ -2,6 +2,8 @@ selectCurrentNavigation("tab-oem-build-matrix", "left-nav-build-history");
 
 var $buildHistoryTable = $('#build-history-table');
 var $confirmReworkOrDeleteModal = $('#confirmReworkOrDeleteModal')
+ModalUtil.initializeModal($confirmReworkOrDeleteModal);
+
 $buildHistoryDataTable = $buildHistoryTable.DataTable({ //All of the below are optional
 	"bPaginate" : true, //enable pagination
 	"bStateSave" : false, //To retrieve the data on click of back button
@@ -70,7 +72,7 @@ function openConfirmModal(isDeleteConfirmModal, buildId) {
 		$('#confirmMessage').text("Reworking this build will clear previous match results and cannot be undone. Do you want to continue?");
 	}
 	$("#build-id").val(buildId);
-	$('#confirmReworkOrDeleteModal').dialog('open');
+	ModalUtil.openModal($confirmReworkOrDeleteModal);
 }
 
 $confirmReworkOrDeleteModal.on("click", '#reworkOrDeleteConfirm', function() {
@@ -86,7 +88,7 @@ $confirmReworkOrDeleteModal.on("click", '#reworkOrDeleteConfirm', function() {
 				buildId : buildId
 			},
 			success : function(data) {
-				$('#confirmReworkOrDeleteModal').dialog('close');
+				ModalUtil.closeModal($confirmReworkOrDeleteModal);
 				location.assign('./build-history.htm');
 				
 			},
@@ -101,27 +103,14 @@ $confirmReworkOrDeleteModal.on("click", '#reworkOrDeleteConfirm', function() {
 				buildId : buildId
 			},
 			success : function(data) {
-				$('#confirmReworkOrDeleteModal').dialog('close');
+				ModalUtil.closeModal($confirmReworkOrDeleteModal);
 				location.assign('./build-history.htm');
 			},
 		});
 	}
 });
 
-$('#confirmReworkOrDeleteModal').dialog({
-	autoOpen : false,
-	modal : true,
-	dialogClass : 'popupModal',
-	width : 370,
-	minHeight : 150,
-	resizable : false,
-	title : 'Confirm',
-	closeOnEscape : false,
-	open : function(event, ui) {
-		$(this).closest('.ui-dialog').find('.ui-dialog-titlebar-close').show();
-	}
-});
 
 function closeConfirmDialog() {
-	$('#confirmReworkOrDeleteModal').dialog('close');
+	ModalUtil.closeModal($confirmReworkOrDeleteModal);
 }

@@ -30,3 +30,10 @@
 	right:5px;
 }
 
+.confrim-button-row{
+	padding-top: 10px;
+}
+
+.confirm-modal-content{
+	padding-top: 5px !important;
+}

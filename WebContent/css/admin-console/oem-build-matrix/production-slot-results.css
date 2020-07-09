@@ -43,3 +43,6 @@ color: #FFFFFF !important;
 .delete-confrim-button-row{
   padding-top: 10px;
 }
+.confirm-modal-content{
+	padding-top: 5px !important;
+}

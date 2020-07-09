@@ -155,7 +155,7 @@
 	</div>
 	
 	<div class="modal row" id="confirm-delete-reservation-modal">
-      <div class="modal-content col-xs-12" data-modal-title="Confirm" data-modal-max-width="350" data-keep-contents="true">
+      <div class="modal-content confirm-modal-content col-xs-12" data-modal-title="Confirm" data-modal-max-width="350" data-keep-contents="true">
         <div class="row">
           <div class="col-xs-12">
            Associated slot reservation data will get deleted for the run and cannot be undone. Do you want to continue?
