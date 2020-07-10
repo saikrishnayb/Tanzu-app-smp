@@ -74,13 +74,21 @@
 	</div>
 	<div id="set-offline-dates-modal" class="modal row"></div>
 	<div id="region-association-modal" class="modal row"></div>
-	<div id="confirmDeleteModal">
-		<p id="deleteMessage"></p>
-		<div class="confirm-modal-btn">
-			<a href="javascript:void(0)" class="secondaryLink" onclick="closeConfirmDialog();">Cancel</a> 
-			<a href="javascript:void(0)" class="buttonPrimary" onclick="confirmDeleteRegion()">Confirm</a>
-		</div>
-	</div>
+	<div class="modal row" id="confirm-delete-proximity-modal">
+      <div class="modal-content confirm-modal-content col-xs-12" data-modal-title="Confirm" data-modal-max-width="350" data-keep-contents="true">
+        <div class="row">
+          <div class="col-xs-12">
+          Associated proximity data will get delete for the region and cannot be undone. Do you want to continue?
+          </div>
+          <div class="confrim-button-row col-xs-12">
+            <div class="pull-right">
+              <a id="cancel-confirm" class="secondaryLink">Cancel</a>
+              <a id="confirm-btn"  class="buttonPrimary btn">Confirm</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 	<%@ include file="../../global/v2/footer.jsp" %>
 	<script src="${baseUrl}/js/admin-console/oem-build-matrix/maintenance-summary.js" type="text/javascript"></script>
 </body>

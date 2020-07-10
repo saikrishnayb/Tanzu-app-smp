@@ -295,8 +295,7 @@ button.ui-datepicker-close {
 	padding-right: 8px
 }
 
-.confirm-modal-btn { 
-	position:absolute;
-	bottom:3px;
-	right:5px;
+.confirm-modal-content{
+	padding-top: 5px !important;
+	padding-bottom: 5px !important;
 }

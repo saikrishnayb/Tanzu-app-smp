@@ -7,11 +7,13 @@ var $saveRegionAssociation = $("#save-region-association");
 var regionChangeCnt = 0;
 var regionAssociationUpdateList = [];
 var deleteRegion = false;
+var $confirmProximityModal = $('#confirm-delete-proximity-modal');
 
 selectCurrentNavigation("tab-oem-build-matrix", "left-nav-maintenance-summary");
 
 ModalUtil.initializeModal($setOfflineDatesModal);
 ModalUtil.initializeModal($regionAssociationModal);
+ModalUtil.initializeModal($confirmProximityModal);
 
 $bodyPlantTable = $('#body-plant-maint-table').dataTable({ //All of the below are optional
 	"bPaginate" : true, //enable pagination
@@ -317,31 +319,20 @@ $regionAssociationModal.on("click", "#cancel-btn", function() {
 
 $regionAssociationModal.on('click', '#save-region-association', function() {
 	if (deleteRegion == true) {
-		openConfirmModal();
+		ModalUtil.openModal($confirmProximityModal);
 	} else {
 		confirmDeleteRegion();
 	}
 
 });
-
-function openConfirmModal() {
-	$('#deleteMessage').text("Associated proximity data will get delete for the region and cannot be undone. Do you want to continue?");
-	$('#confirmDeleteModal').dialog('open');
-}
-
-$('#confirmDeleteModal').dialog({
-	autoOpen : false,
-	modal : true,
-	dialogClass : 'popupModal',
-	width : 370,
-	minHeight : 150,
-	resizable : false,
-	title : 'Confirm',
-	closeOnEscape : false,
-	open : function(event, ui) {
-		$(this).closest('.ui-dialog').find('.ui-dialog-titlebar-close').show();
-	}
+$("#cancel-confirm").on("click",function(){
+	ModalUtil.closeModal($confirmProximityModal);
 });
+
+$('#confirm-btn').on("click",function(){
+	confirmDeleteRegion();
+});
+
 
 function confirmDeleteRegion() {
 	if (regionAssociationUpdateList && regionAssociationUpdateList.length != 0) {
@@ -352,16 +343,12 @@ function confirmDeleteRegion() {
 			contentType : 'application/json'
 		});
 		$saveRegionPromise.done(function(data) {
-			$('#confirmDeleteModal').dialog('close');
+			ModalUtil.closeModal($confirmProximityModal);
 			ModalUtil.closeModal($regionAssociationModal);
 		});
-		$('#confirmDeleteModal').dialog('close');
+		ModalUtil.closeModal($confirmProximityModal);
 		ModalUtil.closeModal($regionAssociationModal);
 	}
-}
-
-function closeConfirmDialog() {
-	$('#confirmDeleteModal').dialog('close');
 }
 
 //# sourceURL=maintenance-summary.js
