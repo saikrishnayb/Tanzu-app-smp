@@ -4,10 +4,8 @@ var $slotResultsTable = $('#slot-results-table');
 var orderSelectionCnt = 0;
 var orderSelectionList = [];
 initializeDatePicker();
-var $confirmAcceptSlotModal = $('#confirm-accept-slot-modal');
 var $confirmReservationModal = $('#confirm-delete-reservation-modal');
 
-ModalUtil.initializeModal($confirmAcceptSlotModal);
 ModalUtil.initializeModal($confirmReservationModal);
 
 $slotResultsDataTable = $slotResultsTable.DataTable({
@@ -60,7 +58,7 @@ function exportSlotResults() {
 		mm = '0' + mm;
 	}
 	filename += mm;
-	
+
 	var dd = today.getDate();
 	if (dd < 10) {
 		dd = '0' + dd;
@@ -179,26 +177,66 @@ $('.unit-selection').on("change", function() {
 });
 
 $("#delete-reservation").on("click", function() {
-	ModalUtil.openModal($confirmReservationModal);
+	openConfirmModal(true);
 });
 
 $("#cancel-confirm").on("click", function() {
 	ModalUtil.closeModal($confirmReservationModal);
 });
 
-$('#confirm-btn').on("click", function() {
-	$.ajax({
-		type : "POST",
-		url : "./delete-reservation-data.htm",
-		cache : false,
-		data : JSON.stringify(orderSelectionList),
-		contentType : 'application/json',
-		success : function(data) {
-			ModalUtil.closeModal($confirmReservationModal);
-			location.assign('view-slot-results-filter.htm?buildId=' + $('#buildId').val() + '&selectedFiltersList=A,E,P&checkedFilter=0');
-		},
-	});
+$confirmReservationModal.on("click", '#confirm-btn', function() {
+	var isDeleteBuild = $("#confirm-btn").attr("delete");
+	var buildId = parseInt($('#buildId').val());
+	if (isDeleteBuild == "Y") //delete Reservations flow
+	{
+		$.ajax({
+			type : "POST",
+			url : "./delete-reservation-data.htm",
+			cache : false,
+			data : JSON.stringify(orderSelectionList),
+			contentType : 'application/json',
+			success : function(data) {
+				ModalUtil.closeModal($confirmReservationModal);
+				location.assign('view-slot-results-filter.htm?buildId=' + $('#buildId').val() + '&selectedFiltersList=A,E,P&checkedFilter=0');
+			},
+		});
+	} else { //accept build flow
+		$.ajax({
+			type : "POST",
+			url : "./show-accept-button.htm",
+			cache : false,
+			data : {
+				buildId : buildId
+			},
+			success : function(showAcceptButton) {
+				if (showAcceptButton) {
+					$.ajax({
+						url : './update-run-status.htm',
+						type : "GET",
+						data : {
+							buildId : buildId
+						},
+						success : function() {
+							ModalUtil.closeModal($confirmReservationModal);
+							$("#actions-dpdown").addClass("buttonDisabled");
+							$('#accept-slot-results').addClass("buttonDisabled");
+							document.getElementById("Matched").disabled = true;
+							document.getElementById("Exceptions").disabled = true;
+							document.getElementById("Unmatched").disabled = true;
+							document.getElementById("approvedBuild").value = true;
+						},
+					});
+
+				} else {
+					addErrorMessage("Slot reservation records should be in Matched status to Accept the build, check the data and try again");
+				}
+			},
+		});
+
+	}
+	ModalUtil.closeModal($confirmReservationModal);
 });
+
 
 function showUpdateButton(orderSelectionList) {
 	var showUpdateAction = true;
@@ -209,48 +247,19 @@ function showUpdateButton(orderSelectionList) {
 	return showUpdateAction;
 }
 
+function openConfirmModal(isDeleteConfirmModal) {
+	if (isDeleteConfirmModal) {
+		$("#confirm-btn").html('Confirm');
+		$("#confirm-btn").attr("delete", "Y");
+		$('#confirmMessage').text("Associated slot reservation data will get deleted for the run and cannot be undone. Do you want to continue?");
+	} else {
+		$("#confirm-btn").html('Yes');
+		$("#confirm-btn").attr("delete", "N");
+		$('#confirmMessage').text("You are about to accept the outcomes of this build request. Your changes will be committed and reservations marked as approved. This operation cannot be undone. Do you wish to continue?");
+	}
+	ModalUtil.openModal($confirmReservationModal);
+}
+
 $('#accept-slot-results').on("click", function() {
-	ModalUtil.openModal($confirmAcceptSlotModal);
-});
-
-$("#cancel-accept").on("click", function() {
-	ModalUtil.closeModal($confirmAcceptSlotModal);
-});
-
-$('#confirm-accept').on("click", function() {
-	var buildId = parseInt($('#buildId').val());
-
-	$.ajax({
-		type : "POST",
-		url : "./show-accept-button.htm",
-		cache : false,
-		data : {
-			buildId : buildId
-		},
-		success : function(showAcceptButton) {
-			if (showAcceptButton) {
-				$.ajax({
-					url : './update-run-status.htm',
-					type : "GET",
-					data : {
-						buildId : buildId
-					},
-					success : function() {
-						ModalUtil.closeModal($confirmAcceptSlotModal);
-						$("#actions-dpdown").addClass("buttonDisabled");
-						$('#accept-slot-results').addClass("buttonDisabled");
-						document.getElementById("Matched").disabled = true;
-						document.getElementById("Exceptions").disabled = true;
-						document.getElementById("Unmatched").disabled = true;
-						document.getElementById("approvedBuild").value = true;
-					},
-				});
-
-			} else {
-				addErrorMessage("Slot reservation records should be in Matched status to Accept the build, check the data and try again");
-			}
-		},
-	});
-
-	ModalUtil.closeModal($confirmAcceptSlotModal);
+	openConfirmModal(false);
 });
