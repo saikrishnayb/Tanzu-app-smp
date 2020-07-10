@@ -4,8 +4,10 @@ var $slotResultsTable = $('#slot-results-table');
 var orderSelectionCnt = 0;
 var orderSelectionList = [];
 initializeDatePicker();
+var $confirmAcceptSlotModal = $('#confirm-accept-slot-modal');
 var $confirmReservationModal = $('#confirm-delete-reservation-modal');
 
+ModalUtil.initializeModal($confirmAcceptSlotModal);
 ModalUtil.initializeModal($confirmReservationModal);
 
 $slotResultsDataTable = $slotResultsTable.DataTable({
@@ -70,18 +72,18 @@ function exportSlotResults() {
 }
 
 $('.production-slot').multiselect({
-    minWidth : 150,
-    header : [ '' ],
-    selectedList: 1,
-    open : function() {
-        $(".ui-multiselect-menu ").css('width', '210px');
-    }
+	minWidth : 150,
+	header : [ '' ],
+	selectedList : 1,
+	open : function() {
+		$(".ui-multiselect-menu ").css('width', '210px');
+	}
 }).multiselectfilter({
-    width : 130
+	width : 130
 });
 
 /* Added this line of code to make the Multi-select box values in normal font instead of bold (Default)*/
-$(".ui-multiselect-checkboxes label").removeAttr('font-weight').css("font-weight", "normal"); 
+$(".ui-multiselect-checkboxes label").removeAttr('font-weight').css("font-weight", "normal");
 
 
 $(document).ready(initializeDatePicker);
@@ -115,62 +117,63 @@ function initializeDatePicker() {
 	});
 }
 
-$(function () {
-    if (localStorage && localStorage["checked"]) {
-        var localStoredData = JSON.parse(localStorage["checked"]);
-        var checkboxes = $("input[name='filters']");
-        for (var i = 0; i < checkboxes.length; i++) {
-            for (var j = 0; j < localStoredData.length; j++) {
-                if (checkboxes[i].value == localStoredData[j]) {
-                    checkboxes[i].checked = true;
-                }
-            }
-        }
-        localStorage.removeItem('checked');
-    }
+$(function() {
+	if (localStorage && localStorage["checked"]) {
+		var localStoredData = JSON.parse(localStorage["checked"]);
+		var checkboxes = $("input[name='filters']");
+		for (var i = 0; i < checkboxes.length; i++) {
+			for (var j = 0; j < localStoredData.length; j++) {
+				if (checkboxes[i].value == localStoredData[j]) {
+					checkboxes[i].checked = true;
+				}
+			}
+		}
+		localStorage.removeItem('checked');
+	}
 });
-    
+
 $('.Filter-div').on("change", function() {
 
 	var selectedFiltersList = [];
 	$('#filter-checkbox input:checked').each(function() {
 		selectedFiltersList.push($(this).val());
 	});
-	
-	var data = $("input[name='filters']:checked").map(function () {return this.value;}).get();
+
+	var data = $("input[name='filters']:checked").map(function() {
+		return this.value;
+	}).get();
 	localStorage['checked'] = JSON.stringify(data);
 	document.getElementById("selectedFiltersList").value = selectedFiltersList;
-	
+
 	var $filterSlotsForm = $('#filter-slots-form');
 	$filterSlotsForm.submit();
 });
 
 $('.unit-selection').on("change", function() {
 	var orderObj = {};
-	var slotReservationId=$(this).attr('data-attribute-id');
+	var slotReservationId = $(this).attr('data-attribute-id');
 	var slotReservationStatus = $(this).attr('reservation-status');
 	orderObj['slotReservationId'] = slotReservationId;
 	orderObj['orderId'] = $(this).attr('order-id');
 	orderObj['runId'] = $('#buildId').val();
-	orderObj['reservationStatus']=slotReservationStatus;
-	
-	
+	orderObj['reservationStatus'] = slotReservationStatus;
+	var approvedBuild = $('#approvedBuild').val();
+
+
 	if ($(this).is(':checked')) {
 		orderSelectionList.push(orderObj);
-	}
-	else{
+	} else {
 		orderSelectionList = $.grep(orderSelectionList, function(e) {
-			return !(e.slotReservationId == slotReservationId) 
+			return !(e.slotReservationId == slotReservationId)
 		});
 	}
-	if(orderSelectionList.length>0)
-		{
-		if(!showUpdateButton(orderSelectionList))
+	if (orderSelectionList.length > 0 && approvedBuild != 'true') {
+		if (!showUpdateButton(orderSelectionList))
 			$('#update-reservation').addClass('hideOption');
 		else
 			$('#update-reservation').removeClass('hideOption');
 		$("#actions-dpdown").removeClass("buttonDisabled");
-		}
+	}
 	else
 		$("#actions-dpdown").addClass("buttonDisabled");
 });
@@ -179,11 +182,11 @@ $("#delete-reservation").on("click", function() {
 	ModalUtil.openModal($confirmReservationModal);
 });
 
-$("#cancel-confirm").on("click",function(){
+$("#cancel-confirm").on("click", function() {
 	ModalUtil.closeModal($confirmReservationModal);
 });
 
-$('#confirm-btn').on("click",function(){
+$('#confirm-btn').on("click", function() {
 	$.ajax({
 		type : "POST",
 		url : "./delete-reservation-data.htm",
@@ -192,62 +195,62 @@ $('#confirm-btn').on("click",function(){
 		contentType : 'application/json',
 		success : function(data) {
 			ModalUtil.closeModal($confirmReservationModal);
-			location.assign('view-slot-results-filter.htm?buildId='+$('#buildId').val()+'&selectedFiltersList=A,E,P&checkedFilter=0');
+			location.assign('view-slot-results-filter.htm?buildId=' + $('#buildId').val() + '&selectedFiltersList=A,E,P&checkedFilter=0');
 		},
 	});
 });
 
-function showUpdateButton(orderSelectionList)
-{
-	var showUpdateAction=true;
-	 for (var i = 0; i < orderSelectionList.length; i++) {
-		if(orderSelectionList[i].reservationStatus!='A' && orderSelectionList[i].reservationStatus!='E')
-				showUpdateAction=false;
+function showUpdateButton(orderSelectionList) {
+	var showUpdateAction = true;
+	for (var i = 0; i < orderSelectionList.length; i++) {
+		if (orderSelectionList[i].reservationStatus != 'A' && orderSelectionList[i].reservationStatus != 'E')
+			showUpdateAction = false;
 	}
 	return showUpdateAction;
 }
 
 $('#accept-slot-results').on("click", function() {
-	openConfirmModal();
+	ModalUtil.openModal($confirmAcceptSlotModal);
 });
 
-function openConfirmModal() {
-	$('#deleteMessage').text("You are about to accept the outcomes of this build request. Your changes will be committed and reservations marked as approved.  This operation cannot be undone. Do you wish to continue?");
-	$('#confirmDeleteModal').dialog('open');
-}
-
-$('#confirmDeleteModal').dialog({
-	autoOpen : false,
-	modal : true,
-	dialogClass : 'popupModal',
-	width : 370,
-	minHeight : 170,
-	resizable : false,
-	title : 'Confirm',
-	closeOnEscape : false,
-	open : function(event, ui) {
-		$(this).closest('.ui-dialog').find('.ui-dialog-titlebar-close').show();
-	}
+$("#cancel-accept").on("click", function() {
+	ModalUtil.closeModal($confirmAcceptSlotModal);
 });
 
-function updateRunSummary() {
+$('#confirm-accept').on("click", function() {
 	var buildId = parseInt($('#buildId').val());
 
-	var $updateBuildStatusPromise = $.ajax({
-		type : "GET",
-		url : baseBuildMatrixUrl + '/update-run-status',
+	$.ajax({
+		type : "POST",
+		url : "./show-accept-button.htm",
+		cache : false,
 		data : {
 			buildId : buildId
-		}
+		},
+		success : function(showAcceptButton) {
+			if (showAcceptButton) {
+				$.ajax({
+					url : './update-run-status.htm',
+					type : "GET",
+					data : {
+						buildId : buildId
+					},
+					success : function() {
+						ModalUtil.closeModal($confirmAcceptSlotModal);
+						$("#actions-dpdown").addClass("buttonDisabled");
+						$('#accept-slot-results').addClass("buttonDisabled");
+						document.getElementById("Matched").disabled = true;
+						document.getElementById("Exceptions").disabled = true;
+						document.getElementById("Unmatched").disabled = true;
+						document.getElementById("approvedBuild").value = true;
+					},
+				});
+
+			} else {
+				addErrorMessage("Slot reservation records should be in Matched status to Accept the build, check the data and try again");
+			}
+		},
 	});
 
-	$updateBuildStatusPromise.done(function() {
-		$('#confirmDeleteModal').dialog('close');
-	});
-
-	$('#confirmDeleteModal').dialog('close');
-}
-
-function closeConfirmDialog() {
-	$('#confirmDeleteModal').dialog('close');
-}
+	ModalUtil.closeModal($confirmAcceptSlotModal);
+});

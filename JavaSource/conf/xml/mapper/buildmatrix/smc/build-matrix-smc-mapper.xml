@@ -428,6 +428,8 @@
 		 AND SLOT_RESERVE.RESERVATION_STATUS IN 
 		<foreach collection="selectedFilters" item="id" separator="," open="(" close=")">#{id}</foreach>
 		</if>
+		 AND
+			 SLOT_RESERVE.UNIT_NUMBER <![CDATA[<>]]>''
 	</select>
 	<select id="getProductionSlotList" resultType="String">
 		SELECT 

@@ -187,6 +187,12 @@ public class BuildMatrixController {
 		else {
 			model.addObject("checkedFilter", false);
 		}
+		if (StringUtils.equals(selectedFiltersList, ApplicationConstants.RESERVATION_STATUS_ASSIGNED)) {
+			model.addObject("approvedBuild", true);
+		}
+		else {
+			model.addObject("approvedBuild", false);
+		}
 		model.addObject("showAcceptBtn", showAcceptBtn);
 		model.addObject("plantList", buildMatrixSmcService.getAllPlants());
 		model.addObject("buildId", buildId);

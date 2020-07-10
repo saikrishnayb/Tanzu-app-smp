@@ -473,6 +473,14 @@ public class BuildMatrixRestController {
 	}
 	
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping("/show-accept-button")
+	public boolean showAcceptButton(@RequestParam("buildId") int buildId) {
+		List<ProductionSlotResult> slotResults = buildMatrixSmcService.getProductionSlotResults(buildId);
+		boolean showAcceptBtn = !slotResults.stream().anyMatch(order -> !order.showAcceptBtn());
+		return showAcceptBtn;
+	}
+	
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping(value="/update-run-status", method = {RequestMethod.GET })
 	public void updateRunSummary(@RequestParam("buildId") int buildId) {
 		buildMatrixSmcService.updateRunSummary(buildId);

@@ -31,17 +31,18 @@
 							<input type="hidden" id="buildId" value="${buildId}" name="buildId"> 
 							<input type="hidden" id="selectedFiltersList" value="${selectedFiltersList}" name="selectedFiltersList"> 
 							<input type="hidden" id="checkedFilter" value="1" name="checkedFilter">
+							<input type="hidden" id="approvedBuild" value="${approvedBuild}">
 							<span> <label>Filter Results</label> 
 								<c:choose>
 									<c:when test= "${checkedFilter eq true}">
-										<span><input type="checkbox" id="Matched" value="A" name="filters" checked/><label>Matched</label></span> 
-										<span><input type="checkbox" id="Exceptions" value="E" name="filters" checked/><label>Exceptions</label></span>
-										<span><input type="checkbox" id="Unmatched" value="P" name="filters" checked/><label>Unmatched</label></span>
+										<span><input type="checkbox" id="Matched" value="A" name="filters" checked <c:if test="${approvedBuild eq true}">disabled</c:if>/><label>Matched</label></span> 
+										<span><input type="checkbox" id="Exceptions" value="E" name="filters" checked <c:if test="${approvedBuild eq true}">disabled</c:if>/><label>Exceptions</label></span>
+										<span><input type="checkbox" id="Unmatched" value="P" name="filters" checked <c:if test="${approvedBuild eq true}">disabled</c:if>/><label>Unmatched</label></span>
 									</c:when>
 									<c:otherwise>
-										<span><input type="checkbox" id="Matched" value="A" name="filters" /><label>Matched</label></span> 
-										<span><input type="checkbox" id="Exceptions" value="E" name="filters" /><label>Exceptions</label></span>
-										<span><input type="checkbox" id="Unmatched" value="P" name="filters" /><label>Unmatched</label></span>
+										<span><input type="checkbox" id="Matched" value="A" name="filters"/><label>Matched</label></span> 
+										<span><input type="checkbox" id="Exceptions" value="E" name="filters"/><label>Exceptions</label></span>
+										<span><input type="checkbox" id="Unmatched" value="P" name="filters"/><label>Unmatched</label></span>
 									</c:otherwise>
 								</c:choose>
 							</span>
@@ -61,7 +62,7 @@
 						<c:if test="${fn:length(slotResults) ne 0}">
 							<a id="export-slot-results" class="buttonPrimary" onclick="exportSlotResults();return false;">Export</a>
 						</c:if>
-						<a id="accept-slot-results" class="buttonSecondary  <c:if test="${!showAcceptBtn or fn:length(slotResults) eq 0}"> buttonDisabled</c:if>">Accept</a>
+						<a id="accept-slot-results" class="buttonSecondary  <c:if test="${!showAcceptBtn or fn:length(slotResults) eq 0 or (checkedFilter eq true and approvedBuild eq true)}"> buttonDisabled</c:if>">Accept</a>
 					</div>
 				</div>
 			</div>
@@ -170,14 +171,23 @@
         </div>
       </div>
     </div>
+    
+    <div class="modal row" id="confirm-accept-slot-modal">
+      <div class="modal-content col-xs-12" data-modal-title="Confirm" data-modal-max-width="350" data-keep-contents="true">
+        <div class="row">
+          <div class="col-xs-12">
+          	You are about to accept the outcomes of this build request. Your changes will be committed and reservations marked as approved. This operation cannot be undone. Do you wish to continue?
+          </div>
+          <div class="delete-confrim-button-row col-xs-12">
+            <div class="pull-right">
+              <a id="cancel-accept">Cancel</a>
+              <a id="confirm-accept" class="buttonPrimary btn">Yes</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   
-	<div id="confirmDeleteModal">
-		<p id="deleteMessage"></p>
-		<div class="confirm-modal-btn">
-			<a href="javascript:void(0)" class="secondaryLink" onclick="closeConfirmDialog();">Cancel</a> 
-			<a href="javascript:void(0)" class="buttonPrimary" onclick="updateRunSummary()">Yes</a>
-		</div>
-	</div>
 	<%@ include file="../../global/v2/footer.jsp"%>
 	<script src="${baseUrl}/js/admin-console/oem-build-matrix/file-download-helper.js" type="text/javascript"></script>
 	<script src="${baseUrl}/js/admin-console/oem-build-matrix/production-slot-results.js" type="text/javascript"></script>
