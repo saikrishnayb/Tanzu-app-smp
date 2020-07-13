@@ -1112,6 +1112,23 @@
 		ORDER BY PLANT_MANUFACTURER, PLANT_CITY
 	</select>
 	
+	<select id="getBodyPlantForImport" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant">
+		SELECT   PLANT_ID AS plantId,
+		         PLANT_MFR_CODE AS plantMfrCode,
+		         PLANT_MANUFACTURER AS plantManufacturer,
+		         PLANT_NAME AS plantName,
+		         PLANT_STATE AS state,
+		         PLANT_ZIP AS zip,
+		         PLANT_COUNTRY AS country,
+		         PLANT_CITY AS city
+		FROM     SMC.OBM_PLANTS
+		WHERE
+			PLANT_MANUFACTURER = #{header.manufacturer}
+			AND PLANT_CITY = #{header.city}
+			AND PLANT_STATE = #{header.state}
+		ORDER BY PLANT_MANUFACTURER, PLANT_CITY
+	</select>
+	
 	<select id="getBodyPlantsByMfrCode" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant">
 		SELECT   PLANT_ID AS plantId,
 		         PLANT_MFR_CODE AS plantMfrCode,
@@ -1163,6 +1180,23 @@
 		ORDER BY PLANT.PLANT_MANUFACTURER, PLANT.PLANT_CITY
 	</select>
 	
+	<select id="getSlotsBySlotIds" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlot">
+		SELECT   SLOT_ID AS slotId,
+		         SLOT_TYPE_ID AS slotTypeId,
+		         plant.PLANT_ID AS plantId,
+		         SLOT_DATE_ID AS slotDateId,
+		         SLOT_AVAILABLE AS availableSlots,
+		         SLOT_RESERVED AS reservedSlots
+		FROM     SMC.OBM_SLOTS SLOT 
+		         JOIN SMC.OBM_PLANTS PLANT ON SLOT.PLANT_ID = PLANT.PLANT_ID
+		WHERE    SLOT_ID IN (
+				<foreach collection="slotIds" item="slotId" separator="," open="" close="">
+	 				#{slotId}
+	 			</foreach>
+			)
+		ORDER BY PLANT.PLANT_MANUFACTURER, PLANT.PLANT_CITY
+	</select>
+	
 	<select id="getSlotsBySlotDatesAndPlantIds" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlot">
 		SELECT   SLOT_ID AS slotId,
 		         SLOT_TYPE_ID AS slotTypeId,
@@ -1185,6 +1219,16 @@
 		)
 		ORDER BY PLANT.PLANT_MANUFACTURER, PLANT.PLANT_CITY
 	</select>
+	
+	<update id="updateSlot">
+		UPDATE 
+			SMC.OBM_SLOTS 
+		SET
+		         SLOT_AVAILABLE = #{slot.availableSlots},
+		         SLOT_RESERVED = #{slot.reservedSlots},
+		         SLOT_ACCEPTED = #{slot.acceptedSlots}
+		WHERE    SLOT_ID = #{slot.slotId}
+	</update>
 	
 	<select id="getRegionAvailability" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlotRegionAvailability">
 		SELECT 
@@ -1366,6 +1410,8 @@
 	
 	<select statementType="CALLABLE" id="removeSlotResult">
 		{CALL SMC.SMC_REMOVE_SLOT_RESULT(#{slotReservationId, mode=IN, jdbcType=INTEGER})}
-	</select> 
+	</select>
 	
-	</mapper>
+	
+	
+</mapper>

@@ -20,7 +20,8 @@ public class ProductionSlotsMaintenanceSummary {
 	
 	public ProductionSlotsMaintenanceSummary(List<BuildMatrixBodyPlant> bodyPlantList, 
 			List<BuildMatrixSlotDate> slotDates,  
-			List<BuildMatrixSlot> slots) {
+			List<BuildMatrixSlot> slots,
+			boolean importModal) {
 		
 		Map<Integer, BuildMatrixBodyPlant> bodyPlantById = bodyPlantList.stream().collect(toMap(BuildMatrixBodyPlant::getPlantId, bmbp -> bmbp));
 		this.bodyPlantById = bodyPlantById;
@@ -37,7 +38,14 @@ public class ProductionSlotsMaintenanceSummary {
 			List<ProductionSlotsMaintenanceRow> rows = new ArrayList<>();
 			for(BuildMatrixSlotDate slotDate: slotDates) {
 				List<ProductionSlotsMaintenanceCell> cells = new ArrayList<>();
-				for(BuildMatrixSlot slot: slotsByDateId.get(slotDate.getSlotDateId())) {
+				List<BuildMatrixSlot> slotsForDate = slotsByDateId.get(slotDate.getSlotDateId());
+				if(slotsForDate == null || slotsForDate.isEmpty()) {
+					if(!importModal)
+						throw new IllegalStateException("Slots not created for Date: " + slotDate.getFormattedSlotDate());
+					else
+						continue;
+				}
+				for(BuildMatrixSlot slot: slotsForDate) {
 					BuildMatrixBodyPlant bodyPlant = bodyPlantById.get(slot.getPlantId());
 					cells.add(new ProductionSlotsMaintenanceCell(bodyPlant, slot));
 				}

@@ -1,5 +1,6 @@
 package com.penske.apps.buildmatrix.dao;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -25,6 +26,7 @@ import com.penske.apps.buildmatrix.domain.PlantProximity;
 import com.penske.apps.buildmatrix.domain.ProductionSlotResult;
 import com.penske.apps.buildmatrix.domain.RegionPlantAssociation;
 import com.penske.apps.buildmatrix.domain.enums.BuildStatus;
+import com.penske.apps.buildmatrix.model.ImportSlotsHeader;
 import com.penske.apps.suppliermgmt.annotation.DBSmc;
 
 /**
@@ -194,5 +196,12 @@ public interface BuildMatrixSmcDAO {
 	public List<BuildMatrixBodyPlant> getBodyPlantsByMfrCode(@Param("mfrCode") String mfrCode);
 
 	public List<BuildMatrixSlot> getSlotsBySlotDatesAndPlantIds(@Param("slotTypeId") int slotTypeId, @Param("slotDateIds") List<Integer> slotDateIds, @Param("plantIds") List<Integer> plantIds);
+
+	public BuildMatrixBodyPlant getBodyPlantForImport(@Param("header") ImportSlotsHeader header);
+
+	public List<BuildMatrixSlot> getSlotsBySlotIds(@Param("slotIds") Collection <Integer> slotIds);
+
+	public void updateSlot(@Param("slot") BuildMatrixSlot slot);
+	
 	
 }

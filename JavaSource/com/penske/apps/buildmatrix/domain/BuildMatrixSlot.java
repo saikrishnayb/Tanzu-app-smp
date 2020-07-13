@@ -39,6 +39,13 @@ public class BuildMatrixSlot {
 	public String getFormattedChassisArrivalDate() {
 		return StringUtils.defaultString(DateUtil.formatDateUS(chassisArrivalDate));
 	}
+	
+	public void updateAvailableSlots(int availableSlots) {
+		if(acceptedSlots + reservedSlots > availableSlots)
+			throw new IllegalArgumentException("New Available Slots less than Accepted + Reserved Slots");
+		else
+			this.availableSlots = availableSlots;
+	}
 
 	public int getSlotId() {
 		return slotId;

@@ -3,7 +3,9 @@ package com.penske.apps.buildmatrix.service;
 import static java.util.stream.Collectors.summingInt;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.toMap;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -18,6 +20,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -29,19 +32,31 @@ import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.DataValidation;
+import org.apache.poi.ss.usermodel.DataValidationConstraint;
+import org.apache.poi.ss.usermodel.DataValidationHelper;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.ss.util.CellUtil;
 import org.apache.poi.xssf.streaming.SXSSFCell;
 import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFDataValidation;
+import org.apache.poi.xssf.usermodel.XSSFDataValidationConstraint;
+import org.apache.poi.xssf.usermodel.XSSFDataValidationHelper;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.penske.apps.adminconsole.util.ApplicationConstants;
 import com.penske.apps.buildmatrix.dao.BuildMatrixCroDAO;
@@ -67,10 +82,15 @@ import com.penske.apps.buildmatrix.domain.ProductionSlotResult;
 import com.penske.apps.buildmatrix.domain.RegionPlantAssociation;
 import com.penske.apps.buildmatrix.domain.ReportResultOptionModel;
 import com.penske.apps.buildmatrix.domain.enums.BuildStatus;
+import com.penske.apps.buildmatrix.model.BuildMatrixSlotKey;
 import com.penske.apps.buildmatrix.model.BuildMixForm;
 import com.penske.apps.buildmatrix.model.BuildMixForm.AttributeRow;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm.BusinessAwardRow;
+import com.penske.apps.buildmatrix.model.ImportSlotsForm;
+import com.penske.apps.buildmatrix.model.ImportSlotsForm.SlotInfo;
+import com.penske.apps.buildmatrix.model.ImportSlotsHeader;
+import com.penske.apps.buildmatrix.model.ImportSlotsResults;
 import com.penske.apps.buildmatrix.model.ProductionSlotsMaintenanceSummary;
 import com.penske.apps.buildmatrix.model.ProductionSlotsMaintenanceSummary.ProductionSlotsMaintenanceCell;
 import com.penske.apps.buildmatrix.model.ProductionSlotsMaintenanceSummary.ProductionSlotsMaintenanceRow;
@@ -894,7 +914,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		}
 			
 		List<BuildMatrixBodyPlant> bodyPlantList = buildMatrixSmcDAO.getAllBodyPlantsforSlotMaintenance();
-		ProductionSlotsMaintenanceSummary summary = new ProductionSlotsMaintenanceSummary(bodyPlantList, slotDates, slots);
+		ProductionSlotsMaintenanceSummary summary = new ProductionSlotsMaintenanceSummary(bodyPlantList, slotDates, slots, false);
 		return summary;
 	}
 	
@@ -1098,7 +1118,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		}
 			
 		List<BuildMatrixBodyPlant> bodyPlantList = buildMatrixSmcDAO.getBodyPlantsByPlantIds(plantIds);
-		ProductionSlotsMaintenanceSummary summary = new ProductionSlotsMaintenanceSummary(bodyPlantList, slotDates, slots);
+		ProductionSlotsMaintenanceSummary summary = new ProductionSlotsMaintenanceSummary(bodyPlantList, slotDates, slots, false);
 		
 		return generateSlotMaintenanceExcel(summary, bodyPlantList);
 	}
@@ -1110,6 +1130,8 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		workbook.setCompressTempFiles(true);
 		int headerColIndex = 0;
 		CellStyle cellStyle = getCellStyle(workbook);
+		CellStyle unlocked = workbook.createCellStyle();
+		unlocked.setLocked(false);
 		
 		workSheet.setColumnWidth(headerColIndex, 20 * 300);
 		Cell dateHeaderCell = getCell(workSheet, 0, headerColIndex);
@@ -1140,7 +1162,10 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 			dateCell.setCellValue(slotRow.getSlotDate().getFormattedSlotDate());
 			
 			for(ProductionSlotsMaintenanceCell slotCell : slotRow.getCells()) {
-				dataRow.createCell(column++).setCellValue(slotCell.getSlot().getAvailableSlots());
+				SXSSFCell cell  = dataRow.createCell(column++);
+				cell.setCellValue(slotCell.getSlot().getAvailableSlots());
+				cell.setCellStyle(unlocked);
+				
 			}
 			
 			rowId++;
@@ -1150,12 +1175,111 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		
 		return workbook;
 	}
-	
+
+	@Override
+	public ImportSlotsResults importSlotMaintenace(MultipartFile file, String fileName, int slotTypeId, int year) throws IOException {
+		XSSFWorkbook workbook = new XSSFWorkbook(file.getInputStream());
+	    XSSFSheet worksheet = workbook.getSheetAt(0);
+	    
+	    Map<Integer, ImportSlotsHeader> headerByColIndex = new HashMap<>();
+	    Map<String, Map<Integer, Integer>> availableSlotsByColIndexByDate = new HashMap<>();
+	    
+	    for(int i=0; i<=worksheet.getLastRowNum(); i++) {
+	    	XSSFRow row = worksheet.getRow(i);
+	    	Map<Integer, Integer> availableSlotsByColIndex = new HashMap<>();
+	    	for(int j=0; j<row.getLastCellNum(); j++) {
+	    		XSSFCell cell = row.getCell(j);
+	    		if(i==0) {
+	    			if(j==0)
+	    				continue;
+	    			else {
+	    				String cellValue = cell.getStringCellValue();
+	    				String[] strArray = cellValue.split("-");
+	    				String manufacturer = strArray[0].trim();
+	    				String[] cityState = strArray[1].trim().split(",");
+	    				String city = cityState[0].trim();
+	    				String state = cityState[1].trim();
+	    				
+	    				headerByColIndex.put(j, new ImportSlotsHeader(manufacturer, city, state));
+	    				
+	    			}
+	    		}
+	    		else {
+	    			if(j==0)
+	    				continue;
+	    			else {
+	    				availableSlotsByColIndex.put(j, (int) cell.getNumericCellValue());
+	    			}
+	    		}
+	    	}
+	    	if(i!=0)
+	    		availableSlotsByColIndexByDate.put(row.getCell(0).getStringCellValue().trim(), availableSlotsByColIndex);    
+	    }
+	    
+	    workbook.close();
+	    
+	    Map<Integer, BuildMatrixBodyPlant> bodyPlantByColIndex = new HashMap<>();
+	    Map<Integer, ImportSlotsHeader> plantsNotFound = new HashMap<>();
+	    for(Entry<Integer,ImportSlotsHeader> entry: headerByColIndex.entrySet()) {
+	    	BuildMatrixBodyPlant plant = buildMatrixSmcDAO.getBodyPlantForImport(entry.getValue());
+	    	if(plant == null)
+	    		plantsNotFound.put(entry.getKey(), entry.getValue());
+	    	else
+	    		bodyPlantByColIndex.put(entry.getKey(), plant);
+	    }
+	    
+	    List<BuildMatrixSlotDate> slotDatesForYear = buildMatrixSmcDAO.getSlotDatesForYear(year);
+	    Map<String, BuildMatrixSlotDate> slotDatesByYearStrings = slotDatesForYear.stream().collect(toMap(BuildMatrixSlotDate::getFormattedSlotDate, sd -> sd));
+	    List<String> datesNotInYear = new ArrayList<>();
+	    Map<BuildMatrixSlotKey, Integer> availableUnitsBySlotKey = new HashMap<>();
+	    for(Entry<String, Map<Integer, Integer>> entry: availableSlotsByColIndexByDate.entrySet()) {
+	    	if(!slotDatesByYearStrings.keySet().contains(entry.getKey())) {
+	    		datesNotInYear.add(entry.getKey());
+	    	}
+	    	else {
+	    		BuildMatrixSlotDate slotDate = slotDatesByYearStrings.get(entry.getKey());
+	    		for(Entry<Integer, Integer> innerEntry: entry.getValue().entrySet()) {
+	    			if(!plantsNotFound.keySet().contains(innerEntry.getKey())) {
+	    				BuildMatrixBodyPlant bodyPlant = bodyPlantByColIndex.get(innerEntry.getKey());
+	    				availableUnitsBySlotKey.put(new BuildMatrixSlotKey(slotDate.getSlotDateId(), bodyPlant.getPlantId(), slotTypeId), innerEntry.getValue());
+	    			}
+	    		}
+	    	}
+	    }
+	    
+	    List<Integer> slotDateIds = availableUnitsBySlotKey.keySet().stream().map(BuildMatrixSlotKey::getSlotDateId).collect(toList());
+	    List<Integer> plantIds = availableUnitsBySlotKey.keySet().stream().map(BuildMatrixSlotKey::getPlantId).collect(toList());
+		List<BuildMatrixSlot> slots = buildMatrixSmcDAO.getSlotsBySlotDatesAndPlantIds(slotTypeId, slotDateIds, plantIds);
+		
+		for(BuildMatrixSlot slot: slots) {
+			Integer newAvailableSlots = availableUnitsBySlotKey.get(new BuildMatrixSlotKey(slot.getSlotDateId(), slot.getPlantId(), slot.getSlotTypeId()));
+			slot.updateAvailableSlots(newAvailableSlots);
+		}
+		
+		List<BuildMatrixBodyPlant> bodyPlantList = new ArrayList<>(bodyPlantByColIndex.values());
+		ProductionSlotsMaintenanceSummary summary = new ProductionSlotsMaintenanceSummary(bodyPlantList, slotDatesForYear, slots, true);
+		ImportSlotsResults results = new ImportSlotsResults(summary, bodyPlantList, datesNotInYear, plantsNotFound);
+		
+		return results;
+	}
+
 	@Override
 	public void deleteReservationData(List<ProductionSlotResult> orderSelectionList)
 	{
 		for(ProductionSlotResult order: orderSelectionList) {
 			buildMatrixSmcDAO.removeSlotResult(order.getSlotReservationId());
+		}
+	}
+	
+	@Override
+	public void saveImportSlots(ImportSlotsForm form) {
+		Map<Integer, Integer> availableSlotsById = form.getSlotInfos().stream().collect(toMap(si->si.getSlotId(),si->si.getAvailableSlots()));
+		List<BuildMatrixSlot> slots = buildMatrixSmcDAO.getSlotsBySlotIds(availableSlotsById.keySet());
+		
+		for(BuildMatrixSlot slot: slots) {
+			int newAvailableSlots = availableSlotsById.get(slot.getSlotId());
+			slot.updateAvailableSlots(newAvailableSlots);
+			buildMatrixSmcDAO.updateSlot(slot);
 		}
 		
 	}

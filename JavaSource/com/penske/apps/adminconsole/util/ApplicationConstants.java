@@ -73,6 +73,7 @@ public class ApplicationConstants {
 	public static final String WHEEL_MATERIAL_CHANGE_REQUIRED = "Wheel Change Required";
 	public static final String VEHICLE_TYPE_CHANGE_REQUIRED = "Vehicle Type Change Required";
 	public static final String SLOT_MAINTENANCE_RESULTS = "Slot Maintenance Results";
+	public static final String FILETYPE = "FILETYPE";
 	
 	//OEM Build Matrix
 	public static final String String_ZERO="0";

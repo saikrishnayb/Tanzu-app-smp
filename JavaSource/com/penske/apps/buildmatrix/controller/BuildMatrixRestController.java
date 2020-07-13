@@ -6,6 +6,7 @@ package com.penske.apps.buildmatrix.controller;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,9 +23,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.penske.apps.adminconsole.util.ApplicationConstants;
+import com.penske.apps.adminconsole.util.FileUtil;
+import com.penske.apps.adminconsole.util.FileUtil.UploadInvalidReason;
 import com.penske.apps.buildmatrix.domain.BodyPlantCapability;
 import com.penske.apps.buildmatrix.domain.BuildAttribute;
 import com.penske.apps.buildmatrix.domain.BuildAttributeValue;
@@ -36,6 +41,8 @@ import com.penske.apps.buildmatrix.domain.ProductionSlotResult;
 import com.penske.apps.buildmatrix.domain.RegionPlantAssociation;
 import com.penske.apps.buildmatrix.model.BuildMixForm;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm;
+import com.penske.apps.buildmatrix.model.ImportSlotsForm;
+import com.penske.apps.buildmatrix.model.ImportSlotsResults;
 import com.penske.apps.buildmatrix.service.BuildMatrixSmcService;
 import com.penske.apps.suppliermgmt.annotation.SmcSecurity;
 import com.penske.apps.suppliermgmt.annotation.SmcSecurity.SecurityFunction;
@@ -481,7 +488,60 @@ public class BuildMatrixRestController {
 	}
 	
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
-	@RequestMapping(value="/update-run-status", method = {RequestMethod.GET })
+	@RequestMapping(method = RequestMethod.POST, value = "/import-slot-maintenance")
+	public ModelAndView uploadTransportExcelFile(@RequestParam(value = "file") MultipartFile file,
+			@RequestParam(value = "slotTypeId") int slotTypeId, @RequestParam(value = "year") int year, 
+    		HttpServletResponse response) throws Exception {
+		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/import-slots-confirmation");
+        //The file name is required for the save function.
+        String fileName = file.getOriginalFilename();
+        ImportSlotsResults results = null;
+        try{
+			UploadInvalidReason errorCode = FileUtil.validateFileUpload(file, Collections.singleton("xlsx"));
+			if(errorCode != null)
+			{
+				//We do some error message translation with the generic file type message, to make sure the user knows it's specific to XLSX files.
+				String message;
+				if(errorCode == UploadInvalidReason.INVALID_FILE_TYPE)
+					message = fileName + " is not a valid Excel file, Please ensure your file is an XLSX file type and try again.";
+				else
+					message = errorCode.getErrorMessage(fileName);
+
+				response.getWriter().write(message);
+			}
+			else
+			{
+				results = buildMatrixSmcService.importSlotMaintenace(file, fileName, slotTypeId, year);
+			}
+        } catch(Exception ex){
+			//handleException(ex,request);
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		}
+        
+        BuildMatrixSlotType slotType = buildMatrixSmcService.getVehicleTypeById(slotTypeId);
+        
+        String backUrl = "/suppliermgmt/app/admin-console/oem-build-matrix/prod-slot-maintenance.htm?slotType=" + slotTypeId + "&year=" + year;
+        
+        model.addObject("results", results);
+        model.addObject("slotType", slotType);
+        model.addObject("year", year);
+        model.addObject("backUrl", backUrl);
+        return model;
+	}
+	
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping(method = RequestMethod.POST, value = "/import-slots-confirm")
+	public ModelAndView saveImportResults(ImportSlotsForm form) {
+		
+		buildMatrixSmcService.saveImportSlots(form);
+		
+		ModelMap modelMap = new ModelMap();
+		modelMap.addAttribute("slotType", form.getSlotTypeId());
+		modelMap.addAttribute("year", form.getYear());
+		return new ModelAndView("redirect:/app/admin-console/oem-build-matrix/prod-slot-maintenance", modelMap);
+	}
+	
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })	@RequestMapping(value="/update-run-status", method = {RequestMethod.GET })
 	public void updateRunSummary(@RequestParam("buildId") int buildId) {
 		buildMatrixSmcService.updateRunSummary(buildId);
 	}

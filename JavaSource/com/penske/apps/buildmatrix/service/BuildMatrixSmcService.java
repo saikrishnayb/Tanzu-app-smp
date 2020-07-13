@@ -1,9 +1,11 @@
 package com.penske.apps.buildmatrix.service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.penske.apps.buildmatrix.domain.ApprovedOrder;
 import com.penske.apps.buildmatrix.domain.BodyPlantCapability;
@@ -21,6 +23,8 @@ import com.penske.apps.buildmatrix.domain.ProductionSlotResult;
 import com.penske.apps.buildmatrix.domain.RegionPlantAssociation;
 import com.penske.apps.buildmatrix.model.BuildMixForm;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm;
+import com.penske.apps.buildmatrix.model.ImportSlotsForm;
+import com.penske.apps.buildmatrix.model.ImportSlotsResults;
 import com.penske.apps.buildmatrix.model.ProductionSlotsMaintenanceSummary;
 import com.penske.apps.buildmatrix.model.ProductionSlotsUtilizationSummary;
 import com.penske.apps.suppliermgmt.model.UserContext;
@@ -159,6 +163,11 @@ public interface BuildMatrixSmcService {
 	public Map<String, String> getMfrListForExport();
 
 	public List<BuildMatrixBodyPlant> getBodyPlantsByMfrCode(String mfrCode);
+	public ImportSlotsResults importSlotMaintenace(MultipartFile file, String fileName, int slotTypeId, int year)
+			throws IOException;
 
 	public void deleteReservationData(List<ProductionSlotResult> orderSelectionList);
+
+	public void saveImportSlots(ImportSlotsForm form);
+
 }

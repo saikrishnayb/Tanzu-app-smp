@@ -81,26 +81,4 @@ $('#export-btn').on('click', function(){
 	    ModalUtil.openModal($prodSlotMaintenanceModal);
 	});
 	
-	/*var vehicleType = $('#vehicletype-drpdwn').val();
-	var vehicleTypeDesc = $('#vehicletype-drpdwn').find('option[selected="selected"]').text()
-	var year = $('#year-drpdwn').val();
-	
-	var today = new Date();
-	var filename = vehicleTypeDesc + '_' + year + '_Slot_Maintenance_';
-
-	var mm = today.getMonth() + 1;
-	if (mm < 10) {
-		mm = '0' + mm;
-	}
-	filename += mm;
-	
-	var dd = today.getDate();
-	if (dd < 10) {
-		dd = '0' + dd;
-	}
-	filename += '-' + dd;
-	
-	var list = [vehicleType, year];
-
-	DownloadUtil.downloadFileAsFormPost(baseBuildMatrixUrl + '/export-slot-maintenance.htm', filename + '.xlsx', 'list', list);*/
 });
