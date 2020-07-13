@@ -105,4 +105,8 @@ public class ApprovedOrder {
 	public void setFulfilledQty(int fulfilledQty) {
 		this.fulfilledQty = fulfilledQty;
 	}
+	
+	public int getUnfulfilledQty() {
+		return (addCount+replaceCount)-fulfilledQty;
+	}
 }

@@ -163,7 +163,7 @@ function saveCheckedBoxes(id) {
 			 if(rowCount == checkedRowCount) {
 				$('#mass-select-all').prop('checked', true); 
 				}
-			 var quantity =  parseInt($(this).find('.order-quantity').text(), 10);
+			 var quantity =  parseInt($(this).find('.order-quantity').text()-$(this).find('.order-fulfilled').text(), 10);
 			 sum += quantity;
 		 } else {
 				$('#mass-select-all').prop('checked', false);
@@ -178,8 +178,8 @@ function calculateBodiesOnOrder(){
 	var sum = 0;
 	$($orderSummaryDataTable.rows().nodes()).each(function() {
 		if($(this).find('.select-order').prop("checked") == true ) {
-			var quantity =  parseInt($(this).find('.order-quantity').text(), 10);
-			 sum += quantity;
+			var quantity =  parseInt($(this).find('.order-quantity').text()-$(this).find('.order-fulfilled').text(), 10);
+			sum += quantity;
 		}
 	});
 	$('#bodies-on-order').html(sum);

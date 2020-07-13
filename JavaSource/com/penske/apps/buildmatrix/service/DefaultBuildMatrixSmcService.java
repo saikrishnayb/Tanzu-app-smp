@@ -257,7 +257,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	// BUILD FUNCTIONS //
 	@Override
 	public BuildSummary startNewBuild(List<ApprovedOrder> selectedOrders, UserContext userContext) {
-		int bodiesOnOrder = selectedOrders.stream().collect(summingInt(order->order.getOrderTotalQuantity()));
+		int bodiesOnOrder = selectedOrders.stream().collect(summingInt(order->order.getUnfulfilledQty()));
 		int maxBeforeWeeks = buildMatrixSmcDAO.getBuildMaximumWeeksBefore();
 		int maxAfterWeeks = buildMatrixSmcDAO.getBuildMaximumWeeksAfter();
 		
@@ -272,7 +272,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	
 	@Override
 	public BuildSummary updateExistingBuild(Integer buildId, List<ApprovedOrder> selectedOrders) {
-		int bodiesOnOrder = selectedOrders.stream().collect(summingInt(order->order.getOrderTotalQuantity()));
+		int bodiesOnOrder = selectedOrders.stream().collect(summingInt(order->order.getOrderTotalQuantity()-order.getFulfilledQty()));
 		BuildSummary existingBuild = buildMatrixSmcDAO.getBuildSummary(buildId);
 		existingBuild.setReqQty(bodiesOnOrder);
 		buildMatrixSmcDAO.updateBuild(existingBuild);
@@ -322,7 +322,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 			{
 				if(order.getOrderId() == croOrderReq.getOrderId() && order.getDeliveryId() == croOrderReq.getDeliveryId())
 				{
-					order.setFulfilledQty(croOrderReq.getFulfilledQty());
+					order.setFulfilledQty(order.getFulfilledQty()+croOrderReq.getFulfilledQty());
 				}
 			}
 		}

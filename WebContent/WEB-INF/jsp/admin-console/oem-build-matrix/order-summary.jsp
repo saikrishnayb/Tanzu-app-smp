@@ -68,7 +68,7 @@
 										<td>${order.districtDesc}</td>
 										<td>${order.packageName}</td>
 										<td class="order-quantity">${order.orderTotalQuantity}</td>
-										<td>${order.fulfilledQty}</td>
+										<td class="order-fulfilled">${order.fulfilledQty}</td>
 										<td>${order.deliveryDate}</td>
 									</tr>
 								</c:forEach>

@@ -242,24 +242,25 @@ public class BuildMatrixController {
 		Integer formBuildId = orderSelectionForm.getBuildId();
 		List<CroOrderKey> selectedOrderKeys = orderSelectionForm.getCroOrderKeys();
 		List<ApprovedOrder> selectedOrders = buildMatrixCroService.getApprovedOrdersByIds(selectedOrderKeys);
+		List<ApprovedOrder> ordersToAdd = buildMatrixSmcService.getUnfulfilledOrders(selectedOrders);
 		UserContext userContext = sessionBean.getUserContext();
 		
 		int buildId = 0;
 		if(formBuildId == null) {
-			BuildSummary newBuild = buildMatrixSmcService.startNewBuild(selectedOrders, userContext);
+			BuildSummary newBuild = buildMatrixSmcService.startNewBuild(ordersToAdd, userContext);
 			buildId = newBuild.getBuildId();
 		}
 		else {
-			BuildSummary existingBuild = buildMatrixSmcService.updateExistingBuild(formBuildId, selectedOrders);
+			BuildSummary existingBuild = buildMatrixSmcService.updateExistingBuild(formBuildId, ordersToAdd);
 			buildId = existingBuild.getBuildId();
 		}
 		
-		int bodiesOnOrder = selectedOrders.stream().collect(Collectors.summingInt(order->order.getOrderTotalQuantity()));
+		int bodiesOnOrder = ordersToAdd.stream().collect(Collectors.summingInt(order->order.getOrderTotalQuantity()-order.getFulfilledQty()));
 		int totalChassis = buildMatrixCorpService.getAvailableChasisCount();
 		int excludedChassis = buildMatrixSmcService.getExcludedUnitCount();
 		int chassisAvailable = totalChassis - excludedChassis;
 		
-		model.addObject("selectedOrders", selectedOrders);
+		model.addObject("selectedOrders", ordersToAdd);
 		model.addObject("bodiesOnOrder", bodiesOnOrder);
 		model.addObject("chassisAvailable", chassisAvailable);
 		model.addObject("buildId", buildId);
@@ -310,7 +311,9 @@ public class BuildMatrixController {
 		
 		List<CroOrderKey> selectedOrderKeys = buildMatrixSmcService.getCroOrderKeysForBuild(existingBuild.getBuildId());
 		List<ApprovedOrder> selectedOrders = buildMatrixCroService.getApprovedOrdersByIds(selectedOrderKeys);
-		int bodiesOnOrder = selectedOrders.stream().collect(Collectors.summingInt(order->order.getOrderTotalQuantity()));
+		List<ApprovedOrder> ordersToAdd = buildMatrixSmcService.getUnfulfilledOrders(selectedOrders);
+		
+		int bodiesOnOrder = ordersToAdd.stream().collect(Collectors.summingInt(order->order.getUnfulfilledQty()));
 		
 		List<String> excludedUnits = buildMatrixSmcService.getExcludedUnits();
 		AvailableChassisSummaryModel summaryModel = buildMatrixCorpService.getAvailableChassis(excludedUnits);
@@ -339,7 +342,9 @@ public class BuildMatrixController {
 		
 		List<CroOrderKey> selectedOrderKeys = buildMatrixSmcService.getCroOrderKeysForBuild(existingBuild.getBuildId());
 		List<ApprovedOrder> selectedOrders = buildMatrixCroService.getApprovedOrdersByIds(selectedOrderKeys);
-		int bodiesOnOrder = selectedOrders.stream().collect(Collectors.summingInt(order->order.getOrderTotalQuantity()));
+		List<ApprovedOrder> ordersToAdd = buildMatrixSmcService.getUnfulfilledOrders(selectedOrders);
+		
+		int bodiesOnOrder = ordersToAdd.stream().collect(Collectors.summingInt(order->order.getUnfulfilledQty()));
 		
 		int totalChassis = buildMatrixCorpService.getAvailableChasisCount();
 		int excludedChassis = buildMatrixSmcService.getExcludedUnitCount();
@@ -348,9 +353,9 @@ public class BuildMatrixController {
 		
 		Map<String,Map<String,BusinessAward>> buildMixMap = buildMatrixSmcService.getExistingBuildMixData(existingBuild.getBuildId());
 		
-		int reeferUnits = selectedOrders.stream().filter(order->order.isHasReeferUnits()).collect(Collectors.summingInt(order->order.getOrderTotalQuantity()));
-		int reardoorUnits = selectedOrders.stream().filter(order->order.isHasReardoorUnits()).collect(Collectors.summingInt(order->order.getOrderTotalQuantity()));
-		int liftgateUnits = selectedOrders.stream().filter(order->order.isHasLiftgateUnits()).collect(Collectors.summingInt(order->order.getOrderTotalQuantity()));
+		int reeferUnits = ordersToAdd.stream().filter(order->order.isHasReeferUnits()).collect(Collectors.summingInt(order->order.getUnfulfilledQty()));
+		int reardoorUnits = ordersToAdd.stream().filter(order->order.isHasReardoorUnits()).collect(Collectors.summingInt(order->order.getUnfulfilledQty()));
+		int liftgateUnits = ordersToAdd.stream().filter(order->order.isHasLiftgateUnits()).collect(Collectors.summingInt(order->order.getUnfulfilledQty()));
 		
 		model.addObject("bodiesOnOrder", bodiesOnOrder);
 		model.addObject("chassisAvailable", chassisAvailable);

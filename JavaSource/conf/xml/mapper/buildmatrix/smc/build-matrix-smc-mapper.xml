@@ -583,11 +583,15 @@
  		INSERT INTO SMC.OBM_CRO_BUILD_REQUEST (
  			RUN_ID,
  			ORDER_ID,
- 			DELIVERY_ID
+ 			DELIVERY_ID,
+ 			QTY_REQUESTED,
+ 			QTY_FULFILLED
  		) VALUES (
  			#{buildId},
  			#{order.orderId},
- 			#{order.deliveryId}
+ 			#{order.deliveryId},
+ 			#{order.unfulfilledQty},
+ 			0
  		)
 	</insert>
 
