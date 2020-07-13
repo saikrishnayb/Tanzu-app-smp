@@ -8,8 +8,8 @@ $componentManagementTable.on('click', '.visible-component-check', function() {
 
   var checkbox = this;
   var componentId = $(checkbox).closest('tr').attr('data-component-id');
-  var componentGroupId = $(checkbox).closest('tr').attr('data-component-group-id');
-  var $copyCorpComponentPromise = $.post('copy-corp-component.htm', {componentId : componentId, componentGroupId: componentGroupId});
+  var componentGroupNumber = $(checkbox).closest('tr').attr('data-component-group-number');
+  var $copyCorpComponentPromise = $.post('copy-corp-component.htm', {componentId : componentId, componentGroupNumber: componentGroupNumber});
 
   $copyCorpComponentPromise.done(function() {
     var allowDuplicateCheckBox = $(checkbox).closest('tr').has('.allow-duplicate-check').find(':checkbox');

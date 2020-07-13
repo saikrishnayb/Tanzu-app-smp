@@ -43,7 +43,7 @@ public interface ComponentService {
 //COMPONENT VISIBILITY OVERRIDES -- start
 	public List<Component> loadAllAvailableComponents();
 
-    public void copyCorpComponentRow(int componentId, int componentGroupId);
+    public void copyCorpComponentRow(int componentId, int componentGroupNumber);
 
 	public List<LoadSheetComponentDetails> getTemplateComponentByTempId(int templateId);
 	

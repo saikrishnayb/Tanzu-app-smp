@@ -75,11 +75,12 @@ public interface ComponentDao {
     public List<Component> loadAllAvailableComponents();
 
     @NonVendorQuery
-    public ComponentGroup getComponentGroup(@Param("groupId") int groupId);
+    public ComponentGroup getComponentGroup(@Param("groupNumber") int groupNumber);
 
     @NonVendorQuery
     public void copyCorpComponentGroupRow(@Param("groupId") int groupId);
 
+    //FIXME: make this look up the component row
     @NonVendorQuery
     public void copyCorpComponentRow(@Param("componentId") int componentId);
 

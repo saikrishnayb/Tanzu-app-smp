@@ -6,7 +6,7 @@ public class ComponentGroup {
     private int groupId;
     private String groupName;
     private int groupSequence;
-    private String groupNumber;
+    private int groupNumber;
     private int sectionId;
     
     //Mybatis Only
@@ -21,7 +21,7 @@ public class ComponentGroup {
     public int getGroupSequence() {
         return groupSequence;
     }
-    public String getGroupNumber() {
+    public int getGroupNumber() {
         return groupNumber;
     }
     public int getSectionId() {

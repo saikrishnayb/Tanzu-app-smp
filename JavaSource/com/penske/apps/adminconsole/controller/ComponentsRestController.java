@@ -234,8 +234,8 @@ public class ComponentsRestController {
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_COMPONENTS)
     @RequestMapping(value = "copy-corp-component")
     @ResponseBody
-    public void copyCorpComponent(@RequestParam("componentId") int componentId, @RequestParam("componentGroupId") int componentGroupId) {
-    		componentService.copyCorpComponentRow(componentId, componentGroupId);
+    public void copyCorpComponent(@RequestParam("componentId") int componentId, @RequestParam("componentGroupNumber") int componentGroupNumber) {
+    		componentService.copyCorpComponentRow(componentId, componentGroupNumber);
     }
     
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_COMPONENTS)

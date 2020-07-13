@@ -31,7 +31,7 @@
 					<tbody>
 						<c:forEach items="${componentList}" var="component">
 							<c:set var="holdPayments" value="${holdPaymentsByCompId.get(component.componentId)}" />
-							<tr class="component-row" data-component-id="${component.componentId}" data-component-group-id="${component.componentGroupId}">
+							<tr class="component-row" data-component-id="${component.componentId}" data-component-group-number="${component.componentGroupNumber}">
 								<td>${component.componentGroup}</td>
 								<td>${component.subGroup}</td>
 								<td>${component.subComponentName}</td>

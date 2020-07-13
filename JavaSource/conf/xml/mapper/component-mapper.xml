@@ -138,18 +138,18 @@
   
   <!-- Component Management *****************************************************************************************-->
   <select id="loadAllAvailableComponents"  resultType="com.penske.apps.adminconsole.model.Component">
-  	SELECT SGF.COMPONENT_GROUP, 
-               SGF.SUB_GROUP, 
-               SGF.SUB_COMPONENT_NAME, 
-               SGF.COMPONENT_ID, 
-  		   SGF.COMPONENT_GROUP_ID,
-               SGF.COMPONENT_TYPE, 
-               SGF.DISPLAY_SEQUENCE, 
-               CASE WHEN CID.COMPONENT_ID IS NULL THEN 'FALSE' ELSE 'TRUE' END AS VISIBLE,
-               CASE WHEN CID.ALLOW_DUPLICATES = 'Y' THEN 'TRUE' ELSE 'FALSE' END AS allowDuplicates 
-          FROM CORP.VEHCMPSGF SGF
-     LEFT JOIN SMC.SMC_COMPONENT_INFO_DETAILS CID
-  		   ON SGF.COMPONENT_ID = CID.COMPONENT_ID
+	SELECT
+		SGF.COMPONENT_GROUP,
+		SGF.SUB_GROUP,
+		SGF.SUB_COMPONENT_NAME,
+		SGF.COMPONENT_ID,
+		SGF.COMPONENT_GROUP_ID AS componentGroupNumber,
+		SGF.COMPONENT_TYPE,
+		SGF.DISPLAY_SEQUENCE,
+		CASE WHEN CID.COMPONENT_ID IS NULL THEN 'FALSE' ELSE 'TRUE' END AS VISIBLE,
+		CASE WHEN CID.ALLOW_DUPLICATES = 'Y' THEN 'TRUE' ELSE 'FALSE' END AS allowDuplicates
+	FROM CORP.VEHCMPSGF SGF
+	LEFT JOIN SMC.SMC_COMPONENT_INFO_DETAILS CID ON SGF.COMPONENT_ID = CID.COMPONENT_ID
   </select>	
   
    <select id="getComponentGroup" resultType="com.penske.apps.suppliermgmt.domain.ComponentGroup">
@@ -159,7 +159,7 @@
             COMP_GRP_NUMBER AS groupNumber,
             COMP_SECTION_ID AS sectionId
        FROM SMC.SMC_COMPONENT_GROUPS
-      WHERE COMP_GROUP_ID = #{groupId}
+      WHERE COMP_GRP_NUMBER = #{groupNumber}
   </select>
 	
   <insert id="copyCorpComponentRow">
@@ -176,15 +176,22 @@
                   GEN_MISSING_COUNT
                 )
          SELECT COMPONENT_ID,
-                trim(COMPONENt_GROUP) || (case when sub_group != ' ' THEN ' '||trim(sub_group) else '' end) ||' '||trim( SUB_COMPONENT_NAME),
-                COMPONENT_GROUP_ID,
-                COMPONENT_TYPE,
+                trim(comp.COMPONENt_GROUP) || (case when comp.sub_group != ' ' THEN ' '||trim(comp.sub_group) else '' end) ||' '||trim(comp.SUB_COMPONENT_NAME),
+                <!-- Look up the component group ID in SMC that maps to the component group in the CORP tables (their IDs may be different) -->
+                grp.COMP_GROUP_ID,
+                comp.COMPONENT_TYPE,
                 'N' AS IS_VEHICLE_COMP,
                 'Y' AS VISIBILITY,
                 'Y' AS ALLOW_DUPLICATES,
-                DISPLAY_SEQUENCE, 
+                comp.DISPLAY_SEQUENCE, 
                 'Y' AS GEN_MISSING_COUNT
-           FROM CORP.VEHCMPSGF
+           FROM CORP.VEHCMPSGF comp
+           <!--
+           		This is admittedly a strange join, and it looks like it should be based on COMPONENT_GROUP_ID = COMP_GROUP_ID.
+           		However, SMC_COMPONENT_GROUPS.COMP_GROUP_ID does not mean the same thing as VEHCMPSGF.COMPONENT_GROUP_ID.
+           		The COMP_GRP_NUMBER in SMC_COMPONENT_GROUPS is what maps to VEHCMPSGF.COMPONENT_GROUP_ID
+           -->
+          LEFT JOIN SMC.SMC_COMPONENT_GROUPS grp ON grp.COMP_GRP_NUMBER = comp.COMPONENT_GROUP_ID
           WHERE COMPONENT_ID = #{componentId}
   </insert>
   
@@ -196,12 +203,12 @@
                   COMP_GRP_NUMBER,
                   COMP_SECTION_ID
                 )
-         SELECT COMPONENT_GROUP,
-                (SELECT MAX(COMP_GROUP_ID) FROM SMC.SMC_COMPONENT_GROUPS) AS GROUP_SEQUENCE,
-                COMPONENT_GROUP_ID,
+         SELECT grp.COMPONENT_GROUP,
+                (SELECT MAX(GROUP_SEQUENCE) + 1 FROM SMC.SMC_COMPONENT_GROUPS) AS GROUP_SEQUENCE,
+                grp.COMPONENT_GROUP_ID,
                 3 AS COMP_SECTION_ID
-           FROM CORP.VEHCMPGRF
-          WHERE COMPONENT_GROUP_ID = #{groupId}
+           FROM CORP.VEHCMPGRF grp
+          WHERE grp.COMPONENT_GROUP_ID = #{groupId}
   </insert>
   
    <update id="allowDuplicateComponents" >

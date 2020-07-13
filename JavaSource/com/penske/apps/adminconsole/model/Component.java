@@ -1,21 +1,17 @@
 package com.penske.apps.adminconsole.model;
 
-import java.util.List;
-
 public class Component {
 	private String componentGroup;
 	private String subGroup;
     private String subComponentName;
 	 
 	private Integer componentId;
-	private String componentGroupId;
+	private Integer componentGroupNumber;
 	private String componentType;
 	private Integer displaySequence;
 	private boolean visible;
 	private boolean allowDuplicates;
 	
-	private List<HoldPayment> holdPayments;
-	 
 	public String getComponentGroup() {
 		return componentGroup;
 	}
@@ -41,11 +37,11 @@ public class Component {
 	public void setComponentId(Integer componentId) {
 		this.componentId = componentId;
 	}
-	public String getComponentGroupId() {
-		return componentGroupId;
+	public Integer getComponentGroupNumber() {
+		return componentGroupNumber;
 	}
-	public void setComponentGroupId(String componentGroupId) {
-		this.componentGroupId = componentGroupId;
+	public void setComponentGroupNumber(Integer componentGroupNumber) {
+		this.componentGroupNumber = componentGroupNumber;
 	}
 	public String getComponentType() {
 		return componentType;
@@ -71,15 +67,11 @@ public class Component {
 	public void setAllowDuplicates(boolean allowDuplicates) {
 		this.allowDuplicates = allowDuplicates;
 	}
-	
-	public List<HoldPayment> getHoldPayments() {
-		return holdPayments;
-	}
-	
+
 	@Override
 	public String toString() {
 
-        return "Component [componentGroup=" + componentGroup + ", subGroup=" + subGroup + ", subComponentName=" + subComponentName + ", componentId=" + componentId + ", componentGroupId=" + componentGroupId + ", componentType=" + componentType + ", displaySequence=" + displaySequence + ", visible=" + visible + "]";
+        return "Component [componentGroup=" + componentGroup + ", subGroup=" + subGroup + ", subComponentName=" + subComponentName + ", componentId=" + componentId + ", componentGroupNumber=" + componentGroupNumber + ", componentType=" + componentType + ", displaySequence=" + displaySequence + ", visible=" + visible + "]";
 	}
 	
 	

@@ -197,10 +197,11 @@ public class DefaultComponentService implements ComponentService {
     }
 
     @Override
-    public void copyCorpComponentRow(int componentId, int componentGroupId) {
-        ComponentGroup componentGroup = componentDao.getComponentGroup(componentGroupId);
+    @Transactional
+    public void copyCorpComponentRow(int componentId, int componentGroupNumber) {
+        ComponentGroup componentGroup = componentDao.getComponentGroup(componentGroupNumber);
         if (componentGroup == null)
-            componentDao.copyCorpComponentGroupRow(componentGroupId);
+            componentDao.copyCorpComponentGroupRow(componentGroupNumber);
         componentDao.copyCorpComponentRow(componentId);
     }
     
