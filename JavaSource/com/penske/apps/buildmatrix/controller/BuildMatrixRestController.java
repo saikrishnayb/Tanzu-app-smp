@@ -482,7 +482,7 @@ public class BuildMatrixRestController {
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping("/show-accept-button")
 	public boolean showAcceptButton(@RequestParam("buildId") int buildId) {
-		List<ProductionSlotResult> slotResults = buildMatrixSmcService.getProductionSlotResults(buildId);
+		List<ProductionSlotResult> slotResults = buildMatrixSmcService.getSlotResultsByFilter(buildId, null);
 		boolean showAcceptBtn = !slotResults.stream().anyMatch(order -> !order.showAcceptBtn());
 		return showAcceptBtn;
 	}

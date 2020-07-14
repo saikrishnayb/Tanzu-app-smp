@@ -370,8 +370,6 @@
 				ON SLOT_DATES.SLOT_DATE_ID = SLOT.SLOT_DATE_ID
 		WHERE
 			 RUN_SUMMARY.RUN_ID=#{buildId}
-		 AND
-			 SLOT_RESERVE.UNIT_NUMBER <![CDATA[<>]]>''
 	</select>
 	
 	<select id="getSlotResultsByFilter" resultMap="slotResultsMap">
