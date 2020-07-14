@@ -4,6 +4,8 @@ var $prodSlotMaintenanceModal = $('#prod-slot-maintenance-modal');
 
 ModalUtil.initializeModal($prodSlotMaintenanceModal);
 
+ritsu.storeInitialFormValues('#slot-maintenance-form');
+
 var $slotMaintenanceTable = $('#slot-maintenance-table');
 var $vehicleTypeDrpdwn = $("#vehicletype-drpdwn");
 var $yearDrpdwn = $("#year-drpdwn");
@@ -35,6 +37,13 @@ $("#vehicletype-drpdwn, #year-drpdwn").on("change", function() {
 	$filterSlotsForm.submit();
 });
 
+$('.available-slot-input').on('input', function(){
+	
+	if(ritsu.isFormDirty('#slot-maintenance-form'))
+		$('#save-slots-btn').removeClass('buttonDisabled');
+	
+})
+
 $('#create-slots-btn').on('click', function(){
 	var $getCreateSlotsContentPromise = $.ajax({
 		type: "GET",
@@ -47,6 +56,9 @@ $('#create-slots-btn').on('click', function(){
 });
 
 $('#import-btn').on('click', function(){
+	if($(this).hasClass('buttonDisabled'))
+		return false;
+	
 	var vehicleType = $('#vehicletype-drpdwn').val();
 	var year = $('#year-drpdwn').val();
 	
@@ -65,6 +77,9 @@ $('#import-btn').on('click', function(){
 });
 
 $('#export-btn').on('click', function(){
+	if($(this).hasClass('buttonDisabled'))
+		return false;
+	
 	var vehicleType = $('#vehicletype-drpdwn').val();
 	var year = $('#year-drpdwn').val();
 	
@@ -80,5 +95,22 @@ $('#export-btn').on('click', function(){
 		$prodSlotMaintenanceModal.html(data);
 	    ModalUtil.openModal($prodSlotMaintenanceModal);
 	});
-	
 });
+
+$('#save-slots-btn').on('click', function(){
+	if($(this).hasClass('buttonDisabled'))
+		return false;
+	
+	var serializedForm = $('#slot-maintenance-form').serialize();
+	
+	var $saveSlotsPromise = $.ajax({
+		type: "POST",
+		url: baseBuildMatrixUrl + '/save-slots',
+		data: serializedForm
+	});
+	
+	$saveSlotsPromise.done(function(){
+		$('#save-slots-btn').addClass('buttonDisabled');
+    	ritsu.storeInitialFormValues('#slot-maintenance-form');
+	});
+})

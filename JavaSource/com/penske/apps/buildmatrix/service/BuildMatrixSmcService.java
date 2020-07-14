@@ -23,7 +23,7 @@ import com.penske.apps.buildmatrix.domain.ProductionSlotResult;
 import com.penske.apps.buildmatrix.domain.RegionPlantAssociation;
 import com.penske.apps.buildmatrix.model.BuildMixForm;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm;
-import com.penske.apps.buildmatrix.model.ImportSlotsForm;
+import com.penske.apps.buildmatrix.model.SaveSlotsForm;
 import com.penske.apps.buildmatrix.model.ImportSlotsResults;
 import com.penske.apps.buildmatrix.model.ProductionSlotsMaintenanceSummary;
 import com.penske.apps.buildmatrix.model.ProductionSlotsUtilizationSummary;
@@ -168,6 +168,6 @@ public interface BuildMatrixSmcService {
 
 	public void deleteReservationData(List<ProductionSlotResult> orderSelectionList);
 
-	public void saveImportSlots(ImportSlotsForm form);
+	public void saveImportSlots(SaveSlotsForm form);
 
 }

@@ -2,8 +2,8 @@ package com.penske.apps.buildmatrix.service;
 
 import static java.util.stream.Collectors.summingInt;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
 import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -32,24 +32,17 @@ import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
-import org.apache.poi.ss.usermodel.DataValidation;
-import org.apache.poi.ss.usermodel.DataValidationConstraint;
-import org.apache.poi.ss.usermodel.DataValidationHelper;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.ss.util.CellUtil;
 import org.apache.poi.xssf.streaming.SXSSFCell;
 import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFDataValidation;
-import org.apache.poi.xssf.usermodel.XSSFDataValidationConstraint;
-import org.apache.poi.xssf.usermodel.XSSFDataValidationHelper;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -87,8 +80,7 @@ import com.penske.apps.buildmatrix.model.BuildMixForm;
 import com.penske.apps.buildmatrix.model.BuildMixForm.AttributeRow;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm.BusinessAwardRow;
-import com.penske.apps.buildmatrix.model.ImportSlotsForm;
-import com.penske.apps.buildmatrix.model.ImportSlotsForm.SlotInfo;
+import com.penske.apps.buildmatrix.model.SaveSlotsForm;
 import com.penske.apps.buildmatrix.model.ImportSlotsHeader;
 import com.penske.apps.buildmatrix.model.ImportSlotsResults;
 import com.penske.apps.buildmatrix.model.ProductionSlotsMaintenanceSummary;
@@ -490,8 +482,8 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 			SXSSFCell vehicleTypeCell = dataRow.createCell(column++);
 			vehicleTypeCell.setCellValue(ProductionSlotResultData.getVehicleType());
 			SXSSFCell vehicleTypeRequiredCell = dataRow.createCell(column++);
-			vehicleTypeRequiredCell.setCellValue(ProductionSlotResultData.isVehicleTypeChangeRequired() ? "Yes" : "No");
-			if(ProductionSlotResultData.isVehicleTypeChangeRequired()) {
+			vehicleTypeRequiredCell.setCellValue(ProductionSlotResultData.getVehicleTypeChangeRequired() != null ? ProductionSlotResultData.getVehicleTypeChangeRequired() : "");
+			if(ProductionSlotResultData.getVehicleTypeChangeRequired() != null) {
 				vehicleTypeCell.setCellStyle(changeRequired);
 				vehicleTypeRequiredCell.setCellStyle(changeRequired);
 			}
@@ -524,8 +516,8 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 			SXSSFCell modelCell = dataRow.createCell(column++);
 			modelCell.setCellValue(ProductionSlotResultData.getChassisModel());
 			SXSSFCell modelRequiredCell = dataRow.createCell(column++);
-			modelRequiredCell.setCellValue(ProductionSlotResultData.isChassisModelChangeRequired() ? "Yes" : "No");
-			if(ProductionSlotResultData.isChassisModelChangeRequired()) {
+			modelRequiredCell.setCellValue(ProductionSlotResultData.getChassisModelChangeRequired() != null ? ProductionSlotResultData.getChassisModelChangeRequired() : "");
+			if(ProductionSlotResultData.getChassisModelChangeRequired() != null) {
 				modelCell.setCellStyle(changeRequired);
 				modelRequiredCell.setCellStyle(changeRequired);
 			}
@@ -533,8 +525,8 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 			SXSSFCell yearCell = dataRow.createCell(column++);
 			yearCell.setCellValue(ProductionSlotResultData.getChassisModelYear());
 			SXSSFCell yearRequiredCell = dataRow.createCell(column++);
-			yearRequiredCell.setCellValue(ProductionSlotResultData.isChassisModelYearChangeRequired() ? "Yes" : "No");
-			if(ProductionSlotResultData.isChassisModelYearChangeRequired()) {
+			yearRequiredCell.setCellValue(ProductionSlotResultData.getChassisModelYearChangeRequired() != null ? ProductionSlotResultData.getChassisModelYearChangeRequired() : "");
+			if(ProductionSlotResultData.getChassisModelYearChangeRequired() != null) {
 				yearCell.setCellStyle(changeRequired);
 				yearRequiredCell.setCellStyle(changeRequired);
 			}
@@ -542,8 +534,8 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 			SXSSFCell colorCell = dataRow.createCell(column++);
 			colorCell.setCellValue(ProductionSlotResultData.getChassisColor());
 			SXSSFCell colorRequiredCell = dataRow.createCell(column++);
-			colorRequiredCell.setCellValue(ProductionSlotResultData.isChassisColorChangeRequired() ? "Yes" : "No");
-			if(ProductionSlotResultData.isChassisColorChangeRequired()) {
+			colorRequiredCell.setCellValue(ProductionSlotResultData.getChassisColorChangeRequired() != null ? ProductionSlotResultData.getChassisColorChangeRequired() : "");
+			if(ProductionSlotResultData.getChassisColorChangeRequired() != null) {
 				colorCell.setCellStyle(changeRequired);
 				colorRequiredCell.setCellStyle(changeRequired);
 			}
@@ -559,8 +551,8 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 			SXSSFCell wheelCell = dataRow.createCell(column++);
 			wheelCell.setCellValue(ProductionSlotResultData.getWheelMaterial());
 			SXSSFCell wheelRequiredCell = dataRow.createCell(column++);
-			wheelRequiredCell.setCellValue(ProductionSlotResultData.isChassisWheelMatChangeRequired() ? "Yes" : "No");
-			if(ProductionSlotResultData.isChassisColorChangeRequired()) {
+			wheelRequiredCell.setCellValue(ProductionSlotResultData.getChassisWheelMatChangeRequired() != null ? ProductionSlotResultData.getChassisWheelMatChangeRequired() : "");
+			if(ProductionSlotResultData.getChassisWheelMatChangeRequired() != null) {
 				wheelCell.setCellStyle(changeRequired);
 				wheelRequiredCell.setCellStyle(changeRequired);
 			}
@@ -1277,14 +1269,16 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	}
 	
 	@Override
-	public void saveImportSlots(ImportSlotsForm form) {
+	public void saveImportSlots(SaveSlotsForm form) {
 		Map<Integer, Integer> availableSlotsById = form.getSlotInfos().stream().collect(toMap(si->si.getSlotId(),si->si.getAvailableSlots()));
 		List<BuildMatrixSlot> slots = buildMatrixSmcDAO.getSlotsBySlotIds(availableSlotsById.keySet());
 		
 		for(BuildMatrixSlot slot: slots) {
 			int newAvailableSlots = availableSlotsById.get(slot.getSlotId());
-			slot.updateAvailableSlots(newAvailableSlots);
-			buildMatrixSmcDAO.updateSlot(slot);
+			if(newAvailableSlots != slot.getAvailableSlots()) {
+				slot.updateAvailableSlots(newAvailableSlots);
+				buildMatrixSmcDAO.updateSlot(slot);
+			}
 		}
 		
 	}

@@ -2,7 +2,7 @@ package com.penske.apps.buildmatrix.model;
 
 import java.util.List;
 
-public class ImportSlotsForm {
+public class SaveSlotsForm {
 
 	private int slotTypeId;
 	private int year;

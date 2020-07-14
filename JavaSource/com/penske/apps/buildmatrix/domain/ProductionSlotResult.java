@@ -35,11 +35,11 @@ public class ProductionSlotResult {
 	private String reservationStatus;
 	private String wheelMaterial;
 	private boolean changeRequired;
-	private boolean chassisModelChangeRequired;
-	private boolean chassisModelYearChangeRequired;
-	private boolean chassisColorChangeRequired;
-	private boolean chassisWheelMatChangeRequired;
-	private boolean vehicleTypeChangeRequired;
+	private String chassisModelChangeRequired;
+	private String chassisModelYearChangeRequired;
+	private String chassisColorChangeRequired;
+	private String chassisWheelMatChangeRequired;
+	private String vehicleTypeChangeRequired;
 	private List<String> productionSlotList;
 	
 
@@ -152,27 +152,27 @@ public class ProductionSlotResult {
 		return wheelMaterial;
 	}
 	
-	public boolean isChassisColorChangeRequired() {
-		return chassisColorChangeRequired;
-	}
-	
-	public boolean isChassisModelChangeRequired() {
-		return chassisModelChangeRequired;
-	}
-	
-	public boolean isChassisModelYearChangeRequired() {
-		return chassisModelYearChangeRequired;
-	}
-	
-	public boolean isChassisWheelMatChangeRequired() {
-		return chassisWheelMatChangeRequired;
-	}
-
 	public boolean isChangeRequired() {
 		return changeRequired;
 	}
 	
-	public boolean isVehicleTypeChangeRequired() {
+	public String getChassisColorChangeRequired() {
+		return chassisColorChangeRequired;
+	}
+	
+	public String getChassisModelChangeRequired() {
+		return chassisModelChangeRequired;
+	}
+	
+	public String getChassisModelYearChangeRequired() {
+		return chassisModelYearChangeRequired;
+	}
+	
+	public String getChassisWheelMatChangeRequired() {
+		return chassisWheelMatChangeRequired;
+	}
+	
+	public String getVehicleTypeChangeRequired() {
 		return vehicleTypeChangeRequired;
 	}
 	

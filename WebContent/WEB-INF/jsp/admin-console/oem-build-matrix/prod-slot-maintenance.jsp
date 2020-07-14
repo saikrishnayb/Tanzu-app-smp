@@ -51,31 +51,41 @@
           				<a id="create-slots-btn" class="buttonSecondary">Create Slots</a>
           				<a id="import-btn" class="buttonSecondary<c:if test="${noRows}"> buttonDisabled</c:if>">Import</a>
           				<a id="export-btn" class="buttonSecondary<c:if test="${noRows}"> buttonDisabled</c:if>">Export</a>
+          				<a id="save-slots-btn" class="buttonPrimary buttonDisabled">Save</a>
           			</div>
         		</div>
       		</div>
       		<div class="row">
         		<div class="col-xs-12">
-					<table id="slot-maintenance-table">
-						<thead>
-								<tr>
-								<th class="centerAlign slot-table-header" id="prod-date">Production Date</th>
-								<c:forEach items="${bodyplantList}" var="plantData">
-									<th class="centerAlign slot-table-header no-sort" id="${plantData.plantId}"> ${plantData.plantManufacturer} <br> ${plantData.city}, ${plantData.state}</th>	
-								</c:forEach>
-								</tr>
-						</thead>
-						<tbody id="slot-maintenance-tablebody">
-							<c:forEach items="${summary.rows}" var="row">
-								<tr>
-									<td class="centerAlign slot-table-header" headers="prod-date">${row.slotDate.formattedSlotDate}</td>
-									<c:forEach items="${row.cells}" var="cell">
-										<td class="centerAlign slot-table-header" headers="${cell.bodyPlant.plantId}"><input class ="available-slot-input" type="number" value="${cell.slot.availableSlots}"/></td>
+        			<form id="slot-maintenance-form">
+	        			<input type="hidden" name="slotTypeId" value="${slotTypeId}">
+						<input type="hidden" name="year" value="${year}">
+						<table id="slot-maintenance-table">
+							<thead>
+									<tr>
+									<th class="centerAlign slot-table-header" id="prod-date">Production Date</th>
+									<c:forEach items="${bodyplantList}" var="plantData">
+										<th class="centerAlign slot-table-header no-sort" id="${plantData.plantId}"> ${plantData.plantManufacturer} <br> ${plantData.city}, ${plantData.state}</th>	
 									</c:forEach>
-								</tr>
-							</c:forEach>
-						</tbody>
-					</table>
+									</tr>
+							</thead>
+							<tbody id="slot-maintenance-tablebody">
+								<c:set var="slotIndex" value="0" />
+								<c:forEach items="${summary.rows}" var="row">
+									<tr>
+										<td class="centerAlign slot-table-header" headers="prod-date">${row.slotDate.formattedSlotDate}</td>
+										<c:forEach items="${row.cells}" var="cell">
+											<td class="centerAlign slot-table-header" headers="${cell.bodyPlant.plantId}">
+												<input type="hidden" name="slotInfos[${slotIndex}].slotId" value="${cell.slot.slotId}" />
+												<input class ="available-slot-input" name="slotInfos[${slotIndex}].availableSlots" type="number" value="${cell.slot.availableSlots}"/>
+											</td>
+											<c:set var="slotIndex" value="${slotIndex+1}" />
+										</c:forEach>
+									</tr>
+								</c:forEach>
+							</tbody>
+						</table>
+					</form>
 				</div>
 			</div>
 			<div id="prod-slot-maintenance-modal" class="modal"></div>	

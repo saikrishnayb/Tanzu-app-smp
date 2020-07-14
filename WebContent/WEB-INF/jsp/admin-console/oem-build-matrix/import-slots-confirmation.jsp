@@ -49,7 +49,7 @@
       		</div>
       		<div class="row">
         		<div class="col-xs-12">
-        			<form id="import-slots-confirm-form" action="./import-slots-confirm" method="POST">
+        			<form id="import-slots-confirm-form" action="./save-slots" method="POST">
 	        			<input type="hidden" name="slotTypeId" value="${slotType.slotTypeId}">
 						<input type="hidden" name="year" value="${year}">
 						<table id="import-slots-table">

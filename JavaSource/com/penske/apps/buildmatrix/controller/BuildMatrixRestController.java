@@ -41,8 +41,8 @@ import com.penske.apps.buildmatrix.domain.ProductionSlotResult;
 import com.penske.apps.buildmatrix.domain.RegionPlantAssociation;
 import com.penske.apps.buildmatrix.model.BuildMixForm;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm;
-import com.penske.apps.buildmatrix.model.ImportSlotsForm;
 import com.penske.apps.buildmatrix.model.ImportSlotsResults;
+import com.penske.apps.buildmatrix.model.SaveSlotsForm;
 import com.penske.apps.buildmatrix.service.BuildMatrixSmcService;
 import com.penske.apps.suppliermgmt.annotation.SmcSecurity;
 import com.penske.apps.suppliermgmt.annotation.SmcSecurity.SecurityFunction;
@@ -530,8 +530,8 @@ public class BuildMatrixRestController {
 	}
 	
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
-	@RequestMapping(method = RequestMethod.POST, value = "/import-slots-confirm")
-	public ModelAndView saveImportResults(ImportSlotsForm form) {
+	@RequestMapping(method = RequestMethod.POST, value = "/save-slots")
+	public ModelAndView saveSlots(SaveSlotsForm form) {
 		
 		buildMatrixSmcService.saveImportSlots(form);
 		
@@ -551,4 +551,5 @@ public class BuildMatrixRestController {
 	public void deleteReservationData(@RequestBody List<ProductionSlotResult> orderSelectionList) {
 		buildMatrixSmcService.deleteReservationData(orderSelectionList);
 	}
+	
 }
