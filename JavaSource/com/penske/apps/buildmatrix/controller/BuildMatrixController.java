@@ -178,8 +178,8 @@ public class BuildMatrixController {
 												 @RequestParam("checkedFilter") String checkedFilter) {
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/production-slot-results");
 		List<String> selectedFilters = Arrays.asList(selectedFiltersList.split(","));
-		model.addObject("slotResults",buildMatrixSmcService.getSlotResultsByFilter(buildId, selectedFilters));
-		List<ProductionSlotResult> slotResults=buildMatrixSmcService.getProductionSlotResults(buildId);
+		List<ProductionSlotResult> slotResults=buildMatrixSmcService.getSlotResultsByFilter(buildId, null);
+		model.addObject("slotResults",slotResults.stream().filter(e ->selectedFilters.contains(e.getReservationStatus())).collect(Collectors.toList()));
 		boolean showAcceptBtn = !slotResults.stream().anyMatch(order->!order.showAcceptBtn());
 		if (StringUtils.equals(checkedFilter, ApplicationConstants.String_ZERO)) {
 			model.addObject("checkedFilter", true);
