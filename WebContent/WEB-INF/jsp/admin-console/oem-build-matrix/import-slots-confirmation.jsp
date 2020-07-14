@@ -13,7 +13,7 @@
 <body>
 	<%@ include file="../../global/navigation/sub-nav.jsp"%>
 	<div id="mainContent" class="borderTop">
-		<c:set var="noRows" value="${empty summary.rows}" />
+		<c:set var="noRows" value="${empty results.summary.rows}" />
 		<%@ include file="../../global/navigation/admin-console/oem-build-matrix/left-nav.jsp"%>
 		<div class="leftNavAdjacentContainer">
 			<%@ include file="../../global/v2/page-error-container.jsp"%>
@@ -31,9 +31,21 @@
 	      			</div>
 		      		<div class="btn-div floatRight">
 		  				<a id="back-btn" class="buttonSecondary" href="${backUrl}">Back</a>
-		  				<a id="import-confirm-btn" class="buttonPrimary">Import</a>
+		  				<a id="import-confirm-btn" class="buttonPrimary<c:if test="${noRows}"> buttonDisabled</c:if>">Import</a>
 		  			</div>
 		  		</div>
+      		</div>
+      		<div class="row invalid-plants-row<c:if test="${empty results.plantsNotFound}"> hidden</c:if>" >
+      			<div class="col-xs-12">
+	      			<div class="alert alert-warning">
+	      				The following plants were not found:
+	      				<ul>
+		      				<c:forEach items="${results.plantsNotFound}" var="plant">
+								<li>${plant}</li>
+							</c:forEach>
+						</ul>
+	      			</div>
+	      		</div>
       		</div>
       		<div class="row">
         		<div class="col-xs-12">

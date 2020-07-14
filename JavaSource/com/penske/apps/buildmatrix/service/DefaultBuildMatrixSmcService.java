@@ -1249,11 +1249,16 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	    
 	    List<Integer> slotDateIds = availableUnitsBySlotKey.keySet().stream().map(BuildMatrixSlotKey::getSlotDateId).collect(toList());
 	    List<Integer> plantIds = availableUnitsBySlotKey.keySet().stream().map(BuildMatrixSlotKey::getPlantId).collect(toList());
-		List<BuildMatrixSlot> slots = buildMatrixSmcDAO.getSlotsBySlotDatesAndPlantIds(slotTypeId, slotDateIds, plantIds);
-		
-		for(BuildMatrixSlot slot: slots) {
-			Integer newAvailableSlots = availableUnitsBySlotKey.get(new BuildMatrixSlotKey(slot.getSlotDateId(), slot.getPlantId(), slot.getSlotTypeId()));
-			slot.updateAvailableSlots(newAvailableSlots);
+	    List<BuildMatrixSlot> slots = new ArrayList<>();
+		if(slotDateIds.isEmpty() || slotDateIds == null || plantIds.isEmpty() || plantIds == null)
+			slots = Collections.emptyList();
+		else	
+			slots = buildMatrixSmcDAO.getSlotsBySlotDatesAndPlantIds(slotTypeId, slotDateIds, plantIds);
+		if(!slots.isEmpty()) {
+			for(BuildMatrixSlot slot: slots) {
+				Integer newAvailableSlots = availableUnitsBySlotKey.get(new BuildMatrixSlotKey(slot.getSlotDateId(), slot.getPlantId(), slot.getSlotTypeId()));
+				slot.updateAvailableSlots(newAvailableSlots);
+			}
 		}
 		
 		List<BuildMatrixBodyPlant> bodyPlantList = new ArrayList<>(bodyPlantByColIndex.values());
