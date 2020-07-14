@@ -20,10 +20,10 @@
 			<c:choose>
 				<c:when test="${isDataAvailable eq true}">
 					<div class="tier-main-div">
-						<c:forEach items="${proximityModel.tiers}" var="tierModel">
+						<c:forEach items="${proximityModel.tiers}" var="tierModel" varStatus="theCount">
 							<c:set var="tier" value="${tierModel.tier}" />
 							
-							<div class="tier-div vertical-line" id="tier${tier}-div">
+							<div class="tier-div ${theCount.index < 2 ? 'vertical-line' : ''}" id="tier${tier}-div">
 								<div class="tier-header">
 									<h2 id="tier${tier}-header">Tier ${tier}</h2>
 								</div>

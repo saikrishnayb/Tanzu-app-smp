@@ -292,7 +292,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	
 	@Override
 	public BuildSummary updateExistingBuild(Integer buildId, List<ApprovedOrder> selectedOrders) {
-		int bodiesOnOrder = selectedOrders.stream().collect(summingInt(order->order.getOrderTotalQuantity()-order.getFulfilledQty()));
+		int bodiesOnOrder = selectedOrders.stream().collect(summingInt(order->order.getUnfulfilledQty()));
 		BuildSummary existingBuild = buildMatrixSmcDAO.getBuildSummary(buildId);
 		existingBuild.setReqQty(bodiesOnOrder);
 		buildMatrixSmcDAO.updateBuild(existingBuild);
