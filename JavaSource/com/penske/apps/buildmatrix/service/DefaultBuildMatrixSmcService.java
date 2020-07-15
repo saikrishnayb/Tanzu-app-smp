@@ -251,6 +251,11 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		buildMatrixSmcDAO.updateRunSummary(buildId);
 	}
 	
+	public List<BuildMatrixSlotDate> getSlotDatesForPlant(int plantId) {
+		List<BuildMatrixSlotDate> slotDatesList = buildMatrixSmcDAO.getSlotDatesForPlant(plantId);
+		return slotDatesList;
+	}
+	
 	@Override
 	public BuildAttributeValue addOrUpdateAttribute(int attributeId, String attributeValue) {
 		BuildAttributeValue attrValue = new BuildAttributeValue(attributeValue);
@@ -1266,6 +1271,12 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		for(ProductionSlotResult order: orderSelectionList) {
 			buildMatrixSmcDAO.removeSlotResult(order.getSlotReservationId());
 		}
+	}
+	
+	@Override
+	public void updateReservationData(int slotReservationId, int slotId, int plantId, String unitNumber)
+	{
+			buildMatrixSmcDAO.updateSlotReservations(slotReservationId, slotId, plantId, unitNumber);
 	}
 	
 	@Override

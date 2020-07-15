@@ -90,62 +90,18 @@
 										<input class="unit-selection" type="checkbox" data-attribute-id="${unit.slotReservationId}" reservation-status="${unit.reservationStatus}" order-id="${unit.orderId}"/>
 										<a class="secondaryLink">${unit.orderId}</a>
 									</td>
-									<c:choose>
-										<c:when test="${unit.reservationStatus eq 'P'}">
-											<td class="leftAlign"><input class="width-55" /></td>
-										</c:when>
-										<c:otherwise>
-											<td class="leftAlign">
-												${unit.unitNumber}
-												<c:if test="${unit.changeRequired}">
-												<img rel="tooltip" class="centerImage change-required" src="${commonStaticUrl}/images/warning.png" title="Change Required"/>
-												</c:if>
-											</td>
-										</c:otherwise>
-									</c:choose>
+									<td class="leftAlign">${unit.unitNumber}</td>
 									<td class="leftAlign">${unit.programName}</td>
 									<td class="leftAlign">${unit.region}</td>
 									<td class="leftAlign">${unit.area}</td>
 									<td class="leftAlign">${unit.districtNumber}</td>
 									<td class="leftAlign">${unit.districtName}</td>
 									<td class="leftAlign"><fmt:formatDate pattern="MM/dd/yyyy" value="${unit.requestedDeliveryDate}" /></td>
-									<td class="leftAlign">
-										<div class="leftAlign">
-											<c:if test="${unit.reservationStatus eq 'A'}">${unit.productionSlot}
-											</c:if>
-											<c:if test="${unit.reservationStatus eq 'E'}">
-                                                <select class="production-slot width-200" id="values" multiple>
-                                                    <c:forEach items="${unit.productionSlotList}" var="productionSlot">
-                                                        <c:set var="isSlotselected">${unit.productionSlot eq productionSlot}</c:set>
-                                                        <option value="${productionSlot}"  ${isSlotselected?'selected="selected"':'' }>${productionSlot}</option>
-                                                    </c:forEach>
-                                                </select>
-                                            </c:if>
-                                            <c:if test="${unit.reservationStatus eq 'P'}">
-                                                <select class="production-slot width-200" multiple>
-                                                    <c:forEach items="${plantList}" var="plants">
-                                                        <c:set var="isPlantselected">${unit.productionSlot eq plants}</c:set>
-                                                        <option value="${plants}"  ${isPlantselected?'selected="selected"':'' }>${plants}</option>
-                                                    </c:forEach>
-                                                </select>
-											</c:if>
-										</div>
-									</td>
+									<td class="leftAlign">${unit.productionSlot}</td>
 									<td class="row leftAlign">
 										<fmt:parseDate pattern="MM/dd/yyy" value="${unit.productionDate}" var="parsedProductionDate" /> 
-										<c:choose>
-										<c:when test="${unit.reservationStatus eq 'A'}">
 											<fmt:formatDate pattern="MM/dd/yyyy" value="${parsedProductionDate}" />
-										</c:when>
-										<c:otherwise> 
-											<div class="form-group d-inline-block">
-												<fmt:formatDate pattern="MM/dd/yyyy" var="formattedProductionDate" value="${parsedProductionDate}" />
-												<input class="production-date  date-picker numeric numeric-jquery-date advanced-date width-75"
-													required value="${formattedProductionDate}" />
-											</div>
-										</c:otherwise>
-										</c:choose>
-								  </td>
+								   </td>
 								</tr>
 							</c:forEach>
 						</tbody>

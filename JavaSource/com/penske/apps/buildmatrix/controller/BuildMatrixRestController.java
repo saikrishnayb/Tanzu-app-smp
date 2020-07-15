@@ -541,7 +541,8 @@ public class BuildMatrixRestController {
 		return new ModelAndView("redirect:/app/admin-console/oem-build-matrix/prod-slot-maintenance", modelMap);
 	}
 	
-	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })	@RequestMapping(value="/update-run-status", method = {RequestMethod.GET })
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })	
+	@RequestMapping(value="/update-run-status", method = {RequestMethod.GET })
 	public void updateRunSummary(@RequestParam("buildId") int buildId) {
 		buildMatrixSmcService.updateRunSummary(buildId);
 	}
@@ -550,6 +551,13 @@ public class BuildMatrixRestController {
 	@RequestMapping("/delete-reservation-data")
 	public void deleteReservationData(@RequestBody List<ProductionSlotResult> orderSelectionList) {
 		buildMatrixSmcService.deleteReservationData(orderSelectionList);
+	}
+	
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping("/update-reservation-data")
+	public void updateReservationData(@RequestParam("slotReservationId") int slotReservationId, @RequestParam("slotId") int slotId,
+									  @RequestParam("plantId") int plantId, @RequestParam("unitNumber") String unitNumber) {
+		buildMatrixSmcService.updateReservationData(slotReservationId, slotId, plantId, unitNumber);
 	}
 	
 }

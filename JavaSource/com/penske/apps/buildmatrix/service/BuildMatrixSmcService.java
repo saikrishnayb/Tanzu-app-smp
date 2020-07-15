@@ -66,6 +66,8 @@ public interface BuildMatrixSmcService {
 	
 	public void updateRunSummary(int buildId);
 	
+	public List<BuildMatrixSlotDate> getSlotDatesForPlant(int plantId);
+	
 	//***** BUILD MATRIX WORKFLOW *****//
 	
 	// BUILD HISTROY //
@@ -167,6 +169,8 @@ public interface BuildMatrixSmcService {
 			throws IOException;
 
 	public void deleteReservationData(List<ProductionSlotResult> orderSelectionList);
+	
+	public void updateReservationData(int slotReservationId, int slotId, int plantId, String unitNumber);
 
 	public void saveImportSlots(SaveSlotsForm form);
 

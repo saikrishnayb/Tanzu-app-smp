@@ -77,6 +77,8 @@ public interface BuildMatrixSmcDAO {
     public List<String> getAllPlants();
     
     public void updateRunSummary(@Param("buildId") int buildId);
+    
+    public List<BuildMatrixSlotDate> getSlotDatesForPlant(@Param("plantId")int plantId);
 	
 	//***** BUILD MATRIX WORKFLOW *****//
 	
@@ -188,6 +190,8 @@ public interface BuildMatrixSmcDAO {
 	public BuildMatrixSlotType getVehicleTypeById(@Param("slotTypeId") int slotTypeId);
 	
 	public void removeSlotResult(@Param("slotReservationId") int slotReservationId);
+	
+	public void updateSlotReservations(@Param("slotReservationId") int slotReservationId, @Param("slotId") int slotId, @Param("plantId") int plantId, @Param("unitNumber") String unitNumber);
 
 	public List<Integer> getSlotIdForPlantId(@Param("plantId")int plantId);
 	

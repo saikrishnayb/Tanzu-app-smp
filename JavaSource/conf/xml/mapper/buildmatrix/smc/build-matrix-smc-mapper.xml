@@ -448,6 +448,16 @@
 		SET    RUN_STATUS = 'A'
 		WHERE  RUN_ID = #{buildId}
 	</update>
+	
+	<select id="getSlotDatesForPlant" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlotDate">
+		SELECT 
+					SLOTS.SLOT_ID AS slotId,
+					DATE(to_date(SLOT_DATES.SLOT_DATE,'MM/DD/YYYY')) AS slotDate 
+		FROM 		SMC.OBM_SLOTS SLOTS
+		LEFT JOIN  	SMC.OBM_SLOT_DATES SLOT_DATES 
+		ON 			SLOT_DATES.SLOT_DATE_ID = SLOTS.SLOT_DATE_ID
+		WHERE		SLOTS.PLANT_ID = #{plantId}
+	</select>
 		
 	<!--***** BUILD MATRIX WORKFLOW *****-->
 	
@@ -1408,6 +1418,9 @@
 		{CALL SMC.SMC_REMOVE_SLOT_RESULT(#{slotReservationId, mode=IN, jdbcType=INTEGER})}
 	</select>
 	
-	
+	<select statementType="CALLABLE" id="updateSlotReservations">
+		{CALL SMC.SMC_SAVE_SLOT_RESERVATION(#{slotReservationId, mode=IN, jdbcType=INTEGER},#{slotId, mode=IN, jdbcType=INTEGER},
+											#{plantId, mode=IN, jdbcType=INTEGER},#{unitNumber, mode=IN, jdbcType=VARCHAR})}
+	</select>
 	
 </mapper>

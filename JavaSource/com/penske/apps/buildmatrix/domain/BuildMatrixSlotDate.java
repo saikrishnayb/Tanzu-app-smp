@@ -16,6 +16,7 @@ public class BuildMatrixSlotDate {
 	private Date slotDate;
 	private int weekOfYear;
 	private List<BuildMatrixSlot> buildSlots;
+	private int slotId;
 
 	protected BuildMatrixSlotDate() {};
 	
@@ -43,6 +44,9 @@ public class BuildMatrixSlotDate {
 		return weekOfYear;
 	}
 
+	public int getSlotId() {
+		return slotId;
+	}
 
 	public List<BuildMatrixSlot> getBuildSlots() { return buildSlots; }
 
