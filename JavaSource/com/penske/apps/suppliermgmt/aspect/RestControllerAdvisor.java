@@ -5,10 +5,8 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,12 +26,6 @@ import com.penske.apps.suppliermgmt.util.ApplicationConstants;
 @ResponseBody
 public class RestControllerAdvisor
 {
-	
-	@InitBinder
-    public void initBinder(WebDataBinder binder) {
-        binder.setAutoGrowCollectionLimit(9999);
-    }
-	
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(AppValidationException.class)
 	public AjaxError handleValidationException(AppValidationException ex)

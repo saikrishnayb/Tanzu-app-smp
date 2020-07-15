@@ -11,6 +11,7 @@ public class GlobalControllerAdvisor {
 
 	@InitBinder
 	protected void initBinder(WebDataBinder binder){
+		binder.setAutoGrowCollectionLimit(9999);
 		binder.registerCustomEditor(int.class, new SmcCustomNumberEditor(Integer.class));
 	}
 }
