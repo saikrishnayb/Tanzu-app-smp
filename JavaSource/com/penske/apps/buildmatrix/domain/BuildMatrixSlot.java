@@ -41,10 +41,7 @@ public class BuildMatrixSlot {
 	}
 	
 	public void updateAvailableSlots(int availableSlots) {
-		if(acceptedSlots + reservedSlots > availableSlots)
-			throw new IllegalArgumentException("New Available Slots less than Accepted + Reserved Slots");
-		else
-			this.availableSlots = availableSlots;
+		this.availableSlots = availableSlots;
 	}
 
 	public int getSlotId() {
