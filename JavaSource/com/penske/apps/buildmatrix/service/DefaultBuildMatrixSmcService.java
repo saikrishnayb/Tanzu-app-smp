@@ -246,6 +246,11 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		return allPlants;
 	}
 	
+	public List<String> getProductionSlotList(int buildId, String unitNumber) {
+		List<String> allPlants = buildMatrixSmcDAO.getProductionSlotList(buildId, unitNumber);
+		return allPlants;
+	}
+	
 	@Override
 	public void updateRunSummary(int buildId) {
 		buildMatrixSmcDAO.updateRunSummary(buildId);

@@ -153,10 +153,12 @@ $('.unit-selection').on("change", function() {
 	var orderObj = {};
 	var slotReservationId = $(this).attr('data-attribute-id');
 	var slotReservationStatus = $(this).attr('reservation-status');
+	var unitNumber = $(this).attr('unit-number');
 	orderObj['slotReservationId'] = slotReservationId;
 	orderObj['orderId'] = $(this).attr('order-id');
 	orderObj['runId'] = $('#buildId').val();
 	orderObj['reservationStatus'] = slotReservationStatus;
+	orderObj['unitNumber'] = unitNumber;
 	var approvedBuild = $('#approvedBuild').val();
 
 

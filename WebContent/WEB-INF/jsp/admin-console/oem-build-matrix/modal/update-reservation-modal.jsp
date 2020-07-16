@@ -21,11 +21,20 @@
 					<tr class="row" >
 						<td class="col-xs-4"><span class="formLbl">Plant</span></td>
 						<td class="col-xs-8">
+						<c:if test="${productionSlotResult.reservationStatus eq 'P'}">
 							<select id="plant-dropdown">
-								<option value="">PLANT 1</option>
-								<option value="">PLANT 2</option>
-								<option value="">PLANT 3</option>
+								<c:forEach items="${plantList}" var="plants">
+  	       						 <option value="${plants}">${plants}</option>
+  	      						</c:forEach>
 							</select>	
+						</c:if>
+						<c:if test="${productionSlotResult.reservationStatus eq 'E'}">
+							<select id="plant-dropdown">
+								<c:forEach items="${productionSlotList}" var="plants">
+  	       						 <option value="${plants}">${plants}</option>
+  	      						</c:forEach>
+							</select>	
+						</c:if>
 						</td>
 					</tr>
 					<tr class="row" >

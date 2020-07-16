@@ -76,6 +76,8 @@ public interface BuildMatrixSmcDAO {
     
     public List<String> getAllPlants();
     
+    public List<String> getProductionSlotList(@Param("buildId") int buildId, @Param("unitNumber") String unitNumber);
+    
     public void updateRunSummary(@Param("buildId") int buildId);
     
     public List<BuildMatrixSlotDate> getSlotDatesForPlant(@Param("plantId")int plantId);

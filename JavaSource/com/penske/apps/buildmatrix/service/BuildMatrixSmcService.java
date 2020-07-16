@@ -64,6 +64,8 @@ public interface BuildMatrixSmcService {
 	
 	public List<String> getAllPlants();
 	
+	public List<String> getProductionSlotList(int buildId, String unitNumber);
+	
 	public void updateRunSummary(int buildId);
 	
 	public List<BuildMatrixSlotDate> getSlotDatesForPlant(int plantId);

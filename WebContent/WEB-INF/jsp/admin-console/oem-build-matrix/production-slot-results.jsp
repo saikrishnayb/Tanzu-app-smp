@@ -87,7 +87,8 @@
 							<c:forEach items="${slotResults}" var="unit">
 								<tr class="result">
 									<td>
-										<input class="unit-selection" type="checkbox" data-attribute-id="${unit.slotReservationId}" reservation-status="${unit.reservationStatus}" order-id="${unit.orderId}"/>
+										<input class="unit-selection" type="checkbox" data-attribute-id="${unit.slotReservationId}" reservation-status="${unit.reservationStatus}" 
+											order-id="${unit.orderId}" unit-number="${unit.unitNumber}"/>
 										<a class="secondaryLink">${unit.orderId}</a>
 									</td>
 									<td class="leftAlign">${unit.unitNumber}</td>

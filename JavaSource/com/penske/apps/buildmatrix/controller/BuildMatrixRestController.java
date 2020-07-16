@@ -564,6 +564,10 @@ public class BuildMatrixRestController {
 	@RequestMapping(value = "/load-update-reservation-popup-modal")
 	public ModelAndView loadUpdateReservationPopup(@RequestBody ProductionSlotResult productionSlotResult) {
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/modal/update-reservation-modal");
+		int buildId = productionSlotResult.getRunId();
+		String unitNumber = productionSlotResult.getUnitNumber();
+		model.addObject("plantList", buildMatrixSmcService.getAllPlants());
+		model.addObject("productionSlotList", buildMatrixSmcService.getProductionSlotList(buildId, unitNumber));
 		model.addObject("productionSlotResult",productionSlotResult);
 		return model;
 	}
