@@ -256,20 +256,21 @@ table.dataTable thead th{
 button.ui-datepicker-close {
     display: inline-block !important;
 }
-.static-header {
+.dropdown-header {
+	color: #333;
 	font-weight: bold !important;
 }
 
-.sub-list {
+/* .sub-list {
 	list-style: none !important;
 	margin: 0px 0px 0px 30px !important
-}
+} */
 
-.sub-list-item {
-	padding: 4px;
-}
+/* .sub-list-item {
+	padding-left: 10px;
+} */
 
-.sub-list-item a {
+/* .sub-list-item a {
 	clear: both;
 	font-weight: normal;
 	line-height: 1.42857143;
@@ -281,7 +282,7 @@ button.ui-datepicker-close {
     color: #262626;
     background-color: #f5f5f5;
 }
-
+ */
 #region-div{
 	text-align: left;
 }

@@ -41,12 +41,9 @@
 								<ul class="dropdown-menu">
 									<li><a href="bodyplant-capabilities.htm?plantId=${plant.plantId}">Body Plant Exceptions</a></li>
 									<li><a class="set-offline-date" onclick="setOfflineDates(${plant.plantId})" href="#">Plant Off-line Dates</a></li>
-									<li><a class="static-header">Geographical Configuration</a>
-										<ul class="sub-list">
-											<li class="sub-list-item"><a class="region-association" plantId="${plant.plantId}">Region Association</a></li>
-											<li class="sub-list-item"><a href="district-proximity.htm?plantId=${plant.plantId}">Proximity Configuration</a></li>
-										</ul>
-									</li>
+									<li class="dropdown-header">Geographical Configuration</li>
+									<li><a class="region-association" plantId="${plant.plantId}">&emsp;Region Association</a></li>
+									<li><a href="district-proximity.htm?plantId=${plant.plantId}">Proximity Configuration</a></li>
 								</ul>
 							</div>
 							</td>
