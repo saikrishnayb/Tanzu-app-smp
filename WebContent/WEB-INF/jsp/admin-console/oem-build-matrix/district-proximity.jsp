@@ -35,7 +35,7 @@
 											<c:set var="areaDesc" value="${areaModel.freightMileage.areaDesc}"></c:set>
 											<li>
 												<label class="dist-proximity-lbl">${area} - ${areaDesc}</label>
-												<ul>
+												<ul class="list${tier}-subtier">
 													<fieldset class="fieldset">
 														<legend class="legend-view"></legend>
 														<c:forEach items="${areaModel.proximities}" var="entry">

@@ -24,11 +24,15 @@ $(document).ready(function() {
 		var tierNumber = $(this).attr("id").split("tier")[1];
 		var value = $(this).val().toLowerCase();
 		var listId = "#list" + tierNumber + " li";
+		var subListId = ".list" + tierNumber + "-subtier li";
 
 		$(listId).filter(function() {
-			$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+			$(this).toggle($(this).text().toLowerCase().indexOf(value) != -1)
 		});
-		$(listId).find('.district-values').show();
+		$(subListId).filter(function() {
+			$(this).toggle($(this).text().toLowerCase().indexOf(value) != -1)
+		})
+		
 		setMaxVericalLineHeight();
 	});
 
