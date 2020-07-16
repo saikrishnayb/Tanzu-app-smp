@@ -125,7 +125,7 @@
         </div>
       </div>
     </div>
-	
+	<div id="update-reservation-popup-modal" class="modal row"></div>
 	<%@ include file="../../global/v2/footer.jsp"%>
 	<script src="${baseUrl}/js/admin-console/oem-build-matrix/file-download-helper.js" type="text/javascript"></script>
 	<script src="${baseUrl}/js/admin-console/oem-build-matrix/production-slot-results.js" type="text/javascript"></script>

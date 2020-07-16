@@ -553,6 +553,21 @@ public class BuildMatrixRestController {
 		buildMatrixSmcService.deleteReservationData(orderSelectionList);
 	}
 	
+	/**
+	 * Method to Loads Edit Dimension Popup Modal
+	 * 
+	 * @param attributeId, plantId, key, attributeName
+	 * 
+	 * @return ModelAndView
+	 */
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping(value = "/load-update-reservation-popup-modal")
+	public ModelAndView loadUpdateReservationPopup(@RequestBody ProductionSlotResult productionSlotResult) {
+		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/modal/update-reservation-modal");
+		model.addObject("productionSlotResult",productionSlotResult);
+		return model;
+	}
+	
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping("/update-reservation-data")
 	public void updateReservationData(@RequestParam("slotReservationId") int slotReservationId, @RequestParam("slotId") int slotId,

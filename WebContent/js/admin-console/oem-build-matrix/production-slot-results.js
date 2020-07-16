@@ -5,8 +5,10 @@ var orderSelectionCnt = 0;
 var orderSelectionList = [];
 initializeDatePicker();
 var $confirmReservationModal = $('#confirm-delete-reservation-modal');
-
+var $updateReservation =$('#update-reservation');
+var $updateReservationModal = $('#update-reservation-popup-modal');
 ModalUtil.initializeModal($confirmReservationModal);
+ModalUtil.initializeModal($updateReservationModal);
 
 $slotResultsDataTable = $slotResultsTable.DataTable({
 	"bPaginate" : true, //enable pagination
@@ -237,13 +239,31 @@ $confirmReservationModal.on("click", '#confirm-btn', function() {
 	ModalUtil.closeModal($confirmReservationModal);
 });
 
+$updateReservation.on("click", function() {
+	console.log(orderSelectionList);
+	if(orderSelectionList.length==1)
+		{
+			var $updateReservationPromise=$.ajax({
+				type : "POST",
+				url : './load-update-reservation-popup-modal.htm',
+				data : JSON.stringify(orderSelectionList[0]),
+				contentType : 'application/json'});
+			
+			$updateReservationPromise.done(function(data) {
+				$updateReservationModal.html(data);
+				initializeDatePicker();
+				ModalUtil.openModal($updateReservationModal);
+			});
+		}
+});
 
 function showUpdateButton(orderSelectionList) {
-	var showUpdateAction = true;
-	for (var i = 0; i < orderSelectionList.length; i++) {
-		if (orderSelectionList[i].reservationStatus != 'A' && orderSelectionList[i].reservationStatus != 'E')
-			showUpdateAction = false;
-	}
+	var showUpdateAction = false;
+	if(orderSelectionList.length==1)
+		{
+		if (orderSelectionList[0].reservationStatus == 'E' || orderSelectionList[0].reservationStatus == 'P')
+			showUpdateAction = true;
+		}
 	return showUpdateAction;
 }
 
