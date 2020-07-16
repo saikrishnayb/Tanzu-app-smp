@@ -50,3 +50,13 @@ color: #FFFFFF !important;
 .formLbl {
 	font-weight: bold;
 }
+#update-reservation-table{
+	width: 100%;
+}
+#save-reservation-div{
+	padding-top: 12px;	
+}
+
+.update-res-input{
+	width: 170px;
+}

@@ -181,7 +181,7 @@ $('.unit-selection').on("change", function() {
 });
 
 $("#delete-reservation").on("click", function() {
-	openConfirmModal(true);
+	openConfirmModal('delete');
 });
 
 $("#cancel-confirm").on("click", function() {
@@ -269,19 +269,27 @@ function showUpdateButton(orderSelectionList) {
 	return showUpdateAction;
 }
 
-function openConfirmModal(isDeleteConfirmModal) {
-	if (isDeleteConfirmModal) {
+function openConfirmModal(confirmationCategory) {
+	if (confirmationCategory =='delete') {
 		$("#confirm-btn").html('Confirm');
 		$("#confirm-btn").attr("delete", "Y");
 		$('#confirmMessage').text("Associated slot reservation data will get deleted for the run and cannot be undone. Do you want to continue?");
-	} else {
+	} else if(confirmationCategory =='accept'){
 		$("#confirm-btn").html('Yes');
 		$("#confirm-btn").attr("delete", "N");
 		$('#confirmMessage').text("You are about to accept the outcomes of this build request. Your changes will be committed and reservations marked as approved. This operation cannot be undone. Do you wish to continue?");
+	} else if(confirmationCategory=='update'){
+		$("#confirm-btn").html('Confirm');
+		$("#confirm-btn").attr("delete", "N");
+		$('#confirmMessage').text("Selected reservation data will get updated for the run. Do you wish to continue?");
 	}
 	ModalUtil.openModal($confirmReservationModal);
 }
 
 $('#accept-slot-results').on("click", function() {
-	openConfirmModal(false);
+	openConfirmModal('accept');
+});
+
+$("#save-reservation").on("click",function(){
+	openConfirmModal('update');
 });
