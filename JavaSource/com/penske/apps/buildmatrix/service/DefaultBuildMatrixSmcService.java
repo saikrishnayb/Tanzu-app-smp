@@ -241,13 +241,13 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		return SlotResultsByFilter;
 	}
 	
-	public List<String> getAllPlants() {
-		List<String> allPlants = buildMatrixSmcDAO.getAllPlants();
+	public List<ProductionSlotResult> getAllPlants() {
+		List<ProductionSlotResult> allPlants = buildMatrixSmcDAO.getAllPlants();
 		return allPlants;
 	}
 	
-	public List<String> getProductionSlotList(int buildId, String unitNumber) {
-		List<String> allPlants = buildMatrixSmcDAO.getProductionSlotList(buildId, unitNumber);
+	public List<ProductionSlotResult> getProductionSlotList(int buildId, String unitNumber) {
+		List<ProductionSlotResult> allPlants = buildMatrixSmcDAO.getProductionSlotList(buildId, unitNumber);
 		return allPlants;
 	}
 	

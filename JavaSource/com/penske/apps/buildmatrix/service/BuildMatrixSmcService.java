@@ -62,9 +62,9 @@ public interface BuildMatrixSmcService {
 	
 	public List<ProductionSlotResult> getSlotResultsByFilter(int buildId, List<String> selectedFilters);
 	
-	public List<String> getAllPlants();
+	public List<ProductionSlotResult> getAllPlants();
 	
-	public List<String> getProductionSlotList(int buildId, String unitNumber);
+	public List<ProductionSlotResult> getProductionSlotList(int buildId, String unitNumber);
 	
 	public void updateRunSummary(int buildId);
 	

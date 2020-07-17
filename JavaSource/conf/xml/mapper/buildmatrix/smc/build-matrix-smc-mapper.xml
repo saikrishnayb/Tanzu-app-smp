@@ -427,9 +427,10 @@
 		<foreach collection="selectedFilters" item="id" separator="," open="(" close=")">#{id}</foreach>
 		</if>
 	</select>
-	<select id="getProductionSlotList" resultType="String">
+	<select id="getProductionSlotList" resultMap="plantResultMap">
 		SELECT 
-					PLANT.PLANT_MFR_CODE ||'-' ||PLANT.PLANT_CITY ||',' ||PLANT.PLANT_STATE
+					PLANT.PLANT_ID AS plantId,
+					PLANT.PLANT_MFR_CODE ||'-' ||PLANT.PLANT_CITY ||',' ||PLANT.PLANT_STATE AS productionSlot
 		FROM 		SMC.OBM_PLANTS PLANT
 		LEFT JOIN  	SMC.OBM_SLOT_RESERVATION_EXCEPTION RESERVE_EXCEPTION
 		ON 			RESERVE_EXCEPTION.PLANT_ID = PLANT.PLANT_ID
@@ -437,10 +438,17 @@
 		AND			RESERVE_EXCEPTION.UNIT_NUMBER = #{unitNumber}
 	</select>
 	
-	<select id="getAllPlants" resultType="String">
-		SELECT 
-					PLANT.PLANT_MFR_CODE ||'-' ||PLANT.PLANT_CITY ||',' ||PLANT.PLANT_STATE
-		FROM 		SMC.OBM_PLANTS PLANT
+	<resultMap type="com.penske.apps.buildmatrix.domain.ProductionSlotResult" id="plantResultMap">
+		<result column="plantId"		property="plantId" />
+		<result column="productionSlot"	property="productionSlot" />
+	</resultMap>
+	
+	<select id="getAllPlants" resultMap="plantResultMap">
+		SELECT 		
+				PLANT_ID AS plantId,
+				PLANT_MFR_CODE ||'-' ||PLANT_CITY ||',' ||PLANT_STATE AS productionSlot
+					
+		FROM 	SMC.OBM_PLANTS
 	</select>
 	
 	<update id="updateRunSummary">

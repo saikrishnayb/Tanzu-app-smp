@@ -194,7 +194,6 @@ public class BuildMatrixController {
 			model.addObject("approvedBuild", false);
 		}
 		model.addObject("showAcceptBtn", showAcceptBtn);
-		model.addObject("plantList", buildMatrixSmcService.getAllPlants());
 		model.addObject("buildId", buildId);
 		return model;
 	}

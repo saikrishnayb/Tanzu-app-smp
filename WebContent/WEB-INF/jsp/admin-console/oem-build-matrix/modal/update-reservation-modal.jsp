@@ -24,14 +24,14 @@
 						<c:if test="${productionSlotResult.reservationStatus eq 'P'}">
 							<select id="plant-dropdown"  class="update-res-input">
 								<c:forEach items="${plantList}" var="plants">
-  	       						 <option value="${plants}">${plants}</option>
+  	       						 <option value="${plants.plantId}">${plants.productionSlot}</option>
   	      						</c:forEach>
 							</select>	
 						</c:if>
 						<c:if test="${productionSlotResult.reservationStatus eq 'E'}">
 							<select id="plant-dropdown"  class="update-res-input">
 								<c:forEach items="${productionSlotList}" var="plants">
-  	       						 <option value="${plants}">${plants}</option>
+  	       						 <option value="${plants.plantId}">${plants.productionSlot}</option>
   	      						</c:forEach>
 							</select>	
 						</c:if>

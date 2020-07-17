@@ -5,7 +5,7 @@ var orderSelectionCnt = 0;
 var orderSelectionList = [];
 initializeDatePicker();
 var $confirmReservationModal = $('#confirm-delete-reservation-modal');
-var $updateReservation =$('#update-reservation');
+var $updateReservation = $('#update-reservation');
 var $updateReservationModal = $('#update-reservation-popup-modal');
 ModalUtil.initializeModal($confirmReservationModal);
 ModalUtil.initializeModal($updateReservationModal);
@@ -233,6 +233,7 @@ $confirmReservationModal.on("click", '#confirm-btn', function() {
 
 				} else {
 					addErrorMessage("Slot reservation records should be in Matched status to Accept the build, check the data and try again");
+					$('#accept-slot-results').addClass("buttonDisabled");
 				}
 			},
 		});
@@ -243,42 +244,57 @@ $confirmReservationModal.on("click", '#confirm-btn', function() {
 
 $updateReservation.on("click", function() {
 	console.log(orderSelectionList);
-	if(orderSelectionList.length==1)
-		{
-			var $updateReservationPromise=$.ajax({
-				type : "POST",
-				url : './load-update-reservation-popup-modal.htm',
-				data : JSON.stringify(orderSelectionList[0]),
-				contentType : 'application/json'});
-			
-			$updateReservationPromise.done(function(data) {
-				$updateReservationModal.html(data);
-				initializeDatePicker();
-				ModalUtil.openModal($updateReservationModal);
-			});
+	if (orderSelectionList.length == 1) {
+		var $updateReservationPromise = $.ajax({
+			type : "POST",
+			url : './load-update-reservation-popup-modal.htm',
+			data : JSON.stringify(orderSelectionList[0]),
+			contentType : 'application/json'
+		});
+
+		$updateReservationPromise.done(function(data) {
+			$updateReservationModal.html(data);
+			initializeDatePicker();
+			ModalUtil.openModal($updateReservationModal);
+		});
+	}
+});
+
+$updateReservationModal.on("change", '#plant-dropdown', function() {
+	var plantId = parseInt($updateReservationModal.find('#plant-dropdown').val());
+
+	var $availableSlotPromise = $.ajax({
+		type : "POST",
+		url : './get-available-slot-dates.htm',
+		data : {
+			plantId : plantId
 		}
+	});
+
+	$availableSlotPromise.done(function(data) {
+		initializeDatePicker();
+	});
 });
 
 function showUpdateButton(orderSelectionList) {
 	var showUpdateAction = false;
-	if(orderSelectionList.length==1)
-		{
+	if (orderSelectionList.length == 1) {
 		if (orderSelectionList[0].reservationStatus == 'E' || orderSelectionList[0].reservationStatus == 'P')
 			showUpdateAction = true;
-		}
+	}
 	return showUpdateAction;
 }
 
 function openConfirmModal(confirmationCategory) {
-	if (confirmationCategory =='delete') {
+	if (confirmationCategory == 'delete') {
 		$("#confirm-btn").html('Confirm');
 		$("#confirm-btn").attr("delete", "Y");
 		$('#confirmMessage').text("Associated slot reservation data will get deleted for the run and cannot be undone. Do you want to continue?");
-	} else if(confirmationCategory =='accept'){
+	} else if (confirmationCategory == 'accept') {
 		$("#confirm-btn").html('Yes');
 		$("#confirm-btn").attr("delete", "N");
 		$('#confirmMessage').text("You are about to accept the outcomes of this build request. Your changes will be committed and reservations marked as approved. This operation cannot be undone. Do you wish to continue?");
-	} else if(confirmationCategory=='update'){
+	} else if (confirmationCategory == 'update') {
 		$("#confirm-btn").html('Confirm');
 		$("#confirm-btn").attr("delete", "N");
 		$('#confirmMessage').text("Selected reservation data will get updated for the run. Do you wish to continue?");
@@ -290,6 +306,6 @@ $('#accept-slot-results').on("click", function() {
 	openConfirmModal('accept');
 });
 
-$("#save-reservation").on("click",function(){
+$updateReservationModal.on("click", '#save-reservation', function() {
 	openConfirmModal('update');
 });

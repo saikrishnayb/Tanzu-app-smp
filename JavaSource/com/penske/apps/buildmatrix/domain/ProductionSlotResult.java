@@ -41,6 +41,7 @@ public class ProductionSlotResult {
 	private String chassisWheelMatChangeRequired;
 	private String vehicleTypeChangeRequired;
 	private List<String> productionSlotList;
+	private int plantId;
 	
 
 	// getters
@@ -176,6 +177,10 @@ public class ProductionSlotResult {
 		return vehicleTypeChangeRequired;
 	}
 	
+	public int getPlantId() {
+		return plantId;
+	}
+
 	// setters
 	public void setOrderId(long orderId) {
 		this.orderId = orderId;
