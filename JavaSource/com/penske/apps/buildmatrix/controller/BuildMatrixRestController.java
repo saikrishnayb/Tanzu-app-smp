@@ -577,7 +577,7 @@ public class BuildMatrixRestController {
 	public ModelAndView getAvailableSlotDates(@RequestParam("plantId") int plantId) {
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/modal/update-reservation-modal");
 		model.addObject("slotDates", buildMatrixSmcService.getSlotDatesForPlant(plantId));
-		return null;
+		return model;
 		
 	}
 	
