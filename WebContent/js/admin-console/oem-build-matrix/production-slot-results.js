@@ -3,7 +3,6 @@ selectCurrentNavigation("tab-oem-build-matrix", "left-nav-build-history");
 var $slotResultsTable = $('#slot-results-table');
 var orderSelectionCnt = 0;
 var orderSelectionList = [];
-initializeDatePicker();
 var $confirmReservationModal = $('#confirm-delete-reservation-modal');
 var $updateReservation = $('#update-reservation');
 var $updateReservationModal = $('#update-reservation-popup-modal');
@@ -85,10 +84,9 @@ $('.production-slot').multiselect({
 /* Added this line of code to make the Multi-select box values in normal font instead of bold (Default)*/
 $(".ui-multiselect-checkboxes label").removeAttr('font-weight').css("font-weight", "normal");
 
-
-$(document).ready(initializeDatePicker);
-
-function initializeDatePicker() {
+function initializeDatePicker(slotdata) {
+	var jsonData= JSON.stringify(slotdata);
+	var datesToEnable= "[" + JSON.parse(jsonData).map(x => x.formattedSlotDate).join(',') + "]"
 	$(".production-date").datepicker({
 		dateFormat : 'mm/dd/yy',
 		changeMonth : true,
@@ -112,7 +110,8 @@ function initializeDatePicker() {
 		},
 		//Override for beforeShowDay, since all monday only should enable
 		beforeShowDay : function(date) {
-			return [ date.getDay() == 1, "" ]
+			var string = jQuery.datepicker.formatDate('mm/dd/yy', date);
+			return [datesToEnable.indexOf(string) !== -1]
 		}
 	});
 }
@@ -254,7 +253,6 @@ $updateReservation.on("click", function() {
 
 		$updateReservationPromise.done(function(data) {
 			$updateReservationModal.html(data);
-			initializeDatePicker();
 			ModalUtil.openModal($updateReservationModal);
 		});
 	}
@@ -272,7 +270,7 @@ $updateReservationModal.on("change", '#plant-dropdown', function() {
 	});
 
 	$availableSlotPromise.done(function(data) {
-		initializeDatePicker();
+		initializeDatePicker(data);
 	});
 });
 

@@ -574,10 +574,10 @@ public class BuildMatrixRestController {
 	
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping(value = "/get-available-slot-dates")
-	public ModelAndView getAvailableSlotDates(@RequestParam("plantId") int plantId) {
-		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/modal/update-reservation-modal");
-		model.addObject("slotDates", buildMatrixSmcService.getSlotDatesForPlant(plantId));
-		return model;
+	@ResponseBody
+	public List<BuildMatrixSlotDate> getAvailableSlotDates(@RequestParam("plantId") int plantId) {
+		List<BuildMatrixSlotDate> slotDates=buildMatrixSmcService.getSlotDatesForPlant(plantId);
+		return slotDates;
 		
 	}
 	
