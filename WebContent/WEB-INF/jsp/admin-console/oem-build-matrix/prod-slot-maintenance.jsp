@@ -77,7 +77,7 @@
 										<c:forEach items="${row.cells}" var="cell">
 											<td class="centerAlign slot-table-header" headers="${cell.bodyPlant.plantId}">
 												<input type="hidden" name="slotInfos[${slotIndex}].slotId" value="${cell.slot.slotId}" />
-												<input class ="available-slot-input" name="slotInfos[${slotIndex}].availableSlots" type="number" value="${cell.slot.availableSlots}"/>
+												<input class ="available-slot-input" name="slotInfos[${slotIndex}].availableSlots" type="text" value="${cell.slot.availableSlots}"/>
 											</td>
 											<c:set var="slotIndex" value="${slotIndex+1}" />
 										</c:forEach>

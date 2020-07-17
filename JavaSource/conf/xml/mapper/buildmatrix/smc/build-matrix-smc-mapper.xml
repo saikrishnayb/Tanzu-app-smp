@@ -1177,14 +1177,22 @@
 	</select>
 	
 	<select id="getSlotsBySlotDates" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlot">
-		SELECT   SLOT_ID AS slotId,
+		SELECT   SLOT.SLOT_ID AS slotId,
 		         SLOT_TYPE_ID AS slotTypeId,
 		         plant.PLANT_ID AS plantId,
 		         SLOT_DATE_ID AS slotDateId,
 		         SLOT_AVAILABLE AS availableSlots,
-		         SLOT_RESERVED AS reservedSlots
+		         SLOT_RESERVED AS reservedSlots,
+		         sumTable.allocatedSlots as allocatedRegionSlots
 		FROM     SMC.OBM_SLOTS SLOT 
-		         JOIN SMC.OBM_PLANTS PLANT ON SLOT.PLANT_ID = PLANT.PLANT_ID
+		JOIN 	 SMC.OBM_PLANTS PLANT ON SLOT.PLANT_ID = PLANT.PLANT_ID
+		JOIN (
+				Select 
+					region.SLOT_ID, 
+					SUM(SLOT_AVAILABLE) as allocatedSlots 
+				from SMC.OBM_SLOTS_BY_REGION region 
+				GROUP BY region.SLOT_ID
+			) sumTable ON SLOT.SLOT_ID = sumTable.SLOT_ID
 		WHERE    SLOT_TYPE_ID=CAST(#{slotTypeId} AS INTEGER)
 		AND      SLOT_DATE_ID IN (
 				<foreach collection="slotDateIds" item="slotDateId" separator="," open="" close="">
@@ -1195,15 +1203,23 @@
 	</select>
 	
 	<select id="getSlotsBySlotIds" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlot">
-		SELECT   SLOT_ID AS slotId,
+		SELECT   SLOT.SLOT_ID AS slotId,
 		         SLOT_TYPE_ID AS slotTypeId,
 		         plant.PLANT_ID AS plantId,
 		         SLOT_DATE_ID AS slotDateId,
 		         SLOT_AVAILABLE AS availableSlots,
-		         SLOT_RESERVED AS reservedSlots
+		         SLOT_RESERVED AS reservedSlots,
+		         sumTable.allocatedSlots as allocatedRegionSlots
 		FROM     SMC.OBM_SLOTS SLOT 
-		         JOIN SMC.OBM_PLANTS PLANT ON SLOT.PLANT_ID = PLANT.PLANT_ID
-		WHERE    SLOT_ID IN (
+		JOIN 	 SMC.OBM_PLANTS PLANT ON SLOT.PLANT_ID = PLANT.PLANT_ID
+		JOIN (
+				Select 
+					region.SLOT_ID, 
+					SUM(SLOT_AVAILABLE) as allocatedSlots 
+				from SMC.OBM_SLOTS_BY_REGION region 
+				GROUP BY region.SLOT_ID
+			) sumTable ON SLOT.SLOT_ID = sumTable.SLOT_ID
+		WHERE    SLOT.SLOT_ID IN (
 				<foreach collection="slotIds" item="slotId" separator="," open="" close="">
 	 				#{slotId}
 	 			</foreach>
@@ -1212,14 +1228,22 @@
 	</select>
 	
 	<select id="getSlotsBySlotDatesAndPlantIds" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlot">
-		SELECT   SLOT_ID AS slotId,
+		SELECT   SLOT.SLOT_ID AS slotId,
 		         SLOT_TYPE_ID AS slotTypeId,
 		         plant.PLANT_ID AS plantId,
 		         SLOT_DATE_ID AS slotDateId,
 		         SLOT_AVAILABLE AS availableSlots,
-		         SLOT_RESERVED AS reservedSlots
+		         SLOT_RESERVED AS reservedSlots,
+		         sumTable.allocatedSlots as allocatedRegionSlots
 		FROM     SMC.OBM_SLOTS SLOT 
-		         JOIN SMC.OBM_PLANTS PLANT ON SLOT.PLANT_ID = PLANT.PLANT_ID
+		JOIN 	 SMC.OBM_PLANTS PLANT ON SLOT.PLANT_ID = PLANT.PLANT_ID
+		JOIN (
+				Select 
+					region.SLOT_ID, 
+					SUM(SLOT_AVAILABLE) as allocatedSlots 
+				from SMC.OBM_SLOTS_BY_REGION region 
+				GROUP BY region.SLOT_ID
+			) sumTable ON SLOT.SLOT_ID = sumTable.SLOT_ID
 		WHERE    SLOT_TYPE_ID=CAST(#{slotTypeId} AS INTEGER)
 		AND      SLOT_DATE_ID IN (
 				<foreach collection="slotDateIds" item="slotDateId" separator="," open="" close="">
@@ -1261,6 +1285,34 @@
 	 			</foreach>
 			)
 	</select>
+	
+	<select id="getRegionAvailabilityBySlotRegionIds" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlotRegionAvailability">
+		SELECT 
+			SLOT_REGION_ID,
+			SLOT_ID,
+			REGION,
+			SLOT_AVAILABLE,
+			SLOT_RESERVED,
+			SLOT_ACCEPTED
+		FROM
+			SMC.OBM_SLOTS_BY_REGION
+		WHERE
+			SLOT_REGION_ID IN (
+				<foreach collection="slotRegionIds" item="slotRegionId" separator="," open="" close="">
+	 				#{slotRegionId}
+	 			</foreach>
+			)
+	</select>
+	
+	<update id="updateRegionAvailability">
+		UPDATE 
+			SMC.OBM_SLOTS_BY_REGION 
+		SET
+		         SLOT_AVAILABLE = #{regionAvailability.slotAvailable},
+		         SLOT_RESERVED = #{regionAvailability.slotReserved},
+		         SLOT_ACCEPTED = #{regionAvailability.slotAccepted}
+		WHERE    SLOT_REGION_ID = #{regionAvailability.slotRegionId}
+	</update>
 	
 	<select id="getBuildMaximumWeeksBefore" resultType="int">
 		SELECT

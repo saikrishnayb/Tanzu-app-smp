@@ -42,6 +42,7 @@ import com.penske.apps.buildmatrix.domain.RegionPlantAssociation;
 import com.penske.apps.buildmatrix.model.BuildMixForm;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm;
 import com.penske.apps.buildmatrix.model.ImportSlotsResults;
+import com.penske.apps.buildmatrix.model.SaveRegionSlotsForm;
 import com.penske.apps.buildmatrix.model.SaveSlotsForm;
 import com.penske.apps.buildmatrix.service.BuildMatrixSmcService;
 import com.penske.apps.suppliermgmt.annotation.SmcSecurity;
@@ -533,12 +534,25 @@ public class BuildMatrixRestController {
 	@RequestMapping(method = RequestMethod.POST, value = "/save-slots")
 	public ModelAndView saveSlots(SaveSlotsForm form) {
 		
-		buildMatrixSmcService.saveImportSlots(form);
+		buildMatrixSmcService.saveSlots(form);
 		
 		ModelMap modelMap = new ModelMap();
 		modelMap.addAttribute("slotType", form.getSlotTypeId());
 		modelMap.addAttribute("year", form.getYear());
 		return new ModelAndView("redirect:/app/admin-console/oem-build-matrix/prod-slot-maintenance", modelMap);
+	}
+	
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping(method = RequestMethod.POST, value = "/save-region-slots")
+	public ModelAndView saveRegionSlots(SaveRegionSlotsForm form) {
+		
+		buildMatrixSmcService.saveRegionSlots(form);
+		
+		ModelMap modelMap = new ModelMap();
+		modelMap.addAttribute("slotType", form.getSlotTypeId());
+		modelMap.addAttribute("year", form.getYear());
+		modelMap.addAttribute("region", form.getRegion());
+		return new ModelAndView("redirect:/app/admin-console/oem-build-matrix/prod-slot-region-maintenance", modelMap);
 	}
 	
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })	

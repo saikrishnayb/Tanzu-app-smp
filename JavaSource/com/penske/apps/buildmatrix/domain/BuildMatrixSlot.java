@@ -18,6 +18,7 @@ public class BuildMatrixSlot {
 	private int chassisArrivalWeekOfYear;
 	private int chassisArrivalYear;
 	private int acceptedSlots;
+	private int allocatedRegionSlots;
 	
 	protected BuildMatrixSlot() {};
 	
@@ -38,6 +39,10 @@ public class BuildMatrixSlot {
 	
 	public String getFormattedChassisArrivalDate() {
 		return StringUtils.defaultString(DateUtil.formatDateUS(chassisArrivalDate));
+	}
+	
+	public int getUnallocatedSlots() {
+		return availableSlots - allocatedRegionSlots;
 	}
 	
 	public void updateAvailableSlots(int availableSlots) {
@@ -82,6 +87,10 @@ public class BuildMatrixSlot {
 	
 	public int getAcceptedSlots() {
 		return acceptedSlots;
+	}
+	
+	public int getAllocatedRegionSlots() {
+		return allocatedRegionSlots;
 	}
 	
 }

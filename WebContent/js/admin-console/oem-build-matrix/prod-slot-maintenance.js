@@ -38,10 +38,9 @@ $("#vehicletype-drpdwn, #year-drpdwn").on("change", function() {
 });
 
 $('.available-slot-input').on('input', function(){
-	
+	this.value = this.value.replace(/[^0-9]/g,'');
 	if(ritsu.isFormDirty('#slot-maintenance-form'))
 		$('#save-slots-btn').removeClass('buttonDisabled');
-	
 })
 
 $('#create-slots-btn').on('click', function(){

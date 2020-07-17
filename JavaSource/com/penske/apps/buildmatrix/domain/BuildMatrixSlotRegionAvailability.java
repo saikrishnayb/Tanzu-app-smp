@@ -40,6 +40,13 @@ public class BuildMatrixSlotRegionAvailability {
 
 	public int getSlotAccepted() {
 		return slotAccepted;
-	};
-	
+	}
+
+	public void updateAvailableSlots(int newAvailableSlots, BuildMatrixSlot slot) {
+		if(slot.getUnallocatedSlots() < newAvailableSlots)
+			throw new IllegalArgumentException("Available region slots cannot be more than the unallocated overall available slots");
+		else
+			this.slotAvailable = newAvailableSlots;
+	}
+
 }

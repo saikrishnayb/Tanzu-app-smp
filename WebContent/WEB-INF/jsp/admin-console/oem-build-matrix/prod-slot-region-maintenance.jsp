@@ -65,6 +65,7 @@
           			<div class="btn-div floatRight">
           				<a id="import-btn" class="buttonSecondary<c:if test="${noRows}"> buttonDisabled</c:if>">Import</a>
           				<a id="export-btn" class="buttonSecondary<c:if test="${noRows}"> buttonDisabled</c:if>">Export</a>
+          				<a id="save-region-slots-btn" class="buttonPrimary buttonDisabled">Save</a>
           			</div>
         		</div>
       		</div>
@@ -84,52 +85,65 @@
 	        					</div>
 	        				</c:when>
 	        				<c:otherwise>
-								<table id="slot-region-maintenance-table">
-									<thead>
-										<%-- <tr class="region-row">
-											<th class="first-col"></th>
-											<c:forEach items="${summary.plantAssociationsByRegion}" var="entry">
-												<c:set var="region" value="${entry.key}" />
-												<c:set var="associationList" value="${entry.value}" />
-												<c:set var="associationListSize" value="${fn:length(associationList)}" />
-												<c:set var="exampleBodyPlant" value="${associationList.get(0)}" />
-												<th colspan="${associationListSize}">${exampleBodyPlant.region} - ${exampleBodyPlant.regionDesc}</th>
-											</c:forEach>
-										</tr> --%>
-										<tr class="plant-header-row">
-											<th class="first-col">Production Date</th>
-											<c:forEach items="${summary.plantAssociationsByRegion}" var="entry">
-												<c:set var="region" value="${entry.key}" />
-												<c:set var="associationList" value="${entry.value}" />
-												<c:forEach items="${associationList}" var="association">
-													<c:set var="bodyPlant" value="${summary.bodyPlantById.get(association.plantId)}" />
-													<th id="${bodyPlant.plantId}"> ${bodyPlant.plantManufacturer} <br> ${bodyPlant.city}, ${bodyPlant.state}</th>
-												</c:forEach>	
-											</c:forEach>
-										</tr>
-									</thead>
-									<tbody>
-										<c:forEach items="${summary.rows}" var="row" varStatus="loop">
-											<c:choose>
-												<c:when test="${loop.count % 2 eq 0}">
-													<c:set var="rowClass" value="even" />
-												</c:when>
-												<c:otherwise>
-													<c:set var="rowClass" value="odd" />
-												</c:otherwise>
-											</c:choose>
-											<c:set var="slotDateId" value="${row.slotDate.slotDateId}" />
-											<tr class="date-unit-row ${rowClass}" data-prod-slot-date-id="${slotDateId}">
-												<td class="first-col prod-date">${row.slotDate.formattedSlotDate}</td>
-												<c:forEach items="${row.cells}" var="cell">
-													<td class="available-units-td">
-														<input type="text" class="available-units-input" value="${cell.regionAvailability.slotAvailable}" />
-													</td>
+	        					<form id="region-slot-maintenance-form">
+				        			<input type="hidden" name="slotTypeId" value="${slotTypeId}">
+									<input type="hidden" name="year" value="${selectedYear}">
+									<input type="hidden" name="region" value="${selectedRegion}">
+									<table id="slot-region-maintenance-table">
+										<thead>
+											<%-- <tr class="region-row">
+												<th class="first-col"></th>
+												<c:forEach items="${summary.plantAssociationsByRegion}" var="entry">
+													<c:set var="region" value="${entry.key}" />
+													<c:set var="associationList" value="${entry.value}" />
+													<c:set var="associationListSize" value="${fn:length(associationList)}" />
+													<c:set var="exampleBodyPlant" value="${associationList.get(0)}" />
+													<th colspan="${associationListSize}">${exampleBodyPlant.region} - ${exampleBodyPlant.regionDesc}</th>
+												</c:forEach>
+											</tr> --%>
+											<tr class="plant-header-row">
+												<th class="first-col slot-table-header">Production Date</th>
+												<c:forEach items="${summary.plantAssociationsByRegion}" var="entry">
+													<c:set var="region" value="${entry.key}" />
+													<c:set var="associationList" value="${entry.value}" />
+													<c:forEach items="${associationList}" var="association">
+														<c:set var="bodyPlant" value="${summary.bodyPlantById.get(association.plantId)}" />
+														<th id="${bodyPlant.plantId}" class="slot-table-header"> ${bodyPlant.plantManufacturer} <br> ${bodyPlant.city}, ${bodyPlant.state}</th>
+													</c:forEach>	
 												</c:forEach>
 											</tr>
-										</c:forEach>
-									</tbody>
-								</table>
+										</thead>
+										<tbody>
+											<c:set var="slotIndex" value="0" />
+											<c:forEach items="${summary.rows}" var="row" varStatus="loop">
+												<c:choose>
+													<c:when test="${loop.count % 2 eq 0}">
+														<c:set var="rowClass" value="even" />
+													</c:when>
+													<c:otherwise>
+														<c:set var="rowClass" value="odd" />
+													</c:otherwise>
+												</c:choose>
+												<c:set var="slotDateId" value="${row.slotDate.slotDateId}" />
+												<tr class="date-unit-row ${rowClass}" data-prod-slot-date-id="${slotDateId}">
+													<td class="first-col prod-date centerAlign slot-table-header">${row.slotDate.formattedSlotDate}</td>
+													<c:forEach items="${row.cells}" var="cell">
+														<c:set var="slot" value="${summary.slotById.get(cell.regionAvailability.slotId)}" />
+														<td class="available-units-td">
+															<input type="hidden" name="regionSlotInfos[${slotIndex}].slotRegionId" value="${cell.regionAvailability.slotRegionId}" />
+															<input type="text" class="available-slot-input" name="regionSlotInfos[${slotIndex}].slotAvailable" value="${cell.regionAvailability.slotAvailable}" data-overall-slots="${slot.availableSlots}" data-allocated-slots="${slot.allocatedRegionSlots - cell.regionAvailability.slotAvailable}"/>
+															<br>
+															<div class="unallocated-region-slots-div">
+																<span class="unallocated-region-slots hidden">Slots Available: <span class="unallocated-slots">${slot.unallocatedSlots}</span></span>
+															</div>
+														</td>
+														<c:set var="slotIndex" value="${slotIndex+1}" />
+													</c:forEach>
+												</tr>
+											</c:forEach>
+										</tbody>
+									</table>
+								</form>
 							</c:otherwise>
 						</c:choose>
 					</div>

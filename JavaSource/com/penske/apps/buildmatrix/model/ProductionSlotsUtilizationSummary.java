@@ -23,6 +23,7 @@ public class ProductionSlotsUtilizationSummary {
 	private List<ProductionSlotsUtilizationRow> rows;
 	private Map<String, List<RegionPlantAssociation>> plantAssociationsByRegion;
 	private Map<Integer, BuildMatrixBodyPlant> bodyPlantById;
+	private Map<Integer, BuildMatrixSlot> slotById;
 	
 	public ProductionSlotsUtilizationSummary(List<RegionPlantAssociation> regionPlantAsscoiationList, 
 			List<BuildMatrixBodyPlant> bodyPlantList, 
@@ -39,6 +40,9 @@ public class ProductionSlotsUtilizationSummary {
 		
 		Map<Integer, BuildMatrixBodyPlant> bodyPlantById = bodyPlantList.stream().collect(toMap(BuildMatrixBodyPlant::getPlantId, bmbp -> bmbp));
 		this.bodyPlantById = bodyPlantById;
+		
+		Map<Integer, BuildMatrixSlot> slotById = slots.stream().collect(toMap(BuildMatrixSlot::getSlotId, sl -> sl));
+		this.slotById = slotById;
 		
 		if(slotDates.isEmpty() || slotDates==null || slots.isEmpty() || slots == null)
 			this.rows = Collections.emptyList();
@@ -91,6 +95,10 @@ public class ProductionSlotsUtilizationSummary {
 	
 	public List<ProductionSlotsUtilizationRow> getRows() {
 		return rows;
+	}
+	
+	public Map<Integer, BuildMatrixSlot> getSlotById() {
+		return slotById;
 	}
 	
 	public static class ProductionSlotsUtilizationRow {

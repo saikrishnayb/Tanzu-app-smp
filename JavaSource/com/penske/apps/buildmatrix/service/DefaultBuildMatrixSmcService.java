@@ -87,6 +87,7 @@ import com.penske.apps.buildmatrix.model.ProductionSlotsMaintenanceSummary;
 import com.penske.apps.buildmatrix.model.ProductionSlotsMaintenanceSummary.ProductionSlotsMaintenanceCell;
 import com.penske.apps.buildmatrix.model.ProductionSlotsMaintenanceSummary.ProductionSlotsMaintenanceRow;
 import com.penske.apps.buildmatrix.model.ProductionSlotsUtilizationSummary;
+import com.penske.apps.buildmatrix.model.SaveRegionSlotsForm;
 import com.penske.apps.smccore.base.util.BatchRunnable;
 import com.penske.apps.smccore.base.util.Util;
 import com.penske.apps.suppliermgmt.model.UserContext;
@@ -1285,7 +1286,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	}
 	
 	@Override
-	public void saveImportSlots(SaveSlotsForm form) {
+	public void saveSlots(SaveSlotsForm form) {
 		Map<Integer, Integer> availableSlotsById = form.getSlotInfos().stream().collect(toMap(si->si.getSlotId(),si->si.getAvailableSlots()));
 		List<BuildMatrixSlot> slots = buildMatrixSmcDAO.getSlotsBySlotIds(availableSlotsById.keySet());
 		
@@ -1298,4 +1299,23 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		}
 		
 	}
+
+	@Override
+	public void saveRegionSlots(SaveRegionSlotsForm form) {
+		Map<Integer, Integer> availableSlotsById = form.getRegionSlotInfos().stream().collect(toMap(si->si.getSlotRegionId(),si->si.getSlotAvailable()));
+		List<BuildMatrixSlotRegionAvailability> regionAvailabilities = buildMatrixSmcDAO.getRegionAvailabilityBySlotRegionIds(availableSlotsById.keySet());
+		Set<Integer> slotIds = regionAvailabilities.stream().map(ra -> ra.getSlotId()).collect(toSet());
+		List<BuildMatrixSlot> slots = buildMatrixSmcDAO.getSlotsBySlotIds(slotIds);
+		Map<Integer, BuildMatrixSlot> slotById = slots.stream().collect(toMap(BuildMatrixSlot::getSlotId, sl -> sl));
+		
+		for(BuildMatrixSlotRegionAvailability regionAvailability: regionAvailabilities) {
+			int newAvailableSlots = availableSlotsById.get(regionAvailability.getSlotRegionId());
+			if(newAvailableSlots != regionAvailability.getSlotAvailable()) {
+				BuildMatrixSlot slot = slotById.get(regionAvailability.getSlotId());
+				regionAvailability.updateAvailableSlots(newAvailableSlots, slot);
+				buildMatrixSmcDAO.updateRegionAvailability(regionAvailability);
+			}
+		}
+	}
+	
 }

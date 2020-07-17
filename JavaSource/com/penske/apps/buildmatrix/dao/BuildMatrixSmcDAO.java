@@ -208,6 +208,10 @@ public interface BuildMatrixSmcDAO {
 	public List<BuildMatrixSlot> getSlotsBySlotIds(@Param("slotIds") Collection <Integer> slotIds);
 
 	public void updateSlot(@Param("slot") BuildMatrixSlot slot);
+
+	public List<BuildMatrixSlotRegionAvailability> getRegionAvailabilityBySlotRegionIds(@Param("slotRegionIds") Collection<Integer> slotRegionIds);
+
+	public void updateRegionAvailability(@Param("regionAvailability") BuildMatrixSlotRegionAvailability regionAvailability);
 	
 	
 }

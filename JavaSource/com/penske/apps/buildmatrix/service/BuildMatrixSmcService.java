@@ -27,6 +27,7 @@ import com.penske.apps.buildmatrix.model.SaveSlotsForm;
 import com.penske.apps.buildmatrix.model.ImportSlotsResults;
 import com.penske.apps.buildmatrix.model.ProductionSlotsMaintenanceSummary;
 import com.penske.apps.buildmatrix.model.ProductionSlotsUtilizationSummary;
+import com.penske.apps.buildmatrix.model.SaveRegionSlotsForm;
 import com.penske.apps.suppliermgmt.model.UserContext;
 
 public interface BuildMatrixSmcService {
@@ -174,6 +175,8 @@ public interface BuildMatrixSmcService {
 	
 	public void updateReservationData(int slotReservationId, int slotId, int plantId, String unitNumber);
 
-	public void saveImportSlots(SaveSlotsForm form);
+	public void saveSlots(SaveSlotsForm form);
+
+	public void saveRegionSlots(SaveRegionSlotsForm form);
 
 }
