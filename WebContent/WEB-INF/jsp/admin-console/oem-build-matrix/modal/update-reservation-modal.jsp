@@ -23,6 +23,7 @@
 						<td class="col-xs-8">
 						<c:if test="${productionSlotResult.reservationStatus eq 'P'}">
 							<select id="plant-dropdown"  class="update-res-input">
+								<option value="" >Select</option>
 								<c:forEach items="${plantList}" var="plants">
 								<c:set var="plantselected">${plants.plantId eq plantId}</c:set>
 		          					<option value="${plants.plantId}" ${plantselected?'selected="selected"':'' } >${plants.productionSlot}</option>
@@ -31,6 +32,7 @@
 						</c:if>
 						<c:if test="${productionSlotResult.reservationStatus eq 'E'}">
 							<select id="plant-dropdown"  class="update-res-input">
+								<option value="" >Select</option>
 								<c:forEach items="${productionSlotList}" var="plants">
 									<c:set var="plantselected">${plants.plantId eq plantId}</c:set>
 		          					<option value="${plants.plantId}" ${plantselected?'selected="selected"':'' } >${plants.productionSlot}</option>
