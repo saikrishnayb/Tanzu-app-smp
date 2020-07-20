@@ -286,40 +286,6 @@
 	</delete>
 	 
 	<!-- PRODUCTION SLOT RESULTS -->
-	<resultMap id="slotResultsMap" type="com.penske.apps.buildmatrix.domain.ProductionSlotResult" >
-		<result column="runId"  				  property="runId"/>
-		<result column="orderId"  				  property="orderId"/>
-		<result column="unitNumber" 			  property="unitNumber"/>
-		<result column="reservationStatus" 		  property="reservationStatus"/>
-		<result column="programName"  			  property="programName"/>
-		<result column="REGION"  				  property="region"/>
-		<result column="AREA" 					  property="area"/>
-		<result column="districtNumber" 		  property="districtNumber"/>
-		<result column="districtName"  			  property="districtName"/>
-		<result column="requestedDeliveryDate"    property="requestedDeliveryDate"/>
-		<result column="productionSlot" 		  property="productionSlot"/>
-		<result column="productionDate" 		  property="productionDate"/>
-		<result column="chassisMake"						property="chassisMake"/>
-		<result column="chassisModel" 		  				property="chassisModel"/>
-		<result column="chassisModelYear" 		  			property="chassisModelYear"/>
-		<result column="chassisColor" 		  				property="chassisColor"/>
-		<result column="bodyMake" 		  					property="bodyMake"/>
-		<result column="chassisLength" 		 				property="chassisLength"/>
-		<result column="rearDoorMake" 		  				property="rearDoorMake"/>
-		<result column="reeferMake" 		  				property="reeferMake"/>
-		<result column="liftgateInstalled" 		  			property="liftgateInstalled"/>
-		<result column="liftgateMake" 		  				property="liftgateMake"/>
-		<result column="liftgateType" 		  				property="liftgateType"/>
-		<result column="wheelMaterial" 		  				property="wheelMaterial"/>
-		<result column="changeRequired" 		  			property="changeRequired"/>
-		<result column="vehicleTypeChangeRequired" 		  	property="vehicleTypeChangeRequired"/>
-		<result column="chassisModelChangeRequired" 		property="chassisModelChangeRequired"/>
-		<result column="chassisModelYearChangeRequired" 	property="chassisModelYearChangeRequired"/>
-		<result column="chassisColorChangeRequired" 		property="chassisColorChangeRequired"/>
-		<result column="chassisWheelMatChangeRequired"		property="chassisWheelMatChangeRequired"/>
-		<collection property="productionSlotList" column="{buildId=runId,unitNumber=unitNumber}" select="getProductionSlotList"></collection>
-	</resultMap>
-	
 	<select id="getProductionSlotResults" resultType="com.penske.apps.buildmatrix.domain.ProductionSlotResult">
 		SELECT
 			SLOT_RESERVE.SLOT_RESERVATION_ID AS slotReservationId,
@@ -372,7 +338,7 @@
 			 RUN_SUMMARY.RUN_ID=#{buildId}
 	</select>
 	
-	<select id="getSlotResultsByFilter" resultMap="slotResultsMap">
+	<select id="getSlotResultsByFilter" resultType="com.penske.apps.buildmatrix.domain.ProductionSlotResult">
 		SELECT
 			SLOT_RESERVE.SLOT_RESERVATION_ID AS slotReservationId,
 			SLOT_REQ.RUN_ID AS runId,
@@ -427,6 +393,7 @@
 		<foreach collection="selectedFilters" item="id" separator="," open="(" close=")">#{id}</foreach>
 		</if>
 	</select>
+	
 	<select id="getProductionSlotList" resultMap="plantResultMap">
 		SELECT 
 					PLANT.PLANT_ID AS plantId,

@@ -40,7 +40,6 @@ public class ProductionSlotResult {
 	private String chassisColorChangeRequired;
 	private String chassisWheelMatChangeRequired;
 	private String vehicleTypeChangeRequired;
-	private List<String> productionSlotList;
 	private int plantId;
 	
 
@@ -99,10 +98,6 @@ public class ProductionSlotResult {
 	
 	public String getReservationStatus() {
 		return reservationStatus;
-	}
-	
-	public List<String> getProductionSlotList() {
-		return productionSlotList;
 	}
 	
 	public String getChassisMake() {
@@ -230,9 +225,6 @@ public class ProductionSlotResult {
 		this.reservationStatus = reservationStatus;
 	}
 	
-	public void setProductionSlotList(List<String> productionSlotList) {
-		this.productionSlotList = productionSlotList;
-	}
 	public boolean showAcceptBtn() {
 		if(StringUtils.equals(reservationStatus,ApplicationConstants.RESERVATION_STATUS_ASSIGNED))
 			return true;
