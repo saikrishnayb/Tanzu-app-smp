@@ -45,8 +45,18 @@ public class BuildMatrixSlot {
 		return availableSlots - allocatedRegionSlots;
 	}
 	
-	public void updateAvailableSlots(int availableSlots) {
-		this.availableSlots = availableSlots;
+	public boolean isInvalidSlot() {
+		if(availableSlots < allocatedRegionSlots)
+			return true;
+		else
+			return false;
+	}
+	
+	public void updateAvailableSlots(int availableSlots, boolean isImportConfirmation) {
+		if(availableSlots > allocatedRegionSlots && !isImportConfirmation)
+			throw new IllegalArgumentException("New available slots can't be less than the alloated region slots");
+		else
+			this.availableSlots = availableSlots;
 	}
 
 	public int getSlotId() {

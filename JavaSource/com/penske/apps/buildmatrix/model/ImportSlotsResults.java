@@ -4,7 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
+import com.penske.apps.buildmatrix.domain.BuildMatrixSlotDate;
+import com.penske.apps.buildmatrix.model.ProductionSlotsMaintenanceSummary.ProductionSlotsMaintenanceCell;
+import com.penske.apps.buildmatrix.model.ProductionSlotsMaintenanceSummary.ProductionSlotsMaintenanceRow;
 
 public class ImportSlotsResults {
 
@@ -23,6 +28,17 @@ public class ImportSlotsResults {
 			plantsNotFoundList.add(header.getManufacturer() + " - " + header.getCity() + ", " + header.getState());
 		}
 		this.plantsNotFound = plantsNotFoundList;
+	}
+	
+	public List<Pair<BuildMatrixSlotDate, ProductionSlotsMaintenanceCell>> getInvalidSlots() {
+		List<Pair<BuildMatrixSlotDate, ProductionSlotsMaintenanceCell>> invalidSlots = new ArrayList<>();
+		for(ProductionSlotsMaintenanceRow row: summary.getRows()) {
+			for(ProductionSlotsMaintenanceCell cell: row.getCells()) {
+				if(cell.getSlot().isInvalidSlot())
+					invalidSlots.add(Pair.of(row.getSlotDate(), cell));
+			}
+		}
+		return invalidSlots;
 	}
 
 	public ProductionSlotsMaintenanceSummary getSummary() {

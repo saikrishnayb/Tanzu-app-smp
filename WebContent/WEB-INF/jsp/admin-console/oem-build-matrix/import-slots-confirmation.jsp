@@ -14,6 +14,7 @@
 	<%@ include file="../../global/navigation/sub-nav.jsp"%>
 	<div id="mainContent" class="borderTop">
 		<c:set var="noRows" value="${empty results.summary.rows}" />
+		<c:set var="invalidSlots" value="${!empty results.getInvalidSlots()}" />
 		<%@ include file="../../global/navigation/admin-console/oem-build-matrix/left-nav.jsp"%>
 		<div class="leftNavAdjacentContainer">
 			<%@ include file="../../global/v2/page-error-container.jsp"%>
@@ -31,7 +32,7 @@
 	      			</div>
 		      		<div class="btn-div floatRight">
 		  				<a id="back-btn" class="buttonSecondary" href="${backUrl}">Back</a>
-		  				<a id="import-confirm-btn" class="buttonPrimary<c:if test="${noRows}"> buttonDisabled</c:if>">Import</a>
+		  				<a id="import-confirm-btn" class="buttonPrimary<c:if test="${noRows or invalidSlots}"> buttonDisabled</c:if>">Import</a>
 		  			</div>
 		  		</div>
       		</div>
@@ -42,6 +43,25 @@
 	      				<ul>
 		      				<c:forEach items="${results.plantsNotFound}" var="plant">
 								<li>${plant}</li>
+							</c:forEach>
+						</ul>
+	      			</div>
+	      		</div>
+      		</div>
+      		<div class="row invalid-slots-row<c:if test="${!invalidSlots}"> hidden</c:if>" >
+      			<div class="col-xs-12">
+	      			<div class="alert alert-danger">
+	      				The following slots are invalid because the new available slots is less than the allocated region slots:
+	      				<ul>
+		      				<c:forEach items="${results.plantsNotFound}" var="plant">
+								<li>${plant}</li>
+							</c:forEach>
+							<c:forEach items="${results.invalidSlots}" var="invalidSlot">
+		      					<c:set var="slotDate" value="${invalidSlot.left}"/>
+		      					<c:set var="cell" value="${invalidSlot.right}"/>
+								<li>
+									${slotDate.formattedSlotDate} - ${cell.bodyPlant.plantManufacturer} - ${cell.bodyPlant.city}, ${cell.bodyPlant.state}: New Available Slots: ${cell.slot.availableSlots} &emsp; Allocated Region Slots: ${cell.slot.allocatedRegionSlots}
+								</li>
 							</c:forEach>
 						</ul>
 	      			</div>
@@ -67,7 +87,8 @@
 									<tr>
 										<td class="centerAlign import-slots-table-header" headers="prod-date">${row.slotDate.formattedSlotDate}</td>
 										<c:forEach items="${row.cells}" var="cell" varStatus="innerLoop">
-											<td class="centerAlign slot-table-header" headers="${cell.bodyPlant.plantId}">
+											<c:set var="invalidSlot" value="${cell.slot.isInvalidSlot()}" />
+											<td class="centerAlign slot-table-header<c:if test="${invalidSlot}"> invalid-slot-td</c:if>" headers="${cell.bodyPlant.plantId}">
 												${cell.slot.availableSlots}
 											</td>
 											<input type="hidden" name="slotInfos[${slotIndex}].slotId" value="${cell.slot.slotId}" />

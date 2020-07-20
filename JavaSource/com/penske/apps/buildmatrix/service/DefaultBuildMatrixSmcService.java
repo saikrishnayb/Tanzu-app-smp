@@ -1260,7 +1260,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		if(!slots.isEmpty()) {
 			for(BuildMatrixSlot slot: slots) {
 				Integer newAvailableSlots = availableUnitsBySlotKey.get(new BuildMatrixSlotKey(slot.getSlotDateId(), slot.getPlantId(), slot.getSlotTypeId()));
-				slot.updateAvailableSlots(newAvailableSlots);
+				slot.updateAvailableSlots(newAvailableSlots, true);
 			}
 		}
 		
@@ -1293,7 +1293,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		for(BuildMatrixSlot slot: slots) {
 			int newAvailableSlots = availableSlotsById.get(slot.getSlotId());
 			if(newAvailableSlots != slot.getAvailableSlots()) {
-				slot.updateAvailableSlots(newAvailableSlots);
+				slot.updateAvailableSlots(newAvailableSlots, false);
 				buildMatrixSmcDAO.updateSlot(slot);
 			}
 		}

@@ -75,9 +75,16 @@
 									<tr>
 										<td class="centerAlign slot-table-header" headers="prod-date">${row.slotDate.formattedSlotDate}</td>
 										<c:forEach items="${row.cells}" var="cell">
-											<td class="centerAlign slot-table-header" headers="${cell.bodyPlant.plantId}">
+											<td class="centerAlign slot-table-header available-units-td" headers="${cell.bodyPlant.plantId}">
 												<input type="hidden" name="slotInfos[${slotIndex}].slotId" value="${cell.slot.slotId}" />
-												<input class ="available-slot-input" name="slotInfos[${slotIndex}].availableSlots" type="text" value="${cell.slot.availableSlots}"/>
+												<input class ="available-slot-input" name="slotInfos[${slotIndex}].availableSlots" type="text" value="${cell.slot.availableSlots}"
+													data-allocated-slots="${cell.slot.allocatedRegionSlots}"/>
+												<br>
+												<div class="allocated-region-slots-div">
+													<span class="allocated-region-slots hidden">
+														Allocated: ${cell.slot.allocatedRegionSlots}
+													</span>
+												</div>
 											</td>
 											<c:set var="slotIndex" value="${slotIndex+1}" />
 										</c:forEach>

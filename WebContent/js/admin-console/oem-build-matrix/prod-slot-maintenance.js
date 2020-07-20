@@ -37,10 +37,50 @@ $("#vehicletype-drpdwn, #year-drpdwn").on("change", function() {
 	$filterSlotsForm.submit();
 });
 
+$('.available-slot-input').on('focusin', function(){
+	var $td = $(this).closest('.available-units-td');
+	$td.find('.allocated-region-slots').removeClass('hidden');
+});
+
+$('.available-slot-input').on('focusout', function(){
+	var $td = $(this).closest('.available-units-td');
+	$td.find('.allocated-region-slots').addClass('hidden');
+});
+
 $('.available-slot-input').on('input', function(){
 	this.value = this.value.replace(/[^0-9]/g,'');
+	var inputValue = this.value;
+	var $td = $(this).closest('.available-units-td');
+	var allocatedSlots =  parseInt(this.getAttribute('data-allocated-slots'));
+	
+	if(inputValue == ''){
+		$('#save-region-slots-btn').addClass('buttonDisabled');
+		$(this).addClass('errorMsgInput');
+		return false;
+	}
+	else{
+		$(this).removeClass('errorMsgInput');
+	}
 	if(ritsu.isFormDirty('#slot-maintenance-form'))
 		$('#save-slots-btn').removeClass('buttonDisabled');
+	
+	var value = parseInt(inputValue);
+	
+	if(value < allocatedSlots) {
+		$('#save-slots-btn').addClass('buttonDisabled');
+		$(this).addClass('errorMsgInput');
+		$td.find('.allocated-region-slots').addClass('errorMsg');
+	}
+	else {
+		$('#save-slots-btn').removeClass('buttonDisabled');
+		$(this).removeClass('errorMsgInput');
+		$td.find('.allocated-region-slots').removeClass('errorMsg');
+	}
+	
+	$('.available-slot-input').each(function(){
+		if($(this).hasClass('errorMsgInput'))
+			$('#save-slots-btn').addClass('buttonDisabled');
+	});
 })
 
 $('#create-slots-btn').on('click', function(){
