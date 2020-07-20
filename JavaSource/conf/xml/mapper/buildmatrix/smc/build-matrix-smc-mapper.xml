@@ -103,6 +103,7 @@
 			PLANT_COUNTRY AS country,
 			PLANT_CITY AS city
 		FROM SMC.OBM_PLANTS
+		ORDER BY PLANT_MANUFACTURER, PLANT_CITY
 	</select>
 	
 	<select id="getPlantData" resultMap="bodyplantResultmap">

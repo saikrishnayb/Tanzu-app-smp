@@ -79,7 +79,7 @@
         		<div class="col-xs-12">
         			<div class="slot-region-maintenance-table-container">
 	        			<c:choose>
-	        				<c:when test="${empty summary.plantAssociationsByRegion}">
+	        				<c:when test="${empty summary.bodyPlantById}">
 	        					<div class="no-plants-message">
 	        						There are no plants associated with this region. Please add plant associations to continue
 	        					</div>
@@ -102,15 +102,14 @@
 												</c:forEach>
 											</tr> --%>
 											<tr class="plant-header-row">
-												<th class="first-col slot-table-header">Production Date</th>
-												<c:forEach items="${summary.plantAssociationsByRegion}" var="entry">
-													<c:set var="region" value="${entry.key}" />
-													<c:set var="associationList" value="${entry.value}" />
-													<c:forEach items="${associationList}" var="association">
-														<c:set var="bodyPlant" value="${summary.bodyPlantById.get(association.plantId)}" />
-														<th id="${bodyPlant.plantId}" class="slot-table-header"> ${bodyPlant.plantManufacturer} <br> ${bodyPlant.city}, ${bodyPlant.state}</th>
-													</c:forEach>	
-												</c:forEach>
+												<th id="prod-date" class="first-col slot-table-header">Production Date</th>
+												<c:forEach items="${bodyPlantList}" var="bodyPlant">
+													<th id="${bodyPlant.plantId}" class="slot-table-header">
+																${bodyPlant.plantManufacturer}
+														<br>
+														${bodyPlant.city}, ${bodyPlant.state}
+													</th>
+												</c:forEach>	
 											</tr>
 										</thead>
 										<tbody>
@@ -126,10 +125,10 @@
 												</c:choose>
 												<c:set var="slotDateId" value="${row.slotDate.slotDateId}" />
 												<tr class="date-unit-row ${rowClass}" data-prod-slot-date-id="${slotDateId}">
-													<td class="first-col prod-date centerAlign slot-table-header">${row.slotDate.formattedSlotDate}</td>
+													<td class="first-col prod-date centerAlign slot-table-header" headers="prod-date">${row.slotDate.formattedSlotDate}</td>
 													<c:forEach items="${row.cells}" var="cell">
 														<c:set var="slot" value="${summary.slotById.get(cell.regionAvailability.slotId)}" />
-														<td class="available-units-td">
+														<td class="available-units-td" headers="${cell.bodyPlant.plantId}">
 															<input type="hidden" name="regionSlotInfos[${slotIndex}].slotRegionId" value="${cell.regionAvailability.slotRegionId}" />
 															<input type="text" class="available-slot-input" name="regionSlotInfos[${slotIndex}].slotAvailable" value="${cell.regionAvailability.slotAvailable}" 
 																data-overall-slots="${slot.availableSlots}" 

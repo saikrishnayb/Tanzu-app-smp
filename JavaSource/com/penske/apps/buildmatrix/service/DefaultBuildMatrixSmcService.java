@@ -14,6 +14,7 @@ import java.time.temporal.IsoFields;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -959,7 +960,9 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 			slots = Collections.emptyList();
 		}
 		else {
-			slots = buildMatrixSmcDAO.getSlotsBySlotDates(slotTypeId, slotDates.stream().map(BuildMatrixSlotDate::getSlotDateId).collect(toList()));
+			List<Integer> slotDateIds = slotDates.stream().map(sld->sld.getSlotDateId()).collect(toList());
+			List<Integer> plantIds = bodyPlantSummary.stream().map(bp->bp.getPlantId()).collect(toList());
+			slots = buildMatrixSmcDAO.getSlotsBySlotDatesAndPlantIds(slotTypeId, slotDateIds, plantIds);
 		}
 		
 		Set<Integer> slotIds = slots.stream().map(BuildMatrixSlot::getSlotId).collect(toSet());
@@ -968,7 +971,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 			regionAvailability = Collections.emptyList();
 		else
 			regionAvailability = buildMatrixSmcDAO.getRegionAvailability(slotIds);
-		ProductionSlotsUtilizationSummary summary = new ProductionSlotsUtilizationSummary(regionPlantList, bodyPlantSummary, slotDates, regionAvailability, slots);
+		ProductionSlotsUtilizationSummary summary = new ProductionSlotsUtilizationSummary(bodyPlantSummary, slotDates, regionAvailability, slots, false);
 		
 		return summary;
 	}
@@ -1039,7 +1042,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 			buildMatrixSmcDAO.insertSlotDates(slotDatesForYear);
 		}
 		
-		List<BuildMatrixBodyPlant> plants = buildMatrixSmcDAO.getAllBodyPlants();
+		List<BuildMatrixBodyPlant> plants = buildMatrixSmcDAO.getAllBodyPlantsforSlotMaintenance();
 		List<BuildMatrixSlot> slots = new ArrayList<>();
 		for(BuildMatrixSlotDate slotDate: slotDatesForYear) {
 			for(BuildMatrixBodyPlant plant: plants) {
@@ -1316,6 +1319,11 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 				buildMatrixSmcDAO.updateRegionAvailability(regionAvailability);
 			}
 		}
+	}
+
+	@Override
+	public List<BuildMatrixBodyPlant> getBodyPlantsByPlantIds(Collection<Integer> plantIds) {
+		return buildMatrixSmcDAO.getBodyPlantsByPlantIds(plantIds);
 	}
 	
 }

@@ -78,7 +78,8 @@
 											<td class="centerAlign slot-table-header available-units-td" headers="${cell.bodyPlant.plantId}">
 												<input type="hidden" name="slotInfos[${slotIndex}].slotId" value="${cell.slot.slotId}" />
 												<input class ="available-slot-input" name="slotInfos[${slotIndex}].availableSlots" type="text" value="${cell.slot.availableSlots}"
-													data-allocated-slots="${cell.slot.allocatedRegionSlots}"/>
+													data-allocated-slots="${cell.slot.allocatedRegionSlots}"
+													data-plant="${cell.bodyPlant.plantId}"/>
 												<br>
 												<div class="allocated-region-slots-div">
 													<span class="allocated-region-slots hidden">

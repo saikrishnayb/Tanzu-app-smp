@@ -1,6 +1,7 @@
 package com.penske.apps.buildmatrix.service;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -23,11 +24,11 @@ import com.penske.apps.buildmatrix.domain.ProductionSlotResult;
 import com.penske.apps.buildmatrix.domain.RegionPlantAssociation;
 import com.penske.apps.buildmatrix.model.BuildMixForm;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm;
-import com.penske.apps.buildmatrix.model.SaveSlotsForm;
 import com.penske.apps.buildmatrix.model.ImportSlotsResults;
 import com.penske.apps.buildmatrix.model.ProductionSlotsMaintenanceSummary;
 import com.penske.apps.buildmatrix.model.ProductionSlotsUtilizationSummary;
 import com.penske.apps.buildmatrix.model.SaveRegionSlotsForm;
+import com.penske.apps.buildmatrix.model.SaveSlotsForm;
 import com.penske.apps.suppliermgmt.model.UserContext;
 
 public interface BuildMatrixSmcService {
@@ -178,5 +179,7 @@ public interface BuildMatrixSmcService {
 	public void saveSlots(SaveSlotsForm form);
 
 	public void saveRegionSlots(SaveRegionSlotsForm form);
+
+	public List<BuildMatrixBodyPlant> getBodyPlantsByPlantIds(Collection<Integer> plantIds);
 
 }

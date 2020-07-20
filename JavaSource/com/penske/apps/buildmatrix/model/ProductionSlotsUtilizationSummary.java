@@ -8,35 +8,23 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-
-import org.apache.commons.lang3.tuple.Pair;
 
 import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlot;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlotDate;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlotRegionAvailability;
-import com.penske.apps.buildmatrix.domain.RegionPlantAssociation;
 
 public class ProductionSlotsUtilizationSummary {
 	
 	private List<ProductionSlotsUtilizationRow> rows;
-	private Map<String, List<RegionPlantAssociation>> plantAssociationsByRegion;
 	private Map<Integer, BuildMatrixBodyPlant> bodyPlantById;
 	private Map<Integer, BuildMatrixSlot> slotById;
 	
-	public ProductionSlotsUtilizationSummary(List<RegionPlantAssociation> regionPlantAsscoiationList, 
-			List<BuildMatrixBodyPlant> bodyPlantList, 
+	public ProductionSlotsUtilizationSummary(List<BuildMatrixBodyPlant> bodyPlantList, 
 			List<BuildMatrixSlotDate> slotDates, 
 			List<BuildMatrixSlotRegionAvailability> regionAvailabilityList, 
-			List<BuildMatrixSlot> slots) {
-		
-		Map<String, List<RegionPlantAssociation>> plantAssociationsByRegion = new HashMap<>();
-		for(RegionPlantAssociation rpa: regionPlantAsscoiationList) {
-			List<RegionPlantAssociation> regionList = plantAssociationsByRegion.computeIfAbsent(rpa.getRegion(), list->new ArrayList<>());
-			regionList.add(rpa);
-		}
-		this.plantAssociationsByRegion = plantAssociationsByRegion;
+			List<BuildMatrixSlot> slots,
+			boolean importModal) {
 		
 		Map<Integer, BuildMatrixBodyPlant> bodyPlantById = bodyPlantList.stream().collect(toMap(BuildMatrixBodyPlant::getPlantId, bmbp -> bmbp));
 		this.bodyPlantById = bodyPlantById;
@@ -53,30 +41,25 @@ public class ProductionSlotsUtilizationSummary {
 				list.add(slot);
 			}
 			
-			Map<Pair<Integer, Integer>, BuildMatrixSlot> slotsByDateIdandPlantId = new HashMap<>();
-			for(BuildMatrixSlotDate slotDate: slotDates) {
-				List<BuildMatrixSlot> dateSlots = slotsByDateId.get(slotDate.getSlotDateId());
-				for(BuildMatrixSlot slot: dateSlots) {
-					slotsByDateIdandPlantId.put(Pair.of(slotDate.getSlotDateId(), slot.getPlantId()), slot);
-				}
-			}
-			
-			Map<Pair<String, Integer>, BuildMatrixSlotRegionAvailability> regionAvilabilityByRegionAndSlotId = new HashMap<>();
+			Map<Integer, BuildMatrixSlotRegionAvailability> regionAvilabilityBySlotId = new HashMap<>();
 			for(BuildMatrixSlotRegionAvailability regionAv: regionAvailabilityList) {
-				regionAvilabilityByRegionAndSlotId.put(Pair.of(regionAv.getRegion(),regionAv.getSlotId()), regionAv);
+				regionAvilabilityBySlotId.put(regionAv.getSlotId(), regionAv);
 			}
 			
 			List<ProductionSlotsUtilizationRow> rows = new ArrayList<>();
 			for(BuildMatrixSlotDate slotDate: slotDates) {
 				List<ProductionSlotsUtilizationCell> cells = new ArrayList<>();
-				for(Entry<String, List<RegionPlantAssociation>> entry: plantAssociationsByRegion.entrySet()) {
-					for(RegionPlantAssociation regionPlant:entry.getValue()) {
-						BuildMatrixSlot slot = slotsByDateIdandPlantId.get(Pair.of(slotDate.getSlotDateId(), regionPlant.getPlantId()));
-						BuildMatrixBodyPlant bodyPlant = bodyPlantById.get(regionPlant.getPlantId());
-						BuildMatrixSlotRegionAvailability regionAvailability = regionAvilabilityByRegionAndSlotId.get(Pair.of(entry.getKey(), slot.getSlotId()));
-						
-						cells.add(new ProductionSlotsUtilizationCell(bodyPlant, slot, regionAvailability, regionPlant));
-					}
+				List<BuildMatrixSlot> slotsForDate = slotsByDateId.get(slotDate.getSlotDateId());
+				if(slotsForDate == null || slotsForDate.isEmpty()) {
+					if(!importModal)
+						throw new IllegalStateException("Slots not created for Date: " + slotDate.getFormattedSlotDate());
+					else
+						continue;
+				}
+				for(BuildMatrixSlot slot: slotsForDate) {
+					BuildMatrixBodyPlant bodyPlant = bodyPlantById.get(slot.getPlantId());
+					BuildMatrixSlotRegionAvailability regionAvailability = regionAvilabilityBySlotId.get(slot.getSlotId());
+					cells.add(new ProductionSlotsUtilizationCell(bodyPlant, slot, regionAvailability));
 				}
 				
 				rows.add(new ProductionSlotsUtilizationRow(slotDate, cells));
@@ -87,10 +70,6 @@ public class ProductionSlotsUtilizationSummary {
 	
 	public Map<Integer, BuildMatrixBodyPlant> getBodyPlantById() {
 		return bodyPlantById;
-	}
-	
-	public Map<String, List<RegionPlantAssociation>> getPlantAssociationsByRegion() {
-		return plantAssociationsByRegion;
 	}
 	
 	public List<ProductionSlotsUtilizationRow> getRows() {
@@ -123,14 +102,12 @@ public class ProductionSlotsUtilizationSummary {
 		private BuildMatrixBodyPlant bodyPlant;
 		private BuildMatrixSlot slot;
 		private BuildMatrixSlotRegionAvailability regionAvailability;
-		private RegionPlantAssociation regionPlantAssociation;
 		
 		public ProductionSlotsUtilizationCell(BuildMatrixBodyPlant bodyPlant, BuildMatrixSlot slot, 
-				BuildMatrixSlotRegionAvailability regionAvailability, RegionPlantAssociation regionPlantAssociation) {
+				BuildMatrixSlotRegionAvailability regionAvailability) {
 			this.bodyPlant = bodyPlant;
 			this.slot = slot;
 			this.regionAvailability = regionAvailability;
-			this.regionPlantAssociation = regionPlantAssociation;
 		}
 		
 		public BuildMatrixBodyPlant getBodyPlant() {
@@ -141,9 +118,6 @@ public class ProductionSlotsUtilizationSummary {
 		}
 		public BuildMatrixSlot getSlot() {
 			return slot;
-		}
-		public RegionPlantAssociation getRegionPlantAssociation() {
-			return regionPlantAssociation;
 		}
 	}
 	

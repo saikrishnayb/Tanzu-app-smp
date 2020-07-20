@@ -449,8 +449,10 @@ public class BuildMatrixController {
 			selectedRegion = regionMap.keySet().iterator().next();
 		
 		ProductionSlotsUtilizationSummary summary = buildMatrixSmcService.getUtilizationSummary(Integer.valueOf(slotTypeId), Integer.valueOf(selectedYear), selectedRegion);
+		List<BuildMatrixBodyPlant> bodyplantList = buildMatrixSmcService.getBodyPlantsByPlantIds(summary.getBodyPlantById().keySet());
 		
 		model.addObject("summary", summary);
+		model.addObject("bodyPlantList", bodyplantList);
 		model.addObject("vehicleTypes", buildMatrixSlotTypes);
 		model.addObject("years", yearsForDropdown);
 		model.addObject("slotTypeId", Integer.valueOf(slotTypeId));
@@ -480,8 +482,10 @@ public class BuildMatrixController {
 			selectedRegion = regionMap.keySet().iterator().next();
 		
 		ProductionSlotsUtilizationSummary summary = buildMatrixSmcService.getUtilizationSummary(Integer.valueOf(slotTypeId), Integer.valueOf(selectedYear), selectedRegion);
+		List<BuildMatrixBodyPlant> bodyplantList = buildMatrixSmcService.getBodyPlantsByPlantIds(summary.getBodyPlantById().keySet());
 		
 		model.addObject("summary", summary);
+		model.addObject("bodyPlantList", bodyplantList);
 		model.addObject("vehicleTypes", buildMatrixSlotTypes);
 		model.addObject("years", yearsForDropdown);
 		model.addObject("slotTypeId", Integer.valueOf(slotTypeId));

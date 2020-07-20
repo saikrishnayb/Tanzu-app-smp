@@ -171,7 +171,7 @@ public interface BuildMatrixSmcDAO {
 
 	public List<RegionPlantAssociation> getRegionAssociationDataByRegion(@Param("region") String region);
 
-	public List<BuildMatrixBodyPlant> getBodyPlantsByPlantIds(@Param("plantIds") List<Integer> plantIds);
+	public List<BuildMatrixBodyPlant> getBodyPlantsByPlantIds(@Param("plantIds") Collection<Integer> plantIds);
 	
 	public List<BuildMatrixSlot> getSlotsBySlotDates(@Param("slotTypeId") int slotTypeId, @Param("slotDateIds") List<Integer> slotDateIds);
 	

@@ -77,7 +77,7 @@
         		<div class="col-xs-12">
         			<div class="slot-utilization-table-container">
         				<c:choose>
-	        				<c:when test="${empty summary.plantAssociationsByRegion}">
+	        				<c:when test="${empty summary.bodyPlantById}">
 	        					<div class="no-plants-message">
 	        						There are no plants associated with this region. Please add plant associations to continue
 	        					</div>
@@ -97,25 +97,16 @@
 										</tr> --%>
 										<tr class="plant-header-row">
 											<th class="first-col">Production Date</th>
-											<c:forEach items="${summary.plantAssociationsByRegion}" var="entry">
-												<c:set var="region" value="${entry.key}" />
-												<c:set var="associationList" value="${entry.value}" />
-												<c:forEach items="${associationList}" var="association">
-													<c:set var="bodyPlant" value="${summary.bodyPlantById.get(association.plantId)}" />
-													<th colspan="3" id="${bodyPlant.plantId}"> ${bodyPlant.plantManufacturer} <br> ${bodyPlant.city}, ${bodyPlant.state}</th>
-												</c:forEach>	
+											<c:forEach items="${bodyPlantList}" var="bodyPlant">
+												<th colspan="3" id="${bodyPlant.plantId}"> ${bodyPlant.plantManufacturer} <br> ${bodyPlant.city}, ${bodyPlant.state}</th>
 											</c:forEach>
 										</tr>
 										<tr class="badge-row">
 											<th class="first-col"></th>
-											<c:forEach items="${summary.plantAssociationsByRegion}" var="entry">
-												<c:set var="region" value="${entry.key}" />
-												<c:set var="associationList" value="${entry.value}" />
-												<c:forEach items="${associationList}" var="association">
-													<th><span class="badge available-badge">Available</span></th>
-													<th><span class="badge reserved-badge">Reserved</span></th>
-													<th><span class="badge issued-badge">Issued</span></th>
-												</c:forEach>
+											<c:forEach items="${bodyPlantList}" var="bodyPlant">
+												<th id="a-${bodyPlant.plantId}"><span class="badge available-badge">Available</span></th>
+												<th id="r-${bodyPlant.plantId}"><span class="badge reserved-badge">Reserved</span></th>
+												<th id="i-${bodyPlant.plantId}"><span class="badge issued-badge">Issued</span></th>
 											</c:forEach>
 										</tr>
 									</thead>
@@ -133,10 +124,10 @@
 											<tr class="date-unit-row ${rowClass}" data-prod-slot-date-id="${slotDateId}">
 												<td class="first-col prod-date">${row.slotDate.formattedSlotDate}</td>
 												<c:forEach items="${row.cells}" var="cell">
-													<td class="available-units">${cell.regionAvailability.slotAvailable}</td>
+													<td class="available-units" headers="a-${cell.bodyPlant.plantId}">${cell.regionAvailability.slotAvailable}</td>
 													<c:choose>
 														<c:when test="${cell.regionAvailability.slotReserved gt 0}">
-															<td class="reserved-units"
+															<td class="reserved-units" headers="r-${cell.bodyPlant.plantId}"
 																data-plant-id="${cell.bodyPlant.plantId}"
 																data-region="${cell.regionAvailability.region}" 
 																data-slot-id="${cell.slot.slotId}" 
@@ -146,10 +137,10 @@
 															</td>
 														</c:when>
 														<c:otherwise>
-															<td class="reserved-units">${cell.regionAvailability.slotReserved}</td>
+															<td class="reserved-units" headers="r-${cell.bodyPlant.plantId}">${cell.regionAvailability.slotReserved}</td>
 														</c:otherwise>
 													</c:choose>
-													<td class="issued-units">${cell.regionAvailability.slotAccepted}</td>
+													<td class="issued-units" headers="i-${cell.bodyPlant.plantId}">${cell.regionAvailability.slotAccepted}</td>
 												</c:forEach>
 											</tr>
 										</c:forEach>
