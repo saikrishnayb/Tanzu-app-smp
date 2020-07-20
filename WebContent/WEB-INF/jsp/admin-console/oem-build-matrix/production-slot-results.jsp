@@ -120,7 +120,7 @@
           <div class="confrim-button-row col-xs-12">
             <div class="pull-right">
               <a id="cancel-confirm" class="secondaryLink">Cancel</a>
-              <a id="confirm-btn"  delete="N" class="buttonPrimary btn">Confirm</a>
+              <a id="confirm-btn"  confirm-action="delete" class="buttonPrimary btn">Confirm</a>
             </div>
           </div>
         </div>

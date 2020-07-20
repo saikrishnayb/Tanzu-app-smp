@@ -23,6 +23,7 @@
 						<td class="col-xs-8">
 						<c:if test="${productionSlotResult.reservationStatus eq 'P'}">
 							<select id="plant-dropdown"  class="update-res-input">
+								<option value="" >Select</option>
 								<c:forEach items="${plantList}" var="plants">
   	       						 <option value="${plants.plantId}">${plants.productionSlot}</option>
   	      						</c:forEach>
@@ -30,6 +31,7 @@
 						</c:if>
 						<c:if test="${productionSlotResult.reservationStatus eq 'E'}">
 							<select id="plant-dropdown"  class="update-res-input">
+								<option value="" >Select</option>
 								<c:forEach items="${productionSlotList}" var="plants">
   	       						 <option value="${plants.plantId}">${plants.productionSlot}</option>
   	      						</c:forEach>
@@ -37,11 +39,11 @@
 						</c:if>
 						</td>
 					</tr>
-					<tr class="row" >
+					<tr id="production-date-div" class="row hideOption" >
 						<td class="col-xs-4"><span class="formLbl">Date</span></td>
 						<td class="col-xs-8">
 							<input class="production-date date-picker numeric numeric-jquery-date advanced-date update-res-input"
-										required value="" />	
+										required value="" readonly="readonly"/>	
 						</td>
 					</tr>
 				</tbody>
@@ -50,7 +52,7 @@
 	</div>
 	<div class="modal-footer">
 		<div id="save-reservation-div">
-			<a class="buttonPrimary floatRight" id="save-reservation">Save</a>
+			<a class="buttonPrimary floatRight buttonDisabled" id="save-reservation">Save</a>
 		</div>
 	</div>
 </div>

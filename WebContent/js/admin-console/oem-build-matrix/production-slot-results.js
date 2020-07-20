@@ -101,6 +101,16 @@ function initializeDatePicker(slotdata) {
 		altFormat : "mm/dd/yy",
 		onSelect : function(dateText, inst) {
 			$(this).datepicker('option', 'buttonImage', '../../../images/calendar.png');
+			if (orderSelectionList.length == 1) {
+				var plantId = parseInt($updateReservationModal.find('#plant-dropdown').val());
+				var slotDate=$updateReservationModal.find('.production-date').val();
+				if(plantId!="" && slotDate!="")
+					{
+					$updateReservationModal.find('#save-reservation').removeClass("buttonDisabled");
+					}
+				else
+					$updateReservationModal.find('#save-reservation').addClass("buttonDisabled");
+			}
 		},
 		onClose : function(dateText, inst) {
 			$(this).datepicker('option', 'buttonImage', '../../../images/calendar.png');
@@ -188,9 +198,9 @@ $("#cancel-confirm").on("click", function() {
 });
 
 $confirmReservationModal.on("click", '#confirm-btn', function() {
-	var isDeleteBuild = $("#confirm-btn").attr("delete");
+	var confirmAction = $("#confirm-btn").attr("confirm-action");
 	var buildId = parseInt($('#buildId').val());
-	if (isDeleteBuild == "Y") //delete Reservations flow
+	if (confirmAction == "delete") //delete Reservations flow
 	{
 		$.ajax({
 			type : "POST",
@@ -203,7 +213,7 @@ $confirmReservationModal.on("click", '#confirm-btn', function() {
 				location.assign('view-slot-results-filter.htm?buildId=' + $('#buildId').val() + '&selectedFiltersList=A,E,P&checkedFilter=0');
 			},
 		});
-	} else { //accept build flow
+	} else if(confirmAction=='accept') { //accept build flow
 		$.ajax({
 			type : "POST",
 			url : "./show-accept-button.htm",
@@ -238,6 +248,33 @@ $confirmReservationModal.on("click", '#confirm-btn', function() {
 		});
 
 	}
+	else if(confirmAction=='update'){
+		if(orderSelectionList.length == 1)
+			{
+			updateReservationObj=orderSelectionList[0];
+			var slotReservationId=updateReservationObj["slotReservationId"];
+			var plantId = parseInt($updateReservationModal.find('#plant-dropdown').val());
+			var slotId =0;
+			var slotDate=$updateReservationModal.find('.production-date').val();
+			var unitNumber=updateReservationObj['unitNumber'];
+			$.ajax({
+				type : "POST",
+				url : "./update-reservation-data.htm",
+				data : {
+					slotReservationId : slotReservationId,
+					plantId : plantId,
+					slotId :slotId,
+					unitNumber : unitNumber
+				},
+				success : function(data) {
+					ModalUtil.closeModal($confirmReservationModal);
+					ModalUtil.closeModal($updateReservationModal);
+					location.assign('view-slot-results-filter.htm?buildId=' + $('#buildId').val() + '&selectedFiltersList=A,E,P&checkedFilter=0');
+				},
+			});
+			}
+		
+	}
 	ModalUtil.closeModal($confirmReservationModal);
 });
 
@@ -259,19 +296,41 @@ $updateReservation.on("click", function() {
 });
 
 $updateReservationModal.on("change", '#plant-dropdown', function() {
-	var plantId = parseInt($updateReservationModal.find('#plant-dropdown').val());
-
-	var $availableSlotPromise = $.ajax({
-		type : "POST",
-		url : './get-available-slot-dates.htm',
-		data : {
-			plantId : plantId
+	var plantId = $updateReservationModal.find('#plant-dropdown').val();
+	if(plantId=="" ||plantId==0)
+		{
+		$('#production-date-div').addClass('hideOption');
+		$updateReservationModal.find('.production-date').val("")
+		$updateReservationModal.find('#save-reservation').addClass("buttonDisabled");
 		}
-	});
+	else{
+		var $availableSlotPromise = $.ajax({
+			type : "POST",
+			url : './get-available-slot-dates.htm',
+			data : {
+				plantId : parseInt(plantId)
+			}
+		});
+		$availableSlotPromise.done(function(data) {
+			initializeDatePicker(data);
+			$('#production-date-div').removeClass('hideOption');
+		});
+	}	
+	
+});
 
-	$availableSlotPromise.done(function(data) {
-		initializeDatePicker(data);
-	});
+$updateReservationModal.on("change input",".update-res-input",function(){
+	if (orderSelectionList.length == 1) {
+		var plantId = parseInt($updateReservationModal.find('#plant-dropdown').val());
+		var slotDate=$updateReservationModal.find('.production-date').val();
+		if(plantId!="" && slotDate!="")
+			{
+			$updateReservationModal.find('#save-reservation').removeClass("buttonDisabled");
+			}
+		else
+			$updateReservationModal.find('#save-reservation').addClass("buttonDisabled");
+	}
+	
 });
 
 function showUpdateButton(orderSelectionList) {
@@ -286,15 +345,15 @@ function showUpdateButton(orderSelectionList) {
 function openConfirmModal(confirmationCategory) {
 	if (confirmationCategory == 'delete') {
 		$("#confirm-btn").html('Confirm');
-		$("#confirm-btn").attr("delete", "Y");
+		$("#confirm-btn").attr("confirm-action", "delete");
 		$('#confirmMessage').text("Associated slot reservation data will get deleted for the run and cannot be undone. Do you want to continue?");
 	} else if (confirmationCategory == 'accept') {
 		$("#confirm-btn").html('Yes');
-		$("#confirm-btn").attr("delete", "N");
+		$("#confirm-btn").attr("confirm-action", "accept");
 		$('#confirmMessage').text("You are about to accept the outcomes of this build request. Your changes will be committed and reservations marked as approved. This operation cannot be undone. Do you wish to continue?");
 	} else if (confirmationCategory == 'update') {
 		$("#confirm-btn").html('Confirm');
-		$("#confirm-btn").attr("delete", "N");
+		$("#confirm-btn").attr("confirm-action", "update");
 		$('#confirmMessage').text("Selected reservation data will get updated for the run. Do you wish to continue?");
 	}
 	ModalUtil.openModal($confirmReservationModal);
