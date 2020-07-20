@@ -3,6 +3,7 @@ selectCurrentNavigation("tab-oem-build-matrix", "left-nav-build-history");
 var $slotResultsTable = $('#slot-results-table');
 var orderSelectionCnt = 0;
 var orderSelectionList = [];
+var slotDataAvailable=[];
 var $confirmReservationModal = $('#confirm-delete-reservation-modal');
 var $updateReservation = $('#update-reservation');
 var $updateReservationModal = $('#update-reservation-popup-modal');
@@ -85,6 +86,7 @@ $('.production-slot').multiselect({
 $(".ui-multiselect-checkboxes label").removeAttr('font-weight').css("font-weight", "normal");
 
 function initializeDatePicker(slotdata) {
+	slotDataAvailable=slotdata;
 	var jsonData= JSON.stringify(slotdata);
 	var datesToEnable= "[" + JSON.parse(jsonData).map(x => x.formattedSlotDate).join(',') + "]"
 	$(".production-date").datepicker({
@@ -100,6 +102,12 @@ function initializeDatePicker(slotdata) {
 		altField : ".datepickerStartHidden",
 		altFormat : "mm/dd/yy",
 		onSelect : function(dateText, inst) {
+			var matchslotId=0;
+			slotDataAvailable.forEach((obj) => {
+                if(obj.formattedSlotDate == dateText)
+                    matchslotId=obj.slotId;
+             });
+            $updateReservationModal.find('.production-date').attr("slotId",matchslotId);
 			$(this).datepicker('option', 'buttonImage', '../../../images/calendar.png');
 			if (orderSelectionList.length == 1) {
 				var plantId = parseInt($updateReservationModal.find('#plant-dropdown').val());
@@ -255,7 +263,7 @@ $confirmReservationModal.on("click", '#confirm-btn', function() {
 			updateReservationObj=orderSelectionList[0];
 			var slotReservationId=updateReservationObj["slotReservationId"];
 			var plantId = parseInt($updateReservationModal.find('#plant-dropdown').val());
-			var slotId =0;
+			var slotId =$updateReservationModal.find('.production-date').attr("slotId");
 			var slotDate=$updateReservationModal.find('.production-date').val();
 			var unitNumber=updateReservationObj['unitNumber'];
 			$.ajax({
