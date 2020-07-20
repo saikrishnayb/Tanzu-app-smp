@@ -17,6 +17,10 @@ public class BuildMatrixSlotRegionAvailability {
 		this.slotReserved = 0;
 		this.slotAccepted = 0;
 	}
+	
+	public int getAllocatedSlots() {
+		return slotReserved + slotAccepted;
+	}
 
 	public int getSlotRegionId() {
 		return slotRegionId;
@@ -45,6 +49,8 @@ public class BuildMatrixSlotRegionAvailability {
 	public void updateAvailableSlots(int newAvailableSlots, BuildMatrixSlot slot) {
 		if(slot.getUnallocatedSlots() < newAvailableSlots)
 			throw new IllegalArgumentException("Available region slots cannot be more than the unallocated overall available slots");
+		else if(slot.getUnallocatedSlots() < newAvailableSlots)
+			throw new IllegalArgumentException("Available region slots cannot be less than the already allocated region slots");
 		else
 			this.slotAvailable = newAvailableSlots;
 	}

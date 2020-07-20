@@ -131,10 +131,15 @@
 														<c:set var="slot" value="${summary.slotById.get(cell.regionAvailability.slotId)}" />
 														<td class="available-units-td">
 															<input type="hidden" name="regionSlotInfos[${slotIndex}].slotRegionId" value="${cell.regionAvailability.slotRegionId}" />
-															<input type="text" class="available-slot-input" name="regionSlotInfos[${slotIndex}].slotAvailable" value="${cell.regionAvailability.slotAvailable}" data-overall-slots="${slot.availableSlots}" data-allocated-slots="${slot.allocatedRegionSlots - cell.regionAvailability.slotAvailable}"/>
+															<input type="text" class="available-slot-input" name="regionSlotInfos[${slotIndex}].slotAvailable" value="${cell.regionAvailability.slotAvailable}" 
+																data-overall-slots="${slot.availableSlots}" 
+																data-allocated-slots="${slot.allocatedRegionSlots - cell.regionAvailability.slotAvailable}"
+																data-region-allocated-slots="${cell.regionAvailability.allocatedSlots}"/>
 															<br>
 															<div class="unallocated-region-slots-div">
-																<span class="unallocated-region-slots hidden">Slots Available: <span class="unallocated-slots">${slot.unallocatedSlots}</span></span>
+																<span class="unallocated-region-slots hidden">
+																	Available: <span class="unallocated-slots">${slot.unallocatedSlots}</span>
+																	&emsp;Used: ${cell.regionAvailability.allocatedSlots}</span>
 															</div>
 														</td>
 														<c:set var="slotIndex" value="${slotIndex+1}" />

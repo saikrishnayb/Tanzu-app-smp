@@ -48,6 +48,7 @@ $('.available-slot-input').on('input', function(){
 	var $td = $(this).closest('.available-units-td');
 	var allocatedSlots =  parseInt(this.getAttribute('data-allocated-slots'));
 	var overallSlots =  parseInt(this.getAttribute('data-overall-slots'));
+	var allocatedRegionSlots = parseInt(this.getAttribute('data-region-allocated-slots'));
 	
 	if(inputValue == ''){
 		$('#save-region-slots-btn').addClass('buttonDisabled');
@@ -64,6 +65,11 @@ $('.available-slot-input').on('input', function(){
 	$td.find('.unallocated-slots').text(overallSlots - value - allocatedSlots);
 	
 	if(value + allocatedSlots > overallSlots) {
+		$('#save-region-slots-btn').addClass('buttonDisabled');
+		$(this).addClass('errorMsgInput');
+		$td.find('.unallocated-region-slots').addClass('errorMsg');
+	}
+	else if(value < allocatedRegionSlots) {
 		$('#save-region-slots-btn').addClass('buttonDisabled');
 		$(this).addClass('errorMsgInput');
 		$td.find('.unallocated-region-slots').addClass('errorMsg');
