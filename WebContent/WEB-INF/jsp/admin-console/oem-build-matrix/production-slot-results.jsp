@@ -102,6 +102,7 @@
 									<td class="row leftAlign">
 										<fmt:parseDate pattern="MM/dd/yyy" value="${unit.productionDate}" var="parsedProductionDate" /> 
 											<fmt:formatDate pattern="MM/dd/yyyy" value="${parsedProductionDate}" />
+											<input type="hidden" id="production-date" value="${parsedProductionDate}">
 								   </td>
 								</tr>
 							</c:forEach>

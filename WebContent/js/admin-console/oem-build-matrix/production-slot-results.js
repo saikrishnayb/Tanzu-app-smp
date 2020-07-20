@@ -168,6 +168,7 @@ $('.unit-selection').on("change", function() {
 	orderObj['runId'] = $('#buildId').val();
 	orderObj['reservationStatus'] = slotReservationStatus;
 	orderObj['unitNumber'] = unitNumber;
+	orderObj['productionDate']=$('#production-date').val();
 	var approvedBuild = $('#approvedBuild').val();
 
 
