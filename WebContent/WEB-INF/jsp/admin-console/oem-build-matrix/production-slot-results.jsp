@@ -98,7 +98,9 @@
 									<td class="leftAlign">${unit.districtNumber}</td>
 									<td class="leftAlign">${unit.districtName}</td>
 									<td class="leftAlign"><fmt:formatDate pattern="MM/dd/yyyy" value="${unit.requestedDeliveryDate}" /></td>
-									<td class="leftAlign">${unit.productionSlot}</td>
+									<td class="leftAlign">${unit.productionSlot}
+										<input type="hidden" id="production-slot" value="${unit.productionSlot}" >
+									</td>
 									<td class="row leftAlign">${unit.formattedProductionDate}
 										<input type="hidden" id="production-date" value="${unit.formattedProductionDate}" >
 								   </td>
