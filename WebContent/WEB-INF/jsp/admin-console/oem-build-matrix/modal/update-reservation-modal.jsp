@@ -39,11 +39,11 @@
 						</c:if>
 						</td>
 					</tr>
-					<tr id="production-date-div" class="row hideOption" >
+					<tr id="production-date-div" class="row <c:if test="${productionSlotResult.productionSlot==''}">hideOption</c:if>" >
 						<td class="col-xs-4"><span class="formLbl">Date</span></td>
 						<td class="col-xs-8">
 							<input class="production-date date-picker numeric numeric-jquery-date advanced-date update-res-input"
-										required value="${productionSlotResult.productionSlotDate}" readonly="readonly"/>	
+										required value="${productionSlotResult.productionSlotDate}" readonly="readonly" slot-dates="${JSON.stringify(slotDates)}" slot-array="${slotArray}"/>	
 						</td>
 					</tr>
 				</tbody>

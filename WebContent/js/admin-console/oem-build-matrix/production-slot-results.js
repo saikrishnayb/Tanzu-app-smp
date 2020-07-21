@@ -178,6 +178,7 @@ $('.unit-selection').on("change", function() {
 	orderObj['unitNumber'] = unitNumber;
 	orderObj['productionSlotDate']= $('#production-date').val();
 	orderObj['productionSlot']= $('#production-slot').val();
+	orderObj['plantId'] =$(this).attr('plant-id');
 	var approvedBuild = $('#approvedBuild').val();
 	
 
@@ -300,6 +301,9 @@ $updateReservation.on("click", function() {
 
 		$updateReservationPromise.done(function(data) {
 			$updateReservationModal.html(data);
+			slotDates=$updateReservationModal.find('.production-date').attr('slot-dates');
+			slotArray=$updateReservationModal.find('.production-date').attr('slot-array');
+			//initializeDatePicker(slotDates);
 			ModalUtil.openModal($updateReservationModal);
 		});
 	}

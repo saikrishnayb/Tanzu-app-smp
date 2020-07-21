@@ -583,6 +583,8 @@ public class BuildMatrixRestController {
 		model.addObject("plantList", buildMatrixSmcService.getAllPlants());
 		model.addObject("productionSlotList", buildMatrixSmcService.getProductionSlotList(buildId, unitNumber));
 		model.addObject("productionSlotResult",productionSlotResult);
+		if(productionSlotResult.getPlantId()!= 0)
+			model.addObject("slotDates",buildMatrixSmcService.getSlotDatesForPlant(productionSlotResult.getPlantId()));
 		return model;
 	}
 	
