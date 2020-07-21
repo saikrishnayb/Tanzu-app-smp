@@ -109,3 +109,59 @@ $("#search-button").on("click", function() {
 	var $filterSlotsForm = $('#filter-slots-form');
 	$filterSlotsForm.submit();
 });
+
+$('#import-btn').on('click', function(){
+	var $this = $(this);
+	if($this.hasClass('buttonDisabled'))
+		return false;
+	
+	var slotTypeId = $this.data('slot-type-id');
+	var year = $this.data('year');
+	var region = $this.data('region');
+	var regionDesc = $this.data('region-desc');
+	
+	var $getImportContentPromise = $.ajax({
+		type: "GET",
+		url: baseBuildMatrixUrl + '/get-import-region-slot-maintenance',
+		data: {
+			slotTypeId: slotTypeId,
+			year: year,
+			region: region,
+			regionDesc, regionDesc
+		}
+	});
+	$getImportContentPromise.done(function(data){
+		$prodSlotRegionMaintenanceModal.html(data);
+	    ModalUtil.openModal($prodSlotRegionMaintenanceModal);
+	});
+});
+
+$('#export-region-slots-btn').on('click', function(){
+	var $this = $(this);
+	if($this.hasClass('buttonDisabled'))
+		return false;
+	
+	var slotTypeId = $this.data('slot-type-id');
+	var vehicleTypeDesc = $this.data('vehicle-desc').trim().replace(' ', '_');
+	var year = $this.data('year');
+	var region = $this.data('region');
+	
+	var today = new Date();
+	var filename = 'Region_' + region + '_' + vehicleTypeDesc + '_' + year  + '_Slot_Maintenance_';
+
+	var mm = today.getMonth() + 1;
+	if (mm < 10) {
+		mm = '0' + mm;
+	}
+	filename += mm;
+	
+	var dd = today.getDate();
+	if (dd < 10) {
+		dd = '0' + dd;
+	}
+	filename += '_' + dd;
+	
+	var params = 'slotTypeId=' + slotTypeId + '&year=' + year + '&region=' + region;
+
+	DownloadUtil.downloadFileAsFormPostMultiParams(baseBuildMatrixUrl + '/export-region-slot-maintenance.htm', filename + '.xlsx', params);
+});

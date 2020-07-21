@@ -80,15 +80,18 @@ import com.penske.apps.buildmatrix.model.BuildMatrixSlotKey;
 import com.penske.apps.buildmatrix.model.BuildMixForm;
 import com.penske.apps.buildmatrix.model.BuildMixForm.AttributeRow;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm;
+import com.penske.apps.buildmatrix.model.ImportRegionSlotsResults;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm.BusinessAwardRow;
-import com.penske.apps.buildmatrix.model.SaveSlotsForm;
 import com.penske.apps.buildmatrix.model.ImportSlotsHeader;
 import com.penske.apps.buildmatrix.model.ImportSlotsResults;
 import com.penske.apps.buildmatrix.model.ProductionSlotsMaintenanceSummary;
 import com.penske.apps.buildmatrix.model.ProductionSlotsMaintenanceSummary.ProductionSlotsMaintenanceCell;
 import com.penske.apps.buildmatrix.model.ProductionSlotsMaintenanceSummary.ProductionSlotsMaintenanceRow;
 import com.penske.apps.buildmatrix.model.ProductionSlotsUtilizationSummary;
+import com.penske.apps.buildmatrix.model.ProductionSlotsUtilizationSummary.ProductionSlotsUtilizationCell;
+import com.penske.apps.buildmatrix.model.ProductionSlotsUtilizationSummary.ProductionSlotsUtilizationRow;
 import com.penske.apps.buildmatrix.model.SaveRegionSlotsForm;
+import com.penske.apps.buildmatrix.model.SaveSlotsForm;
 import com.penske.apps.smccore.base.util.BatchRunnable;
 import com.penske.apps.smccore.base.util.Util;
 import com.penske.apps.suppliermgmt.model.UserContext;
@@ -953,7 +956,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		if(slots.isEmpty() || slots == null)
 			regionAvailability = Collections.emptyList();
 		else
-			regionAvailability = buildMatrixSmcDAO.getRegionAvailability(slotIds);
+			regionAvailability = buildMatrixSmcDAO.getRegionAvailabilityBySlotIdsAndRegion(slotIds, region);
 		ProductionSlotsUtilizationSummary summary = new ProductionSlotsUtilizationSummary(bodyPlantSummary, slotDates, regionAvailability, slots, false);
 		
 		return summary;
@@ -1164,6 +1167,94 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		
 		return workbook;
 	}
+	
+	@Override
+	public SXSSFWorkbook exportRegionSlotMaintenance(int year, int slotTypeId, String region) {
+		List<RegionPlantAssociation> regionPlantList = buildMatrixSmcDAO.getRegionAssociationDataByRegion(region);
+		List<BuildMatrixBodyPlant> bodyPlantSummary = new ArrayList<>();
+		if(regionPlantList.isEmpty() || regionPlantList == null) {
+			regionPlantList = Collections.emptyList();
+			bodyPlantSummary = Collections.emptyList();
+		}
+		else {
+			bodyPlantSummary = buildMatrixSmcDAO.getBodyPlantsByPlantIds(regionPlantList.stream().map(RegionPlantAssociation::getPlantId).collect(toList()));
+		}
+		 
+		List<BuildMatrixSlotDate> slotDates = buildMatrixSmcDAO.getSlotDatesForYear(year);
+		List<BuildMatrixSlot> slots = new ArrayList<>();
+		if(slotDates.isEmpty() || slotDates == null) {
+			slotDates = Collections.emptyList();
+			slots = Collections.emptyList();
+		}
+		else {
+			List<Integer> slotDateIds = slotDates.stream().map(sld->sld.getSlotDateId()).collect(toList());
+			List<Integer> plantIds = bodyPlantSummary.stream().map(bp->bp.getPlantId()).collect(toList());
+			slots = buildMatrixSmcDAO.getSlotsBySlotDatesAndPlantIds(slotTypeId, slotDateIds, plantIds);
+		}
+		
+		Set<Integer> slotIds = slots.stream().map(BuildMatrixSlot::getSlotId).collect(toSet());
+		List<BuildMatrixSlotRegionAvailability> regionAvailability = new ArrayList<>();
+		if(slots.isEmpty() || slots == null)
+			regionAvailability = Collections.emptyList();
+		else
+			regionAvailability = buildMatrixSmcDAO.getRegionAvailabilityBySlotIdsAndRegion(slotIds, region);
+		ProductionSlotsUtilizationSummary summary = new ProductionSlotsUtilizationSummary(bodyPlantSummary, slotDates, regionAvailability, slots, false);
+		
+		return generateRegionSlotMaintenanceExcel(summary, bodyPlantSummary);
+	}
+	
+	private SXSSFWorkbook generateRegionSlotMaintenanceExcel(ProductionSlotsUtilizationSummary summary, List<BuildMatrixBodyPlant> bodyPlantList) {
+		SXSSFWorkbook workbook = new SXSSFWorkbook();
+		SXSSFSheet workSheet = workbook.createSheet(ApplicationConstants.SLOT_MAINTENANCE_RESULTS); // creating new work sheet
+		
+		workbook.setCompressTempFiles(true);
+		int headerColIndex = 0;
+		CellStyle cellStyle = getCellStyle(workbook);
+		CellStyle unlocked = workbook.createCellStyle();
+		unlocked.setLocked(false);
+		
+		workSheet.setColumnWidth(headerColIndex, 20 * 300);
+		Cell dateHeaderCell = getCell(workSheet, 0, headerColIndex);
+		dateHeaderCell.setCellValue("Production Date");
+		dateHeaderCell.setCellStyle(cellStyle);
+		headerColIndex++;
+		
+		for(BuildMatrixBodyPlant plantData: bodyPlantList)
+		{
+			String cellContents = plantData.getPlantManufacturer() + " - " + plantData.getCity() + ", " + plantData.getState();
+			workSheet.setColumnWidth(headerColIndex, 20 * 300);
+			Cell cell = getCell(workSheet, 0, headerColIndex);
+			cell.setCellValue(cellContents);
+			cell.setCellStyle(cellStyle);
+			//Add the column index to our map of column index by option group IDs
+			
+			headerColIndex++;
+		}
+		
+		int rowId = 1;
+		for (ProductionSlotsUtilizationRow slotRow : summary.getRows()) {
+
+			SXSSFRow dataRow = workSheet.createRow(rowId);
+			int column = 0;
+			
+			SXSSFCell dateCell = dataRow.createCell(column++);
+			dateCell.setCellStyle(cellStyle);
+			dateCell.setCellValue(slotRow.getSlotDate().getFormattedSlotDate());
+			
+			for(ProductionSlotsUtilizationCell slotCell : slotRow.getCells()) {
+				SXSSFCell cell  = dataRow.createCell(column++);
+				cell.setCellValue(slotCell.getRegionAvailability().getSlotAvailable());
+				cell.setCellStyle(unlocked);
+				
+			}
+			
+			rowId++;
+		}
+		
+		workSheet.protectSheet("SMCAdm!n"); 
+		
+		return workbook;
+	}
 
 	@Override
 	public ImportSlotsResults importSlotMaintenace(MultipartFile file, String fileName, int slotTypeId, int year) throws IOException {
@@ -1256,6 +1347,112 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		
 		return results;
 	}
+	
+	@Override
+	public ImportRegionSlotsResults importRegionSlotMaintenace(MultipartFile file, String fileName, int slotTypeId,
+			int year, String region) throws IOException {
+		
+		XSSFWorkbook workbook = new XSSFWorkbook(file.getInputStream());
+	    XSSFSheet worksheet = workbook.getSheetAt(0);
+	    
+	    Map<Integer, ImportSlotsHeader> headerByColIndex = new HashMap<>();
+	    Map<String, Map<Integer, Integer>> availableSlotsByColIndexByDate = new HashMap<>();
+	    
+	    for(int i=0; i<=worksheet.getLastRowNum(); i++) {
+	    	XSSFRow row = worksheet.getRow(i);
+	    	Map<Integer, Integer> availableSlotsByColIndex = new HashMap<>();
+	    	for(int j=0; j<row.getLastCellNum(); j++) {
+	    		XSSFCell cell = row.getCell(j);
+	    		if(i==0) {
+	    			if(j==0)
+	    				continue;
+	    			else {
+	    				String cellValue = cell.getStringCellValue();
+	    				String[] strArray = cellValue.split("-");
+	    				String manufacturer = strArray[0].trim();
+	    				String[] cityState = strArray[1].trim().split(",");
+	    				String city = cityState[0].trim();
+	    				String state = cityState[1].trim();
+	    				
+	    				headerByColIndex.put(j, new ImportSlotsHeader(manufacturer, city, state));
+	    				
+	    			}
+	    		}
+	    		else {
+	    			if(j==0)
+	    				continue;
+	    			else {
+	    				availableSlotsByColIndex.put(j, (int) cell.getNumericCellValue());
+	    			}
+	    		}
+	    	}
+	    	if(i!=0)
+	    		availableSlotsByColIndexByDate.put(row.getCell(0).getStringCellValue().trim(), availableSlotsByColIndex);    
+	    }
+	    
+	    workbook.close();
+	    
+	    List<RegionPlantAssociation> regionAssociations = buildMatrixSmcDAO.getRegionAssociationDataByRegion(region);
+	    Map<Integer, RegionPlantAssociation> associationByPlantId = regionAssociations.stream().collect(toMap(RegionPlantAssociation::getPlantId, ras -> ras));
+	    
+	    Map<Integer, BuildMatrixBodyPlant> bodyPlantByColIndex = new HashMap<>();
+	    Map<Integer, ImportSlotsHeader> plantsNotFound = new HashMap<>();
+	    for(Entry<Integer,ImportSlotsHeader> entry: headerByColIndex.entrySet()) {
+	    	BuildMatrixBodyPlant plant = buildMatrixSmcDAO.getBodyPlantForImport(entry.getValue());
+	    	if(plant == null || !associationByPlantId.keySet().contains(plant.getPlantId()))
+	    		plantsNotFound.put(entry.getKey(), entry.getValue());
+	    	else
+	    		bodyPlantByColIndex.put(entry.getKey(), plant);
+	    }
+	    
+	    List<BuildMatrixSlotDate> slotDatesForYear = buildMatrixSmcDAO.getSlotDatesForYear(year);
+	    Map<String, BuildMatrixSlotDate> slotDatesByYearStrings = slotDatesForYear.stream().collect(toMap(BuildMatrixSlotDate::getFormattedSlotDate, sd -> sd));
+	    List<String> datesNotInYear = new ArrayList<>();
+	    Map<BuildMatrixSlotKey, Integer> availableUnitsBySlotKey = new HashMap<>();
+	    for(Entry<String, Map<Integer, Integer>> entry: availableSlotsByColIndexByDate.entrySet()) {
+	    	if(!slotDatesByYearStrings.keySet().contains(entry.getKey())) {
+	    		datesNotInYear.add(entry.getKey());
+	    	}
+	    	else {
+	    		BuildMatrixSlotDate slotDate = slotDatesByYearStrings.get(entry.getKey());
+	    		for(Entry<Integer, Integer> innerEntry: entry.getValue().entrySet()) {
+	    			if(!plantsNotFound.keySet().contains(innerEntry.getKey())) {
+	    				BuildMatrixBodyPlant bodyPlant = bodyPlantByColIndex.get(innerEntry.getKey());
+	    				availableUnitsBySlotKey.put(new BuildMatrixSlotKey(slotDate.getSlotDateId(), bodyPlant.getPlantId(), slotTypeId), innerEntry.getValue());
+	    			}
+	    		}
+	    	}
+	    }
+	    
+	    List<Integer> slotDateIds = availableUnitsBySlotKey.keySet().stream().map(BuildMatrixSlotKey::getSlotDateId).collect(toList());
+	    List<Integer> plantIds = availableUnitsBySlotKey.keySet().stream().map(BuildMatrixSlotKey::getPlantId).collect(toList());
+	    List<BuildMatrixSlot> slots = new ArrayList<>();
+		if(slotDateIds.isEmpty() || slotDateIds == null || plantIds.isEmpty() || plantIds == null)
+			slots = Collections.emptyList();
+		else	
+			slots = buildMatrixSmcDAO.getSlotsBySlotDatesAndPlantIds(slotTypeId, slotDateIds, plantIds);
+		
+		Map<Integer,BuildMatrixSlot> slotByslotId = slots.stream().collect(toMap(BuildMatrixSlot::getSlotId, slot->slot));
+		List<BuildMatrixSlotRegionAvailability> regionAvailabilityList = new ArrayList<>();
+		if(slots.isEmpty() || slots == null)
+			regionAvailabilityList = Collections.emptyList();
+		else
+			regionAvailabilityList = buildMatrixSmcDAO.getRegionAvailabilityBySlotIdsAndRegion(slotByslotId.keySet(), region);
+		
+		if(!regionAvailabilityList.isEmpty()) {
+			for(BuildMatrixSlotRegionAvailability regionSlot: regionAvailabilityList) {
+				BuildMatrixSlot slot = slotByslotId.get(regionSlot.getSlotId());
+				Integer newAvailableSlots = availableUnitsBySlotKey.get(new BuildMatrixSlotKey(slot.getSlotDateId(), slot.getPlantId(), slot.getSlotTypeId()));
+				regionSlot.updateAvailableSlots(newAvailableSlots, slot, true);
+			}
+		}
+		
+		List<BuildMatrixBodyPlant> bodyPlantList = new ArrayList<>(bodyPlantByColIndex.values());
+		ProductionSlotsUtilizationSummary summary = new ProductionSlotsUtilizationSummary(bodyPlantList, slotDatesForYear, regionAvailabilityList, slots, true);
+		ImportRegionSlotsResults results = new ImportRegionSlotsResults(summary, bodyPlantList, datesNotInYear, plantsNotFound);
+	    
+		return results;
+	}
 
 	@Override
 	public void deleteReservationData(List<ProductionSlotResult> orderSelectionList)
@@ -1298,7 +1495,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 			int newAvailableSlots = availableSlotsById.get(regionAvailability.getSlotRegionId());
 			if(newAvailableSlots != regionAvailability.getSlotAvailable()) {
 				BuildMatrixSlot slot = slotById.get(regionAvailability.getSlotId());
-				regionAvailability.updateAvailableSlots(newAvailableSlots, slot);
+				regionAvailability.updateAvailableSlots(newAvailableSlots, slot, false);
 				buildMatrixSmcDAO.updateRegionAvailability(regionAvailability);
 			}
 		}

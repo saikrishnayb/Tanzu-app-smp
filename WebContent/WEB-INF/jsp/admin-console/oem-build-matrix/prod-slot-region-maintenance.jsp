@@ -63,8 +63,16 @@
           				</form>
           			</div>
           			<div class="btn-div floatRight">
-          				<a id="import-btn" class="buttonSecondary<c:if test="${noRows}"> buttonDisabled</c:if>">Import</a>
-          				<a id="export-btn" class="buttonSecondary<c:if test="${noRows}"> buttonDisabled</c:if>">Export</a>
+          				<a id="import-btn" class="buttonSecondary<c:if test="${noRows}"> buttonDisabled</c:if>" 
+          					data-slot-type-id="${slotType.slotTypeId}" 
+          					data-region-desc="${regionInfo.regionDesc}" 
+          					data-year="${selectedYear}" 
+          					data-region="${regionInfo.region}">Import</a>
+          				<a id="export-region-slots-btn" class="buttonSecondary<c:if test="${noRows}"> buttonDisabled</c:if>" 
+          					data-slot-type-id="${slotType.slotTypeId}" 
+          					data-vehicle-desc="${slotType.slotTypeDesc}" 
+          					data-year="${selectedYear}" 
+          					data-region="${regionInfo.region}">Export</a>
           				<a id="save-region-slots-btn" class="buttonPrimary buttonDisabled">Save</a>
           			</div>
         		</div>
@@ -72,7 +80,7 @@
       		<div class="row">
       			<div class="col-xs-12 now-viewing-row">
       				<label>Now Viewing:</label>
-					<span>${slotType.slotTypeDesc}</span>
+					<span id="vehicle-desc">${slotType.slotTypeDesc}</span>
 					<span>${selectedYear}</span>
 					<span>${regionInfo.region} - ${regionInfo.regionDesc}</span>
       			</div>

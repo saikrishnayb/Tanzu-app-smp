@@ -1,0 +1,16 @@
+.import-info-row label {
+	margin-left: 0;
+	margin-right: 5px;
+}
+
+.import-info-row { 
+	margin-bottom: 10px;
+}
+
+#import-form #errorMessage{
+	margin-bottom: 10px;
+}
+
+#file-name {
+	width: 227px;
+}

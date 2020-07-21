@@ -1237,7 +1237,7 @@
 		WHERE    SLOT_ID = #{slot.slotId}
 	</update>
 	
-	<select id="getRegionAvailability" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlotRegionAvailability">
+	<select id="getRegionAvailabilityBySlotIdsAndRegion" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlotRegionAvailability">
 		SELECT 
 			SLOT_REGION_ID,
 			SLOT_ID,
@@ -1253,6 +1253,7 @@
 	 				#{slotId}
 	 			</foreach>
 			)
+			AND REGION = #{region}
 	</select>
 	
 	<select id="getRegionAvailabilityBySlotRegionIds" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlotRegionAvailability">

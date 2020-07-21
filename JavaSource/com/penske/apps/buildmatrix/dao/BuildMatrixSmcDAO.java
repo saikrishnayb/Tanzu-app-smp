@@ -163,7 +163,7 @@ public interface BuildMatrixSmcDAO {
 
 	public List<RegionPlantAssociation> getAllRegionAssociationData();
 	
-	public List<BuildMatrixSlotRegionAvailability> getRegionAvailability(@Param("slotIds") Set<Integer> slotIds);
+	public List<BuildMatrixSlotRegionAvailability> getRegionAvailabilityBySlotIdsAndRegion(@Param("slotIds") Set<Integer> slotIds, @Param("region") String region);
 	
 	public BuildMatrixSlotDate getSlotDate(@Param("slotDateId") int slotDateId);
 

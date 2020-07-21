@@ -41,6 +41,7 @@ import com.penske.apps.buildmatrix.domain.ProductionSlotResult;
 import com.penske.apps.buildmatrix.domain.RegionPlantAssociation;
 import com.penske.apps.buildmatrix.model.BuildMixForm;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm;
+import com.penske.apps.buildmatrix.model.ImportRegionSlotsResults;
 import com.penske.apps.buildmatrix.model.ImportSlotsResults;
 import com.penske.apps.buildmatrix.model.SaveRegionSlotsForm;
 import com.penske.apps.buildmatrix.model.SaveSlotsForm;
@@ -421,6 +422,25 @@ public class BuildMatrixRestController {
 	}
 	
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping(value="get-import-region-slot-maintenance",method = {RequestMethod.GET })
+	public ModelAndView getImportRegionSlotMaintenance(@RequestParam("year") String yearString, @RequestParam("slotTypeId")  String slotTypeIdString,
+			@RequestParam("region")  String region, @RequestParam("regionDesc") String regionDesc) {
+		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/modal/import-region-slot-maintenance");
+		
+		int year = Integer.parseInt(yearString);
+		int slotTypeId = Integer.parseInt(slotTypeIdString);
+		
+		BuildMatrixSlotType slotType = buildMatrixSmcService.getVehicleTypeById(slotTypeId);
+		
+		model.addObject("slotType", slotType);
+		model.addObject("year", year);
+		model.addObject("region", region);
+		model.addObject("regionDesc", regionDesc);
+		
+		return model;
+	}
+	
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping(value="get-export-slot-maintenance",method = {RequestMethod.GET })
 	public ModelAndView getExportSlotMaintenance(@RequestParam("year") String yearString, @RequestParam("slotTypeId")  String slotTypeIdString) {
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/modal/export-slot-maintenance");
@@ -490,7 +510,7 @@ public class BuildMatrixRestController {
 	
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping(method = RequestMethod.POST, value = "/import-slot-maintenance")
-	public ModelAndView uploadTransportExcelFile(@RequestParam(value = "file") MultipartFile file,
+	public ModelAndView importSlotMaintenanceExcelFile(@RequestParam(value = "file") MultipartFile file,
 			@RequestParam(value = "slotTypeId") int slotTypeId, @RequestParam(value = "year") int year, 
     		HttpServletResponse response) throws Exception {
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/import-slots-confirmation");
@@ -526,6 +546,51 @@ public class BuildMatrixRestController {
         model.addObject("results", results);
         model.addObject("slotType", slotType);
         model.addObject("year", year);
+        model.addObject("backUrl", backUrl);
+        return model;
+	}
+	
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping(method = RequestMethod.POST, value = "/import-region-slot-maintenance")
+	public ModelAndView importRegionSlotMaintenanceExcelFile(@RequestParam(value = "file") MultipartFile file,
+			@RequestParam(value = "slotTypeId") int slotTypeId, @RequestParam(value = "year") int year, @RequestParam(value = "region") String region, 
+			@RequestParam(value = "regionDesc") String regionDesc, HttpServletResponse response) throws Exception {
+		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/import-region-slots-confirmation");
+        //The file name is required for the save function.
+        String fileName = file.getOriginalFilename();
+        ImportRegionSlotsResults results = null;
+        try{
+			UploadInvalidReason errorCode = FileUtil.validateFileUpload(file, Collections.singleton("xlsx"));
+			if(errorCode != null)
+			{
+				//We do some error message translation with the generic file type message, to make sure the user knows it's specific to XLSX files.
+				String message;
+				if(errorCode == UploadInvalidReason.INVALID_FILE_TYPE)
+					message = fileName + " is not a valid Excel file, Please ensure your file is an XLSX file type and try again.";
+				else
+					message = errorCode.getErrorMessage(fileName);
+
+				response.getWriter().write(message);
+			}
+			else
+			{
+				results = buildMatrixSmcService.importRegionSlotMaintenace(file, fileName, slotTypeId, year, region);
+			}
+        } catch(Exception ex){
+			//handleException(ex,request);
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		}
+        
+        BuildMatrixSlotType slotType = buildMatrixSmcService.getVehicleTypeById(slotTypeId);
+        
+        String backUrl = "/suppliermgmt/app/admin-console/oem-build-matrix/prod-slot-region-maintenance.htm?slotType=" + slotTypeId 
+        		+ "&year=" + year + "&region=" + region;
+        
+        model.addObject("results", results);
+        model.addObject("slotType", slotType);
+        model.addObject("year", year);
+        model.addObject("region", region);
+        model.addObject("regionDesc", regionDesc);
         model.addObject("backUrl", backUrl);
         return model;
 	}
@@ -602,6 +667,41 @@ public class BuildMatrixRestController {
 	public void updateReservationData(@RequestParam("slotReservationId") int slotReservationId, @RequestParam("slotId") int slotId,
 									  @RequestParam("plantId") int plantId, @RequestParam("unitNumber") String unitNumber) {
 		buildMatrixSmcService.updateReservationData(slotReservationId, slotId, plantId, unitNumber);
+	}
+	
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping(value="export-region-slot-maintenance",method = {RequestMethod.POST })
+	public void exportRegionSlotMaintenance(HttpServletResponse response, @RequestParam("slotTypeId") int slotTypeId, 
+			@RequestParam("year") int year,
+			@RequestParam("region") String region) {
+		
+		SXSSFWorkbook workbook = buildMatrixSmcService.exportRegionSlotMaintenance(year, slotTypeId, region);
+		if(workbook != null){
+			try(OutputStream out = response.getOutputStream()) {
+				if(year!=0){
+					response.setHeader("Set-Cookie", "fileDownload=true; path=/");
+
+					response.setContentType(ApplicationConstants.EXCEL_CONTENT_TYPE_XLSX);
+					response.setHeader(ApplicationConstants.CONTENT_DISPOSITION_HEADER,"attachment;filename=\"Order Confirmation-Template.xlsx\"");
+					response.setHeader("Pragma",ApplicationConstants.EXCEL_HEADER_TYPE);
+					response.setHeader("Expires",ApplicationConstants.EXCEL_EXPIRES);
+					response.setContentType(ApplicationConstants.EXCEL_CONTENT_TYPE);
+					workbook.write(out);
+				}
+				else{
+					response.getWriter().write("Slot Maintenance not available to process the template");
+					response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+				}
+
+
+			} catch(IOException ex) {
+				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+				throw new RuntimeException(ex.getMessage(), ex);
+			}finally{
+				workbook.dispose();
+			}
+		}
+		
 	}
 	
 }
