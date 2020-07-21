@@ -1,11 +1,11 @@
 package com.penske.apps.buildmatrix.domain;
 
 import java.util.Date;
-import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.penske.apps.adminconsole.util.ApplicationConstants;
+import com.penske.apps.smccore.base.util.DateUtil;
 
 public class ProductionSlotResult {
 	private int slotReservationId;
@@ -20,7 +20,7 @@ public class ProductionSlotResult {
 	private String districtName;
 	private Date requestedDeliveryDate;
 	private String productionSlot;
-	private String productionDate;
+	private Date productionDate;
 	private String chassisMake;
 	private String chassisModel;
 	private int chassisModelYear;
@@ -41,8 +41,8 @@ public class ProductionSlotResult {
 	private String chassisWheelMatChangeRequired;
 	private String vehicleTypeChangeRequired;
 	private int plantId;
+	private String productionSlotDate;
 	
-
 	// getters
 	public int getSlotReservationId() {
 		return slotReservationId;
@@ -88,7 +88,7 @@ public class ProductionSlotResult {
 		return productionSlot;
 	}
 
-	public String getProductionDate() {
+	public Date getProductionDate() {
 		return productionDate;
 	}
 
@@ -175,6 +175,10 @@ public class ProductionSlotResult {
 	public int getPlantId() {
 		return plantId;
 	}
+	
+	public String getProductionSlotDate() {
+		return productionSlotDate;
+	}
 
 	// setters
 	public void setOrderId(long orderId) {
@@ -213,7 +217,7 @@ public class ProductionSlotResult {
 		this.productionSlot = productionSlot;
 	}
 
-	public void setProductionDate(String productionDate) {
+	public void setProductionDate(Date productionDate) {
 		this.productionDate = productionDate;
 	}
 
@@ -230,5 +234,9 @@ public class ProductionSlotResult {
 			return true;
 		else
 			return false;
+	}
+	
+	public String getFormattedProductionDate() {
+		return StringUtils.defaultString(DateUtil.formatDateUS(productionDate));
 	}
 }

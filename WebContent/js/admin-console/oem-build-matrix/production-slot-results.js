@@ -176,9 +176,9 @@ $('.unit-selection').on("change", function() {
 	orderObj['runId'] = $('#buildId').val();
 	orderObj['reservationStatus'] = slotReservationStatus;
 	orderObj['unitNumber'] = unitNumber;
-	orderObj['productionDate']=$('#production-date').val();
+	orderObj['productionSlotDate']= $('#production-date').val();
 	var approvedBuild = $('#approvedBuild').val();
-
+	
 
 	if ($(this).is(':checked')) {
 		orderSelectionList.push(orderObj);

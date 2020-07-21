@@ -516,9 +516,8 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 			dataRow.createCell(column++).setCellValue(ProductionSlotResultData.getProductionSlot());
 
 			SXSSFCell datacell10 = dataRow.createCell(column++);
-			String productionDateString = ProductionSlotResultData.getProductionDate();
-			if (productionDateString != null && productionDateString != "") {
-				Date productionDate = convertStringToDate(productionDateString);
+			Date productionDate = ProductionSlotResultData.getProductionDate();
+			if (productionDate != null) {
 				datacell10.setCellValue(productionDate);
 				formatDateCell(workbook, datacell10);
 			}
@@ -725,22 +724,6 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		cell.setCellStyle(cellStyle);
 	}
 
-	/**
-	 * Method for converting string to date
-	 * 
-	 * @param productionDate
-	 */
-	private Date convertStringToDate(String productionDateString) {
-		SimpleDateFormat dateFormat = new SimpleDateFormat(ApplicationConstants.DATE_FORMAT);
-		Date parsedDate = new Date();
-		try {
-			parsedDate = dateFormat.parse(productionDateString);
-		} catch (ParseException ex) {
-			logger.error(ex);
-		}
-		return parsedDate;
-	}
-		
 		//*****BODY PLANT EXCEPTIONS WORKFLOW *****//
 	@Override
 	public List<BodyPlantCapability> getAllBuildMatrixCapabilities() {
