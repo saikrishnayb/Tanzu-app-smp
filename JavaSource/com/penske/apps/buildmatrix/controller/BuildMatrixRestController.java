@@ -26,6 +26,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.penske.apps.adminconsole.util.ApplicationConstants;
 import com.penske.apps.adminconsole.util.FileUtil;
 import com.penske.apps.adminconsole.util.FileUtil.UploadInvalidReason;
@@ -638,10 +640,11 @@ public class BuildMatrixRestController {
 	 * @param attributeId, plantId, key, attributeName
 	 * 
 	 * @return ModelAndView
+	 * @throws JsonProcessingException 
 	 */
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping(value = "/load-update-reservation-popup-modal")
-	public ModelAndView loadUpdateReservationPopup(@RequestBody ProductionSlotResult productionSlotResult) {
+	public ModelAndView loadUpdateReservationPopup(@RequestBody ProductionSlotResult productionSlotResult) throws JsonProcessingException {
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/modal/update-reservation-modal");
 		int buildId = productionSlotResult.getRunId();
 		String unitNumber = productionSlotResult.getUnitNumber();
@@ -649,7 +652,12 @@ public class BuildMatrixRestController {
 		model.addObject("productionSlotList", buildMatrixSmcService.getProductionSlotList(buildId, unitNumber));
 		model.addObject("productionSlotResult",productionSlotResult);
 		if(productionSlotResult.getPlantId()!= 0)
-			model.addObject("slotDates",buildMatrixSmcService.getSlotDatesForPlant(productionSlotResult.getPlantId()));
+		 {
+			 ObjectMapper mapper = new ObjectMapper();
+			 String jsonString = mapper.writeValueAsString(buildMatrixSmcService.getSlotDatesForPlant(productionSlotResult.getPlantId()));
+			 System.out.println("JSON = " + jsonString);
+			 model.addObject("slotDates",jsonString);
+		 }
 		return model;
 	}
 	

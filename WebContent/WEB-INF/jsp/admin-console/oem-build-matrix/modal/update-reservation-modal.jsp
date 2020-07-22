@@ -23,6 +23,7 @@
 						<td class="col-xs-8">
 						<c:if test="${productionSlotResult.reservationStatus eq 'P'}">
 							<select id="plant-dropdown"  class="update-res-input">
+								<option value="">Please Select</option>
 								<c:forEach items="${plantList}" var="plants">
 								 <c:set var="isPlantSelected">${productionSlotResult.productionSlot eq plants.productionSlot}</c:set>
 		          					<option value="${plants.plantId}" ${isPlantSelected?'selected="selected"':'' } >${plants.productionSlot}</option>
@@ -31,6 +32,7 @@
 						</c:if>
 						<c:if test="${productionSlotResult.reservationStatus eq 'E'}">
 							<select id="plant-dropdown"  class="update-res-input">
+								<option value="">Please Select</option>
 								<c:forEach items="${productionSlotList}" var="plants">
 									<c:set var="isPlantSelected">${productionSlotResult.productionSlot eq plants.productionSlot}</c:set>
 		          					<option value="${plants.plantId}" ${isPlantSelected?'selected="selected"':'' } >${plants.productionSlot}</option>
@@ -43,7 +45,8 @@
 						<td class="col-xs-4"><span class="formLbl">Date</span></td>
 						<td class="col-xs-8">
 							<input class="production-date date-picker numeric numeric-jquery-date advanced-date update-res-input"
-										required value="${productionSlotResult.productionSlotDate}" readonly="readonly" slot-dates="${JSON.stringify(slotDates)}" slot-array="${slotArray}"/>	
+										required value="${productionSlotResult.productionSlotDate}" readonly="readonly" />	
+							<input type="hidden" id="slot-dates" value='${slotDates}'>
 						</td>
 					</tr>
 				</tbody>
