@@ -267,7 +267,10 @@ $confirmReservationModal.on("click", '#confirm-btn', function() {
 			var plantId = parseInt($updateReservationModal.find('#plant-dropdown').val());
 			var slotId =$updateReservationModal.find('.production-date').attr("slotId");
 			var slotDate=$updateReservationModal.find('.production-date').val();
-			var unitNumber=updateReservationObj['unitNumber'];
+			if(updateReservationObj["reservationStatus"]=='P')
+				var unitNumber=$updateReservationModal.find('#unit-number').val();
+			else if (updateReservationObj["reservationStatus"]=='E')
+				var unitNumber=updateReservationObj['unitNumber'];
 			$.ajax({
 				type : "POST",
 				url : "./update-reservation-data.htm",
