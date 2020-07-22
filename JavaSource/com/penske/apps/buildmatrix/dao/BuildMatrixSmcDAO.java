@@ -212,6 +212,7 @@ public interface BuildMatrixSmcDAO {
 	public List<BuildMatrixSlotRegionAvailability> getRegionAvailabilityBySlotRegionIds(@Param("slotRegionIds") Collection<Integer> slotRegionIds);
 
 	public void updateRegionAvailability(@Param("regionAvailability") BuildMatrixSlotRegionAvailability regionAvailability);
-	
-	
+
+	public void mergeSlotRegionAvailabilities(@Param("regionAvailabilityList") List<BuildMatrixSlotRegionAvailability> regionAvailabilities);
+
 }

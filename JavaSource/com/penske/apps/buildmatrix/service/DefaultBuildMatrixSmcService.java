@@ -6,8 +6,6 @@ import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.temporal.ChronoField;
 import java.time.temporal.IsoFields;
@@ -80,8 +78,8 @@ import com.penske.apps.buildmatrix.model.BuildMatrixSlotKey;
 import com.penske.apps.buildmatrix.model.BuildMixForm;
 import com.penske.apps.buildmatrix.model.BuildMixForm.AttributeRow;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm;
-import com.penske.apps.buildmatrix.model.ImportRegionSlotsResults;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm.BusinessAwardRow;
+import com.penske.apps.buildmatrix.model.ImportRegionSlotsResults;
 import com.penske.apps.buildmatrix.model.ImportSlotsHeader;
 import com.penske.apps.buildmatrix.model.ImportSlotsResults;
 import com.penske.apps.buildmatrix.model.ProductionSlotsMaintenanceSummary;
@@ -189,26 +187,43 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 
 	@Override
 	public void savePlantRegionAssociation(List<RegionPlantAssociation> regionPlantAssociationList) {
-		List<String> regionsList = new ArrayList<String>();
-		List<String> districtsList = new ArrayList<String>();
-		List<Integer> slotIdList = new ArrayList<Integer>();
+		List<RegionPlantAssociation> regionsToDelete = new ArrayList<RegionPlantAssociation>();
+		List<RegionPlantAssociation> regionsToAdd = new ArrayList<RegionPlantAssociation>();
+		int plantId = regionPlantAssociationList.get(0).getPlantId();
+		List<Integer> slotIdList = buildMatrixSmcDAO.getSlotIdForPlantId(plantId);
+		
 		for (RegionPlantAssociation regionPlantAssociation : regionPlantAssociationList) {
 			if (regionPlantAssociation.getIsAssociated().equalsIgnoreCase(ApplicationConstants.NO)) {
-				regionsList.add(regionPlantAssociation.getRegion());
+				regionsToDelete.add(regionPlantAssociation);
 			}
+			else
+				regionsToAdd.add(regionPlantAssociation);
 		}
-		int plantId = regionPlantAssociationList.get(0).getPlantId();
-		if (regionsList != null && !regionsList.isEmpty()) {
+		
+		if (regionsToDelete != null && !regionsToDelete.isEmpty()) {
+			List<String> regionsList = regionsToDelete.stream().map(rpa->rpa.getRegion()).collect(toList());
+			List<String> districtsList = new ArrayList<String>();
 			districtsList = buildMatrixSmcDAO.getDistrictsFromFreightMileage(plantId, regionsList);
 			if (districtsList != null && !districtsList.isEmpty()) {
 				buildMatrixSmcDAO.deleteProximityDataForRegion(plantId, districtsList);
 			}
-			slotIdList = buildMatrixSmcDAO.getSlotIdForPlantId(plantId);
 			if (slotIdList != null && !slotIdList.isEmpty()) {
 				buildMatrixSmcDAO.deleteSlotDataForRegion(slotIdList, regionsList);
 			}
 		}
 		buildMatrixSmcDAO.savePlantRegionAssociation(regionPlantAssociationList);
+		if(regionsToAdd != null && !regionsToAdd.isEmpty()) {
+			List<BuildMatrixSlotRegionAvailability> regionAvailabilities = new ArrayList<>();
+			for(Integer slotId: slotIdList) {
+				for(RegionPlantAssociation rpa: regionsToAdd)
+					regionAvailabilities.add(new BuildMatrixSlotRegionAvailability(slotId, rpa));
+			}
+			new BatchRunnable<BuildMatrixSlotRegionAvailability>(regionAvailabilities, 60) {
+	            @Override protected void runBatch(List<BuildMatrixSlotRegionAvailability> items){
+	            	buildMatrixSmcDAO.mergeSlotRegionAvailabilities(regionAvailabilities);
+	            }
+			}.run();
+		}
 	}
 
 	//*****ATTRIBUTE MAINENANCE WORKFLOW *****//
@@ -1054,7 +1069,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 			List<BuildMatrixSlot> slotList = slotsByPlantId.get(assoc.getPlantId());
 			if(slotList != null) {
 				for(BuildMatrixSlot slot: slotList) {
-					regionAvailabilityList.add(new BuildMatrixSlotRegionAvailability(slot, assoc));
+					regionAvailabilityList.add(new BuildMatrixSlotRegionAvailability(slot.getSlotId(), assoc));
 				}
 			}
 		}

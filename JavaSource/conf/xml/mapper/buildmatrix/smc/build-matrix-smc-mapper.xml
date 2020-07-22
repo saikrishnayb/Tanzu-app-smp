@@ -1274,6 +1274,49 @@
 			)
 	</select>
 	
+	<update id="mergeSlotRegionAvailabilities">
+		MERGE INTO SMC.OBM_SLOTS_BY_REGION AS slotsByRegion USING
+		(
+		VALUES
+		<foreach collection="regionAvailabilityList" item="rpa" separator="," >
+			(
+				CAST(#{rpa.slotRegionId} AS INTEGER),
+				CAST(#{rpa.slotId} AS INTEGER),
+				CAST(#{rpa.region} AS VARCHAR(4)),
+				CAST(#{rpa.slotAvailable} AS INTEGER),
+				CAST(#{rpa.slotReserved} AS INTEGER),
+				CAST(#{rpa.slotAccepted} AS INTEGER)
+			)
+		</foreach>
+		)
+		AS input
+		(
+			SLOT_REGION_ID, SLOT_ID, REGION, SLOT_AVAILABLE, SLOT_RESERVED, SLOT_ACCEPTED
+		)
+		ON slotsByRegion.SLOT_REGION_ID=input.SLOT_REGION_ID 
+			AND slotsByRegion.SLOT_ID=input.SLOT_ID 
+			AND slotsByRegion.REGION=input.REGION
+		WHEN NOT MATCHED THEN
+		INSERT
+			(
+			SLOT_REGION_ID,
+			SLOT_ID,
+			REGION,
+			SLOT_AVAILABLE,
+			SLOT_RESERVED,
+			SLOT_ACCEPTED
+			)
+		 VALUES
+			(
+			input.SLOT_REGION_ID,
+			input.SLOT_ID,
+			input.REGION,
+			input.SLOT_AVAILABLE,
+			input.SLOT_RESERVED,
+			input.SLOT_ACCEPTED
+			)
+	</update>
+	
 	<update id="updateRegionAvailability">
 		UPDATE 
 			SMC.OBM_SLOTS_BY_REGION 

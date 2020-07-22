@@ -11,8 +11,8 @@ public class BuildMatrixSlotRegionAvailability {
 
 	protected BuildMatrixSlotRegionAvailability() {}
 
-	public BuildMatrixSlotRegionAvailability(BuildMatrixSlot slot, RegionPlantAssociation assoc) {
-		this.slotId = slot.getSlotId();
+	public BuildMatrixSlotRegionAvailability(int slotId, RegionPlantAssociation assoc) {
+		this.slotId = slotId;
 		this.region = assoc.getRegion();
 		this.slotAvailable = 0;
 		this.slotReserved = 0;
