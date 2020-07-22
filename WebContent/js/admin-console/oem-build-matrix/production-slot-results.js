@@ -303,6 +303,7 @@ $updateReservation.on("click", function() {
 			$updateReservationModal.html(data);
 			var slotDates=$updateReservationModal.find('#slot-dates').val();
 			initializeDatePicker(JSON.parse(slotDates));
+			slotDataAvailable = JSON.parse(slotDates);
 			ModalUtil.openModal($updateReservationModal);
 		});
 	}
@@ -336,6 +337,16 @@ $updateReservationModal.on("change input",".update-res-input",function(){
 	if (orderSelectionList.length == 1) {
 		var plantId = parseInt($updateReservationModal.find('#plant-dropdown').val());
 		var slotDate=$updateReservationModal.find('.production-date').val();
+		var slotId =$updateReservationModal.find('.production-date').attr("slotId");
+		
+		if(slotId === undefined && slotDate != "") {
+		var matchslotId=0;
+		slotDataAvailable.forEach((obj) => {
+            if(obj.formattedSlotDate == slotDate)
+                matchslotId=obj.slotId;
+         });
+        $updateReservationModal.find('.production-date').attr("slotId",matchslotId);
+		}
 		if(plantId!="" && slotDate!="")
 			{
 			$updateReservationModal.find('#save-reservation').removeClass("buttonDisabled");
