@@ -3,7 +3,7 @@ selectCurrentNavigation("tab-oem-build-matrix", "left-nav-build-history");
 var $slotResultsTable = $('#slot-results-table');
 var orderSelectionCnt = 0;
 var orderSelectionList = [];
-var slotDataAvailable=[];
+var slotDataAvailable = [];
 var $confirmReservationModal = $('#confirm-delete-reservation-modal');
 var $updateReservation = $('#update-reservation');
 var $updateReservationModal = $('#update-reservation-popup-modal');
@@ -86,9 +86,9 @@ $('.production-slot').multiselect({
 $(".ui-multiselect-checkboxes label").removeAttr('font-weight').css("font-weight", "normal");
 
 function initializeDatePicker(slotdata) {
-	slotDataAvailable=slotdata;
-	var jsonData= JSON.stringify(slotdata);
-	var datesToEnable= "[" + JSON.parse(jsonData).map(x => x.formattedSlotDate).join(',') + "]"
+	slotDataAvailable = slotdata;
+	var jsonData = JSON.stringify(slotdata);
+	var datesToEnable = "[" + JSON.parse(jsonData).map(x => x.formattedSlotDate).join(',') + "]"
 	$(".production-date").datepicker({
 		dateFormat : 'mm/dd/yy',
 		changeMonth : true,
@@ -102,20 +102,21 @@ function initializeDatePicker(slotdata) {
 		altField : ".datepickerStartHidden",
 		altFormat : "mm/dd/yy",
 		onSelect : function(dateText, inst) {
-			var matchslotId=0;
+			var matchslotId = 0;
 			slotDataAvailable.forEach((obj) => {
-                if(obj.formattedSlotDate == dateText)
-                    matchslotId=obj.slotId;
-             });
-            $updateReservationModal.find('.production-date').attr("slotId",matchslotId);
+				if (obj.formattedSlotDate == dateText)
+					matchslotId = obj.slotId;
+			});
+			$updateReservationModal.find('.production-date').attr("slotId", matchslotId);
 			$(this).datepicker('option', 'buttonImage', '../../../images/calendar.png');
 			if (orderSelectionList.length == 1) {
 				var plantId = parseInt($updateReservationModal.find('#plant-dropdown').val());
-				var slotDate=$updateReservationModal.find('.production-date').val();
-				if(plantId!="" && slotDate!="")
-					{
+				var slotDate = $updateReservationModal.find('.production-date').val();
+				var unitNumber = $updateReservationModal.find('#unit-number').val();
+				var reservationStatus = $('#reservation-status').val();
+				if ((reservationStatus == 'P' && plantId != "" && slotDate != "" && unitNumber != "") || (reservationStatus == 'E' && plantId != "" && slotDate != "")) {
 					$updateReservationModal.find('#save-reservation').removeClass("buttonDisabled");
-					}
+				}
 				else
 					$updateReservationModal.find('#save-reservation').addClass("buttonDisabled");
 			}
@@ -129,7 +130,7 @@ function initializeDatePicker(slotdata) {
 		//Override for beforeShowDay, since all monday only should enable
 		beforeShowDay : function(date) {
 			var string = jQuery.datepicker.formatDate('mm/dd/yy', date);
-			return [datesToEnable.indexOf(string) !== -1]
+			return [ datesToEnable.indexOf(string) !== -1 ]
 		}
 	});
 }
@@ -150,12 +151,10 @@ $(function() {
 });
 
 $('.Filter-div').on("change", function() {
-
 	var selectedFiltersList = [];
 	$('#filter-checkbox input:checked').each(function() {
 		selectedFiltersList.push($(this).val());
 	});
-
 	var data = $("input[name='filters']:checked").map(function() {
 		return this.value;
 	}).get();
@@ -176,12 +175,10 @@ $('.unit-selection').on("change", function() {
 	orderObj['runId'] = $('#buildId').val();
 	orderObj['reservationStatus'] = slotReservationStatus;
 	orderObj['unitNumber'] = unitNumber;
-	orderObj['productionSlotDate']= $('#production-date').val();
-	orderObj['productionSlot']= $('#production-slot').val();
-	orderObj['plantId'] =$(this).attr('plant-id');
+	orderObj['productionSlotDate'] = $('#production-date').val();
+	orderObj['productionSlot'] = $('#production-slot').val();
+	orderObj['plantId'] = $(this).attr('plant-id');
 	var approvedBuild = $('#approvedBuild').val();
-	
-
 	if ($(this).is(':checked')) {
 		orderSelectionList.push(orderObj);
 	} else {
@@ -224,7 +221,7 @@ $confirmReservationModal.on("click", '#confirm-btn', function() {
 				location.assign('view-slot-results-filter.htm?buildId=' + $('#buildId').val() + '&selectedFiltersList=A,E,P&checkedFilter=0');
 			},
 		});
-	} else if(confirmAction=='accept') { //accept build flow
+	} else if (confirmAction == 'accept') { //accept build flow
 		$.ajax({
 			type : "POST",
 			url : "./show-accept-button.htm",
@@ -250,7 +247,6 @@ $confirmReservationModal.on("click", '#confirm-btn', function() {
 							document.getElementById("approvedBuild").value = true;
 						},
 					});
-
 				} else {
 					addErrorMessage("Slot reservation records should be in Matched status to Accept the build, check the data and try again");
 					$('#accept-slot-results').addClass("buttonDisabled");
@@ -258,26 +254,24 @@ $confirmReservationModal.on("click", '#confirm-btn', function() {
 			},
 		});
 
-	}
-	else if(confirmAction=='update'){
-		if(orderSelectionList.length == 1)
-			{
-			updateReservationObj=orderSelectionList[0];
-			var slotReservationId=updateReservationObj["slotReservationId"];
+	} else if (confirmAction == 'update') {
+		if (orderSelectionList.length == 1) {
+			updateReservationObj = orderSelectionList[0];
+			var slotReservationId = updateReservationObj["slotReservationId"];
 			var plantId = parseInt($updateReservationModal.find('#plant-dropdown').val());
-			var slotId =$updateReservationModal.find('.production-date').attr("slotId");
-			var slotDate=$updateReservationModal.find('.production-date').val();
-			if(updateReservationObj["reservationStatus"]=='P')
-				var unitNumber=$updateReservationModal.find('#unit-number').val();
-			else if (updateReservationObj["reservationStatus"]=='E')
-				var unitNumber=updateReservationObj['unitNumber'];
+			var slotId = $updateReservationModal.find('.production-date').attr("slotId");
+			var slotDate = $updateReservationModal.find('.production-date').val();
+			if (updateReservationObj["reservationStatus"] == 'P')
+				var unitNumber = $updateReservationModal.find('#unit-number').val();
+			else if (updateReservationObj["reservationStatus"] == 'E')
+				var unitNumber = updateReservationObj['unitNumber'];
 			$.ajax({
 				type : "POST",
 				url : "./update-reservation-data.htm",
 				data : {
 					slotReservationId : slotReservationId,
 					plantId : plantId,
-					slotId :slotId,
+					slotId : slotId,
 					unitNumber : unitNumber
 				},
 				success : function(data) {
@@ -286,8 +280,7 @@ $confirmReservationModal.on("click", '#confirm-btn', function() {
 					location.assign('view-slot-results-filter.htm?buildId=' + $('#buildId').val() + '&selectedFiltersList=A,E,P&checkedFilter=0');
 				},
 			});
-			}
-		
+		}
 	}
 	ModalUtil.closeModal($confirmReservationModal);
 });
@@ -301,10 +294,9 @@ $updateReservation.on("click", function() {
 			data : JSON.stringify(orderSelectionList[0]),
 			contentType : 'application/json'
 		});
-
 		$updateReservationPromise.done(function(data) {
 			$updateReservationModal.html(data);
-			var slotDates=$updateReservationModal.find('#slot-dates').val();
+			var slotDates = $updateReservationModal.find('#slot-dates').val();
 			initializeDatePicker(JSON.parse(slotDates));
 			slotDataAvailable = JSON.parse(slotDates);
 			ModalUtil.openModal($updateReservationModal);
@@ -314,13 +306,11 @@ $updateReservation.on("click", function() {
 
 $updateReservationModal.on("change", '#plant-dropdown', function() {
 	var plantId = $updateReservationModal.find('#plant-dropdown').val();
-	if(plantId=="" ||plantId==0)
-		{
+	if (plantId == "" || plantId == 0) {
 		$('#production-date-div').addClass('hideOption');
 		$updateReservationModal.find('.production-date').val("")
 		$updateReservationModal.find('#save-reservation').addClass("buttonDisabled");
-		}
-	else{
+	} else {
 		var $availableSlotPromise = $.ajax({
 			type : "POST",
 			url : './get-available-slot-dates.htm',
@@ -332,34 +322,31 @@ $updateReservationModal.on("change", '#plant-dropdown', function() {
 			initializeDatePicker(data);
 			$('#production-date-div').removeClass('hideOption');
 		});
-	}	
-	
+	}
 });
 
-$updateReservationModal.on("change input",".update-res-input",function(){
+$updateReservationModal.on("change input", ".update-res-input", function() {
 	if (orderSelectionList.length == 1) {
 		var plantId = parseInt($updateReservationModal.find('#plant-dropdown').val());
-		var slotDate=$updateReservationModal.find('.production-date').val();
-		var slotId =$updateReservationModal.find('.production-date').attr("slotId");
+		var slotDate = $updateReservationModal.find('.production-date').val();
+		var slotId = $updateReservationModal.find('.production-date').attr("slotId");
 		var reservationStatus = $('#reservation-status').val();
-		var unitNumber=$updateReservationModal.find('#unit-number').val();
-		
-		if(slotId === undefined && slotDate != "") {
-		var matchslotId=0;
-		slotDataAvailable.forEach((obj) => {
-            if(obj.formattedSlotDate == slotDate)
-                matchslotId=obj.slotId;
-         });
-        $updateReservationModal.find('.production-date').attr("slotId",matchslotId);
+		var unitNumber = $updateReservationModal.find('#unit-number').val();
+		if (slotId === undefined && slotDate != "") {
+			var matchslotId = 0;
+			slotDataAvailable.forEach((obj) => {
+				if (obj.formattedSlotDate == slotDate)
+					matchslotId = obj.slotId;
+			});
+			$updateReservationModal.find('.production-date').attr("slotId", matchslotId);
 		}
-		if((reservationStatus=='P'&& plantId!="" && slotDate!="" && unitNumber!="") ||(reservationStatus=='E'&& plantId!="" && slotDate!=""))
-			{
+		if ((reservationStatus == 'P' && plantId != "" && slotDate != "" && unitNumber != "") || (reservationStatus == 'E' && plantId != "" && slotDate != "")) {
 			$updateReservationModal.find('#save-reservation').removeClass("buttonDisabled");
-			}
+		}
 		else
 			$updateReservationModal.find('#save-reservation').addClass("buttonDisabled");
 	}
-	
+
 });
 
 function showUpdateButton(orderSelectionList) {
