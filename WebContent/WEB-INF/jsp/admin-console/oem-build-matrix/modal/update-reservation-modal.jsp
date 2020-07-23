@@ -10,6 +10,7 @@
 			</div>
 			<table id="update-reservation-table">
 				<tbody>
+					<input type="hidden" id="reservation-status" value="${productionSlotResult.reservationStatus}">
 					<c:if test="${productionSlotResult.reservationStatus eq 'P'}">
 						<tr class="row" >
 							<td class="col-xs-4"><span class="formLbl">Unit</span></td>

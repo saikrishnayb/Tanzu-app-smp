@@ -341,6 +341,8 @@ $updateReservationModal.on("change input",".update-res-input",function(){
 		var plantId = parseInt($updateReservationModal.find('#plant-dropdown').val());
 		var slotDate=$updateReservationModal.find('.production-date').val();
 		var slotId =$updateReservationModal.find('.production-date').attr("slotId");
+		var reservationStatus = $('#reservation-status').val();
+		var unitNumber=$updateReservationModal.find('#unit-number').val();
 		
 		if(slotId === undefined && slotDate != "") {
 		var matchslotId=0;
@@ -350,7 +352,7 @@ $updateReservationModal.on("change input",".update-res-input",function(){
          });
         $updateReservationModal.find('.production-date').attr("slotId",matchslotId);
 		}
-		if(plantId!="" && slotDate!="")
+		if((reservationStatus=='P'&& plantId!="" && slotDate!="" && unitNumber!="") ||(reservationStatus=='E'&& plantId!="" && slotDate!=""))
 			{
 			$updateReservationModal.find('#save-reservation').removeClass("buttonDisabled");
 			}
