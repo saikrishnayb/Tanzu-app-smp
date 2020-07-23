@@ -245,6 +245,7 @@ $confirmReservationModal.on("click", '#confirm-btn', function() {
 							document.getElementById("Exceptions").disabled = true;
 							document.getElementById("Unmatched").disabled = true;
 							document.getElementById("approvedBuild").value = true;
+							$(".unit-selection").prop("checked", false);
 						},
 					});
 				} else {
