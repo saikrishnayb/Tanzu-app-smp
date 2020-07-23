@@ -298,8 +298,10 @@ $updateReservation.on("click", function() {
 		$updateReservationPromise.done(function(data) {
 			$updateReservationModal.html(data);
 			var slotDates = $updateReservationModal.find('#slot-dates').val();
-			initializeDatePicker(JSON.parse(slotDates));
-			slotDataAvailable = JSON.parse(slotDates);
+			if(slotDates!="") {
+				initializeDatePicker(JSON.parse(slotDates));
+				slotDataAvailable = JSON.parse(slotDates);
+			}
 			ModalUtil.openModal($updateReservationModal);
 		});
 	}
