@@ -15,7 +15,7 @@
 						<tr class="row" >
 							<td class="col-xs-4"><span class="formLbl">Unit</span></td>
 							<td class="col-xs-8">
-								<input type="text" class="update-res-input" id="unit-number" value="${productionSlotResult.unitNumber}">	
+								<input type="text" class="update-res-input" id="unit-number" value="${productionSlotResult.unitNumber}" maxlength="10">	
 							</td>
 						</tr>
 					</c:if>
