@@ -110,7 +110,7 @@ function initializeDatePicker(slotdata) {
 			$updateReservationModal.find('.production-date').attr("slotId", matchslotId);
 			$(this).datepicker('option', 'buttonImage', '../../../images/calendar.png');
 			if (orderSelectionList.length == 1) {
-				var plantId = parseInt($updateReservationModal.find('#plant-dropdown').val());
+				var plantId = $updateReservationModal.find('#plant-dropdown').val();
 				var slotDate = $updateReservationModal.find('.production-date').val();
 				var unitNumber = $updateReservationModal.find('#unit-number').val();
 				var reservationStatus = $('#reservation-status').val();
@@ -327,7 +327,7 @@ $updateReservationModal.on("change", '#plant-dropdown', function() {
 
 $updateReservationModal.on("change input", ".update-res-input", function() {
 	if (orderSelectionList.length == 1) {
-		var plantId = parseInt($updateReservationModal.find('#plant-dropdown').val());
+		var plantId = $updateReservationModal.find('#plant-dropdown').val();
 		var slotDate = $updateReservationModal.find('.production-date').val();
 		var slotId = $updateReservationModal.find('.production-date').attr("slotId");
 		var reservationStatus = $('#reservation-status').val();
