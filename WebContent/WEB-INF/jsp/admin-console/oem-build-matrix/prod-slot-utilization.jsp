@@ -13,6 +13,7 @@
 <body>
 	<%@ include file="../../global/navigation/sub-nav.jsp"%>
 	<div id="mainContent" class="borderTop">
+		<c:set var="noRows" value="${empty summary.rows}" />
 		<%@ include file="../../global/navigation/admin-console/oem-build-matrix/left-nav.jsp"%>
 		<div class="leftNavAdjacentContainer">
 			<%@ include file="../../global/v2/page-error-container.jsp"%>
