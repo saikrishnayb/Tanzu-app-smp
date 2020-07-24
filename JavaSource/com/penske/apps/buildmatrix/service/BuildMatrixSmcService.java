@@ -71,7 +71,7 @@ public interface BuildMatrixSmcService {
 	
 	public void updateRunSummary(int buildId);
 	
-	public List<BuildMatrixSlotDate> getSlotDatesForPlant(int plantId);
+	public List<BuildMatrixSlotDate> getSlotDatesForPlant(int plantId, String vehicleType);
 	
 	//***** BUILD MATRIX WORKFLOW *****//
 	

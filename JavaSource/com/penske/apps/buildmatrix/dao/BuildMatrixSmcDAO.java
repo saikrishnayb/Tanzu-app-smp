@@ -80,7 +80,7 @@ public interface BuildMatrixSmcDAO {
     
     public void updateRunSummary(@Param("buildId") int buildId);
     
-    public List<BuildMatrixSlotDate> getSlotDatesForPlant(@Param("plantId")int plantId);
+    public List<BuildMatrixSlotDate> getSlotDatesForPlant(@Param("plantId")int plantId, @Param("vehicleType") String vehicleType);
 	
 	//***** BUILD MATRIX WORKFLOW *****//
 	

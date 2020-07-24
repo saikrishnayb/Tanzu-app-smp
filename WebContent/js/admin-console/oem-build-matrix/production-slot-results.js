@@ -178,6 +178,7 @@ $('.unit-selection').on("change", function() {
 	orderObj['productionSlotDate'] = $('#production-date').val();
 	orderObj['productionSlot'] = $('#production-slot').val();
 	orderObj['plantId'] = $(this).attr('plant-id');
+	orderObj['vehicleType'] = $(this).attr('vehicle-type');
 	var approvedBuild = $('#approvedBuild').val();
 	if ($(this).is(':checked')) {
 		orderSelectionList.push(orderObj);
@@ -309,6 +310,7 @@ $updateReservation.on("click", function() {
 
 $updateReservationModal.on("change", '#plant-dropdown', function() {
 	var plantId = $updateReservationModal.find('#plant-dropdown').val();
+	var vehicleType = $updateReservationModal.find('#vehicle-type').val();
 	if (plantId == "" || plantId == 0) {
 		$('#production-date-div').addClass('hideOption');
 		$updateReservationModal.find('.production-date').val("")
@@ -318,7 +320,8 @@ $updateReservationModal.on("change", '#plant-dropdown', function() {
 			type : "POST",
 			url : './get-available-slot-dates.htm',
 			data : {
-				plantId : parseInt(plantId)
+				plantId : parseInt(plantId),
+				vehicleType : vehicleType
 			}
 		});
 		$availableSlotPromise.done(function(data) {

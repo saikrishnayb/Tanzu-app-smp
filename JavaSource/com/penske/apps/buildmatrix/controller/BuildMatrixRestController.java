@@ -654,8 +654,7 @@ public class BuildMatrixRestController {
 		if(productionSlotResult.getPlantId()!= 0)
 		 {
 			 ObjectMapper mapper = new ObjectMapper();
-			 String jsonString = mapper.writeValueAsString(buildMatrixSmcService.getSlotDatesForPlant(productionSlotResult.getPlantId()));
-			 System.out.println("JSON = " + jsonString);
+			 String jsonString = mapper.writeValueAsString(buildMatrixSmcService.getSlotDatesForPlant(productionSlotResult.getPlantId(), productionSlotResult.getVehicleType()));
 			 model.addObject("slotDates",jsonString);
 		 }
 		return model;
@@ -664,8 +663,8 @@ public class BuildMatrixRestController {
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping(value = "/get-available-slot-dates")
 	@ResponseBody
-	public List<BuildMatrixSlotDate> getAvailableSlotDates(@RequestParam("plantId") int plantId) {
-		List<BuildMatrixSlotDate> slotDates=buildMatrixSmcService.getSlotDatesForPlant(plantId);
+	public List<BuildMatrixSlotDate> getAvailableSlotDates(@RequestParam("plantId") int plantId, @RequestParam("vehicleType") String vehicleType) {
+		List<BuildMatrixSlotDate> slotDates=buildMatrixSmcService.getSlotDatesForPlant(plantId, vehicleType);
 		return slotDates;
 		
 	}
