@@ -31,6 +31,20 @@
 	width: 150px !important;
 }
 
+.no-slots-message{
+	font-weight: bold;
+	margin-top: 20px;
+	text-align: center;
+}
+
+.now-viewing-row span {
+	padding-right: 10px;
+}
+
+.search-div div {
+    padding-right: 35px;
+}
+
 /* fix for fixed columns *shrug emoji* */
 .DTFC_LeftBodyWrapper:nth-child(2) .dataTable.no-footer.DTFC_Cloned thead{
 	display: none;

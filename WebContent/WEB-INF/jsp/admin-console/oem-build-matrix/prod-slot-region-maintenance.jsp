@@ -92,6 +92,11 @@
 	        						There are no plants associated with this region. Please add plant associations to continue
 	        					</div>
 	        				</c:when>
+	        				<c:when test="${noRows}">
+	        					<div class="no-plants-message">
+	        						Slots have not been created for the selected year and vehicle type combination. Create slots to continue
+	        					</div>
+	        				</c:when>
 	        				<c:otherwise>
 	        					<form id="region-slot-maintenance-form">
 				        			<input type="hidden" name="slotTypeId" value="${slotTypeId}">

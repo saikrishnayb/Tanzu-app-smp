@@ -31,6 +31,9 @@
 	          				<select id="vehicletype-drpdwn" name="slotType">
 		          				<c:forEach items="${vehicleTypes}" var="type">
 		          					<c:set var="vehicleselected">${type.slotTypeId eq slotTypeId}</c:set>
+		          					<c:if test="${vehicleselected}">
+		          						<c:set var="slotType" scope="page" value="${type}" />
+		          					</c:if>
 		          					<option value="${type.slotTypeId}" ${vehicleselected?'selected="selected"':'' } >${type.slotTypeDesc }</option>
 		          				</c:forEach>
 	          				</select>
@@ -44,6 +47,7 @@
 		          				</c:forEach>
 	          				</select>
           				</div>
+          				<a class="buttonSecondary" id="search-button">Search</a>
           				</form>
           				
           			</div>
@@ -56,44 +60,58 @@
         		</div>
       		</div>
       		<div class="row">
+      			<div class="col-xs-12 now-viewing-row">
+      				<label>Now Viewing:</label>
+					<span id="vehicle-desc">${slotType.slotTypeDesc}</span>
+					<span>${selectedYear}</span>
+      			</div>
         		<div class="col-xs-12">
-        			<form id="slot-maintenance-form">
-	        			<input type="hidden" name="slotTypeId" value="${slotTypeId}">
-						<input type="hidden" name="year" value="${year}">
-						<table id="slot-maintenance-table">
-							<thead>
-									<tr>
-									<th class="centerAlign slot-table-header" id="prod-date">Production Date</th>
-									<c:forEach items="${bodyplantList}" var="plantData">
-										<th class="centerAlign slot-table-header no-sort" id="${plantData.plantId}"> ${plantData.plantManufacturer} <br> ${plantData.city}, ${plantData.state}</th>	
-									</c:forEach>
-									</tr>
-							</thead>
-							<tbody id="slot-maintenance-tablebody">
-								<c:set var="slotIndex" value="0" />
-								<c:forEach items="${summary.rows}" var="row">
-									<tr>
-										<td class="centerAlign slot-table-header" headers="prod-date">${row.slotDate.formattedSlotDate}</td>
-										<c:forEach items="${row.cells}" var="cell">
-											<td class="centerAlign slot-table-header available-units-td" headers="${cell.bodyPlant.plantId}">
-												<input type="hidden" name="slotInfos[${slotIndex}].slotId" value="${cell.slot.slotId}" />
-												<input class ="available-slot-input" name="slotInfos[${slotIndex}].availableSlots" type="text" value="${cell.slot.availableSlots}"
-													data-allocated-slots="${cell.slot.allocatedRegionSlots}"
-													data-plant="${cell.bodyPlant.plantId}"/>
-												<br>
-												<div class="allocated-region-slots-div">
-													<span class="allocated-region-slots hidden">
-														Allocated: ${cell.slot.allocatedRegionSlots}
-													</span>
-												</div>
-											</td>
-											<c:set var="slotIndex" value="${slotIndex+1}" />
+        			<c:choose>
+	       				<c:when test="${noRows}">
+	       					<div class="no-slots-message">
+	       						Slots have not been created for the selected year and vehicle type combination. Create slots to continue
+	       					</div>
+	       				</c:when>
+	       				<c:otherwise>
+		        			<form id="slot-maintenance-form">
+			        			<input type="hidden" name="slotTypeId" value="${slotTypeId}">
+								<input type="hidden" name="year" value="${year}">
+								<table id="slot-maintenance-table">
+									<thead>
+											<tr>
+											<th class="centerAlign slot-table-header" id="prod-date">Production Date</th>
+											<c:forEach items="${bodyplantList}" var="plantData">
+												<th class="centerAlign slot-table-header no-sort" id="${plantData.plantId}"> ${plantData.plantManufacturer} <br> ${plantData.city}, ${plantData.state}</th>	
+											</c:forEach>
+											</tr>
+									</thead>
+									<tbody id="slot-maintenance-tablebody">
+										<c:set var="slotIndex" value="0" />
+										<c:forEach items="${summary.rows}" var="row">
+											<tr>
+												<td class="centerAlign slot-table-header" headers="prod-date">${row.slotDate.formattedSlotDate}</td>
+												<c:forEach items="${row.cells}" var="cell">
+													<td class="centerAlign slot-table-header available-units-td" headers="${cell.bodyPlant.plantId}">
+														<input type="hidden" name="slotInfos[${slotIndex}].slotId" value="${cell.slot.slotId}" />
+														<input class ="available-slot-input" name="slotInfos[${slotIndex}].availableSlots" type="text" value="${cell.slot.availableSlots}"
+															data-allocated-slots="${cell.slot.allocatedRegionSlots}"
+															data-plant="${cell.bodyPlant.plantId}"/>
+														<br>
+														<div class="allocated-region-slots-div">
+															<span class="allocated-region-slots hidden">
+																Allocated: ${cell.slot.allocatedRegionSlots}
+															</span>
+														</div>
+													</td>
+													<c:set var="slotIndex" value="${slotIndex+1}" />
+												</c:forEach>
+											</tr>
 										</c:forEach>
-									</tr>
-								</c:forEach>
-							</tbody>
-						</table>
-					</form>
+									</tbody>
+								</table>
+							</form>
+						</c:otherwise>
+					</c:choose>
 				</div>
 			</div>
 			<div id="prod-slot-maintenance-modal" class="modal"></div>	
