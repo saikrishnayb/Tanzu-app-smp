@@ -70,7 +70,7 @@ public interface BuildMatrixSmcDAO {
     public List<String> getAllAttributeValues(@Param("attributeId") int attributeId);
     
 	// PRODUCTION SLOT RESULTS //
-    public List<ProductionSlotResult> getProductionSlotResults(@Param("buildId")int buildId);
+    public List<ProductionSlotResult> getProductionSlotResults(@Param("buildId")int buildId ,@Param("slotReservationId")int slotReservationId);
     
     public List<ProductionSlotResult> getSlotResultsByFilter(@Param("buildId")int buildId, @Param("selectedFilters") List<String> selectedFilters);
     

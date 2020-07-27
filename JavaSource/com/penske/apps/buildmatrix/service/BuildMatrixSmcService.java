@@ -61,7 +61,7 @@ public interface BuildMatrixSmcService {
 	public boolean checkForUniqueAttributeValue(int attributeId, String attributeValue);
 	
 	// PRODUCTION SLOT RESULTS //
-	public List<ProductionSlotResult> getProductionSlotResults(int buildId);
+	public ProductionSlotResult getProductionSlotResults(int buildId,int slotReservationId);
 	
 	public List<ProductionSlotResult> getSlotResultsByFilter(int buildId, List<String> selectedFilters);
 	

@@ -644,9 +644,9 @@ public class BuildMatrixRestController {
 	 */
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping(value = "/load-update-reservation-popup-modal")
-	public ModelAndView loadUpdateReservationPopup(@RequestBody ProductionSlotResult productionSlotResult) throws JsonProcessingException {
+	public ModelAndView loadUpdateReservationPopup(@RequestParam("buildId") int buildId, @RequestParam("reservationId") int reservationId) throws JsonProcessingException {
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/modal/update-reservation-modal");
-		int buildId = productionSlotResult.getRunId();
+		ProductionSlotResult productionSlotResult = buildMatrixSmcService.getProductionSlotResults(buildId, reservationId);
 		String unitNumber = productionSlotResult.getUnitNumber();
 		model.addObject("plantList", buildMatrixSmcService.getAllPlants());
 		model.addObject("productionSlotList", buildMatrixSmcService.getProductionSlotList(buildId, unitNumber));

@@ -251,9 +251,9 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		return isUnique;
 	}
 	//****PRODUCTION SLOT RESULTS WORKFLOW****//
-	public List<ProductionSlotResult> getProductionSlotResults(int buildId) {
-		List<ProductionSlotResult> productionSlotResults = buildMatrixSmcDAO.getProductionSlotResults(buildId);
-		return productionSlotResults;
+	public ProductionSlotResult getProductionSlotResults(int buildId,int slotReservationId) {
+		List<ProductionSlotResult> productionSlotResults = buildMatrixSmcDAO.getProductionSlotResults(buildId,slotReservationId);
+		return productionSlotResults.get(0);
 	}
 	
 	public List<ProductionSlotResult> getSlotResultsByFilter(int buildId, List<String> selectedFilters) {
@@ -443,7 +443,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	@Override
 	public SXSSFWorkbook downloadProductionSlotResultsDocument(int buildId){
 		SXSSFWorkbook workbook = null;
-		List<ProductionSlotResult> productionSlotResult = buildMatrixSmcDAO.getProductionSlotResults(buildId);
+		List<ProductionSlotResult> productionSlotResult = buildMatrixSmcDAO.getProductionSlotResults(buildId,0);
 		if (productionSlotResult != null && !productionSlotResult.isEmpty()) {
 			List<Integer> orderIds = new ArrayList<>();
 			for (ProductionSlotResult psr : productionSlotResult) {

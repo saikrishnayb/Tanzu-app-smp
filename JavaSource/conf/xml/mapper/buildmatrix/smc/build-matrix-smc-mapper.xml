@@ -302,6 +302,7 @@
 			SLOT_REQ.DESTINATION_DISTRICT_DESC AS districtName,
 			SLOT_REQ.DESTINATION_DELIVERY_DATE AS requestedDeliveryDate,
 			PLANT.PLANT_MFR_CODE ||'-' ||PLANT.PLANT_CITY ||',' ||PLANT.PLANT_STATE AS productionSlot,
+			PLANT.PLANT_ID AS plantId,
 			DATE(to_date(SLOT_DATES.SLOT_DATE,'MM/DD/YYYY')) AS productionDate,
 			SLOT_RESERVE.CHASSIS_MAKE AS chassisMake,
 			SLOT_RESERVE.CHASSIS_MODEL AS chassisModel,
@@ -337,6 +338,9 @@
 				ON SLOT_DATES.SLOT_DATE_ID = SLOT.SLOT_DATE_ID
 		WHERE
 			 RUN_SUMMARY.RUN_ID=#{buildId}
+			 <if test="slotReservationId != null and slotReservationId != 0">
+		 	 AND SLOT_RESERVE.SLOT_RESERVATION_ID =#{slotReservationId} 
+			</if>
 	</select>
 	
 	<select id="getSlotResultsByFilter" resultType="com.penske.apps.buildmatrix.domain.ProductionSlotResult">
@@ -398,7 +402,7 @@
 	
 	<select id="getProductionSlotList" resultMap="plantResultMap">
 		SELECT 
-					PLANT.PLANT_ID AS plantId,
+					distinct PLANT.PLANT_ID AS plantId,
 					PLANT.PLANT_MFR_CODE ||'-' ||PLANT.PLANT_CITY ||',' ||PLANT.PLANT_STATE AS productionSlot
 		FROM 		SMC.OBM_PLANTS PLANT
 		LEFT JOIN  	SMC.OBM_SLOT_RESERVATION_EXCEPTION RESERVE_EXCEPTION

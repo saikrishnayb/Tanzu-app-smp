@@ -47,7 +47,7 @@
 						<td class="col-xs-4"><span class="formLbl">Date</span></td>
 						<td class="col-xs-8">
 							<input class="production-date date-picker numeric numeric-jquery-date advanced-date update-res-input"
-										required value="${productionSlotResult.productionSlotDate}" readonly="readonly" />	
+										required value="${productionSlotResult.formattedProductionDate}" readonly="readonly" />	
 							<input type="hidden" id="slot-dates" value='${slotDates}'>
 						</td>
 					</tr>

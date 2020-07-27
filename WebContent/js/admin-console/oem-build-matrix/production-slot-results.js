@@ -288,13 +288,14 @@ $confirmReservationModal.on("click", '#confirm-btn', function() {
 });
 
 $updateReservation.on("click", function() {
-	console.log(orderSelectionList);
 	if (orderSelectionList.length == 1) {
+		var selectedReservation= orderSelectionList[0];
+		var buildId=$('#buildId').val();
+		var reservationId = selectedReservation["slotReservationId"];
 		var $updateReservationPromise = $.ajax({
 			type : "POST",
 			url : './load-update-reservation-popup-modal.htm',
-			data : JSON.stringify(orderSelectionList[0]),
-			contentType : 'application/json'
+			data : {buildId:buildId, reservationId:reservationId}
 		});
 		$updateReservationPromise.done(function(data) {
 			$updateReservationModal.html(data);
