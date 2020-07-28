@@ -1310,7 +1310,6 @@
 		WHEN NOT MATCHED THEN
 		INSERT
 			(
-			SLOT_REGION_ID,
 			SLOT_ID,
 			REGION,
 			SLOT_AVAILABLE,
@@ -1319,7 +1318,6 @@
 			)
 		 VALUES
 			(
-			input.SLOT_REGION_ID,
 			input.SLOT_ID,
 			input.REGION,
 			input.SLOT_AVAILABLE,

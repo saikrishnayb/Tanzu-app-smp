@@ -220,7 +220,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 			}
 			new BatchRunnable<BuildMatrixSlotRegionAvailability>(regionAvailabilities, 60) {
 	            @Override protected void runBatch(List<BuildMatrixSlotRegionAvailability> items){
-	            	buildMatrixSmcDAO.mergeSlotRegionAvailabilities(regionAvailabilities);
+	            	buildMatrixSmcDAO.mergeSlotRegionAvailabilities(items);
 	            }
 			}.run();
 		}
