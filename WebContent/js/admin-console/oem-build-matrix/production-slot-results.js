@@ -3,6 +3,7 @@ selectCurrentNavigation("tab-oem-build-matrix", "left-nav-build-history");
 var $slotResultsTable = $('#slot-results-table');
 var orderSelectionCnt = 0;
 var orderSelectionList = [];
+var slotReservationIdList = [];
 var slotDataAvailable = [];
 var $confirmReservationModal = $('#confirm-delete-reservation-modal');
 var $updateReservation = $('#update-reservation');
@@ -182,9 +183,14 @@ $('.unit-selection').on("change", function() {
 	var approvedBuild = $('#approvedBuild').val();
 	if ($(this).is(':checked')) {
 		orderSelectionList.push(orderObj);
+		slotReservationIdList.push(slotReservationId);
+		
 	} else {
 		orderSelectionList = $.grep(orderSelectionList, function(e) {
-			return !(e.slotReservationId == slotReservationId)
+			return !(e.slotReservationId == slotReservationId);
+		});
+		slotReservationIdList = $.grep(slotReservationIdList, function(e) {
+			return !(e == slotReservationId);
 		});
 	}
 	if (orderSelectionList.length > 0 && approvedBuild != 'true') {
@@ -215,8 +221,9 @@ $confirmReservationModal.on("click", '#confirm-btn', function() {
 			type : "POST",
 			url : "./delete-reservation-data.htm",
 			cache : false,
-			data : JSON.stringify(orderSelectionList),
-			contentType : 'application/json',
+			data : {
+				slotReservationIdList : slotReservationIdList
+			},
 			success : function(data) {
 				ModalUtil.closeModal($confirmReservationModal);
 				location.assign('view-slot-results-filter.htm?buildId=' + $('#buildId').val() + '&selectedFiltersList=A,E,P&checkedFilter=0');

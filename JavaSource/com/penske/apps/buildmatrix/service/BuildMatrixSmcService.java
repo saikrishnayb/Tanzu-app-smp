@@ -173,7 +173,7 @@ public interface BuildMatrixSmcService {
 	public ImportSlotsResults importSlotMaintenace(MultipartFile file, String fileName, int slotTypeId, int year)
 			throws IOException;
 
-	public void deleteReservationData(List<ProductionSlotResult> orderSelectionList);
+	public void deleteReservationData(List<Integer> slotReservationIdList);
 	
 	public void updateReservationData(int slotReservationId, int slotId, int plantId, String unitNumber);
 

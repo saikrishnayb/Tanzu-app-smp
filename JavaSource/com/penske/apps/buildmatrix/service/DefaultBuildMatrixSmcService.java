@@ -1470,10 +1470,12 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	}
 
 	@Override
-	public void deleteReservationData(List<ProductionSlotResult> orderSelectionList)
+	public void deleteReservationData(List<Integer> slotReservationIdList)
 	{
-		for(ProductionSlotResult order: orderSelectionList) {
-			buildMatrixSmcDAO.removeSlotResult(order.getSlotReservationId());
+		if (!slotReservationIdList.isEmpty()) {
+			for (Integer slotReservationId : slotReservationIdList) {
+				buildMatrixSmcDAO.removeSlotResult(slotReservationId);
+			}
 		}
 	}
 	
