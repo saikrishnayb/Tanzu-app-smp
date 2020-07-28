@@ -276,8 +276,8 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		buildMatrixSmcDAO.updateRunSummary(buildId);
 	}
 	
-	public List<BuildMatrixSlotDate> getSlotDatesForPlant(int plantId, String vehicleType) {
-		List<BuildMatrixSlotDate> slotDatesList = buildMatrixSmcDAO.getSlotDatesForPlant(plantId, vehicleType);
+	public List<BuildMatrixSlotDate> getSlotDatesForPlant(int plantId, String vehicleType, String region) {
+		List<BuildMatrixSlotDate> slotDatesList = buildMatrixSmcDAO.getSlotDatesForPlant(plantId, vehicleType, region);
 		return slotDatesList;
 	}
 	

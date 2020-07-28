@@ -38,7 +38,6 @@ import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlotDate;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlotType;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
-import com.penske.apps.buildmatrix.domain.PlantProximity;
 import com.penske.apps.buildmatrix.domain.ProductionSlotResult;
 import com.penske.apps.buildmatrix.domain.RegionPlantAssociation;
 import com.penske.apps.buildmatrix.model.BuildMixForm;
@@ -658,7 +657,7 @@ public class BuildMatrixRestController {
 		if(productionSlotResult.getPlantId()!= 0)
 		 {
 			 ObjectMapper mapper = new ObjectMapper();
-			 String jsonString = mapper.writeValueAsString(buildMatrixSmcService.getSlotDatesForPlant(productionSlotResult.getPlantId(), productionSlotResult.getVehicleType()));
+			 String jsonString = mapper.writeValueAsString(buildMatrixSmcService.getSlotDatesForPlant(productionSlotResult.getPlantId(), productionSlotResult.getVehicleType(), productionSlotResult.getRegion()));
 			 model.addObject("slotDates",jsonString);
 		 }
 		return model;
@@ -667,8 +666,8 @@ public class BuildMatrixRestController {
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping(value = "/get-available-slot-dates")
 	@ResponseBody
-	public List<BuildMatrixSlotDate> getAvailableSlotDates(@RequestParam("plantId") int plantId, @RequestParam("vehicleType") String vehicleType) {
-		List<BuildMatrixSlotDate> slotDates=buildMatrixSmcService.getSlotDatesForPlant(plantId, vehicleType);
+	public List<BuildMatrixSlotDate> getAvailableSlotDates(@RequestParam("plantId") int plantId, @RequestParam("vehicleType") String vehicleType, @RequestParam("region") String region) {
+		List<BuildMatrixSlotDate> slotDates=buildMatrixSmcService.getSlotDatesForPlant(plantId, vehicleType, region);
 		return slotDates;
 		
 	}

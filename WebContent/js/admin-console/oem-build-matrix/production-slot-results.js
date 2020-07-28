@@ -319,6 +319,7 @@ $updateReservation.on("click", function() {
 $updateReservationModal.on("change", '#plant-dropdown', function() {
 	var plantId = $updateReservationModal.find('#plant-dropdown').val();
 	var vehicleType = $updateReservationModal.find('#vehicle-type').val();
+	var region = $updateReservationModal.find('#region').val();
 	if (plantId == "" || plantId == 0) {
 		$('#production-date-div').addClass('hideOption');
 		$updateReservationModal.find('.production-date').val("")
@@ -329,7 +330,8 @@ $updateReservationModal.on("change", '#plant-dropdown', function() {
 			url : './get-available-slot-dates.htm',
 			data : {
 				plantId : parseInt(plantId),
-				vehicleType : vehicleType
+				vehicleType : vehicleType,
+				region : region
 			}
 		});
 		$availableSlotPromise.done(function(data) {

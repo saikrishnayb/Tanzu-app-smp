@@ -12,6 +12,7 @@
 				<tbody>
 					<input type="hidden" id="reservation-status" value="${productionSlotResult.reservationStatus}">
 					<input type="hidden" id="vehicle-type" value="${productionSlotResult.vehicleType}">
+					<input type="hidden" id="region" value="${productionSlotResult.region}">
 					<c:if test="${productionSlotResult.reservationStatus eq 'P'}">
 						<tr class="row" >
 							<td class="col-xs-4"><span class="formLbl">Unit</span></td>

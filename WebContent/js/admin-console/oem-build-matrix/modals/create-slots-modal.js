@@ -1,7 +1,7 @@
 var $generateButton = $('#generate-slots')
 
 $('#years, #slot-types').on('change', function(){
-	if($(this).val() == ""){
+	if($('#years').val() == ''|| $('#slot-types').val() == ''){
 		$generateButton.addClass('buttonDisabled');
 	}
 	else {
