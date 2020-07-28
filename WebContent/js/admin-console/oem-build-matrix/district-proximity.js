@@ -101,17 +101,48 @@ $(document).ready(function() {
 	//Saves the proximity data
 	$('#save-proximitybtn').on("click",function() {
 		if (proximityUpdateList && proximityUpdateList.length != 0) {
-			var $saveProximityPromise = $.ajax({
-				type : "POST",
-				url : './save-district-proximity.htm',
-				data : JSON.stringify(proximityUpdateList),
-				contentType : 'application/json'
-			});
-			$saveProximityPromise.done(function(data) {
-				window.location.href = "maintenance-summary.htm";
-			});
+		var districtProximityForm = $('#district-proximity-form').empty();
+		var plantId = districtProximityForm.data('plant-id');
+		plantId = plantId == "" ? parseInt($('#plantId').val()) : plantId;
+		for (var i = 0; i < proximityUpdateList.length; i++) {
+			var proxIdInput = document.createElement('input');
+			proxIdInput.type = 'hidden';
+			proxIdInput.name = 'plantProximities[' + i + '].proximityId'
+			proxIdInput.value = proximityUpdateList[i].proximityId;
+			districtProximityForm.append(proxIdInput);
+			
+			var plantIdIp = document.createElement('input');
+			plantIdIp.type = 'hidden';
+			plantIdIp.name = 'plantProximities[' + i + '].plantId'
+			plantIdIp.value = proximityUpdateList[i].plantId;
+			districtProximityForm.append(plantIdIp);
+			
+			var tierInput = document.createElement('input');
+			tierInput.type = 'hidden';
+			tierInput.name = 'plantProximities[' + i + '].tier'
+			tierInput.value = proximityUpdateList[i].tier;
+			districtProximityForm.append(tierInput);
+			
+			var districtInput = document.createElement('input');
+			districtInput.type = 'hidden';
+			districtInput.name = 'plantProximities[' + i + '].district'
+			districtInput.value = proximityUpdateList[i].district;
+			districtProximityForm.append(districtInput);
+			
+			var deleteFlgInput = document.createElement('input');
+			deleteFlgInput.type = 'hidden';
+			deleteFlgInput.name = 'plantProximities[' + i + '].removeDistrict'
+			deleteFlgInput.value = proximityUpdateList[i].removeDistrict;
+			districtProximityForm.append(deleteFlgInput);
 		}
-	});
+		var plantIdInput = document.createElement('input');
+		plantIdInput.type = 'hidden';
+		plantIdInput.name = 'plantId'
+		plantIdInput.value = plantId;
+		districtProximityForm.append(plantIdInput);
+		districtProximityForm.submit();
+		}
+		});
 	
 	setMaxVericalLineHeight();
 });

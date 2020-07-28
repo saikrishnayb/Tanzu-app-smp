@@ -43,6 +43,7 @@ import com.penske.apps.buildmatrix.domain.ProductionSlotResult;
 import com.penske.apps.buildmatrix.domain.RegionPlantAssociation;
 import com.penske.apps.buildmatrix.model.BuildMixForm;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm;
+import com.penske.apps.buildmatrix.model.DistrictProximityForm;
 import com.penske.apps.buildmatrix.model.ImportRegionSlotsResults;
 import com.penske.apps.buildmatrix.model.ImportSlotsResults;
 import com.penske.apps.buildmatrix.model.SaveRegionSlotsForm;
@@ -237,10 +238,13 @@ public class BuildMatrixRestController {
 	 */
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping("/save-district-proximity")
-	public void saveDistrictProximity(@RequestBody List<PlantProximity> plantProximityList) {
-		 buildMatrixSmcService.saveDistrictProximity(plantProximityList);
+	public ModelAndView saveDistrictProximity(DistrictProximityForm districtProximityForm) {
+		if(districtProximityForm.getPlantId() !=0) {
+		 buildMatrixSmcService.saveDistrictProximity(districtProximityForm.getPlantProximities());
+		}
+		return new ModelAndView("redirect:/app/admin-console/oem-build-matrix/maintenance-summary");
 	}
-
+	
 	/**
 	 * Method to Loads Edit Dimension Popup Modal
 	 * 

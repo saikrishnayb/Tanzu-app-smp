@@ -72,6 +72,7 @@
 					</div>
 				</c:otherwise>
 			</c:choose>
+			<form id="district-proximity-form" name="districtProximityForm" data-plant-id="${plantData.plantId}" method="POST" action="${baseAppUrl}/admin-console/oem-build-matrix/save-district-proximity"></form>
 		</div>
 	</div>
 
