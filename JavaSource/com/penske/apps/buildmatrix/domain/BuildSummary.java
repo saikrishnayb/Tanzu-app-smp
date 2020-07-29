@@ -2,7 +2,10 @@ package com.penske.apps.buildmatrix.domain;
 
 import java.sql.Date;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.penske.apps.buildmatrix.domain.enums.BuildStatus;
+import com.penske.apps.smccore.base.util.DateUtil;
 import com.penske.apps.suppliermgmt.model.UserContext;
 
 public class BuildSummary {
@@ -130,6 +133,18 @@ public class BuildSummary {
 
 	public void setReqQty(int reqQty) {
 		this.reqQty = reqQty;
+	}
+	
+	public String getFormattedStartDate() {
+		return StringUtils.defaultString(DateUtil.formatDateUS(startedDate));
+	}
+	
+	public String getFormattedSubmittedDate() {
+		return StringUtils.defaultString(DateUtil.formatDateUS(submittedDate));
+	}
+	
+	public String getFormattedRunEndDate() {
+		return StringUtils.defaultString(DateUtil.formatDateUS(runEndDate));
 	}
 	
 }

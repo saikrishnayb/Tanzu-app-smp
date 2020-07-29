@@ -69,7 +69,7 @@
 										<td>${order.packageName}</td>
 										<td class="order-quantity">${order.orderTotalQuantity}</td>
 										<td class="order-fulfilled">${order.fulfilledQty}</td>
-										<td>${order.deliveryDate}</td>
+										<td>${order.formattedDeliveryDate}</td>
 									</tr>
 								</c:forEach>
 							</tbody>

@@ -65,7 +65,7 @@
 										<td>${order.districtDesc}</td>
 										<td>${order.packageName}</td>
 										<td>${order.unfulfilledQty}</td>
-										<td>${order.deliveryDate}</td>
+										<td>${order.formattedDeliveryDate}</td>
 									</tr>
 								</c:forEach>
 							</tbody>

@@ -63,10 +63,10 @@
 									<td class="leftAlign">${buildHistory.fulfilledQty }</td>
 									<td class=""> ${buildHistory.buildStatus.label} </td>
 									<td>${buildHistory.startedByName}</td>
-									<td>${buildHistory.startedDate}</td>
+									<td>${buildHistory.formattedStartDate}</td>
 									<td>${buildHistory.submittedByName}</td>
-									<td>${buildHistory.submittedDate}</td>
-									<td>${buildHistory.runEndDate}</td>
+									<td>${buildHistory.formattedSubmittedDate}</td>
+									<td>${buildHistory.formattedRunEndDate}</td>
 									<td>
 										<c:choose>
 											<c:when test="${buildHistory.showViewReportBtn()}">

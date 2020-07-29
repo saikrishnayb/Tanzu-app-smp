@@ -2,7 +2,10 @@ package com.penske.apps.buildmatrix.domain;
 
 import java.sql.Date;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.penske.apps.buildmatrix.domain.enums.ApprovalStatus;
+import com.penske.apps.smccore.base.util.DateUtil;
 
 public class ApprovedOrder {
 	
@@ -108,5 +111,9 @@ public class ApprovedOrder {
 	
 	public int getUnfulfilledQty() {
 		return (addCount+replaceCount)-fulfilledQty;
+	}
+	
+	public String getFormattedDeliveryDate() {
+		return StringUtils.defaultString(DateUtil.formatDateUS(deliveryDate));
 	}
 }
