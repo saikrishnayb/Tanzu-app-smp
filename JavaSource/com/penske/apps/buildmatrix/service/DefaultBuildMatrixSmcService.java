@@ -172,11 +172,11 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	@Transactional
 	@Override
 	public void saveOfflineDates(BuildMatrixBodyPlant plantData) {
-		if(!plantData.getOfflineDateToRemove().isEmpty()) {
+		if(null!=plantData.getOfflineDateToRemove() && !plantData.getOfflineDateToRemove().isEmpty()) {
 			buildMatrixSmcDAO.removeOfflineDates(plantData.getOfflineDateToRemove());
 		}
 		
-		if(!plantData.getOfflineDates().isEmpty())
+		if(null != plantData.getOfflineDates() && !plantData.getOfflineDates().isEmpty())
 			buildMatrixSmcDAO.saveOfflineDates(plantData);
 	}
 

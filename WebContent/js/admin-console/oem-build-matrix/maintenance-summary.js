@@ -59,74 +59,65 @@ $bodyPlantTable = $('#body-plant-maint-table').dataTable({ //All of the below ar
 });
 
 $setOfflineDatesModal.on("click", '#save-offline-dates', function() {
+	var saveOfflineDateForm = $('#save-offline-date-form').empty();
 	var $form = $('#set-offline-date-form');
 	var plantId = $form.find('.plantId').val();
 	var rows = $form.find('#offline-dates-table .row')
-	var plantOfflineDate = {};
-	var plantOfflineDateList = [];
 	var startDate;
 	var endDate;
 
-	$.each(rows, function(index, row) {
+	var plantIdInput = document.createElement('input');
+	plantIdInput.type = 'hidden';
+	plantIdInput.name = 'plantId'
+	plantIdInput.value = plantId;
+	saveOfflineDateForm.append(plantIdInput);
+	
+	$.each(rows, function(i, row) {
 		var offlineDateId = $(row).attr('offlineDateId');
 		if ($(row).find('.start-date').val() != '' && $(row).find('.end-date').val() != '') {
 			startDate = $(row).find('.start-date').val();
 			endDate = $(row).find('.end-date').val();
-			plantOfflineDate = {};
-			plantOfflineDate['offlineDateId'] = offlineDateId;
-			plantOfflineDate['plantId'] = plantId;
-			plantOfflineDate['offlineStartDate'] = new Date(startDate);
-			plantOfflineDate['offlineEndDate'] = new Date(endDate);
-			plantOfflineDateList.push(plantOfflineDate);
+			
+			var offlineDateIdInput = document.createElement('input');
+			offlineDateIdInput.type = 'hidden';
+			offlineDateIdInput.name = 'offlineDates[' + i + '].offlineDateId'
+			offlineDateIdInput.value = offlineDateId;
+			saveOfflineDateForm.append(offlineDateIdInput);
+			
+			var plantIdIp = document.createElement('input');
+			plantIdIp.type = 'hidden';
+			plantIdIp.name = 'offlineDates[' + i + '].plantId'
+			plantIdIp.value = plantId;
+			saveOfflineDateForm.append(plantIdIp);
+			
+			var offlineStartDateInput = document.createElement('input');
+			offlineStartDateInput.type = 'hidden';
+			offlineStartDateInput.name = 'offlineDates[' + i + '].offlineStartDate'
+			offlineStartDateInput.value = new Date(startDate);
+			saveOfflineDateForm.append(offlineStartDateInput);
+			
+			var offlineEndDateInput = document.createElement('input');
+			offlineEndDateInput.type = 'hidden';
+			offlineEndDateInput.name = 'offlineDates[' + i + '].offlineEndDate'
+			offlineEndDateInput.value = new Date(endDate);
+			saveOfflineDateForm.append(offlineEndDateInput);
+			
 		} else if (offlineDateId != undefined && offlineDateId != "") {
 			removeOfflineDate.push(offlineDateId);
 		}
 
 	});
-
-	var input = {};
-	input['plantId'] = $form.find('.plantId').val();
-	input['offlineDates'] = plantOfflineDateList;
-	input['offlineDateToRemove'] = removeOfflineDate;
+	var removeOfflineDateInput = document.createElement('input');
+	removeOfflineDateInput.type = 'hidden';
+	removeOfflineDateInput.name = 'offlineDateToRemove'
+	removeOfflineDateInput.value = removeOfflineDate;
+	saveOfflineDateForm.append(removeOfflineDateInput);
 	var errorMsg = '';
 	// Validate the form.
 	errorMsg = validateOfflineDateForm($form);
 	// If no error message was returned, hide any errors and submit the form data.
 	if (errorMsg.length == 0) {
-		if (plantOfflineDateList.length != 0 || removeOfflineDate.length != 0) {
-			var $saveOfflineDatesPromise = $.ajax({
-				type : "POST",
-				url : './save-offline-dates.htm',
-				data : JSON.stringify(input),
-				contentType : 'application/json',
-				success : function(data) {
-					$('#body-plant-maint-table').find('.plant-id').each(function() {
-						var plantIdCheck = $(this).val();
-						var plantIdMatch = (plantIdCheck == plantId);
-
-						if (plantIdMatch) {
-							var stringToAppend = "";
-							if (plantOfflineDateList.length == 1) {
-								if (plantOfflineDate['offlineStartDate'] == null || plantOfflineDate['offlineStartDate'] == "")
-									stringToAppend = "";
-								else
-									stringToAppend = startDate + ' - ' + endDate;
-
-							} else if (plantOfflineDateList.length > 0)
-								stringToAppend = "Multiple Dates";
-							else
-								stringToAppend = "";
-
-							var $bodyPlantRow = $(this).closest('tr');
-							var nRow = $bodyPlantRow[0];
-							$bodyPlantTable.dataTable().fnUpdate(stringToAppend, nRow, 5, false);
-
-						}
-					});
-					ModalUtil.closeModal($setOfflineDatesModal);
-				}
-			});
-		}
+		saveOfflineDateForm.submit();
 	} else {
 		// If an error was found, display it to the user and do not submit the form data.
 		clearErrorAndWarningLabels();

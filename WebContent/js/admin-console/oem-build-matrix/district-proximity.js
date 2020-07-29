@@ -20,6 +20,10 @@ $(document).ready(function() {
 	
 	$('.filter').accordionLiveFilter();
 
+	$(".hasProximity").each(function() {
+		$(this).addClass('expanded').data('alf-child').slideDown(0, setMaxVericalLineHeight(this));
+	});
+	
 	$("#tier1, #tier2, #tier3").on("keyup", function() {
 		var tierNumber = $(this).attr("id").split("tier")[1];
 		var value = $(this).val().toLowerCase();

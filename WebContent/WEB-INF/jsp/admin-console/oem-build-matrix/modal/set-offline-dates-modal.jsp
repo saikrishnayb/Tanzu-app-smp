@@ -62,8 +62,8 @@
 				<a class="secondaryLink" id="add-new-row">Add Additional Offline Date</a>
 				<a class="buttonPrimary  clear-left  buttonDisabled" id="save-offline-dates" tabindex=8>Save</a>
 		     </div>
-			
 		</form>
+		<form id="save-offline-date-form" name="saveOfflineDateForm" data-plant-id="${plantData.plantId}" method="POST" action="${baseAppUrl}/admin-console/oem-build-matrix/save-offline-dates"></form>
 	</div>
 </div>
 <script src="${baseUrl}/js/admin-console/oem-build-matrix/modals/set-offline-dates-modal.js" type="text/javascript"></script>

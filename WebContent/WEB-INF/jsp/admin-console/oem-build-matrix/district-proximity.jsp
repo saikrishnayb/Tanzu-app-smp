@@ -34,7 +34,14 @@
 											<c:set var="area" value="${areaModel.freightMileage.area}" />
 											<c:set var="areaDesc" value="${areaModel.freightMileage.areaDesc}"></c:set>
 											<li>
-												<label class="dist-proximity-lbl">${area} - ${areaDesc}</label>
+												<c:set var="hasproximity" value="N"/>
+												<c:forEach items="${areaModel.proximities}" var="entry">
+													<c:set var="proximityData" value="${entry.value}" />
+													<c:if test="${not empty proximityData}">
+														<c:set var="hasproximity" value="Y"/>
+													</c:if>
+												</c:forEach>
+												<label class="<c:if test="${hasproximity=='Y'}">hasProximity</c:if> dist-proximity-lbl">${area} - ${areaDesc}</label>
 												<ul class="list${tier}-subtier">
 													<fieldset class="fieldset">
 														<legend class="legend-view"></legend>

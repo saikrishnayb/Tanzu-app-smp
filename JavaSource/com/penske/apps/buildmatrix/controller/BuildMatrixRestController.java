@@ -227,8 +227,9 @@ public class BuildMatrixRestController {
 	 */
 	@SmcSecurity(securityFunction = SecurityFunction.OEM_BUILD_MATRIX)
     @RequestMapping(value="save-offline-dates")
-    public void saveOfflineDates(@RequestBody BuildMatrixBodyPlant plantData) {
+    public ModelAndView saveOfflineDates(BuildMatrixBodyPlant plantData) {
        	buildMatrixSmcService.saveOfflineDates(plantData);
+       	return new ModelAndView("redirect:/app/admin-console/oem-build-matrix/maintenance-summary");
     }
 
 	/**
