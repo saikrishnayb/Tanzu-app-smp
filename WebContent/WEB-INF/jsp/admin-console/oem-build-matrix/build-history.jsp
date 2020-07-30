@@ -43,7 +43,7 @@
 									<td class="editable centerAlign">
 										<c:choose>
 											<c:when test="${buildHistory.showReworkBtn()}">
-												<div class="dropdown">
+												<div class="dropdown rework-delete-build">
 													<a class="bootStrapDropDown dropdown-toggle" data-toggle="dropdown"> Actions <span class="caret"></span>
 													</a>
 													<ul class="dropdown-menu">

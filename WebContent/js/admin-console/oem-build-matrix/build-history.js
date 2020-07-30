@@ -47,8 +47,7 @@ $buildHistoryDataTable = $buildHistoryTable.DataTable({ //All of the below are o
 			$('.build-history-table-top').append('<a href="' + baseBuildMatrixUrl + '/order-summary" class="buttonSecondary floatRight">Start Build</a>');
 		}
 		else {
-			$('#cancel-btn').remove();
-			$('#rework-btn').remove();
+			$('.rework-delete-build').hide();
 		}
 	}
 });
