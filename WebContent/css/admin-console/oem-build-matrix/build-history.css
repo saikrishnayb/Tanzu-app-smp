@@ -28,7 +28,7 @@
 }
 
 .actionsheader {
-	width: 100px;
+	width: 100px!important;
 }
 
 /* Start of custom Bootstrap Dropdown custom CSS */
