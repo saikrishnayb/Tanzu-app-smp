@@ -47,17 +47,17 @@ $buildHistoryDataTable = $buildHistoryTable.DataTable({ //All of the below are o
 			$('.build-history-table-top').append('<a href="' + baseBuildMatrixUrl + '/order-summary" class="buttonSecondary floatRight">Start Build</a>');
 		}
 		else {
-			$('.cancel-btn').remove();
-			$('.rework-btn').remove();
+			$('#cancel-btn').remove();
+			$('#rework-btn').remove();
 		}
 	}
 });
 
-$buildHistoryTable.on('click', '.rework-btn', function() {
+$buildHistoryTable.on('click', '#rework-btn', function() {
 	openConfirmModal(false, $(this).data('build-id'));
 });
 
-$buildHistoryTable.on('click', '.cancel-btn', function() {
+$buildHistoryTable.on('click', '#cancel-btn', function() {
 	openConfirmModal(true, $(this).data('build-id'));
 
 });

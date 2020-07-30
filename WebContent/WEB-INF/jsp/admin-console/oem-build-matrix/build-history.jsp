@@ -21,11 +21,11 @@
       		</div>
 			<div class="row">
         		<div class="col-xs-12">
-					<table id="build-history-table" class="plant-view" data-show-start-build-btn="${showStartBuildBtn}">
+					<table id="build-history-table" data-show-start-build-btn="${showStartBuildBtn}">
 						<thead>
 							<tr>
-								<th></th>
-								<th class="leftAlign" id="build-number">Build #</th>
+								<th class="actionsheader"></th>
+								<th class="leftAlign">Build #</th>
 								<th class="leftAlign">Requested Qty</th>
 								<th class="leftAlign">Fulfilled Qty</th>
 								<th class="leftAlign">Status</th>
@@ -39,16 +39,21 @@
 						</thead>
 						<tbody>
 							<c:forEach items="${buildHistoryList}" var="buildHistory">
-								<tr class="user-row">
-									<td>
+								<tr>
+									<td class="editable centerAlign">
 										<c:choose>
 											<c:when test="${buildHistory.showReworkBtn()}">
-												<a class="buttonSecondary rework-btn" data-build-id="${buildHistory.buildId}">Rework</a>
-												<a class="buttonSecondary cancel-btn" data-build-id="${buildHistory.buildId}">Delete</a>
+												<div class="dropdown">
+													<a class="bootStrapDropDown dropdown-toggle" data-toggle="dropdown"> Actions <span class="caret"></span>
+													</a>
+													<ul class="dropdown-menu">
+														<li><a id ="rework-btn" data-build-id="${buildHistory.buildId}">Rework</a></li>
+														<li><a id ="cancel-btn" data-build-id="${buildHistory.buildId}">Delete</a></li>
+													</ul>
+												</div>
 											</c:when>
 											<c:otherwise></c:otherwise>
 										</c:choose>
-									</td>
 									<td class="leftAlign">
 										<c:choose>
 											<c:when test='${buildHistory.buildStatus.code eq "P"}'>
