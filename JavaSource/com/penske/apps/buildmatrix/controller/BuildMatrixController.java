@@ -449,7 +449,10 @@ public class BuildMatrixController {
 			selectedRegion = regionMap.keySet().iterator().next();
 		
 		ProductionSlotsUtilizationSummary summary = buildMatrixSmcService.getUtilizationSummary(Integer.valueOf(slotTypeId), Integer.valueOf(selectedYear), selectedRegion);
-		List<BuildMatrixBodyPlant> bodyplantList = buildMatrixSmcService.getBodyPlantsByPlantIds(summary.getBodyPlantById().keySet());
+		List<BuildMatrixBodyPlant> bodyplantList = new ArrayList<>();
+		Set<Integer> plantIds = summary.getBodyPlantById().keySet();
+		if(!plantIds.isEmpty())
+			bodyplantList = buildMatrixSmcService.getBodyPlantsByPlantIds(plantIds);
 		
 		model.addObject("summary", summary);
 		model.addObject("bodyPlantList", bodyplantList);
@@ -482,7 +485,11 @@ public class BuildMatrixController {
 			selectedRegion = regionMap.keySet().iterator().next();
 		
 		ProductionSlotsUtilizationSummary summary = buildMatrixSmcService.getUtilizationSummary(Integer.valueOf(slotTypeId), Integer.valueOf(selectedYear), selectedRegion);
-		List<BuildMatrixBodyPlant> bodyplantList = buildMatrixSmcService.getBodyPlantsByPlantIds(summary.getBodyPlantById().keySet());
+		
+		List<BuildMatrixBodyPlant> bodyplantList = new ArrayList<>();
+		Set<Integer> plantIds = summary.getBodyPlantById().keySet();
+		if(!plantIds.isEmpty())
+			bodyplantList = buildMatrixSmcService.getBodyPlantsByPlantIds(plantIds);
 		
 		model.addObject("summary", summary);
 		model.addObject("bodyPlantList", bodyplantList);

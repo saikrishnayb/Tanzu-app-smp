@@ -1163,10 +1163,10 @@
 		         SLOT_DATE_ID AS slotDateId,
 		         SLOT_AVAILABLE AS availableSlots,
 		         SLOT_RESERVED AS reservedSlots,
-		         sumTable.allocatedSlots as allocatedRegionSlots
+		         COALESCE(sumTable.allocatedSlots, 0) as allocatedRegionSlots
 		FROM     SMC.OBM_SLOTS SLOT 
 		JOIN 	 SMC.OBM_PLANTS PLANT ON SLOT.PLANT_ID = PLANT.PLANT_ID
-		JOIN (
+		LEFT JOIN (
 				Select 
 					region.SLOT_ID, 
 					SUM(SLOT_AVAILABLE) as allocatedSlots 
@@ -1189,10 +1189,10 @@
 		         SLOT_DATE_ID AS slotDateId,
 		         SLOT_AVAILABLE AS availableSlots,
 		         SLOT_RESERVED AS reservedSlots,
-		         sumTable.allocatedSlots as allocatedRegionSlots
+		         COALESCE(sumTable.allocatedSlots, 0) as allocatedRegionSlots
 		FROM     SMC.OBM_SLOTS SLOT 
 		JOIN 	 SMC.OBM_PLANTS PLANT ON SLOT.PLANT_ID = PLANT.PLANT_ID
-		JOIN (
+		LEFT JOIN (
 				Select 
 					region.SLOT_ID, 
 					SUM(SLOT_AVAILABLE) as allocatedSlots 
@@ -1214,10 +1214,10 @@
 		         SLOT_DATE_ID AS slotDateId,
 		         SLOT_AVAILABLE AS availableSlots,
 		         SLOT_RESERVED AS reservedSlots,
-		         sumTable.allocatedSlots as allocatedRegionSlots
+		         COALESCE(sumTable.allocatedSlots, 0) as allocatedRegionSlots
 		FROM     SMC.OBM_SLOTS SLOT 
 		JOIN 	 SMC.OBM_PLANTS PLANT ON SLOT.PLANT_ID = PLANT.PLANT_ID
-		JOIN (
+		LEFT JOIN (
 				Select 
 					region.SLOT_ID, 
 					SUM(SLOT_AVAILABLE) as allocatedSlots 

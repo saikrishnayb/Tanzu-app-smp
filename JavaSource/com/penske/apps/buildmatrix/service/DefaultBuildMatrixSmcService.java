@@ -915,7 +915,8 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 			slots = Collections.emptyList();
 		}
 		else {
-			slots = buildMatrixSmcDAO.getSlotsBySlotDates(slotTypeId, slotDates.stream().map(BuildMatrixSlotDate::getSlotDateId).collect(toList()));
+			List<Integer> slotDateIds = slotDates.stream().map(BuildMatrixSlotDate::getSlotDateId).collect(toList());
+			slots = buildMatrixSmcDAO.getSlotsBySlotDates(slotTypeId, slotDateIds);
 		}
 			
 		List<BuildMatrixBodyPlant> bodyPlantList = buildMatrixSmcDAO.getAllBodyPlantsforSlotMaintenance();
@@ -951,7 +952,9 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 			bodyPlantSummary = Collections.emptyList();
 		}
 		else {
-			bodyPlantSummary = buildMatrixSmcDAO.getBodyPlantsByPlantIds(regionPlantList.stream().map(RegionPlantAssociation::getPlantId).collect(toList()));
+			List<Integer> plantIds = regionPlantList.stream().map(RegionPlantAssociation::getPlantId).collect(toList());
+			if(!plantIds.isEmpty())
+				bodyPlantSummary = buildMatrixSmcDAO.getBodyPlantsByPlantIds(plantIds);
 		}
 		 
 		List<BuildMatrixSlotDate> slotDates = buildMatrixSmcDAO.getSlotDatesForYear(selectedYear);
@@ -963,7 +966,8 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		else {
 			List<Integer> slotDateIds = slotDates.stream().map(sld->sld.getSlotDateId()).collect(toList());
 			List<Integer> plantIds = bodyPlantSummary.stream().map(bp->bp.getPlantId()).collect(toList());
-			slots = buildMatrixSmcDAO.getSlotsBySlotDatesAndPlantIds(slotTypeId, slotDateIds, plantIds);
+			if(!slotDateIds.isEmpty() && !plantIds.isEmpty())
+				slots = buildMatrixSmcDAO.getSlotsBySlotDatesAndPlantIds(slotTypeId, slotDateIds, plantIds);
 		}
 		
 		Set<Integer> slotIds = slots.stream().map(BuildMatrixSlot::getSlotId).collect(toSet());
