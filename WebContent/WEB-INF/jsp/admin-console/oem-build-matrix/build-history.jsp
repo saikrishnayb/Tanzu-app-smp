@@ -54,6 +54,7 @@
 											</c:when>
 											<c:otherwise></c:otherwise>
 										</c:choose>
+									</td>
 									<td class="leftAlign">
 										<c:choose>
 											<c:when test='${buildHistory.buildStatus.code eq "P"}'>
