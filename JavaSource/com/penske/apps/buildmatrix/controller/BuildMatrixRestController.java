@@ -45,6 +45,7 @@ import com.penske.apps.buildmatrix.model.BusinessAwardForm;
 import com.penske.apps.buildmatrix.model.DistrictProximityForm;
 import com.penske.apps.buildmatrix.model.ImportRegionSlotsResults;
 import com.penske.apps.buildmatrix.model.ImportSlotsResults;
+import com.penske.apps.buildmatrix.model.SavePlantRegionForm;
 import com.penske.apps.buildmatrix.model.SaveRegionSlotsForm;
 import com.penske.apps.buildmatrix.model.SaveSlotsForm;
 import com.penske.apps.buildmatrix.service.BuildMatrixSmcService;
@@ -309,8 +310,9 @@ public class BuildMatrixRestController {
 	 */
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping("/save-region-association")
-	public void savePlantRegionAssociation(@RequestBody List<RegionPlantAssociation> regionPlantAssociationList) {
-		buildMatrixSmcService.savePlantRegionAssociation(regionPlantAssociationList);
+	public ModelAndView savePlantRegionAssociation(SavePlantRegionForm savePlantRegionForm) {
+		buildMatrixSmcService.savePlantRegionAssociation(savePlantRegionForm.getRegionPlantAssociationList());
+		return new ModelAndView("redirect:/app/admin-console/oem-build-matrix/maintenance-summary");
 	}
 	
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })

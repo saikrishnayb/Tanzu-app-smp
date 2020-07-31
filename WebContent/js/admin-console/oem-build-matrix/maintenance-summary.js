@@ -327,18 +327,40 @@ $('#confirm-btn').on("click",function(){
 
 function confirmDeleteRegion() {
 	if (regionAssociationUpdateList && regionAssociationUpdateList.length != 0) {
-		var $saveRegionPromise = $.ajax({
-			type : "POST",
-			url : './save-region-association.htm',
-			data : JSON.stringify(regionAssociationUpdateList),
-			contentType : 'application/json'
-		});
-		$saveRegionPromise.done(function(data) {
-			ModalUtil.closeModal($confirmProximityModal);
-			ModalUtil.closeModal($regionAssociationModal);
-		});
-		ModalUtil.closeModal($confirmProximityModal);
-		ModalUtil.closeModal($regionAssociationModal);
+		var saveRegionAssociationForm = $('#save-region-association-form').empty();
+		var plantId = saveRegionAssociationForm.data('plant-id');
+		plantId = plantId == "" ? parseInt($('.plantId').val()) : plantId;
+		for (var i = 0; i < regionAssociationUpdateList.length; i++) {
+			var plantIdInput = document.createElement('input');
+			plantIdInput.type = 'hidden';
+			plantIdInput.name = 'regionPlantAssociationList[' + i + '].plantId';
+			plantIdInput.value = plantId;
+			saveRegionAssociationForm.append(plantIdInput);
+			
+			var removeFlg = document.createElement('input');
+			removeFlg.type = 'hidden';
+			removeFlg.name = 'regionPlantAssociationList[' + i + '].isAssociated'
+			removeFlg.value = regionAssociationUpdateList[i].isAssociated;
+			saveRegionAssociationForm.append(removeFlg);
+			
+			var regionInput = document.createElement('input');
+			regionInput.type = 'hidden';
+			regionInput.name = 'regionPlantAssociationList[' + i + '].region';
+			regionInput.value =  regionAssociationUpdateList[i].region;
+			saveRegionAssociationForm.append(regionInput);
+			
+			var regionDescInput = document.createElement('input');
+			regionDescInput.type = 'hidden';
+			regionDescInput.name = 'regionPlantAssociationList[' + i + '].regionDesc';
+			regionDescInput.value =  regionAssociationUpdateList[i].regionDesc;
+			saveRegionAssociationForm.append(regionDescInput);
+		}
+		var plantIdIp = document.createElement('input');
+		plantIdIp.type = 'hidden';
+		plantIdIp.name = 'plantId'
+		plantIdIp.value = plantId;
+		saveRegionAssociationForm.append(plantIdIp);
+		saveRegionAssociationForm.submit();
 	}
 }
 

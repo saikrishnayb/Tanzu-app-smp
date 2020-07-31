@@ -26,5 +26,6 @@
 		     </div>
 			
 		</form>
+		<form id="save-region-association-form" name="saveRegionAssociationForm" data-plant-id="${plantData.plantId}" method="POST" action="${baseAppUrl}/admin-console/oem-build-matrix/save-region-association"></form>
 	</div>
 </div>
