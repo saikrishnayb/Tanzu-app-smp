@@ -25,4 +25,6 @@ public interface VendorService {
 	public void modifyVendorsMassUpdate(int[] vendorIds, Vendor vendor);
 	
 	public List<Alert> getAllAlerts();
+
+	void sendEmailToAnalyst(Vendor vendor, UserContext user);
 }

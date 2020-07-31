@@ -1,18 +1,22 @@
 package com.penske.apps.adminconsole.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.penske.apps.adminconsole.dao.SecurityDao;
 import com.penske.apps.adminconsole.dao.VendorDao;
 import com.penske.apps.adminconsole.model.Alert;
 import com.penske.apps.adminconsole.model.User;
 import com.penske.apps.adminconsole.model.Vendor;
 import com.penske.apps.adminconsole.model.VendorContact;
+import com.penske.apps.adminconsole.util.ApplicationConstants;
 import com.penske.apps.suppliermgmt.model.UserContext;
+import com.penske.apps.suppliermgmt.util.LookupManager;
 
 @Service
 public class DefaultVendorService implements VendorService {
@@ -21,6 +25,12 @@ public class DefaultVendorService implements VendorService {
 	
 	@Autowired
 	private VendorDao vendorDao;
+	
+	@Autowired
+	private SecurityDao securityDao;
+	
+	@Autowired
+	private LookupManager lookupManager;
 	
 	@Override
 	public List<Vendor> getAllVendors(int orgId) {
@@ -121,6 +131,59 @@ public class DefaultVendorService implements VendorService {
 		// The user did not enter information for the secondary contact but it exists in the database.
 		else if (secondary == null && secondaryExists) {
 			vendorDao.removeVendorContact("SECONDARY", vendor.getVendorId());
+		}
+	}
+
+	@Override
+	public void sendEmailToAnalyst(Vendor vendor, UserContext user) {
+		if (vendor == null || vendor.getPlanningAnalyst() == null || user == null) {
+			return;
+		}
+
+		List<User> allAnalysts = getAllPlanningAnalysts();
+		Optional<User> opt = allAnalysts.stream().filter(a -> a.getUserId() == vendor.getPlanningAnalyst().getUserId())
+				.findFirst();
+		if (!opt.isPresent()) {
+			return;
+		}
+
+		User analyst = opt.get();
+		if (StringUtils.isBlank(analyst.getEmail())) {
+			return;
+		}
+
+		logger.info("Sending e-mail to Analyst [" + analyst.getFirstName() + " " + analyst.getLastName()
+				+ "] that a new Vendor [" + vendor.getVendorName() + "] is assigned.");
+		try {
+			MailRequest mailRequest = new MailRequest();
+			mailRequest.setUserId(user.getUserSSO());
+			mailRequest.setFromAddress(
+					lookupManager.getLookUpListByName(ApplicationConstants.EBS_FROM_ADDRESS).get(0).getLookUpValue());
+			mailRequest.setToList(analyst.getEmail().trim());
+			mailRequest.setSubject("New Vendor is Assigned");
+
+			StringBuilder mailBody = new StringBuilder(512);
+			mailBody.append("<html><body>");
+			mailBody.append("<p>" + analyst.getFirstName() + ",</p>");
+			mailBody.append("<p>Supplier Management Center assigned you a new Vendor.</p>");
+
+			mailBody.append("<p><b>Vendor Name</b><br>" + vendor.getVendorName() + "</p>");
+			mailBody.append("<p><b>Vendor Number</b><br>" + vendor.getVendorNumber() + "</p>");
+
+			VendorContact primaryContact = vendor.getPrimaryContact();
+			String primaryContactName = primaryContact != null
+					? primaryContact.getFirstName() + " " + primaryContact.getLastName()
+					: "";
+			mailBody.append("<p><b>Vendor&apos;s Primary Contact</b><br>" + primaryContactName + "</p>");
+
+			mailBody.append("<p>Please update your reports accordingly.</p>");
+			mailBody.append("<p>Thank you,<br>Supplier Management Center</p>");
+			mailBody.append("</body></html>");
+			mailRequest.setMessageContent(mailBody.toString());
+
+			securityDao.addEmailSent(mailRequest);// Email Content to SMC_EMAIL - uses EBS
+		} catch (Exception e) {
+			logger.error("E-mail sending failed for user [" + user.getUserName() + "]", e);
 		}
 	}
 

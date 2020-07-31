@@ -60,7 +60,8 @@
 	<select id="getAllPlanningAnalysts" resultType="com.penske.apps.adminconsole.model.User">
 		SELECT	u.USER_ID AS userId,
 				u.FIRST_NAME AS firstName,
-				u.LAST_NAME AS lastName
+				u.LAST_NAME AS lastName,
+				u.EMAIL as email
 		
 		FROM	SMC.SMC_USER_MASTER u,
 						SMC.SMC_USER_DEPT d
