@@ -48,6 +48,7 @@ $buildHistoryDataTable = $buildHistoryTable.DataTable({ //All of the below are o
 		}
 		else {
 			$('.rework-delete-build').hide();
+			$('.action-cell').removeClass('editable');
 		}
 	}
 });

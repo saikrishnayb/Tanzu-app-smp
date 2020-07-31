@@ -40,7 +40,7 @@
 						<tbody>
 							<c:forEach items="${buildHistoryList}" var="buildHistory">
 								<tr>
-									<td class="editable centerAlign">
+									<td class="<c:if test="${buildHistory.showReworkBtn()}">editable</c:if>  centerAlign action-cell">
 										<c:choose>
 											<c:when test="${buildHistory.showReworkBtn()}">
 												<div class="dropdown rework-delete-build">
