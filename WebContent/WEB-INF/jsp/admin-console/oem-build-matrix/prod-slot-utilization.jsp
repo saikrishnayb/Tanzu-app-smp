@@ -135,10 +135,10 @@
 														<c:when test="${cell.regionAvailability.slotReserved gt 0}">
 															<td class="reserved-units" headers="r-${cell.bodyPlant.plantId}"
 																data-plant-id="${cell.bodyPlant.plantId}"
-																data-region="${cell.regionAvailability.region}" 
+																data-region="${regionInfo.region}" 
 																data-slot-id="${cell.slot.slotId}" 
 																data-slot-region-id="${cell.regionAvailability.slotRegionId}" 
-																data-region-desc="${cell.regionPlantAssociation.regionDesc}" >
+																data-region-desc="${regionInfo.regionDesc}" >
 																	<a class="secondaryLink release-units-link">${cell.regionAvailability.slotReserved}</a>
 															</td>
 														</c:when>
