@@ -1501,7 +1501,7 @@
 	
 	<select statementType="CALLABLE" id="updateSlotReservations">
 		{CALL SMC.SMC_SAVE_SLOT_RESERVATION(#{slotReservationId, mode=IN, jdbcType=INTEGER},#{unitNumber, mode=IN, jdbcType=VARCHAR},
-											#{plantId, mode=IN, jdbcType=INTEGER},#{slotId, mode=IN, jdbcType=INTEGER})}
+											#{plantId, mode=IN, jdbcType=INTEGER},#{slotId, mode=IN, jdbcType=INTEGER}, #{sso, mode=IN, jdbcType=VARCHAR})}
 	</select>
 	
 </mapper>

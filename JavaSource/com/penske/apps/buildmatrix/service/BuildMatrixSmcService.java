@@ -175,8 +175,6 @@ public interface BuildMatrixSmcService {
 
 	public void deleteReservationData(List<Integer> slotReservationIdList);
 	
-	public void updateReservationData(int slotReservationId, int slotId, int plantId, String unitNumber);
-
 	public void saveSlots(SaveSlotsForm form);
 
 	public void saveRegionSlots(SaveRegionSlotsForm form);
@@ -187,5 +185,7 @@ public interface BuildMatrixSmcService {
 
 	public ImportRegionSlotsResults importRegionSlotMaintenace(MultipartFile file, String fileName, int slotTypeId,
 			int year, String region) throws IOException;
+
+	void updateReservationData(int slotReservationId, int slotId, int plantId, String unitNumber, UserContext user);
 
 }

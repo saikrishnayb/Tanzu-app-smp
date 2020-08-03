@@ -1484,9 +1484,9 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	}
 	
 	@Override
-	public void updateReservationData(int slotReservationId, int slotId, int plantId, String unitNumber)
+	public void updateReservationData(int slotReservationId, int slotId, int plantId, String unitNumber, UserContext user)
 	{
-			buildMatrixSmcDAO.updateSlotReservations(slotReservationId, slotId, plantId, unitNumber);
+			buildMatrixSmcDAO.updateSlotReservations(slotReservationId, slotId, plantId, unitNumber, user.getSso());
 	}
 	
 	@Override

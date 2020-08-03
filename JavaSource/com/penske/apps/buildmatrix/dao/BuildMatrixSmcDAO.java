@@ -193,7 +193,7 @@ public interface BuildMatrixSmcDAO {
 	
 	public void removeSlotResult(@Param("slotReservationId") int slotReservationId);
 	
-	public void updateSlotReservations(@Param("slotReservationId") int slotReservationId, @Param("slotId") int slotId, @Param("plantId") int plantId, @Param("unitNumber") String unitNumber);
+	public void updateSlotReservations(@Param("slotReservationId") int slotReservationId, @Param("slotId") int slotId, @Param("plantId") int plantId, @Param("unitNumber") String unitNumber, @Param("sso") String sso);
 
 	public List<Integer> getSlotIdForPlantId(@Param("plantId")int plantId);
 	
