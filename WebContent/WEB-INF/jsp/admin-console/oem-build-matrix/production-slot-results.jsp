@@ -91,7 +91,12 @@
 											order-id="${unit.orderId}" unit-number="${unit.unitNumber}" plant-id="${unit.plantId}" vehicle-type="${unit.vehicleType}"/>
 										<a class="secondaryLink">${unit.orderId}</a>
 									</td>
-									<td class="leftAlign">${unit.unitNumber}</td>
+									<td class="leftAlign">
+										${unit.unitNumber}
+										<c:if test="${unit.changeRequired}">
+											<i class="fa fa-exclamation-triangle change-required" title="Change Required"></i>
+										</c:if>
+									</td>
 									<td class="leftAlign">${unit.programName}</td>
 									<td class="leftAlign">${unit.region}</td>
 									<td class="leftAlign">${unit.area}</td>

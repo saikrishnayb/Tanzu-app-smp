@@ -21,6 +21,8 @@
 
 .change-required {
 	margin-left: 5px;
+	color: #C8050A;
+	font-size: medium;
 }
 
 .production-slot-actions {
