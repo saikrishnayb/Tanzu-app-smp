@@ -74,6 +74,7 @@ import com.penske.apps.buildmatrix.domain.ProductionSlotResult;
 import com.penske.apps.buildmatrix.domain.RegionPlantAssociation;
 import com.penske.apps.buildmatrix.domain.ReportResultOptionModel;
 import com.penske.apps.buildmatrix.domain.enums.BuildStatus;
+import com.penske.apps.buildmatrix.model.AvailableChassisSummaryModel;
 import com.penske.apps.buildmatrix.model.BuildMatrixSlotKey;
 import com.penske.apps.buildmatrix.model.BuildMixForm;
 import com.penske.apps.buildmatrix.model.BuildMixForm.AttributeRow;
@@ -1486,7 +1487,20 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	@Override
 	public void updateReservationData(int slotReservationId, int slotId, int plantId, String unitNumber, UserContext user)
 	{
-			buildMatrixSmcDAO.updateSlotReservations(slotReservationId, slotId, plantId, unitNumber, user.getSso());
+		buildMatrixSmcDAO.updateSlotReservations(slotReservationId, slotId, plantId, unitNumber, user.getSso());
+	}
+	
+	@Override
+	public boolean checkUpdateResUnitNumber(String unitNumber, AvailableChassisSummaryModel summaryModel) {
+		List<String> availableUnitNumbers = summaryModel.getGroupedAvailableUnits().stream()
+		        .flatMap(li -> li.stream()
+		        		.map(ac -> ac.getUnitNumber().trim()))
+		        .collect(Collectors.toList());
+		
+		if(availableUnitNumbers.contains(unitNumber))
+			return true;
+		else
+			return false;
 	}
 	
 	@Override

@@ -22,6 +22,7 @@ import com.penske.apps.buildmatrix.domain.FreightMileage;
 import com.penske.apps.buildmatrix.domain.PlantProximity;
 import com.penske.apps.buildmatrix.domain.ProductionSlotResult;
 import com.penske.apps.buildmatrix.domain.RegionPlantAssociation;
+import com.penske.apps.buildmatrix.model.AvailableChassisSummaryModel;
 import com.penske.apps.buildmatrix.model.BuildMixForm;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm;
 import com.penske.apps.buildmatrix.model.ImportRegionSlotsResults;
@@ -187,5 +188,7 @@ public interface BuildMatrixSmcService {
 			int year, String region) throws IOException;
 
 	void updateReservationData(int slotReservationId, int slotId, int plantId, String unitNumber, UserContext user);
+
+	public boolean checkUpdateResUnitNumber(String unitNumber, AvailableChassisSummaryModel summaryModel);
 
 }

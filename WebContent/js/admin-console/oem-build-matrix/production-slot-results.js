@@ -264,6 +264,8 @@ $confirmReservationModal.on("click", '#confirm-btn', function() {
 		});
 
 	} else if (confirmAction == 'update') {
+		$updateReservationModal.find('#errorMessage').hide();
+		
 		if (orderSelectionList.length == 1) {
 			updateReservationObj = orderSelectionList[0];
 			var slotReservationId = updateReservationObj["slotReservationId"];
@@ -273,22 +275,41 @@ $confirmReservationModal.on("click", '#confirm-btn', function() {
 			if (updateReservationObj["reservationStatus"] == 'P')
 				var unitNumber = $updateReservationModal.find('#unit-number').val();
 			else if (updateReservationObj["reservationStatus"] == 'E')
-				var unitNumber = updateReservationObj['unitNumber'];
+				var unitNumber = updateReservationObj['unitNumber']
+			
 			$.ajax({
-				type : "POST",
-				url : "./update-reservation-data.htm",
-				data : {
-					slotReservationId : slotReservationId,
-					plantId : plantId,
-					slotId : slotId,
-					unitNumber : unitNumber
-				},
-				success : function(data) {
-					ModalUtil.closeModal($confirmReservationModal);
-					ModalUtil.closeModal($updateReservationModal);
-					location.assign('view-slot-results-filter.htm?buildId=' + $('#buildId').val() + '&selectedFiltersList=A,E,P&checkedFilter=0');
-				},
-			});
+					type : "POST",
+					url : "./check-update-res-unit-number.htm",
+					data : {
+						unitNumber : unitNumber
+					},
+					success : function(unitNumberAvailable) {
+						if (unitNumberAvailable) {
+							$.ajax({
+								type : "POST",
+								url : "./update-reservation-data.htm",
+								data : {
+									slotReservationId : slotReservationId,
+									plantId : plantId,
+									slotId : slotId,
+									unitNumber : unitNumber
+								},
+								success : function(data) {
+									ModalUtil.closeModal($confirmReservationModal);
+									ModalUtil.closeModal($updateReservationModal);
+									location.assign('view-slot-results-filter.htm?buildId=' + $('#buildId').val() + '&selectedFiltersList=A,E,P&checkedFilter=0');
+								},
+							});
+							
+						}
+						else {
+							$updateReservationModal.find('.errorMsg').text("The entered unit is not availble or is excluded. Enter another unit number and try again");
+							$updateReservationModal.find('#errorMessage').addClass("buttonDisabled");
+							$updateReservationModal.find('#errorMessage').show();
+						}
+						
+					}
+				});
 		}
 	}
 	ModalUtil.closeModal($confirmReservationModal);

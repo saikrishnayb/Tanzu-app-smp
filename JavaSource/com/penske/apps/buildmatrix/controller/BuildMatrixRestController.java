@@ -38,6 +38,7 @@ import com.penske.apps.buildmatrix.domain.BuildMatrixSlotDate;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlotType;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.ProductionSlotResult;
+import com.penske.apps.buildmatrix.model.AvailableChassisSummaryModel;
 import com.penske.apps.buildmatrix.model.BuildMixForm;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm;
 import com.penske.apps.buildmatrix.model.DistrictProximityForm;
@@ -46,6 +47,7 @@ import com.penske.apps.buildmatrix.model.ImportSlotsResults;
 import com.penske.apps.buildmatrix.model.SavePlantRegionForm;
 import com.penske.apps.buildmatrix.model.SaveRegionSlotsForm;
 import com.penske.apps.buildmatrix.model.SaveSlotsForm;
+import com.penske.apps.buildmatrix.service.BuildMatrixCorpService;
 import com.penske.apps.buildmatrix.service.BuildMatrixSmcService;
 import com.penske.apps.suppliermgmt.annotation.SmcSecurity;
 import com.penske.apps.suppliermgmt.annotation.SmcSecurity.SecurityFunction;
@@ -61,6 +63,9 @@ public class BuildMatrixRestController {
 	
 	@Autowired
 	private BuildMatrixSmcService buildMatrixSmcService;
+	
+	@Autowired
+	private BuildMatrixCorpService buildMatrixCorpService;
 	
 	@Autowired
 	private SuppliermgmtSessionBean sessionBean;
@@ -679,6 +684,14 @@ public class BuildMatrixRestController {
 									  @RequestParam("plantId") int plantId, @RequestParam("unitNumber") String unitNumber) {
 		UserContext user = sessionBean.getUserContext();
 		buildMatrixSmcService.updateReservationData(slotReservationId, slotId, plantId, unitNumber, user);
+	}
+	
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping("/check-update-res-unit-number")
+	public boolean checkUpdateResUnitNumber(@RequestParam("unitNumber") String unitNumber) {
+		List<String> excludedUnits = buildMatrixSmcService.getExcludedUnits();
+		AvailableChassisSummaryModel summaryModel = buildMatrixCorpService.getAvailableChassis(excludedUnits);
+		return buildMatrixSmcService.checkUpdateResUnitNumber(unitNumber, summaryModel);
 	}
 	
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
