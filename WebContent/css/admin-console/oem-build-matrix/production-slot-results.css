@@ -52,6 +52,11 @@ color: #FFFFFF !important;
 .formLbl {
 	font-weight: bold;
 }
+
+#errorMessage {
+	margin-bottom: 10px;
+}
+
 #update-reservation-table{
 	width: 100%;
 }

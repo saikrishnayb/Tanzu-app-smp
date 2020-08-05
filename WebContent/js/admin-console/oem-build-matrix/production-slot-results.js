@@ -304,7 +304,7 @@ $confirmReservationModal.on("click", '#confirm-btn', function() {
 						}
 						else {
 							$updateReservationModal.find('.errorMsg').text("The entered unit is not availble or is excluded. Enter another unit number and try again");
-							$updateReservationModal.find('#errorMessage').addClass("buttonDisabled");
+							$updateReservationModal.find('#save-reservation').addClass("buttonDisabled");
 							$updateReservationModal.find('#errorMessage').show();
 						}
 						
