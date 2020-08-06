@@ -1531,4 +1531,12 @@
 											#{plantId, mode=IN, jdbcType=INTEGER},#{slotId, mode=IN, jdbcType=INTEGER}, #{sso, mode=IN, jdbcType=VARCHAR})}
 	</select>
 	
+	<select id="getDebugInformation" resultType="String">
+	 	SELECT   TRIM(RUN_TRACE)
+		FROM     SMC.OBM_RUN_DEBUG
+		WHERE    SLOT_RESERVATION_ID = #{slotReservationId}
+		AND		 RUN_ID =  #{buildId}
+		ORDER BY DEBUG_SEQ ASC
+	</select>
+	
 </mapper>

@@ -8,8 +8,10 @@ var slotDataAvailable = [];
 var $confirmReservationModal = $('#confirm-delete-reservation-modal');
 var $updateReservation = $('#update-reservation');
 var $updateReservationModal = $('#update-reservation-popup-modal');
+var $viewDiagnosticInfoModal = $('#view-diagnostic-info-popup-modal');
 ModalUtil.initializeModal($confirmReservationModal);
 ModalUtil.initializeModal($updateReservationModal);
+ModalUtil.initializeModal($viewDiagnosticInfoModal);
 
 $slotResultsDataTable = $slotResultsTable.DataTable({
 	"bPaginate" : true, //enable pagination
@@ -418,4 +420,22 @@ $('#accept-slot-results').on("click", function() {
 
 $updateReservationModal.on("click", '#save-reservation', function() {
 	openConfirmModal('update');
+});
+
+$("#view-diagnostic-info").on("click", function() {
+	if (orderSelectionList.length == 1) {
+		var selectedReservation= orderSelectionList[0];
+		var buildId=$('#buildId').val();
+		var reservationId = selectedReservation["slotReservationId"];
+		var $updateReservationPromise = $.ajax({
+			type : "POST",
+			url : './load-diagnostic-info-popup-modal.htm',
+			data : {buildId:buildId, reservationId:reservationId}
+		});
+		$updateReservationPromise.done(function(data) {
+			$viewDiagnosticInfoModal.html(data);
+			ModalUtil.openModal($viewDiagnosticInfoModal);
+		});
+	}
+	
 });

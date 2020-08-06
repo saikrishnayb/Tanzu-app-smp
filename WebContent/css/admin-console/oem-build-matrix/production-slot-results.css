@@ -67,3 +67,15 @@ color: #FFFFFF !important;
 .update-res-input{
 	width: 170px;
 }
+
+.modal-body {
+	margin-left: 1px;
+    max-height: 300px;
+    overflow-y: auto;
+    width: 370px;
+}
+
+#view-diagnostic-info-popup-modal {
+    max-height: 300px !important;
+    overflow-y: hidden !important;
+}

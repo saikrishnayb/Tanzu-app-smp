@@ -188,7 +188,9 @@ public interface BuildMatrixSmcService {
 			int year, String region) throws IOException;
 
 	void updateReservationData(int slotReservationId, int slotId, int plantId, String unitNumber, UserContext user);
-
+	
+	public List<String> getDebugInformation(int slotReservationId, int buildId);
+	
 	public boolean checkUpdateResUnitNumber(String unitNumber, AvailableChassisSummaryModel summaryModel);
 
 }

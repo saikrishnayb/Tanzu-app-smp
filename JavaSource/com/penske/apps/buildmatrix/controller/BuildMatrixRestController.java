@@ -735,4 +735,13 @@ public class BuildMatrixRestController {
 		
 	}
 	
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping(value = "/load-diagnostic-info-popup-modal")
+	public ModelAndView loadDiagonasticInfoPopup(@RequestParam("buildId") int buildId, @RequestParam("reservationId") int reservationId) {
+		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/modal/diagnostic-info-modal");
+		List<String> debugInformation = buildMatrixSmcService.getDebugInformation(reservationId, buildId);
+		model.addObject("debugInformation", debugInformation);
+		return model;
+	}
+	
 }

@@ -81,6 +81,8 @@ public interface BuildMatrixSmcDAO {
     public void updateRunSummary(@Param("buildId") int buildId);
     
     public List<BuildMatrixSlotDate> getSlotDatesForPlant(@Param("plantId")int plantId, @Param("vehicleType") String vehicleType, @Param("region") String region);
+    
+    public List<String> getDebugInformation(@Param("slotReservationId") int slotReservationId, @Param("buildId") int buildId);
 	
 	//***** BUILD MATRIX WORKFLOW *****//
 	

@@ -282,6 +282,11 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		return slotDatesList;
 	}
 	
+	public List<String> getDebugInformation(int slotReservationId, int buildId) {
+		List<String> debugInfoList = buildMatrixSmcDAO.getDebugInformation(slotReservationId, buildId);
+		return debugInfoList;
+	}
+	
 	@Override
 	public BuildAttributeValue addOrUpdateAttribute(int attributeId, String attributeValue) {
 		BuildAttributeValue attrValue = new BuildAttributeValue(attributeValue);
