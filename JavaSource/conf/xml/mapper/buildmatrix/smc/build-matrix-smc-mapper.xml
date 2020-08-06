@@ -546,7 +546,15 @@
 	        RUN_START_DATE as runStartDate,
 	        RUN_END_DATE as runEndDate,
 	        MAXIMUM_WEEKS_BEFORE_ALLOWED as maxWeeksBefore,
-			MAXIMUM_WEEKS_AFTER_ALLOWED as maxWeeksAfter
+			MAXIMUM_WEEKS_AFTER_ALLOWED as maxWeeksAfter,
+		    CASE runSummary.DEBUG_MODE
+			   	WHEN 1 THEN 'TRUE'
+			   	WHEN 0 THEN 'FALSE'
+		    END as debugMode,
+		    CASE runSummary.ENHANCED_DEBUG_MODE
+			   	WHEN 1 THEN 'TRUE'
+			   	WHEN 0 THEN 'FALSE'
+		    END as enhancedDebugMode 
 		FROM SMC.OBM_RUN_SUMMARY runSummary
 		LEFT JOIN SMC.SMC_USER_MASTER starter ON starter.SSO = runSummary.STARTED_BY
 		LEFT JOIN SMC.SMC_USER_MASTER submitter ON submitter.SSO = runSummary.SUBMITTED_BY
@@ -568,6 +576,25 @@
 		SET
 			MAXIMUM_WEEKS_BEFORE_ALLOWED = #{summary.maxWeeksBefore},
 			MAXIMUM_WEEKS_AFTER_ALLOWED = #{summary.maxWeeksAfter}
+			<if test="summary.debugUpdateFlg">
+				,
+			<choose>
+				<when test="summary.debugMode">
+				DEBUG_MODE=1,
+				</when>
+				<otherwise>
+				DEBUG_MODE=0,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="summary.enhancedDebugMode">
+				ENHANCED_DEBUG_MODE=1
+				</when>
+				<otherwise>
+				ENHANCED_DEBUG_MODE=0
+				</otherwise>
+			</choose>
+			</if>
 		WHERE
 			RUN_ID = #{summary.buildId}
 	</update>

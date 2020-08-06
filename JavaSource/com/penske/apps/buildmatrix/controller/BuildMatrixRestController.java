@@ -335,7 +335,8 @@ public class BuildMatrixRestController {
 	
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping("/update-build-params")
-	public void updateBuildParams(@RequestParam("buildId") int buildId, @RequestParam("maxWeeksBefore") int maxWeeksBefore, @RequestParam("maxWeeksAfter") int maxWeeksAfter) {
+	public void updateBuildParams(@RequestParam("buildId") int buildId, @RequestParam("maxWeeksBefore") int maxWeeksBefore, @RequestParam("maxWeeksAfter") int maxWeeksAfter,@RequestParam("debugMode") boolean debugMode,
+			@RequestParam("enhancedDebugMode")boolean enhancedDebugMode,@RequestParam("debugUpdateFlg")boolean debugUpdateFlg) {
 		BuildSummary summary = buildMatrixSmcService.getBuildSummary(buildId);
 		
 		if(summary == null)
@@ -343,7 +344,12 @@ public class BuildMatrixRestController {
 		
 		summary.setMaxWeeksBefore(maxWeeksBefore);
 		summary.setMaxWeeksAfter(maxWeeksAfter);
-		
+		if(debugUpdateFlg)
+		{
+			summary.setDebugMode(debugMode);
+			summary.setEnhancedDebugMode(enhancedDebugMode);
+		}
+		summary.setDebugUpdateFlg(debugUpdateFlg);
 		buildMatrixSmcService.updateBuildParams(summary);
 	}
 	

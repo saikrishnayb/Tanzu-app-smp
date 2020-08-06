@@ -23,6 +23,9 @@ public class BuildSummary {
 	private Date runEndDate;
 	private int maxWeeksBefore;
 	private int maxWeeksAfter;
+	private boolean debugMode;
+	private boolean enhancedDebugMode;
+	private boolean debugUpdateFlg;
 	
 	protected BuildSummary() {}
 	
@@ -145,6 +148,30 @@ public class BuildSummary {
 	
 	public String getFormattedRunEndDate() {
 		return StringUtils.defaultString(DateUtil.formatDateUS(runEndDate));
+	}
+
+	public boolean isDebugMode() {
+		return debugMode;
+	}
+
+	public boolean isEnhancedDebugMode() {
+		return enhancedDebugMode;
+	}
+
+	public void setDebugMode(boolean debugMode) {
+		this.debugMode = debugMode;
+	}
+
+	public void setEnhancedDebugMode(boolean enhancedDebugMode) {
+		this.enhancedDebugMode = enhancedDebugMode;
+	}
+
+	public boolean isDebugUpdateFlg() {
+		return debugUpdateFlg;
+	}
+
+	public void setDebugUpdateFlg(boolean debugUpdateFlg) {
+		this.debugUpdateFlg = debugUpdateFlg;
 	}
 	
 }

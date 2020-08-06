@@ -46,7 +46,8 @@ public @interface SmcSecurity {
         LOADSHEET_RULES, 
         LOADSHEET_SEQUENCES,
         
-        OEM_BUILD_MATRIX;
+        OEM_BUILD_MATRIX,
+    	OEM_BUILD_MATRIX_DEBUG;
     	
         public static SecurityFunction findByName(String name) {
             for (SecurityFunction securityFunction : values())

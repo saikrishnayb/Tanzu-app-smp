@@ -90,8 +90,14 @@
 	width: 16%;
 } 
 
+.debug-option-label{
+	text-align: left;
+}
 
-
+.debug-option{
+    display: inline-block;
+    width: 15px;
+}
 /* .attribute-table .attribute-percentage-td,
 .attribute-table .attribute-units-td {
 	width: 80px;
