@@ -57,9 +57,9 @@
 								<ul class="dropdown-menu">
 									<li><a id="delete-reservation">Delete Selected Reservations</a></li>
 									<li><a id="update-reservation">Update Selected Slot Reservations</a></li>
-									<%-- <tl:isAuthorized tabName="Admin Console" secFunction="OEM_BUILD_MATRIX_DEBUG"> --%>
+									<tl:isAuthorized tabName="Admin Console" secFunction="OEM_BUILD_MATRIX_DEBUG">
 									<li><a id="view-diagnostic-info">View Diagnostic Info</a></li>
-									<%-- </tl:isAuthorized> --%>
+									</tl:isAuthorized>
 									
 								</ul>
 							</div>
