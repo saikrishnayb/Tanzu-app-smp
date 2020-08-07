@@ -68,13 +68,6 @@ color: #FFFFFF !important;
 	width: 170px;
 }
 
-.modal-content-body {
-	margin-left: 1px;
-    max-height: 300px;
-    overflow-y: auto;
-    width: 550px;
-}
-
 #view-diagnostic-info-popup-modal {
     max-height: 300px !important;
     overflow-y: hidden !important;
@@ -84,4 +77,11 @@ color: #FFFFFF !important;
 	white-space: pre-wrap;
     margin-bottom: 50px;
     margin-top: 15px;
+}
+
+.debug-info-modal-body{
+	margin-left: 1px;
+    max-height: 300px;
+    overflow-y: auto;
+	width: 550px !important;
 }

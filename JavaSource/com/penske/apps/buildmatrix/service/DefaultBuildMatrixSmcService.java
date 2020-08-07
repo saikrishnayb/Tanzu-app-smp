@@ -284,6 +284,11 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	
 	public List<String> getDebugInformation(int slotReservationId, int buildId) {
 		List<String> debugInfoList = buildMatrixSmcDAO.getDebugInformation(slotReservationId, buildId);
+		for(int i=0;i<debugInfoList.size();i++)
+		{
+			String str= debugInfoList.get(i);
+			debugInfoList.set(i, str.replaceAll("/n", "<br/>"));
+		}
 		return debugInfoList;
 	}
 	
