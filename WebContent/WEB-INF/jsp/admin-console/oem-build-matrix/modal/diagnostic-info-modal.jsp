@@ -3,10 +3,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <c:set var="modalName" value="Debug Information" />
 <div class="modal-content" data-modal-title="${modalName}" data-modal-width="550" data-modal-max-height="400">
-	<div class="modal-body">
+	<div class="modal-content-body">
 		<c:choose>
 			<c:when test="${fn:length(debugInformation) eq 0}">
-
 				<div class="centerAlign">No debug data found</div>
 			</c:when>
 			<c:otherwise>

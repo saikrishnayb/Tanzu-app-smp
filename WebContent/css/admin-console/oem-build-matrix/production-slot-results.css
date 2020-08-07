@@ -68,7 +68,7 @@ color: #FFFFFF !important;
 	width: 170px;
 }
 
-.modal-body {
+.modal-content-body {
 	margin-left: 1px;
     max-height: 300px;
     overflow-y: auto;
