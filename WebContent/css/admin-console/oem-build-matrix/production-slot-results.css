@@ -81,7 +81,7 @@ color: #FFFFFF !important;
 
 .debug-info-modal-body{
 	margin-left: 1px;
-    max-height: 300px;
+    max-height: 500px;
     overflow-y: auto;
-	width: 550px !important;
+	width: 800px !important;
 }
