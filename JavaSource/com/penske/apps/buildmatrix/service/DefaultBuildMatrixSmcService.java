@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -1112,7 +1113,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	@Override
 	public Map<String, String> getMfrListForExport() {
 		List<BuildMatrixBodyPlant> bodyPlantList  = buildMatrixSmcDAO.getAllBodyPlantsforSlotMaintenance();
-		Map<String, String> mfrMap = new HashMap<>();
+		Map<String, String> mfrMap = new TreeMap<>();
 		
 		for(BuildMatrixBodyPlant plant: bodyPlantList) {
 			if(!mfrMap.containsKey(plant.getPlantMfrCode()))
