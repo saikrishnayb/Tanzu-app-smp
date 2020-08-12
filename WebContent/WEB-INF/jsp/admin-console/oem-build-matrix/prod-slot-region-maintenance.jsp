@@ -151,7 +151,7 @@
 															<div class="unallocated-region-slots-div">
 																<span class="unallocated-region-slots hidden">
 																	Available: <span class="unallocated-slots">${slot.unallocatedSlots}</span>
-																	&emsp;Used: ${cell.regionAvailability.allocatedSlots}</span>
+																	&emsp;Reserved: ${cell.regionAvailability.allocatedSlots}</span>
 															</div>
 														</td>
 														<c:set var="slotIndex" value="${slotIndex+1}" />
