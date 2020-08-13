@@ -69,7 +69,6 @@ color: #FFFFFF !important;
 }
 
 #view-diagnostic-info-popup-modal {
-    max-height: 300px !important;
     overflow-y: hidden !important;
 }
 

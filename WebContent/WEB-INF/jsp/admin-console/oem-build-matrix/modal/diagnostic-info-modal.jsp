@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <c:set var="modalName" value="Debug Information" />
-<div class="modal-content" data-modal-title="${modalName}" data-modal-width="800" data-modal-max-height="500">
+<div class="modal-content" data-modal-title="${modalName}" data-modal-width="800" data-modal-height="500">
 	<div class="modal-body debug-info-modal-body">
 		<c:choose>
 			<c:when test="${fn:length(debugInformation) eq 0}">
