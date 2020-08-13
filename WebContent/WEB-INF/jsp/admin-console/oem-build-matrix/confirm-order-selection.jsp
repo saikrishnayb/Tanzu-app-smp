@@ -55,7 +55,11 @@
 								</tr>
 							</thead>
 							<tbody>
-								<c:forEach items="${selectedOrders}" var="order">
+								<c:forEach items="${orderMap}" var="entry">
+									<c:set var="orderKey" value="${entry.key}" />
+									<c:set var="pair" value="${entry.value}" />
+									<c:set var="order" value="${pair.left}" />
+									<c:set var="croBuildRequest" value="${pair.right}" />
 									<tr class="user-row approved-order-row" data-order-id="${order.orderId}">
 										<td>${order.orderId}</td>
 										<td>${order.approvalStatus.label}</td>
@@ -64,7 +68,7 @@
 										<td>${order.district}</td>
 										<td>${order.districtDesc}</td>
 										<td>${order.packageName}</td>
-										<td>${order.unfulfilledQty}</td>
+										<td>${croBuildRequest.requestedQty}</td>
 										<td>${order.formattedDeliveryDate}</td>
 									</tr>
 								</c:forEach>

@@ -20,7 +20,6 @@ import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.BusinessAward;
 import com.penske.apps.buildmatrix.domain.BusinessAwardDefault;
 import com.penske.apps.buildmatrix.domain.CROBuildRequest;
-import com.penske.apps.buildmatrix.domain.CroOrderKey;
 import com.penske.apps.buildmatrix.domain.FreightMileage;
 import com.penske.apps.buildmatrix.domain.PlantProximity;
 import com.penske.apps.buildmatrix.domain.ProductionSlotResult;
@@ -99,11 +98,11 @@ public interface BuildMatrixSmcDAO {
 	public void submitBuild(@Param("buildId") int buildId, @Param("status") BuildStatus submitted, @Param("sso") String userSSO);
 	
 	// CRO BUILD REQUESTS //
-	public void insertCroBuildRequest(@Param("buildId") int buildId, @Param("order") ApprovedOrder order);
+	public void insertCroBuildRequest(@Param("buildId") int buildId, @Param("order") ApprovedOrder order, @Param("unitsToConsider") int unitsToConsider);
 
 	public void deleteCroBuildRequestsFromBuild(@Param("existingBuildId") Integer existingBuildId);
 
-	public List<CroOrderKey> getCroOrderKeysForBuild(@Param("buildId") Integer buildId);
+	public List<CROBuildRequest> getCroOrdersForBuild(@Param("buildId") Integer buildId);
 	
 	public List<CROBuildRequest> getCroOrdersForAllRuns(@Param("approvedOrders")List<ApprovedOrder> approvedOrders);
 	

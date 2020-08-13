@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,6 +18,7 @@ import com.penske.apps.buildmatrix.domain.BuildMatrixSlotDate;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlotType;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.BusinessAward;
+import com.penske.apps.buildmatrix.domain.CROBuildRequest;
 import com.penske.apps.buildmatrix.domain.CroOrderKey;
 import com.penske.apps.buildmatrix.domain.FreightMileage;
 import com.penske.apps.buildmatrix.domain.PlantProximity;
@@ -80,18 +82,21 @@ public interface BuildMatrixSmcService {
 	public List<BuildSummary> getAllBuildHistory();
 
 	// BUILD FUNCTIONS //
-	public BuildSummary startNewBuild(List<ApprovedOrder> selectedOrders, UserContext userContext);
+	public BuildSummary startNewBuild(List<ApprovedOrder> selectedOrders, Map<CroOrderKey, Integer> unitsToConsiderByCroOrderKey, UserContext userContext);
 
-	public BuildSummary updateExistingBuild(Integer buildId, List<ApprovedOrder> selectedOrders);
+	public BuildSummary updateExistingBuild(Integer buildId, Map<CroOrderKey, Integer> unitsToConsiderByCroOrderKey, List<ApprovedOrder> selectedOrders);
 
 	public BuildSummary getBuildSummary(Integer buildId);
 	
 	public void submitBuild(BuildMixForm buildMixForm, UserContext userContext);
 	
 	// CRO BUILD REQUESTS //
-	public List<CroOrderKey> getCroOrderKeysForBuild(Integer buildId);
+	List<CROBuildRequest> getCroOrdersForBuild(Integer buildId);
 	
 	public List<ApprovedOrder> getUnfulfilledOrders(List<ApprovedOrder> approvedOrders);
+	
+	public Map<CroOrderKey, Pair<ApprovedOrder, CROBuildRequest>> getCroOrderMap(Map<CroOrderKey, CROBuildRequest> croBuildRequestsByOrderKey,
+			List<ApprovedOrder> selectedOrders);
 	
 	// AVAILABLE CHASSIS //
 	public int getExcludedUnitCount();

@@ -51,6 +51,7 @@
 									<th class="">Program Name</th>
 									<th class="">Requested Qty</th>
 									<th class="">Fulfilled Qty</th>
+									<th class=""># of Units to Consider</th>
 									<th class="">Requested Delivery Date</th>
 								</tr>
 							</thead>
@@ -58,8 +59,21 @@
 								<c:forEach items="${approvedOrdersByKey}" var="orderEntry">
 									<c:set var="orderKey" value="${orderEntry.key}"/>
 									<c:set var="order" value="${orderEntry.value}"/>
-									<tr class="user-row approved-order-row <c:if test="${selectedOrderKeys.contains(orderKey)}">row-selected</c:if>" data-order-id="${order.orderId}" data-delivery-id="${order.deliveryId}">
-										<td><input class="select-order" onclick="saveCheckedBoxes(this.id)" type='checkbox' <c:if test="${selectedOrderKeys.contains(orderKey)}"> checked</c:if>></td>
+									<c:set var="unitsToConsider" value="${null}"/>
+									<c:if test="${!empty unitsToConsiderByOrderKey}">
+										<c:set var="unitsToConsider" value="${unitsToConsiderByOrderKey.get(orderKey)}"/>
+									</c:if>
+									<c:set var="orderSelected" value="${unitsToConsider ne null}"/>
+									<c:choose>
+										<c:when test="${orderSelected}">
+											<c:set var="rowClass" value="user-row approved-order-row row-selected"/>
+										</c:when>
+										<c:otherwise>
+											<c:set var="rowClass" value="user-row approved-order-row"/>
+										</c:otherwise>
+									</c:choose>
+									<tr class="${rowClass}" data-order-id="${order.orderId}" data-delivery-id="${order.deliveryId}" data-unfulfilled-qty="${order.unfulfilledQty}">
+										<td><input class="select-order" onclick="saveCheckedBoxes(this.id)" type='checkbox' <c:if test="${orderSelected}"> checked</c:if>></td>
 										<td><a>${order.orderId}</a></td>
 										<td>${order.approvalStatus.label}</td>
 										<td>${order.region}</td>
@@ -69,6 +83,16 @@
 										<td>${order.packageName}</td>
 										<td class="order-quantity">${order.orderTotalQuantity}</td>
 										<td class="order-fulfilled">${order.fulfilledQty}</td>
+										<td class="units-to-consider-td">
+											<c:choose>
+												<c:when test="${orderSelected}">
+													<input type="text" class="units-to-consider numbers-only" value="${unitsToConsider}">
+												</c:when>
+												<c:otherwise>
+													<input type="text" class="units-to-consider numbers-only" value="${order.unfulfilledQty}">
+												</c:otherwise>
+											</c:choose>
+										</td>
 										<td>${order.formattedDeliveryDate}</td>
 									</tr>
 								</c:forEach>

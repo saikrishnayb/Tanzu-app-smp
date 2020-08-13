@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,6 +28,7 @@ import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlotType;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.BusinessAward;
+import com.penske.apps.buildmatrix.domain.CROBuildRequest;
 import com.penske.apps.buildmatrix.domain.CroOrderKey;
 import com.penske.apps.buildmatrix.domain.FreightMileage;
 import com.penske.apps.buildmatrix.domain.PlantProximity;
@@ -214,16 +216,19 @@ public class BuildMatrixController {
 		int excludedChassis = buildMatrixSmcService.getExcludedUnitCount();
 		int chassisAvailable = totalChassis - excludedChassis;
 		
-		List<CroOrderKey> selectedOrderKeys = new ArrayList<>();
+		List<CROBuildRequest> buildRequests = new ArrayList<>();
 		if(buildId != null) {
 			BuildSummary existingBuild = buildMatrixSmcService.getBuildSummary(buildId);
 			if(existingBuild == null)
 				throw new IllegalArgumentException("Couldn't find existing build");
-			selectedOrderKeys = buildMatrixSmcService.getCroOrderKeysForBuild(existingBuild.getBuildId());
+			buildRequests = buildMatrixSmcService.getCroOrdersForBuild(buildId);
 		}
 		
+		Map<CroOrderKey, Integer> unitsToConsiderByOrderKey = buildRequests.stream()
+				.collect(toMap(br -> new CroOrderKey(br), br -> br.getRequestedQty()));
+		
 		model.addObject("approvedOrdersByKey", approvedOrdersByKey);
-		model.addObject("selectedOrderKeys", selectedOrderKeys);
+		model.addObject("unitsToConsiderByOrderKey", unitsToConsiderByOrderKey);
 		model.addObject("chassisAvailable", chassisAvailable);
 		model.addObject("buildId", buildId);
 		return model;
@@ -246,20 +251,26 @@ public class BuildMatrixController {
 		
 		int buildId = 0;
 		if(formBuildId == null) {
-			BuildSummary newBuild = buildMatrixSmcService.startNewBuild(ordersToAdd, userContext);
+			BuildSummary newBuild = buildMatrixSmcService.startNewBuild(ordersToAdd, orderSelectionForm.getUnitsToConsiderByCroOrderKey(), userContext);
 			buildId = newBuild.getBuildId();
 		}
 		else {
-			BuildSummary existingBuild = buildMatrixSmcService.updateExistingBuild(formBuildId, ordersToAdd);
+			BuildSummary existingBuild = buildMatrixSmcService.updateExistingBuild(formBuildId, orderSelectionForm.getUnitsToConsiderByCroOrderKey(), ordersToAdd);
 			buildId = existingBuild.getBuildId();
 		}
 		
-		int bodiesOnOrder = ordersToAdd.stream().collect(Collectors.summingInt(order->order.getOrderTotalQuantity()-order.getFulfilledQty()));
+		List<CROBuildRequest> croBuildRequests = buildMatrixSmcService.getCroOrdersForBuild(buildId);
+		Map<CroOrderKey, CROBuildRequest> croBuildRequestsByOrderKey = croBuildRequests.stream()
+				.collect(toMap(br -> new CroOrderKey(br), br -> br));
+		Map<CroOrderKey, Pair<ApprovedOrder, CROBuildRequest>> orderMap = buildMatrixSmcService.getCroOrderMap(croBuildRequestsByOrderKey, ordersToAdd);
+		int bodiesOnOrder = orderSelectionForm.getUnitsToConsiderByCroOrderKey().values().stream()
+				.collect(Collectors.summingInt(utc->utc));
+		
 		int totalChassis = buildMatrixCorpService.getAvailableChasisCount();
 		int excludedChassis = buildMatrixSmcService.getExcludedUnitCount();
 		int chassisAvailable = totalChassis - excludedChassis;
 		
-		model.addObject("selectedOrders", ordersToAdd);
+		model.addObject("orderMap", orderMap);
 		model.addObject("bodiesOnOrder", bodiesOnOrder);
 		model.addObject("chassisAvailable", chassisAvailable);
 		model.addObject("buildId", buildId);
@@ -279,15 +290,20 @@ public class BuildMatrixController {
 		if(existingBuild == null)
 			throw new IllegalArgumentException("Couldn't find existing build");
 		
-		List<CroOrderKey> selectedOrderKeys = buildMatrixSmcService.getCroOrderKeysForBuild(existingBuild.getBuildId());
-		List<ApprovedOrder> selectedOrders = buildMatrixCroService.getApprovedOrdersByIds(selectedOrderKeys);
-		int bodiesOnOrder = selectedOrders.stream().collect(Collectors.summingInt(order->order.getOrderTotalQuantity()));
+		List<CROBuildRequest> croBuildRequests = buildMatrixSmcService.getCroOrdersForBuild(buildId);
+		Map<CroOrderKey, CROBuildRequest> croBuildRequestsByOrderKey = croBuildRequests.stream()
+				.collect(toMap(br -> new CroOrderKey(br), br -> br));
+		List<ApprovedOrder> selectedOrders = buildMatrixCroService.getApprovedOrdersByIds(new ArrayList<>(croBuildRequestsByOrderKey.keySet()));
+		List<ApprovedOrder> ordersToAdd = buildMatrixSmcService.getUnfulfilledOrders(selectedOrders);
+		Map<CroOrderKey, Pair<ApprovedOrder, CROBuildRequest>> orderMap = buildMatrixSmcService.getCroOrderMap(croBuildRequestsByOrderKey, ordersToAdd);
+		int bodiesOnOrder = orderMap.values().stream()
+				.collect(Collectors.summingInt(pa->pa.getRight().getRequestedQty()));
 		
 		int totalChassis = buildMatrixCorpService.getAvailableChasisCount();
 		int excludedChassis = buildMatrixSmcService.getExcludedUnitCount();
 		int chassisAvailable = totalChassis - excludedChassis;
 		
-		model.addObject("selectedOrders", selectedOrders);
+		model.addObject("orderMap", orderMap);
 		model.addObject("bodiesOnOrder", bodiesOnOrder);
 		model.addObject("chassisAvailable", chassisAvailable);
 		model.addObject("buildId", buildId);
@@ -308,11 +324,8 @@ public class BuildMatrixController {
 		if(existingBuild == null)
 			throw new IllegalArgumentException("Couldn't find existing build");
 		
-		List<CroOrderKey> selectedOrderKeys = buildMatrixSmcService.getCroOrderKeysForBuild(existingBuild.getBuildId());
-		List<ApprovedOrder> selectedOrders = buildMatrixCroService.getApprovedOrdersByIds(selectedOrderKeys);
-		List<ApprovedOrder> ordersToAdd = buildMatrixSmcService.getUnfulfilledOrders(selectedOrders);
-		
-		int bodiesOnOrder = ordersToAdd.stream().collect(Collectors.summingInt(order->order.getUnfulfilledQty()));
+		List<CROBuildRequest> croBuildRequests = buildMatrixSmcService.getCroOrdersForBuild(buildId);
+		int bodiesOnOrder = croBuildRequests.stream().collect(Collectors.summingInt(br->br.getRequestedQty()));
 		
 		List<String> excludedUnits = buildMatrixSmcService.getExcludedUnits();
 		AvailableChassisSummaryModel summaryModel = buildMatrixCorpService.getAvailableChassis(excludedUnits);
@@ -339,12 +352,14 @@ public class BuildMatrixController {
 		if(existingBuild == null)
 			throw new IllegalArgumentException("Couldn't find existing build");
 		
-		List<CroOrderKey> selectedOrderKeys = buildMatrixSmcService.getCroOrderKeysForBuild(existingBuild.getBuildId());
-		List<ApprovedOrder> selectedOrders = buildMatrixCroService.getApprovedOrdersByIds(selectedOrderKeys);
+		List<CROBuildRequest> croBuildRequests = buildMatrixSmcService.getCroOrdersForBuild(buildId);
+		Map<CroOrderKey, CROBuildRequest> croBuildRequestsByOrderKey = croBuildRequests.stream()
+				.collect(toMap(br -> new CroOrderKey(br), br -> br));
+		List<ApprovedOrder> selectedOrders = buildMatrixCroService.getApprovedOrdersByIds(new ArrayList<>(croBuildRequestsByOrderKey.keySet()));
 		List<ApprovedOrder> ordersToAdd = buildMatrixSmcService.getUnfulfilledOrders(selectedOrders);
 		
-		int bodiesOnOrder = ordersToAdd.stream().collect(Collectors.summingInt(order->order.getUnfulfilledQty()));
-		
+		int bodiesOnOrder = croBuildRequests.stream().collect(Collectors.summingInt(br->br.getRequestedQty()));
+				
 		int totalChassis = buildMatrixCorpService.getAvailableChasisCount();
 		int excludedChassis = buildMatrixSmcService.getExcludedUnitCount();
 		int chassisAvailable = totalChassis - excludedChassis;
@@ -352,9 +367,15 @@ public class BuildMatrixController {
 		
 		Map<String,Map<String,BusinessAward>> buildMixMap = buildMatrixSmcService.getExistingBuildMixData(existingBuild.getBuildId());
 		
-		int reeferUnits = ordersToAdd.stream().filter(order->order.isHasReeferUnits()).collect(Collectors.summingInt(order->order.getUnfulfilledQty()));
-		int reardoorUnits = ordersToAdd.stream().filter(order->order.isHasReardoorUnits()).collect(Collectors.summingInt(order->order.getUnfulfilledQty()));
-		int liftgateUnits = ordersToAdd.stream().filter(order->order.isHasLiftgateUnits()).collect(Collectors.summingInt(order->order.getUnfulfilledQty()));
+		int reeferUnits = ordersToAdd.stream()
+				.filter(order->order.isHasReeferUnits())
+				.collect(Collectors.summingInt(order -> croBuildRequestsByOrderKey.get(new CroOrderKey(order)).getRequestedQty()));
+		int reardoorUnits = ordersToAdd.stream()
+				.filter(order->order.isHasReardoorUnits())
+				.collect(Collectors.summingInt(order -> croBuildRequestsByOrderKey.get(new CroOrderKey(order)).getRequestedQty()));
+		int liftgateUnits = ordersToAdd.stream()
+				.filter(order->order.isHasLiftgateUnits())
+				.collect(Collectors.summingInt(order -> croBuildRequestsByOrderKey.get(new CroOrderKey(order)).getRequestedQty()));
 		
 		model.addObject("bodiesOnOrder", bodiesOnOrder);
 		model.addObject("chassisAvailable", chassisAvailable);

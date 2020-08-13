@@ -19,6 +19,11 @@ public class CroOrderKey {
 		this.deliveryId = order.getDeliveryId();
 	}
 
+	public CroOrderKey(CROBuildRequest buildRequest) {
+		this.orderId = buildRequest.getOrderId();
+		this.deliveryId = buildRequest.getDeliveryId();
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

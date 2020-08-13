@@ -126,6 +126,7 @@ $('#add-to-build').on('click', function(){
 		var $row = $(selectedRows[i]);
 		var orderId = $row.data('order-id');
 		var deliveryId = $row.data('delivery-id');
+		var unitsToConsider = $row.find('.units-to-consider').val();
 		
 		var orderIdInput = document.createElement('input');
 		orderIdInput.type = 'hidden';
@@ -138,6 +139,12 @@ $('#add-to-build').on('click', function(){
 		deliveryIdInput.name = 'selectedOrders[' + i + '].deliveryId'
 		deliveryIdInput.value = deliveryId;
 		orderSelectionForm.append(deliveryIdInput);
+		
+		var unitsToConsiderInput = document.createElement('input');
+		unitsToConsiderInput.type = 'hidden';
+		unitsToConsiderInput.name = 'selectedOrders[' + i + '].unitsToConsider'
+		unitsToConsiderInput.value = unitsToConsider;
+		orderSelectionForm.append(unitsToConsiderInput);
 	}
 	
 	var buildId = orderSelectionForm.data('build-id');
@@ -150,6 +157,33 @@ $('#add-to-build').on('click', function(){
 	
 	orderSelectionForm.submit();
 	
+});
+
+$('.units-to-consider').on('input', function () { 
+    this.value = this.value.replace(/[^0-9\.]/g,'');
+    
+    var unitsToConsider = parseInt(this.value);
+    var $row = $(this).closest('.approved-order-row');
+    var unfulfilledQty = $row.data('unfulfilled-qty');
+    
+    if(unitsToConsider > unfulfilledQty){
+    	$(this).addClass('error-input');
+    }
+    else {
+    	$(this).removeClass('error-input');
+    }
+    var hasErrors = false;
+    $('.units-to-consider').each(function(index){
+    	if($(this).hasClass('error-input'))
+    		hasErrors = true;
+    });
+    
+    if(hasErrors) {
+    	$addToBuildBtn.addClass('buttonDisabled');
+    }
+    else {
+    	$addToBuildBtn.removeClass('buttonDisabled');
+    }
 });
 
 function saveCheckedBoxes(id) {

@@ -1,9 +1,11 @@
 package com.penske.apps.buildmatrix.model;
 
 import java.util.List;
+import java.util.Map;
 
 import com.penske.apps.buildmatrix.domain.CroOrderKey;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 public class OrderSelectionForm {
 	
@@ -14,6 +16,12 @@ public class OrderSelectionForm {
 	public List<CroOrderKey> getCroOrderKeys(){
 		List<CroOrderKey> croOrderKeys = selectedOrders.stream().map(so -> new CroOrderKey(so.getOrderId(), so.getDeliveryId())).collect(toList());
 		return croOrderKeys;
+	}
+	
+	public Map<CroOrderKey, Integer> getUnitsToConsiderByCroOrderKey(){
+		Map<CroOrderKey, Integer> unitsToConsiderByCroOrderKey = selectedOrders.stream()
+				.collect(toMap(so -> new CroOrderKey(so.getOrderId(), so.getDeliveryId()), so -> so.getUnitsToConsider()));
+		return unitsToConsiderByCroOrderKey;
 	}
 	
 	//***** DEFUALT ACCESSORS *****//
@@ -36,6 +44,7 @@ public class OrderSelectionForm {
 	public static class OrderSelection {
 		private int orderId;
 		private int deliveryId;
+		private int unitsToConsider;
 		
 		//***** DEFUALT ACCESSORS *****//
 		public int getOrderId() {
@@ -50,7 +59,12 @@ public class OrderSelectionForm {
 		public void setDeliveryId(int deliveryId) {
 			this.deliveryId = deliveryId;
 		}
-		
+		public int getUnitsToConsider() {
+			return unitsToConsider;
+		}
+		public void setUnitsToConsider(int unitsToConsider) {
+			this.unitsToConsider = unitsToConsider;
+		}
 	}
 	
 }

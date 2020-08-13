@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.BorderStyle;
@@ -310,8 +311,9 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	
 	// BUILD FUNCTIONS //
 	@Override
-	public BuildSummary startNewBuild(List<ApprovedOrder> selectedOrders, UserContext userContext) {
-		int bodiesOnOrder = selectedOrders.stream().collect(summingInt(order->order.getUnfulfilledQty()));
+	public BuildSummary startNewBuild(List<ApprovedOrder> selectedOrders, Map<CroOrderKey, Integer> unitsToConsiderByCroOrderKey, UserContext userContext) {
+		int bodiesOnOrder = unitsToConsiderByCroOrderKey.values().stream()
+				.collect(summingInt(val->val));
 		int maxBeforeWeeks = buildMatrixSmcDAO.getBuildMaximumWeeksBefore();
 		int maxAfterWeeks = buildMatrixSmcDAO.getBuildMaximumWeeksAfter();
 		
@@ -319,21 +321,28 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		buildMatrixSmcDAO.insertNewBuild(newBuild);
 		int buildId = newBuild.getBuildId();
 		for(ApprovedOrder order: selectedOrders) {
-			buildMatrixSmcDAO.insertCroBuildRequest(buildId, order);
+			int unitsToConsider = unitsToConsiderByCroOrderKey.get(new CroOrderKey(order));
+			if(unitsToConsider > order.getUnfulfilledQty())
+				throw new IllegalArgumentException("Units to consider cannot be greater than unfulfilled units");
+			buildMatrixSmcDAO.insertCroBuildRequest(buildId, order, unitsToConsider);
 		}
 		return newBuild;
 	}
 	
 	@Override
-	public BuildSummary updateExistingBuild(Integer buildId, List<ApprovedOrder> selectedOrders) {
-		int bodiesOnOrder = selectedOrders.stream().collect(summingInt(order->order.getUnfulfilledQty()));
+	public BuildSummary updateExistingBuild(Integer buildId, Map<CroOrderKey, Integer> unitsToConsiderByCroOrderKey, List<ApprovedOrder> selectedOrders) {
+		int bodiesOnOrder = unitsToConsiderByCroOrderKey.values().stream()
+				.collect(summingInt(utc->utc));
 		BuildSummary existingBuild = buildMatrixSmcDAO.getBuildSummary(buildId);
 		existingBuild.setReqQty(bodiesOnOrder);
 		buildMatrixSmcDAO.updateBuild(existingBuild);
 		Integer existingBuildId = existingBuild.getBuildId();
 		buildMatrixSmcDAO.deleteCroBuildRequestsFromBuild(existingBuildId);
 		for(ApprovedOrder order: selectedOrders) {
-			buildMatrixSmcDAO.insertCroBuildRequest(buildId, order);
+			int unitsToConsider = unitsToConsiderByCroOrderKey.get(new CroOrderKey(order));
+			if(unitsToConsider > order.getUnfulfilledQty())
+				throw new IllegalArgumentException("Units to consider cannot be greater than unfulfilled units");
+			buildMatrixSmcDAO.insertCroBuildRequest(buildId, order, unitsToConsider);
 		}
 		return existingBuild;
 	}
@@ -363,8 +372,21 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	
 	// CRO BUILD REQUESTS //
 	@Override
-	public List<CroOrderKey> getCroOrderKeysForBuild(Integer buildId) {
-		return buildMatrixSmcDAO.getCroOrderKeysForBuild(buildId);
+	public List<CROBuildRequest> getCroOrdersForBuild(Integer buildId) {
+		return buildMatrixSmcDAO.getCroOrdersForBuild(buildId);
+	}
+	
+	@Override
+	public Map<CroOrderKey, Pair<ApprovedOrder, CROBuildRequest>> getCroOrderMap(Map<CroOrderKey, CROBuildRequest> croBuildRequestsByOrderKey,
+			List<ApprovedOrder> selectedOrders) {
+		Map<CroOrderKey, Pair<ApprovedOrder, CROBuildRequest>> orderMap = new HashMap<>();
+		for(ApprovedOrder order: selectedOrders) {
+			CroOrderKey orderKey = new CroOrderKey(order);
+			CROBuildRequest br = croBuildRequestsByOrderKey.get(orderKey);
+			orderMap.put(orderKey, Pair.of(order, br));
+		}
+		
+		return orderMap;
 	}
 	
 	@Override

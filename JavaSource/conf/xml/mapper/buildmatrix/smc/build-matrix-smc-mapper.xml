@@ -611,7 +611,7 @@
  			#{buildId},
  			#{order.orderId},
  			#{order.deliveryId},
- 			#{order.unfulfilledQty},
+ 			#{unitsToConsider},
  			0
  		)
 	</insert>
@@ -621,10 +621,14 @@
 	 	WHERE RUN_ID = #{existingBuildId}
 	</delete>
 
-	<select id="getCroOrderKeysForBuild" resultType="com.penske.apps.buildmatrix.domain.CroOrderKey">
+	<select id="getCroOrdersForBuild" resultType="com.penske.apps.buildmatrix.domain.CROBuildRequest">
 		SELECT
+			CRO_BUILD_REQUEST_ID as croBuildRequestId,
+			RUN_ID as runId,
 			ORDER_ID as orderId,
- 			DELIVERY_ID as deliveryId
+			DELIVERY_ID as deliveryId,
+			QTY_REQUESTED as requestedQty,
+			QTY_FULFILLED as fulfilledQty
 		FROM SMC.OBM_CRO_BUILD_REQUEST
 		WHERE RUN_ID = #{buildId}
 	</select>
