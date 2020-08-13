@@ -162,34 +162,28 @@ $('#add-to-build').on('click', function(){
 $('.units-to-consider').on('input', function () { 
     this.value = this.value.replace(/[^0-9\.]/g,'');
     
-    var unitsToConsider = parseInt(this.value);
+    var val = this.value;
+    if(val == "")
+    	val = "0";
+    var unitsToConsider = parseInt(val);
     var $row = $(this).closest('.approved-order-row');
     var unfulfilledQty = $row.data('unfulfilled-qty');
     
-    if(unitsToConsider > unfulfilledQty){
+    if(unitsToConsider > unfulfilledQty || unitsToConsider == 0){
     	$(this).addClass('error-input');
     }
     else {
     	$(this).removeClass('error-input');
     }
-    var hasErrors = false;
-    $('.units-to-consider').each(function(index){
-    	if($(this).hasClass('error-input'))
-    		hasErrors = true;
-    });
     
-    if(hasErrors) {
-    	$addToBuildBtn.addClass('buttonDisabled');
-    }
-    else {
-    	$addToBuildBtn.removeClass('buttonDisabled');
-    }
+    calculateBodiesOnOrder();
 });
 
 function saveCheckedBoxes(id) {
 	var checkedRowCount = 0;
 	var rowCount = $orderSummaryDataTable.rows().nodes().length;
 	var sum = 0;
+	var hasErrors = false;
 	$($orderSummaryDataTable.rows().nodes()).each(function() {
 		 if($(this).find('.select-order').prop("checked") == true ) {
 			 $(this).addClass('row-selected');
@@ -197,32 +191,44 @@ function saveCheckedBoxes(id) {
 			 if(rowCount == checkedRowCount) {
 				$('#mass-select-all').prop('checked', true); 
 				}
-			 var quantity =  parseInt($(this).find('.order-quantity').text()-$(this).find('.order-fulfilled').text(), 10);
+			 var unitsToConsider = $(this).find('.units-to-consider').val();
+			 if(unitsToConsider == "")
+				 unitsToConsider = "0";
+			 var quantity =  parseInt(unitsToConsider, 10);
 			 sum += quantity;
 		 } else {
 				$('#mass-select-all').prop('checked', false);
 				$(this).removeClass('row-selected');
 		 }
+		 if($(this).find('.units-to-consider').hasClass('error-input'))
+			 hasErrors = true;
 	 });
 	$('#bodies-on-order').html(sum);
-	checkAddToBuild();
+	checkAddToBuild(hasErrors);
 }
 
 function calculateBodiesOnOrder(){
 	var sum = 0;
+	var hasErrors = false;
 	$($orderSummaryDataTable.rows().nodes()).each(function() {
 		if($(this).find('.select-order').prop("checked") == true ) {
-			var quantity =  parseInt($(this).find('.order-quantity').text()-$(this).find('.order-fulfilled').text(), 10);
+			var unitsToConsider = $(this).find('.units-to-consider').val();
+			if(unitsToConsider == "")
+				unitsToConsider = "0";
+			var quantity =  parseInt(unitsToConsider, 10);
 			sum += quantity;
 		}
+		if($(this).find('.units-to-consider').hasClass('error-input'))
+			 hasErrors = true;
 	});
 	$('#bodies-on-order').html(sum);
-	checkAddToBuild();
+	checkAddToBuild(hasErrors);
 }
 
-function checkAddToBuild() {
+function checkAddToBuild(hasErrors) {
 	var sum = parseInt($('#bodies-on-order').html());
-	if(sum > 0)
+	
+	if(sum > 0 && !hasErrors)
 		$addToBuildBtn.removeClass('buttonDisabled');
 	else
 		$addToBuildBtn.addClass('buttonDisabled');
