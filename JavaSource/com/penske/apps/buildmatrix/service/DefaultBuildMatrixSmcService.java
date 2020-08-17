@@ -392,7 +392,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	@Override
 	public List<ApprovedOrder> getUnfulfilledOrders(List<ApprovedOrder> approvedOrders){
 		List<CROBuildRequest> croOrdersForAllRuns = new ArrayList<CROBuildRequest>();
-		if(approvedOrders == null || approvedOrders.isEmpty()) {
+		if(approvedOrders == null || !approvedOrders.isEmpty()) {
 			croOrdersForAllRuns = buildMatrixSmcDAO.getCroOrdersForAllRuns(approvedOrders);
 			for(ApprovedOrder order:approvedOrders)
 			{
