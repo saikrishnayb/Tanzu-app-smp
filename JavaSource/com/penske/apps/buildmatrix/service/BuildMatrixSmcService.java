@@ -14,7 +14,9 @@ import com.penske.apps.buildmatrix.domain.BodyPlantCapability;
 import com.penske.apps.buildmatrix.domain.BuildAttribute;
 import com.penske.apps.buildmatrix.domain.BuildAttributeValue;
 import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
+import com.penske.apps.buildmatrix.domain.BuildMatrixSlot;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlotDate;
+import com.penske.apps.buildmatrix.domain.BuildMatrixSlotRegionAvailability;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlotType;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.BusinessAward;
@@ -197,5 +199,10 @@ public interface BuildMatrixSmcService {
 	public List<String> getDebugInformation(int slotReservationId, int buildId);
 	
 	public boolean checkUpdateResUnitNumber(String unitNumber, AvailableChassisSummaryModel summaryModel);
+
+	public List<BuildMatrixSlotRegionAvailability> getInvalidSlots();
+
+	public Map<Integer, Pair<BuildMatrixSlot, BuildMatrixSlotDate>> getSlotsAndSlotDatesBySlotIds(
+			List<Integer> slotIds);
 
 }

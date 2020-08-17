@@ -143,13 +143,13 @@
 														<c:set var="slot" value="${summary.slotById.get(cell.regionAvailability.slotId)}" />
 														<td class="available-units-td" headers="${cell.bodyPlant.plantId}">
 															<input type="hidden" name="regionSlotInfos[${slotIndex}].slotRegionId" value="${cell.regionAvailability.slotRegionId}" />
-															<input type="text" class="available-slot-input" name="regionSlotInfos[${slotIndex}].slotAvailable" value="${cell.regionAvailability.slotAvailable}" 
+															<input type="text" class="available-slot-input<c:if test="${cell.regionAvailability.invalidSlot}"> errorMsgInput</c:if>" name="regionSlotInfos[${slotIndex}].slotAvailable" value="${cell.regionAvailability.slotAvailable}" 
 																data-overall-slots="${slot.availableSlots}" 
 																data-allocated-slots="${slot.allocatedRegionSlots - cell.regionAvailability.slotAvailable}"
 																data-region-allocated-slots="${cell.regionAvailability.allocatedSlots}"/>
 															<br>
 															<div class="unallocated-region-slots-div">
-																<span class="unallocated-region-slots hidden">
+																<span class="unallocated-region-slots hidden<c:if test="${cell.regionAvailability.invalidSlot}"> errorMsg</c:if>">
 																	Available: <span class="unallocated-slots">${slot.unallocatedSlots}</span>
 																	&emsp;Reserved: ${cell.regionAvailability.allocatedSlots}</span>
 															</div>

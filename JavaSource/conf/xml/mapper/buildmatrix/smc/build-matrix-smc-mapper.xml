@@ -1178,6 +1178,19 @@
 		WHERE    SLOT_YEAR=#{year}
 	</select>
 	
+	<select id="getSlotDatesByIds" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlotDate">
+		SELECT   SLOT_DATE_ID,
+		         SLOT_YEAR,
+		         WEEK_OF_YEAR,
+		         DATE(to_date(SLOT_DATE,'MM/DD/YYYY')) AS SLOT_DATE
+		FROM     SMC.OBM_SLOT_DATES
+		WHERE    SLOT_DATE_ID IN (
+				<foreach collection="slotDateIds" item="slotDateId" separator="," open="" close="">
+	 				#{slotDateId}
+	 			</foreach>
+			)
+	</select>
+	
 	<select id="getSlotDate" parameterType="int" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlotDate">
 		SELECT   SLOT_DATE_ID,
 		         SLOT_YEAR,
@@ -1279,6 +1292,19 @@
 		WHERE    SLOT_ID = #{slot.slotId}
 	</update>
 	
+	<select id="getInvalidSlots" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlotRegionAvailability">
+		SELECT
+			SLOT_REGION_ID,
+			SLOT_ID,
+			REGION,
+			SLOT_AVAILABLE,
+			SLOT_RESERVED,
+			SLOT_ACCEPTED,
+			IS_INVALID_SLOT as invalidSlot
+		FROM SMC.OBM_SLOTS_BY_REGION
+		WHERE IS_INVALID_SLOT = 1
+	</select>
+	
 	<select id="getRegionAvailabilityBySlotIdsAndRegion" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlotRegionAvailability">
 		SELECT 
 			SLOT_REGION_ID,
@@ -1286,7 +1312,8 @@
 			REGION,
 			SLOT_AVAILABLE,
 			SLOT_RESERVED,
-			SLOT_ACCEPTED
+			SLOT_ACCEPTED,
+			IS_INVALID_SLOT as invalidSlot
 		FROM
 			SMC.OBM_SLOTS_BY_REGION
 		WHERE
@@ -1305,7 +1332,8 @@
 			REGION,
 			SLOT_AVAILABLE,
 			SLOT_RESERVED,
-			SLOT_ACCEPTED
+			SLOT_ACCEPTED,
+			IS_INVALID_SLOT as invalidSlot
 		FROM
 			SMC.OBM_SLOTS_BY_REGION
 		WHERE
@@ -1327,13 +1355,14 @@
 				CAST(#{rpa.region} AS VARCHAR(4)),
 				CAST(#{rpa.slotAvailable} AS INTEGER),
 				CAST(#{rpa.slotReserved} AS INTEGER),
-				CAST(#{rpa.slotAccepted} AS INTEGER)
+				CAST(#{rpa.slotAccepted} AS INTEGER),
+				CAST(#{rpa.invalidSlot} AS INTEGER),
 			)
 		</foreach>
 		)
 		AS input
 		(
-			SLOT_REGION_ID, SLOT_ID, REGION, SLOT_AVAILABLE, SLOT_RESERVED, SLOT_ACCEPTED
+			SLOT_REGION_ID, SLOT_ID, REGION, SLOT_AVAILABLE, SLOT_RESERVED, SLOT_ACCEPTED, IS_INVALID_SLOT
 		)
 		ON  slotsByRegion.SLOT_ID=input.SLOT_ID 
 			AND slotsByRegion.REGION=input.REGION
@@ -1344,7 +1373,8 @@
 			REGION,
 			SLOT_AVAILABLE,
 			SLOT_RESERVED,
-			SLOT_ACCEPTED
+			SLOT_ACCEPTED,
+			IS_INVALID_SLOT
 			)
 		 VALUES
 			(
@@ -1352,7 +1382,8 @@
 			input.REGION,
 			input.SLOT_AVAILABLE,
 			input.SLOT_RESERVED,
-			input.SLOT_ACCEPTED
+			input.SLOT_ACCEPTED,
+			input.IS_INVALID_SLOT
 			)
 	</update>
 	
@@ -1362,7 +1393,8 @@
 		SET
 		         SLOT_AVAILABLE = #{regionAvailability.slotAvailable},
 		         SLOT_RESERVED = #{regionAvailability.slotReserved},
-		         SLOT_ACCEPTED = #{regionAvailability.slotAccepted}
+		         SLOT_ACCEPTED = #{regionAvailability.slotAccepted},
+		         IS_INVALID_SLOT = #{regionAvailability.invalidSlot}
 		WHERE    SLOT_REGION_ID = #{regionAvailability.slotRegionId}
 	</update>
 	
@@ -1495,7 +1527,8 @@
 			REGION,
 			SLOT_AVAILABLE,
 			SLOT_RESERVED,
-			SLOT_ACCEPTED
+			SLOT_ACCEPTED,
+			IS_INVALID_SLOT
 		) VALUES
 		<foreach collection="list" item="availability" separator=",">
 		(
@@ -1503,7 +1536,8 @@
 			#{availability.region},
 			#{availability.slotAvailable},
 			#{availability.slotReserved},
-			#{availability.slotAccepted}
+			#{availability.slotAccepted},
+			#{availability.invalidSlot}
 		)
 		</foreach>
 	</insert>

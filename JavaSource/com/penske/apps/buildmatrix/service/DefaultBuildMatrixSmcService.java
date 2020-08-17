@@ -391,18 +391,21 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	
 	@Override
 	public List<ApprovedOrder> getUnfulfilledOrders(List<ApprovedOrder> approvedOrders){
-		List<CROBuildRequest> croOrdersForAllRuns = buildMatrixSmcDAO.getCroOrdersForAllRuns(approvedOrders);
-		for(ApprovedOrder order:approvedOrders)
-		{
-			for(CROBuildRequest croOrderReq: croOrdersForAllRuns)
+		List<CROBuildRequest> croOrdersForAllRuns = new ArrayList<CROBuildRequest>();
+		if(approvedOrders == null || approvedOrders.isEmpty()) {
+			croOrdersForAllRuns = buildMatrixSmcDAO.getCroOrdersForAllRuns(approvedOrders);
+			for(ApprovedOrder order:approvedOrders)
 			{
-				if(order.getOrderId() == croOrderReq.getOrderId() && order.getDeliveryId() == croOrderReq.getDeliveryId())
+				for(CROBuildRequest croOrderReq: croOrdersForAllRuns)
 				{
-					order.setFulfilledQty(order.getFulfilledQty()+croOrderReq.getFulfilledQty());
+					if(order.getOrderId() == croOrderReq.getOrderId() && order.getDeliveryId() == croOrderReq.getDeliveryId())
+					{
+						order.setFulfilledQty(order.getFulfilledQty()+croOrderReq.getFulfilledQty());
+					}
 				}
 			}
+			approvedOrders.removeIf(order -> order.getFulfilledQty()==order.getOrderTotalQuantity());
 		}
-		approvedOrders.removeIf(order -> order.getFulfilledQty()==order.getOrderTotalQuantity());
 		return approvedOrders;
 	}
 	
@@ -1496,7 +1499,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 			for(BuildMatrixSlotRegionAvailability regionSlot: regionAvailabilityList) {
 				BuildMatrixSlot slot = slotByslotId.get(regionSlot.getSlotId());
 				Integer newAvailableSlots = availableUnitsBySlotKey.get(new BuildMatrixSlotKey(slot.getSlotDateId(), slot.getPlantId(), slot.getSlotTypeId()));
-				regionSlot.updateAvailableSlots(newAvailableSlots, slot, true);
+				regionSlot.updateAvailableSlots(newAvailableSlots, slot);
 			}
 		}
 		
@@ -1563,7 +1566,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 			int newAvailableSlots = availableSlotsById.get(regionAvailability.getSlotRegionId());
 			if(newAvailableSlots != regionAvailability.getSlotAvailable()) {
 				BuildMatrixSlot slot = slotById.get(regionAvailability.getSlotId());
-				regionAvailability.updateAvailableSlots(newAvailableSlots, slot, false);
+				regionAvailability.updateAvailableSlots(newAvailableSlots, slot);
 				buildMatrixSmcDAO.updateRegionAvailability(regionAvailability);
 			}
 		}
@@ -1572,6 +1575,31 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	@Override
 	public List<BuildMatrixBodyPlant> getBodyPlantsByPlantIds(Collection<Integer> plantIds) {
 		return buildMatrixSmcDAO.getBodyPlantsByPlantIds(plantIds);
+	}
+	
+	@Override
+	public List<BuildMatrixSlotRegionAvailability> getInvalidSlots(){
+		return buildMatrixSmcDAO.getInvalidSlots();
+	}
+	
+	@Override
+	public Map<Integer, Pair<BuildMatrixSlot, BuildMatrixSlotDate>> getSlotsAndSlotDatesBySlotIds(
+			List<Integer> slotIds) {
+		List<BuildMatrixSlot> slots = buildMatrixSmcDAO.getSlotsBySlotIds(slotIds);
+		List<Integer> slotDateIds = slots.stream()
+				.map(sl -> sl.getSlotDateId())
+				.collect(toList());
+		List<BuildMatrixSlotDate> slotDates = buildMatrixSmcDAO.getSlotDatesByIds(slotDateIds);
+		Map<Integer, BuildMatrixSlotDate> slotDateById = slotDates.stream()
+				.collect(toMap(BuildMatrixSlotDate::getSlotDateId, sd-> sd));
+		
+		Map<Integer, Pair<BuildMatrixSlot, BuildMatrixSlotDate>> result = new HashMap<>();
+		for(BuildMatrixSlot slot: slots) {
+			BuildMatrixSlotDate slotDate = slotDateById.get(slot.getSlotDateId());
+			result.put(slot.getSlotId(), Pair.of(slot, slotDate));
+		}
+		
+		return result;
 	}
 	
 }

@@ -216,4 +216,7 @@ public interface BuildMatrixSmcDAO {
 
 	public void mergeSlotRegionAvailabilities(@Param("regionAvailabilityList") List<BuildMatrixSlotRegionAvailability> regionAvailabilities);
 
+	public List<BuildMatrixSlotRegionAvailability> getInvalidSlots();
+
+	public List<BuildMatrixSlotDate> getSlotDatesByIds(@Param("slotDateIds") List<Integer> slotDateIds);
 }
