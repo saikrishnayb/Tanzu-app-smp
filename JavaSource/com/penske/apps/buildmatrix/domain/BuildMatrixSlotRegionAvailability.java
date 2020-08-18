@@ -19,6 +19,16 @@ public class BuildMatrixSlotRegionAvailability {
 		this.slotAccepted = 0;
 	}
 	
+	// MODIFIED ACCESSORS
+	public void markInvalid() {
+		this.invalidSlot = true;
+	}
+
+	public void markValid() {
+		this.invalidSlot = false;
+	}
+	
+	// DEFAULT ACCESSORS	
 	public int getAllocatedSlots() {
 		return slotReserved + slotAccepted;
 	}
@@ -51,19 +61,19 @@ public class BuildMatrixSlotRegionAvailability {
 		return invalidSlot;
 	}
 
-	public void updateAvailableSlots(int newAvailableSlots, BuildMatrixSlot slot) {
+	public void updateAvailableSlots(int newAvailableSlots, BuildMatrixSlot slot, boolean importModal) {
 		if(newAvailableSlots + (slot.getAllocatedRegionSlots() - this.slotAvailable) > slot.getAvailableSlots()) {
 			this.invalidSlot = true;
+			if(!importModal)
+				throw new IllegalArgumentException("Available region slots cannot be more than the unallocated overall available slots");
 		}
 		else if(this.getSlotAccepted() + this.slotReserved > newAvailableSlots) {
 			this.invalidSlot = true;
-		}
-		else {
-			this.invalidSlot = false;
+			if(!importModal)
+				throw new IllegalArgumentException("Available region slots cannot be less than the already allocated region slots");
 		}
 		
 		this.slotAvailable = newAvailableSlots;
 	}
-
 
 }

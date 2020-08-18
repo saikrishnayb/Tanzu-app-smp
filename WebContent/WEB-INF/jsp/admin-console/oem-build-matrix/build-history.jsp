@@ -19,31 +19,28 @@
           			<h1>Build History</h1>
         		</div>
       		</div>
-      		<div class="row invalid-slots-row<c:if test="${empty invalidSlots}"> hidden</c:if>" >
+      		<div class="row invalid-slots-row<c:if test="${empty invalidSlotIds}"> hidden</c:if>" >
       			<div class="col-xs-12">
 	      			<div class="alert alert-danger">
-	      				The following slots are invalid because the new available region slots is less than the allocated region slots 
-	      				or the new available region slots plus the other allocated region slots is greater than the overall slots:
+	      				The following slots are invalid because the new available slots is less than the allocated region slots:
 	      				<ul>
-							<c:forEach items="${invalidSlots}" var="invalidSlot">
-								<c:set var="pair" value="${slotAndSlotDateBySlotId.get(invalidSlot.slotId)}" />
+							<c:forEach items="${invalidSlotIds}" var="invalidSlotId">
+								<c:set var="pair" value="${slotAndSlotDateBySlotId.get(invalidSlotId)}" />
 								<c:set var="slot" value="${pair.left}"/>
 		      					<c:set var="slotDate" value="${pair.right}"/>
 		      					<c:set var="bodyPlant" value="${bodyPlantsById.get(slot.plantId)}"/>
 								<li>
-									Region: ${invalidSlot.region} - ${slotDate.formattedSlotDate} - ${bodyPlant.plantManufacturer} - ${bodyPlant.city}, ${bodyPlant.state}: New Available Slots: ${invalidSlot.slotAvailable} 
-									&emsp; Used Region Slots: ${invalidSlot.slotReserved + invalidSlot.slotAccepted}
-									&emsp; Overall Slots: ${slot.availableSlots}
+									${slotDate.formattedSlotDate} - ${bodyPlant.plantManufacturer} - ${bodyPlant.city}, ${bodyPlant.state}: Available Slots: ${slot.availableSlots} &emsp; Allocated Region Slots: ${slot.allocatedRegionSlots}
 								</li>
 							</c:forEach>
 						</ul>
-						You can not start a build until these invalid slots are resolved.
+						You can not start/continue a build until these invalid slots are resolved.
 	      			</div>
 	      		</div>
 	      	</div>
 			<div class="row">
         		<div class="col-xs-12">
-					<table id="build-history-table" data-show-start-build-btn="${showStartBuildBtn && empty invalidSlots}">
+					<table id="build-history-table" data-show-start-build-btn="${showStartBuildBtn && empty invalidSlotIds}">
 						<thead>
 							<tr>
 								<th class="actionsheader"></th>
@@ -79,7 +76,7 @@
 									</td>
 									<td class="leftAlign">
 										<c:choose>
-											<c:when test='${buildHistory.buildStatus.code eq "P"}'>
+											<c:when test='${buildHistory.buildStatus.code eq "P" and empty invalidSlotIds}'>
 												<a href="${baseAppUrl}/admin-console/oem-build-matrix/order-summary?buildId=${buildHistory.buildId}">${buildHistory.buildId}</a>
 											</c:when>
 											<c:otherwise>

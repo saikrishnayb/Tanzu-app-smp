@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
@@ -16,7 +17,6 @@ import com.penske.apps.buildmatrix.domain.BuildAttributeValue;
 import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlot;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlotDate;
-import com.penske.apps.buildmatrix.domain.BuildMatrixSlotRegionAvailability;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlotType;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.BusinessAward;
@@ -200,9 +200,9 @@ public interface BuildMatrixSmcService {
 	
 	public boolean checkUpdateResUnitNumber(String unitNumber, AvailableChassisSummaryModel summaryModel);
 
-	public List<BuildMatrixSlotRegionAvailability> getInvalidSlots();
-
 	public Map<Integer, Pair<BuildMatrixSlot, BuildMatrixSlotDate>> getSlotsAndSlotDatesBySlotIds(
-			List<Integer> slotIds);
+			Set<Integer> invalidSlotIds);
+
+	public Set<Integer> getInvalidSlotIds();
 
 }

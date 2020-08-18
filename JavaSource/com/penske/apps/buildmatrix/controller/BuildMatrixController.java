@@ -1,7 +1,7 @@
 package com.penske.apps.buildmatrix.controller;
 
-import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,7 +28,6 @@ import com.penske.apps.buildmatrix.domain.BuildAttribute;
 import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlot;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlotDate;
-import com.penske.apps.buildmatrix.domain.BuildMatrixSlotRegionAvailability;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlotType;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.BusinessAward;
@@ -170,12 +169,9 @@ public class BuildMatrixController {
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/build-history");
 		List<BuildSummary> buildHistoryList = buildMatrixSmcService.getAllBuildHistory();
 		boolean showStartBuildBtn = !buildHistoryList.stream().anyMatch(bs->!bs.showStartBuildBtn());
-		List<BuildMatrixSlotRegionAvailability> invalidSlots = buildMatrixSmcService.getInvalidSlots();
-		if(!invalidSlots.isEmpty()) {
-			List<Integer> slotIds = invalidSlots.stream()
-					.map(ra -> ra.getSlotId())
-					.collect(toList());
-			Map<Integer, Pair<BuildMatrixSlot, BuildMatrixSlotDate>> slotAndSlotDateBySlotId = buildMatrixSmcService.getSlotsAndSlotDatesBySlotIds(slotIds);
+		Set<Integer> invalidSlotIds = buildMatrixSmcService.getInvalidSlotIds();
+		if(!invalidSlotIds.isEmpty()) {
+			Map<Integer, Pair<BuildMatrixSlot, BuildMatrixSlotDate>> slotAndSlotDateBySlotId = buildMatrixSmcService.getSlotsAndSlotDatesBySlotIds(invalidSlotIds);
 			
 			List<Integer> plantIds = slotAndSlotDateBySlotId.values().stream()
 					.map(p -> p.getLeft().getPlantId())
@@ -189,7 +185,7 @@ public class BuildMatrixController {
 			
 		}
 		
-		model.addObject("invalidSlots", invalidSlots);
+		model.addObject("invalidSlotIds", invalidSlotIds);
 		model.addObject("buildHistoryList", buildHistoryList);
 		model.addObject("showStartBuildBtn", showStartBuildBtn);
 		model.addObject("buildStatuses", BuildStatus.values());

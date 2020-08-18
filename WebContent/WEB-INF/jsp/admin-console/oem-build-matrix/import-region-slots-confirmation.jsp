@@ -33,7 +33,7 @@
 	      			</div>
 		      		<div class="btn-div floatRight">
 		  				<a id="back-btn" class="buttonSecondary" href="${backUrl}">Back</a>
-		  				<a id="import-confirm-btn" class="buttonPrimary<c:if test="${noRows}"> buttonDisabled</c:if>">Import</a>
+		  				<a id="import-confirm-btn" class="buttonPrimary<c:if test="${noRows or invalidSlots}"> buttonDisabled</c:if>">Import</a>
 		  			</div>
 		  		</div>
       		</div>
@@ -51,7 +51,7 @@
       		</div>
       		<div class="row invalid-slots-row<c:if test="${!invalidSlots}"> hidden</c:if>" >
       			<div class="col-xs-12">
-	      			<div class="alert alert-warning">
+	      			<div class="alert alert-danger">
 	      				The following slots are invalid because the new available region slots is less than the allocated region slots 
 	      				or the new available region slots plus the other allocated region slots is greater than the overall slots:
 	      				<ul>
@@ -68,7 +68,6 @@
 								</li>
 							</c:forEach>
 						</ul>
-						You may continue but all future results for this region will be marked invalid until the invalid slot is corrected.
 	      			</div>
 	      		</div>
       		</div>

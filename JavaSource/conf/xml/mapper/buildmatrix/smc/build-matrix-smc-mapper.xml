@@ -1292,15 +1292,9 @@
 		WHERE    SLOT_ID = #{slot.slotId}
 	</update>
 	
-	<select id="getInvalidSlots" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlotRegionAvailability">
+	<select id="getInvalidSlotIds" resultType="int">
 		SELECT
-			SLOT_REGION_ID,
-			SLOT_ID,
-			REGION,
-			SLOT_AVAILABLE,
-			SLOT_RESERVED,
-			SLOT_ACCEPTED,
-			IS_INVALID_SLOT as invalidSlot
+			SLOT_ID
 		FROM SMC.OBM_SLOTS_BY_REGION
 		WHERE IS_INVALID_SLOT = 1
 	</select>
@@ -1323,6 +1317,21 @@
 	 			</foreach>
 			)
 			AND REGION = #{region}
+	</select>
+	
+	<select id="getRegionAvailabilityBySlotId" parameterType="int" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlotRegionAvailability">
+		SELECT 
+			SLOT_REGION_ID,
+			SLOT_ID,
+			REGION,
+			SLOT_AVAILABLE,
+			SLOT_RESERVED,
+			SLOT_ACCEPTED,
+			IS_INVALID_SLOT as invalidSlot
+		FROM
+			SMC.OBM_SLOTS_BY_REGION
+		WHERE
+			SLOT_ID = #{slotId}
 	</select>
 	
 	<select id="getRegionAvailabilityBySlotRegionIds" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlotRegionAvailability">
