@@ -467,7 +467,7 @@ public class BuildMatrixController {
 		model.addObject("bodyplantList", bodyplantList);
 		model.addObject("summary", summary);
 		model.addObject("slotTypeId", Integer.valueOf(slotTypeId));
-		model.addObject("selectedYear", selectedYear);
+		model.addObject("selectedYear", Integer.valueOf(selectedYear));
 		return model;
 	}
  	

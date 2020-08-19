@@ -2,6 +2,7 @@ package com.penske.apps.buildmatrix.model;
 
 
 import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,31 +24,63 @@ public class ProductionSlotsMaintenanceSummary {
 			List<BuildMatrixSlot> slots,
 			boolean importModal) {
 		
-		Map<Integer, BuildMatrixBodyPlant> bodyPlantById = bodyPlantList.stream().collect(toMap(BuildMatrixBodyPlant::getPlantId, bmbp -> bmbp));
+		Map<Integer, BuildMatrixBodyPlant> bodyPlantById = new HashMap<>();
+		Map<Integer, Map<Integer,BuildMatrixSlot>> slotByDateIdByPlantId = new HashMap<>();
+		for(BuildMatrixBodyPlant plant: bodyPlantList) {
+			int plantId = plant.getPlantId();
+			bodyPlantById.put(plantId, plant);
+			List<BuildMatrixSlot> slotList = slots.stream()
+					.filter(slot -> plantId == slot.getPlantId())
+					.collect(toList());
+			if(!slotList.isEmpty()) {
+				Map<Integer, BuildMatrixSlot> slotBySlotDateId = slotList.stream()
+						.collect(toMap(BuildMatrixSlot::getSlotDateId, slot-> slot));
+				slotByDateIdByPlantId.put(plantId, slotBySlotDateId);
+			}
+			else
+				slotByDateIdByPlantId.put(plantId, Collections.emptyMap());
+		}
 		this.bodyPlantById = bodyPlantById;
 		
-		if(slotDates.isEmpty() || slotDates==null || slots.isEmpty() || slots == null)
+		if(slotDates.isEmpty() || slotDates==null || slots == null)
 			this.rows = Collections.emptyList();
 		else {
-			Map<Integer, List<BuildMatrixSlot>> slotsByDateId = new HashMap<>();
-			for(BuildMatrixSlot slot: slots) {
-				List<BuildMatrixSlot> list = slotsByDateId.computeIfAbsent(slot.getSlotDateId(), l-> new ArrayList<>());
-				list.add(slot);
-			}
+//			Map<Integer, List<BuildMatrixSlot>> slotsByDateId = new HashMap<>();
+//			for(BuildMatrixSlot slot: slots) {
+//				List<BuildMatrixSlot> list = slotsByDateId.computeIfAbsent(slot.getSlotDateId(), l-> new ArrayList<>());
+//				list.add(slot);
+//			}
 			
 			List<ProductionSlotsMaintenanceRow> rows = new ArrayList<>();
 			for(BuildMatrixSlotDate slotDate: slotDates) {
 				List<ProductionSlotsMaintenanceCell> cells = new ArrayList<>();
-				List<BuildMatrixSlot> slotsForDate = slotsByDateId.get(slotDate.getSlotDateId());
-				if(slotsForDate == null || slotsForDate.isEmpty()) {
-					if(!importModal)
-						throw new IllegalStateException("Slots not created for Date: " + slotDate.getFormattedSlotDate());
+				
+//				List<BuildMatrixSlot> slotsForDate = slotsByDateId.get(slotDate.getSlotDateId());
+//				if(slotsForDate == null || slotsForDate.isEmpty()) {
+//					if(!importModal)
+//						throw new IllegalStateException("Slots not created for Date: " + slotDate.getFormattedSlotDate());
+//					else
+//						continue;
+//				}
+//				for(BuildMatrixSlot slot: slotsForDate) {
+//					BuildMatrixBodyPlant bodyPlant = bodyPlantById.get(slot.getPlantId());
+//					cells.add(new ProductionSlotsMaintenanceCell(bodyPlant, slot));
+//				}
+//				for(BuildMatrixBodyPlant plant: plantsWithoutSlots) {
+//					cells.add(new ProductionSlotsMaintenanceCell(plant, slotDate.getSlotDateId()));
+//				}
+				
+				for(BuildMatrixBodyPlant plant: bodyPlantList) {
+					Map<Integer, BuildMatrixSlot> slotsBySlotDate = slotByDateIdByPlantId.get(plant.getPlantId());
+					if(!slotsBySlotDate.isEmpty()) {
+						BuildMatrixSlot slot = slotsBySlotDate.get(slotDate.getSlotDateId());
+						if(slot != null)
+							cells.add(new ProductionSlotsMaintenanceCell(plant, slot));
+						else
+							cells.add(new ProductionSlotsMaintenanceCell(plant, slotDate.getSlotDateId()));
+					}
 					else
-						continue;
-				}
-				for(BuildMatrixSlot slot: slotsForDate) {
-					BuildMatrixBodyPlant bodyPlant = bodyPlantById.get(slot.getPlantId());
-					cells.add(new ProductionSlotsMaintenanceCell(bodyPlant, slot));
+						cells.add(new ProductionSlotsMaintenanceCell(plant, slotDate.getSlotDateId()));
 				}
 				
 				rows.add(new ProductionSlotsMaintenanceRow(slotDate, cells));
@@ -86,10 +119,18 @@ public class ProductionSlotsMaintenanceSummary {
 	public static class ProductionSlotsMaintenanceCell {
 		private BuildMatrixBodyPlant bodyPlant;
 		private BuildMatrixSlot slot;
+		private int slotDateId;
 		
 		public ProductionSlotsMaintenanceCell(BuildMatrixBodyPlant bodyPlant, BuildMatrixSlot slot) {
 			this.bodyPlant = bodyPlant;
 			this.slot = slot;
+			this.slotDateId = slot.getSlotDateId();
+		}
+		
+		public ProductionSlotsMaintenanceCell(BuildMatrixBodyPlant bodyPlant, int slotDateId) {
+			this.bodyPlant = bodyPlant;
+			this.slot = null;
+			this.slotDateId = slotDateId;
 		}
 		
 		public BuildMatrixBodyPlant getBodyPlant() {
@@ -97,6 +138,9 @@ public class ProductionSlotsMaintenanceSummary {
 		}
 		public BuildMatrixSlot getSlot() {
 			return slot;
+		}
+		public Integer getSlotDateId() {
+			return slotDateId;
 		}
 	}
 	

@@ -34,7 +34,7 @@ public class ImportSlotsResults {
 		List<Pair<BuildMatrixSlotDate, ProductionSlotsMaintenanceCell>> invalidSlots = new ArrayList<>();
 		for(ProductionSlotsMaintenanceRow row: summary.getRows()) {
 			for(ProductionSlotsMaintenanceCell cell: row.getCells()) {
-				if(cell.getSlot().isInvalidSlot())
+				if(cell.getSlot() != null && cell.getSlot().isInvalidSlot())
 					invalidSlots.add(Pair.of(row.getSlotDate(), cell));
 			}
 		}

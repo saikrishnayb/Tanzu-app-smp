@@ -75,7 +75,7 @@
 	       				<c:otherwise>
 		        			<form id="slot-maintenance-form">
 			        			<input type="hidden" name="slotTypeId" value="${slotTypeId}">
-								<input type="hidden" name="year" value="${year}">
+								<input type="hidden" name="year" value="${selectedYear}">
 								<table id="slot-maintenance-table">
 									<thead>
 											<tr>
@@ -91,15 +91,32 @@
 											<tr>
 												<td class="centerAlign slot-table-header" headers="prod-date">${row.slotDate.formattedSlotDate}</td>
 												<c:forEach items="${row.cells}" var="cell">
+													<c:set var="slot" value="${cell.slot}"/>
+													<c:choose>
+														<c:when test="${empty slot}">
+															<c:set var="slotId" value="${-1}"/>
+															<c:set var="invalidSlot" value="${false}"/>
+															<c:set var="availableSlots" value="${0}"/>
+															<c:set var="allocatedRegionSlots" value="${0}"/>
+														</c:when>
+														<c:otherwise>
+															<c:set var="slotId" value="${slot.slotId}"/>
+															<c:set var="invalidSlot" value="${slot.invalidSlot}"/>
+															<c:set var="availableSlots" value="${slot.availableSlots}"/>
+															<c:set var="allocatedRegionSlots" value="${slot.allocatedRegionSlots}"/>
+														</c:otherwise>
+													</c:choose>
 													<td class="centerAlign slot-table-header available-units-td" headers="${cell.bodyPlant.plantId}">
-														<input type="hidden" name="slotInfos[${slotIndex}].slotId" value="${cell.slot.slotId}" />
-														<input class ="available-slot-input<c:if test="${cell.slot.invalidSlot}"> errorMsgInput</c:if>" name="slotInfos[${slotIndex}].availableSlots" type="text" value="${cell.slot.availableSlots}"
-															data-allocated-slots="${cell.slot.allocatedRegionSlots}"
+														<input type="hidden" name="slotInfos[XXX].slotId" value="${slotId}" />
+														<input type="hidden" name="slotInfos[XXX].plantId" value="${cell.bodyPlant.plantId}" />
+														<input type="hidden" name="slotInfos[XXX].slotDateId" value="${row.slotDate.slotDateId}" />
+														<input class ="available-slot-input<c:if test="${invalidSlot}"> errorMsgInput</c:if>" name="slotInfos[XXX].availableSlots" type="text" value="${availableSlots}"
+															data-allocated-slots="${allocatedRegionSlots}"
 															data-plant="${cell.bodyPlant.plantId}"/>
 														<br>
 														<div class="allocated-region-slots-div">
-															<span class="allocated-region-slots hidden<c:if test="${cell.slot.invalidSlot}"> errorMsg</c:if>">
-																Allocated: ${cell.slot.allocatedRegionSlots}
+															<span class="allocated-region-slots hidden<c:if test="${invalidSlot}"> errorMsg</c:if>">
+																Allocated: ${allocatedRegionSlots}
 															</span>
 														</div>
 													</td>
@@ -116,7 +133,6 @@
 			</div>
 			<div id="prod-slot-maintenance-modal" class="modal"></div>	
 		</div>
-		
 	</div>
 	<%@ include file="../../global/v2/footer.jsp" %>
 	<script src="${baseUrl}/js/admin-console/oem-build-matrix/prod-slot-maintenance.js" type="text/javascript"></script>

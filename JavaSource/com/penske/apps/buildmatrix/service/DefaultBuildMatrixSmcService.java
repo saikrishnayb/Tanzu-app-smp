@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -94,6 +95,7 @@ import com.penske.apps.buildmatrix.model.ProductionSlotsUtilizationSummary.Produ
 import com.penske.apps.buildmatrix.model.ProductionSlotsUtilizationSummary.ProductionSlotsUtilizationRow;
 import com.penske.apps.buildmatrix.model.SaveRegionSlotsForm;
 import com.penske.apps.buildmatrix.model.SaveSlotsForm;
+import com.penske.apps.buildmatrix.model.SaveSlotsForm.SlotInfo;
 import com.penske.apps.smccore.base.util.BatchRunnable;
 import com.penske.apps.smccore.base.util.Util;
 import com.penske.apps.suppliermgmt.model.UserContext;
@@ -1212,7 +1214,11 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 			
 			for(ProductionSlotsMaintenanceCell slotCell : slotRow.getCells()) {
 				SXSSFCell cell  = dataRow.createCell(column++);
-				cell.setCellValue(slotCell.getSlot().getAvailableSlots());
+				BuildMatrixSlot slot = slotCell.getSlot();
+				if(slot != null)
+					cell.setCellValue(slotCell.getSlot().getAvailableSlots());
+				else
+					cell.setCellValue(0);
 				cell.setCellStyle(unlocked);
 				
 			}
@@ -1355,6 +1361,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	    
 	    workbook.close();
 	    
+	    BuildMatrixSlotType slotType = buildMatrixSmcDAO.getVehicleTypeById(slotTypeId);
 	    Map<Integer, BuildMatrixBodyPlant> bodyPlantByColIndex = new HashMap<>();
 	    Map<Integer, ImportSlotsHeader> plantsNotFound = new HashMap<>();
 	    for(Entry<Integer,ImportSlotsHeader> entry: headerByColIndex.entrySet()) {
@@ -1364,8 +1371,12 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	    	else
 	    		bodyPlantByColIndex.put(entry.getKey(), plant);
 	    }
+	    Map<Integer, BuildMatrixBodyPlant> bodyPlantByPlantId = bodyPlantByColIndex.values().stream()
+	    		.collect(toMap(BuildMatrixBodyPlant::getPlantId, bp -> bp));
 	    
 	    List<BuildMatrixSlotDate> slotDatesForYear = buildMatrixSmcDAO.getSlotDatesForYear(year);
+	    Map<Integer, BuildMatrixSlotDate> slotDatesByDateId = slotDatesForYear.stream()
+	    		.collect(toMap(BuildMatrixSlotDate::getSlotDateId, sd -> sd));
 	    Map<String, BuildMatrixSlotDate> slotDatesByYearStrings = slotDatesForYear.stream().collect(toMap(BuildMatrixSlotDate::getFormattedSlotDate, sd -> sd));
 	    List<String> datesNotInYear = new ArrayList<>();
 	    Map<BuildMatrixSlotKey, Integer> availableUnitsBySlotKey = new HashMap<>();
@@ -1391,10 +1402,32 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 			slots = Collections.emptyList();
 		else	
 			slots = buildMatrixSmcDAO.getSlotsBySlotDatesAndPlantIds(slotTypeId, slotDateIds, plantIds);
+
+		List<BuildMatrixSlotKey> slotKeys = slots.stream()
+				.map(slot -> new BuildMatrixSlotKey(slot.getSlotDateId(), slot.getPlantId(), slot.getSlotTypeId()))
+				.collect(toList());
+		Map<BuildMatrixSlotKey, Integer> needsSlotCreation = new HashMap<>();
+		for(Entry<BuildMatrixSlotKey, Integer> entry :availableUnitsBySlotKey.entrySet()) {
+			if(!slotKeys.contains(entry.getKey()))
+				needsSlotCreation.put(entry.getKey(), entry.getValue());
+		}
 		if(!slots.isEmpty()) {
 			for(BuildMatrixSlot slot: slots) {
 				Integer newAvailableSlots = availableUnitsBySlotKey.get(new BuildMatrixSlotKey(slot.getSlotDateId(), slot.getPlantId(), slot.getSlotTypeId()));
 				slot.updateAvailableSlots(newAvailableSlots);
+			}
+		}
+		if(!needsSlotCreation.isEmpty()) {
+			for(Entry<BuildMatrixSlotKey, Integer> entry: needsSlotCreation.entrySet()) {
+				BuildMatrixSlotKey slotKey = entry.getKey();
+				if(!plantsNotFound.keySet().contains(slotKey.getPlantId())) {
+					BuildMatrixSlotDate slotDate = slotDatesByDateId.get(slotKey.getSlotDateId());
+					BuildMatrixBodyPlant bodyPlant = bodyPlantByPlantId.get(slotKey.getPlantId());
+					BuildMatrixSlot newSlot = new BuildMatrixSlot(slotType, slotDate, bodyPlant);
+					buildMatrixSmcDAO.insertSlot(newSlot);
+					newSlot.updateAvailableSlots(entry.getValue());
+					slots.add(newSlot);
+				}
 			}
 		}
 		
@@ -1542,7 +1575,35 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	
 	@Override
 	public void saveSlots(SaveSlotsForm form) {
-		Map<Integer, Integer> availableSlotsById = form.getSlotInfos().stream().collect(toMap(si->si.getSlotId(),si->si.getAvailableSlots()));
+		if(form.needToCreateSlots()) {
+			Set<Integer> plantIds = new HashSet<>();
+			Set<Integer> slotDateIds = new HashSet<>();
+			List<SlotInfo> slotsToCreate = form.getSlotInfos().stream()
+					.filter(si -> si.getSlotId() == -1)
+					.collect(toList());
+			for(SlotInfo slotInfo: slotsToCreate) {
+				plantIds.add(slotInfo.getPlantId());
+				slotDateIds.add(slotInfo.getSlotDateId());
+			}
+			List<BuildMatrixBodyPlant> plants = buildMatrixSmcDAO.getBodyPlantsByPlantIds(plantIds);
+			Map<Integer, BuildMatrixBodyPlant> plantByPlantId = plants.stream()
+					.collect(toMap(BuildMatrixBodyPlant::getPlantId, plant->plant));
+			List<BuildMatrixSlotDate> slotDates = buildMatrixSmcDAO.getSlotDatesByIds(slotDateIds);
+			Map<Integer, BuildMatrixSlotDate> slotDateBySlotDateId = slotDates.stream()
+					.collect(toMap(BuildMatrixSlotDate::getSlotDateId, sd->sd));
+			BuildMatrixSlotType slotType = buildMatrixSmcDAO.getVehicleTypeById(form.getSlotTypeId());
+			for(SlotInfo slotInfo: slotsToCreate) {
+				BuildMatrixBodyPlant plant = plantByPlantId.get(slotInfo.getPlantId());
+				BuildMatrixSlotDate slotDate = slotDateBySlotDateId.get(slotInfo.getSlotDateId());
+				BuildMatrixSlot slot = new BuildMatrixSlot(slotType, slotDate, plant);
+				buildMatrixSmcDAO.insertSlot(slot);
+				slotInfo.setSlotId(slot.getSlotId());
+			}
+		}
+		
+		Map<Integer, Integer> availableSlotsById = form.getSlotInfos().stream()
+				.collect(toMap(SlotInfo::getSlotId, SlotInfo::getAvailableSlots));
+		
 		List<BuildMatrixSlot> slots = buildMatrixSmcDAO.getSlotsBySlotIds(availableSlotsById.keySet());
 		
 		for(BuildMatrixSlot slot: slots) {

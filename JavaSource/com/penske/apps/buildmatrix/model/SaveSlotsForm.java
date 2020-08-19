@@ -8,6 +8,11 @@ public class SaveSlotsForm {
 	private int year;
 	private List<SlotInfo> slotInfos;
 	
+	public boolean needToCreateSlots() {
+		return slotInfos.stream()
+				.anyMatch(si -> si.getSlotId() == -1);
+	}
+	
 	public List<SlotInfo> getSlotInfos() {
 		return slotInfos;
 	}
@@ -34,22 +39,33 @@ public class SaveSlotsForm {
 	
 	public static class SlotInfo {
 		private int slotId;
+		private int plantId;
+		private int slotDateId;
 		private int availableSlots;
 		
 		public int getAvailableSlots() {
 			return availableSlots;
 		}
-		
 		public int getSlotId() {
 			return slotId;
 		}
-		
+		public int getPlantId() {
+			return plantId;
+		}
+		public int getSlotDateId() {
+			return slotDateId;
+		}
 		public void setAvailableSlots(int availableSlots) {
 			this.availableSlots = availableSlots;
 		}
-		
 		public void setSlotId(int slotId) {
 			this.slotId = slotId;
+		}
+		public void setPlantId(int plantId) {
+			this.plantId = plantId;
+		}
+		public void setSlotDateId(int slotDateId) {
+			this.slotDateId = slotDateId;
 		}
 	}
 }

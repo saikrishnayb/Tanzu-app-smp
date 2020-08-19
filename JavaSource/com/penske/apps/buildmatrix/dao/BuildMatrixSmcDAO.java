@@ -183,6 +183,8 @@ public interface BuildMatrixSmcDAO {
 	public void insertSlotDates(@Param("list") List<BuildMatrixSlotDate> slotDates);
 
 	public void insertSlots(@Param("list") List<BuildMatrixSlot> slots);
+	
+	public void insertSlot(@Param("slot") BuildMatrixSlot slot);
 
 	public void insertSlotRegionAvailabilities(@Param("list") List<BuildMatrixSlotRegionAvailability> regionAvailabilityList);
 	

@@ -182,7 +182,7 @@
 			END as isAssociated
 		FROM OBM_FREIGHT_MILEAGE mileage
 			LEFT JOIN OBM_REGION_PLANT_ASSOCIATION reg 
-			ON mileage.REGION = reg.REGION AND reg.PLANT_ID = #{plantId}
+			ON mileage.REGION = reg.REGION AND mileage.plant_id = reg.plant_id
 		WHERE mileage.REGION <![CDATA[<>]]> ''
 		ORDER BY mileage.REGION
 	</select>
@@ -1550,6 +1550,31 @@
 			#{slot.acceptedSlots}
 		)
 		</foreach>
+	</insert>
+	
+	<insert id="insertSlot" useGeneratedKeys="true" keyProperty="slot.slotId">
+		INSERT INTO SMC.OBM_SLOTS (
+			SLOT_TYPE_ID,
+			PLANT_ID,
+			SLOT_DATE_ID,
+			SLOT_AVAILABLE,
+			SLOT_RESERVED,
+			CHASSIS_ARRIVAL_DATE,
+			CHASSIS_ARRIVAL_WEEK_OF_YEAR,
+			CHASSIS_ARRIVAL_YEAR,
+			SLOT_ACCEPTED
+		) VALUES
+			(
+				#{slot.slotTypeId},
+				#{slot.plantId},
+				#{slot.slotDateId},
+				#{slot.availableSlots},
+				#{slot.reservedSlots},
+				#{slot.formattedChassisArrivalDate},
+				#{slot.chassisArrivalWeekOfYear},
+				#{slot.chassisArrivalYear},
+				#{slot.acceptedSlots}
+			)
 	</insert>
 	
 	<insert id="insertSlotRegionAvailabilities" useGeneratedKeys="true" keyProperty="slotRegionId">

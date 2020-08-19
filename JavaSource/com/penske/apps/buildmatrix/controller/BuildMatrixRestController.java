@@ -615,8 +615,8 @@ public class BuildMatrixRestController {
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping(method = RequestMethod.POST, value = "/save-slots")
 	public ModelAndView saveSlots(SaveSlotsForm form) {
-		
-		buildMatrixSmcService.saveSlots(form);
+		if(form.getSlotInfos() != null || !form.getSlotInfos().isEmpty())
+			buildMatrixSmcService.saveSlots(form);
 		
 		ModelMap modelMap = new ModelMap();
 		modelMap.addAttribute("slotType", form.getSlotTypeId());
