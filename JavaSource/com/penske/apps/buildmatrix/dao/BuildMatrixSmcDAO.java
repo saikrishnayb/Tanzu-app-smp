@@ -218,7 +218,10 @@ public interface BuildMatrixSmcDAO {
 
 	public Set<Integer> getInvalidSlotIds();
 
-	public List<BuildMatrixSlotDate> getSlotDatesByIds(@Param("slotDateIds") List<Integer> slotDateIds);
+	public List<BuildMatrixSlotDate> getSlotDatesByIds(@Param("slotDateIds") Collection<Integer> slotDateIds);
 
-	public List<BuildMatrixSlotRegionAvailability> getRegionAvailabilityBySlotId(@Param("slotId") int slotId);
+	public List<BuildMatrixSlotRegionAvailability> getRegionAvailabilityBySlotIds(@Param("slotIds") Collection<Integer> slotId);
+
+	public List<RegionPlantAssociation> getRegionAssociationByPlantIds(@Param("bodyPlantIds") Set<Integer> bodyPlantIds);
+
 }

@@ -187,6 +187,24 @@
 		ORDER BY mileage.REGION
 	</select>
 	
+	<select id="getRegionAssociationByPlantIds" resultType="com.penske.apps.buildmatrix.domain.RegionPlantAssociation">
+		SELECT
+			DISTINCT mileage.REGION AS region,
+			mileage.REGION_DESC AS regionDesc,
+			reg.ASSOC_ID AS regionAssociationId,
+			reg.PLANT_ID AS plantId,
+			'Y' as isAssociated
+		FROM OBM_FREIGHT_MILEAGE mileage
+			RIGHT JOIN OBM_REGION_PLANT_ASSOCIATION reg 
+			ON mileage.REGION = reg.REGION AND reg.PLANT_ID = mileage.PLANT_ID
+		WHERE mileage.REGION <![CDATA[<>]]> ''
+		AND reg.PLANT_ID IN (
+			<foreach collection="bodyPlantIds" item="plantId" separator="," open="" close="">
+ 				#{plantId}
+ 			</foreach>
+		)
+	</select>
+	
 	<select id="getRegionAssociationDataByRegion" resultType="com.penske.apps.buildmatrix.domain.RegionPlantAssociation">
 		SELECT
 			DISTINCT mileage.REGION AS region,
@@ -1319,7 +1337,7 @@
 			AND REGION = #{region}
 	</select>
 	
-	<select id="getRegionAvailabilityBySlotId" parameterType="int" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlotRegionAvailability">
+	<select id="getRegionAvailabilityBySlotIds" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlotRegionAvailability">
 		SELECT 
 			SLOT_REGION_ID,
 			SLOT_ID,
@@ -1331,7 +1349,11 @@
 		FROM
 			SMC.OBM_SLOTS_BY_REGION
 		WHERE
-			SLOT_ID = #{slotId}
+			SLOT_ID IN (
+				<foreach collection="slotIds" item="slotId" separator="," open="" close="">
+	 				#{slotId}
+	 			</foreach>
+			)
 	</select>
 	
 	<select id="getRegionAvailabilityBySlotRegionIds" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlotRegionAvailability">

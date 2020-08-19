@@ -31,6 +31,7 @@ import com.penske.apps.buildmatrix.model.BuildMixForm;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm;
 import com.penske.apps.buildmatrix.model.ImportRegionSlotsResults;
 import com.penske.apps.buildmatrix.model.ImportSlotsResults;
+import com.penske.apps.buildmatrix.model.InvalidSlotsSummary;
 import com.penske.apps.buildmatrix.model.ProductionSlotsMaintenanceSummary;
 import com.penske.apps.buildmatrix.model.ProductionSlotsUtilizationSummary;
 import com.penske.apps.buildmatrix.model.SaveRegionSlotsForm;
@@ -204,5 +205,9 @@ public interface BuildMatrixSmcService {
 			Set<Integer> invalidSlotIds);
 
 	public Set<Integer> getInvalidSlotIds();
+
+	public BuildMatrixSlot getSlotById(Integer slotId);
+
+	public InvalidSlotsSummary getInvalidSlotSummaryForMfr(String mfrCode);
 
 }

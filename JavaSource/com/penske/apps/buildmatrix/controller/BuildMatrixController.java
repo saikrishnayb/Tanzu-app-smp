@@ -39,6 +39,7 @@ import com.penske.apps.buildmatrix.domain.ProductionSlotResult;
 import com.penske.apps.buildmatrix.domain.RegionPlantAssociation;
 import com.penske.apps.buildmatrix.domain.enums.BuildStatus;
 import com.penske.apps.buildmatrix.model.AvailableChassisSummaryModel;
+import com.penske.apps.buildmatrix.model.InvalidSlotsSummary;
 import com.penske.apps.buildmatrix.model.OrderSelectionForm;
 import com.penske.apps.buildmatrix.model.ProductionSlotsMaintenanceSummary;
 import com.penske.apps.buildmatrix.model.ProductionSlotsUtilizationSummary;
@@ -540,6 +541,31 @@ public class BuildMatrixController {
 		model.addObject("selectedYear", selectedYear);
 		model.addObject("selectedRegion", selectedRegion);
 		model.addObject("regionMap", regionMap);
+		return model;
+	}
+ 	
+ 	//
+ 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+ 	@RequestMapping("/invalid-slots")
+ 	public ModelAndView getInvalidSlots(@RequestParam("mfrCode") String mfrCode) 
+	{
+ 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/invalid-slot-maintenance");
+		if (StringUtils.equals(mfrCode, ApplicationConstants.String_ZERO)) 
+		{
+			Set<Integer> invalidSlotIds = buildMatrixSmcService.getInvalidSlotIds();
+			if(!invalidSlotIds.isEmpty()) {
+				BuildMatrixSlot slot = buildMatrixSmcService.getSlotById(invalidSlotIds.iterator().next());
+				BuildMatrixBodyPlant bodyPlant = buildMatrixSmcService.getBodyPlantById(slot.getPlantId());
+				mfrCode = bodyPlant.getPlantMfrCode();
+			}
+		}
+		boolean invalidSlotsExist = false;
+		if (!StringUtils.equals(mfrCode, ApplicationConstants.String_ZERO)) {
+			invalidSlotsExist = true;
+			InvalidSlotsSummary invalidRegionSlots = buildMatrixSmcService.getInvalidSlotSummaryForMfr(mfrCode);
+		}
+		
+		model.addObject("invalidSlotsExist", invalidSlotsExist);
 		return model;
 	}
   

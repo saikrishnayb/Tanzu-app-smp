@@ -85,6 +85,7 @@ import com.penske.apps.buildmatrix.model.BusinessAwardForm.BusinessAwardRow;
 import com.penske.apps.buildmatrix.model.ImportRegionSlotsResults;
 import com.penske.apps.buildmatrix.model.ImportSlotsHeader;
 import com.penske.apps.buildmatrix.model.ImportSlotsResults;
+import com.penske.apps.buildmatrix.model.InvalidSlotsSummary;
 import com.penske.apps.buildmatrix.model.ProductionSlotsMaintenanceSummary;
 import com.penske.apps.buildmatrix.model.ProductionSlotsMaintenanceSummary.ProductionSlotsMaintenanceCell;
 import com.penske.apps.buildmatrix.model.ProductionSlotsMaintenanceSummary.ProductionSlotsMaintenanceRow;
@@ -1550,7 +1551,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 				slot.updateAvailableSlots(newAvailableSlots);
 				buildMatrixSmcDAO.updateSlot(slot);
 				if(slot.isInvalidSlot()) {
-					List<BuildMatrixSlotRegionAvailability> regionSlots = buildMatrixSmcDAO.getRegionAvailabilityBySlotId(slot.getSlotId());
+					List<BuildMatrixSlotRegionAvailability> regionSlots = buildMatrixSmcDAO.getRegionAvailabilityBySlotIds(Arrays.asList(slot.getSlotId()));
 					for(BuildMatrixSlotRegionAvailability ra: regionSlots) {
 						ra.markInvalid();
 						buildMatrixSmcDAO.updateRegionAvailability(ra);
@@ -1610,4 +1611,53 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		return result;
 	}
 	
+	@Override
+	public BuildMatrixSlot getSlotById(Integer slotId) {
+		return buildMatrixSmcDAO.getSlotsBySlotIds(Arrays.asList(slotId)).get(0);
+	}
+	
+	
+	@Override
+	public InvalidSlotsSummary getInvalidSlotSummaryForMfr(String mfrCode) {
+		List<BuildMatrixBodyPlant> bodyPlants = buildMatrixSmcDAO.getBodyPlantsByMfrCode(mfrCode);
+		Map<Integer, BuildMatrixBodyPlant> bodyPlantsById = bodyPlants.stream()
+				.collect(toMap(BuildMatrixBodyPlant::getPlantId, bp-> bp));
+		
+		List<RegionPlantAssociation> regionPlantAssociations = buildMatrixSmcDAO.getRegionAssociationByPlantIds(bodyPlantsById.keySet());
+		Map<Integer, List<RegionPlantAssociation>> regionPlantAssociationsByPlantId = new HashMap<>();
+		Map<String, String> regionDescByRegion = new HashMap<>();
+		for(RegionPlantAssociation rpa: regionPlantAssociations) {
+			if(!regionDescByRegion.containsKey(rpa.getRegion()))
+				regionDescByRegion.put(rpa.getRegion(), rpa.getRegionDesc());
+			List<RegionPlantAssociation> rpaList = regionPlantAssociationsByPlantId.computeIfAbsent(rpa.getPlantId(), list -> new ArrayList<>());
+			rpaList.add(rpa);
+		}
+				
+		Set<Integer> invalidSlotIds = buildMatrixSmcDAO.getInvalidSlotIds();
+		List<BuildMatrixSlot> invalidSlots = buildMatrixSmcDAO.getSlotsBySlotIds(invalidSlotIds);
+		List<BuildMatrixSlot> invalidSlotsForMfr = invalidSlots.stream()
+				.filter(sl -> bodyPlantsById.keySet().contains(sl.getPlantId()))
+				.collect(toList());
+		Map<Integer, BuildMatrixSlot> invalidSlotsForMfrById = invalidSlotsForMfr.stream()
+				.collect(toMap(BuildMatrixSlot::getSlotId, sl -> sl));
+		
+		Set<Integer> slotDateIds = invalidSlotsForMfrById.values().stream()
+				.map(BuildMatrixSlot::getSlotDateId)
+				.collect(toSet());
+		List<BuildMatrixSlotDate> slotDates = buildMatrixSmcDAO.getSlotDatesByIds(slotDateIds);
+		Map<Integer, BuildMatrixSlotDate> slotDatesById = slotDates.stream()
+				.collect(toMap(BuildMatrixSlotDate::getSlotDateId, sd -> sd));
+		
+		List<BuildMatrixSlotRegionAvailability> invalidRegionSlotsForMfr = buildMatrixSmcDAO.getRegionAvailabilityBySlotIds(invalidSlotsForMfrById.keySet());
+		Map<Integer, List<BuildMatrixSlotRegionAvailability>> invalidRegionSlotsBySlotId = new HashMap<>();
+		for(BuildMatrixSlotRegionAvailability ra: invalidRegionSlotsForMfr) {
+			List<BuildMatrixSlotRegionAvailability> raList = invalidRegionSlotsBySlotId.computeIfAbsent(ra.getSlotId(), list -> new ArrayList<>());
+			raList.add(ra);
+		}
+		
+		InvalidSlotsSummary summary = new InvalidSlotsSummary(bodyPlantsById, regionPlantAssociationsByPlantId, 
+				regionDescByRegion, invalidSlotsForMfrById, slotDatesById, invalidRegionSlotsBySlotId);
+		
+		return summary;
+	}
 }
