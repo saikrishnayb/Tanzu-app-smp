@@ -150,6 +150,8 @@ public interface BuildMatrixSmcDAO {
 	//PRODUCTION SLOT MAINTENANCE//
 	public List<BuildMatrixSlotType> getAllVehicleTypes();
 	
+	public List<BuildMatrixSlotType> getVehicleTypesByIds(@Param("slotTypeIds") List<Integer> slotTypeIds);
+	
 	public List<Integer> getYearsforSLotMaintenance();
 	
 	public List<BuildMatrixBodyPlant> getAllBodyPlantsforSlotMaintenance();
@@ -164,7 +166,7 @@ public interface BuildMatrixSmcDAO {
 
 	public List<RegionPlantAssociation> getAllRegionAssociationData();
 	
-	public List<BuildMatrixSlotRegionAvailability> getRegionAvailabilityBySlotIdsAndRegion(@Param("slotIds") Set<Integer> slotIds, @Param("region") String region);
+	public List<BuildMatrixSlotRegionAvailability> getRegionAvailabilityBySlotIdsAndRegion(@Param("slotIds") Collection<Integer> slotIds, @Param("region") String region);
 	
 	public BuildMatrixSlotDate getSlotDate(@Param("slotDateId") int slotDateId);
 
@@ -185,6 +187,8 @@ public interface BuildMatrixSmcDAO {
 	public void insertSlots(@Param("list") List<BuildMatrixSlot> slots);
 	
 	public void insertSlot(@Param("slot") BuildMatrixSlot slot);
+	
+	public void insertSlotRegionAvailability(@Param("regionAvailability") BuildMatrixSlotRegionAvailability regionAvailability);
 
 	public void insertSlotRegionAvailabilities(@Param("list") List<BuildMatrixSlotRegionAvailability> regionAvailabilityList);
 	
@@ -222,7 +226,7 @@ public interface BuildMatrixSmcDAO {
 
 	public List<BuildMatrixSlotDate> getSlotDatesByIds(@Param("slotDateIds") Collection<Integer> slotDateIds);
 
-	public List<BuildMatrixSlotRegionAvailability> getRegionAvailabilityBySlotIds(@Param("slotIds") Collection<Integer> slotId);
+	public List<BuildMatrixSlotRegionAvailability> getRegionAvailabilityBySlotIds(@Param("slotIds") Collection<Integer> slotIds);
 
 	public List<RegionPlantAssociation> getRegionAssociationByPlantIds(@Param("bodyPlantIds") Set<Integer> bodyPlantIds);
 

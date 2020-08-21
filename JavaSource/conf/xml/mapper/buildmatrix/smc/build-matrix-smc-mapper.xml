@@ -1119,6 +1119,19 @@
 		WHERE SLOT_TYPE_ID = #{slotTypeId}
 	</select>
 	
+	<select id="getVehicleTypesByIds" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlotType">
+		SELECT   SLOT_TYPE_ID AS slotTypeId,
+		         SLOT_DESCRIPTION AS slotTypeDesc,
+		         SLOT_TYPE AS slotType,
+		         CHASSIS_LEAD_TIME as chassisLeadTime
+		FROM     SMC.OBM_SLOT_TYPES
+		WHERE SLOT_TYPE_ID IN (
+			<foreach collection="slotTypeIds" item="slotTypeId" separator="," open="" close="">
+ 				#{slotTypeId}
+ 			</foreach>
+		)
+	</select>
+	
 	<select id="getYearsforSLotMaintenance" resultType="int">
 		SELECT DISTINCT SLOT_YEAR FROM SMC.OBM_SLOT_DATES
 	</select>
@@ -1574,6 +1587,25 @@
 				#{slot.chassisArrivalWeekOfYear},
 				#{slot.chassisArrivalYear},
 				#{slot.acceptedSlots}
+			)
+	</insert>
+	
+	<insert id="insertSlotRegionAvailability" useGeneratedKeys="true" keyProperty="regionAvailability.slotRegionId">
+		INSERT INTO SMC.OBM_SLOTS_BY_REGION (
+			SLOT_ID,
+			REGION,
+			SLOT_AVAILABLE,
+			SLOT_RESERVED,
+			SLOT_ACCEPTED,
+			IS_INVALID_SLOT
+		) VALUES
+			(
+				#{regionAvailability.slotId},
+				#{regionAvailability.region},
+				#{regionAvailability.slotAvailable},
+				#{regionAvailability.slotReserved},
+				#{regionAvailability.slotAccepted},
+				#{regionAvailability.invalidSlot}
 			)
 	</insert>
 	

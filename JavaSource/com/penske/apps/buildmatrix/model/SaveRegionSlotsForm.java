@@ -9,6 +9,16 @@ public class SaveRegionSlotsForm {
 	private String region;
 	private List<RegionSlotInfo> regionSlotInfos;
 	
+	public boolean needToCreateSlots() {
+		return regionSlotInfos.stream()
+				.anyMatch(si -> si.getSlotId() == -1);
+	}
+	
+	public boolean needToCreateRegionSlots() {
+		return regionSlotInfos.stream()
+				.anyMatch(si -> si.getSlotRegionId() == -1);
+	}
+	
 	public List<RegionSlotInfo> getRegionSlotInfos() {
 		return regionSlotInfos;
 	}
@@ -43,14 +53,29 @@ public class SaveRegionSlotsForm {
 	
 	public static class RegionSlotInfo {
 		private int slotRegionId;
+		private int slotId;
 		private int slotAvailable;
+		private int slotDateId;
+		private int plantId;
 		
 		public int getSlotAvailable() {
 			return slotAvailable;
 		}
 		
+		public int getSlotId() {
+			return slotId;
+		}
+		
 		public int getSlotRegionId() {
 			return slotRegionId;
+		}
+		
+		public int getPlantId() {
+			return plantId;
+		}
+		
+		public int getSlotDateId() {
+			return slotDateId;
 		}
 		
 		public void setSlotAvailable(int slotAvailable) {
@@ -59,6 +84,18 @@ public class SaveRegionSlotsForm {
 		
 		public void setSlotRegionId(int slotRegionId) {
 			this.slotRegionId = slotRegionId;
+		}
+		
+		public void setPlantId(int plantId) {
+			this.plantId = plantId;
+		}
+		
+		public void setSlotDateId(int slotDateId) {
+			this.slotDateId = slotDateId;
+		}
+		
+		public void setSlotId(int slotId) {
+			this.slotId = slotId;
 		}
 
 	}

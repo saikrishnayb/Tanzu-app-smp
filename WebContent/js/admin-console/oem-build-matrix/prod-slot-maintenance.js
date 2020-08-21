@@ -141,7 +141,7 @@ $('#save-slots-btn').on('click', function(){
 		return false;
 	var slotIndex = 0;
 	$('#slot-maintenance-form').find('.available-slot-input').each(function(index) {
-		var initialValue = $(this).data('initial-value');
+		var initialValue = this.getAttribute('data-initial-value');
 		var newValue = parseInt(this.value);
 		var $td = $(this).closest('.available-units-td');
 		if(initialValue == newValue) {

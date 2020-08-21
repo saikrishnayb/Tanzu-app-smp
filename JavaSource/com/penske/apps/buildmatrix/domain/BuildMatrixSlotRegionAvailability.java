@@ -19,6 +19,14 @@ public class BuildMatrixSlotRegionAvailability {
 		this.slotAccepted = 0;
 	}
 	
+	public BuildMatrixSlotRegionAvailability(int slotId, String region) {
+		this.slotId = slotId;
+		this.region = region;
+		this.slotAvailable = 0;
+		this.slotReserved = 0;
+		this.slotAccepted = 0;
+	}
+	
 	// MODIFIED ACCESSORS
 	public void markInvalid() {
 		this.invalidSlot = true;

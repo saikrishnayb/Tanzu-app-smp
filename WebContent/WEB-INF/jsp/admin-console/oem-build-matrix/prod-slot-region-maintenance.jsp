@@ -140,18 +140,54 @@
 												<tr class="date-unit-row ${rowClass}" data-prod-slot-date-id="${slotDateId}">
 													<td class="first-col prod-date centerAlign slot-table-header" headers="prod-date">${row.slotDate.formattedSlotDate}</td>
 													<c:forEach items="${row.cells}" var="cell">
-														<c:set var="slot" value="${summary.slotById.get(cell.regionAvailability.slotId)}" />
+														<c:set var="ra" value="${cell.regionAvailability}"/>
+														<c:set var="slot" value="${cell.slot}"/>
+														<c:choose>
+															<c:when test="${empty ra}">
+																<c:set var="slotRegionId" value="${-1}"/>
+																<c:set var="slotAvailable" value="${0}"/>
+																<c:set var="slotReserved" value="${0}"/>
+																<c:set var="slotAccepted" value="${0}"/>
+																<c:set var="invalidSlot" value="${false}"/>
+																<c:set var="allocatedSlots" value="${0}"/>
+															</c:when>
+															<c:otherwise>
+																<c:set var="slotRegionId" value="${ra.slotRegionId}"/>
+																<c:set var="slotAvailable" value="${ra.slotAvailable}"/>
+																<c:set var="slotReserved" value="${ra.slotReserved}"/>
+																<c:set var="slotAccepted" value="${ra.slotAccepted}"/>
+																<c:set var="invalidSlot" value="${ra.invalidSlot}"/>
+																<c:set var="allocatedSlots" value="${ra.allocatedSlots}"/>
+															</c:otherwise>
+														</c:choose>
+														<c:choose>
+															<c:when test="${empty slot}">
+																<c:set var="slotId" value="${-1}"/>
+																<c:set var="availableSlots" value="${0}"/>
+																<c:set var="allocatedRegionSlots" value="${0}"/>
+																<c:set var="unallocatedSlots" value="${0}"/>
+															</c:when>
+															<c:otherwise>
+																<c:set var="slotId" value="${slot.slotId}"/>
+																<c:set var="availableSlots" value="${slot.availableSlots}"/>
+																<c:set var="allocatedRegionSlots" value="${slot.allocatedRegionSlots}"/>
+																<c:set var="unallocatedSlots" value="${slot.unallocatedSlots}"/>
+															</c:otherwise>
+														</c:choose>
 														<td class="available-units-td" headers="${cell.bodyPlant.plantId}">
-															<input type="hidden" name="regionSlotInfos[${slotIndex}].slotRegionId" value="${cell.regionAvailability.slotRegionId}" />
-															<input type="text" class="available-slot-input<c:if test="${cell.regionAvailability.invalidSlot}"> errorMsgInput</c:if>" name="regionSlotInfos[${slotIndex}].slotAvailable" value="${cell.regionAvailability.slotAvailable}" 
-																data-overall-slots="${slot.availableSlots}" 
-																data-allocated-slots="${slot.allocatedRegionSlots - cell.regionAvailability.slotAvailable}"
-																data-region-allocated-slots="${cell.regionAvailability.allocatedSlots}"/>
+															<input type="hidden" name="regionSlotInfos[XXX].slotRegionId" value="${slotRegionId}" />
+															<input type="hidden" name="regionSlotInfos[XXX].slotId" value="${slotId}" />
+															<input type="hidden" name="regionSlotInfos[XXX].plantId" value="${cell.bodyPlant.plantId}" />
+															<input type="hidden" name="regionSlotInfos[XXX].slotDateId" value="${row.slotDate.slotDateId}" />
+															<input type="text" class="available-slot-input<c:if test="${invalidSlot}"> errorMsgInput</c:if>" name="regionSlotInfos[XXX].slotAvailable" value="${slotAvailable}" 
+																data-overall-slots="${availableSlots}" 
+																data-allocated-slots="${allocatedRegionSlots - slotAvailable}"
+																data-region-allocated-slots="${allocatedSlots}"/>
 															<br>
 															<div class="unallocated-region-slots-div">
-																<span class="unallocated-region-slots hidden<c:if test="${cell.regionAvailability.invalidSlot}"> errorMsg</c:if>">
-																	Available: <span class="unallocated-slots">${slot.unallocatedSlots}</span>
-																	&emsp;Reserved: ${cell.regionAvailability.allocatedSlots}</span>
+																<span class="unallocated-region-slots hidden<c:if test="${invalidSlot}"> errorMsg</c:if>">
+																	Available: <span class="unallocated-slots">${unallocatedSlots}</span>
+																	&emsp;Reserved: ${allocatedSlots}</span>
 															</div>
 														</td>
 														<c:set var="slotIndex" value="${slotIndex+1}" />

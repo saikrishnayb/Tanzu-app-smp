@@ -91,7 +91,32 @@ $('#save-region-slots-btn').on('click', function(){
 	if($(this).hasClass('buttonDisabled'))
 		return false;
 	
+	var slotIndex = 0;
+	$('#region-slot-maintenance-form').find('.available-slot-input').each(function(index) {
+		var initialValue = this.getAttribute('data-initial-value');
+		var newValue = parseInt(this.value);
+		var $td = $(this).closest('.available-units-td');
+		if(initialValue == newValue) {
+			$td.find(':input').each(function(innerIndex){
+				$(this).attr("disabled", "disabled");
+			});
+		}
+		else{
+			$td.find(':input').each(function(innerIndex) {
+		      this.name = this.name.replace('XXX', slotIndex);
+		    });
+			slotIndex++;
+		}
+	});
+	
 	var serializedForm = $('#region-slot-maintenance-form').serialize();
+	
+	$('#region-slot-maintenance-form').find('.available-slot-input').each(function(index) {
+		var $td = $(this).closest('.available-units-td');
+		$td.find(':input').each(function() {
+			this.name = this.name.replace(/\[[0-9]*\]/, '[XXX]');
+		});
+	})
 	
 	var $saveSlotsPromise = $.ajax({
 		type: "POST",
@@ -101,6 +126,7 @@ $('#save-region-slots-btn').on('click', function(){
 	
 	$saveSlotsPromise.done(function(){
 		$('#save-region-slots-btn').addClass('buttonDisabled');
+		$('#region-slot-maintenance-form').find(':input:disabled').removeAttr("disabled");
     	ritsu.storeInitialFormValues('#region-slot-maintenance-form');
 	});
 });

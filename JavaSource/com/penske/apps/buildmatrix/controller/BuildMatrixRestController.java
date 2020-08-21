@@ -615,7 +615,7 @@ public class BuildMatrixRestController {
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping(method = RequestMethod.POST, value = "/save-slots")
 	public ModelAndView saveSlots(SaveSlotsForm form) {
-		if(form.getSlotInfos() != null || !form.getSlotInfos().isEmpty())
+		if(form.getSlotInfos() != null && !form.getSlotInfos().isEmpty())
 			buildMatrixSmcService.saveSlots(form);
 		
 		ModelMap modelMap = new ModelMap();
@@ -627,8 +627,8 @@ public class BuildMatrixRestController {
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping(method = RequestMethod.POST, value = "/save-region-slots")
 	public ModelAndView saveRegionSlots(SaveRegionSlotsForm form) {
-		
-		buildMatrixSmcService.saveRegionSlots(form);
+		if(form.getRegionSlotInfos() != null && !form.getRegionSlotInfos().isEmpty())
+			buildMatrixSmcService.saveRegionSlots(form);
 		
 		ModelMap modelMap = new ModelMap();
 		modelMap.addAttribute("slotType", form.getSlotTypeId());

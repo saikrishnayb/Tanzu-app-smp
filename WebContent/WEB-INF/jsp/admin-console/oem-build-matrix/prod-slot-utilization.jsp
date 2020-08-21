@@ -130,23 +130,47 @@
 											<tr class="date-unit-row ${rowClass}" data-prod-slot-date-id="${slotDateId}">
 												<td class="first-col prod-date">${row.slotDate.formattedSlotDate}</td>
 												<c:forEach items="${row.cells}" var="cell">
-													<td class="available-units" headers="a-${cell.bodyPlant.plantId}">${cell.regionAvailability.slotAvailable}</td>
+													<c:set var="ra" value="${cell.regionAvailability}"/>
+													<c:set var="slot" value="${cell.slot}"/>
 													<c:choose>
-														<c:when test="${cell.regionAvailability.slotReserved gt 0}">
+														<c:when test="${empty ra}">
+															<c:set var="slotRegionId" value="${-1}"/>
+															<c:set var="slotAvailable" value="${0}"/>
+															<c:set var="slotReserved" value="${0}"/>
+															<c:set var="slotAccepted" value="${0}"/>
+														</c:when>
+														<c:otherwise>
+															<c:set var="slotRegionId" value="${ra.slotRegionId}"/>
+															<c:set var="slotAvailable" value="${ra.slotAvailable}"/>
+															<c:set var="slotReserved" value="${ra.slotReserved}"/>
+															<c:set var="slotAccepted" value="${ra.slotAccepted}"/>
+														</c:otherwise>
+													</c:choose>
+													<c:choose>
+														<c:when test="${empty slot}">
+															<c:set var="slotId" value="${-1}"/>
+														</c:when>
+														<c:otherwise>
+															<c:set var="slotId" value="${slot.slotId}"/>
+														</c:otherwise>
+													</c:choose>
+													<td class="available-units" headers="a-${cell.bodyPlant.plantId}">${slotAvailable}</td>
+													<c:choose>
+														<c:when test="${slotReserved gt 0}">
 															<td class="reserved-units" headers="r-${cell.bodyPlant.plantId}"
 																data-plant-id="${cell.bodyPlant.plantId}"
 																data-region="${regionInfo.region}" 
-																data-slot-id="${cell.slot.slotId}" 
-																data-slot-region-id="${cell.regionAvailability.slotRegionId}" 
+																data-slot-id="${slotId}" 
+																data-slot-region-id="${slotRegionId}" 
 																data-region-desc="${regionInfo.regionDesc}" >
-																	<a class="secondaryLink release-units-link">${cell.regionAvailability.slotReserved}</a>
+																	<a class="secondaryLink release-units-link">${slotReserved}</a>
 															</td>
 														</c:when>
 														<c:otherwise>
-															<td class="reserved-units" headers="r-${cell.bodyPlant.plantId}">${cell.regionAvailability.slotReserved}</td>
+															<td class="reserved-units" headers="r-${cell.bodyPlant.plantId}">${slotReserved}</td>
 														</c:otherwise>
 													</c:choose>
-													<td class="issued-units" headers="i-${cell.bodyPlant.plantId}">${cell.regionAvailability.slotAccepted}</td>
+													<td class="issued-units" headers="i-${cell.bodyPlant.plantId}">${slotAccepted}</td>
 												</c:forEach>
 											</tr>
 										</c:forEach>
