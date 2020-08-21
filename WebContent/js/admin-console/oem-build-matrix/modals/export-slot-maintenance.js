@@ -1,6 +1,9 @@
 $("#plants").multiselect({
 	minWidth : 150,
 	noneSelectedText : "",
+	open : function() {
+		$(".ui-multiselect-menu ").css('width', '300px');
+	}
 });
 
 $('#manufacturer').on('change', function(){
