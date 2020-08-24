@@ -1333,7 +1333,11 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 			
 			for(ProductionSlotsUtilizationCell slotCell : slotRow.getCells()) {
 				SXSSFCell cell  = dataRow.createCell(column++);
-				cell.setCellValue(slotCell.getRegionAvailability().getSlotAvailable());
+				BuildMatrixSlotRegionAvailability ra = slotCell.getRegionAvailability();
+				if(ra != null)
+					cell.setCellValue(ra.getSlotAvailable());
+				else
+					cell.setCellValue(0);
 				cell.setCellStyle(unlocked);
 				
 			}
@@ -1807,46 +1811,25 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	
 	
 	@Override
-	public InvalidSlotsSummary getInvalidSlotSummaryForMfr(String mfrCode) {
-		List<BuildMatrixBodyPlant> bodyPlants = buildMatrixSmcDAO.getBodyPlantsByMfrCode(mfrCode);
-		Map<Integer, BuildMatrixBodyPlant> bodyPlantsById = bodyPlants.stream()
-				.collect(toMap(BuildMatrixBodyPlant::getPlantId, bp-> bp));
-		
-		List<RegionPlantAssociation> regionPlantAssociations = buildMatrixSmcDAO.getRegionAssociationByPlantIds(bodyPlantsById.keySet());
-		Map<Integer, List<RegionPlantAssociation>> regionPlantAssociationsByPlantId = new HashMap<>();
-		Map<String, String> regionDescByRegion = new HashMap<>();
-		for(RegionPlantAssociation rpa: regionPlantAssociations) {
-			if(!regionDescByRegion.containsKey(rpa.getRegion()))
-				regionDescByRegion.put(rpa.getRegion(), rpa.getRegionDesc());
-			List<RegionPlantAssociation> rpaList = regionPlantAssociationsByPlantId.computeIfAbsent(rpa.getPlantId(), list -> new ArrayList<>());
-			rpaList.add(rpa);
-		}
-				
-		Set<Integer> invalidSlotIds = buildMatrixSmcDAO.getInvalidSlotIds();
-		List<BuildMatrixSlot> invalidSlots = buildMatrixSmcDAO.getSlotsBySlotIds(invalidSlotIds);
-		List<BuildMatrixSlot> invalidSlotsForMfr = invalidSlots.stream()
-				.filter(sl -> bodyPlantsById.keySet().contains(sl.getPlantId()))
-				.collect(toList());
-		Map<Integer, BuildMatrixSlot> invalidSlotsForMfrById = invalidSlotsForMfr.stream()
-				.collect(toMap(BuildMatrixSlot::getSlotId, sl -> sl));
-		
-		Set<Integer> slotDateIds = invalidSlotsForMfrById.values().stream()
+	public InvalidSlotsSummary getInvalidSlotSummaryForPlantAndSlotType(String plantId, String slotTypeId) {
+		BuildMatrixBodyPlant bodyPlant = buildMatrixSmcDAO.getPlantData(Integer.parseInt(plantId));
+		BuildMatrixSlotType slotType = buildMatrixSmcDAO.getVehicleTypeById(Integer.parseInt(slotTypeId));
+		List<BuildMatrixSlot> invalidSlots = buildMatrixSmcDAO.getInvalidSlotIdsByPlantAndSlotType(slotType.getSlotTypeId(), bodyPlant.getPlantId());
+		List<BuildMatrixSlotRegionAvailability> invalidRegionSlots = buildMatrixSmcDAO.getRegionAvailabilityBySlotIds(invalidSlots.stream()
+				.map(BuildMatrixSlot::getSlotId)
+				.collect(toList()));
+		List<BuildMatrixSlotDate> slotDates = buildMatrixSmcDAO.getSlotDatesByIds(invalidSlots.stream()
 				.map(BuildMatrixSlot::getSlotDateId)
-				.collect(toSet());
-		List<BuildMatrixSlotDate> slotDates = buildMatrixSmcDAO.getSlotDatesByIds(slotDateIds);
-		Map<Integer, BuildMatrixSlotDate> slotDatesById = slotDates.stream()
-				.collect(toMap(BuildMatrixSlotDate::getSlotDateId, sd -> sd));
+				.collect(toSet()));
 		
-		List<BuildMatrixSlotRegionAvailability> invalidRegionSlotsForMfr = buildMatrixSmcDAO.getRegionAvailabilityBySlotIds(invalidSlotsForMfrById.keySet());
-		Map<Integer, List<BuildMatrixSlotRegionAvailability>> invalidRegionSlotsBySlotId = new HashMap<>();
-		for(BuildMatrixSlotRegionAvailability ra: invalidRegionSlotsForMfr) {
-			List<BuildMatrixSlotRegionAvailability> raList = invalidRegionSlotsBySlotId.computeIfAbsent(ra.getSlotId(), list -> new ArrayList<>());
-			raList.add(ra);
-		}
-		
-		InvalidSlotsSummary summary = new InvalidSlotsSummary(bodyPlantsById, regionPlantAssociationsByPlantId, 
-				regionDescByRegion, invalidSlotsForMfrById, slotDatesById, invalidRegionSlotsBySlotId);
+		InvalidSlotsSummary summary = new InvalidSlotsSummary(bodyPlant, invalidSlots, 
+				invalidRegionSlots, slotDates);
 		
 		return summary;
+	}
+	
+	@Override
+	public Set<Integer> getInvalidSlotTypesforPlant(int plantId) {
+		return buildMatrixSmcDAO.getInvalidSlotTypesforPlant(plantId);
 	}
 }

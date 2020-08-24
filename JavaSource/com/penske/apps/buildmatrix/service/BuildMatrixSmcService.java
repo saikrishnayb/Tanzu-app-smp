@@ -208,6 +208,8 @@ public interface BuildMatrixSmcService {
 
 	public BuildMatrixSlot getSlotById(Integer slotId);
 
-	public InvalidSlotsSummary getInvalidSlotSummaryForMfr(String mfrCode);
+	public InvalidSlotsSummary getInvalidSlotSummaryForPlantAndSlotType(String plantId, String slotTypeId);
+
+	public Set<Integer> getInvalidSlotTypesforPlant(int plantId);
 
 }

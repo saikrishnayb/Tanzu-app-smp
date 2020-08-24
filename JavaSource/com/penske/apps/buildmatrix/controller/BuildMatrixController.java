@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -547,22 +548,24 @@ public class BuildMatrixController {
  	//
  	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
  	@RequestMapping("/invalid-slots")
- 	public ModelAndView getInvalidSlots(@RequestParam("mfrCode") String mfrCode) 
+ 	public ModelAndView getInvalidSlots(@RequestParam("plantId") String plantId, @RequestParam("slotTypeId") String slotTypeId) 
 	{
  		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/invalid-slot-maintenance");
-		if (StringUtils.equals(mfrCode, ApplicationConstants.String_ZERO)) 
+		if (StringUtils.equals(plantId, ApplicationConstants.String_ZERO)) 
 		{
 			Set<Integer> invalidSlotIds = buildMatrixSmcService.getInvalidSlotIds();
 			if(!invalidSlotIds.isEmpty()) {
 				BuildMatrixSlot slot = buildMatrixSmcService.getSlotById(invalidSlotIds.iterator().next());
 				BuildMatrixBodyPlant bodyPlant = buildMatrixSmcService.getBodyPlantById(slot.getPlantId());
-				mfrCode = bodyPlant.getPlantMfrCode();
+				plantId = Integer.toString(bodyPlant.getPlantId());
+				Set<Integer> slotTypeIds = buildMatrixSmcService.getInvalidSlotTypesforPlant(bodyPlant.getPlantId());
+				slotTypeId = Integer.toString(slotTypeIds.iterator().next());
 			}
 		}
 		boolean invalidSlotsExist = false;
-		if (!StringUtils.equals(mfrCode, ApplicationConstants.String_ZERO)) {
+		if (!StringUtils.equals(plantId, ApplicationConstants.String_ZERO)) {
 			invalidSlotsExist = true;
-			InvalidSlotsSummary invalidRegionSlots = buildMatrixSmcService.getInvalidSlotSummaryForMfr(mfrCode);
+			InvalidSlotsSummary invalidRegionSlots = buildMatrixSmcService.getInvalidSlotSummaryForPlantAndSlotType(plantId, slotTypeId);
 		}
 		
 		model.addObject("invalidSlotsExist", invalidSlotsExist);

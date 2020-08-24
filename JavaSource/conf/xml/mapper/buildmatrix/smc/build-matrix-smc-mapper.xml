@@ -184,6 +184,7 @@
 			LEFT JOIN OBM_REGION_PLANT_ASSOCIATION reg 
 			ON mileage.REGION = reg.REGION AND mileage.plant_id = reg.plant_id
 		WHERE mileage.REGION <![CDATA[<>]]> ''
+		AND reg.plant_id = #{plantId}
 		ORDER BY mileage.REGION
 	</select>
 	
@@ -1220,6 +1221,7 @@
 	 				#{slotDateId}
 	 			</foreach>
 			)
+		ORDER BY SLOT_DATE
 	</select>
 	
 	<select id="getSlotDate" parameterType="int" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlotDate">
@@ -1313,6 +1315,45 @@
 		ORDER BY PLANT.PLANT_MANUFACTURER, PLANT.PLANT_CITY
 	</select>
 	
+	<select id="getInvalidSlotIdsByPlantAndSlotType" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlot">
+		SELECT   SLOT.SLOT_ID AS slotId,
+		         SLOT_TYPE_ID AS slotTypeId,
+		         plant.PLANT_ID AS plantId,
+		         SLOT_DATE_ID AS slotDateId,
+		         SLOT_AVAILABLE AS availableSlots,
+		         SLOT_RESERVED AS reservedSlots,
+		         COALESCE(sumTable.allocatedSlots, 0) as allocatedRegionSlots
+		FROM     SMC.OBM_SLOTS SLOT 
+		JOIN 	 SMC.OBM_PLANTS PLANT ON SLOT.PLANT_ID = PLANT.PLANT_ID
+		LEFT JOIN (
+				Select 
+					region.SLOT_ID, 
+					SUM(SLOT_AVAILABLE) as allocatedSlots 
+					SUM(IS_INVALID) as isInvalid
+				from SMC.OBM_SLOTS_BY_REGION region 
+				GROUP BY region.SLOT_ID
+			) sumTable ON SLOT.SLOT_ID = sumTable.SLOT_ID
+		WHERE    SLOT_TYPE_ID=CAST(#{slotTypeId} AS INTEGER)
+		AND sumTable.isInvalid > 0
+		AND plant.PLANT_ID = #{plantId}
+	</select>
+	
+	<select id="getInvalidSlotTypesforPlant" resultType="int">
+		SELECT   
+		         DISTINCT SLOT_TYPE_ID AS slotTypeId
+		FROM     SMC.OBM_SLOTS SLOT 
+		JOIN 	 SMC.OBM_PLANTS PLANT ON SLOT.PLANT_ID = PLANT.PLANT_ID
+		LEFT JOIN (
+				Select 
+					region.SLOT_ID, 
+					SUM(IS_INVALID) as isInvalid
+				from SMC.OBM_SLOTS_BY_REGION region 
+				GROUP BY region.SLOT_ID
+			) sumTable ON SLOT.SLOT_ID = sumTable.SLOT_ID
+		WHERE sumTable.isInvalid > 0
+		AND plant.PLANT_ID = #{plantId}
+	</select>
+	
 	<update id="updateSlot">
 		UPDATE 
 			SMC.OBM_SLOTS 
@@ -1329,6 +1370,8 @@
 		FROM SMC.OBM_SLOTS_BY_REGION
 		WHERE IS_INVALID_SLOT = 1
 	</select>
+	
+	
 	
 	<select id="getRegionAvailabilityBySlotIdsAndRegion" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlotRegionAvailability">
 		SELECT 

@@ -245,15 +245,8 @@ $('.region-association').on("click", function() {
 		},
 		success : function(data) {
 			$regionAssociationModal.html(data);
-			var regionData = $('.regionData').val();
-			if (regionData.length > 2) {
-				$regionAssociationModal.find('.error').hide();
-				$('.errorMsgInput').removeClass('errorMsgInput');
-				ModalUtil.openModal($regionAssociationModal);
-				regionAssociationUpdateList = [];
-			} else {
-				addErrorMessage("No region available for the plant, check the data and try again");
-			}
+			ModalUtil.openModal($regionAssociationModal);
+			regionAssociationUpdateList = [];
 		},
 	});
 });

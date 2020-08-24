@@ -3,6 +3,8 @@
  */
 package com.penske.apps.buildmatrix.controller;
 
+import static java.util.stream.Collectors.toMap;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.time.LocalDate;
@@ -38,6 +40,7 @@ import com.penske.apps.buildmatrix.domain.BuildMatrixSlotDate;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlotType;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.ProductionSlotResult;
+import com.penske.apps.buildmatrix.domain.RegionPlantAssociation;
 import com.penske.apps.buildmatrix.model.AvailableChassisSummaryModel;
 import com.penske.apps.buildmatrix.model.BuildMixForm;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm;
@@ -302,7 +305,9 @@ public class BuildMatrixRestController {
 	public ModelAndView getRegionAssociationModalData(@RequestParam("plantId") int plantId) {
 		ModelAndView mav = new ModelAndView("/admin-console/oem-build-matrix/modal/region-association-modal");
 		mav.addObject("plantData", buildMatrixSmcService.getPlantData(plantId));
-		mav.addObject("regionData", buildMatrixSmcService.getRegionAssociationData(plantId));
+		mav.addObject("raByRegion", buildMatrixSmcService.getRegionAssociationData(plantId).stream()
+				.collect(toMap(RegionPlantAssociation::getRegion, ra -> ra)));
+		mav.addObject("regionMap", buildMatrixSmcService.getRegionAssociationDataMap());
 		return mav;
 	}
 

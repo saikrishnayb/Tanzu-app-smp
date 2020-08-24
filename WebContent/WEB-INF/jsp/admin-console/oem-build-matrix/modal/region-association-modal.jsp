@@ -12,10 +12,22 @@
 			<input type="hidden" value="${regionData}" class="regionData" name="regionData"/>
 			<div>
 			<ul id="region-div">
-				<c:forEach items="${regionData}" var="region">
+				<c:forEach items="${regionMap}" var="entry">
+					<c:set var="region" value="${entry.value}"/>
+					<c:set var="ra" value="${raByRegion.get(region.region)}"/>
+					<c:choose>
+						<c:when test="${empty ra}">
+							<c:set var="isAssociated" value="${false}"/>
+							<c:set var="regionAssociationId" value=""/>
+						</c:when>
+						<c:otherwise>
+							<c:set var="isAssociated" value="${true}"/>
+							<c:set var="regionAssociationId" value="${ra.regionAssociationId}"/>
+						</c:otherwise>
+					</c:choose>
 					<li class="region-value">
 					<input type="checkbox" class="region-value-input" value="${region.region}" region-desc="${region.regionDesc}"
-					<c:if test="${region.isAssociated=='Y'}">checked="checked" region-association-id="${region.regionAssociationId}"</c:if>/>${region.region} - ${region.regionDesc}
+					<c:if test="${isAssociated}">checked="checked" region-association-id="${regionAssociationId}"</c:if>/>${region.region} - ${region.regionDesc}
 					</li>
 				</c:forEach>
 			</ul>

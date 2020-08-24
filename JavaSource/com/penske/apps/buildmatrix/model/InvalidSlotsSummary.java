@@ -1,5 +1,11 @@
 package com.penske.apps.buildmatrix.model;
 
+import static java.util.stream.Collectors.summingInt;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,16 +17,15 @@ import com.penske.apps.buildmatrix.domain.RegionPlantAssociation;
 
 public class InvalidSlotsSummary {
 
-	public InvalidSlotsSummary(Map<Integer, BuildMatrixBodyPlant> bodyPlantsById,
-			Map<Integer, List<RegionPlantAssociation>> regionPlantAssociationsByPlantId,
-			Map<String, String> regionDescByRegion, Map<Integer, BuildMatrixSlot> invalidSlotsForMfrById,
-			Map<Integer, BuildMatrixSlotDate> slotDatesById,
-			Map<Integer, List<BuildMatrixSlotRegionAvailability>> invalidRegionSlotsBySlotId) {
+	public InvalidSlotsSummary(BuildMatrixBodyPlant bodyPlant, List<BuildMatrixSlot> invalidSlots,
+			List<BuildMatrixSlotRegionAvailability> invalidRegionSlots, List<BuildMatrixSlotDate> slotDates) {
 		
+		Map<Integer, BuildMatrixSlot> invalidSlotsByDateId = invalidSlots.stream()
+				.collect(toMap(BuildMatrixSlot::getSlotDateId, sl -> sl));
 		
-		
+		Map<Integer, Map<String, BuildMatrixSlotRegionAvailability>> regionSlotsByRegionBySlotId = new HashMap<>();
 	}
-	
+
 	public static class InvalidSlotsSummaryRow {
 		private BuildMatrixSlotDate slotDate;
 		private List<InvalidSlotsSummaryCell> cells;
