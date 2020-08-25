@@ -150,7 +150,7 @@ public interface BuildMatrixSmcDAO {
 	//PRODUCTION SLOT MAINTENANCE//
 	public List<BuildMatrixSlotType> getAllVehicleTypes();
 	
-	public List<BuildMatrixSlotType> getVehicleTypesByIds(@Param("slotTypeIds") List<Integer> slotTypeIds);
+	public List<BuildMatrixSlotType> getVehicleTypesByIds(@Param("slotTypeIds") Collection<Integer> slotTypeIds);
 	
 	public List<Integer> getYearsforSLotMaintenance();
 	
@@ -233,5 +233,9 @@ public interface BuildMatrixSmcDAO {
 	public List<BuildMatrixSlot> getInvalidSlotIdsByPlantAndSlotType(@Param("slotTypeId") int slotTypeId, @Param("plantId") int plantId);
 	
 	public Set<Integer> getInvalidSlotTypesforPlant(@Param("plantId") int plantId);
+
+	public List<BuildMatrixBodyPlant> getInvalidBodyPlantsByMfrCode(@Param("mfrCode") String mfrCode);
+
+	public List<BuildMatrixBodyPlant> getInvalidBodyPlants();
 
 }

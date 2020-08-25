@@ -1201,6 +1201,62 @@
 		ORDER BY PLANT_MANUFACTURER, PLANT_CITY
 	</select>
 	
+	<select id="getInvalidBodyPlants" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant">
+		SELECT   plants.PLANT_ID AS plantId,
+		         plants.PLANT_MFR_CODE AS plantMfrCode,
+		         plants.PLANT_MANUFACTURER AS plantManufacturer,
+		         plants.PLANT_NAME AS plantName,
+		         plants.PLANT_STATE AS state,
+		         plants.PLANT_ZIP AS zip,
+		         plants.PLANT_COUNTRY AS country,
+		         plants.PLANT_CITY AS city
+		FROM     SMC.OBM_PLANTS plants
+		WHERE plants.PLANT_ID IN (
+				SELECT
+					SLOT.PLANT_ID
+				FROM
+					SMC.OBM_SLOTS SLOT
+				LEFT JOIN (
+					Select 
+						region.SLOT_ID, 
+						SUM(IS_INVALID_SLOT) as isInvalid
+					from SMC.OBM_SLOTS_BY_REGION region 
+					GROUP BY region.SLOT_ID
+				) sumTable ON SLOT.SLOT_ID = sumTable.SLOT_ID
+				WHERE sumTable.isInvalid > 0
+			)
+		ORDER BY plants.PLANT_MANUFACTURER, plants.PLANT_CITY
+	</select>
+	
+	<select id="getInvalidBodyPlantsByMfrCode" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant">
+		SELECT   plants.PLANT_ID AS plantId,
+		         plants.PLANT_MFR_CODE AS plantMfrCode,
+		         plants.PLANT_MANUFACTURER AS plantManufacturer,
+		         plants.PLANT_NAME AS plantName,
+		         plants.PLANT_STATE AS state,
+		         plants.PLANT_ZIP AS zip,
+		         plants.PLANT_COUNTRY AS country,
+		         plants.PLANT_CITY AS city
+		FROM     SMC.OBM_PLANTS plants
+		WHERE
+			PLANT_MFR_CODE = #{mfrCode}
+			AND plants.PLANT_ID IN (
+				SELECT
+					SLOT.PLANT_ID
+				FROM
+					SMC.OBM_SLOTS SLOT
+				LEFT JOIN (
+					Select 
+						region.SLOT_ID, 
+						SUM(IS_INVALID_SLOT) as isInvalid
+					from SMC.OBM_SLOTS_BY_REGION region 
+					GROUP BY region.SLOT_ID
+				) sumTable ON SLOT.SLOT_ID = sumTable.SLOT_ID
+				WHERE sumTable.isInvalid > 0
+			)
+		ORDER BY plants.PLANT_MANUFACTURER, plants.PLANT_CITY
+	</select>
+	
 	<select id="getSlotDatesForYear" parameterType="int" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlotDate">
 		SELECT   SLOT_DATE_ID,
 		         SLOT_YEAR,
@@ -1328,8 +1384,8 @@
 		LEFT JOIN (
 				Select 
 					region.SLOT_ID, 
-					SUM(SLOT_AVAILABLE) as allocatedSlots 
-					SUM(IS_INVALID) as isInvalid
+					SUM(SLOT_AVAILABLE) as allocatedSlots,
+					SUM(IS_INVALID_SLOT) as isInvalid
 				from SMC.OBM_SLOTS_BY_REGION region 
 				GROUP BY region.SLOT_ID
 			) sumTable ON SLOT.SLOT_ID = sumTable.SLOT_ID
@@ -1346,7 +1402,7 @@
 		LEFT JOIN (
 				Select 
 					region.SLOT_ID, 
-					SUM(IS_INVALID) as isInvalid
+					SUM(region.IS_INVALID_SLOT) as isInvalid
 				from SMC.OBM_SLOTS_BY_REGION region 
 				GROUP BY region.SLOT_ID
 			) sumTable ON SLOT.SLOT_ID = sumTable.SLOT_ID

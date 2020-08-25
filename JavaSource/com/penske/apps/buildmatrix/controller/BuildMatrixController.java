@@ -551,6 +551,7 @@ public class BuildMatrixController {
  	public ModelAndView getInvalidSlots(@RequestParam("plantId") String plantId, @RequestParam("slotTypeId") String slotTypeId) 
 	{
  		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/invalid-slot-maintenance");
+ 		String mfr = "";
 		if (StringUtils.equals(plantId, ApplicationConstants.String_ZERO)) 
 		{
 			Set<Integer> invalidSlotIds = buildMatrixSmcService.getInvalidSlotIds();
@@ -565,9 +566,17 @@ public class BuildMatrixController {
 		boolean invalidSlotsExist = false;
 		if (!StringUtils.equals(plantId, ApplicationConstants.String_ZERO)) {
 			invalidSlotsExist = true;
-			InvalidSlotsSummary invalidRegionSlots = buildMatrixSmcService.getInvalidSlotSummaryForPlantAndSlotType(plantId, slotTypeId);
+			InvalidSlotsSummary invalidSlotsSummary = buildMatrixSmcService.getInvalidSlotSummaryForPlantAndSlotType(plantId, slotTypeId);
+			model.addObject("invalidSlotsSummary", invalidSlotsSummary);
+			model.addObject("selectedMfr", invalidSlotsSummary.getBodyPlant().getPlantMfrCode());
+			model.addObject("selectedPlant", invalidSlotsSummary.getBodyPlant().getPlantId());
+			model.addObject("selectedSlotType", invalidSlotsSummary.getSlotType().getSlotTypeId());
+			model.addObject("plantList", buildMatrixSmcService.getInvalidBodyPlantsByMfrCode(invalidSlotsSummary.getBodyPlant().getPlantMfrCode()));
+			model.addObject("mfrMap", buildMatrixSmcService.getInvalidMfrList());
+			Set<Integer> slotTypeIds = buildMatrixSmcService.getInvalidSlotTypesforPlant(invalidSlotsSummary.getBodyPlant().getPlantId());
+			model.addObject("slotTypeList", buildMatrixSmcService.getVehicleTypeByIds(slotTypeIds));
+			
 		}
-		
 		model.addObject("invalidSlotsExist", invalidSlotsExist);
 		return model;
 	}

@@ -488,6 +488,12 @@ public class BuildMatrixRestController {
 	}
 	
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping(value="get-invalid-body-plants-by-mfr-code",method = {RequestMethod.GET })
+	public List<BuildMatrixBodyPlant> getInvalidBodyPlantsForMfr(@RequestParam("mfrCode") String mfrCode) {
+		return buildMatrixSmcService.getInvalidBodyPlantsByMfrCode(mfrCode);
+	}
+	
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping(value="export-slot-maintenance",method = {RequestMethod.POST })
 	public void exportSlotMaintenance(HttpServletResponse response, @RequestParam("slotTypeId") int slotTypeId, 
 			@RequestParam("year") int year,

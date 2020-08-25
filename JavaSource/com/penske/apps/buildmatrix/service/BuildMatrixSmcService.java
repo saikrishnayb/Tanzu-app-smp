@@ -212,4 +212,10 @@ public interface BuildMatrixSmcService {
 
 	public Set<Integer> getInvalidSlotTypesforPlant(int plantId);
 
+	public List<BuildMatrixBodyPlant> getInvalidBodyPlantsByMfrCode(String mfrCode);
+
+	public List<BuildMatrixSlotType> getVehicleTypeByIds(Set<Integer> slotTypeIds);
+
+	public Map<String, String> getInvalidMfrList();
+
 }

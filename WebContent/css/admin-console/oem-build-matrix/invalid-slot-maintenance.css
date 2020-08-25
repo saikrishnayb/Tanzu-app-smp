@@ -1,0 +1,74 @@
+.invalid-slots-table-top {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.invalid-slots-table-top  div {
+	display: inline-block;
+}
+
+#invalid-slots-table td,
+.dataTables_scrollHead th {
+	text-align: center !important;
+}
+
+/* #slot-region-maintenance-table thead { 
+	position: sticky;
+	display: block;
+	top: 0;
+	z-index:999;
+}
+ */
+
+.search-div div {
+	padding-right: 35px;
+}
+
+.now-viewing-row span {
+	padding-right: 10px;
+}
+
+.available-slot-input{
+	width: 70px;
+    text-align: center;
+    margin-bottom: 0px !important;
+    margin-top: 2px;
+}
+
+.unallocated-region-slots-div {
+	height: 5px;
+	margin-bottom: 5px;
+}
+.unallocated-region-slots {
+	font-weight: bold;
+    font-size: smaller;
+}
+
+/* .first-col {
+	min-width: 100px;
+} */
+
+/* .region-row .first-col {
+	background-color: inherit;
+}
+
+.region-row th, */
+.region-header-row th{
+	border-radius: 5px;
+	border: 2px solid white;
+}
+
+.no-invalid-slots-message{
+	font-weight: bold;
+	margin-top: 20px;
+	text-align: center;
+}
+
+table.dataTable {
+	margin: 0px !important;
+}
+
+/* fix for fixed columns *shrug emoji* */
+.DTFC_LeftBodyWrapper:nth-child(2) .dataTable.no-footer.DTFC_Cloned thead{
+	display: none;
+}

@@ -1813,6 +1813,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	@Override
 	public InvalidSlotsSummary getInvalidSlotSummaryForPlantAndSlotType(String plantId, String slotTypeId) {
 		BuildMatrixBodyPlant bodyPlant = buildMatrixSmcDAO.getPlantData(Integer.parseInt(plantId));
+		List<RegionPlantAssociation> regionPlantAssociations = buildMatrixSmcDAO.getRegionAssociationData(Integer.parseInt(plantId));
 		BuildMatrixSlotType slotType = buildMatrixSmcDAO.getVehicleTypeById(Integer.parseInt(slotTypeId));
 		List<BuildMatrixSlot> invalidSlots = buildMatrixSmcDAO.getInvalidSlotIdsByPlantAndSlotType(slotType.getSlotTypeId(), bodyPlant.getPlantId());
 		List<BuildMatrixSlotRegionAvailability> invalidRegionSlots = buildMatrixSmcDAO.getRegionAvailabilityBySlotIds(invalidSlots.stream()
@@ -1822,8 +1823,8 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 				.map(BuildMatrixSlot::getSlotDateId)
 				.collect(toSet()));
 		
-		InvalidSlotsSummary summary = new InvalidSlotsSummary(bodyPlant, invalidSlots, 
-				invalidRegionSlots, slotDates);
+		InvalidSlotsSummary summary = new InvalidSlotsSummary(bodyPlant, slotType, invalidSlots, 
+				invalidRegionSlots, slotDates, regionPlantAssociations);
 		
 		return summary;
 	}
@@ -1831,5 +1832,28 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	@Override
 	public Set<Integer> getInvalidSlotTypesforPlant(int plantId) {
 		return buildMatrixSmcDAO.getInvalidSlotTypesforPlant(plantId);
+	}
+	
+	@Override
+	public List<BuildMatrixBodyPlant> getInvalidBodyPlantsByMfrCode(String mfrCode) {
+		return buildMatrixSmcDAO.getInvalidBodyPlantsByMfrCode(mfrCode);
+	}
+	
+	@Override
+	public List<BuildMatrixSlotType> getVehicleTypeByIds(Set<Integer> slotTypeIds) {
+		return buildMatrixSmcDAO.getVehicleTypesByIds(slotTypeIds);
+	}
+	
+	@Override
+	public Map<String, String> getInvalidMfrList() {
+		List<BuildMatrixBodyPlant> bodyPlantList  = buildMatrixSmcDAO.getInvalidBodyPlants();
+		Map<String, String> mfrMap = new TreeMap<>();
+		
+		for(BuildMatrixBodyPlant plant: bodyPlantList) {
+			if(!mfrMap.containsKey(plant.getPlantMfrCode()))
+					mfrMap.put(plant.getPlantMfrCode(), plant.getPlantManufacturer());
+		}
+
+		return mfrMap;
 	}
 }
