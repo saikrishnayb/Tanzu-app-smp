@@ -41,51 +41,64 @@ $('.available-slot-input').on('focusout', function(){
 });
 
 $('.available-slot-input').on('input', function(){
-	this.value = this.value.replace(/[^0-9]/g,'');
-	var inputValue = this.value;
-	var $td = $(this).closest('.available-units-td');
-	var allocatedSlots =  parseInt(this.getAttribute('data-allocated-slots'));
-	var overallSlots =  parseInt(this.getAttribute('data-overall-slots'));
-	var allocatedRegionSlots = parseInt(this.getAttribute('data-region-allocated-slots'));
+	var $row = $(this).closest('.date-unit-row');
+	var overallSlots =  $row.data('available-slots')
 	
-	if(inputValue == ''){
-		$('#save-region-slots-btn').addClass('buttonDisabled');
-		$(this).addClass('errorMsgInput');
-		return false;
-	}
-	else{
-		$(this).removeClass('errorMsgInput');
-	}
 	if(ritsu.isFormDirty('#region-slot-maintenance-form'))
-		$('#save-region-slots-btn').removeClass('buttonDisabled');
+		$('#save-invalid-slots-btn').removeClass('buttonDisabled');
 	
-	var value = parseInt(inputValue);
-	$td.find('.unallocated-slots').text(overallSlots - value - allocatedSlots);
-	
-	if(value + allocatedSlots > overallSlots) {
-		$('#save-region-slots-btn').addClass('buttonDisabled');
-		$(this).addClass('errorMsgInput');
-		$td.find('.unallocated-region-slots').addClass('errorMsg');
-	}
-	else if(value < allocatedRegionSlots) {
-		$('#save-region-slots-btn').addClass('buttonDisabled');
-		$(this).addClass('errorMsgInput');
-		$td.find('.unallocated-region-slots').addClass('errorMsg');
-	}
-	else {
-		$('#save-region-slots-btn').removeClass('buttonDisabled');
-		$(this).removeClass('errorMsgInput');
-		$td.find('.unallocated-region-slots').removeClass('errorMsg');
-	}
-	
-	$('.available-slot-input').each(function(){
-		if($(this).hasClass('errorMsgInput'))
-			$('#save-region-slots-btn').addClass('buttonDisabled');
+	var rowSlots = 0;
+	var errorsExist = false;
+	$row.find('.available-slot-input').each(function(){
+		var $td = $(this).closest('.available-units-td');
+		this.value = this.value.replace(/[^0-9]/g,'');
+		var inputValue = this.value;
+		var allocatedRegionSlots = parseInt(this.getAttribute('data-region-allocated-slots'));
+		
+		if(inputValue == ''){
+			$('#save-invalid-slots-btn').addClass('buttonDisabled');
+			$(this).addClass('errorMsgInput');
+			$td.find('.unallocated-region-slots').addClass('errorMsg');
+			errorsExist = true;
+		}
+		else{
+			$(this).removeClass('errorMsgInput');
+			$td.find('.unallocated-region-slots').removeClass('errorMsg');
+		}
+		
+		if(errorsExist)
+			return;
+		
+		var value = parseInt(inputValue);
+		
+		if(value < allocatedRegionSlots) {
+			$('#save-invalid-slots-btn').addClass('buttonDisabled');
+			$(this).addClass('errorMsgInput');
+			$td.find('.unallocated-region-slots').addClass('errorMsg');
+			errorsExist = true;
+		}
+		rowSlots += value;
 	});
+	
+	var invalidRow = false;
+	if(rowSlots > overallSlots) {
+		$('#save-invalid-slots-btn').addClass('buttonDisabled');
+		invalidRow = true;
+	}
+	
+	$row.find('.available-slot-input').each(function(){
+		var $td = $(this).closest('.available-units-td');
+		$td.find('.unallocated-slots').text(overallSlots-rowSlots);
+		if(invalidRow) {
+			$(this).addClass('errorMsgInput');
+			$td.find('.unallocated-region-slots').addClass('errorMsg');
+		}
+	});
+	
 	
 });
 
-$('#save-region-slots-btn').on('click', function(){
+$('#save-invalid-slots-btn').on('click', function(){
 	if($(this).hasClass('buttonDisabled'))
 		return false;
 	
@@ -123,7 +136,7 @@ $('#save-region-slots-btn').on('click', function(){
 	});
 	
 	$saveSlotsPromise.done(function(){
-		$('#save-region-slots-btn').addClass('buttonDisabled');
+		$('#save-invalid-slots-btn').addClass('buttonDisabled');
 		$('#region-slot-maintenance-form').find(':input:disabled').removeAttr("disabled");
     	ritsu.storeInitialFormValues('#region-slot-maintenance-form');
 	});

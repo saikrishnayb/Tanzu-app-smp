@@ -247,9 +247,10 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 				}
 			}
 			List<BuildMatrixSlotRegionAvailability> regionAvailabilities = new ArrayList<>();
+			Set<Integer> invalidSlotIds = buildMatrixSmcDAO.getInvalidSlotIds();
 			for(Integer slotId: slotIdList) {
 				for(RegionPlantAssociation rpa: regionsToAdd)
-					regionAvailabilities.add(new BuildMatrixSlotRegionAvailability(slotId, rpa));
+					regionAvailabilities.add(new BuildMatrixSlotRegionAvailability(slotId, rpa, invalidSlotIds.contains(slotId)));
 			}
 			new BatchRunnable<BuildMatrixSlotRegionAvailability>(regionAvailabilities, 60) {
 	            @Override protected void runBatch(List<BuildMatrixSlotRegionAvailability> items){
@@ -1135,12 +1136,13 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		}
 		
 		List<RegionPlantAssociation> associationList = buildMatrixSmcDAO.getAllRegionAssociationData();
+		Set<Integer> invalidSlotIds = buildMatrixSmcDAO.getInvalidSlotIds();
 		List<BuildMatrixSlotRegionAvailability> regionAvailabilityList = new ArrayList<>();
 		for(RegionPlantAssociation assoc: associationList) {
 			List<BuildMatrixSlot> slotList = slotsByPlantId.get(assoc.getPlantId());
 			if(slotList != null) {
 				for(BuildMatrixSlot slot: slotList) {
-					regionAvailabilityList.add(new BuildMatrixSlotRegionAvailability(slot.getSlotId(), assoc));
+					regionAvailabilityList.add(new BuildMatrixSlotRegionAvailability(slot.getSlotId(), assoc, invalidSlotIds.contains(slot.getSlotId())));
 				}
 			}
 		}
@@ -1589,10 +1591,11 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		}
 		
 		Map<Integer,BuildMatrixSlot> slotByslotId = slots.stream().collect(toMap(BuildMatrixSlot::getSlotId, slot->slot));
+		Set<Integer> invalidSlotIds = buildMatrixSmcDAO.getInvalidSlotIds();
 		List<BuildMatrixSlotRegionAvailability> regionAvailabilityList = buildMatrixSmcDAO.getRegionAvailabilityBySlotIdsAndRegion(slotByslotId.keySet(), region);
 		if(regionAvailabilityList.isEmpty()) {
 			for(BuildMatrixSlot slot : slotByslotId.values()) {
-				BuildMatrixSlotRegionAvailability ra = new BuildMatrixSlotRegionAvailability(slot.getSlotId(), region);
+				BuildMatrixSlotRegionAvailability ra = new BuildMatrixSlotRegionAvailability(slot.getSlotId(), region, invalidSlotIds.contains(slot.getSlotId()));
 				regionAvailabilityList.add(ra);
 			}
 			buildMatrixSmcDAO.insertSlotRegionAvailabilities(regionAvailabilityList);
@@ -1742,7 +1745,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 			List<RegionSlotInfo> regionSlotsToCreate = form.getRegionSlotInfos().stream()
 					.filter(si -> si.getSlotRegionId() == -1)
 					.collect(toList());
-			
+			Set<Integer> invalidSlotIds = buildMatrixSmcDAO.getInvalidSlotIds();
 			for(RegionSlotInfo slotInfo: regionSlotsToCreate) {
 				List<BuildMatrixSlotRegionAvailability> slotList = buildMatrixSmcDAO.getRegionAvailabilityBySlotIdsAndRegion(Arrays.asList(slotInfo.getSlotId()), region);
 				if(!slotList.isEmpty()) {
@@ -1750,7 +1753,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 					slotInfo.setSlotRegionId(ra.getSlotRegionId());
 				}
 				else {
-					BuildMatrixSlotRegionAvailability ra = new BuildMatrixSlotRegionAvailability(slotInfo.getSlotId(), region);
+					BuildMatrixSlotRegionAvailability ra = new BuildMatrixSlotRegionAvailability(slotInfo.getSlotId(), region, invalidSlotIds.contains(slotInfo.getSlotId()));
 					buildMatrixSmcDAO.insertSlotRegionAvailability(ra);
 					slotInfo.setSlotRegionId(ra.getSlotRegionId());
 				}

@@ -1499,7 +1499,7 @@
 				CAST(#{rpa.slotAvailable} AS INTEGER),
 				CAST(#{rpa.slotReserved} AS INTEGER),
 				CAST(#{rpa.slotAccepted} AS INTEGER),
-				CAST(#{rpa.invalidSlot} AS INTEGER),
+				CAST(#{rpa.invalidSlot} AS INTEGER)
 			)
 		</foreach>
 		)

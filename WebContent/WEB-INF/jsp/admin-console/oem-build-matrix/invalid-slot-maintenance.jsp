@@ -115,7 +115,11 @@
 													</c:otherwise>
 												</c:choose>
 												<c:set var="slotDateId" value="${row.slotDate.slotDateId}" />
-												<tr class="date-unit-row ${rowClass}" data-prod-slot-date-id="${slotDateId}">
+												<tr class="date-unit-row ${rowClass}" 
+													data-prod-slot-date-id="${slotDateId}" 
+													data-slot-id="${row.slot.slotId}" 
+													data-available-slots="${row.slot.availableSlots}"
+													data-row-index="${loop.index}">
 													<td class="first-col prod-date centerAlign slot-table-header" headers="prod-date">${row.slotDate.formattedSlotDate}</td>
 													<c:forEach items="${row.cells}" var="cell">
 														<c:set var="ra" value="${cell.regionAvailability}"/>
@@ -157,7 +161,8 @@
 															<input type="hidden" name="invalidSlotInfos[XXX].slotId" value="${slotId}" />
 															<input type="hidden" name="invalidSlotInfos[XXX].plantId" value="${cell.bodyPlant.plantId}" />
 															<input type="hidden" name="invalidSlotInfos[XXX].slotDateId" value="${row.slotDate.slotDateId}" />
-															<input type="text" class="available-slot-input<c:if test="${invalidSlot}"> errorMsgInput</c:if>" name="regionSlotInfos[XXX].slotAvailable" value="${slotAvailable}" 
+															<input type="hidden" name="invalidSlotInfos[XXX].region" value="${cell.regionPlantAssociation.region}" />
+															<input type="text" class="available-slot-input<c:if test="${invalidSlot}"> errorMsgInput</c:if>" name="invalidSlotInfos[XXX].slotAvailable" value="${slotAvailable}" 
 																data-overall-slots="${availableSlots}" 
 																data-allocated-slots="${allocatedRegionSlots - slotAvailable}"
 																data-region-allocated-slots="${allocatedSlots}"/>
@@ -166,6 +171,7 @@
 																<span class="unallocated-region-slots hidden<c:if test="${invalidSlot}"> errorMsg</c:if>">
 																	Available: <span class="unallocated-slots">${unallocatedSlots}</span>
 																	&emsp;Reserved: ${allocatedSlots}</span>
+																</span>
 															</div>
 														</td>
 														<c:set var="slotIndex" value="${slotIndex+1}" />

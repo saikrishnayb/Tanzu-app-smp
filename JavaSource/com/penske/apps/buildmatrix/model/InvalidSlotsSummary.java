@@ -80,12 +80,14 @@ public class InvalidSlotsSummary {
 
 	public static class InvalidSlotsSummaryRow {
 		private BuildMatrixSlotDate slotDate;
+		private BuildMatrixSlot slot;
 		private List<InvalidSlotsSummaryCell> cells;
 		
 		public InvalidSlotsSummaryRow(BuildMatrixSlotDate slotDate, 
 				List<InvalidSlotsSummaryCell> cells) {
 			this.cells = cells;
 			this.slotDate = slotDate;
+			this.slot = cells.get(0).getSlot();
 		}
 		
 		public List<InvalidSlotsSummaryCell> getCells() {
@@ -93,6 +95,9 @@ public class InvalidSlotsSummary {
 		}
 		public BuildMatrixSlotDate getSlotDate() {
 			return slotDate;
+		}
+		public BuildMatrixSlot getSlot() {
+			return slot;
 		}
 	}
 	

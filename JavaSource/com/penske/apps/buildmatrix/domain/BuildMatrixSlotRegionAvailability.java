@@ -11,20 +11,22 @@ public class BuildMatrixSlotRegionAvailability {
 
 	protected BuildMatrixSlotRegionAvailability() {}
 
-	public BuildMatrixSlotRegionAvailability(int slotId, RegionPlantAssociation assoc) {
+	public BuildMatrixSlotRegionAvailability(int slotId, RegionPlantAssociation assoc, boolean invalidSlot) {
 		this.slotId = slotId;
 		this.region = assoc.getRegion();
 		this.slotAvailable = 0;
 		this.slotReserved = 0;
 		this.slotAccepted = 0;
+		this.invalidSlot = invalidSlot;
 	}
 	
-	public BuildMatrixSlotRegionAvailability(int slotId, String region) {
+	public BuildMatrixSlotRegionAvailability(int slotId, String region, boolean invalidSlot) {
 		this.slotId = slotId;
 		this.region = region;
 		this.slotAvailable = 0;
 		this.slotReserved = 0;
 		this.slotAccepted = 0;
+		this.invalidSlot = invalidSlot;
 	}
 	
 	// MODIFIED ACCESSORS
