@@ -11,10 +11,12 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.ModelMap;
@@ -47,6 +49,8 @@ import com.penske.apps.buildmatrix.model.BusinessAwardForm;
 import com.penske.apps.buildmatrix.model.DistrictProximityForm;
 import com.penske.apps.buildmatrix.model.ImportRegionSlotsResults;
 import com.penske.apps.buildmatrix.model.ImportSlotsResults;
+import com.penske.apps.buildmatrix.model.InvalidPlantsAndSlotTypes;
+import com.penske.apps.buildmatrix.model.InvalidSlotsForm;
 import com.penske.apps.buildmatrix.model.SavePlantRegionForm;
 import com.penske.apps.buildmatrix.model.SaveRegionSlotsForm;
 import com.penske.apps.buildmatrix.model.SaveSlotsForm;
@@ -753,6 +757,30 @@ public class BuildMatrixRestController {
 		List<String> debugInformation = buildMatrixSmcService.getDebugInformation(reservationId, buildId);
 		model.addObject("debugInformation", debugInformation);
 		return model;
+	}
+	
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping(value = "get-invalid-plants-and-slot-types")
+	public InvalidPlantsAndSlotTypes getInvalidPlantsAndSlotTypes(String mfrCode) {
+		List<BuildMatrixBodyPlant> invalidPlants = buildMatrixSmcService.getInvalidBodyPlantsByMfrCode(mfrCode);
+		Set<Integer> invalidSlotTypeIds = buildMatrixSmcService.getInvalidSlotTypesforPlant(invalidPlants.get(0).getPlantId());
+		List<BuildMatrixSlotType> slotTypes = buildMatrixSmcService.getVehicleTypeByIds(invalidSlotTypeIds);
+		return new InvalidPlantsAndSlotTypes(invalidPlants, slotTypes);
+	}
+	
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping(value = "get-invalid-slot-types")
+	public List<BuildMatrixSlotType> getInvalidSlotTypes(int plantId) {
+		Set<Integer> invalidSlotTypeIds = buildMatrixSmcService.getInvalidSlotTypesforPlant(plantId);
+		List<BuildMatrixSlotType> slotTypes = buildMatrixSmcService.getVehicleTypeByIds(invalidSlotTypeIds);
+		return slotTypes;
+	}
+	
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping(value = "/save-invalid-slots")
+	public void saveInvalidSlots(InvalidSlotsForm invalidSlotsForm) {
+		if(invalidSlotsForm.getInvalidSlotInfos() != null && !invalidSlotsForm.getInvalidSlotInfos().isEmpty())
+			buildMatrixSmcService.saveInvalidSlots(invalidSlotsForm);
 	}
 	
 }

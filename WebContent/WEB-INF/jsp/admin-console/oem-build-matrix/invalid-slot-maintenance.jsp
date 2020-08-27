@@ -34,12 +34,12 @@
 		      		<div class="row">
 		        		<div class="col-xs-12 invalid-slots-table-top">
 		        			<div class='search-div'>
-		        				<form id="filter-slots-form" action="./invalid-slot-maintenance.htm" method="GET">
+		        				<form id="filter-slots-form" action="./invalid-slots.htm" method="GET">
 		        				<div class="manufacturer-div">
 		        					<label>Manufacturer</label>
 			          				<select id="manufacturer-drpdwn">
 				          				<c:forEach items="${mfrMap}" var="mfr">
-				          					<c:set var="mSelected">${mfr.key eq mfrSelected}</c:set>
+				          					<c:set var="mSelected">${mfr.key eq selectedMfr}</c:set>
 				          					<c:if test="${mSelected}">
 				          						<c:set var="mfrSelected" scope="page" value="${mfr.key}" />
 				          					</c:if>
@@ -186,7 +186,22 @@
 					</div>
 				</c:otherwise>
 			</c:choose>
-			<div id="invalid-slot-modal" class="modal"></div>	
+			<div class="modal row" id="modal-invalid-slot-save">
+		      <div class="modal-content col-xs-12" data-modal-title="Save Invalid Units" data-modal-max-width="350" data-keep-contents="true">
+		        <div class="row">
+		          <div class="col-xs-12">
+		            Are you sure you want to save? Any rows with invalid entries will not be saved.
+		          </div>
+		          
+		          <div class="save-confrim-button-row col-xs-12">
+		            <div class="pull-right">
+		              <a id="cancel-save-btn" class="buttonSecondary btn">Cancel</a>
+		              <a id="save-invalid-slots-confirm-btn"class="buttonPrimary btn">Save</a>
+		            </div>
+		          </div>
+		        </div>
+		      </div>
+		    </div>
 		</div>
 		
 	</div>

@@ -71,16 +71,14 @@ public class BuildMatrixSlotRegionAvailability {
 		return invalidSlot;
 	}
 
-	public void updateAvailableSlots(int newAvailableSlots, BuildMatrixSlot slot, boolean importModal) {
-		if(newAvailableSlots + (slot.getAllocatedRegionSlots() - this.slotAvailable) > slot.getAvailableSlots()) {
-			this.invalidSlot = true;
-			if(!importModal)
-				throw new IllegalArgumentException("Available region slots cannot be more than the unallocated overall available slots");
-		}
-		else if(this.getSlotAccepted() + this.slotReserved > newAvailableSlots) {
+	public void updateAvailableSlots(int newAvailableSlots, boolean importModal) {
+		if(this.getSlotAccepted() + this.slotReserved > newAvailableSlots) {
 			this.invalidSlot = true;
 			if(!importModal)
 				throw new IllegalArgumentException("Available region slots cannot be less than the already allocated region slots");
+		}
+		else {
+			this.invalidSlot = false;
 		}
 		
 		this.slotAvailable = newAvailableSlots;

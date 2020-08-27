@@ -31,6 +31,7 @@ import com.penske.apps.buildmatrix.model.BuildMixForm;
 import com.penske.apps.buildmatrix.model.BusinessAwardForm;
 import com.penske.apps.buildmatrix.model.ImportRegionSlotsResults;
 import com.penske.apps.buildmatrix.model.ImportSlotsResults;
+import com.penske.apps.buildmatrix.model.InvalidSlotsForm;
 import com.penske.apps.buildmatrix.model.InvalidSlotsSummary;
 import com.penske.apps.buildmatrix.model.ProductionSlotsMaintenanceSummary;
 import com.penske.apps.buildmatrix.model.ProductionSlotsUtilizationSummary;
@@ -217,5 +218,7 @@ public interface BuildMatrixSmcService {
 	public List<BuildMatrixSlotType> getVehicleTypeByIds(Set<Integer> slotTypeIds);
 
 	public Map<String, String> getInvalidMfrList();
+
+	public void saveInvalidSlots(InvalidSlotsForm invalidSlotsForm);
 
 }
