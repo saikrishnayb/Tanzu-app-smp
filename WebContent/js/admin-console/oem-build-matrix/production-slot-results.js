@@ -14,21 +14,20 @@ ModalUtil.initializeModal($updateReservationModal);
 ModalUtil.initializeModal($viewDiagnosticInfoModal);
 
 $slotResultsDataTable = $slotResultsTable.DataTable({
-	"bPaginate" : true, //enable pagination
+	"bPaginate" : false, //enable pagination
 	"bStateSave" : true, //To retrieve the data on click of back button
 	"sPaginationType" : "two_button",
-	"bLengthChange" : true, //enable change of records per page, not recommended
+	"bLengthChange" : false, //enable change of records per page, not recommended
 	"bFilter" : true, //Allows dynamic filtering of results, do not enable if using ajax for pagination
 	"bAutoWidth" : false,
 	"bSort" : true, //Allow sorting by column header
 	"bInfo" : true, //Showing 1 to 10 of 11 entries
 	"sPaginationType" : "full_numbers", //Shows first/previous 1,2,3,4 next/last buttons
-	"iDisplayLength" : 100, //number of records per page for pagination
 	"aoColumnDefs" : [ {
 		'bSortable' : false,
 		'aTargets' : [ 0 ]
 	} ],
-	"dom" : "t",
+	"dom" : "ti",
 	"fnDrawCallback" : function() { //This will hide the pagination menu if we only have 1 page.
 		var paginateRow = $(this).parent().children('div.dataTables_paginate');
 		var pageCount = Math.ceil((this.fnSettings().fnRecordsDisplay()) / this.fnSettings()._iDisplayLength);
