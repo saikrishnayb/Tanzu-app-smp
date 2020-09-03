@@ -14,7 +14,7 @@
 	<select class="floatLeft width-200" name="planningAnalyst.userId">
 		<option value="">Select...</option>
 		<c:forEach var="analyst" items="${analysts}">
-		<option value="${analyst.userId}">${analyst.email}${analyst.firstName} ${analyst.lastName}</option>
+		<option value="${analyst.userId}">${analyst.firstName} ${analyst.lastName}</option>
 		</c:forEach>
 	</select>
 	

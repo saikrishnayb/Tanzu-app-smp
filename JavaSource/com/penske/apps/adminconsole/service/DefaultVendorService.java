@@ -96,7 +96,9 @@ public class DefaultVendorService implements VendorService {
 		
 		updateBaseVendorRecord(vendor, user);
 		updateVendorContactInformation(vendor, user);
-		return getEditVendorInformation(vendor.getVendorId());
+		//I am conflicted about this call; technically we could return this out of updateBaseVendorRecord
+		//but grabbing it at the end ensures that we get the latest data 
+		return getVendorById(vendor.getVendorId());
 	}
 	
 	@Override
