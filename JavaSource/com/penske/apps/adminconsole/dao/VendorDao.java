@@ -31,7 +31,7 @@ public interface VendorDao {
     public Vendor getEditVendorInformation(int vendorId);
 
     @NonVendorQuery
-    public void modifyVendorInfo(Vendor vendor);
+    public void modifyVendorInfo(@Param("vendor") Vendor vendor, @Param("updatedBy") String updatedBy);
 
     @NonVendorQuery
     public void modifyVendorContactInfo(VendorContact contact);
@@ -47,4 +47,7 @@ public interface VendorDao {
     
     @NonVendorQuery
     public List<Vendor> getAllViewVendorInfo();
+    
+    @NonVendorQuery
+	public Vendor getVendorById(int vendorId);
 }

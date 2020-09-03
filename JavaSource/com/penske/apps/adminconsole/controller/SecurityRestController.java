@@ -603,34 +603,16 @@ public class SecurityRestController {
 	@RequestMapping("modify-vendor-info")
 	@ResponseBody
 	public Vendor modifyVendorInfo(Vendor vendor) {
-		int vendorId = vendor.getVendorId();
-		Vendor vendorBeforeUpdate = vendorService.getEditVendorInformation(vendorId);
-		int prevAnalystId = vendorBeforeUpdate != null && vendorBeforeUpdate.getPlanningAnalyst() != null
-				? vendorBeforeUpdate.getPlanningAnalyst().getUserId()
-				: 0;
-
 		UserContext userContext = sessionBean.getUserContext();
-		vendorService.modifyVendorInformation(vendor, userContext);
-		List<Vendor> updatedVendors = vendorService.getAllVendors(userContext.getOrgId());
-		for (Vendor updatedVendor : updatedVendors) {
-			if (updatedVendor.getVendorId() == vendor.getVendorId()) {
-				int curAnalystId = updatedVendor.getPlanningAnalyst() != null
-						? updatedVendor.getPlanningAnalyst().getUserId()
-						: 0;
-				if (curAnalystId != 0 && curAnalystId != prevAnalystId) {
-					vendorService.sendEmailToAnalyst(updatedVendor, userContext);
-				}
-				return updatedVendor;
-			}
-		}
-		return null;
+		return vendorService.modifyVendorSingleUpdate(vendor, userContext);
 	}
 
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDORS)
     @RequestMapping("mass-update-vendors")
     @ResponseBody
-    public void modifyVendorsByVendorId(Vendor vendor, @RequestParam("vendorIds") int[] vendorIds) {
-        vendorService.modifyVendorsMassUpdate(vendorIds, vendor);
+    public void modifyVendorsByVendorId(Vendor vendor, @RequestParam("vendorIds") int... vendorIdsToApplyChange) {
+    	UserContext userContext = sessionBean.getUserContext();
+    	vendorService.modifyVendorsMassUpdate(vendor, userContext, vendorIdsToApplyChange);
     }
 
 

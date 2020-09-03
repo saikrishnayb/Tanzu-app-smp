@@ -33,6 +33,11 @@ public class DefaultVendorService implements VendorService {
 	private LookupManager lookupManager;
 	
 	@Override
+	public Vendor getVendorById(int vendorId) {
+	    return vendorDao.getVendorById(vendorId);
+	}
+	
+	@Override
 	public List<Vendor> getAllVendors(int orgId) {
 	    List<Vendor> allVendors = vendorDao.getAllVendors(orgId);
 		return allVendors;
@@ -84,17 +89,57 @@ public class DefaultVendorService implements VendorService {
 	public Vendor getEditVendorInformation(int vendorId) {
 		return vendorDao.getEditVendorInformation(vendorId);
 	}
+
+	@Override
+	public Vendor modifyVendorSingleUpdate(Vendor vendor, UserContext user) {
+		if(validateVendor(vendor)) return null;
+		
+		updateBaseVendorRecord(vendor, user);
+		updateVendorContactInformation(vendor, user);
+		return getEditVendorInformation(vendor.getVendorId());
+	}
 	
 	@Override
-	public void modifyVendorInformation(Vendor vendor,UserContext user) {
+	public void modifyVendorsMassUpdate(Vendor vendor, UserContext user, int... vendorIds) {
+		// Planning Analyst user ID cannot be zero or negative.
+		if (vendor.getPlanningAnalyst().getUserId() <= 0) return;		
+		
+		for (int i = 0; i < vendorIds.length; i++) {
+			vendor.setVendorId(vendorIds[i]);
+			
+			// Vendor ID cannot be negative or 0.
+			if (vendor.getVendorId() > 0) {
+				updateBaseVendorRecord(vendor, user);
+			}
+		}
+	}	
+	
+	private void updateBaseVendorRecord(Vendor vendor, UserContext user) {
+	
+		int vendorId = vendor.getVendorId();
+		Vendor vendorBeforeUpdate = getEditVendorInformation(vendorId);
+		int prevAnalystId = vendorBeforeUpdate != null && vendorBeforeUpdate.getPlanningAnalyst() != null
+				? vendorBeforeUpdate.getPlanningAnalyst().getUserId()
+				: 0;
+
+		vendorDao.modifyVendorInfo(vendor, user.getSso());
+		Vendor updatedVendor = getVendorById(vendor.getVendorId());
+		if (updatedVendor.getVendorId() == vendor.getVendorId()) {
+			int curAnalystId = updatedVendor.getPlanningAnalyst() != null
+					? updatedVendor.getPlanningAnalyst().getUserId()
+					: 0;
+			if (curAnalystId != 0 && curAnalystId != prevAnalystId) {
+				sendEmailToAnalyst(updatedVendor, user);
+			}
+		}
+	}
+	
+	private void updateVendorContactInformation(Vendor vendor, UserContext user) {
+		String currentUser = user.getSso();
 		VendorContact primary = vendor.getPrimaryContact();
 		VendorContact secondary = vendor.getSecondaryContact();
-		String currentUser=user.getUserSSO();
 		boolean primaryExists = false;
 		boolean secondaryExists = false;
-		
-		validateVendor(vendor);
-		vendorDao.modifyVendorInfo(vendor);
 		
 		primaryExists = (vendorDao.getVendorContact("PRIMARY", vendor.getVendorId()) != null);
 		secondaryExists = (vendorDao.getVendorContact("SECONDARY", vendor.getVendorId()) != null);
@@ -112,6 +157,7 @@ public class DefaultVendorService implements VendorService {
 			}
 		}
 		// The user did not enter information for the primary contact but it exists in the database.
+		// D.Roth Sept 9 2020 - can we even hit this condition?  If we get here its an error is it not?
 		else if (primary == null && primaryExists) {
 			vendorDao.removeVendorContact("PRIMARY", vendor.getVendorId());
 		}
@@ -133,7 +179,7 @@ public class DefaultVendorService implements VendorService {
 			vendorDao.removeVendorContact("SECONDARY", vendor.getVendorId());
 		}
 	}
-
+	
 	@Override
 	public void sendEmailToAnalyst(Vendor vendor, UserContext user) {
 		if (vendor == null || vendor.getPlanningAnalyst() == null || user == null) {
@@ -184,27 +230,6 @@ public class DefaultVendorService implements VendorService {
 			securityDao.addEmailSent(mailRequest);// Email Content to SMC_EMAIL - uses EBS
 		} catch (Exception e) {
 			logger.error("E-mail sending failed for user [" + user.getUserName() + "]", e);
-		}
-	}
-
-	@Override
-	public void modifyVendorsMassUpdate(int[] vendorIds, Vendor vendor) {
-		// Planning Analyst user ID cannot be zero or negative.
-		if (vendor.getPlanningAnalyst().getUserId() <= 0) {
-			return;
-		}
-		// Supply Specialist user ID cannot be zero or negative.
-	//	else if (vendor.getSupplySpecialist().getUserId() <= 0) {
-	//		return;
-	//	}
-		
-		for (int i = 0; i < vendorIds.length; i++) {
-			vendor.setVendorId(vendorIds[i]);
-			
-			// Vendor ID cannot be negative or 0.
-			if (vendor.getVendorId() > 0) {
-				vendorDao.modifyVendorInfo(vendor);
-			}
 		}
 	}
 	

@@ -20,11 +20,13 @@ public interface VendorService {
 	
 	public Vendor getEditVendorInformation(int vendorId);
 	
-	public void modifyVendorInformation(Vendor vendor,UserContext user);
+	public Vendor modifyVendorSingleUpdate(Vendor vendor, UserContext userContext);
 	
-	public void modifyVendorsMassUpdate(int[] vendorIds, Vendor vendor);
+	public void modifyVendorsMassUpdate(Vendor vendor, UserContext user, int... vendorIdsToApplyChange);
 	
 	public List<Alert> getAllAlerts();
 
 	void sendEmailToAnalyst(Vendor vendor, UserContext user);
+
+	Vendor getVendorById(int vendorId);
 }
