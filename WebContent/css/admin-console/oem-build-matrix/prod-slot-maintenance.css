@@ -7,6 +7,11 @@
 	display: inline-block;
 }
 
+#slot-maintenance-table td,
+.dataTables_scrollHead th {
+	text-align: center !important;
+}
+
 .available-slot-input{
 	width: 70px;
     text-align: center;
@@ -27,6 +32,11 @@
 	padding-left: 35px;
 }
 
+.plant-header-row th{
+	border-radius: 5px;
+	border: 2px solid white;
+}
+
 .slot-table-header{
 	width: 150px !important;
 }
@@ -43,6 +53,11 @@
 
 .search-div div {
     padding-right: 35px;
+}
+
+.prod-date-week-col{
+	width: 60px !important;
+	text-align: center !important;
 }
 
 /* fix for fixed columns *shrug emoji* */

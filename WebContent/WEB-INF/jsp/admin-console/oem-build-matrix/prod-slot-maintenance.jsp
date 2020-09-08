@@ -78,18 +78,19 @@
 								<input type="hidden" name="year" value="${selectedYear}">
 								<table id="slot-maintenance-table">
 									<thead>
-											<tr>
-											<th class="centerAlign slot-table-header" id="prod-date">Production Date</th>
-											<c:forEach items="${bodyplantList}" var="plantData">
-												<th class="centerAlign slot-table-header no-sort" id="${plantData.plantId}"> ${plantData.plantManufacturer} <br> ${plantData.city}, ${plantData.state}</th>	
-											</c:forEach>
+											<tr class="plant-header-row">
+												<th class="prod-date-week-col"></th>
+												<th class="centerAlign slot-table-header" id="prod-date">Production Date</th>
+												<c:forEach items="${bodyplantList}" var="plantData">
+													<th class="centerAlign slot-table-header no-sort" id="${plantData.plantId}"> ${plantData.plantManufacturer} <br> ${plantData.city}, ${plantData.state}</th>	
+												</c:forEach>
 											</tr>
 									</thead>
 									<tbody id="slot-maintenance-tablebody">
 										<c:set var="slotIndex" value="0" />
 										<c:forEach items="${summary.rows}" var="row">
 											<tr>
-												<td class="">${row.slotDate.weekOfYear}</td>
+												<td class="prod-date-week-col">WK ${row.slotDate.weekOfYear}</td>
 												<td class="centerAlign slot-table-header" headers="prod-date">${row.slotDate.formattedSlotDate}</td>
 												<c:forEach items="${row.cells}" var="cell">
 													<c:set var="slot" value="${cell.slot}"/>

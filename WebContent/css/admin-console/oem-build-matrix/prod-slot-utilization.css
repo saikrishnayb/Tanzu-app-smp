@@ -65,6 +65,11 @@ table.dataTable {
 	margin: 0px !important;
 }
 
+.prod-date-week-col{
+	width: 60px !important;
+	text-align: center !important;
+}
+
 /* fix for fixed columns *shrug emoji* */
 .DTFC_LeftBodyWrapper:nth-child(2) .dataTable.no-footer.DTFC_Cloned thead{
 	display: none;

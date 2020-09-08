@@ -115,6 +115,7 @@
 												</c:forEach>
 											</tr> --%>
 											<tr class="plant-header-row">
+												<th class="prod-date-week-col"></th>
 												<th id="prod-date" class="first-col slot-table-header">Production Date</th>
 												<c:forEach items="${bodyPlantList}" var="bodyPlant">
 													<th id="${bodyPlant.plantId}" class="slot-table-header">
@@ -138,6 +139,7 @@
 												</c:choose>
 												<c:set var="slotDateId" value="${row.slotDate.slotDateId}" />
 												<tr class="date-unit-row ${rowClass}" data-prod-slot-date-id="${slotDateId}">
+													<td class="prod-date-week-col">WK ${row.slotDate.weekOfYear}</td>
 													<td class="first-col prod-date centerAlign slot-table-header" headers="prod-date">${row.slotDate.formattedSlotDate}</td>
 													<c:forEach items="${row.cells}" var="cell">
 														<c:set var="ra" value="${cell.regionAvailability}"/>

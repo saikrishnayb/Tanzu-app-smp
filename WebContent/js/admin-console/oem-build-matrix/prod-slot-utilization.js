@@ -23,7 +23,8 @@ var $slotUtilizationDataTable = $slotUtilizationTable.DataTable({
 	'autoWidth': true,
 	'responsive': false,
 	'columnDefs': [
-		{targets: [0], width: '100px'}
+		{targets: [0], width: '100px'},
+		{targets: ['slot-table-header'], width: '140px'}
 	],
 	"language": {
 	      "emptyTable": "Slots have not been created for the selected year and vehicle type combination. Create slots to continue"
