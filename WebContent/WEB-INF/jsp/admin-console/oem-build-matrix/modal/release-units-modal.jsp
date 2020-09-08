@@ -40,7 +40,7 @@
 					<div class="col-xs-7">
 						<select id="release-units" name="releaseUnits" multiple onchange="enableUpdate()" class="common-form-control">
 							<c:forEach items="${slotReservations}" var="slotReservation">
-								<option value="${slotReservation.slotReservationId}">${slotReservation.unitNumber}</option>
+								<option value="${slotReservation.slotReservationId}">${slotReservation.unitNumber} - (Build ${slotReservation.runId})</option>
 							</c:forEach>
 						</select>
 					</div>
