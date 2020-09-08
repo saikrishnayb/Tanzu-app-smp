@@ -102,12 +102,14 @@
 											</c:forEach>
 										</tr> --%>
 										<tr class="plant-header-row">
+											<th class=""></th>
 											<th class="first-col">Production Date</th>
 											<c:forEach items="${bodyPlantList}" var="bodyPlant">
 												<th colspan="3" id="${bodyPlant.plantId}"> ${bodyPlant.plantManufacturer} <br> ${bodyPlant.city}, ${bodyPlant.state}</th>
 											</c:forEach>
 										</tr>
 										<tr class="badge-row">
+											<th class=""></th>
 											<th class="first-col"></th>
 											<c:forEach items="${bodyPlantList}" var="bodyPlant">
 												<th id="a-${bodyPlant.plantId}"><span class="badge available-badge">Available</span></th>
@@ -128,6 +130,7 @@
 											</c:choose>
 											<c:set var="slotDateId" value="${row.slotDate.slotDateId}" />
 											<tr class="date-unit-row ${rowClass}" data-prod-slot-date-id="${slotDateId}">
+												<td class="prod-date-week">WK ${row.slotDate.weekOfYear}</td>
 												<td class="first-col prod-date">${row.slotDate.formattedSlotDate}</td>
 												<c:forEach items="${row.cells}" var="cell">
 													<c:set var="ra" value="${cell.regionAvailability}"/>
