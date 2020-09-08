@@ -1641,7 +1641,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		        		.map(ac -> ac.getUnitNumber().trim()))
 		        .collect(Collectors.toList());
 		
-		if(availableUnitNumbers.contains(unitNumber))
+		if(availableUnitNumbers.contains(unitNumber.trim()))
 			return true;
 		else
 			return false;

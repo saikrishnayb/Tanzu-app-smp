@@ -10,7 +10,7 @@ public enum BuildStatus implements MappedEnum
 	COMPLETED("C", "Completed", "Build has run successfully and all requests have been fulfilled"),
 	APPROVED("A", "Approved", "Build has run completed and approved by vehicle supply"),
 	FAILED("F", "Failed", "A technical / IT error occured during the build process - We don't anticipate this to be a common outcome but are calling out any possible outcomes on this page"),
-	VOID("V", "Void", "A run which had been previously submitted and processed but later had all results removed will render the run as void."),
+	VOID("D", "Void", "A run which had been previously submitted and processed but later had all results removed will render the run as void."),
 	;
 
 	/** Code used to represent this status in the database. */

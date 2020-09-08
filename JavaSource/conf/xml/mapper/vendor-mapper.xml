@@ -97,7 +97,7 @@
 						ON	vend.SUPPLY_SPECIALIST = supp.USER_ID
 						INNER JOIN corp.fpurvnd purv
 						on purv.pvcorp = vend.corp and purv.pvnbr = vend.vendor_number
- LEFT JOIN ediVendor 
+ 		LEFT JOIN ediVendor 
             ON ediVendor.EDI_VENDOR = vend.VENDOR_NUMBER
             AND ediVendor.EDI_CORP = vend.CORP
 				WHERE org.ORG_ID=#{orgId} and vend.STATUS = 'A'
