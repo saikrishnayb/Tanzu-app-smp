@@ -152,6 +152,7 @@
 																<c:set var="slotAccepted" value="${0}"/>
 																<c:set var="invalidSlot" value="${false}"/>
 																<c:set var="allocatedSlots" value="${0}"/>
+																<c:set var="nonAcceptedSlots" value="${0}"/>
 															</c:when>
 															<c:otherwise>
 																<c:set var="slotRegionId" value="${ra.slotRegionId}"/>
@@ -160,6 +161,7 @@
 																<c:set var="slotAccepted" value="${ra.slotAccepted}"/>
 																<c:set var="invalidSlot" value="${ra.invalidSlot}"/>
 																<c:set var="allocatedSlots" value="${ra.allocatedSlots}"/>
+																<c:set var="nonAcceptedSlots" value="${ra.nonAcceptedSlots}"/>
 															</c:otherwise>
 														</c:choose>
 														<c:choose>

@@ -141,12 +141,14 @@
 															<c:set var="slotAvailable" value="${0}"/>
 															<c:set var="slotReserved" value="${0}"/>
 															<c:set var="slotAccepted" value="${0}"/>
+															<c:set var="nonAcceptedSlots" value="${0}"/>
 														</c:when>
 														<c:otherwise>
 															<c:set var="slotRegionId" value="${ra.slotRegionId}"/>
 															<c:set var="slotAvailable" value="${ra.slotAvailable}"/>
 															<c:set var="slotReserved" value="${ra.slotReserved}"/>
 															<c:set var="slotAccepted" value="${ra.slotAccepted}"/>
+															<c:set var="nonAcceptedSlots" value="${ra.nonAcceptedSlots}"/>
 														</c:otherwise>
 													</c:choose>
 													<c:choose>
@@ -159,18 +161,18 @@
 													</c:choose>
 													<td class="available-units" headers="a-${cell.bodyPlant.plantId}">${slotAvailable}</td>
 													<c:choose>
-														<c:when test="${slotReserved gt 0}">
+														<c:when test="${nonAcceptedSlots gt 0}">
 															<td class="reserved-units" headers="r-${cell.bodyPlant.plantId}"
 																data-plant-id="${cell.bodyPlant.plantId}"
 																data-region="${regionInfo.region}" 
 																data-slot-id="${slotId}" 
 																data-slot-region-id="${slotRegionId}" 
 																data-region-desc="${regionInfo.regionDesc}" >
-																	<a class="secondaryLink release-units-link">${slotReserved}</a>
+																	<a class="secondaryLink release-units-link">${nonAcceptedSlots}</a>
 															</td>
 														</c:when>
 														<c:otherwise>
-															<td class="reserved-units" headers="r-${cell.bodyPlant.plantId}">${slotReserved}</td>
+															<td class="reserved-units" headers="r-${cell.bodyPlant.plantId}">${nonAcceptedSlots}</td>
 														</c:otherwise>
 													</c:choose>
 													<td class="issued-units" headers="i-${cell.bodyPlant.plantId}">${slotAccepted}</td>

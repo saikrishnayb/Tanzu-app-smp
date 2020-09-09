@@ -42,6 +42,10 @@ public class BuildMatrixSlotRegionAvailability {
 	public int getAllocatedSlots() {
 		return slotReserved + slotAccepted;
 	}
+	
+	public int getNonAcceptedSlots() {
+		return slotReserved - slotAccepted;
+	}
 
 	public int getSlotRegionId() {
 		return slotRegionId;

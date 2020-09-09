@@ -11,7 +11,7 @@ ritsu.storeInitialFormValues('#region-slot-maintenance-form');
 var $slotRegionMaintenanceTable = $('#slot-region-maintenance-table');
 var $slotRegionMaintenanceDataTable = $slotRegionMaintenanceTable.DataTable({
 	'fixedColumns': {
-        leftColumns: 1
+        leftColumns: 2
     },
 	'paging': false,
 	'ordering': false,

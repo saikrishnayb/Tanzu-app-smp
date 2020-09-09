@@ -10,7 +10,7 @@ ModalUtil.initializeModal($prodSlotUtilizationModal);
 var $slotUtilizationTable = $('#slot-utilization-table');
 var $slotUtilizationDataTable = $slotUtilizationTable.DataTable({
 	'fixedColumns': {
-        leftColumns: 1
+        leftColumns: 2
     },
 	'paging': false,
 	'ordering': false,

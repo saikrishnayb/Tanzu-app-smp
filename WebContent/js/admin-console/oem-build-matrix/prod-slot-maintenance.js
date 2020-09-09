@@ -11,7 +11,7 @@ var $vehicleTypeDrpdwn = $("#vehicletype-drpdwn");
 var $yearDrpdwn = $("#year-drpdwn");
 $slotMaintenanceDataTable = $slotMaintenanceTable.DataTable({
 	'fixedColumns': {
-        leftColumns: 1
+        leftColumns: 2
     },
 	'paging': false,
 	'ordering': false,
