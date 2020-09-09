@@ -449,6 +449,16 @@
 		WHERE  RUN_ID = #{buildId}
 	</update>
 	
+	<select id="acceptBuild" statementType="CALLABLE" parameterType="int">
+	   {
+	        CALL SMC.SMC_ACCEPT_RUN
+	       	(
+	        	#{runId, mode=IN, jdbcType=INTEGER},
+	        	#{STATUS, mode=OUT, jdbcType=INTEGER},
+	       	) 
+	    }      
+	</select>
+	
 	<select id="getSlotDatesForPlant" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlotDate">
 		SELECT 
 					SLOTS.SLOT_ID AS slotId,
@@ -462,9 +472,7 @@
 			   ON	REGION.SLOT_ID = SLOTS.SLOT_ID
 		WHERE       SLOTS.PLANT_ID = #{plantId} 
 		AND         SLOT_TYPES.SLOT_TYPE = #{vehicleType}
-		AND			REGION.REGION = #{region}
-		AND			REGION.SLOT_RESERVED + REGION.SLOT_ACCEPTED <![CDATA[<]]> REGION.SLOT_AVAILABLE
-	</select>
+		AND			REGION.REGION = #{region}	</select>
 		
 	<!--***** BUILD MATRIX WORKFLOW *****-->
 	
