@@ -238,6 +238,6 @@ public interface BuildMatrixSmcDAO {
 
 	public List<BuildMatrixBodyPlant> getInvalidBodyPlants();
 
-	public void acceptBuild(@Param("runId") int buildId);
+	public Integer acceptBuild(@Param("runId") int buildId);
 
 }
