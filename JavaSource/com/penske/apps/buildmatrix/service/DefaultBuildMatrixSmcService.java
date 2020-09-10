@@ -1161,7 +1161,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	@Override
 	public void releaseUnits(List<Integer> slotReservationIds) {
 		for(Integer slotReservationId: slotReservationIds) {
-			buildMatrixSmcDAO.removeSlotResult(slotReservationId);
+			buildMatrixSmcDAO.releaseUnit(slotReservationId);
 		}
 	}
 	

@@ -1761,6 +1761,10 @@
 	<select statementType="CALLABLE" id="removeSlotResult">
 		{CALL SMC.SMC_REMOVE_SLOT_RESULT(#{slotReservationId, mode=IN, jdbcType=INTEGER})}
 	</select>
+
+	<select statementType="CALLABLE" id="releaseUnit">
+		{CALL SMC.SMC_REMOVE_UNIT_RESERVATION(#{slotReservationId, mode=IN, jdbcType=INTEGER})}
+	</select>
 	
 	<select statementType="CALLABLE" id="updateSlotReservations">
 		{CALL SMC.SMC_SAVE_SLOT_RESERVATION(#{slotReservationId, mode=IN, jdbcType=INTEGER},#{unitNumber, mode=IN, jdbcType=VARCHAR},
