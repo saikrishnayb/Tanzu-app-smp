@@ -29,7 +29,7 @@ $("#release-units-btn").on('click', function(){
 		var remainingReservations = slotReservations - slotReservationIds.length;
 		
 		if(remainingReservations > 0){
-			$reservedUnitTd.html('<a class="secondaryLink release-units-link">' +  + '</a>');
+			$reservedUnitTd.html('<a class="secondaryLink release-units-link">' + remainingReservations + '</a>');
 		}
 		else {
 			$reservedUnitTd.html('0');
