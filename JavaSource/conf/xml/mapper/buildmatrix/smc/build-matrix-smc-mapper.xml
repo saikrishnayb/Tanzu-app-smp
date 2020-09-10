@@ -472,7 +472,9 @@
 			   ON	REGION.SLOT_ID = SLOTS.SLOT_ID
 		WHERE       SLOTS.PLANT_ID = #{plantId} 
 		AND         SLOT_TYPES.SLOT_TYPE = #{vehicleType}
-		AND			REGION.REGION = #{region}	</select>
+		AND			REGION.REGION = #{region}
+		AND			REGION.SLOT_RESERVED + REGION.SLOT_ACCEPTED <![CDATA[<]]> REGION.SLOT_AVAILABLE	
+	</select>
 		
 	<!--***** BUILD MATRIX WORKFLOW *****-->
 	
