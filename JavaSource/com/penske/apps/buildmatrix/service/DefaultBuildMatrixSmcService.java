@@ -309,7 +309,6 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	
 	@Override
 	public void updateRunSummary(int buildId) {
-		buildMatrixSmcDAO.updateRunSummary(buildId);
 		buildMatrixSmcDAO.acceptBuild(buildId);
 	}
 	
