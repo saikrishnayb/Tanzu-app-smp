@@ -49,7 +49,21 @@ $slotResultsDataTable = $slotResultsTable.DataTable({
 });
 
 $('#slot-search').on('keyup', function() {
-	$slotResultsDataTable.search($(this).val()).draw() ;
+	var isChecked = $('#show-selected-checkbox').is(':checked');
+	if(isChecked) {
+	    $.fn.dataTable.ext.search.push(
+		    function (settings, data, dataIndex){             
+		        return ($($slotResultsDataTable.row(dataIndex).node()).hasClass('row-selected')) ? true : false;
+		    }
+		);
+		  
+	    $slotResultsDataTable.search($(this).val()).draw() ;
+		  
+		$.fn.dataTable.ext.search.pop();
+	}
+	else {
+		$slotResultsDataTable.search($(this).val()).draw() ;
+	}
 });
 
 function exportSlotResults() {
@@ -172,6 +186,7 @@ $('.unit-selection').on("change", function() {
 	var slotReservationId = $(this).attr('data-attribute-id');
 	var slotReservationStatus = $(this).attr('reservation-status');
 	var unitNumber = $(this).attr('unit-number');
+	var $row = $(this).closest('.result');
 	orderObj['slotReservationId'] = slotReservationId;
 	orderObj['orderId'] = $(this).attr('order-id');
 	orderObj['runId'] = $('#buildId').val();
@@ -185,6 +200,7 @@ $('.unit-selection').on("change", function() {
 	if ($(this).is(':checked')) {
 		orderSelectionList.push(orderObj);
 		slotReservationIdList.push(slotReservationId);
+		$row.addClass('row-selected');
 		
 	} else {
 		orderSelectionList = $.grep(orderSelectionList, function(e) {
@@ -193,6 +209,7 @@ $('.unit-selection').on("change", function() {
 		slotReservationIdList = $.grep(slotReservationIdList, function(e) {
 			return !(e == slotReservationId);
 		});
+		$row.removeClass('row-selected');
 	}
 	if (orderSelectionList.length > 0 && approvedBuild != 'true') {
 		if (!showUpdateButton(orderSelectionList))
@@ -437,4 +454,47 @@ $("#view-diagnostic-info").on("click", function() {
 		});
 	}
 	
+});
+
+$("#show-selected-checkbox").on('click', function(){
+	var isChecked = $(this).is(':checked');
+	if(isChecked) {
+	    $.fn.dataTable.ext.search.push(
+		    function (settings, data, dataIndex){             
+		        return ($($slotResultsDataTable.row(dataIndex).node()).hasClass('row-selected')) ? true : false;
+		    }
+		);
+		  
+	    $slotResultsDataTable.draw();
+		  
+		$.fn.dataTable.ext.search.pop();
+	}
+	else {
+		$slotResultsDataTable.draw();
+	}
+});
+
+$("#clear-selections-link").on('click', function(){
+	$($slotResultsDataTable.rows().nodes()).each(function() {
+		$(this).find('.unit-selection').prop("checked", false);
+		$(this).removeClass("row-selected");
+	});
+	
+	$($('.unit-selection')[0]).trigger('change');
+	
+	var isChecked = $("#show-selected-checkbox").is(':checked');
+	if(isChecked) {
+	    $.fn.dataTable.ext.search.push(
+		    function (settings, data, dataIndex){             
+		        return ($($slotResultsDataTable.row(dataIndex).node()).hasClass('row-selected')) ? true : false;
+		    }
+		);
+		  
+	    $slotResultsDataTable.draw();
+		  
+		$.fn.dataTable.ext.search.pop();
+	}
+	else {
+		$slotResultsDataTable.draw();
+	}
 });

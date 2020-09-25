@@ -71,6 +71,12 @@
 				</div>
 			</div>
 			<div class="row">
+				<div class="col-xs-12 slot-results-table-top">
+					<label>Show Selected Only</label> <input type="checkbox" id="show-selected-checkbox">
+					<a id="clear-selections-link">Clear Selections</a>
+				</div>
+			</div>
+			<div class="row">
 				<div class="col-xs-12">
 					<table id="slot-results-table">
 						<thead>
