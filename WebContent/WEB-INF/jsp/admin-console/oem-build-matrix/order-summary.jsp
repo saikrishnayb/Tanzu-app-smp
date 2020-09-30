@@ -74,7 +74,7 @@
 									</c:choose>
 									<tr class="${rowClass}" data-order-id="${order.orderId}" data-delivery-id="${order.deliveryId}" data-unfulfilled-qty="${order.unfulfilledQty}">
 										<td><input class="select-order" onclick="saveCheckedBoxes(this.id)" type='checkbox' <c:if test="${orderSelected}"> checked</c:if>></td>
-										<td><a>${order.orderId}</a></td>
+										<td>${order.orderId}</td>
 										<td>${order.approvalStatus.label}</td>
 										<td>${order.region}</td>
 										<td>${order.area}</td>

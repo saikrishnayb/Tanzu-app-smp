@@ -99,7 +99,7 @@
 									<td>
 										<input class="unit-selection" type="checkbox" data-attribute-id="${unit.slotReservationId}" reservation-status="${unit.reservationStatus}" 
 											order-id="${unit.orderId}" unit-number="${unit.unitNumber}" plant-id="${unit.plantId}" vehicle-type="${unit.vehicleType}"/>
-										<a class="secondaryLink">${unit.orderId}</a>
+										${unit.orderId}
 									</td>
 									<td class="leftAlign">
 										${unit.unitNumber}
