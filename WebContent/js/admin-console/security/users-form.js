@@ -855,8 +855,8 @@ $('#signature-add').on('click', function(){
 								$('#users-table').dataTable().fnUpdate(data.lastName, nRow, 2,false);
 								$('#users-table').dataTable().fnUpdate(data.email, nRow, 3,false);
 								$('#users-table').dataTable().fnUpdate(data.phone, nRow, 4,false);
-								$('#users-table').dataTable().fnUpdate(data.userType.userType, nRow, 6,false);
-								$('#users-table').dataTable().fnUpdate(data.role.roleName + "<input class='role-id' type=hidden value='" + data.role.roleId + "'/>", nRow, 7,false);
+								//$('#users-table').dataTable().fnUpdate(data.userType.userType, nRow, 6,false);
+								$('#users-table').dataTable().fnUpdate(data.role.roleName + "<input class='role-id' type=hidden value='" + data.role.roleId + "'/>", nRow, 5,false);
 				
 								closeModal($editModal);
 							});
