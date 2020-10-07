@@ -100,10 +100,9 @@
 							<th>Last Name</th>
 							<th>Email</th>
 							<th>Phone</th>
-							<th>Status</th>
-							<th>Type</th>
 							<th>Role</th>
 							<th>Org</th>
+							<th>Created Date</th>
 							<th class="lastLogin">Last Login</th>
 						</tr>
 					</thead>
@@ -119,13 +118,9 @@
 							<td><c:out value="${user.lastName}" /></td>
 							<td class="user-email"><c:out value="${user.email}" /></td>
 							<td>${user.phone} <c:if test="${(user.extension ne '') || (not empty user.extension)}">ext. ${user.extension}</c:if></td>
-							<td>
-							 	<c:if test="${user.status eq 'A'}">Active</c:if>
-								<c:if test="${user.status eq 'I'}">Inactive</c:if>
-							</td>
-							<td class="user-type">${user.userType.userType}</td>
 							<td>${user.role.roleName} <input class="role-id" type=hidden value="${user.role.roleId}"/></td>
 							<td>${user.org}</td>
+							<td>${user.formattedCreatedDate}</td>
 							<c:choose>
                 <c:when test= "${user.lastLoginDate eq null}">
                   <td>(Never)</td>

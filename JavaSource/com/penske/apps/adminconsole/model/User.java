@@ -40,6 +40,7 @@ public class User {
 	private String org;
 	private boolean dailyOptIn;
 	private Date lastLoginDate;
+	private Date createdDate;
 
 	public String getOrg() {
 		return org;
@@ -513,5 +514,12 @@ public class User {
 		String formattedLastLoginDate = DateUtil.formatDateTimeUS(lastLoginDate);
 		return formattedLastLoginDate;
 	}
-	
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public String getFormattedCreatedDate() {
+		return DateUtil.formatDateTimeUS(createdDate);
+	}
 }

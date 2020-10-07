@@ -297,7 +297,7 @@ $(document).ready(function() {
 		
 		var $this =  $(this);
 		var userId = $this.closest('.user-row').find('.user-id').val();
-		var userType = $this.closest('.user-row').find('.user-type').text();
+		var userType = "VENDOR";
 		var roleId = $this.closest('.user-row').find('.role-id').val();
 		var $getEditUserModalContentPromise = $.get('get-edit-vendor-user-modal-content.htm', {userId:userId, userType:userType, roleId:roleId});
 		

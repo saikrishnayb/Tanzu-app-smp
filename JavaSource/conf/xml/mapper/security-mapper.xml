@@ -616,7 +616,8 @@
 				U.ROLE_ID AS "role.roleId",
 				R.ROLE_NAME AS "role.roleName",
 				O.NAME as "org",
-				L.LAST_LOGIN AS lastLoginDate
+				L.LAST_LOGIN AS lastLoginDate,
+				U.CREATED_DATE AS createdDate
 				
 		FROM SMC.SMC_USER_MASTER U
     LEFT JOIN  L
