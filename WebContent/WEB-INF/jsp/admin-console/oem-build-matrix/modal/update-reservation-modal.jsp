@@ -17,7 +17,10 @@
 						<tr class="row" >
 							<td class="col-xs-4"><span class="formLbl">Unit</span></td>
 							<td class="col-xs-8">
-								<input type="text" class="update-res-input" id="unit-number" value="${productionSlotResult.unitNumber}" maxlength="10">	
+								${productionSlotResult.unitNumber}
+								<!--   
+									<input type="text" class="update-res-input" id="unit-number" value="${productionSlotResult.unitNumber}" maxlength="10">
+								-->	
 							</td>
 						</tr>
 					</c:if>
@@ -29,7 +32,7 @@
 								<option value="">Please Select</option>
 								<c:forEach items="${plantList}" var="plants">
 								 <c:set var="isPlantSelected">${productionSlotResult.productionSlot eq plants.productionSlot}</c:set>
-		          					<option value="${plants.plantId}" ${isPlantSelected?'selected="selected"':'' } >${plants.productionSlot}</option>
+		          					<option value="${plants.plantId}" data-mfr="${plants.bodyMake}" ${isPlantSelected?'selected="selected"':'' } >${plants.productionSlot}</option>
   	      						</c:forEach>
 							</select>	
 						</c:if>

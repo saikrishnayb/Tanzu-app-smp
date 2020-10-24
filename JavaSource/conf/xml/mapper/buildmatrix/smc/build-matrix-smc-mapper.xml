@@ -433,12 +433,14 @@
 	<resultMap type="com.penske.apps.buildmatrix.domain.ProductionSlotResult" id="plantResultMap">
 		<result column="plantId"		property="plantId" />
 		<result column="productionSlot"	property="productionSlot" />
+		<result column="bodyMake"		property="bodyMake" />
 	</resultMap>
 	
 	<select id="getAllPlants" resultMap="plantResultMap">
 		SELECT 		
 				PLANT_ID AS plantId,
-				PLANT_MFR_CODE ||'-' ||PLANT_CITY ||',' ||PLANT_STATE AS productionSlot
+				PLANT_MFR_CODE ||'-' ||PLANT_CITY ||',' ||PLANT_STATE AS productionSlot,
+				PLANT_MFR_CODE as bodyMake
 					
 		FROM 	SMC.OBM_PLANTS
 	</select>
@@ -1767,7 +1769,7 @@
 	</select>
 	
 	<select statementType="CALLABLE" id="updateSlotReservations">
-		{CALL SMC.SMC_SAVE_SLOT_RESERVATION(#{slotReservationId, mode=IN, jdbcType=INTEGER},#{unitNumber, mode=IN, jdbcType=VARCHAR},
+		{CALL SMC.SMC_SAVE_SLOT_RESERVATION(#{slotReservationId, mode=IN, jdbcType=INTEGER},#{unitNumber, mode=IN, jdbcType=VARCHAR}, #{bodyMfr, mode=IN, jdbcType=INTEGER},
 											#{plantId, mode=IN, jdbcType=INTEGER},#{slotId, mode=IN, jdbcType=INTEGER}, #{sso, mode=IN, jdbcType=VARCHAR})}
 	</select>
 	

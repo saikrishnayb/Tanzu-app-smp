@@ -196,7 +196,7 @@ public interface BuildMatrixSmcService {
 	public ImportRegionSlotsResults importRegionSlotMaintenace(MultipartFile file, String fileName, int slotTypeId,
 			int year, String region) throws IOException;
 
-	void updateReservationData(int slotReservationId, int slotId, int plantId, String unitNumber, UserContext user);
+	void updateReservationData(int slotReservationId, int slotId, String bodyMfr, int plantId, String unitNumber, UserContext user);
 	
 	public List<String> getDebugInformation(int slotReservationId, int buildId);
 	

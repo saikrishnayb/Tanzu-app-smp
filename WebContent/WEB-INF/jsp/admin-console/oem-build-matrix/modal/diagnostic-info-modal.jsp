@@ -10,7 +10,7 @@
 			</c:when>
 			<c:otherwise>
 				<c:forEach items="${debugInformation}" var="debug">
-					<p class="marginLeft debug-info">${fn:replace(debug,'/\\n|/n|\\r\\n|\\n\\r|\\r/g', '<br/>')}</p>
+					<p class="marginLeft debug-info">${debug}</p>
 				</c:forEach>
 			</c:otherwise>
 		</c:choose>

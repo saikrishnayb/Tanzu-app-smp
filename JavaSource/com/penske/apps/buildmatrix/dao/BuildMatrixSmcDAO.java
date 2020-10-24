@@ -202,7 +202,7 @@ public interface BuildMatrixSmcDAO {
 	
 	public void releaseUnit(@Param("slotReservationId") int slotReservationId);
 	
-	public void updateSlotReservations(@Param("slotReservationId") int slotReservationId, @Param("slotId") int slotId, @Param("plantId") int plantId, @Param("unitNumber") String unitNumber, @Param("sso") String sso);
+	public void updateSlotReservations(@Param("slotReservationId") int slotReservationId, @Param("slotId") int slotId, @Param("bodyMfr") String bodyMfr, @Param("plantId") int plantId, @Param("unitNumber") String unitNumber, @Param("sso") String sso);
 
 	public List<Integer> getSlotIdForPlantId(@Param("plantId")int plantId);
 	

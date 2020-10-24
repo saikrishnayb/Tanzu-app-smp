@@ -290,9 +290,10 @@ $confirmReservationModal.on("click", '#confirm-btn', function() {
 			var plantId = parseInt($updateReservationModal.find('#plant-dropdown').val());
 			var slotId = $updateReservationModal.find('.production-date').attr("slotId");
 			var slotDate = $updateReservationModal.find('.production-date').val();
-			if (updateReservationObj["reservationStatus"] == 'P')
+			var bodyMfr = $updateReservationModal.find('#plant-dropdown :selected').data('mfr')
+			if (updateReservationObj["reservationStatus"] == 'U')
 				var unitNumber = $updateReservationModal.find('#unit-number').val();
-			else if (updateReservationObj["reservationStatus"] == 'E')
+			else if (updateReservationObj["reservationStatus"] == 'E' || updateReservationObj["reservationStatus"] == 'P')
 				var unitNumber = updateReservationObj['unitNumber']
 			
 			$.ajax({
@@ -308,9 +309,10 @@ $confirmReservationModal.on("click", '#confirm-btn', function() {
 								url : "./update-reservation-data.htm",
 								data : {
 									slotReservationId : slotReservationId,
-									plantId : plantId,
-									slotId : slotId,
-									unitNumber : unitNumber
+									plantId 	: plantId,
+									slotId 		: slotId,
+									unitNumber 	: unitNumber,
+									bodyMfr 	: bodyMfr
 								},
 								success : function(data) {
 									ModalUtil.closeModal($confirmReservationModal);

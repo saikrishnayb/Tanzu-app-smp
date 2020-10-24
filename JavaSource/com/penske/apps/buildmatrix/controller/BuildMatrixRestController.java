@@ -702,9 +702,9 @@ public class BuildMatrixRestController {
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping("/update-reservation-data")
 	public void updateReservationData(@RequestParam("slotReservationId") int slotReservationId, @RequestParam("slotId") int slotId,
-									  @RequestParam("plantId") int plantId, @RequestParam("unitNumber") String unitNumber) {
+									  @RequestParam("plantId") int plantId, @RequestParam("unitNumber") String unitNumber, @RequestParam("bodyMfr") String bodyMfr) {
 		UserContext user = sessionBean.getUserContext();
-		buildMatrixSmcService.updateReservationData(slotReservationId, slotId, plantId, unitNumber, user);
+		buildMatrixSmcService.updateReservationData(slotReservationId, slotId, bodyMfr, plantId, unitNumber, user);
 	}
 	
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
