@@ -3,6 +3,8 @@ selectCurrentNavigation("tab-oem-build-matrix", "left-nav-build-history");
 var $buildHistoryTable = $('#build-history-table');
 var $confirmReworkOrDeleteModal = $('#confirmReworkOrDeleteModal')
 ModalUtil.initializeModal($confirmReworkOrDeleteModal);
+var $viewDiagnosticInfoModal = $('#view-error-log-popup-modal');
+ModalUtil.initializeModal($viewDiagnosticInfoModal);
 
 $buildHistoryDataTable = $buildHistoryTable.DataTable({ //All of the below are optional
 	"bPaginate" : true, //enable pagination
@@ -110,7 +112,19 @@ $confirmReworkOrDeleteModal.on("click", '#reworkOrDeleteConfirm', function() {
 	}
 });
 
-
 function closeConfirmDialog() {
 	ModalUtil.closeModal($confirmReworkOrDeleteModal);
 }
+
+$("#view-error-log").on("click", function() {
+	var buildId=$('#buildId').val();
+	var $viewErrorLogPromise = $.ajax({
+		type : "POST",
+		url : './load-error-log-popup-modal.htm',
+		data : {buildId:buildId}
+	});
+	$viewErrorLogPromise.done(function(data) {
+		$viewErrorLogModal.html(data);
+		ModalUtil.openModal($viewErrorLogModal);
+	});
+});

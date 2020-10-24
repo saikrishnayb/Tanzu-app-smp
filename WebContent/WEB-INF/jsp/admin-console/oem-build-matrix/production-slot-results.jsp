@@ -37,12 +37,14 @@
 									<c:when test= "${checkedFilter eq true}">
 										<span><input type="checkbox" id="Matched" value="A" name="filters" checked <c:if test="${approvedBuild eq true}">disabled</c:if>/><label>Slot Found</label></span> 
 										<span><input type="checkbox" id="Exceptions" value="E" name="filters" checked <c:if test="${approvedBuild eq true}">disabled</c:if>/><label>No Date Found</label></span>
-										<span><input type="checkbox" id="Unmatched" value="P" name="filters" checked <c:if test="${approvedBuild eq true}">disabled</c:if>/><label>Suitable Unit Not Found</label></span>
+										<span><input type="checkbox" id="Unmatched" value="U" name="filters" checked <c:if test="${approvedBuild eq true}">disabled</c:if>/><label>No Suitable Match Found</label></span>
+										<span><input type="checkbox" id="PlantMissing" value="P" name="filters" checked <c:if test="${approvedBuild eq true}">disabled</c:if>/><label>Chassis Found, Body Required</label></span>
 									</c:when>
 									<c:otherwise>
 										<span><input type="checkbox" id="Matched" value="A" name="filters"/><label>Slot Found</label></span> 
 										<span><input type="checkbox" id="Exceptions" value="E" name="filters"/><label>No Date Found</label></span>
-										<span><input type="checkbox" id="Unmatched" value="P" name="filters"/><label>Suitable Unit Not Found</label></span>
+										<span><input type="checkbox" id="Unmatched" value="U" name="filters"/><label>No Suitable Match Found</label></span>
+										<span><input type="checkbox" id="PlantMissing" value="P" name="filters"/><label>Chassis Found, Body Required</label></span>
 									</c:otherwise>
 								</c:choose>
 							</span>

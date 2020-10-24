@@ -71,7 +71,6 @@
 													</ul>
 												</div>
 											</c:when>
-											<c:otherwise></c:otherwise>
 										</c:choose>
 									</td>
 									<td class="leftAlign">
@@ -102,9 +101,15 @@
 												</c:if>
 												<c:if test='${buildHistory.buildStatus.code ne "A"}'>
 													<a
-														href="view-slot-results-filter.htm?buildId=${buildHistory.buildId}&selectedFiltersList=A,E,P&checkedFilter=0">View
+														href="view-slot-results-filter.htm?buildId=${buildHistory.buildId}&selectedFiltersList=A,E,P,U&checkedFilter=0">View
 														Slot Results</a>
 												</c:if>
+											
+											</c:when>
+											<c:when test="${buildHistory.showErrorLog()}">
+												<c:if test='${buildHistory.buildStatus.code eq "F"}'>
+													<a id="view-error-log" href="#">View Error Log</a>
+												</c:if>	
 											</c:when>
 											<c:otherwise></c:otherwise>
 										</c:choose>
@@ -127,6 +132,7 @@
 			</div>
 		</div>
 	</div>
+	<div id="view-error-log-popup-modal" class="modal row"></div>
 	<div class="modal row" id="confirmReworkOrDeleteModal">
       <div class="modal-content confirm-modal-content col-xs-12" data-modal-title="Confirm" data-modal-max-width="350" data-keep-contents="true">
         <div class="row">

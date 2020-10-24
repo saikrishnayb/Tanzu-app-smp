@@ -453,7 +453,6 @@ $("#view-diagnostic-info").on("click", function() {
 			ModalUtil.openModal($viewDiagnosticInfoModal);
 		});
 	}
-	
 });
 
 $("#show-selected-checkbox").on('click', function(){

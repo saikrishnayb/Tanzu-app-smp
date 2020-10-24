@@ -51,6 +51,13 @@ public class BuildSummary {
 			return true;
 	}
 	
+	public boolean showErrorLog() {
+		if(BuildStatus.FAILED == buildStatus)
+			return true;
+		else
+			return false;
+	}
+	
 	public boolean showViewReportBtn() {
 		if(BuildStatus.COMPLETED == buildStatus || BuildStatus.APPROVED == buildStatus)
 			return true;
@@ -59,7 +66,7 @@ public class BuildSummary {
 	}
 	
 	public boolean showReworkBtn() {
-		if(BuildStatus.COMPLETED == buildStatus && BuildStatus.APPROVED != buildStatus)
+		if((BuildStatus.FAILED == buildStatus || BuildStatus.COMPLETED == buildStatus) && BuildStatus.APPROVED != buildStatus)
 			return true;
 		else
 			return false;
