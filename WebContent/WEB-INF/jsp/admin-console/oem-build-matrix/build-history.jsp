@@ -108,7 +108,7 @@
 											</c:when>
 											<c:when test="${buildHistory.showErrorLog()}">
 												<c:if test='${buildHistory.buildStatus.code eq "F"}'>
-													<a id="view-error-log" href="#">View Error Log</a>
+													<a id="view-error-log" data-run-id="${buildHistory.buildId}" href="#">View Error Log</a>
 												</c:if>	
 											</c:when>
 											<c:otherwise></c:otherwise>

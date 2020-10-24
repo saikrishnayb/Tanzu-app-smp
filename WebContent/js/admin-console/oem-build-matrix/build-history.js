@@ -3,8 +3,8 @@ selectCurrentNavigation("tab-oem-build-matrix", "left-nav-build-history");
 var $buildHistoryTable = $('#build-history-table');
 var $confirmReworkOrDeleteModal = $('#confirmReworkOrDeleteModal')
 ModalUtil.initializeModal($confirmReworkOrDeleteModal);
-var $viewDiagnosticInfoModal = $('#view-error-log-popup-modal');
-ModalUtil.initializeModal($viewDiagnosticInfoModal);
+var $viewErrorLogModal = $('#view-error-log-popup-modal');
+ModalUtil.initializeModal($viewErrorLogModal);
 
 $buildHistoryDataTable = $buildHistoryTable.DataTable({ //All of the below are optional
 	"bPaginate" : true, //enable pagination
@@ -117,7 +117,7 @@ function closeConfirmDialog() {
 }
 
 $("#view-error-log").on("click", function() {
-	var buildId=$('#buildId').val();
+	var buildId=$(this).data('runId');
 	var $viewErrorLogPromise = $.ajax({
 		type : "POST",
 		url : './load-error-log-popup-modal.htm',
