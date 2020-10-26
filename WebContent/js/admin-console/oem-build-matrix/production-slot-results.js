@@ -1,5 +1,47 @@
 selectCurrentNavigation("tab-oem-build-matrix", "left-nav-build-history");
 
+
+$('#slot-results-table').DataTable( {
+    data:           resultData,
+    "columns": [
+        { className: "orderCol", data: "orderId" },
+        { className: "unitCol", "data": "unitNumber" },
+        { "data": "programName" },
+        { "data": "region" },
+        { "data": "area" },
+        { "data": "districtNumber" },
+        { "data": "districtName" },
+        { "data": "formattedRequestedDeliveryDate" },
+        { "data": "productionSlot" },
+        { "data": "formattedProductionDate" }
+    ],
+    paging: 		false,
+    searching:	 	false, 
+    deferRender:    true,
+    //scrollY:        200,
+    scrollCollapse: true,
+    scroller:       true,
+    createdRow: function(row, data, dataIndex) {
+    if (data.changeRequired) {
+    	$( row ).find('.orderCol').append('<i class="fa fa-exclamation-triangle change-required" title="Change Required"></i>');
+    }
+    $( row ).find('.orderCol').prepend('<input class="unit-selection" type="checkbox"/>');
+    $( row ).find('.unit-selection')
+    	.attr('data-attribute-id', data.slotReservationId)
+	    .attr('reservation-status', data.reservationStatus)
+	    .attr('order-id', data.orderId)
+	    .attr('unit-number', data.unitNumber)
+    	.attr('plant-id', data.plantId)
+    	.attr('vehicle-type', data.vehicleType);
+    }
+});
+
+/*
+resultData.forEach((obj) => {
+	$('.search-div').prepend(obj.slotReservationId);
+});
+*/
+
 var $slotResultsTable = $('#slot-results-table');
 var orderSelectionCnt = 0;
 var orderSelectionList = [];

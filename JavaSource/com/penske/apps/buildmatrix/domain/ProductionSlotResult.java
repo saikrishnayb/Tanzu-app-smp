@@ -235,8 +235,13 @@ public class ProductionSlotResult {
 		else
 			return false;
 	}
-	
+
 	public String getFormattedProductionDate() {
 		return StringUtils.defaultString(DateUtil.formatDateUS(productionDate));
 	}
+	
+	public String getFormattedRequestedDeliveryDate() {
+		return StringUtils.defaultString(DateUtil.formatDateUS(requestedDeliveryDate));
+	}
+
 }

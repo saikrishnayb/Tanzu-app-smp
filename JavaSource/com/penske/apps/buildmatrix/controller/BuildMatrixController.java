@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.penske.apps.adminconsole.enums.LeftNav;
 import com.penske.apps.adminconsole.enums.Tab.SubTab;
 import com.penske.apps.adminconsole.util.ApplicationConstants;
@@ -203,7 +205,20 @@ public class BuildMatrixController {
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/production-slot-results");
 		List<String> selectedFilters = Arrays.asList(selectedFiltersList.split(","));
 		List<ProductionSlotResult> slotResults=buildMatrixSmcService.getSlotResultsByFilter(buildId, null);
-		model.addObject("slotResults",slotResults.stream().filter(e ->selectedFilters.contains(e.getReservationStatus())).collect(Collectors.toList()));
+		
+		List<ProductionSlotResult> filteredSlotResults = slotResults.stream().filter(e ->selectedFilters.contains(e.getReservationStatus())).collect(Collectors.toList());
+		
+		ObjectMapper mapper = new ObjectMapper();
+		String jsonString;
+		try {
+			jsonString = mapper.writeValueAsString(filteredSlotResults);
+			 model.addObject("resultData",jsonString);
+		} catch (JsonProcessingException e1) {
+			e1.printStackTrace();
+		}
+		
+		
+		model.addObject("slotResults",filteredSlotResults);
 		boolean showAcceptBtn = !slotResults.stream().anyMatch(order->!order.showAcceptBtn());
 		if (StringUtils.equals(checkedFilter, ApplicationConstants.String_ZERO)) {
 			model.addObject("checkedFilter", true);

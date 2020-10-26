@@ -4,6 +4,9 @@
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/fmt" prefix = "fmt"%>
 <html>
 <head>
+<script type="text/javascript">
+	var resultData = ${resultData};
+</script>
 	<title>OEM Build Matrix</title>
 	
 	<%@ include file="../../global/v2/header.jsp"%>
@@ -91,11 +94,12 @@
 								<th class="leftAlign">District</th>
 								<th class="leftAlign">District Name</th>
 								<th class="leftAlign">Requested Delivery Date</th>
-								<th class="leftAlign width-200">Production Slot</th>
+								<th class="leftAlign width-200">Plant</th>
 								<th class="leftAlign width-100">Production Date</th>
 							</tr>
 						</thead>
 						<tbody>
+							<!--  
 							<c:forEach items="${slotResults}" var="unit">
 								<tr class="result">
 									<td>
@@ -123,6 +127,7 @@
 								   </td>
 								</tr>
 							</c:forEach>
+							-->
 						</tbody>
 					</table>
 				</div>
