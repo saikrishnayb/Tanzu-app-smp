@@ -1,7 +1,8 @@
 selectCurrentNavigation("tab-oem-build-matrix", "left-nav-build-history");
 
+var $slotResultsTable = $('#slot-results-table');
 
-$('#slot-results-table').DataTable( {
+var $slotResultsDataTable = $slotResultsTable.DataTable( {
     data:           resultData,
     "columns": [
         { className: "orderCol", data: "orderId" },
@@ -16,9 +17,8 @@ $('#slot-results-table').DataTable( {
         { "data": "formattedProductionDate" }
     ],
     paging: 		false,
-    searching:	 	false, 
     deferRender:    true,
-    //scrollY:        200,
+    scrollY:        200,
     scrollCollapse: true,
     scroller:       true,
     createdRow: function(row, data, dataIndex) {
@@ -36,13 +36,6 @@ $('#slot-results-table').DataTable( {
     }
 });
 
-/*
-resultData.forEach((obj) => {
-	$('.search-div').prepend(obj.slotReservationId);
-});
-*/
-
-var $slotResultsTable = $('#slot-results-table');
 var orderSelectionCnt = 0;
 var orderSelectionList = [];
 var slotReservationIdList = [];
@@ -56,7 +49,7 @@ ModalUtil.initializeModal($updateReservationModal);
 ModalUtil.initializeModal($viewDiagnosticInfoModal);
 
 
-$slotResultsDataTable = null;/* $slotResultsTable.DataTable({
+/* $slotResultsTable.DataTable({
 	"bPaginate" : false, //enable pagination
 	"bStateSave" : true, //To retrieve the data on click of back button
 	"sPaginationType" : "two_button",
@@ -229,7 +222,7 @@ $('.unit-selection').on("change", function() {
 	var slotReservationId = $(this).attr('data-attribute-id');
 	var slotReservationStatus = $(this).attr('reservation-status');
 	var unitNumber = $(this).attr('unit-number');
-	var $row = $(this).closest('.result');
+	var $row = $(this).closest('tr');
 	orderObj['slotReservationId'] = slotReservationId;
 	orderObj['orderId'] = $(this).attr('order-id');
 	orderObj['runId'] = $('#buildId').val();
