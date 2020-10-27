@@ -1,7 +1,7 @@
 package com.penske.apps.buildmatrix.domain;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.temporal.WeekFields;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -14,7 +14,7 @@ public class BuildMatrixSlot {
 	private int plantId;
 	private int availableSlots;
 	private int reservedSlots;
-	private Date chassisArrivalDate;
+	private LocalDate chassisArrivalDate;
 	private int chassisArrivalWeekOfYear;
 	private int chassisArrivalYear;
 	private int acceptedSlots;
@@ -28,13 +28,11 @@ public class BuildMatrixSlot {
 		this.plantId = plant.getPlantId();
 		this.availableSlots = 0;
 		this.reservedSlots = 0;
-		//USE LOCALDATE - this is off by 1????
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(slotDate.getSlotDate());            
-		calendar.add(Calendar.WEEK_OF_YEAR, slotType.getNegativeChassisLeadTime());
-		this.chassisArrivalDate = calendar.getTime();
-		this.chassisArrivalWeekOfYear = calendar.get(Calendar.WEEK_OF_YEAR);
-		this.chassisArrivalYear = calendar.get(Calendar.YEAR);
+		LocalDate chassisArrivalDate = slotDate.getSlotDate().minusWeeks(slotType.getChassisLeadTime());
+		this.chassisArrivalDate = chassisArrivalDate;
+		WeekFields weekFields = WeekFields.ISO;
+		this.chassisArrivalWeekOfYear = chassisArrivalDate.get(weekFields.weekOfWeekBasedYear());
+		this.chassisArrivalYear = chassisArrivalDate.getYear();
 		this.acceptedSlots = 0;
 	}
 	
@@ -81,7 +79,7 @@ public class BuildMatrixSlot {
 		return slotDateId;
 	}
 	
-	public Date getChassisArrivalDate() {
+	public LocalDate getChassisArrivalDate() {
 		return chassisArrivalDate;
 	}
 	
