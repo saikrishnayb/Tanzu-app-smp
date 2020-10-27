@@ -422,7 +422,8 @@
 	<select id="getProductionSlotList" resultMap="plantResultMap">
 		SELECT 
 					distinct PLANT.PLANT_ID AS plantId,
-					PLANT.PLANT_MFR_CODE ||'-' ||PLANT.PLANT_CITY ||',' ||PLANT.PLANT_STATE AS productionSlot
+					PLANT.PLANT_MFR_CODE ||'-' ||PLANT.PLANT_CITY ||',' ||PLANT.PLANT_STATE AS productionSlot,
+					PLANT_MFR_CODE as bodyMake
 		FROM 		SMC.OBM_PLANTS PLANT
 		LEFT JOIN  	SMC.OBM_SLOT_RESERVATION_EXCEPTION RESERVE_EXCEPTION
 		ON 			RESERVE_EXCEPTION.PLANT_ID = PLANT.PLANT_ID

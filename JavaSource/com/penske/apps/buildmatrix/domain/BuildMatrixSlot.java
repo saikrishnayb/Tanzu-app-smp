@@ -28,6 +28,7 @@ public class BuildMatrixSlot {
 		this.plantId = plant.getPlantId();
 		this.availableSlots = 0;
 		this.reservedSlots = 0;
+		//USE LOCALDATE - this is off by 1????
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(slotDate.getSlotDate());            
 		calendar.add(Calendar.WEEK_OF_YEAR, slotType.getNegativeChassisLeadTime());

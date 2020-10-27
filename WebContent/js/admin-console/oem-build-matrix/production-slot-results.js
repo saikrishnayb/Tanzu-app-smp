@@ -16,9 +16,10 @@ var $slotResultsDataTable = $slotResultsTable.DataTable( {
         { "data": "productionSlot" },
         { "data": "formattedProductionDate" }
     ],
+    dom: 			"ti",
     paging: 		false,
     deferRender:    true,
-    scrollY:        200,
+    scrollY:        700,
     scrollCollapse: true,
     scroller:       true,
     createdRow: function(row, data, dataIndex) {
@@ -516,6 +517,7 @@ $("#clear-selections-link").on('click', function(){
 		$(this).find('.unit-selection').prop("checked", false);
 		$(this).removeClass("row-selected");
 	});
+	orderSelectionList = [];
 	
 	$($('.unit-selection')[0]).trigger('change');
 	

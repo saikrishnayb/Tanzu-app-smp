@@ -41,7 +41,7 @@
 								<option value="">Please Select</option>
 								<c:forEach items="${productionSlotList}" var="plants">
 									<c:set var="isPlantSelected">${productionSlotResult.productionSlot eq plants.productionSlot}</c:set>
-		          					<option value="${plants.plantId}" ${isPlantSelected?'selected="selected"':'' } >${plants.productionSlot}</option>
+		          					<option value="${plants.plantId}" data-mfr="${plants.bodyMake}" ${isPlantSelected?'selected="selected"':'' } >${plants.productionSlot}</option>
   	      						</c:forEach>
 							</select>	
 						</c:if>
