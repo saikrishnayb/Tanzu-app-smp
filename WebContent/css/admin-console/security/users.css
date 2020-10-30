@@ -207,6 +207,7 @@ iframe{
 border: none !important;
 background-color:white !important;
  readonly        : true !important;
+  font-style: italics !important;
 }
 .reloadImage:after{
  	margin-left: 5px;

@@ -19,7 +19,7 @@ var $slotResultsDataTable = $slotResultsTable.DataTable( {
     dom: 			"ti",
     paging: 		false,
     deferRender:    true,
-    scrollY:        700,
+    scrollY:        500,
     scrollCollapse: true,
     scroller:       true,
     createdRow: function(row, data, dataIndex) {
@@ -281,7 +281,7 @@ $confirmReservationModal.on("click", '#confirm-btn', function() {
 			},
 			success : function(data) {
 				ModalUtil.closeModal($confirmReservationModal);
-				location.assign('view-slot-results-filter.htm?buildId=' + $('#buildId').val() + '&selectedFiltersList=A,E,P&checkedFilter=0');
+				location.assign('view-slot-results-filter.htm?buildId=' + $('#buildId').val() + '&selectedFiltersList=U,A,E,P&checkedFilter=0');
 			},
 		});
 	} else if (confirmAction == 'accept') { //accept build flow
@@ -354,7 +354,7 @@ $confirmReservationModal.on("click", '#confirm-btn', function() {
 								success : function(data) {
 									ModalUtil.closeModal($confirmReservationModal);
 									ModalUtil.closeModal($updateReservationModal);
-									location.assign('view-slot-results-filter.htm?buildId=' + $('#buildId').val() + '&selectedFiltersList=A,E,P&checkedFilter=0');
+									location.assign('view-slot-results-filter.htm?buildId=' + $('#buildId').val() + '&selectedFiltersList=U,A,E,P&checkedFilter=0');
 								},
 							});
 							
