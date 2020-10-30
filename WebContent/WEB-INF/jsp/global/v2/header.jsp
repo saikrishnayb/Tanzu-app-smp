@@ -4,6 +4,7 @@
 
 <!-- ***** Stylesheets ***** -->
 <link href="${baseUrl}/css/global/v2/jquery/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
+<link href="${baseUrl}/css/global/v2/jquery/jquery.scroller.dataTables.min.css" rel="stylesheet" type="text/css"/>
 <link href="${baseUrl}/css/global/v2/jquery/dataTables.responsive.css" rel="stylesheet" type="text/css"/>
 <link href="${baseUrl}/css/global/v2/jquery/fixedColumns.dataTables.min.css" rel="stylesheet" type="text/css"/>
 <link href="${baseUrl}/css/global/v2/jquery/jquery-ui.min.css" rel="stylesheet" type="text/css"/>

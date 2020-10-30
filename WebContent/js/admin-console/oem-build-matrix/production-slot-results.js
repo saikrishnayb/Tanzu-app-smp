@@ -17,24 +17,24 @@ var $slotResultsDataTable = $slotResultsTable.DataTable( {
         { "data": "formattedProductionDate" }
     ],
     dom: 			"ti",
-    paging: 		false,
+    paging: 		true,
     deferRender:    true,
-    scrollY:        500,
+    scrollY:        500, 
     scrollCollapse: true,
     scroller:       true,
     createdRow: function(row, data, dataIndex) {
-    if (data.changeRequired) {
-    	$( row ).find('.orderCol').append('<i class="fa fa-exclamation-triangle change-required" title="Change Required"></i>');
-    }
-    $( row ).find('.orderCol').prepend('<input class="unit-selection" type="checkbox"/>');
-    $( row ).find('.unit-selection')
-    	.attr('data-attribute-id', data.slotReservationId)
-	    .attr('reservation-status', data.reservationStatus)
-	    .attr('order-id', data.orderId)
-	    .attr('unit-number', data.unitNumber)
-    	.attr('plant-id', data.plantId)
-    	.attr('vehicle-type', data.vehicleType);
-    }
+    	if (data.changeRequired) {
+        	$( row ).find('.orderCol').append('<i class="fa fa-exclamation-triangle change-required" title="Change Required"></i>');
+        }
+        $( row ).find('.orderCol').prepend('<input class="unit-selection" type="checkbox"/>');
+        $( row ).find('.unit-selection')
+        	.attr('data-attribute-id', data.slotReservationId)
+    	    .attr('reservation-status', data.reservationStatus)
+    	    .attr('order-id', data.orderId)
+    	    .attr('unit-number', data.unitNumber)
+        	.attr('plant-id', data.plantId)
+        	.attr('vehicle-type', data.vehicleType);
+        }
 });
 
 var orderSelectionCnt = 0;

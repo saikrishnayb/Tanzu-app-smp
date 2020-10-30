@@ -16,7 +16,7 @@ public class BuildMatrixSlotDate {
 	private List<BuildMatrixSlot> buildSlots;
 	private int slotId;
 
-	protected BuildMatrixSlotDate() {};
+	protected BuildMatrixSlotDate() {}; 
 	
 	public BuildMatrixSlotDate(LocalDate date, int slotYear) {
 		this.slotYear = String.valueOf(slotYear);
