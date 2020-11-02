@@ -4,7 +4,12 @@ var $addToBuildBtn = $('#add-to-build');
 selectCurrentNavigation("tab-oem-build-matrix", "");
 
 var $orderSummaryDataTable = $orderSummaryTable.DataTable({ //All of the below are optional
-		scrollY:        700,
+    	dom: 			"tip",
+    	paging: 		true,
+    	deferRender:    true,
+    	scrollY:        700, 
+    	scrollCollapse: false,
+    	scroller:       true,	
 		"bPaginate" : true, //enable pagination
 		"bStateSave" : false, //To retrieve the data on click of back button
 		"sPaginationType" : "two_button",
@@ -13,7 +18,6 @@ var $orderSummaryDataTable = $orderSummaryTable.DataTable({ //All of the below a
 			'bSortable' : false,
 			'aTargets' : [ 0 ]
 		} ],
-		"bLengthChange" : true, //enable change of records per page, not recommended
 		"bFilter" : true, //Allows dynamic filtering of results, do not enable if using ajax for pagination
 		"bAutoWidth" : false,
 		"bSort" : true, //Allow sorting by column header
@@ -23,9 +27,6 @@ var $orderSummaryDataTable = $orderSummaryTable.DataTable({ //All of the below a
 		"oLanguage" : {
 			"sEmptyTable" : "No Results Found"
 		},
-		"dom": 'tip',
-		//"sScrollY": 246, //Adds a vertical scroll bar if the content exceeds this amount
-		//"sScrollXInner": "100%" 
 		"fnDrawCallback" : function() { //This will hide the pagination menu if we only have 1 page.
 			var paginateRow = $(this).parent().children('div.dataTables_paginate');
 			var pageCount = Math.ceil((this.fnSettings().fnRecordsDisplay()) / this.fnSettings()._iDisplayLength);
