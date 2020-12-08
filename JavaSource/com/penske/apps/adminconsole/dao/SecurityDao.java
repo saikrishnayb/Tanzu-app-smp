@@ -187,4 +187,7 @@ public interface SecurityDao {
 
     @NonVendorQuery
     public int removeVendorAssocFromDescendent(@Param("orgId")int orgId);
+
+    @NonVendorQuery
+	public void deleteOrgVendor(@Param("orgId") int orgId, @Param("uncheckedIds") String[] strArray);
 }

@@ -489,8 +489,32 @@
  	
  	
  	<insert id="addOrgVendor">
- 	Insert into SMC.SMC_ORG_VENDOR_ASSOC (ORG_ID, VENDOR_ID) VALUES(#{orgId} ,
- 					#{vendorNumber})
+ 		MERGE INTO 
+                SMC.SMC_ORG_VENDOR_ASSOC vendorAssoc
+            USING 
+                (VALUES 
+                    (
+                        CAST(#{orgId} AS INTEGER),
+                        CAST(#{vendorNumber} AS INTEGER)
+                    )
+                ) temp (ORG_ID, VENDOR_ID) 
+            ON 
+            	temp.ORG_ID = vendorAssoc.ORG_ID
+                AND temp.VENDOR_ID = vendorAssoc.VENDOR_ID
+
+        WHEN NOT MATCHED THEN
+        
+			INSERT
+			(
+				ORG_ID,
+				VENDOR_ID
+			)
+		 	VALUES
+			(
+				temp.ORG_ID,
+				temp.VENDOR_ID
+			)
+ 	
  	</insert>
  	<delete id="deleteVendorAssocaWithChild">
  		DELETE FROM SMC.SMC_ORG_VENDOR_ASSOC WHERE ORG_ID IN(
@@ -734,5 +758,14 @@
 							 START WITH ORG_ID = #{orgId}
 							 CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID
 					)
+ 	</delete>
+ 	
+ 	<delete id="deleteOrgVendor">
+ 		DELETE FROM SMC.SMC_ORG_VENDOR_ASSOC 
+ 		WHERE ORG_ID = #{orgId}
+ 		AND VENDOR_ID IN
+ 		<foreach item="vendorNumber" collection="uncheckedIds" open="(" separator="," close=")">
+ 			#{vendorNumber}
+ 		</foreach>
  	</delete>
  </mapper>

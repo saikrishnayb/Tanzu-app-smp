@@ -336,6 +336,18 @@ $(document).ready(function() {
 	        .attr("type", "hidden")
 	        .attr("name", "vendorStr").val(checked_ids);
 			$orgForm.append($(input));
+			jeditVendor.jstree('open_all');
+			var uncheckedIds = [];
+			$('.sub-role').each(function(){
+				var $this = $(this);
+				var $row = $this.closest('.jstree-anchor');
+				if(!$row.hasClass('jstree-clicked'))
+					uncheckedIds.push($this.attr('id'));
+			});
+			var input2 = $("<input>")
+	        .attr("type", "hidden")
+	        .attr("name", "uncheckedVendorStr").val(uncheckedIds.join(','));
+			$orgForm.append($(input2));
 			//$orgForm.submit();
 			var $updateOrgPromise =$.post('./update-org.htm', $orgForm.serialize());
 			$updateOrgPromise.done(function() {

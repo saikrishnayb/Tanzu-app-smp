@@ -14,6 +14,7 @@ public class Org {
 	private String status;
 	private List<String> vendor;
 	private String vendorStr;
+	private String uncheckedVendorStr;
 	private String createdBy;
 	private String  modifiedBy;
 	private boolean deactivatible;
@@ -86,6 +87,13 @@ public class Org {
 	}
 	public void setVendorStr(String vendorStr) {
 		this.vendorStr = vendorStr;
+	}
+	
+	public String getUncheckedVendorStr() {
+		return uncheckedVendorStr;
+	}
+	public void setUncheckedVendorStr(String uncheckedVendorStr) {
+		this.uncheckedVendorStr = uncheckedVendorStr;
 	}
 	
 	private static class OrgNameComparator implements Comparator<Org> {

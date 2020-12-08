@@ -515,13 +515,18 @@ public class DefaultSecurityService implements SecurityService{
 	public void updateOrg(Org org) {
 		securityDao.updateOrg(org);
 		int orgId=org.getOrgId();
-		securityDao.deleteVendorAssoc(orgId);
 		if(org.getVendorStr() !=null && !org.getVendorStr().isEmpty()){
 			String [] str=org.getVendorStr().split(",");
 			if(str != null && str.length>0){
 				for (String vendorNumber : str) {
 					securityDao.addOrgVendor(orgId, vendorNumber);
 				}
+			}
+		}
+		if(org.getUncheckedVendorStr() !=null && !org.getUncheckedVendorStr().isEmpty()){
+			String [] strArray = org.getUncheckedVendorStr().split(",");
+			if(strArray != null && strArray.length>0){
+				securityDao.deleteOrgVendor(orgId, strArray);
 			}
 		}
 		//remove all the unselected vendors
