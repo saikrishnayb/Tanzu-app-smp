@@ -93,6 +93,7 @@ $(document).ready(function() {
       		infoRow.css("display", "none");
       	}
       	
+      	parent.iframeResizer.resizeIframe();
 		}
 	} );
 	
