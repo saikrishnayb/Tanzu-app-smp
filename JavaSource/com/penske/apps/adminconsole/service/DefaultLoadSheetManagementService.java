@@ -345,23 +345,33 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 	}
 	
 	/**
-	 * Method to check for unique rule name
+	 * Method to check for unique Loadsheet rule name
 	 */
 	@Override
-	public boolean checkForUniqueRuleName(String newRuleName,int ruleId){
-		
-		List<String> existingNames=null;
-		boolean isUnique=true;
-		
-		existingNames=loadsheetManagementDao.getAllRuleNames(ruleId);
-		
-		for(String name:existingNames){
-			if(name.equalsIgnoreCase(newRuleName.trim())){
-				isUnique=false;
+	public boolean checkForUniqueLoadsheetRuleName(String newRuleName, int ruleId) {
+		List<String> existingNames = loadsheetManagementDao.getAllLoadsheetRuleNames(ruleId);
+		for (String name : existingNames) {
+			if (name.equalsIgnoreCase(newRuleName.trim())) {
+				return false;
 			}
 		}
-		
-		return isUnique;
+
+		return true;
+	}
+
+	/**
+	 * Method to check for Unit Template unique rule name
+	 */
+	@Override
+	public boolean checkForUniqueUnitTemplateRuleName(String newRuleName, int ruleId, int templateId) {
+		List<String> existingNames = loadsheetManagementDao.getAllUnitTemplateRuleNamesByTemplateId(ruleId, templateId);
+		for (String name : existingNames) {
+			if (name.equalsIgnoreCase(newRuleName.trim())) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 	
 	/**

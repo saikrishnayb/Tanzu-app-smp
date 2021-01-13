@@ -406,9 +406,9 @@ public class ComponentsRestController {
     /* ========== Check For Unique rule Name =============== */
     @RequestMapping(value = "/check-unique-rule-name", method = RequestMethod.POST)
     @ResponseBody
-    public boolean checkForUniqueRuleName(@RequestParam("ruleName") String ruleName, @RequestParam("ruleId") int ruleId) {
+    public boolean checkForUniqueRuleName(@RequestParam("ruleName") String ruleName, @RequestParam("ruleId") int ruleId, @RequestParam("templateId") int templateId) {
 
-        return loadsheetManagementService.checkForUniqueRuleName(ruleName, ruleId);
+        return loadsheetManagementService.checkForUniqueUnitTemplateRuleName(ruleName, ruleId, templateId);
     }
     
    

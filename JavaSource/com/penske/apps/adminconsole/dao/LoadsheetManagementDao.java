@@ -57,7 +57,10 @@ public interface LoadsheetManagementDao {
     public List<LoadSheetComponentDetails> getComponents();
 
     @NonVendorQuery
-    public List<String> getAllRuleNames(@Param("ruleId") int ruleId);
+    public List<String> getAllLoadsheetRuleNames(@Param("ruleId") int ruleId);
+
+    @NonVendorQuery
+    public List<String> getAllUnitTemplateRuleNamesByTemplateId(@Param("ruleId") int ruleId, @Param("templateId") int templateId);
 
     @NonVendorQuery
     public void insertRuleMasterDetails(@Param("rule") RuleMaster rule,@Param("user") UserContext user);

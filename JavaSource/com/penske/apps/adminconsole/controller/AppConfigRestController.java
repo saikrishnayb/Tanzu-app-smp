@@ -346,7 +346,7 @@ public class AppConfigRestController {
     @ResponseBody
     public boolean checkForUniqueRuleName(@RequestParam("ruleName") String ruleName, @RequestParam("ruleId") int ruleId) {
 
-        return loadsheetManagementService.checkForUniqueRuleName(ruleName, ruleId);
+        return loadsheetManagementService.checkForUniqueLoadsheetRuleName(ruleName, ruleId);
     }
 
     /* =========================DELETE Rule ======================== */

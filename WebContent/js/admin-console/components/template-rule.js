@@ -581,7 +581,7 @@ function submitCreateRuleForm(){
 			  type: "POST",
 			  url: "./check-unique-rule-name.htm",
 			  cache:false,
-			  data: {ruleName : ruleName,ruleId:ruleId},
+			  data: {ruleName: ruleName, ruleId: ruleId, templateId: templateId},
 			  success: function(isUnique){
 				  
 				  if(isUnique){

@@ -21,7 +21,8 @@ public interface LoadSheetManagementService {
 	public List<ConfigureRule> getComponentVisibilityRules(int componentVisibleId);
 	public List<LoadsheetManagement> getLoadsheetManagementDetails();
 	public List<RuleMaster> getLoadsheetRuleDetails();
-	public boolean checkForUniqueRuleName(String newRuleName,int ruleId);
+	public boolean checkForUniqueLoadsheetRuleName(String newRuleName,int ruleId);
+	public boolean checkForUniqueUnitTemplateRuleName(String newRuleName,int ruleId, int templateId);
 	public void saveComponentRules(ComponentRuleAssociation componentRule);
 	public List<LoadSheetComponentDetails> getComponents();
 	public int createNewRule(RuleMaster rule);

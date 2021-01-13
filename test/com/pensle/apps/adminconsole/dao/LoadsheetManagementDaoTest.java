@@ -120,8 +120,13 @@ public class LoadsheetManagementDaoTest extends MyBatisDaoTest {
     }
 
     @Test
-    public void shouldGetAllRuleNames() {
-    	loadsheetManagementDao.getAllRuleNames(1);
+    public void shouldGetAllLoadsheetRuleNames() {
+    	loadsheetManagementDao.getAllLoadsheetRuleNames(1);
+    }
+
+    @Test
+    public void shouldGetAllUnitTemplateRuleNamesByTemplateId() {
+    	loadsheetManagementDao.getAllUnitTemplateRuleNamesByTemplateId(1, 1);
     }
 
     @Test

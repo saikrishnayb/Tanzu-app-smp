@@ -71,15 +71,32 @@
 				CVRM.RULE_ID,NAME,DESCRIPTION,SUMC.FIRST_NAME||' '||SUMC.LAST_NAME,CVRM.CREATED_DATE,SUME.FIRST_NAME||' '||SUME.LAST_NAME,CVRM.MODIFIED_DATE
 	</select>
 	
-	<!-- Get all the Rule names -->
- 	<select id="getAllRuleNames" resultType="String">
+	<!-- Get all the Loadsheet Rule names -->
+ 	<select id="getAllLoadsheetRuleNames" resultType="String">
  		SELECT 
 				TRIM(NAME)
 		FROM
 				SMC.SMC_CMP_VISIBILITY_RULES_MASTER
-		<if test="ruleId != 0">
 		WHERE
+			RULE_TYPE = 'L'
+		<if test="ruleId != 0">
+			AND
 				RULE_ID NOT IN ( #{ruleId} ) 
+		</if>
+	</select>
+
+	<!-- Get all the Unit Template Rule names by templateId -->
+ 	<select id="getAllUnitTemplateRuleNamesByTemplateId" resultType="String">
+ 		SELECT 
+				TRIM(rule.NAME)
+		FROM SMC.SMC_COMPONENT_RULE_OVERRIDES 	 outcome
+		JOIN SMC.SMC_TEMPLATE_COMPONENTS		 comp ON comp.TEMP_COMP_ID = outcome.TEMP_COMP_ID
+		JOIN SMC.SMC_CMP_VISIBILITY_RULES_MASTER rule ON rule.RULE_ID = outcome.RULE_ID
+		WHERE
+			comp.TEMPLATE_ID = #{templateId}
+		<if test="ruleId != 0">
+			AND
+				rule.RULE_ID NOT IN ( #{ruleId} ) 
 		</if>
 	</select>
 	
