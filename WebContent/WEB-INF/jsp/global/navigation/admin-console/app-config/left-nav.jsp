@@ -33,4 +33,6 @@
 	<tl:isAuthorized tabName="Admin Console" secFunction="UPLOAD_EXCEL">
 		<div class="leftNavGroup"><a href="${baseAppUrl}/admin-console/app-config/excelUploads.htm" id="left-nav-excel-uploads">Excel Uploads</a></div>
 	</tl:isAuthorized>	
+	<div class="leftNavGroup">Cost Sheet Management</div>
+		<div><a href="${baseAppUrl}/admin-console/app-config/cost-sheet-adjustment-options.htm" id="left-nav-cost-sheet-adjustment-options">Cost Sheet Adjustment Options</a></div>
 </div>

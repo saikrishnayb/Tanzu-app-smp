@@ -29,6 +29,7 @@ import com.penske.apps.adminconsole.model.TransportUploadHandler;
 import com.penske.apps.adminconsole.model.VendorReport;
 import com.penske.apps.adminconsole.model.VendorUploadHandler;
 import com.penske.apps.adminconsole.service.AlertService;
+import com.penske.apps.adminconsole.service.CostAdjustmentOptionService;
 import com.penske.apps.adminconsole.service.DynamicRuleService;
 import com.penske.apps.adminconsole.service.ExceptionService;
 import com.penske.apps.adminconsole.service.LoadSheetManagementService;
@@ -64,6 +65,8 @@ public class AppConfigController {
     private DynamicRuleService dynamicRuleService;
     @Autowired
     private SearchTemplateService searchTemplateService;
+    @Autowired
+    private CostAdjustmentOptionService costAdjustmentOptionService;
     @Autowired
     private AlertService alertService;
     @Autowired
@@ -198,6 +201,17 @@ public class AppConfigController {
 
         return mav;
     }
+
+	/* ================== Cost Sheet Adjustment Options ================== */
+	//@SmcSecurity(securityFunction = SecurityFunction.COST_SHEET_ADJUSTMENT_OPTIONS)
+	@RequestMapping("/cost-sheet-adjustment-options")
+	public ModelAndView getCostSheetAdjustmentOptionsPage() {
+		ModelAndView mav = new ModelAndView("/admin-console/app-config/cost-sheet-adjustment-options");
+
+		mav.addObject("adjustmentOptions", costAdjustmentOptionService.getAllAdjustmentOptions());
+
+		return mav;
+	}
 
     /* ===================== Alerts ===================== */
     @SmcSecurity(securityFunction = SecurityFunction.ALERT_MANAGEMENT)

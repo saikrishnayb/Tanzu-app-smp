@@ -13,6 +13,7 @@ import com.pensle.apps.adminconsole.dao.AlertDaoTest;
 import com.pensle.apps.adminconsole.dao.CategoryManagementDAOTest;
 import com.pensle.apps.adminconsole.dao.ComponentDaoTest;
 import com.pensle.apps.adminconsole.dao.ComponentVendorTemplateDaoTest;
+import com.pensle.apps.adminconsole.dao.CostAdjustmentOptionDaoTest;
 import com.pensle.apps.adminconsole.dao.DynamicRuleDaoTest;
 import com.pensle.apps.adminconsole.dao.ExceptionDaoTest;
 import com.pensle.apps.adminconsole.dao.GlobalSettingsDaoTest;
@@ -34,6 +35,7 @@ import com.pensle.apps.adminconsole.dao.RoleDaoTest;
 	GlobalSettingsDaoTest.class,
 	LoadsheetManagementDaoTest.class,
 	RoleDaoTest.class,	
+	CostAdjustmentOptionDaoTest.class,
 	
 	//suppliermgmt
 	HelpDAOTest.class,

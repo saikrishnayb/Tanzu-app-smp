@@ -19,11 +19,13 @@ import com.penske.apps.adminconsole.exceptions.DynamicRulePriorityException;
 import com.penske.apps.adminconsole.exceptions.TemplateNameAlreadyExistsException;
 import com.penske.apps.adminconsole.model.Alert;
 import com.penske.apps.adminconsole.model.ComponentRuleAssociation;
+import com.penske.apps.adminconsole.model.CostAdjustmentOption;
 import com.penske.apps.adminconsole.model.DynamicRule;
 import com.penske.apps.adminconsole.model.GlobalException;
 import com.penske.apps.adminconsole.model.SearchTemplate;
 import com.penske.apps.adminconsole.model.SearchTemplateForm;
 import com.penske.apps.adminconsole.service.AlertService;
+import com.penske.apps.adminconsole.service.CostAdjustmentOptionService;
 import com.penske.apps.adminconsole.service.DynamicRuleService;
 import com.penske.apps.adminconsole.service.ExceptionService;
 import com.penske.apps.adminconsole.service.LoadSheetManagementService;
@@ -64,6 +66,8 @@ public class AppConfigRestController {
     private TabService tabService;
     @Autowired
     private SearchTemplateService searchTemplateService;
+    @Autowired
+    private CostAdjustmentOptionService costAdjustmentOptionService;
     @Autowired
     private TermsAndConditionsService termsAndConditionsService;
     @Autowired
@@ -238,6 +242,45 @@ public class AppConfigRestController {
             throw new TemplateNameAlreadyExistsException(errorMessage);
         }
     }
+
+	/* ================== Cost Sheet Adjustment Options ================== */
+	// @SmcSecurity(securityFunction =
+	// SecurityFunction.COST_SHEET_ADJUSTMENT_OPTIONS)
+	@RequestMapping("get-cost-sheet-adjustment-option-modal")
+	@ResponseBody
+	public ModelAndView getCostAdjustmentOptionModal(@RequestParam(value = "caOptionId") int caOptionId) {
+		ModelAndView mav = new ModelAndView("/admin-console/app-config/modal/cost-sheet-adjustment-option-modal");
+
+		CostAdjustmentOption caOption = caOptionId > 0 ? costAdjustmentOptionService.getAdjustmentOption(caOptionId)
+				: new CostAdjustmentOption();
+		mav.addObject("adjustmentOption", caOption);
+
+		return mav;
+	}
+
+	// @SmcSecurity(securityFunction =
+	// SecurityFunction.COST_SHEET_ADJUSTMENT_OPTIONS)
+	@RequestMapping(value = "add-cost-sheet-adjustment-option", method = RequestMethod.POST)
+	@ResponseBody
+	public void addCostAdjustmentOption(CostAdjustmentOption caOption) {
+		costAdjustmentOptionService.addAdjustmentOption(caOption);
+	}
+
+	// @SmcSecurity(securityFunction =
+	// SecurityFunction.COST_SHEET_ADJUSTMENT_OPTIONS)
+	@RequestMapping(value = "update-cost-sheet-adjustment-option", method = RequestMethod.POST)
+	@ResponseBody
+	public void updateCostAdjustmentOption(CostAdjustmentOption caOption) {
+		costAdjustmentOptionService.updateAdjustmentOption(caOption);
+	}
+
+	// @SmcSecurity(securityFunction =
+	// SecurityFunction.COST_SHEET_ADJUSTMENT_OPTIONS)
+	@RequestMapping(value = "delete-cost-sheet-adjustment-option", method = RequestMethod.POST)
+	@ResponseBody
+	public void deleteCostAdjustmentOption(@RequestParam(value = "caOptionId") int caOption) {
+		costAdjustmentOptionService.deleteAdjustmentOption(caOption);
+	}
 
     /* ================== Alerts ================== */
     @SmcSecurity(securityFunction = SecurityFunction.ALERT_MANAGEMENT)
