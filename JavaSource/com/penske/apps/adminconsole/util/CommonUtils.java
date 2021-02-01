@@ -1,6 +1,7 @@
 package com.penske.apps.adminconsole.util;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -11,8 +12,10 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.log4j.Logger;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.penske.apps.adminconsole.model.Components;
 import com.penske.apps.adminconsole.model.Role;
 import com.penske.apps.suppliermgmt.model.UserContext;
@@ -26,6 +29,7 @@ import com.penske.apps.suppliermgmt.model.UserContext;
 public class CommonUtils {
 	
 	private static Logger logger = Logger.getLogger(CommonUtils.class);
+	private static final ObjectMapper jsonMapper = new ObjectMapper();
 	
 	public static String getCompnentCheckSum(List<Components> compList){
 		if(compList !=null && !compList.isEmpty()){
@@ -132,5 +136,30 @@ public class CommonUtils {
 				}    
 		}
 			return false;
+	}
+
+    /**
+     * Invokes Jackson's {@link ObjectMapper#writeValueAsString(Object)} to deep serialize an object to a JSON string.
+     * This method basically has no error handling. It just throws any generated IOException as a RuntimeException
+     * @param object The object to serialize
+     * @param escapeForJavascript True to escape JavaScript literals in the resulting JSON string; false to skip the escaping.
+     *      This should be set to true if you are using the result in a call like $.parseJSON('${RESULT_STRING_HERE}')
+     * @return The serialized string.
+     * @throws RuntimeException If an IOException occurs while serializing. Since we're writing to Strings, this should happen very
+     * infrequently
+     */
+	public static String serializeJson(Object objectToSerialize, boolean escapeForJavascript)
+	{
+		try {
+			String jsonString = jsonMapper.writeValueAsString(objectToSerialize);
+			if(escapeForJavascript && jsonString != null)
+				return StringEscapeUtils.escapeEcmaScript(jsonString);
+			else
+				return jsonString;
+		} catch(IOException ex) {
+			RuntimeException ex2 = new RuntimeException(ex);
+			ex2.setStackTrace(ex.getStackTrace());
+			throw ex2;
+		}
 	}
 }

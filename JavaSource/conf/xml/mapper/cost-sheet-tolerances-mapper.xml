@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.2//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.penske.apps.adminconsole.dao.CostToleranceDao">
+
+	<resultMap type="com.penske.apps.adminconsole.model.Manufacturer" id="ManufacturerMap">
+		<id		column="MFCODE"				property="mfrCode"/>
+		<result	column="MFNAME"				property="mfrName"/>
+		<result	column="POCATEGORY_TYPES"	property="poCategoryTypes" typeHandler="com.penske.apps.adminconsole.typeHandlers.PoCategoryTypeListTypeHandler"/>
+	</resultMap>
+
+	<select id="getAllManufacturers" resultMap="ManufacturerMap">
+		SELECT DISTINCT
+			MFCODE,
+			MFNAME,
+			MFTYPC || ',' ||  
+			MFTYPB || ',' ||  
+			MFTYPR || ',' ||  
+			MFTYPL || ',' ||  
+			MFTYP5 || ',' ||  
+			MFTYPM || ',' ||  
+			MFTYPE || ',' ||  
+			MFTYPT || ',' ||  
+			MFTYPA || ',' ||  
+			MFTYPW || ',' ||  
+			MFTYPX || ',' ||  
+			MFTYPZ || ',' ||  
+			MFTYPY AS POCATEGORY_TYPES
+		FROM CORP.FVEHMFR
+		ORDER BY MFCODE
+	</select>
+
+	<select id="getAllTolerances" resultType="com.penske.apps.adminconsole.model.CostTolerance">
+		SELECT
+			TOLERANCE_ID AS toleranceId,
+			PO_CATEGORY AS poCategory,
+			MF_CODE AS mfrCode,
+			TOLERANCE AS tolerance
+		FROM SMC.SMC_COST_TOLERANCES
+	</select>
+
+	<select id="getTolerance" resultType="com.penske.apps.adminconsole.model.CostTolerance">
+		SELECT
+			TOLERANCE_ID AS toleranceId,
+			PO_CATEGORY AS poCategory,
+			MF_CODE AS mfrCode,
+			TOLERANCE AS tolerance
+		FROM SMC.SMC_COST_TOLERANCES
+		WHERE
+			TOLERANCE_ID = #{costToleranceId}
+	</select>
+
+	<insert id="addTolerance">
+		INSERT INTO SMC.SMC_COST_TOLERANCES (
+			PO_CATEGORY,
+			MF_CODE,
+			TOLERANCE
+		) VALUES (
+			#{costTolerance.poCategory},
+			#{costTolerance.mfrCode},
+			#{costTolerance.tolerance}
+		)
+	</insert>
+
+	<update id="updateTolerance">
+		UPDATE SMC.SMC_COST_TOLERANCES
+		SET
+			TOLERANCE = #{costTolerance.tolerance}
+		WHERE
+			TOLERANCE_ID = #{costTolerance.toleranceId}
+	</update>
+
+	<delete id="deleteTolerance">
+		DELETE
+		FROM SMC.SMC_COST_TOLERANCES
+		WHERE
+			TOLERANCE_ID = #{costToleranceId}
+	</delete>
+
+</mapper>
