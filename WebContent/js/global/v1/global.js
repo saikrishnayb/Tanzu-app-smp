@@ -76,7 +76,8 @@ $(document).ready(function() {
 	
 	//Listener to show the loading overlay when clicking navigation links in the sub-nav or left-nav
 	$('.leftNav a, nav ul li ul li a').on('click', function() {
-		showLoading();
+		if(!$(this).parent().hasClass("current"))
+			showLoading();
 	});
 	
 	

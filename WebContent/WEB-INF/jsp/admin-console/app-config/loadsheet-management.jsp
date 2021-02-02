@@ -13,6 +13,7 @@
 		<div id="mainContent" class="borderTop">
 			<%@ include file="../../global/navigation/admin-console/app-config/left-nav.jsp" %>
 			<div class="leftNavAdjacentContainer">
+				<%@ include file="../../global/v2/page-error-container.jsp"%>
 				<span class="floatRight addRow push-right">
 				</span>
 				<div><h1>Loadsheet Management</h1></div>
