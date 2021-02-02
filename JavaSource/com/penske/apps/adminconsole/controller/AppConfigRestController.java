@@ -251,8 +251,7 @@ public class AppConfigRestController {
     }
 
 	/* ================== Cost Sheet Adjustment Options ================== */
-	// @SmcSecurity(securityFunction =
-	// SecurityFunction.COST_SHEET_ADJUSTMENT_OPTIONS)
+	@SmcSecurity(securityFunction = SecurityFunction.COST_SHEET_ADJUSTMENT_OPTIONS)
 	@RequestMapping("get-cost-sheet-adjustment-option-modal")
 	@ResponseBody
 	public ModelAndView getCostAdjustmentOptionModal(@RequestParam(value = "caOptionId") int caOptionId) {
@@ -265,24 +264,21 @@ public class AppConfigRestController {
 		return mav;
 	}
 
-	// @SmcSecurity(securityFunction =
-	// SecurityFunction.COST_SHEET_ADJUSTMENT_OPTIONS)
+	@SmcSecurity(securityFunction = SecurityFunction.COST_SHEET_ADJUSTMENT_OPTIONS)
 	@RequestMapping(value = "add-cost-sheet-adjustment-option", method = RequestMethod.POST)
 	@ResponseBody
 	public void addCostAdjustmentOption(CostAdjustmentOption caOption) {
 		costAdjustmentOptionService.addAdjustmentOption(caOption);
 	}
 
-	// @SmcSecurity(securityFunction =
-	// SecurityFunction.COST_SHEET_ADJUSTMENT_OPTIONS)
+	@SmcSecurity(securityFunction = SecurityFunction.COST_SHEET_ADJUSTMENT_OPTIONS)
 	@RequestMapping(value = "update-cost-sheet-adjustment-option", method = RequestMethod.POST)
 	@ResponseBody
 	public void updateCostAdjustmentOption(CostAdjustmentOption caOption) {
 		costAdjustmentOptionService.updateAdjustmentOption(caOption);
 	}
 
-	// @SmcSecurity(securityFunction =
-	// SecurityFunction.COST_SHEET_ADJUSTMENT_OPTIONS)
+	@SmcSecurity(securityFunction = SecurityFunction.COST_SHEET_ADJUSTMENT_OPTIONS)
 	@RequestMapping(value = "delete-cost-sheet-adjustment-option", method = RequestMethod.POST)
 	@ResponseBody
 	public void deleteCostAdjustmentOption(@RequestParam(value = "caOptionId") int caOption) {

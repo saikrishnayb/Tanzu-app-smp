@@ -45,6 +45,7 @@ public @interface SmcSecurity {
         LOADSHEET_MANAGEMENT, 
         LOADSHEET_RULES, 
         LOADSHEET_SEQUENCES,
+        COST_SHEET_ADJUSTMENT_OPTIONS,
         COST_SHEET_TOLERANCES,
         
         OEM_BUILD_MATRIX,

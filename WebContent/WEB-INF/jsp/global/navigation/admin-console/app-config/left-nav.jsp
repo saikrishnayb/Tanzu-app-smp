@@ -33,8 +33,11 @@
 	<tl:isAuthorized tabName="Admin Console" secFunction="UPLOAD_EXCEL">
 		<div class="leftNavGroup"><a href="${baseAppUrl}/admin-console/app-config/excelUploads.htm" id="left-nav-excel-uploads">Excel Uploads</a></div>
 	</tl:isAuthorized>	
+
 	<div class="leftNavGroup">Cost Sheet Management</div>
-		<div><a href="${baseAppUrl}/admin-console/app-config/cost-sheet-adjustment-options.htm" id="left-nav-cost-sheet-adjustment-options">Cost Sheet Adjustment Options</a></div>
+		<tl:isAuthorized tabName="Admin Console" secFunction="COST_SHEET_ADJUSTMENT_OPTIONS">
+			<div><a href="${baseAppUrl}/admin-console/app-config/cost-sheet-adjustment-options.htm" id="left-nav-cost-sheet-adjustment-options">Cost Sheet Adjustment Options</a></div>
+		</tl:isAuthorized>
 		<tl:isAuthorized tabName="Admin Console" secFunction="COST_SHEET_TOLERANCES">
 			<div><a href="${baseAppUrl}/admin-console/app-config/cost-sheet-tolerances.htm" id="left-nav-cost-sheet-tolerances">Cost Sheet Tolerances</a></div>
 		</tl:isAuthorized>

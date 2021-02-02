@@ -206,7 +206,7 @@ public class AppConfigController {
     }
 
 	/* ================== Cost Sheet Adjustment Options ================== */
-	//@SmcSecurity(securityFunction = SecurityFunction.COST_SHEET_ADJUSTMENT_OPTIONS)
+	@SmcSecurity(securityFunction = SecurityFunction.COST_SHEET_ADJUSTMENT_OPTIONS)
 	@RequestMapping("/cost-sheet-adjustment-options")
 	public ModelAndView getCostSheetAdjustmentOptionsPage() {
 		ModelAndView mav = new ModelAndView("/admin-console/app-config/cost-sheet-adjustment-options");
