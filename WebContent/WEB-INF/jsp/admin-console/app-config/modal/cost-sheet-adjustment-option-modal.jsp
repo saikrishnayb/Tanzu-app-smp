@@ -15,11 +15,11 @@
 <div class="blank"></div>
 
 <div class="floatRight">
-	<a class="secondaryLink floatLeft cancel">Cancel</a>
+	<a href="#" class="secondaryLink floatLeft cancel">Cancel</a>
 	<c:if test="${adjustmentOption.optionId gt 0}">
-		<a id="actionButton" class="buttonPrimary clear-left buttonDisabled" onclick="doSave(); return false;">Save</a>
+		<a href="#" id="actionButton" class="buttonPrimary clear-left buttonDisabled" onclick="doSave(); return false;">Save</a>
 	</c:if>
 	<c:if test="${adjustmentOption.optionId eq 0}">
-		<a id="actionButton" class="buttonPrimary clear-left buttonDisabled" onclick="doAdd(); return false;">Add</a>
+		<a href="#" id="actionButton" class="buttonPrimary clear-left buttonDisabled" onclick="doAdd(); return false;">Add</a>
 	</c:if>
 </div>

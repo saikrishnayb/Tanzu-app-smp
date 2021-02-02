@@ -3,6 +3,7 @@ $(document).ready(function() {
 	
 	var $optionTable = $('#optionTable');
 	var $optionModal = $('#optionModal');
+	var commonStaticUrl = sessionStorage.getItem('commonStaticUrl');
 	
 	// Initializes data table
 	$optionTable.dataTable({
@@ -57,8 +58,9 @@ $(document).ready(function() {
 	// Add Adjustment Option link
 	var strHTML='<span style="margin-right: 10px;" class="floatLeft addRow">'+
 		'<a href="#" onclick="addOption(); return false;">Add Adjustment Option</a>'+
+		'<img src='+commonStaticUrl+'/images/add.png class="centerImage handCursor" alt="Add Adjustment Option"/>'+
 		'</span>';
-	$("#optionTable_wrapper").prepend(strHTML);
+	$("#optionTable_filter").prepend(strHTML);
 
 	// Checks Order Code not empty
 	$optionModal.on('input', '#orderCode', function() {
