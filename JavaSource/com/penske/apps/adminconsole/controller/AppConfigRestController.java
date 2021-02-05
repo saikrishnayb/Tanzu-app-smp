@@ -1,7 +1,6 @@
 package com.penske.apps.adminconsole.controller;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -16,21 +15,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.penske.apps.adminconsole.enums.PoCategoryType;
 import com.penske.apps.adminconsole.exceptions.DynamicRulePriorityException;
 import com.penske.apps.adminconsole.exceptions.TemplateNameAlreadyExistsException;
 import com.penske.apps.adminconsole.model.Alert;
 import com.penske.apps.adminconsole.model.ComponentRuleAssociation;
-import com.penske.apps.adminconsole.model.CostAdjustmentOption;
-import com.penske.apps.adminconsole.model.CostTolerance;
 import com.penske.apps.adminconsole.model.DynamicRule;
 import com.penske.apps.adminconsole.model.GlobalException;
-import com.penske.apps.adminconsole.model.Manufacturer;
 import com.penske.apps.adminconsole.model.SearchTemplate;
 import com.penske.apps.adminconsole.model.SearchTemplateForm;
 import com.penske.apps.adminconsole.service.AlertService;
-import com.penske.apps.adminconsole.service.CostAdjustmentOptionService;
-import com.penske.apps.adminconsole.service.CostToleranceService;
 import com.penske.apps.adminconsole.service.DynamicRuleService;
 import com.penske.apps.adminconsole.service.ExceptionService;
 import com.penske.apps.adminconsole.service.LoadSheetManagementService;
@@ -71,10 +64,6 @@ public class AppConfigRestController {
     private TabService tabService;
     @Autowired
     private SearchTemplateService searchTemplateService;
-    @Autowired
-    private CostAdjustmentOptionService costAdjustmentOptionService;
-    @Autowired
-    private CostToleranceService costToleranceService;
     @Autowired
     private TermsAndConditionsService termsAndConditionsService;
     @Autowired
@@ -249,83 +238,6 @@ public class AppConfigRestController {
             throw new TemplateNameAlreadyExistsException(errorMessage);
         }
     }
-
-	/* ================== Cost Sheet Adjustment Options ================== */
-	@SmcSecurity(securityFunction = SecurityFunction.COST_SHEET_ADJUSTMENT_OPTIONS)
-	@RequestMapping("get-cost-sheet-adjustment-option-modal")
-	@ResponseBody
-	public ModelAndView getCostAdjustmentOptionModal(@RequestParam(value = "caOptionId") int caOptionId) {
-		ModelAndView mav = new ModelAndView("/admin-console/app-config/modal/cost-sheet-adjustment-option-modal");
-
-		CostAdjustmentOption caOption = caOptionId > 0 ? costAdjustmentOptionService.getAdjustmentOption(caOptionId)
-				: new CostAdjustmentOption();
-		mav.addObject("adjustmentOption", caOption);
-
-		return mav;
-	}
-
-	@SmcSecurity(securityFunction = SecurityFunction.COST_SHEET_ADJUSTMENT_OPTIONS)
-	@RequestMapping(value = "add-cost-sheet-adjustment-option", method = RequestMethod.POST)
-	@ResponseBody
-	public void addCostAdjustmentOption(CostAdjustmentOption caOption) {
-		costAdjustmentOptionService.addAdjustmentOption(caOption);
-	}
-
-	@SmcSecurity(securityFunction = SecurityFunction.COST_SHEET_ADJUSTMENT_OPTIONS)
-	@RequestMapping(value = "update-cost-sheet-adjustment-option", method = RequestMethod.POST)
-	@ResponseBody
-	public void updateCostAdjustmentOption(CostAdjustmentOption caOption) {
-		costAdjustmentOptionService.updateAdjustmentOption(caOption);
-	}
-
-	@SmcSecurity(securityFunction = SecurityFunction.COST_SHEET_ADJUSTMENT_OPTIONS)
-	@RequestMapping(value = "delete-cost-sheet-adjustment-option", method = RequestMethod.POST)
-	@ResponseBody
-	public void deleteCostAdjustmentOption(@RequestParam(value = "caOptionId") int caOption) {
-		costAdjustmentOptionService.deleteAdjustmentOption(caOption);
-	}
-
-	/* ================== Cost Sheet Tolerances ================== */
-	@SmcSecurity(securityFunction = SecurityFunction.COST_SHEET_TOLERANCES)
-	@RequestMapping("get-cost-sheet-tolerance-modal")
-	@ResponseBody
-	public ModelAndView getCostToleranceModal(@RequestParam(value = "costToleranceId") int costToleranceId) {
-		ModelAndView mav = new ModelAndView("/admin-console/app-config/modal/cost-sheet-tolerance-modal");
-
-		CostTolerance costTolerance = costToleranceId > 0 ? costToleranceService.getTolerance(costToleranceId)
-				: new CostTolerance();
-		mav.addObject("tolerance", costTolerance);
-
-		List<PoCategoryType> poCategoryList = Arrays.asList(PoCategoryType.values());
-		mav.addObject("poCategoryList", poCategoryList);
-
-		List<Manufacturer> vehicleMakeList = costToleranceService.getVehicleMakeList();
-		mav.addObject("vehicleMakeList", vehicleMakeList);
-		mav.addObject("makesJson", CommonUtils.serializeJson(vehicleMakeList, true));
-
-		return mav;
-	}
-
-	@SmcSecurity(securityFunction = SecurityFunction.COST_SHEET_TOLERANCES)
-	@RequestMapping(value = "add-cost-sheet-tolerance", method = RequestMethod.POST)
-	@ResponseBody
-	public void addCostTolerance(CostTolerance costTolerance) {
-		costToleranceService.addTolerance(costTolerance);
-	}
-
-	@SmcSecurity(securityFunction = SecurityFunction.COST_SHEET_TOLERANCES)
-	@RequestMapping(value = "update-cost-sheet-tolerance", method = RequestMethod.POST)
-	@ResponseBody
-	public void updateCostTolerance(CostTolerance costTolerance) {
-		costToleranceService.updateTolerance(costTolerance);
-	}
-
-	@SmcSecurity(securityFunction = SecurityFunction.COST_SHEET_TOLERANCES)
-	@RequestMapping(value = "delete-cost-sheet-tolerance", method = RequestMethod.POST)
-	@ResponseBody
-	public void deleteCostTolerance(@RequestParam(value = "costToleranceId") int costTolerance) {
-		costToleranceService.deleteTolerance(costTolerance);
-	}
 
     /* ================== Alerts ================== */
     @SmcSecurity(securityFunction = SecurityFunction.ALERT_MANAGEMENT)

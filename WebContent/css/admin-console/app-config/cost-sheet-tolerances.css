@@ -1,28 +1,17 @@
-.form-group {
-	margin-bottom: 10px;
+#tolerance-form select {
+	margin-bottom: 0px;
+	width: 100%;
 }
 
-.control-label {
-	padding-left: 10px;
+#tolerance-form input {
+	margin-bottom: 0px;
+	width: 100%;
+}
+
+#cancelButton {
 	padding-right: 10px;
-	width: 100px;
-	float: left;
 }
 
-.control-div select {
-	margin-bottom: 0px;
-	width: 125px;
-}
-
-.control-div input {
-	margin-bottom: 0px;
-	width: 119px;
-}
-
-.blank {
-	height:20px;
-}
-
-.cancel {
-	margin: 5px 15px 0 0;
+.modal-content .modal-footer {
+	margin-top: 10px;
 }
