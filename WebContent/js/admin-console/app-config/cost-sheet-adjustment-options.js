@@ -8,7 +8,7 @@ var commonStaticUrl = sessionStorage.getItem('commonStaticUrl');
 ModalUtil.initializeModal($optionModal);
 
 // Initializes data table
-$optionTable.dataTable({
+var $optionDataTable = $optionTable.DataTable({
 	"aoColumnDefs": [
 		{ 'sWidth':"100px", "aTargets":[0]},
 		{ 'bSortable': false, 'aTargets':[0]},
@@ -39,7 +39,7 @@ $optionTable.on('click', '.delete-button', function() {
 	var caOptionId = $(this).closest('.option-row').find('.option-id').val();
 	var $deleteOptionPromise = $.post("delete-cost-sheet-adjustment-option.htm", {caOptionId: caOptionId});
 	$deleteOptionPromise.done(function(data) {
-		location.reload();
+		updateTable(data);
 	});
 });
 
@@ -95,7 +95,8 @@ function doSave() {
 	var $form = $optionModal.find('#option-form');
 	var $updateOptionPromise = $.post("update-cost-sheet-adjustment-option.htm", $form.serialize());
 	$updateOptionPromise.done(function(data) {
-		location.reload();
+		ModalUtil.closeModal($optionModal);
+		updateTable(data);
 	});
 }
 
@@ -108,6 +109,19 @@ function doAdd() {
 	var $form = $optionModal.find('#option-form');
 	var $addOptionPromise = $.post("add-cost-sheet-adjustment-option.htm", $form.serialize());
 	$addOptionPromise.done(function(data) {
-		location.reload();
+		ModalUtil.closeModal($optionModal);
+		updateTable(data);
 	});
+}
+
+// Replace the old table contents with the new one from the server
+function updateTable(data) {
+	var tableMarkup = $(data);
+
+	$optionDataTable.clear();
+	tableMarkup.find('tbody tr').each(function() {
+		$optionDataTable.row.add(this);
+	});
+
+	$optionDataTable.draw();
 }

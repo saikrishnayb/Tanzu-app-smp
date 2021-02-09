@@ -8,7 +8,7 @@ var commonStaticUrl = sessionStorage.getItem('commonStaticUrl');
 ModalUtil.initializeModal($toleranceModal);
 
 // Initializes data table
-$toleranceTable.dataTable({
+var $toleranceDataTable = $toleranceTable.DataTable({
 	"aoColumnDefs": [
 		{ 'sWidth':"100px", "aTargets":[0]},
 		{ 'bSortable': false, 'aTargets':[0, 3]},
@@ -39,7 +39,7 @@ $toleranceTable.on('click', '.delete-button', function() {
 	var costToleranceId = $(this).closest('.tolerance-row').find('.tolerance-id').val();
 	var $deleteTolerancePromise = $.post("delete-cost-sheet-tolerance.htm", {costToleranceId: costToleranceId});
 	$deleteTolerancePromise.done(function(data) {
-		location.reload();
+		updateTable(data);
 	});
 });
 
@@ -99,7 +99,8 @@ function doSave() {
 	var $form = $toleranceModal.find('#tolerance-form');
 	var $updateTolerancePromise = $.post("update-cost-sheet-tolerance.htm", $form.serialize());
 	$updateTolerancePromise.done(function(data) {
-		location.reload();
+		ModalUtil.closeModal($toleranceModal);
+		updateTable(data);
 	});
 }
 
@@ -112,7 +113,8 @@ function doAdd() {
 	var $form = $toleranceModal.find('#tolerance-form');
 	var $addTolerancePromise = $.post("add-cost-sheet-tolerance.htm", $form.serialize());
 	$addTolerancePromise.done(function(data) {
-		location.reload();
+		ModalUtil.closeModal($toleranceModal);
+		updateTable(data);
 	});
 }
 
@@ -195,3 +197,15 @@ function validate() {
 	return ok;
 }
 
+
+// Replace the old table contents with the new one from the server
+function updateTable(data) {
+	var tableMarkup = $(data);
+
+	$toleranceDataTable.clear();
+	tableMarkup.find('tbody tr').each(function() {
+		$toleranceDataTable.row.add(this);
+	});
+
+	$toleranceDataTable.draw();
+}

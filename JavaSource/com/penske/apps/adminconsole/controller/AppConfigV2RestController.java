@@ -54,32 +54,50 @@ public class AppConfigV2RestController
 	@SmcSecurity(securityFunction = SecurityFunction.COST_SHEET_ADJUSTMENT_OPTIONS)
 	@RequestMapping(value = "add-cost-sheet-adjustment-option", method = RequestMethod.POST)
 	@ResponseBody
-	public void addCostAdjustmentOption(CostAdjustmentOption caOption) {
+	public ModelAndView addCostAdjustmentOption(CostAdjustmentOption caOption) {
+		ModelAndView mav = new ModelAndView("/admin-console/app-config/fragment/cost-sheet-adjustment-option-table");
+
 		try {
 			costAdjustmentOptionService.addAdjustmentOption(caOption);
 		} catch (org.springframework.dao.DuplicateKeyException ex) {
 			throw new AppValidationException(
 					"Order code '" + caOption.getOrderCode() + "' is already an adjustment option");
 		}
+
+		mav.addObject("adjustmentOptions", costAdjustmentOptionService.getAllAdjustmentOptions());
+
+		return mav;
 	}
 
 	@SmcSecurity(securityFunction = SecurityFunction.COST_SHEET_ADJUSTMENT_OPTIONS)
 	@RequestMapping(value = "update-cost-sheet-adjustment-option", method = RequestMethod.POST)
 	@ResponseBody
-	public void updateCostAdjustmentOption(CostAdjustmentOption caOption) {
+	public ModelAndView updateCostAdjustmentOption(CostAdjustmentOption caOption) {
+		ModelAndView mav = new ModelAndView("/admin-console/app-config/fragment/cost-sheet-adjustment-option-table");
+
 		try {
 			costAdjustmentOptionService.updateAdjustmentOption(caOption);
 		} catch (org.springframework.dao.DuplicateKeyException ex) {
 			throw new AppValidationException(
 					"Order code '" + caOption.getOrderCode() + "' is already an adjustment option");
 		}
+
+		mav.addObject("adjustmentOptions", costAdjustmentOptionService.getAllAdjustmentOptions());
+
+		return mav;
 	}
 
 	@SmcSecurity(securityFunction = SecurityFunction.COST_SHEET_ADJUSTMENT_OPTIONS)
 	@RequestMapping(value = "delete-cost-sheet-adjustment-option", method = RequestMethod.POST)
 	@ResponseBody
-	public void deleteCostAdjustmentOption(@RequestParam(value = "caOptionId") int caOptionId) {
+	public ModelAndView deleteCostAdjustmentOption(@RequestParam(value = "caOptionId") int caOptionId) {
+		ModelAndView mav = new ModelAndView("/admin-console/app-config/fragment/cost-sheet-adjustment-option-table");
+
 		costAdjustmentOptionService.deleteAdjustmentOption(caOptionId);
+
+		mav.addObject("adjustmentOptions", costAdjustmentOptionService.getAllAdjustmentOptions());
+
+		return mav;
 	}
 
 	/* ================== Cost Sheet Tolerances ================== */
@@ -106,27 +124,44 @@ public class AppConfigV2RestController
 	@SmcSecurity(securityFunction = SecurityFunction.COST_SHEET_TOLERANCES)
 	@RequestMapping(value = "add-cost-sheet-tolerance", method = RequestMethod.POST)
 	@ResponseBody
-	public void addCostTolerance(CostTolerance costTolerance) {
+	public ModelAndView addCostTolerance(CostTolerance costTolerance) {
+		ModelAndView mav = new ModelAndView("/admin-console/app-config/fragment/cost-sheet-tolerance-table");
+
 		try {
 			costToleranceService.addTolerance(costTolerance);
 		} catch (org.springframework.dao.DuplicateKeyException ex) {
-			throw new AppValidationException("There is already exist a tolerance with combination of PO Category '"
-					+ costTolerance.getPoCategory().getPoCategoryName() + "' and Make '" + costTolerance.getMfrCode()
-					+ "'");
+			throw new AppValidationException("Tolerance already exists for '"
+					+ costTolerance.getPoCategory().getPoCategoryName() + "' / '" + costTolerance.getMfrCode() + "'");
 		}
+
+		mav.addObject("tolerances", costToleranceService.getAllTolerances());
+
+		return mav;
 	}
 
 	@SmcSecurity(securityFunction = SecurityFunction.COST_SHEET_TOLERANCES)
 	@RequestMapping(value = "update-cost-sheet-tolerance", method = RequestMethod.POST)
 	@ResponseBody
-	public void updateCostTolerance(CostTolerance costTolerance) {
+	public ModelAndView updateCostTolerance(CostTolerance costTolerance) {
+		ModelAndView mav = new ModelAndView("/admin-console/app-config/fragment/cost-sheet-tolerance-table");
+
 		costToleranceService.updateTolerance(costTolerance);
+
+		mav.addObject("tolerances", costToleranceService.getAllTolerances());
+
+		return mav;
 	}
 
 	@SmcSecurity(securityFunction = SecurityFunction.COST_SHEET_TOLERANCES)
 	@RequestMapping(value = "delete-cost-sheet-tolerance", method = RequestMethod.POST)
 	@ResponseBody
-	public void deleteCostTolerance(@RequestParam(value = "costToleranceId") int costToleranceId) {
+	public ModelAndView deleteCostTolerance(@RequestParam(value = "costToleranceId") int costToleranceId) {
+		ModelAndView mav = new ModelAndView("/admin-console/app-config/fragment/cost-sheet-tolerance-table");
+
 		costToleranceService.deleteTolerance(costToleranceId);
+
+		mav.addObject("tolerances", costToleranceService.getAllTolerances());
+
+		return mav;
 	}
 }

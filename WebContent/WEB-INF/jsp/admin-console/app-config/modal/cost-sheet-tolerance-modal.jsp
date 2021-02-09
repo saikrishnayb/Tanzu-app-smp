@@ -6,8 +6,8 @@
 
 <c:set var="modalName" value='${tolerance.toleranceId gt 0 ? "Edit Cost Sheet Tolerance" : "Add Cost Sheet Tolerance"}' />
 
-<%@ include file="../../../global/v2/modal-error-container.jsp"%>
 <div class="modal-content col-xs-12" data-modal-title="${modalName}" data-modal-width="400">
+	<%@ include file="../../../global/v2/modal-error-container.jsp"%>
 	<div class="row modal-body">
 		<form id="tolerance-form" class="form-horizontal">
 			<input name="toleranceId" type="hidden" value="${tolerance.toleranceId}"/>

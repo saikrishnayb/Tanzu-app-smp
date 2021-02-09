@@ -2,8 +2,8 @@
 
 <c:set var="modalName" value='${adjustmentOption.optionId gt 0 ? "Edit Cost Sheet Adjustment Option" : "Add Cost Sheet Adjustment Option"}' />
 
-<%@ include file="../../../global/v2/modal-error-container.jsp"%>
 <div class="modal-content col-xs-12" data-modal-title="${modalName}" data-modal-width="400">
+	<%@ include file="../../../global/v2/modal-error-container.jsp"%>
 	<div class="row modal-body">
 		<form id="option-form" class="form-horizontal">
 			<input name="optionId" type="hidden" value="${adjustmentOption.optionId}"/>
