@@ -92,6 +92,10 @@ $(document).ready(function() {
     
   });
 
+  $('nav ul li a').on('mousedown', function() {
+	closeValidationWindow();
+  });
+  
 });
 
 // Functions ************************************************************
@@ -190,5 +194,21 @@ function openHelp()
 	      });
 }
 
- 
- 
+
+///////////////////////////
+var validationWindow;
+function openValidationWindow(url) {
+	validationWindow = window.open(url,"validationWindow","toolbar=0,resizable=1,scrollbars=1");
+	return validationWindow;
+}
+
+function closeValidationWindow() {
+	if(validationWindow !== undefined)
+		validationWindow.close();
+	
+	validationWindow = undefined;
+}
+
+$(window).on('beforeunload', function (){
+	closeValidationWindow();
+});
