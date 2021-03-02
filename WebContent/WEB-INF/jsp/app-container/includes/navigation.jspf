@@ -28,9 +28,6 @@
              <li><a href="#" id="massComponentUpdate" onmousedown="redirectToTab('massComponentUpdate')">Mass Component Update</a></li>
           </tl:isAuthorized>
           
-          <tl:isAuthorized tabName="Order Fulfillment" secFunction="OEM_BUILD_MATRIX">
-             <li class="hidden"><a href="#" id="oemBuildMatrix" onmousedown="redirectToTab('oemBuildMatrix')">OEM Build Matrix</a></li>
-          </tl:isAuthorized>
 				</ul>
 				
 			</li>

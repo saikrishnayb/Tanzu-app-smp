@@ -239,13 +239,9 @@ function redirect(tabName,templateKey){
 		controllerName="massUpload";
 	}
 	else if(tabName=="Home")
-		{
+	{
 		path = "Home";
 		controllerName=tabId;
-		}
-	else if (tabName=="oemBuildMatrix"){
-		path = "smcof";
-		controllerName="oemBuildMatrix";
 	}
 	else if (tabName=="changeOrders"){
 		path = "smcof";
