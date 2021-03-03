@@ -29,8 +29,7 @@ import com.penske.apps.suppliermgmt.util.ApplicationConstants;
 /**
  * Contains methods that augment the controllers using the v1 page template. New controllers should use either {@link @RestController} or {@link @DefaultController} and use the v2 page template.
  */
-@ControllerAdvice
-@Version1Controller
+@ControllerAdvice(annotations = Version1Controller.class)
 public class Version1ControllerAdvisor {
 
     @Autowired(required=false)
