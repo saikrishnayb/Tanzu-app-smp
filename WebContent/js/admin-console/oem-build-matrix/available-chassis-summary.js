@@ -468,6 +468,7 @@ function checkCounts(){
 	
 	var $bodiesOnOrderBadge = $('.bodies-on-order-badge');
 	var bodiesOnOrder = parseInt($bodiesOnOrderBadge.text());
+	/*
 	if(bodiesOnOrder > chassisAvailable) {
 		$('.too-many-bodies-div').removeClass('hidden');
 		$('#continue').addClass('buttonDisabled');
@@ -475,7 +476,11 @@ function checkCounts(){
 	else {
 		$('.too-many-bodies-div').addClass('hidden');
 		$('#continue').removeClass('buttonDisabled');
-	}
+	}*/
+	
+	//THE TWO FOLLOWING LINES NEED TO BE REMOVED WHEN WE UNCOMMENT ABOVE
+	$('.too-many-bodies-div').addClass('hidden');
+	$('#continue').removeClass('buttonDisabled');
 }
 
 function updateQuantities() {

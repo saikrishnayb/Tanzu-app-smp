@@ -13,7 +13,10 @@
 	<div id="mainContent">
 		<%@ include file="../../global/navigation/admin-console/oem-build-matrix/left-nav.jsp"%>
 		<div class="leftNavAdjacentContainer">
-			<c:set var="tooManyBodies" value="${bodiesOnOrder > chassisAvailable}"/>
+			<!--
+				<c:set var="tooManyBodies" value="${bodiesOnOrder > chassisAvailable}"/>
+			--> 
+			<c:set var="tooManyBodies" value=false/>
 			<div class="container-fluid">
 				<%@ include file="../../global/v2/page-error-container.jsp"%>
 				<div class="row">
