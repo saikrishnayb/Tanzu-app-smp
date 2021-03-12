@@ -26,6 +26,17 @@
       </iframe>
     </div>
     
+    <%-- Status dialog - This is manipulated with PageUtil.showOverlay() and PageUtil.hideOverlay() within the child frame --%>
+	<div id="status-dialog" class="dialog ui-helper-hidden text-center">
+		<div class="dialog-content" data-dialog-no-close data-dialog-width="300">
+			<div class="status-dialog-spinner spinner"></div>
+			<div class="update-message text-center"></div>
+		</div>
+	</div>
+	
+	<%-- Semi-transparent Ajax loading overlay - Manipulate this with PageUtil.showOverlay() and PageUtil.hideOverlay() within the child frame --%>
+	<div id="ajax-loading-overlay" class="overlay spinner ui-helper-hidden"></div>
+    
     <%@ include file="includes/footer.jspf"%>
     <script src="${baseUrl}/js/app-container/includes/iframe-resizer.js"></script>
   </body>

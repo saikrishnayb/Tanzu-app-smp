@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.penske.apps.adminconsole.exceptions.UnauthorizedSecurityFunctionException;
+import com.penske.apps.smccore.base.exception.AppValidationException;
 import com.penske.apps.smccore.base.exception.HumanReadableException;
-import com.penske.apps.suppliermgmt.exception.AppValidationException;
 import com.penske.apps.suppliermgmt.model.AjaxError;
 import com.penske.apps.suppliermgmt.model.ValidationError;
 import com.penske.apps.suppliermgmt.util.ApplicationConstants;

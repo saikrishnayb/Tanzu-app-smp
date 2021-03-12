@@ -1,7 +1,10 @@
+var $statusDialog;
+
 $(document).ready(function() {
   
   var $utlityModal = $('.modal-utility');
   var $utilityList = $('#utility .utility-list');
+  $statusDialog = $('#status-dialog');
   
   //Initialization ******************************************************
   ModalUtil.initializeModal($utlityModal);
@@ -46,6 +49,19 @@ $(document).ready(function() {
     title     : 'Help',
     closeOnEscape : false
   });
+  
+  $statusDialog.dialog({
+		autoOpen: false,
+		modal: true,
+		width: $statusDialog.find('.dialog-content').data('dialog-width'),
+		minHeight: 0,
+		resizable: false,
+		closeOnEscape: false,
+		close: function() {
+			$(this).find('.update-message').empty();
+		},
+		dialogClass: 'no-titlebar'
+	});
   
   //Listeners **********************************************************
     
@@ -194,6 +210,14 @@ function openHelp()
 	      });
 }
 
+//***** Loading Overlay - Accessed by JS in Child Frame *****//
+function showStatusDialog() {
+	$statusDialog.dialog('open');
+}
+
+function hideStatusDialog() {
+	$statusDialog.dialog('close');
+}
 
 ///////////////////////////
 var validationWindow;

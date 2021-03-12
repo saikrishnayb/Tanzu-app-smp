@@ -22,12 +22,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.penske.apps.adminconsole.exceptions.UnauthorizedSecurityFunctionException;
+import com.penske.apps.smccore.base.exception.AppValidationException;
 import com.penske.apps.smccore.base.exception.HumanReadableException;
 import com.penske.apps.smccore.base.util.DateUtil;
 import com.penske.apps.suppliermgmt.annotation.CommonStaticUrl;
 import com.penske.apps.suppliermgmt.annotation.DefaultController;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
-import com.penske.apps.suppliermgmt.exception.AppValidationException;
 import com.penske.apps.suppliermgmt.interceptor.CommonModelAttributesHandlerInterceptor;
 import com.penske.apps.suppliermgmt.model.ValidationError;
 

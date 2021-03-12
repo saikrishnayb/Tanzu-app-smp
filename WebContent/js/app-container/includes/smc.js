@@ -393,7 +393,9 @@ function showLoading()
 function hideLoading(){
 
 	$.unblockUI();
-	
+	$('#ajax-loading-overlay').hide();
+	if($statusDialog && $statusDialog.length > 0 && $statusDialog.hasClass('ui-dialog-content'))
+		$statusDialog.dialog('close');
 }
 
 /**

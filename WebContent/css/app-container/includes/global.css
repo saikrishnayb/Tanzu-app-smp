@@ -138,6 +138,10 @@ body {
 	margin-top: 0%;
 }
 
+.ui-dialog.no-titlebar .ui-dialog-titlebar {
+	display: none;
+}
+
 .leftNav {
 	width: 170px;
 }
@@ -189,6 +193,10 @@ body {
 
 .width-300 {
 	width: 300px;
+}
+
+.text-center {
+	text-align: center;
 }
 
 .caret {
@@ -377,3 +385,64 @@ td i {
   vertical-align: middle;
 }
 
+/** Styling for status dialog overlay and spinner */
+.status-dialog.update-message {
+	font-size: 1.2em;
+}
+
+.status-dialog-spinner {
+	height: 60px;
+	position: relative;
+	margin-bottom: 10px;
+}
+
+.overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 9999;
+}
+
+.overlay::before {
+	content: '';
+	display: block;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: #000000;
+	opacity: 0.3;
+}
+
+.overlay.spinner::after, .status-dialog-spinner.spinner::after {
+	position: absolute;
+	margin: auto;
+	left: 0;
+	right: 0;
+	top: 50%;
+	z-index: 999;
+	display: block;
+	width: 1em;
+	height: 1em;
+	font-size: 10px;
+	content: '';
+	transform: translateY(-50%);
+	animation: spinner 1500ms infinite linear;
+	border-radius: 0.5em;
+	box-shadow: rgba(0, 0, 0, 0.75) 1.5em 0 0 0, rgba(0, 0, 0, 0.75) 1.1em
+		1.1em 0 0, rgba(0, 0, 0, 0.75) 0 1.5em 0 0, rgba(0, 0, 0, 0.75) -1.1em
+		1.1em 0 0, rgba(0, 0, 0, 0.75) -1.5em 0 0 0, rgba(0, 0, 0, 0.75)
+		-1.1em -1.1em 0 0, rgba(0, 0, 0, 0.75) 0 -1.5em 0 0,
+		rgba(0, 0, 0, 0.75) 1.1em -1.1em 0 0;
+}
+
+@keyframes spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

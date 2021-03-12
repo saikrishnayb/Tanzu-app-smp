@@ -47,7 +47,7 @@
 <script type="text/javascript" src="${commonStaticUrl}/js/common.js"></script>
 
 <script type="text/javascript" src="${baseUrl}/js/global/v2/jquery/jquery-ui-1.12.1.min.js"></script>
-<script type="text/javascript" src="${baseUrl}/js/global/v2/jquery/jquery.dataTables-1.10.2.min.js"></script>
+<script type="text/javascript" src="${baseUrl}/js/global/v2/jquery/jquery.dataTables-1.10.12.min.js"></script>
 <script type="text/javascript" src="${baseUrl}/js/global/v2/jquery/jquery.dataTables.scroller.min.js"></script>
 <script type="text/javascript" src="${baseUrl}/js/global/v2/jquery/dataTables.responsive-2.0.1.js"></script>
 <script type="text/javascript" src="${baseUrl}/js/global/v2/jquery/dataTables.fixedColumns.min.js"></script>
