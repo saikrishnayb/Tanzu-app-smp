@@ -728,7 +728,11 @@ $('#signature-add').on('click', function(){
 	$('.createVendorUser').on("click", function(){
 		
 		if($(this).hasClass( "buttonPrimary")){
+			
 			var ssoId = $('#sso-id').val();
+			
+			if (!isUserIdValid(ssoId)) return;
+			
 			var userId = 0;
 			
 			var $isUserNameValidPromise = $.ajax({
@@ -779,16 +783,7 @@ $('#signature-add').on('click', function(){
 			
 		}
 	});
-	
-	/*$('#email').on("blur", function(){
-		var $emailVal=$(this).val();
-		var isCreateOrEdit=$('#isCreateOrEdit').val();
-		if($.trim($emailVal).length>0 && isCreateOrEdit=='true'){
-			$("#sso-id").val($emailVal);
-			validateEmailOrUserId(isCreateOrEdit);
-		}
-	});
-	*/
+
 	$('#sso-id').on("blur", function(){
 		var $ssoVal=$(this).val();
 		//var $emailVal=$('#email').val();
@@ -804,10 +799,10 @@ $('#signature-add').on('click', function(){
 	});
 	
 	$('.goLDAP').on("click",function(){
-		$("#first-name").val($("#fnameM").val());
-		$("#last-name").val($("#lnameM").val());
-		$("#phone").val($("#phoneM").val());
-		$("#email").val($("#emailM").val());
+		$("#first-name").val($("#fnameM").val()).prop({'class': 'borderless', 'readonly': 'readonly'});
+		$("#last-name").val($("#lnameM").val()).prop({'class': 'borderless', 'readonly': 'readonly'});
+		$("#phone").val($("#phoneM").val()).prop({'class': 'borderless', 'readonly': 'readonly'});
+		$("#email").val($("#emailM").val()).prop({'class': 'borderless', 'readonly': 'readonly'});
 		closeModal($ldapUserinfoModal);
 	});
 	
@@ -1024,12 +1019,7 @@ function validateEmailOrUserId(isCreateOrEdit){
 			}
 			switch(data.returnFlg) {
 		    case -1:
-		       //Do nothing
-		    	//if(isCreateOrEdit==='true'){
-		    		
-		    //	}else{
-		    		toggleButton("");
-		    //	}
+		    	toggleButton("");
 		        break;
 		    case 0:
 		    	var errorTxt="An active user already exists with the user name " + ssoId + ".";
@@ -1044,12 +1034,10 @@ function validateEmailOrUserId(isCreateOrEdit){
 				toggleButton("disable");
 		        break;
 		    case 1:
-		    	/*var errorTxt="<p>An Active user already exists with the user name " + ssoId + " in LDAP.</p>" +
-		    			"<p>But user yet been configured for access to Supplier Management Center would they like to add now?</p>";
-		    	*/
 		    	var errorTxt="<p>User already exists in the Penske system but has not been added to Supplier Management Center.</p>"+
 		    				"<p> Would you like to add them now?</p>";
-				if(isCreateOrEdit ==='true'){
+				
+		    	if(isCreateOrEdit ==='true'){
 					$ldapUserinfoModal.find("#infoText").html(errorTxt);
 
 					$ldapUserinfoModal.find("#yes").show();
@@ -1060,10 +1048,6 @@ function validateEmailOrUserId(isCreateOrEdit){
 					$ldapUserinfoModal.find("#ssoM").val(data.ssoId);
 					openModal($ldapUserinfoModal);
 		    	}else{
-		    		//var errorTxt="An Active user already exists with the user name " + ssoId + " in LDAP." +
-	    			//"But user yet been configured for access to Supplier Management Center would they like to add now?";
-		    		var errorTxt="<p>User already exists in the Penske system but has not been added to Supplier Management Center.</p>"+
-    				"<p> Would you like to add them now?</p>";
 		    		$errMsg.text(errorTxt);
 					$('.error-messages-container').removeClass('displayNone');
 		    	}
@@ -1072,13 +1056,12 @@ function validateEmailOrUserId(isCreateOrEdit){
 		    case 2:
 		    	var errorTxt="<p>An Inactive user already exists with the user name " + ssoId + " in LDAP.</p>" +
 		    			"<p>Please Contact Support @ "+data.supportNumber+" for further assistance.</p>";
+		    	
 				if(isCreateOrEdit ==='true'){
 					$ldapUserinfoModal.find("#infoText").html(errorTxt);
 					$ldapUserinfoModal.find("#ok").show();
 					openModal($ldapUserinfoModal);
 		    	}else{
-		    		var errorTxt="An Inactive user already exists with the user name " + ssoId + " in LDAP." +
-	    			"Please Contact Support @ "+data.supportNumber+" for further assistance.";
 		    		$errMsg.text(errorTxt);
 					$('.error-messages-container').removeClass('displayNone');
 		    	}
@@ -1123,12 +1106,5 @@ function isUserIdValid(userId) {
 	return alphaNumericRegex.test(userId)
 }
 
-/*function formatPhone(phone){
-	if(phone !=null && phone.length==10){
-		return "("+phone.substr(0, 3) +")" + '-' + phone.substr(3, 3) + '-' + phone.substr(6,4);
-	}else{
-		return phone;
-	}
-}*/
 
 //# sourceURL=users-form.js
