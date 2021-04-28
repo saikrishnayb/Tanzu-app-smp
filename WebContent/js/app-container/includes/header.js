@@ -233,6 +233,10 @@ function closeValidationWindow() {
 	validationWindow = undefined;
 }
 
+function getValidationWindow(){
+	return validationWindow;
+}
+
 $(window).on('beforeunload', function (){
 	closeValidationWindow();
 });
