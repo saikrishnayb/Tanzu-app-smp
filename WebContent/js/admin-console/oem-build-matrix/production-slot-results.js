@@ -2,6 +2,7 @@ selectCurrentNavigation("tab-oem-build-matrix", "left-nav-build-history");
 
 var $slotResultsTable = $('#slot-results-table');
 
+/*
 var $slotResultsDataTable = $slotResultsTable.DataTable( {
     data:           resultData,
     "columns": [
@@ -19,7 +20,7 @@ var $slotResultsDataTable = $slotResultsTable.DataTable( {
     dom: 			"ti",
     paging: 		true,
     deferRender:    true,
-    scrollY:        500, 
+    scrollY:        600, 
     scrollCollapse: true,
     scroller:       true,
     createdRow: function(row, data, dataIndex) {
@@ -36,6 +37,7 @@ var $slotResultsDataTable = $slotResultsTable.DataTable( {
         	.attr('vehicle-type', data.vehicleType);
         }
 });
+*/
 
 var orderSelectionCnt = 0;
 var orderSelectionList = [];
@@ -49,15 +51,14 @@ ModalUtil.initializeModal($confirmReservationModal);
 ModalUtil.initializeModal($updateReservationModal);
 ModalUtil.initializeModal($viewDiagnosticInfoModal);
 
-
-/* $slotResultsTable.DataTable({
+$slotResultsDataTable = $slotResultsTable.DataTable({
 	"bPaginate" : false, //enable pagination
 	"bStateSave" : true, //To retrieve the data on click of back button
 	"sPaginationType" : "two_button",
 	"bLengthChange" : false, //enable change of records per page, not recommended
-	"bFilter" : false, //Allows dynamic filtering of results, do not enable if using ajax for pagination
+	"bFilter" : true, //Allows dynamic filtering of results, do not enable if using ajax for pagination
 	"bAutoWidth" : false,
-	"bSort" : false, //Allow sorting by column header
+	"bSort" : true, //Allow sorting by column header
 	"bInfo" : true, //Showing 1 to 10 of 11 entries
 	"sPaginationType" : "full_numbers", //Shows first/previous 1,2,3,4 next/last buttons
 	"aoColumnDefs" : [ {
@@ -83,7 +84,7 @@ ModalUtil.initializeModal($viewDiagnosticInfoModal);
 			infoRow.css("display", "none");
 		}
 	}
-});*/
+});
 
 $('#slot-search').on('keyup', function() {
 	var isChecked = $('#show-selected-checkbox').is(':checked');

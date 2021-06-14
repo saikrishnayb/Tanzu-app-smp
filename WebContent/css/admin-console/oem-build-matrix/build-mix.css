@@ -74,13 +74,16 @@
 
 .percent-sign,
 .units-label {
+	/*
 	margin-left: 10px;
+	*/
 }
 
 .attribute-table {
 	margin-bottom: 0px;
 }
 
+@media screen and (min-width: 1400px)
 .unit-percent-input {
 	min-width: 100px;
 	width: 44%;

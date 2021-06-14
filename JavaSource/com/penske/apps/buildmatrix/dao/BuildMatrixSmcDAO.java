@@ -242,4 +242,6 @@ public interface BuildMatrixSmcDAO {
 
 	public Integer acceptBuild(@Param("runId") int buildId);
 
+	public List<ProductionSlotResult> getAllPlantsAvailableToDistrict(String district);
+
 }

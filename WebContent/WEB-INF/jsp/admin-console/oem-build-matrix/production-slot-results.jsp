@@ -99,7 +99,6 @@
 							</tr>
 						</thead>
 						<tbody>
-							<!--  
 							<c:forEach items="${slotResults}" var="unit">
 								<tr class="result">
 									<td>
@@ -127,7 +126,6 @@
 								   </td>
 								</tr>
 							</c:forEach>
-							-->
 						</tbody>
 					</table>
 				</div>

@@ -437,13 +437,23 @@
 		<result column="bodyMake"		property="bodyMake" />
 	</resultMap>
 	
+	<select id="getAllPlantsAvailableToDistrict"  parameterType="java.lang.String" resultMap="plantResultMap">
+		SELECT 		
+				PLANT_ID AS plantId,
+				PLANT_MFR_CODE ||'-' ||PLANT_CITY ||',' ||PLANT_STATE AS productionSlot,
+				PLANT_MFR_CODE as bodyMake
+		FROM 	SMC.OBM_PLANTS PLTS
+		INNER JOIN SMC.OBM_PLANT_PROXIMITY PROX ON PROX.PLANT_ID = PLTS.PLANT_ID
+		WHERE PROX.district = #{district}
+	</select>
+	
 	<select id="getAllPlants" resultMap="plantResultMap">
 		SELECT 		
 				PLANT_ID AS plantId,
 				PLANT_MFR_CODE ||'-' ||PLANT_CITY ||',' ||PLANT_STATE AS productionSlot,
 				PLANT_MFR_CODE as bodyMake
-					
 		FROM 	SMC.OBM_PLANTS
+		ORDER BY PLANT_MFR_CODE, PLANT_CITY
 	</select>
 	
 	<update id="updateRunSummary">
@@ -721,10 +731,10 @@
 	<!-- BUSINESS AWARDS -->
 	<insert id="insertBusinessAwards">
 		INSERT INTO SMC.OBM_BUSINESS_AWARD
- 				(RUN_ID, GROUP_KEY, AWARD_KEY, AWARD_KEY_ORDER, AWARD_PERCENTAGE, AWARD_QUANTITY, AWARD_TYPE)
+ 				(RUN_ID, GROUP_KEY, AWARD_KEY, AWARD_KEY_ORDER, AWARD_PERCENTAGE, AWARD_QUANTITY, AWARD_TYPE, AWARD_EXCESS)
  		VALUES
  			<foreach collection="awardsToInsert" item="award" separator="," open="" close="">
- 				(#{award.buildId}, #{award.groupKey}, #{award.attributeValueKey}, #{award.awardOrder}, #{award.percentage}, #{award.quantity}, #{award.awardType})
+ 				(#{award.buildId}, #{award.groupKey}, #{award.attributeValueKey}, #{award.awardOrder}, #{award.percentage}, #{award.quantity}, #{award.awardType}, #{award.awardExcess})
  			</foreach>
 	</insert>
 	
@@ -741,7 +751,8 @@
 			AWARD_KEY_ORDER as awardOrder, 
 			AWARD_PERCENTAGE as percentage, 
 			AWARD_QUANTITY as quantity, 
-			AWARD_TYPE as awardType
+			AWARD_TYPE as awardType,
+			AWARD_EXCESS as awardExcess
 		FROM
 			SMC.OBM_BUSINESS_AWARD
 		WHERE RUN_ID = #{buildId}

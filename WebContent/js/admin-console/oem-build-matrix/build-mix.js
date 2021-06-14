@@ -17,8 +17,8 @@ $('.numbers-only').on('input', function () {
     this.value = this.value.replace(/[^0-9\.]/g,'');
 });
 
-$('.attribute-container').on('input', '.attribute-units', function(){
-	var $unitsInput = $(this);
+$('.attribute-container').on('change', '.attribute-units', function(){
+	var $unitsInput =     $(this);
 	var $attributeValueRow = $unitsInput.closest('.attribute-value-row');
 	var $container = $attributeValueRow.closest('.attribute-container');
 	var unitsText = $unitsInput.val();
@@ -31,7 +31,7 @@ $('.attribute-container').on('input', '.attribute-units', function(){
 	
 	var percentage = calculatePercentage(units, $container, isReefer, isRearDoor, isLiftgate);
 	$attributeValueRow.find('.attribute-percentage').val(percentage);
-	
+
 	calculateTotals($container);
 });
 

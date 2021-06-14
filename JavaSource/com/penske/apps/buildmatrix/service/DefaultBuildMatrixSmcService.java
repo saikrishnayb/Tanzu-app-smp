@@ -297,6 +297,11 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		return SlotResultsByFilter;
 	}
 	
+	public List<ProductionSlotResult> getAllPlantsAvailableToDistrict(String district) {
+		List<ProductionSlotResult> availablePlants = buildMatrixSmcDAO.getAllPlantsAvailableToDistrict(district);
+		return availablePlants;
+	}
+	
 	public List<ProductionSlotResult> getAllPlants() {
 		List<ProductionSlotResult> allPlants = buildMatrixSmcDAO.getAllPlants();
 		return allPlants;
@@ -355,8 +360,10 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		int buildId = newBuild.getBuildId();
 		for(ApprovedOrder order: selectedOrders) {
 			int unitsToConsider = unitsToConsiderByCroOrderKey.get(new CroOrderKey(order));
+			/*
 			if(unitsToConsider > order.getUnfulfilledQty())
 				throw new IllegalArgumentException("Units to consider cannot be greater than unfulfilled units");
+			*/
 			buildMatrixSmcDAO.insertCroBuildRequest(buildId, order, unitsToConsider);
 		}
 		return newBuild;
@@ -373,8 +380,10 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		buildMatrixSmcDAO.deleteCroBuildRequestsFromBuild(existingBuildId);
 		for(ApprovedOrder order: selectedOrders) {
 			int unitsToConsider = unitsToConsiderByCroOrderKey.get(new CroOrderKey(order));
+			/*
 			if(unitsToConsider > order.getUnfulfilledQty())
 				throw new IllegalArgumentException("Units to consider cannot be greater than unfulfilled units");
+			*/
 			buildMatrixSmcDAO.insertCroBuildRequest(buildId, order, unitsToConsider);
 		}
 		return existingBuild;
@@ -392,7 +401,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		int itemOrder = 1;
 		List<BusinessAward> awardsToInsert = new ArrayList<>();
 		for(AttributeRow attributeRow: buildMixForm.getAttributeRows()) {
-			BusinessAward award = new BusinessAward(buildId, attributeRow.getGroupKey(), attributeRow.getAwardKey(), itemOrder, attributeRow.getAwardPercentage(), attributeRow.getAwardQuantity());
+			BusinessAward award = new BusinessAward(buildId, attributeRow.getGroupKey(), attributeRow.getAwardKey(), itemOrder, attributeRow.getAwardPercentage(), attributeRow.getAwardQuantity(), attributeRow.getAwardExcess());
 			awardsToInsert.add(award);
 		}
 		

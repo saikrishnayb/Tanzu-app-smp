@@ -72,6 +72,8 @@ public interface BuildMatrixSmcService {
 	
 	public List<ProductionSlotResult> getSlotResultsByFilter(int buildId, List<String> selectedFilters);
 	
+	public List<ProductionSlotResult> getAllPlantsAvailableToDistrict(String district);
+	
 	public List<ProductionSlotResult> getAllPlants();
 	
 	public List<ProductionSlotResult> getProductionSlotList(int buildId, String unitNumber);
