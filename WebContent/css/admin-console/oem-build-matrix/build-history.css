@@ -202,5 +202,9 @@ color:inherit}
 .dropdown a {
   text-decoration: none !important;
 }
+
+.buttonSecondary .caret{
+	color: #FFFFFF !important;
+}
  
 /* End of Bootstrap Dropdown custom CSS */

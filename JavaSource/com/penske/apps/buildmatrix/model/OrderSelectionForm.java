@@ -11,6 +11,7 @@ public class OrderSelectionForm {
 	
 	private Integer buildId;
 	private List<OrderSelection> selectedOrders;
+	private boolean guidance;
 
 	//***** MODIFIED ACCESSORS *****//
 	public List<CroOrderKey> getCroOrderKeys(){
@@ -39,6 +40,14 @@ public class OrderSelectionForm {
 
 	public void setSelectedOrders(List<OrderSelection> selectedOrders) {
 		this.selectedOrders = selectedOrders;
+	}
+	
+	public boolean isGuidance() {
+		return guidance;
+	}
+	
+	public void setGuidance(boolean guidance) {
+		this.guidance = guidance;
 	}
 	
 	public static class OrderSelection {

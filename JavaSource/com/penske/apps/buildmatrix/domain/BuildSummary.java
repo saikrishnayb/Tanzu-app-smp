@@ -26,16 +26,18 @@ public class BuildSummary {
 	private boolean debugMode;
 	private boolean enhancedDebugMode;
 	private boolean debugUpdateFlg;
+	private String guidanceMode;
 	
 	protected BuildSummary() {}
 	
-	public BuildSummary(int reqQty, UserContext userContext, int maxWeeksBefore, int maxWeeksAfter) {
+	public BuildSummary(int reqQty, UserContext userContext, int maxWeeksBefore, int maxWeeksAfter, boolean guidance) {
 		this.reqQty = reqQty;
 		this.buildStatus = BuildStatus.STARTED;
 		this.startedByName = userContext.getFirstName() + " " + userContext.getLastName();
 		this.startedBySso = userContext.getUserSSO();
 		this.maxWeeksBefore = maxWeeksBefore;
 		this.maxWeeksAfter = maxWeeksAfter;
+		this.guidanceMode = guidance ? "Y" : "N";
 	}
 	
 	@Override
@@ -179,6 +181,14 @@ public class BuildSummary {
 
 	public void setDebugUpdateFlg(boolean debugUpdateFlg) {
 		this.debugUpdateFlg = debugUpdateFlg;
+	}
+	
+	public String getGuidanceMode() {
+		return guidanceMode;
+	}
+	
+	public void setGuidanceMode(String guidanceMode) {
+		this.guidanceMode = guidanceMode;
 	}
 	
 }

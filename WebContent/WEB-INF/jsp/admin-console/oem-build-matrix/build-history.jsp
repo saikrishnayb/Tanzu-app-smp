@@ -45,6 +45,7 @@
 							<tr>
 								<th class="actionsheader"></th>
 								<th class="leftAlign">Build #</th>
+								<th class="leftAlign">Guidance</th>
 								<th class="leftAlign">Requested Qty</th>
 								<th class="leftAlign">Fulfilled Qty</th>
 								<th class="leftAlign">Status</th>
@@ -83,6 +84,7 @@
 											</c:otherwise>
 										</c:choose>
 									</td>
+									<td class="leftAlign">${buildHistory.guidanceMode}</td>
 									<td class="leftAlign">${buildHistory.reqQty}</td>
 									<td class="leftAlign">${buildHistory.fulfilledQty }</td>
 									<td class=""> ${buildHistory.buildStatus.label} </td>

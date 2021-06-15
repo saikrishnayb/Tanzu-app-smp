@@ -88,7 +88,7 @@ public interface BuildMatrixSmcService {
 	public List<BuildSummary> getAllBuildHistory();
 
 	// BUILD FUNCTIONS //
-	public BuildSummary startNewBuild(List<ApprovedOrder> selectedOrders, Map<CroOrderKey, Integer> unitsToConsiderByCroOrderKey, UserContext userContext);
+	public BuildSummary startNewBuild(List<ApprovedOrder> selectedOrders, Map<CroOrderKey, Integer> unitsToConsiderByCroOrderKey, boolean guidance, UserContext userContext);
 
 	public BuildSummary updateExistingBuild(Integer buildId, Map<CroOrderKey, Integer> unitsToConsiderByCroOrderKey, List<ApprovedOrder> selectedOrders);
 

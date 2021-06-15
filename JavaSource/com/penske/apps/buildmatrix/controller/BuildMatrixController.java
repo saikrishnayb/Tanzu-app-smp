@@ -243,7 +243,7 @@ public class BuildMatrixController {
 	 * 	 */
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping("/order-summary")
-	public ModelAndView getOrderSummary(@RequestParam(value="buildId", required=false) Integer buildId) {
+	public ModelAndView getOrderSummary(@RequestParam(value="buildId", required=false) Integer buildId, @RequestParam(value="guidance", required=false) boolean guidance) {
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/order-summary");
 		List<ApprovedOrder> approvedOrders = buildMatrixCroService.getApprovedOrdersForBuildMatrix();
 		List<ApprovedOrder> unFulfilledOrders = buildMatrixSmcService.getUnfulfilledOrders(approvedOrders);
@@ -258,6 +258,7 @@ public class BuildMatrixController {
 			if(existingBuild == null)
 				throw new IllegalArgumentException("Couldn't find existing build");
 			buildRequests = buildMatrixSmcService.getCroOrdersForBuild(buildId);
+			guidance = "Y".equals(existingBuild.getGuidanceMode());
 		}
 		
 		Map<CroOrderKey, Integer> unitsToConsiderByOrderKey = buildRequests.stream()
@@ -266,6 +267,7 @@ public class BuildMatrixController {
 		model.addObject("approvedOrdersByKey", approvedOrdersByKey);
 		model.addObject("unitsToConsiderByOrderKey", unitsToConsiderByOrderKey);
 		model.addObject("chassisAvailable", chassisAvailable);
+		model.addObject("guidance", guidance);
 		model.addObject("buildId", buildId);
 		return model;
 	}
@@ -287,7 +289,7 @@ public class BuildMatrixController {
 		
 		int buildId = 0;
 		if(formBuildId == null) {
-			BuildSummary newBuild = buildMatrixSmcService.startNewBuild(ordersToAdd, orderSelectionForm.getUnitsToConsiderByCroOrderKey(), userContext);
+			BuildSummary newBuild = buildMatrixSmcService.startNewBuild(ordersToAdd, orderSelectionForm.getUnitsToConsiderByCroOrderKey(), orderSelectionForm.isGuidance(), userContext);
 			buildId = newBuild.getBuildId();
 		}
 		else {

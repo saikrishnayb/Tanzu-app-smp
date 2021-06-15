@@ -155,6 +155,13 @@ $('#add-to-build').on('click', function(){
 	buildIdInput.value = buildId;
 	orderSelectionForm.append(buildIdInput);
 	
+	var guidance = orderSelectionForm.data('guidance');
+	var guidanceInput = document.createElement('input');
+	guidanceInput.type = 'hidden';
+	guidanceInput.name = 'guidance'
+	guidanceInput.value = guidance;
+	orderSelectionForm.append(guidanceInput);
+	
 	orderSelectionForm.submit();
 	
 });

@@ -46,7 +46,31 @@ $buildHistoryDataTable = $buildHistoryTable.DataTable({ //All of the below are o
 	"initComplete" : function() {
 		var showStartBuildBtn = $buildHistoryTable.data('show-start-build-btn');
 		if (showStartBuildBtn) {
-			$('.build-history-table-top').append('<a href="' + baseBuildMatrixUrl + '/order-summary" class="buttonSecondary floatRight">Start Build</a>');
+			$('.build-history-table-top').append(
+					'<div class="dropdown floatRight">' +
+						'<a class="buttonSecondary dropdown-toggle"' + 
+							'id="start-build-dropdown" ' +
+							'data-toggle="dropdown" ' +
+							'aria-haspopup="true" ' +
+							'aria-expanded="true">' +
+							'Start Build' +
+								'<span class="caret"></span>' +
+						'</a>' +
+						'<ul class="dropdown-menu pull-left" style="right: 0; left: auto;" aria-labelledby="start-build-dropdown">' +
+							'<li>' +
+								'<a href="' + baseBuildMatrixUrl + '/order-summary?guidance=' + true + '" id="with-guidance" class="ui-helper-hidden">' +
+									'With Guidance' +
+								'</a>' +
+							'</li>' +
+							'<li>' +
+								'<a href="' + baseBuildMatrixUrl + '/order-summary?guidance=' + false + '" id="without-guidance" class="ui-helper-hidden">' +
+									'Without Guidance' +
+								'</a>' +
+							'</li>' +
+						'</ul>' +
+					'</div>'
+					/*<a href="' + baseBuildMatrixUrl + '/order-summary" class="buttonSecondary floatRight">Start Build</a>'*/					
+				);
 		}
 		else {
 			$('.rework-delete-build').hide();

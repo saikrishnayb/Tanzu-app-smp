@@ -102,7 +102,7 @@
 				</div>
 				
 				<div id="edit-attribute-popup" style="display:none;"></div>
-				<form id="order-selection-form" name="orderSelectionForm" data-build-id="${buildId}" method="POST" action="${baseAppUrl}/admin-console/oem-build-matrix/add-to-build"></form>
+				<form id="order-selection-form" name="orderSelectionForm" data-build-id="${buildId}" data-guidance="${guidance}" method="POST" action="${baseAppUrl}/admin-console/oem-build-matrix/add-to-build"></form>
 			</div>
 		</div>
 	</div>

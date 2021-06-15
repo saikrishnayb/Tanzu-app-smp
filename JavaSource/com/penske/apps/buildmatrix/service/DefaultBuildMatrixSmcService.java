@@ -349,13 +349,13 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	
 	// BUILD FUNCTIONS //
 	@Override
-	public BuildSummary startNewBuild(List<ApprovedOrder> selectedOrders, Map<CroOrderKey, Integer> unitsToConsiderByCroOrderKey, UserContext userContext) {
+	public BuildSummary startNewBuild(List<ApprovedOrder> selectedOrders, Map<CroOrderKey, Integer> unitsToConsiderByCroOrderKey, boolean guidance, UserContext userContext) {
 		int bodiesOnOrder = unitsToConsiderByCroOrderKey.values().stream()
 				.collect(summingInt(val->val));
 		int maxBeforeWeeks = buildMatrixSmcDAO.getBuildMaximumWeeksBefore();
 		int maxAfterWeeks = buildMatrixSmcDAO.getBuildMaximumWeeksAfter();
 		
-		BuildSummary newBuild = new BuildSummary(bodiesOnOrder, userContext, maxBeforeWeeks, maxAfterWeeks);
+		BuildSummary newBuild = new BuildSummary(bodiesOnOrder, userContext, maxBeforeWeeks, maxAfterWeeks, guidance);
 		buildMatrixSmcDAO.insertNewBuild(newBuild);
 		int buildId = newBuild.getBuildId();
 		for(ApprovedOrder order: selectedOrders) {

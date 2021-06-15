@@ -506,6 +506,7 @@
 		<result column="runEndDate" 		  property="runEndDate"/>
 		<result column="maxWeeksBefore" 		  property="maxWeeksBefore"/>
 		<result column="maxWeeksAfter"						property="maxWeeksAfter"/>
+		<result column="guidanceMode"						property="guidanceMode"/>
 		<collection property="fulfilledQty" column="{buildId=buildId}" select="getfulfilledQty"></collection>
 	</resultMap>
 	
@@ -524,7 +525,8 @@
 	        RUN_START_DATE as runStartDate,
 	        RUN_END_DATE as runEndDate,
 	        MAXIMUM_WEEKS_BEFORE_ALLOWED as maxWeeksBefore,
-			MAXIMUM_WEEKS_AFTER_ALLOWED as maxWeeksAfter
+			MAXIMUM_WEEKS_AFTER_ALLOWED as maxWeeksAfter,
+			GUIDANCE_MODE as guidanceMode
 		FROM SMC.OBM_RUN_SUMMARY runSummary
 		LEFT JOIN SMC.SMC_USER_MASTER starter ON starter.SSO = runSummary.STARTED_BY
 		LEFT JOIN SMC.SMC_USER_MASTER submitter ON submitter.SSO = runSummary.SUBMITTED_BY
@@ -550,14 +552,16 @@
  			STARTED_BY,
  			STARTED_DATE,
  			MAXIMUM_WEEKS_BEFORE_ALLOWED,
-			MAXIMUM_WEEKS_AFTER_ALLOWED
+			MAXIMUM_WEEKS_AFTER_ALLOWED,
+			GUIDANCE_MODE
  		) VALUES (
  			#{newBuild.buildStatus.code},
  			#{newBuild.reqQty},
  			#{newBuild.startedBySso},
  			CURRENT TIMESTAMP,
  			#{newBuild.maxWeeksBefore},
- 			#{newBuild.maxWeeksAfter}
+ 			#{newBuild.maxWeeksAfter},
+ 			#{newBuild.guidanceMode}
  		)
 	</insert>
 	
@@ -596,7 +600,8 @@
 		    CASE runSummary.ENHANCED_DEBUG_MODE
 			   	WHEN 1 THEN 'TRUE'
 			   	WHEN 0 THEN 'FALSE'
-		    END as enhancedDebugMode 
+		    END as enhancedDebugMode,
+		    GUIDANCE_MODE 
 		FROM SMC.OBM_RUN_SUMMARY runSummary
 		LEFT JOIN SMC.SMC_USER_MASTER starter ON starter.SSO = runSummary.STARTED_BY
 		LEFT JOIN SMC.SMC_USER_MASTER submitter ON submitter.SSO = runSummary.SUBMITTED_BY
