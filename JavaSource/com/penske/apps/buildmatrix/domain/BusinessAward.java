@@ -10,11 +10,11 @@ public class BusinessAward {
 	private int percentage;
 	private int quantity;
 	private String awardType;
-	private int awardExcess;
+	private Integer awardExcess;
 	
 	protected BusinessAward() {}
 	
-	public BusinessAward(int buildId, String groupKey, String attributeValueKey, int awardOrder, int percentage, int quantity, int awardExcess) {
+	public BusinessAward(int buildId, String groupKey, String attributeValueKey, int awardOrder, int percentage, int quantity, Integer awardExcess) {
 		this.buildId = buildId;
 		this.groupKey = groupKey;
 		this.attributeValueKey = attributeValueKey;
@@ -55,6 +55,10 @@ public class BusinessAward {
 
 	public String getAwardType() {
 		return awardType;
+	}
+	
+	public Integer getAwardExcess() {
+		return awardExcess;
 	}
 	
 }

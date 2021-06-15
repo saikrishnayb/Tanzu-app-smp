@@ -74,19 +74,15 @@
 
 .percent-sign,
 .units-label {
-	/*
 	margin-left: 10px;
-	*/
 }
 
 .attribute-table {
 	margin-bottom: 0px;
 }
 
-@media screen and (min-width: 1400px)
 .unit-percent-input {
 	min-width: 100px;
-	width: 44%;
 }
 
 .attribute-value-td {
@@ -100,6 +96,10 @@
 .debug-option{
     display: inline-block;
     width: 15px;
+}
+
+.attribute-table thead tr th{
+	background-color: unset;
 }
 /* .attribute-table .attribute-percentage-td,
 .attribute-table .attribute-units-td {

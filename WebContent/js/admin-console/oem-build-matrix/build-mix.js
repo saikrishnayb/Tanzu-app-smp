@@ -53,6 +53,15 @@ $('.attribute-container').on('input', '.attribute-percentage', function(){
 	calculateTotals($container);
 });
 
+$('.attribute-container').on('input', '.excess-attribute-units', function(){
+	var $excessInput = $(this);
+	var $attributeValueRow = $excessInput.closest('.attribute-value-row');
+	var $container = $attributeValueRow.closest('.attribute-container');
+	
+	calculateTotals($container)
+	
+});
+
 $('.attribute-container').on('click', '.reset-link', function(){
 	var $resetLink = $(this);
 	var $container = $resetLink.closest('.attribute-container');
@@ -82,6 +91,7 @@ $submitBtn.on('click', function(){
 		var $container = $(this);
 		
 		var groupKey = $container.data('group-key');
+		var isBodyMake = $container.is('[data-is-body-make]');
 		
 		var $attributeValueRows = $container.find('.attribute-value-row');
 		$attributeValueRows.each(function(){
@@ -116,6 +126,17 @@ $submitBtn.on('click', function(){
 			unitsInput.name = 'attributeRows[' + index + '].awardQuantity';
 			unitsInput.value = units;
 			buildMixForm.append(unitsInput);
+			
+			if(isBodyMake) {
+				var excessText = $row.find('.excess-attribute-units').val();
+				var excessValue = excessText.trim() == '' ? null : parseInt(excessText);
+				
+				var excessUnitsInput = document.createElement('input');
+				excessUnitsInput.type = 'hidden';
+				excessUnitsInput.name = 'attributeRows[' + index + '].awardExcess';
+				excessUnitsInput.value = excessValue;
+				buildMixForm.append(excessUnitsInput);
+			}
 			
 			index++;
 			
@@ -229,6 +250,7 @@ function checkTotals(){
 		var isReefer = "REEFERMAKE" == $container.data('attribute-key');
 		var isRearDoor = "REARDOORMAKE" == $container.data('attribute-key');
 		var isLiftgate = "LIFTGATEMAKE" == $container.data('attribute-key');
+		var isBodyMake = "BODYMAKE" == $container.data('attribute-key');
 		
 		var $totalRow = $container.find('.attribute-total-row');
 		var totalUnits = parseInt($totalRow.find('.total-units').text());
@@ -262,6 +284,27 @@ function checkTotals(){
 			}
 			else
 				$row.find('.attribute-units').removeClass('error-input');
+			
+			if(isBodyMake) {
+				var excessText = $row.find('.excess-attribute-units').val();
+				if(!excessText.trim() == '') {
+					var unitsText = $row.find('.attribute-units').val();
+					unitsText = unitsText.trim() == '' ? 0 : unitsText;
+					var units = parseInt(unitsText);
+					
+					var excess = parseInt(excessText);
+					if(excess <= units) {
+						enableSubmit = false;
+						$row.find('.excess-attribute-units').addClass('error-input');
+					}
+					else {
+						$row.find('.excess-attribute-units').removeClass('error-input');
+					}
+				}
+				else
+					$row.find('.excess-attribute-units').removeClass('error-input');
+			}
+				
 		});
 	});
 	

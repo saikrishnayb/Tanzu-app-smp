@@ -49,6 +49,7 @@
 	      				<c:set var="isLiftgate" value="${false}" />
 	      				<c:set var="isRearDoor" value="${false}" />
 	      				<c:set var="isReefer" value="${false}" />
+	      				<c:set var="isBodyMake" value="${false}" />
 	      				<c:set var="awardByAttributeKey" value="${buildMixMap.get(attribute.groupKey)}" />
 	      				<c:choose>
 							<c:when test='${attribute.attributeKey eq "LIFTGATEMAKE"}'>
@@ -60,6 +61,9 @@
 							<c:when test='${attribute.attributeKey eq "REEFERMAKE"}'>
 	      						<c:set var="isReefer" value="${true}" />
 							</c:when>
+							<c:when test='${attribute.attributeKey eq "BODYMAKE"}'>
+	      						<c:set var="isBodyMake" value="${true}" />
+							</c:when>
 						</c:choose>
 	      				<div class="col-lg-4">
 		      				<diV class="attribute-container" 
@@ -69,6 +73,7 @@
 		      					<c:if test="${isLiftgate}">data-liftgate-units="${liftgateUnits}"</c:if>
 		      					<c:if test="${isRearDoor}">data-reardoor-units="${reardoorUnits}"</c:if>
 		      					<c:if test="${isReefer}">data-reefer-units="${reeferUnits}"</c:if>
+		      					<c:if test="${isBodyMake}">data-is-body-make</c:if>
 		      					>
 		      					<div class="row">
 		      						<div class="col-xs-12 attribute-header">
@@ -81,6 +86,16 @@
 		      					<div class="row">
 		      						<div class="col-xs-12 attribute-table-container">
 		      							<table class="attribute-table">
+		      								<c:if test="${isBodyMake}">
+			      								<thead>
+			      									<tr>
+			      										<th></th>
+			      										<th></th>
+			      										<th>Ideal</th>
+			      										<th>Excess</th>
+			      									</tr>
+			      								</thead>
+		      								</c:if>
 		      								<tbody>
 		      									<c:forEach items="${attribute.attributeValues}" var="attributeValue" varStatus="innerLoop">
 		      										<c:choose>
@@ -130,9 +145,22 @@
 					      										</c:otherwise>
 					      									</c:choose>
 			      											<input type="text" class="attribute-units text-align-right numbers-only" value="${unitsValue}"/>
-			      											<span class="units-label">Units</span>
+			      											<c:if test="${!isBodyMake}"><span class="units-label">Units</span></c:if>
 			      										</td>
-		      											<!-- <td>Units</td> -->
+		      											<c:if test="${isBodyMake}">
+				      										<td class="excess-attribute-units-td">
+				      											<c:choose>
+				      												<c:when test="${!empty existingAward}">
+				      													<c:set var="excessUnitsValue" value="${existingAward.awardExcess}"/>
+				      												</c:when>
+				      												<c:otherwise>
+					      												<c:set var="excessUnitsValue" value=""/>
+						      										</c:otherwise>
+						      									</c:choose>
+				      											<input type="text" class="excess-attribute-units text-align-right numbers-only" value="${excessUnitsValue}"/>
+				      											<span class="units-label">Units</span>
+				      										</td>
+				      									</c:if>
 		      										</tr>
 		      									</c:forEach>
 		      									<c:choose>
@@ -160,6 +188,21 @@
 				      											<span class="units-label">of ${totalUnits} Units</span>
 				      										</td>
 				      										<%-- <td>of ${totalUnits} Units</td> --%>
+				      									</tr>
+		      										</c:when>
+		      										<c:when test="${isBodyMake}">
+			      										<tr class="attribute-total-row">
+				      										<td >Total</td>
+				      										<td class="total-percentage-td unit-percent-input">
+				      											<span class="total-percentage text-align-right">0</span>
+				      											<span class="percent-sign">%</span>
+				      										</td>
+				      										<!-- <td>%<td> -->
+				      										<td class="total-units-td unit-percent-input" colspan="2">
+				      											<span class="total-units text-align-right">0</span>
+				      											<span class="units-label">of ${bodiesOnOrder} Units</span>
+				      										</td>
+				      										<!-- <td>Units</td> -->
 				      									</tr>
 		      										</c:when>
 		      										<c:otherwise>

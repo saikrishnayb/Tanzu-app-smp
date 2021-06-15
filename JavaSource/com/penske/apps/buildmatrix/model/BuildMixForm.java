@@ -28,7 +28,7 @@ public class BuildMixForm {
 		private String groupKey;
 		private int awardQuantity;
 		private int awardPercentage;
-		private int awardExcess;
+		private Integer awardExcess;
 		
 		public String getAwardKey() {
 			return awardKey;
@@ -62,11 +62,11 @@ public class BuildMixForm {
 			this.awardPercentage = awardPercentage;
 		}
 		
-		public int getAwardExcess() {
+		public Integer getAwardExcess() {
 			return awardExcess;
 		}
 
-		public void setAwardExcess(int awardExcess) {
+		public void setAwardExcess(Integer awardExcess) {
 			this.awardExcess = awardExcess;
 		}
 
