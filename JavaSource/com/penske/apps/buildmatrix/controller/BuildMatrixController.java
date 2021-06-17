@@ -390,6 +390,8 @@ public class BuildMatrixController {
 		if(existingBuild == null)
 			throw new IllegalArgumentException("Couldn't find existing build");
 		
+		buildMatrixSmcService.deleteBodySplitsForBuild(buildId);
+		
 		List<CROBuildRequest> croBuildRequests = buildMatrixSmcService.getCroOrdersForBuild(buildId);
 		Map<CroOrderKey, CROBuildRequest> croBuildRequestsByOrderKey = croBuildRequests.stream()
 				.collect(toMap(br -> new CroOrderKey(br), br -> br));

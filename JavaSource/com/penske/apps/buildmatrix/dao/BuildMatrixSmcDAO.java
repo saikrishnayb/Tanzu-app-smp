@@ -18,6 +18,7 @@ import com.penske.apps.buildmatrix.domain.BuildMatrixSlotRegionAvailability;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlotType;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.BusinessAward;
+import com.penske.apps.buildmatrix.domain.BusinessAwardBodySplit;
 import com.penske.apps.buildmatrix.domain.BusinessAwardDefault;
 import com.penske.apps.buildmatrix.domain.CROBuildRequest;
 import com.penske.apps.buildmatrix.domain.FreightMileage;
@@ -134,6 +135,8 @@ public interface BuildMatrixSmcDAO {
 	
 	public BuildAttribute getBuildAttributeById(@Param("attributeId") int attributeId);
 	
+	public BuildAttribute getBuildAttributeByAttributeKey(@Param("attributeKey") String attributeKey);
+	
 	public void updateAttributeValues(@Param("attributeId") int attributeId, @Param("attributeValues") List<String> attributeValues);
 	
 	public String getDeletedFlagValue(@Param("attributeId") int attributeId, @Param("attributeValue") String attributeValue);
@@ -243,5 +246,13 @@ public interface BuildMatrixSmcDAO {
 	public Integer acceptBuild(@Param("runId") int buildId);
 
 	public List<ProductionSlotResult> getAllPlantsAvailableToDistrict(String district);
+
+	public List<BusinessAwardBodySplit> getBodySplitsForBuild(@Param("buildId") int buildId);
+
+	public void deleteBodySplitsForBuild(@Param("buildId") int buildId);
+
+	public void insertBusinessAwardBodySplits(@Param("list") List<BusinessAwardBodySplit> bodySplitsToInsert);
+
+	public void deleteBodySplitsForBuildAndMake(@Param("buildId") int buildId, @Param("make") String make);
 
 }

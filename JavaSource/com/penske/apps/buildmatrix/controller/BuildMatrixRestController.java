@@ -40,6 +40,7 @@ import com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlotDate;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlotType;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
+import com.penske.apps.buildmatrix.domain.BusinessAwardBodySplit;
 import com.penske.apps.buildmatrix.domain.ProductionSlotResult;
 import com.penske.apps.buildmatrix.domain.RegionPlantAssociation;
 import com.penske.apps.buildmatrix.model.AvailableChassisSummaryModel;
@@ -53,6 +54,7 @@ import com.penske.apps.buildmatrix.model.InvalidSlotsForm;
 import com.penske.apps.buildmatrix.model.SavePlantRegionForm;
 import com.penske.apps.buildmatrix.model.SaveRegionSlotsForm;
 import com.penske.apps.buildmatrix.model.SaveSlotsForm;
+import com.penske.apps.buildmatrix.model.SplitByTypeForm;
 import com.penske.apps.buildmatrix.service.BuildMatrixCorpService;
 import com.penske.apps.buildmatrix.service.BuildMatrixSmcService;
 import com.penske.apps.suppliermgmt.annotation.SmcSecurity;
@@ -339,6 +341,49 @@ public class BuildMatrixRestController {
 		model.addObject("buildId", buildId);
 
 		return model;
+	}
+	
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping("/get-split-by-type")
+	public ModelAndView getSplitByType(@RequestParam("buildId") int buildId) {
+		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/modal/split-by-type");
+		BuildSummary summary = buildMatrixSmcService.getBuildSummary(buildId);
+		
+		if(summary == null)
+			throw new IllegalArgumentException("Could not find build with the provided Build ID - " + buildId);
+		
+		BuildAttribute bodyMakeAttribute = buildMatrixSmcService.getBuildAttributeByAttributeKey(ApplicationConstants.BODYMAKE_ATTRIBUTE_KEY);
+		Map<String, BusinessAwardBodySplit> bodySplitsForRun = buildMatrixSmcService.getBodySplitsForBuildByMfr(buildId);
+		
+		model.addObject("buildId", buildId);
+		model.addObject("bodySplitsForRun", bodySplitsForRun);
+		model.addObject("bodyMakeAttribute", bodyMakeAttribute);
+
+		return model;
+	}
+	
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping("/split-by-type")
+	public void getSplitByType(SplitByTypeForm splitByTypeForm) {
+		BuildSummary summary = buildMatrixSmcService.getBuildSummary(splitByTypeForm.getBuildId());
+		
+		if(summary == null)
+			throw new IllegalArgumentException("Could not find build with the provided Build ID - " + splitByTypeForm.getBuildId());
+		
+		buildMatrixSmcService.splitBodiesByType(splitByTypeForm);
+
+	}
+	
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping("/delete-body-splits")
+	public void getSplitByType(@RequestParam("buildId") int buildId, @RequestParam("make") String make) {
+		BuildSummary summary = buildMatrixSmcService.getBuildSummary(buildId);
+		
+		if(summary == null)
+			throw new IllegalArgumentException("Could not find build with the provided Build ID - " + buildId);
+		
+		buildMatrixSmcService.deleteBodySplits(buildId, make);
+		
 	}
 	
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })

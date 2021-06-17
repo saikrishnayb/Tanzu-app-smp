@@ -885,6 +885,32 @@
 		 	val.IS_DELETED = 'N'		
 	</select>
 	
+	<select id="getBuildAttributeByAttributeKey" resultMap="BuildAttributeMap">
+		SELECT
+			attribute.ATTRIBUTE_ID,
+			attribute.ATTRIBUTE_KEY,
+			attribute.ATTRIBUTE_NAME,
+			awardGroup.BUSINESS_AWARD_GROUP_ID,
+			awardGroup.GROUP_KEY,
+			awardGroup.GROUP_DESCRIPTION,
+			awardGroup.GROUP_ORDER,
+			val.ATTRIBUTE_VALUE_ID AS VAL_ATTRIBUTE_VALUE_ID,
+			val.ATTRIBUTE_VALUE AS VAL_ATTRIBUTE_VALUE,
+			COALESCE(awardDefs.DEFAULT_VALUE, 0 ) AS VAL_DEFAULT_VALUE,
+			COALESCE(awardDefs.ITEM_ORDER, -1) AS VAL_ITEM_ORDER
+		FROM SMC.OBM_ATTRIBUTE_VALUE val
+		LEFT JOIN SMC.OBM_ATTRIBUTE attribute
+			ON attribute.ATTRIBUTE_ID = val.ATTRIBUTE_ID
+		LEFT JOIN SMC.OBM_BUSINESS_AWARD_DEFAULTS awardDefs
+			ON awardDefs.ITEM_ID = val.ATTRIBUTE_VALUE_ID
+		LEFT JOIN SMC.OBM_BUSINESS_AWARD_GROUP awardGroup
+			ON awardGroup.ATTRIBUTE_ID = val.ATTRIBUTE_ID
+		WHERE
+			attribute.ATTRIBUTE_KEY = #{attributeKey}
+		AND
+		 	val.IS_DELETED = 'N'		
+	</select>
+	
 	<update id="updateAttributeValues">
 		UPDATE 	SMC.OBM_ATTRIBUTE_VALUE 
 		SET 	IS_DELETED = 'Y'
@@ -1797,5 +1823,47 @@
 		AND		 RUN_ID =  #{buildId}
 		ORDER BY DEBUG_SEQ ASC
 	</select>
+	
+	<select id="getBodySplitsForBuild" resultType="com.penske.apps.buildmatrix.domain.BusinessAwardBodySplit">
+		SELECT
+			BODY_SPLIT_ID,
+			RUN_ID as buildId,
+			MAKE,
+			VAN_QTY,
+			REEFER_QTY,
+			FLATBED_QTY
+		FROM SMC.OBM_BUSINESS_AWARD_BODY_SPLIT
+		WHERE RUN_ID = #{buildId}
+	</select>
+	
+	<delete id="deleteBodySplitsForBuild">
+		DELETE FROM SMC.OBM_BUSINESS_AWARD_BODY_SPLIT
+		WHERE RUN_ID = #{buildId}
+	</delete>
+
+	<insert id="insertBusinessAwardBodySplits">
+		INSERT INTO SMC.OBM_BUSINESS_AWARD_BODY_SPLIT (
+			RUN_ID,
+			MAKE,
+			VAN_QTY,
+			REEFER_QTY,
+			FLATBED_QTY
+		) VALUES
+		<foreach collection="list" item="bodySplit" separator=",">
+		(
+			#{bodySplit.buildId},
+			#{bodySplit.make},
+			#{bodySplit.vanQty},
+			#{bodySplit.reeferQty},
+			#{bodySplit.flatbedQty}
+		)
+		</foreach>
+	</insert>
+
+	<delete id="deleteBodySplitsForBuildAndMake">
+		DELETE FROM SMC.OBM_BUSINESS_AWARD_BODY_SPLIT
+		WHERE RUN_ID = #{buildId}
+		AND MAKE = #{make}
+	</delete>
 	
 </mapper>

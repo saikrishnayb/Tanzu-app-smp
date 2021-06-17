@@ -79,6 +79,9 @@
 		      						<div class="col-xs-12 attribute-header">
 		      							<h2>${attribute.attributeName}</h2>
 		      							<div class="reset-div floatRight">
+		      								<c:if test="${isBodyMake}">
+		      									<a class="secondaryLink split-by-type-link" data-build-id="${summary.buildId}">Split By Type</a>
+		      								</c:if>
 		      								<a class="secondaryLink reset-link">Reset</a>
 		      							</div>
 		      						</div>
@@ -232,7 +235,28 @@
 	      			</div> 			
 	      		</div>
 				<form id="build-mix-form" name="buildMixForm" data-build-id="${summary.buildId}"></form>
+				
 				<div id="build-mix-modal" class="modal"></div>
+				<div class="modal row" id="body-split-warning-modal">
+			      <div class="modal-content col-xs-12" 
+			      	data-modal-title="Existing Body Splits" 
+			      	data-modal-max-width="450" 
+			      	data-keep-contents="true">
+			        <div class="row">
+			          <div class="col-xs-12">
+			            You already have Body Splits for this make. If you want to make changes, the Body Splits will need to be deleted. Do you want to delete the Body Splits?
+			          </div>
+			          
+			          <div class="clear-confrim-button-row col-xs-12">
+			            <div class="pull-right">
+			              <a id="cancel-change-units" class="buttonSecondary btn">No</a>
+			              <a id="confirm-change-units" class="buttonPrimary btn" data-build-id="${summary.buildId}" data-make>Yes</a>
+			            </div>
+			          </div>
+			        </div>
+			      </div>
+			    </div>
+				
 			</div>
 		</div>
 	</div>

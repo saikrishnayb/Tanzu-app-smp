@@ -20,6 +20,7 @@ import com.penske.apps.buildmatrix.domain.BuildMatrixSlotDate;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlotType;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.BusinessAward;
+import com.penske.apps.buildmatrix.domain.BusinessAwardBodySplit;
 import com.penske.apps.buildmatrix.domain.CROBuildRequest;
 import com.penske.apps.buildmatrix.domain.CroOrderKey;
 import com.penske.apps.buildmatrix.domain.FreightMileage;
@@ -37,6 +38,7 @@ import com.penske.apps.buildmatrix.model.ProductionSlotsMaintenanceSummary;
 import com.penske.apps.buildmatrix.model.ProductionSlotsUtilizationSummary;
 import com.penske.apps.buildmatrix.model.SaveRegionSlotsForm;
 import com.penske.apps.buildmatrix.model.SaveSlotsForm;
+import com.penske.apps.buildmatrix.model.SplitByTypeForm;
 import com.penske.apps.suppliermgmt.model.UserContext;
 
 public interface BuildMatrixSmcService {
@@ -97,7 +99,7 @@ public interface BuildMatrixSmcService {
 	public void submitBuild(BuildMixForm buildMixForm, UserContext userContext);
 	
 	// CRO BUILD REQUESTS //
-	List<CROBuildRequest> getCroOrdersForBuild(Integer buildId);
+	public List<CROBuildRequest> getCroOrdersForBuild(Integer buildId);
 	
 	public List<ApprovedOrder> getUnfulfilledOrders(List<ApprovedOrder> approvedOrders);
 	
@@ -123,9 +125,11 @@ public interface BuildMatrixSmcService {
 	//***** OEM MIX MAINTENANCE *****//
 	public void saveBusinessAwardMaintenance(BusinessAwardForm businessAwardForm);
 
-	BuildAttribute getBuildAttributeById(int attributeId);
+	public BuildAttribute getBuildAttributeById(int attributeId);
+	
+	public BuildAttribute getBuildAttributeByAttributeKey(String bodymakeAttributeKey);
 
-	void updateAttribute(int attributeId, List<String> attributeValues);
+	public void updateAttribute(int attributeId, List<String> attributeValues);
 	
 	public SXSSFWorkbook downloadProductionSlotResultsDocument(int buildId);
 	
@@ -182,6 +186,7 @@ public interface BuildMatrixSmcService {
 	public Map<String, String> getMfrListForExport();
 
 	public List<BuildMatrixBodyPlant> getBodyPlantsByMfrCode(String mfrCode);
+	
 	public ImportSlotsResults importSlotMaintenace(MultipartFile file, String fileName, int slotTypeId, int year)
 			throws IOException;
 
@@ -222,5 +227,13 @@ public interface BuildMatrixSmcService {
 	public Map<String, String> getInvalidMfrList();
 
 	public void saveInvalidSlots(InvalidSlotsForm invalidSlotsForm);
+
+	public Map<String, BusinessAwardBodySplit> getBodySplitsForBuildByMfr(int buildId);
+
+	public void deleteBodySplitsForBuild(int buildId);
+	
+	public void splitBodiesByType(SplitByTypeForm splitByTypeForm);
+
+	public void deleteBodySplits(int buildId, String make);
 
 }

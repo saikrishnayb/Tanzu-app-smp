@@ -1,0 +1,9 @@
+.body-split-input-row select,
+.body-split-input-row input {
+	width: 100%;
+}
+
+.body-split-header-row,
+.body-split-input-row {
+	margin-bottom: 10px;
+}

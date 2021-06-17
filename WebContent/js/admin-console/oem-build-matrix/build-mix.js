@@ -1,8 +1,10 @@
 var bodiesOnOrder = $('.build-mix-top').data('bodies-on-order');
 var $submitBtn = $('#submit-btn');
 var $buildMixModal = $('#build-mix-modal');
+var $bodySplitWarningModal = $('#body-split-warning-modal');
 
 ModalUtil.initializeModal($buildMixModal);
+ModalUtil.initializeModal($bodySplitWarningModal);
 
 selectCurrentNavigation("tab-oem-build-matrix", "");
 
@@ -33,6 +35,34 @@ $('.attribute-container').on('change', '.attribute-units', function(){
 	$attributeValueRow.find('.attribute-percentage').val(percentage);
 
 	calculateTotals($container);
+});
+
+$('.attribute-container').on('focus', '.attribute-units.body-splits-exist', function(){
+	var $unitsInput = $(this);
+	$unitsInput.blur();
+	var $attributeValueRow = $unitsInput.closest('.attribute-value-row');
+	var make = $attributeValueRow.data('attribute-value');
+	ModalUtil.openModal($bodySplitWarningModal);
+	$bodySplitWarningModal.find('#confirm-change-units').data('make', make)
+});
+
+$bodySplitWarningModal.on('click', '#cancel-change-units', function() {
+	ModalUtil.closeModal($bodySplitWarningModal);
+});
+
+$bodySplitWarningModal.on('click', '#confirm-change-units', function() {
+	var $this = $(this);
+	var buildId = $this.data('build-id');
+	var make = $this.data('make');
+	
+	$.post(baseBuildMatrixUrl + '/delete-body-splits', { 
+		buildId:buildId,
+		make:make
+	  }).done(function(){
+		  var $row = $('.attribute-value-row[data-attribute-value="' + make + '"]');
+		  $row.find('.attribute-units').removeClass('body-splits-exist');
+		  ModalUtil.closeModal($bodySplitWarningModal);
+	  })
 });
 
 $('.attribute-container').on('input', '.attribute-percentage', function(){
@@ -69,6 +99,20 @@ $('.attribute-container').on('click', '.reset-link', function(){
 	ritsu.resetInitialFormValues($container);
 	
 	calculateTotals($container);
+});
+
+$('.attribute-container').on('click', '.split-by-type-link', function(){
+	var buildId = $(this).data('build-id');
+	
+	var $getSplitByTypeContentPromise = $.ajax({
+		type: "GET",
+		url: baseBuildMatrixUrl + '/get-split-by-type',
+		data: {buildId: buildId}
+	});
+	$getSplitByTypeContentPromise.done(function(data){
+		$buildMixModal.html(data);
+	    ModalUtil.openModal($buildMixModal);
+	});
 });
 
 $submitBtn.on('click', function(){

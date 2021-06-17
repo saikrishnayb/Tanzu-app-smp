@@ -68,6 +68,7 @@ import com.penske.apps.buildmatrix.domain.BuildMatrixSlotRegionAvailability;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlotType;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.BusinessAward;
+import com.penske.apps.buildmatrix.domain.BusinessAwardBodySplit;
 import com.penske.apps.buildmatrix.domain.BusinessAwardDefault;
 import com.penske.apps.buildmatrix.domain.CROBuildRequest;
 import com.penske.apps.buildmatrix.domain.CroOrderKey;
@@ -99,6 +100,8 @@ import com.penske.apps.buildmatrix.model.SaveRegionSlotsForm;
 import com.penske.apps.buildmatrix.model.SaveRegionSlotsForm.RegionSlotInfo;
 import com.penske.apps.buildmatrix.model.SaveSlotsForm;
 import com.penske.apps.buildmatrix.model.SaveSlotsForm.SlotInfo;
+import com.penske.apps.buildmatrix.model.SplitByTypeForm;
+import com.penske.apps.buildmatrix.model.SplitByTypeForm.BodySplitRow;
 import com.penske.apps.smccore.base.util.BatchRunnable;
 import com.penske.apps.smccore.base.util.Util;
 import com.penske.apps.suppliermgmt.model.UserContext;
@@ -519,6 +522,14 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		BuildAttribute buildAttribute = buildMatrixSmcDAO.getBuildAttributeById(attributeId);
 		return buildAttribute;
 	}
+	
+	@Override
+	public BuildAttribute getBuildAttributeByAttributeKey(String attributeKey) 
+	{
+		BuildAttribute buildAttribute = buildMatrixSmcDAO.getBuildAttributeByAttributeKey(attributeKey);
+		return buildAttribute;
+	}
+	
 	@Override
 	public SXSSFWorkbook downloadProductionSlotResultsDocument(int buildId){
 		SXSSFWorkbook workbook = null;
@@ -1877,5 +1888,41 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 			regionAvailability.updateAvailableSlots(slotAvailable, false);
 			buildMatrixSmcDAO.updateRegionAvailability(regionAvailability);
 		}
+	}
+	
+	@Override
+	public Map<String, BusinessAwardBodySplit> getBodySplitsForBuildByMfr(int buildId) {
+		List<BusinessAwardBodySplit> bodySplitsForRun = buildMatrixSmcDAO.getBodySplitsForBuild(buildId);
+		
+		if(bodySplitsForRun == null)
+			return Collections.emptyMap();
+		else {
+			return bodySplitsForRun.stream()
+					.collect(Collectors.toMap(BusinessAwardBodySplit::getMake, s -> s));
+		}
+	}
+	
+	@Override
+	public void deleteBodySplitsForBuild(int buildId) {
+		buildMatrixSmcDAO.deleteBodySplitsForBuild(buildId);
+	}
+	
+	@Override
+	public void splitBodiesByType(SplitByTypeForm splitByTypeForm) {
+		deleteBodySplitsForBuild(splitByTypeForm.getBuildId());
+		
+		List<BusinessAwardBodySplit> bodySplitsToInsert = new ArrayList<>();
+		for(BodySplitRow row: splitByTypeForm.getBodySplitRows()) {
+			BusinessAwardBodySplit addedBodySplit = new BusinessAwardBodySplit(splitByTypeForm.getBuildId(), row.getMake(), row.getVanQty(), row.getReeferQty(), row.getFlatbedQty());
+			bodySplitsToInsert.add(addedBodySplit);
+		}
+		
+		if(!bodySplitsToInsert.isEmpty())
+			buildMatrixSmcDAO.insertBusinessAwardBodySplits(bodySplitsToInsert);
+	}
+	
+	@Override
+	public void deleteBodySplits(int buildId, String make) {
+		buildMatrixSmcDAO.deleteBodySplitsForBuildAndMake(buildId, make);
 	}
 }

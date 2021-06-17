@@ -101,6 +101,10 @@
 .attribute-table thead tr th{
 	background-color: unset;
 }
+
+.reset-link{
+	margin-left: 10px;
+}
 /* .attribute-table .attribute-percentage-td,
 .attribute-table .attribute-units-td {
 	width: 80px;
