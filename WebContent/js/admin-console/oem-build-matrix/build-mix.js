@@ -128,6 +128,13 @@ $submitBtn.on('click', function(){
 	buildIdInput.value = buildId;
 	buildMixForm.append(buildIdInput);
 	
+	var guidance = $('#guidance').prop('checked');
+	var guidanceInput = document.createElement('input');
+	guidanceInput.type = 'hidden';
+	guidanceInput.name = 'guidance';
+	guidanceInput.value = guidance;
+	buildMixForm.append(guidanceInput);
+	
 	var index = 0;
 	
 	var $attributeContainers = $('.attribute-container');

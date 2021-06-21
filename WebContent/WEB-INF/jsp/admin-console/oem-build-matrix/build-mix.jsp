@@ -43,6 +43,19 @@
 	        		</div>
 	      		</div>
 	      		<div class="row">
+	      			<div class="col-xs-12">
+	      				<div class="floatRight">
+	      					<label for="guidance">Guidance</label>
+	      					<div class="slider-container">
+							  <label class="switch" for="guidance">
+							    <input type="checkbox" id="guidance" name="guidance" <c:if test='${summary.guidanceMode eq "Y"}'> checked</c:if> />
+							    <div class="slider round"></div>
+							  </label>
+							</div>
+	      				</div>
+	      			</div>
+	      		</div>
+	      		<div class="row">
 	      			<div class="col-xs-12 attributes-section">
 	      			<c:forEach items="${attributes}" var="attribute" varStatus="outerLoop">
 	      				<c:if test="${outerLoop.count eq 1 or (outerLoop.count-1) % 3 eq 0}"><div class="row attribute-row"></c:if>

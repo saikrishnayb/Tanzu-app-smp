@@ -22,6 +22,7 @@ import com.penske.apps.buildmatrix.domain.BusinessAwardBodySplit;
 import com.penske.apps.buildmatrix.domain.BusinessAwardDefault;
 import com.penske.apps.buildmatrix.domain.CROBuildRequest;
 import com.penske.apps.buildmatrix.domain.FreightMileage;
+import com.penske.apps.buildmatrix.domain.GuidanceSummary;
 import com.penske.apps.buildmatrix.domain.PlantProximity;
 import com.penske.apps.buildmatrix.domain.ProductionSlotResult;
 import com.penske.apps.buildmatrix.domain.RegionPlantAssociation;
@@ -96,7 +97,7 @@ public interface BuildMatrixSmcDAO {
 	
 	public BuildSummary getBuildSummary(@Param("buildId") Integer buildId);
 	
-	public void submitBuild(@Param("buildId") int buildId, @Param("status") BuildStatus submitted, @Param("sso") String userSSO);
+	public void submitBuild(@Param("buildId") int buildId, @Param("guidanceMode") String guidanceMode, @Param("status") BuildStatus submitted, @Param("sso") String userSSO);
 	
 	// CRO BUILD REQUESTS //
 	public void insertCroBuildRequest(@Param("buildId") int buildId, @Param("order") ApprovedOrder order, @Param("unitsToConsider") int unitsToConsider);
@@ -254,5 +255,7 @@ public interface BuildMatrixSmcDAO {
 	public void insertBusinessAwardBodySplits(@Param("list") List<BusinessAwardBodySplit> bodySplitsToInsert);
 
 	public void deleteBodySplitsForBuildAndMake(@Param("buildId") int buildId, @Param("make") String make);
+
+	public List<GuidanceSummary> getGuidanceSummaries(@Param("buildId") int buildId);
 
 }

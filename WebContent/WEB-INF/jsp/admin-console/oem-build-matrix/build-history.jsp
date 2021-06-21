@@ -61,18 +61,23 @@
 							<c:forEach items="${buildHistoryList}" var="buildHistory">
 								<tr>
 									<td class="<c:if test="${buildHistory.showReworkBtn()}">editable</c:if>  centerAlign action-cell">
-										<c:choose>
-											<c:when test="${buildHistory.showReworkBtn()}">
+										<c:set var="showRework" value="${buildHistory.showReworkBtn()}" />
+										<c:set var="showGuidance" value='${buildHistory.buildStatus.code eq "C" and buildHistory.guidanceMode eq "Y"}' />
+										<c:if test="${showRework or showGuidance}">
 												<div class="dropdown rework-delete-build">
 													<a class="bootStrapDropDown dropdown-toggle" data-toggle="dropdown"> Actions <span class="caret"></span>
 													</a>
 													<ul class="dropdown-menu">
-														<li><a id ="rework-btn" data-build-id="${buildHistory.buildId}">Rework</a></li>
-														<li><a id ="cancel-btn" data-build-id="${buildHistory.buildId}">Delete</a></li>
+														<c:if test='${showGuidance}'>
+															<li><a id ="view-guidance-btn" data-build-id="${buildHistory.buildId}">View Guidance</a></li>
+														</c:if>
+														<c:if test="${showRework}">
+															<li><a id ="rework-btn" data-build-id="${buildHistory.buildId}">Rework</a></li>
+															<li><a id ="cancel-btn" data-build-id="${buildHistory.buildId}">Delete</a></li>
+														</c:if>
 													</ul>
 												</div>
-											</c:when>
-										</c:choose>
+										</c:if>
 									</td>
 									<td class="leftAlign">
 										<c:choose>
@@ -135,6 +140,7 @@
 		</div>
 	</div>
 	<div id="view-error-log-popup-modal" class="modal row"></div>
+	<div id="view-guidance-popup-modal" class="modal row"></div>
 	<div class="modal row" id="confirmReworkOrDeleteModal">
       <div class="modal-content confirm-modal-content col-xs-12" data-modal-title="Confirm" data-modal-max-width="350" data-keep-contents="true">
         <div class="row">

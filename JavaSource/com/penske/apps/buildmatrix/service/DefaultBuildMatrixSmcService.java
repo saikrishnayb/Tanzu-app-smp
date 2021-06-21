@@ -73,6 +73,7 @@ import com.penske.apps.buildmatrix.domain.BusinessAwardDefault;
 import com.penske.apps.buildmatrix.domain.CROBuildRequest;
 import com.penske.apps.buildmatrix.domain.CroOrderKey;
 import com.penske.apps.buildmatrix.domain.FreightMileage;
+import com.penske.apps.buildmatrix.domain.GuidanceSummary;
 import com.penske.apps.buildmatrix.domain.PlantProximity;
 import com.penske.apps.buildmatrix.domain.ProductionSlotResult;
 import com.penske.apps.buildmatrix.domain.RegionPlantAssociation;
@@ -411,8 +412,14 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		//delete any existing rows associated with this build
 		buildMatrixSmcDAO.deleteBusinessAwards(buildId);
 		
+		String guidanceMode;
+		if(buildMixForm.isGuidance())
+			guidanceMode = "Y";
+		else
+			guidanceMode = "N";
+		
 		buildMatrixSmcDAO.insertBusinessAwards(awardsToInsert);
-		buildMatrixSmcDAO.submitBuild(buildId, BuildStatus.SUBMITTED, userContext.getUserSSO());
+		buildMatrixSmcDAO.submitBuild(buildId, guidanceMode, BuildStatus.SUBMITTED, userContext.getUserSSO());
 	}
 	
 	// CRO BUILD REQUESTS //
@@ -1924,5 +1931,20 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	@Override
 	public void deleteBodySplits(int buildId, String make) {
 		buildMatrixSmcDAO.deleteBodySplitsForBuildAndMake(buildId, make);
+	}
+	
+	@Override
+	public Map<String, List<GuidanceSummary>> getGuidanceSummariesByGroupKey(int buildId) {
+		List<GuidanceSummary> guidanceSummaries = buildMatrixSmcDAO.getGuidanceSummaries(buildId);
+		if(guidanceSummaries == null)
+			guidanceSummaries = Collections.emptyList();
+		
+		Map<String, List<GuidanceSummary>> guidanceSummariesByGroupKey = new TreeMap<>();
+		for(GuidanceSummary summary: guidanceSummaries) {
+			List<GuidanceSummary> summaries = guidanceSummariesByGroupKey.computeIfAbsent(summary.getGroupKey(), list -> new ArrayList<>());
+			summaries.add(summary);
+		}
+		
+		return guidanceSummariesByGroupKey;
 	}
 }

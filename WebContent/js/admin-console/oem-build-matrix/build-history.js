@@ -5,6 +5,8 @@ var $confirmReworkOrDeleteModal = $('#confirmReworkOrDeleteModal')
 ModalUtil.initializeModal($confirmReworkOrDeleteModal);
 var $viewErrorLogModal = $('#view-error-log-popup-modal');
 ModalUtil.initializeModal($viewErrorLogModal);
+var $viewGuidanceModal = $('#view-guidance-popup-modal');
+ModalUtil.initializeModal($viewGuidanceModal);
 
 $buildHistoryDataTable = $buildHistoryTable.DataTable({ //All of the below are optional
 	"bPaginate" : true, //enable pagination
@@ -83,9 +85,8 @@ $buildHistoryTable.on('click', '#rework-btn', function() {
 	openConfirmModal(false, $(this).data('build-id'));
 });
 
-$buildHistoryTable.on('click', '#cancel-btn', function() {
-	openConfirmModal(true, $(this).data('build-id'));
-
+$buildHistoryTable.on('click', '#rework-btn', function() {
+	openConfirmModal(false, $(this).data('build-id'));
 });
 
 function openConfirmModal(isDeleteConfirmModal, buildId) {
@@ -150,5 +151,18 @@ $("#view-error-log").on("click", function() {
 	$viewErrorLogPromise.done(function(data) {
 		$viewErrorLogModal.html(data);
 		ModalUtil.openModal($viewErrorLogModal);
+	});
+});
+
+$("#view-guidance-btn").on("click", function() {
+	var buildId=$(this).data('build-id');
+	var $viewGuidanceLogPromise = $.ajax({
+		type : "POST",
+		url : './view-guidance.htm',
+		data : {buildId:buildId}
+	});
+	$viewGuidanceLogPromise.done(function(data) {
+		$viewGuidanceModal.html(data);
+		ModalUtil.openModal($viewGuidanceModal);
 	});
 });

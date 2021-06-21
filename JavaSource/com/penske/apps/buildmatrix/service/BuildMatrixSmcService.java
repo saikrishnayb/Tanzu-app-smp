@@ -24,6 +24,7 @@ import com.penske.apps.buildmatrix.domain.BusinessAwardBodySplit;
 import com.penske.apps.buildmatrix.domain.CROBuildRequest;
 import com.penske.apps.buildmatrix.domain.CroOrderKey;
 import com.penske.apps.buildmatrix.domain.FreightMileage;
+import com.penske.apps.buildmatrix.domain.GuidanceSummary;
 import com.penske.apps.buildmatrix.domain.PlantProximity;
 import com.penske.apps.buildmatrix.domain.ProductionSlotResult;
 import com.penske.apps.buildmatrix.domain.RegionPlantAssociation;
@@ -235,5 +236,7 @@ public interface BuildMatrixSmcService {
 	public void splitBodiesByType(SplitByTypeForm splitByTypeForm);
 
 	public void deleteBodySplits(int buildId, String make);
+
+	public Map<String, List<GuidanceSummary>> getGuidanceSummariesByGroupKey(int buildId);
 
 }

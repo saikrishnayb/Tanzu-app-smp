@@ -613,7 +613,8 @@
 		SET
 			RUN_STATUS = #{status.code},
 			SUBMITTED_BY = #{sso},
-			SUBMITTED_DATE = CURRENT_TIMESTAMP
+			SUBMITTED_DATE = CURRENT_TIMESTAMP,
+			GUIDANCE_MODE = #{guidanceMode}
 		WHERE
 			RUN_ID = #{buildId}
 	</update>
@@ -1865,5 +1866,16 @@
 		WHERE RUN_ID = #{buildId}
 		AND MAKE = #{make}
 	</delete>
+	
+	<select id="getGuidanceSummaries" resultType="com.penske.apps.buildmatrix.domain.GuidanceSummary">
+		SELECT
+			GUIDANCE_ID,
+			GROUP_KEY,
+			AWARD_KEY,
+			GUIDANCE_TARGET,
+			GUIDANCE_ALLOCATION
+		FROM SMC.OBM_GUIDANCE_SUMMARY
+		WHERE RUN_ID = #{buildId}
+	</select>
 	
 </mapper>

@@ -6,6 +6,7 @@ public class BuildMixForm {
 	
 	private List<AttributeRow> attributeRows;
 	private int buildId;
+	private boolean guidance;
 	
 	public int getBuildId() {
 		return buildId;
@@ -13,6 +14,14 @@ public class BuildMixForm {
 	
 	public void setBuildId(int buildId) {
 		this.buildId = buildId;
+	}
+	
+	public boolean isGuidance() {
+		return guidance;
+	}
+	
+	public void setGuidance(boolean guidance) {
+		this.guidance = guidance;
 	}
 	
 	public List<AttributeRow> getAttributeRows() {

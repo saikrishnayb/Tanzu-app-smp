@@ -41,6 +41,7 @@ import com.penske.apps.buildmatrix.domain.BuildMatrixSlotDate;
 import com.penske.apps.buildmatrix.domain.BuildMatrixSlotType;
 import com.penske.apps.buildmatrix.domain.BuildSummary;
 import com.penske.apps.buildmatrix.domain.BusinessAwardBodySplit;
+import com.penske.apps.buildmatrix.domain.GuidanceSummary;
 import com.penske.apps.buildmatrix.domain.ProductionSlotResult;
 import com.penske.apps.buildmatrix.domain.RegionPlantAssociation;
 import com.penske.apps.buildmatrix.model.AvailableChassisSummaryModel;
@@ -834,6 +835,18 @@ public class BuildMatrixRestController {
 	public void saveInvalidSlots(InvalidSlotsForm invalidSlotsForm) {
 		if(invalidSlotsForm.getInvalidSlotInfos() != null && !invalidSlotsForm.getInvalidSlotInfos().isEmpty())
 			buildMatrixSmcService.saveInvalidSlots(invalidSlotsForm);
+	}
+	
+	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
+	@RequestMapping(value = "/view-guidance")
+	public ModelAndView viewGuidance(@RequestParam("buildId") int buildId) {
+		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/modal/view-guidance");
+		
+		Map<String, List<GuidanceSummary>> guidanceSummariesByGroupKey = buildMatrixSmcService.getGuidanceSummariesByGroupKey(buildId);
+		model.addObject("guidanceSummariesByGroupKey", guidanceSummariesByGroupKey);
+		model.addObject("buildId", buildId);
+		
+		return model;
 	}
 	
 }
