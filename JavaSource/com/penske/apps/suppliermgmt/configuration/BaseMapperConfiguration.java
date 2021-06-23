@@ -28,6 +28,7 @@ import com.penske.apps.buildmatrix.domain.BuildMatrixTypeAlias;
 import com.penske.apps.smccore.base.annotation.qualifier.VendorQueryWrappingPluginQualifier;
 import com.penske.apps.smccore.base.configuration.CoreMapperConfiguration;
 import com.penske.apps.smccore.base.configuration.ProfileType;
+import com.penske.apps.smccore.base.plugins.ClientInfoPlugin;
 import com.penske.apps.smccore.base.plugins.QueryLoggingPlugin;
 import com.penske.apps.smccore.base.plugins.TimingBean;
 import com.penske.apps.smccore.base.util.SpringConfigUtil;
@@ -46,6 +47,9 @@ public class BaseMapperConfiguration
 	
 	@Autowired(required = false)
 	private QueryLoggingPlugin queryLoggingPlugin;
+	
+	@Autowired(required = false)
+	private ClientInfoPlugin clientInfoPlugin;
 	
 	@Autowired
 	@VendorQueryWrappingPluginQualifier
@@ -72,6 +76,7 @@ public class BaseMapperConfiguration
 		List<Interceptor> interceptors = new ArrayList<Interceptor>();
 		if(queryLoggingPlugin != null)			interceptors.add(queryLoggingPlugin);
 		if(vendorWrappingPlugin != null)		interceptors.add(vendorWrappingPlugin);
+		if(clientInfoPlugin != null)			interceptors.add(clientInfoPlugin);
 		
 		//***** MAPPER FILES *****//
 		PathMatchingResourcePatternResolver patternResolver = new PathMatchingResourcePatternResolver();
@@ -116,6 +121,13 @@ public class BaseMapperConfiguration
 		return new QueryLoggingPlugin(timingBean);
 	}
 
+	@Bean
+	@Profile(ProfileType.NOT_TEST)
+	public ClientInfoPlugin clientInfoPlugin()
+	{
+		return new ClientInfoPlugin();
+	}
+	
 	@Bean
 	@VendorQueryWrappingPluginQualifier
 	public Interceptor vendorWrappingPlugin()
