@@ -85,8 +85,8 @@ $buildHistoryTable.on('click', '#rework-btn', function() {
 	openConfirmModal(false, $(this).data('build-id'));
 });
 
-$buildHistoryTable.on('click', '#rework-btn', function() {
-	openConfirmModal(false, $(this).data('build-id'));
+$buildHistoryTable.on('click', '#cancel-btn', function() {
+	openConfirmModal(true, $(this).data('build-id'));
 });
 
 function openConfirmModal(isDeleteConfirmModal, buildId) {
