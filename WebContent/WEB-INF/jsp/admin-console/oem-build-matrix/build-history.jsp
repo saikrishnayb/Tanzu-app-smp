@@ -62,15 +62,22 @@
 								<tr>
 									<td class="<c:if test="${buildHistory.showReworkBtn()}">editable</c:if>  centerAlign action-cell">
 										<c:set var="showRework" value="${buildHistory.showReworkBtn()}" />
+										<c:set var="runComplete" value='${buildHistory.buildStatus.code eq "C"}' />
 										<c:set var="showGuidance" value='${buildHistory.buildStatus.code eq "C" and buildHistory.guidanceMode eq "Y"}' />
-										<c:if test="${showRework or showGuidance}">
+										<c:if test="${showRework or showGuidance or runComplete}">
 												<div class="dropdown rework-delete-build">
 													<a class="bootStrapDropDown dropdown-toggle" data-toggle="dropdown"> Actions <span class="caret"></span>
 													</a>
 													<ul class="dropdown-menu">
-														<c:if test='${showGuidance}'>
-															<li><a id ="view-guidance-btn" data-build-id="${buildHistory.buildId}">View Guidance</a></li>
-														</c:if>
+														<c:choose>
+															<c:when test='${showGuidance}'>
+																<li><a id ="view-guidance-btn" data-build-id="${buildHistory.buildId}">View Guidance</a></li>
+															</c:when>
+															<c:otherwise>
+																<li><a id ="view-guidance-btn" data-build-id="${buildHistory.buildId}">View Allocations</a></li>
+															</c:otherwise>
+														</c:choose>
+														
 														<c:if test="${showRework}">
 															<li><a id ="rework-btn" data-build-id="${buildHistory.buildId}">Rework</a></li>
 															<li><a id ="cancel-btn" data-build-id="${buildHistory.buildId}">Delete</a></li>
