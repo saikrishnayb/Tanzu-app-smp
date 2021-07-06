@@ -96,6 +96,7 @@ function openConfirmModal(isDeleteConfirmModal, buildId) {
 		$('#confirmMessage').text("Cancelling this build will delete all results and cannot be undone. Do you want to continue?");
 	} else {
 		$("#reworkOrDeleteConfirm").html('Rework');
+		$("#reworkOrDeleteConfirm").attr("delete", "N");
 		$('#confirmMessage').text("Reworking this build will clear previous match results and cannot be undone. Do you want to continue?");
 	}
 	$("#build-id").val(buildId);
