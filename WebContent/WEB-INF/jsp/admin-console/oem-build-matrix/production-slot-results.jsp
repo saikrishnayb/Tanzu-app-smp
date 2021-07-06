@@ -96,6 +96,7 @@
 								<th class="leftAlign">Requested Delivery Date</th>
 								<th class="leftAlign width-200">Plant</th>
 								<th class="leftAlign width-100">Production Date</th>
+								<th class="leftAlign">Comments</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -115,7 +116,7 @@
 									<td class="leftAlign">${unit.programName}</td>
 									<td class="leftAlign">${unit.region}</td>
 									<td class="leftAlign">${unit.area}</td>
-									<td class="leftAlign">${unit.districtNumber}</td>
+									<td class="leftAlign">${unit.districtNumber}</td>  
 									<td class="leftAlign">${unit.districtName}</td>
 									<td class="leftAlign"><fmt:formatDate pattern="MM/dd/yyyy" value="${unit.requestedDeliveryDate}" /></td>
 									<td class="leftAlign">${unit.productionSlot}
@@ -124,6 +125,7 @@
 									<td class="row leftAlign">${unit.formattedProductionDate}
 										<input type="hidden" id="production-date" value="${unit.formattedProductionDate}" >
 								   </td>
+								   <td class="leftAlign">${unit.comments}</td> 
 								</tr>
 							</c:forEach>
 						</tbody>

@@ -42,6 +42,7 @@ public class ProductionSlotResult {
 	private String vehicleTypeChangeRequired;
 	private int plantId;
 	private String productionSlotDate;
+	private String comments;
 	
 	// getters
 	public int getSlotReservationId() {
@@ -244,4 +245,11 @@ public class ProductionSlotResult {
 		return StringUtils.defaultString(DateUtil.formatDateUS(requestedDeliveryDate));
 	}
 
+	public String getComments() { 
+		return comments;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
+	}
 }

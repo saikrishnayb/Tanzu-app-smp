@@ -51,6 +51,10 @@ ModalUtil.initializeModal($confirmReservationModal);
 ModalUtil.initializeModal($updateReservationModal);
 ModalUtil.initializeModal($viewDiagnosticInfoModal);
 
+function format ( d ) {
+    return 'Guidance Info:'+d.comments;
+}
+
 $slotResultsDataTable = $slotResultsTable.DataTable({
 	"bPaginate" : false, //enable pagination
 	"bStateSave" : true, //To retrieve the data on click of back button
@@ -62,9 +66,18 @@ $slotResultsDataTable = $slotResultsTable.DataTable({
 	"bInfo" : true, //Showing 1 to 10 of 11 entries
 	"sPaginationType" : "full_numbers", //Shows first/previous 1,2,3,4 next/last buttons
 	"aoColumnDefs" : [ {
+		'sClass': 'details-control',
+		'sDefaultContent': '',
 		'bSortable' : false,
 		'aTargets' : [ 0 ]
-	} ],
+		},
+	    {
+	        "targets": [ 10 ],
+	        "visible": false,
+	        "data": "comments"
+	    }],
+	
+	
 	"dom" : "ti",
 	"fnDrawCallback" : function() { //This will hide the pagination menu if we only have 1 page.
 		var paginateRow = $(this).parent().children('div.dataTables_paginate');
@@ -83,8 +96,36 @@ $slotResultsDataTable = $slotResultsTable.DataTable({
 		} else {
 			infoRow.css("display", "none");
 		}
-	}
+	},
+    "createdRow": function(row, data, line, cells) {
+        if (data.comments === '') {
+            var td = $(row).find("td:first");
+            td.removeClass( 'details-control' );
+        } else {
+        	var api = this.api();
+        	api.row(row).child( format(data) ).show();
+        }
+      }	
 });
+
+/*
+// Add event listener for opening and closing details
+$('#slot-results-table tbody').on('click', 'td.details-control', function () {
+    var tr = $(this).closest('tr');
+    var row = $slotResultsDataTable.row( tr );
+
+    if ( row.child.isShown() ) {
+        // This row is already open - close it
+        row.child.hide();
+        tr.removeClass('shown');
+    }
+    else {
+        // Open this row
+        row.child( format(row.data()) ).show();
+        tr.addClass('shown');
+    }
+} );
+*/
 
 $('#slot-search').on('keyup', function() {
 	var isChecked = $('#show-selected-checkbox').is(':checked');
