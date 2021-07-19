@@ -89,6 +89,19 @@ $buildHistoryTable.on('click', '#cancel-btn', function() {
 	openConfirmModal(true, $(this).data('build-id'));
 });
 
+$buildHistoryTable.on('click', '#view-guidance-btn', function() {
+	var buildId=$(this).data('build-id');
+	var $viewGuidanceLogPromise = $.ajax({
+		type : "POST",
+		url : './view-guidance.htm',
+		data : {buildId:buildId}
+	});
+	$viewGuidanceLogPromise.done(function(data) {
+		$viewGuidanceModal.html(data);
+		ModalUtil.openModal($viewGuidanceModal);
+	});
+});
+
 function openConfirmModal(isDeleteConfirmModal, buildId) {
 	if (isDeleteConfirmModal) {
 		$("#reworkOrDeleteConfirm").html('Confirm');
@@ -152,18 +165,5 @@ $("#view-error-log").on("click", function() {
 	$viewErrorLogPromise.done(function(data) {
 		$viewErrorLogModal.html(data);
 		ModalUtil.openModal($viewErrorLogModal);
-	});
-});
-
-$("#view-guidance-btn").on("click", function() {
-	var buildId=$(this).data('build-id');
-	var $viewGuidanceLogPromise = $.ajax({
-		type : "POST",
-		url : './view-guidance.htm',
-		data : {buildId:buildId}
-	});
-	$viewGuidanceLogPromise.done(function(data) {
-		$viewGuidanceModal.html(data);
-		ModalUtil.openModal($viewGuidanceModal);
 	});
 });
