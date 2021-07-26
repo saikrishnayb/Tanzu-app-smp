@@ -52,7 +52,7 @@ ModalUtil.initializeModal($updateReservationModal);
 ModalUtil.initializeModal($viewDiagnosticInfoModal);
 
 function format ( d ) {
-    return 'Guidance Info:'+d.comments;
+    return 'Additional Information:'+d.comments;
 }
 
 $slotResultsDataTable = $slotResultsTable.DataTable({
