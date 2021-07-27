@@ -3,9 +3,12 @@ var $addToBuildBtn = $('#add-to-build');
 
 selectCurrentNavigation("tab-oem-build-matrix", "");
 
+$('#order-summary-table').hide();
+
+//console.time('render');
 var $orderSummaryDataTable = $orderSummaryTable.DataTable({ //All of the below are optional
-		"sScrollY" : "500",
-		"bPaginate" : true, //enable pagination
+		//"sScrollY" : "500",
+		"bPaginate" : false, //enable pagination
 		"bStateSave" : false, //To retrieve the data on click of back button
 		"sPaginationType" : "two_button",
 		"aaSorting" : [], //default sort column
@@ -24,8 +27,6 @@ var $orderSummaryDataTable = $orderSummaryTable.DataTable({ //All of the below a
 			"sEmptyTable" : "No Results Found"
 		},
 		"dom": 'tip',
-		//"sScrollY": 246, //Adds a vertical scroll bar if the content exceeds this amount
-		//"sScrollXInner": "100%" 
 		"fnDrawCallback" : function() { //This will hide the pagination menu if we only have 1 page.
 			var paginateRow = $(this).parent().children('div.dataTables_paginate');
 			var pageCount = Math.ceil((this.fnSettings().fnRecordsDisplay()) / this.fnSettings()._iDisplayLength);
@@ -43,7 +44,11 @@ var $orderSummaryDataTable = $orderSummaryTable.DataTable({ //All of the below a
 			} else {
 				infoRow.css("display", "none");
 			}
-		} 
+		}, 
+		"initComplete": function(settings, json) {
+			$('#order-summary-table').show();
+			//console.timeEnd('render');
+		  }
 });
 
 calculateBodiesOnOrder();
