@@ -52,7 +52,7 @@ ModalUtil.initializeModal($updateReservationModal);
 ModalUtil.initializeModal($viewDiagnosticInfoModal);
 
 function format ( d ) {
-    return 'Additional Information:'+d.comments;
+    return 'Additional Information:<br>'+d.comments;
 }
 
 $slotResultsDataTable = $slotResultsTable.DataTable({
@@ -60,9 +60,11 @@ $slotResultsDataTable = $slotResultsTable.DataTable({
 	"bStateSave" : true, //To retrieve the data on click of back button
 	"sPaginationType" : "two_button",
 	"bLengthChange" : false, //enable change of records per page, not recommended
-	"bFilter" : true, //Allows dynamic filtering of results, do not enable if using ajax for pagination
+	//"bFilter" : true, //Allows dynamic filtering of results, do not enable if using ajax for pagination
+	"bFilter" : false, //Allows dynamic filtering of results, do not enable if using ajax for pagination
 	"bAutoWidth" : false,
-	"bSort" : true, //Allow sorting by column header
+	//"bSort" : true, //Allow sorting by column header
+	"bSort" : false, //Allow sorting by column header
 	"bInfo" : true, //Showing 1 to 10 of 11 entries
 	"sPaginationType" : "full_numbers", //Shows first/previous 1,2,3,4 next/last buttons
 	"aoColumnDefs" : [ {
@@ -79,6 +81,7 @@ $slotResultsDataTable = $slotResultsTable.DataTable({
 	
 	
 	"dom" : "ti",
+	/*
 	"fnDrawCallback" : function() { //This will hide the pagination menu if we only have 1 page.
 		var paginateRow = $(this).parent().children('div.dataTables_paginate');
 		var pageCount = Math.ceil((this.fnSettings().fnRecordsDisplay()) / this.fnSettings()._iDisplayLength);
@@ -96,7 +99,7 @@ $slotResultsDataTable = $slotResultsTable.DataTable({
 		} else {
 			infoRow.css("display", "none");
 		}
-	},
+	},*/
     "createdRow": function(row, data, line, cells) {
         if (data.comments === '') {
             var td = $(row).find("td:first");
@@ -105,7 +108,11 @@ $slotResultsDataTable = $slotResultsTable.DataTable({
         	var api = this.api();
         	api.row(row).child( format(data) ).show();
         }
-      }	
+      }	,
+      "rowCreated": function(row, data) {
+          	console.log($(api.row(row).node()).attr('class'));
+        }	      
+	
 });
 
 /*
