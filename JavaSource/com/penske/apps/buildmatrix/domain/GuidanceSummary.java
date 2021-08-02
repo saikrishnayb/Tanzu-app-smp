@@ -6,7 +6,8 @@ public class GuidanceSummary {
 	private String awardKey;
 	private int guidanceTarget;
 	private int guidanceAllocation;
-	
+	private int guidanceExcess;
+
 	protected GuidanceSummary() {}
 
 	public int getGuidanceId() {
@@ -29,4 +30,7 @@ public class GuidanceSummary {
 		return guidanceAllocation;
 	}
 	
+	public int getGuidanceExcess() {
+		return guidanceExcess;
+	}	
 }

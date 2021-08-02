@@ -12,6 +12,7 @@
 					<tr>
 						<th>Attribute</th>
 						<th>Qty. Requested</th>
+						<th>Qty. Excess</th>
 						<th>Qty. Allotted</th>
 					</tr>
 				</thead>
@@ -20,7 +21,7 @@
 						<c:set var="groupKey" value="${entry.key}"/>
 						<c:set var="guidanceSummaries" value="${entry.value}"/>
 						<tr class="group-key-row">
-							<td class="group-key-td" colspan=3>${groupKey}</td>
+							<td class="group-key-td" colspan=4>${groupKey}</td>
 						<tr>
 						<c:forEach items="${guidanceSummaries}" var="guidanceSummary" varStatus="guidanceSummariesLoop">
 							<c:choose>
@@ -34,6 +35,7 @@
 							<tr class="guidance-summary-row ${rowClass}">
 								<td class="guidance-summary-td">${guidanceSummary.awardKey}</td>
 								<td class="guidance-summary-td">${guidanceSummary.guidanceTarget}</td>
+								<td class="guidance-summary-td">${guidanceSummary.guidanceExcess}</td>
 								<td class="guidance-summary-td">${guidanceSummary.guidanceAllocation}</td>
 							<tr>
 						</c:forEach>	
