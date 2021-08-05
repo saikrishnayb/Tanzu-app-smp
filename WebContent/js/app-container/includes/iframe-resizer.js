@@ -66,7 +66,7 @@ var iframeResizer = (function() {
       
       window.parent.scrollTo(0, pageYOffset);
 
-      $(window.parent).trigger('smc-resize-done');
+      iframeBody.dispatchEvent(new Event('smc-resize-done'));
       
       //console.log('iframe resized');
       
