@@ -386,7 +386,5 @@ function deactivteUser($this,$isVendorUser,$confirmAccountDeactivationModal){
 		openModal($confirmAccountDeactivationModal);
 		
 	});
-	
-	openModal($confirmAccountDeactivationModal);
 }
 //# sourceURL=users.js
