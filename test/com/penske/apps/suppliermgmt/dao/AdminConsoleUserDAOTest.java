@@ -1,9 +1,9 @@
 package com.penske.apps.suppliermgmt.dao;
 
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.sql.Date;
 import java.util.List;
 
 import org.junit.Before;
@@ -22,7 +22,6 @@ import com.penske.apps.smccore.base.configuration.ProfileType;
 import com.penske.apps.suppliermgmt.MyBatisDaoTest;
 import com.penske.apps.suppliermgmt.configuration.ApplicationConfiguration;
 import com.penske.apps.suppliermgmt.configuration.EmbeddedDataSourceConfiguration;
-import com.penske.apps.suppliermgmt.dao.UserDAO;
 import com.penske.apps.suppliermgmt.model.Buddies;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -35,21 +34,21 @@ import com.penske.apps.suppliermgmt.model.Buddies;
 }) 
 @ActiveProfiles(ProfileType.TEST)
 @Transactional
-public class UserDAOTest extends MyBatisDaoTest{
+public class AdminConsoleUserDAOTest extends MyBatisDaoTest{
 
 	@Autowired
-	private UserDAO userDao;
+	private AdminConsoleUserDAO dao;
 
 	@Before
 	public void setup()
 	{
-		userDao = this.trackMethodCalls(userDao, UserDAO.class);
+		dao = this.trackMethodCalls(dao, AdminConsoleUserDAO.class);
 	}
 
     @Test
     public void shouldDeleteBuddyList() {
     	try {
-			userDao.deleteBuddyList("600166698");
+			dao.deleteBuddyList("600166698");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -65,7 +64,7 @@ public class UserDAOTest extends MyBatisDaoTest{
     	buddy.setSelectionType("Test");
     	newBuddyList.add(buddy);
     	try {
-			userDao.addBuddyList(newBuddyList);
+			dao.addBuddyList(newBuddyList);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -74,7 +73,7 @@ public class UserDAOTest extends MyBatisDaoTest{
     @Test
     public void shouldGetUserList() {
     	try {
-			userDao.getUserList(1, false);
+			dao.getUserList(1, false);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -87,62 +86,62 @@ public class UserDAOTest extends MyBatisDaoTest{
     	buddy.setUserDept("MIS");
     	buddy.setBuddySso("600166699");
     	buddy.setSelectionType("Test");
-    	userDao.addBuddyBasedOnselectionType(buddy);
+    	dao.addBuddyBasedOnselectionType(buddy);
     }
 
     @Test
     public void shouldGetSelectionType() {
-    	userDao.getSelectionType("600166698");
+    	dao.getSelectionType("600166698");
     }
 
     @Test
     public void shouldGetExistingBuddiesListFromUserMaster() {
-    	userDao.getExistingBuddiesListFromUserMaster("Test", "600166698");
+    	dao.getExistingBuddiesListFromUserMaster("Test", "600166698");
     }
 
     @Test
     public void shouldGetExistingBuddiesList() {
-    	userDao.getExistingBuddiesList("600166698");
+    	dao.getExistingBuddiesList("600166698");
     }
 
     @Test
     public void shouldGetDeptDetailList() {
-    	userDao.getDeptDetailList();
+    	dao.getDeptDetailList();
     }
 
     @Test
     public void shouldGetTermsAndCondition() {
-    	userDao.getTermsAndCondition(new Date(0), "A");
+    	dao.getTermsAndCondition(new Date(0), "A");
     }
     
     @Test
     public void shouldGetUserVendorFilterSelectionsAsPenskeUser() {
-    	userDao.getUserVendorFilterSelections(1);
+    	dao.getUserVendorFilterSelections(1);
     }
 
     @Test
     public void shouldGetAllOrganizations() {
-    	userDao.getAllOrganizations();
+    	dao.getAllOrganizations();
     }
 
     @Test
     public void shouldGetOrganizationWithOrgId() {
-    	userDao.getOrganizationWithOrgId(1);
+    	dao.getOrganizationWithOrgId(1);
     }
 
     @Test
     public void shouldDeletePreviousUserVendorFilters() {
-    	userDao.deletePreviousUserVendorFilters(1);
+    	dao.deletePreviousUserVendorFilters(1);
     }
 
     @Test
     public void shouldSaveUserVendorFilterSelections() {
-    	userDao.saveUserVendorFilterSelections(Arrays.asList(1), 1);
+    	dao.saveUserVendorFilterSelections(Arrays.asList(1), 1);
     }
 
     @Test
 	public void shouldToggleVendorFilter() {
-    	userDao.toggleVendorFilter(1);
+    	dao.toggleVendorFilter(1);
     }
 
 }

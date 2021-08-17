@@ -8,7 +8,7 @@ import com.penske.apps.suppliermgmt.dao.HelpDAOTest;
 import com.penske.apps.suppliermgmt.dao.HomeDashboardDaoTest;
 import com.penske.apps.suppliermgmt.dao.LoginDAOTest;
 import com.penske.apps.suppliermgmt.dao.LookUpDAOTest;
-import com.penske.apps.suppliermgmt.dao.UserDAOTest;
+import com.penske.apps.suppliermgmt.dao.AdminConsoleUserDAOTest;
 import com.pensle.apps.adminconsole.dao.AlertDaoTest;
 import com.pensle.apps.adminconsole.dao.CategoryManagementDAOTest;
 import com.pensle.apps.adminconsole.dao.ComponentDaoTest;
@@ -44,7 +44,7 @@ import com.pensle.apps.adminconsole.dao.RoleDaoTest;
 	HomeDashboardDaoTest.class,
 	LoginDAOTest.class,
 	LookUpDAOTest.class,
-	UserDAOTest.class
+	AdminConsoleUserDAOTest.class
 
 })
 public class DAOTests{}

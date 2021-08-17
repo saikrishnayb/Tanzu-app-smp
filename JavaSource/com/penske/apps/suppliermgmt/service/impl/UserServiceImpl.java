@@ -32,7 +32,7 @@ import org.springframework.stereotype.Service;
 import com.penske.apps.adminconsole.model.Vendor;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.dao.SalesnetDAO;
-import com.penske.apps.suppliermgmt.dao.UserDAO;
+import com.penske.apps.suppliermgmt.dao.AdminConsoleUserDAO;
 import com.penske.apps.suppliermgmt.domain.Organization;
 import com.penske.apps.suppliermgmt.domain.UserVendorFilterSelection;
 import com.penske.apps.suppliermgmt.exception.SMCException;
@@ -51,7 +51,7 @@ import com.penske.apps.suppliermgmt.util.ApplicationConstants;
 public class UserServiceImpl implements UserService {
 
 	@Autowired
-	private UserDAO userDao;
+	private AdminConsoleUserDAO userDao;
 	
 	@Autowired
 	private SalesnetDAO salesnetDao;

@@ -33,7 +33,7 @@ import com.penske.apps.suppliermgmt.model.LabelValue;
 import com.penske.apps.suppliermgmt.model.User;
 
 @DBSmc
-public interface UserDAO {
+public interface AdminConsoleUserDAO {
 
     @NonVendorQuery
     public void deleteBuddyList(String userSSO) throws  SQLException;
