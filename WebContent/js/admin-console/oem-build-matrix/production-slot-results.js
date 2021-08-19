@@ -55,6 +55,8 @@ function format ( d ) {
     return 'Additional Information:<br>'+d.comments;
 }
 
+$('#slot-results-table').hide();
+
 $slotResultsDataTable = $slotResultsTable.DataTable({
 	"bPaginate" : false, //enable pagination
 	"bStateSave" : true, //To retrieve the data on click of back button
@@ -111,7 +113,10 @@ $slotResultsDataTable = $slotResultsTable.DataTable({
       }	,
       "rowCreated": function(row, data) {
           	console.log($(api.row(row).node()).attr('class'));
-        }	      
+        },
+		"initComplete": function(settings, json) {
+			$('#slot-results-table').show();
+		  }      
 	
 });
 
