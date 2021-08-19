@@ -5,15 +5,15 @@ import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.penske.apps.smccore.base.domain.User;
 import com.penske.apps.smccore.base.util.DateUtil;
 import com.penske.apps.suppliermgmt.model.AppConfigSessionData;
-import com.penske.apps.suppliermgmt.model.UserContext;
 
 public class DefaultSuppliermgmtSessionBean implements SuppliermgmtSessionBean, Serializable {
 
     private static final long serialVersionUID = -1472826879151363042L;
 
-    private UserContext userContext;
+    private User user;
     private String baseUrl;
     private Date lastUserLoginDate;
     private boolean buddyListApplied;
@@ -24,14 +24,14 @@ public class DefaultSuppliermgmtSessionBean implements SuppliermgmtSessionBean, 
 
     /** {@inheritDoc} */
     @Override
-    public void initialize(UserContext userContext, String baseUrl, Date lastUserLoginDate, boolean buddyListApplied, boolean vendorFilterApplied, boolean vendorFilterActive)
+    public void initialize(User user, String baseUrl, Date lastUserLoginDate, boolean buddyListApplied, boolean vendorFilterApplied, boolean vendorFilterActive)
     {
-       	if(userContext == null)
+       	if(user == null)
     		throw new IllegalArgumentException("Can not initialize user session without a logged-in user.");
     	if(StringUtils.isBlank(baseUrl))
     		throw new IllegalArgumentException("Can not initialize user session without a base URL.");
     	
-    	this.userContext = userContext;
+    	this.user = user;
     	this.baseUrl = baseUrl;
     	this.lastUserLoginDate = lastUserLoginDate;
     	this.appConfigSessionData = new AppConfigSessionData();
@@ -42,9 +42,9 @@ public class DefaultSuppliermgmtSessionBean implements SuppliermgmtSessionBean, 
     
     /** {@inheritDoc} */
     @Override
-    public UserContext getUserContext()
+    public User getUser()
     {
-        return userContext;
+        return user;
     }
 
     /** {@inheritDoc} */

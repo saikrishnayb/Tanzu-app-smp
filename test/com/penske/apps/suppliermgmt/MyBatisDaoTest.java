@@ -6,6 +6,7 @@
 package com.penske.apps.suppliermgmt;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.assertThat;
 
 import java.lang.reflect.InvocationHandler;
@@ -26,11 +27,12 @@ import org.junit.AfterClass;
 import org.springframework.aop.framework.AdvisedSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.penske.apps.smccore.CoreTestUtil;
 import com.penske.apps.smccore.base.annotation.NonVendorQuery;
 import com.penske.apps.smccore.base.annotation.SkipQueryTest;
+import com.penske.apps.smccore.base.domain.User;
+import com.penske.apps.smccore.base.domain.enums.UserType;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
-import com.penske.apps.suppliermgmt.model.UserContext;
-import com.penske.apps.suppliermgmt.model.VendorLocation;
 
 
 /**
@@ -42,7 +44,7 @@ public abstract class MyBatisDaoTest
 	
 	private static final Set<String> PROXY_SKIP_METHODS = new HashSet<String>();
 	
-	private static final Map<Class<?>, Map<Method, Set<UserContext>>> METHODS_RUN = new HashMap<Class<?>, Map<Method, Set<UserContext>>>();
+	private static final Map<Class<?>, Map<Method, Set<User>>> METHODS_RUN = new HashMap<Class<?>, Map<Method, Set<User>>>();
 	private static final Map<Class<?>, Map<Method, Boolean>> METHODS_TO_RUN = new HashMap<Class<?>, Map<Method, Boolean>>();
 	
 	@Autowired
@@ -59,9 +61,9 @@ public abstract class MyBatisDaoTest
 		
 		if(methodsForClass == null)
 		{
-			methodsForClass = new HashMap<Method,Boolean>();
+			methodsForClass = new HashMap<>();
 			METHODS_TO_RUN.put(daoClass, methodsForClass);
-			Map<Method, Set<UserContext>> methodsRun = new HashMap<Method, Set<UserContext>>();
+			Map<Method, Set<User>> methodsRun = new HashMap<>();
 			METHODS_RUN.put(daoClass, methodsRun);
 			
 			for(Method method : daoObject.getClass().getDeclaredMethods())
@@ -86,28 +88,16 @@ public abstract class MyBatisDaoTest
 
 	protected void setPenskeUser()
 	{
-		UserContext userContext = new UserContext();
-		userContext.setUserType(1);
-		userContext.setUserId(123456789);
-		List<VendorLocation> associatedVendorList = new ArrayList<VendorLocation>();
-		VendorLocation vendor = new VendorLocation();
-		vendor.setVendorId(1);
-		associatedVendorList.add(vendor);
-		userContext.setAssociatedVendorList(associatedVendorList);
-		sessionBean.initialize(userContext, "penske.com", new Date(), false, false, false);
+		User user = CoreTestUtil.createUser(123456789, "600555555", "Joe", "Test", "test@penske.com", UserType.PENSKE);
+		CoreTestUtil.addAssociatedVendors(user, 1);
+		sessionBean.initialize(user, "penske.com", new Date(), false, false, false);
 	}
 	
 	protected void setVendorUser()
 	{
-		UserContext userContext = new UserContext();
-		userContext.setUserType(2);
-		userContext.setUserId(123456789);
-		List<VendorLocation> associatedVendorList = new ArrayList<VendorLocation>();
-		VendorLocation vendor = new VendorLocation();
-		vendor.setVendorId(1);
-		associatedVendorList.add(vendor);
-		userContext.setAssociatedVendorList(associatedVendorList);
-		sessionBean.initialize(userContext, "penske.com", new Date(), false, false, false);
+		User user = CoreTestUtil.createUser(987654321, "suppliertest", "Supplier", "Test", "test@morgan.com", UserType.VENDOR);
+		CoreTestUtil.addAssociatedVendors(user, 1);
+		sessionBean.initialize(user, "penske.com", new Date(), false, false, false);
 	}	
 	
 	@AfterClass
@@ -115,7 +105,7 @@ public abstract class MyBatisDaoTest
 	{
 		//Make copies of the static maps and clear out the maps themselves, so that they are clean for the next test class, no matter what happens
 		Map<Class<?>, Map<Method, Boolean>> methodsToRun = new HashMap<Class<?>, Map<Method, Boolean>>(METHODS_TO_RUN);
-		Map<Class<?>, Map<Method, Set<UserContext>>> methodsRun = new HashMap<Class<?>, Map<Method, Set<UserContext>>>(METHODS_RUN);
+		Map<Class<?>, Map<Method, Set<User>>> methodsRun = new HashMap<>(METHODS_RUN);
 		METHODS_TO_RUN.clear();
 		METHODS_RUN.clear();
 		
@@ -123,7 +113,7 @@ public abstract class MyBatisDaoTest
 		for(Class<?> daoClass : methodsToRun.keySet())
 		{
 			Map<Method,Boolean> methodsToRunForClass = methodsToRun.get(daoClass);
-			Map<Method,Set<UserContext>> methodsRunForClass = methodsRun.get(daoClass);
+			Map<Method,Set<User>> methodsRunForClass = methodsRun.get(daoClass);
 			if(methodsRunForClass == null)
 				methodsRunForClass = Collections.emptyMap();
 			
@@ -135,14 +125,14 @@ public abstract class MyBatisDaoTest
 				assertThat("Did not run method - did you remember to replace the DAO object with the proxy generated from trackMethodCalls()?", methodRun, is(methodName));
 				
 				Boolean isVendorQuery = entry.getValue();
-				Set<UserContext> context = methodsRunForClass.get(entry.getKey());
+				Set<User> users = methodsRunForClass.get(entry.getKey());
 				
 				if(isVendorQuery){
-					List<Integer> userTypes = new ArrayList<Integer>();
-					for(UserContext userContext:context){
-						userTypes.add(userContext.getUserType());
+					List<UserType> userTypes = new ArrayList<>();
+					for(User user : users){
+						userTypes.add(user.getUserType());
 					}
-					assertThat("Did not run method as both Penske and Vendor User: " + methodName, userTypes.contains(1) && userTypes.contains(2), is(true));
+					assertThat("Did not run method as both Penske and Vendor User: " + methodName, userTypes, containsInAnyOrder(UserType.values()));
 				}
 				
 				
@@ -162,10 +152,10 @@ public abstract class MyBatisDaoTest
 	private static class MyBatisTestInvocationHandler implements InvocationHandler
 	{
 		private final Object delegate;
-		private final Map<Method, Set<UserContext>> methodsRun;
+		private final Map<Method, Set<User>> methodsRun;
 		private SuppliermgmtSessionBean sessionBean;
 		
-		public MyBatisTestInvocationHandler(Object delegate, Map<Method, Set<UserContext>> map, SuppliermgmtSessionBean sessionBean)
+		public MyBatisTestInvocationHandler(Object delegate, Map<Method, Set<User>> map, SuppliermgmtSessionBean sessionBean)
 		{
 			this.delegate = delegate;
 			this.methodsRun = map;
@@ -182,15 +172,15 @@ public abstract class MyBatisDaoTest
 			if(m == null)
 				return null;
 			
-			UserContext context = sessionBean.getUserContext();
+			User user = sessionBean.getUser();
 			
 			if(methodsRun.containsKey(m)){
-				if(context != null) methodsRun.get(m).add(context);
+				if(user != null) methodsRun.get(m).add(user);
 			}
 			else{
-				Set<UserContext> contextList = new HashSet<UserContext>();
-				if(context != null) contextList.add(context);
-				methodsRun.put(m, contextList);
+				Set<User> users = new HashSet<>();
+				if(user != null) users.add(user);
+				methodsRun.put(m, users);
 			}
 			
 			return m.invoke(delegate, args);

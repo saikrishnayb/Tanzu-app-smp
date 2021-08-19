@@ -1,5 +1,7 @@
 package com.penske.apps.suppliermgmt.controller;
 
+import static java.util.stream.Collectors.groupingBy;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,18 +17,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.penske.apps.suppliermgmt.annotation.SmcSecurity;
-import com.penske.apps.suppliermgmt.annotation.SmcSecurity.SecurityFunction;
+import com.penske.apps.smccore.base.annotation.SmcSecurity;
+import com.penske.apps.smccore.base.domain.User;
+import com.penske.apps.smccore.base.domain.enums.SecurityFunction;
+import com.penske.apps.smccore.base.domain.enums.UserDepartment;
+import com.penske.apps.smccore.base.domain.enums.UserType;
+import com.penske.apps.smccore.base.service.UserService;
 import com.penske.apps.suppliermgmt.annotation.VendorAllowed;
 import com.penske.apps.suppliermgmt.annotation.Version1Controller;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.model.Buddies;
 import com.penske.apps.suppliermgmt.model.LabelValue;
 import com.penske.apps.suppliermgmt.model.OrgFilter;
-import com.penske.apps.suppliermgmt.model.User;
-import com.penske.apps.suppliermgmt.model.UserContext;
 import com.penske.apps.suppliermgmt.model.VendorFilter;
-import com.penske.apps.suppliermgmt.service.UserService;
+import com.penske.apps.suppliermgmt.service.SuppliermgmtUserService;
 import com.penske.apps.suppliermgmt.util.ApplicationConstants;
 
 @Version1Controller
@@ -34,34 +38,36 @@ import com.penske.apps.suppliermgmt.util.ApplicationConstants;
 public class UserController extends BaseController {
 
     @Autowired
+    private SuppliermgmtUserService suppliermgmtUserService;
+    @Autowired
     private UserService userService;
 
     @Autowired
     private SuppliermgmtSessionBean sessionBean;
     
     @RequestMapping(value = "/getUsersList", method = {RequestMethod.GET, RequestMethod.POST })
-    protected  ModelAndView validateUser() {
+    protected  ModelAndView getUsersList() {
         ModelAndView model=new ModelAndView();
-        UserContext userContext = new UserContext();
-        List<User> userList=new ArrayList<User>();
+        
         try
         {
-
-            userContext = sessionBean.getUserContext();
-            userList=userService.getUserDetails(true);
-            List<User> purchasingUsersList=new ArrayList<User>();
-            List<User> planningUsersList=new ArrayList<User>();
-            populateUserLists(userList,planningUsersList,purchasingUsersList);
-
-            List<Buddies> existingBuddyList=userService.getExistingBuddiesList(userContext.getUserName());
+        	User user = sessionBean.getUser();
+        	List<User> activeUsers = userService.getUsersWithoutSecurityFunctions(UserType.PENSKE, null);
+        	Map<UserDepartment, List<User>> partitionedUsers = activeUsers.stream()
+        		.collect(groupingBy(u -> u.getUserDepartment()));
+        	
+        	List<User> purchasingUsers = partitionedUsers.get(UserDepartment.SUPPLY_SPECIALIST);
+        	List<User> planningUsers = partitionedUsers.get(UserDepartment.PLANNING_ANALYST);
+        	
+            List<Buddies> existingBuddyList=suppliermgmtUserService.getExistingBuddiesList(user.getSso());
             List<String> existingBuddySsoList=new ArrayList<String>();
 
             populateExistingBuddyUserList(existingBuddySsoList,existingBuddyList);
 
-            model.addObject("loggedInUserSso",userContext.getUserSSO());
+            model.addObject("loggedInUserSso",user.getSso());
             model.addObject("existingBuddySsoList",existingBuddySsoList);
-            model.addObject("planningUsersList", planningUsersList);
-            model.addObject("purchasingUsersList", purchasingUsersList);
+            model.addObject("planningUsersList", planningUsers);
+            model.addObject("purchasingUsersList", purchasingUsers);
 
         }catch(Exception e){
             model=handleException(e);
@@ -80,22 +86,22 @@ public class UserController extends BaseController {
     public @ResponseBody String deleteBuddyList(@RequestParam("newBuddies")List<String> newBuddyArray,@RequestParam("existingBuddyList")List<String> existingBuddyList,HttpServletResponse response) throws Exception
     {
 
-        UserContext userContext= sessionBean.getUserContext();
+        User user= sessionBean.getUser();
         List<Buddies> newBuddyList=new ArrayList<Buddies>();
-        String loggedInUserSso=userContext.getUserSSO();
+        String loggedInUserSso=user.getSso();
         List<Buddies> existingBuddies=new ArrayList<Buddies>();
         try{
 
             if(existingBuddyList!=null&&!existingBuddyList.isEmpty())
             {
-                userService.deleteBuddyList(loggedInUserSso);
+                suppliermgmtUserService.deleteBuddyList(loggedInUserSso);
             }
-            List<LabelValue> deptDetailList=userService.getDeptDetailList();
-            List<User> usersList=userService.getUserDetails(false);
-            populateNewBuddyUserList(newBuddyList,usersList,deptDetailList,loggedInUserSso,newBuddyArray);
+            List<LabelValue> deptDetailList=suppliermgmtUserService.getDeptDetailList();
+            List<User> activeUsers = userService.getUsersWithoutSecurityFunctions(UserType.PENSKE, null);
+            populateNewBuddyUserList(newBuddyList,activeUsers,deptDetailList,loggedInUserSso,newBuddyArray);
 
             addBuddyList(newBuddyList,loggedInUserSso);
-            existingBuddies =userService.getExistingBuddiesList(userContext.getUserName());
+            existingBuddies =suppliermgmtUserService.getExistingBuddiesList(user.getSso());
             
         }catch(Exception e){
             handleAjaxException(e, response);
@@ -108,7 +114,7 @@ public class UserController extends BaseController {
     public @ResponseBody String getTermsAndCondition(HttpServletResponse response){
         String terms = null;
         try{
-            terms = userService.getTermsAndCondition();
+            terms = suppliermgmtUserService.getTermsAndCondition();
         }catch(Exception e){
             handleAjaxException(e, response);
         }
@@ -122,7 +128,7 @@ public class UserController extends BaseController {
 
         ModelAndView modelAndView = new ModelAndView("app-container/modal/vendor-filter-modal");
 
-        List<OrgFilter> allOrgFilters = userService.getAllOrgFilters();
+        List<OrgFilter> allOrgFilters = suppliermgmtUserService.getAllOrgFilters();
 
         modelAndView.addObject("allOrgFilters", allOrgFilters);
 
@@ -134,14 +140,14 @@ public class UserController extends BaseController {
     @RequestMapping(value = "/get-organization-vendor-filters")
     @ResponseBody
     public List<VendorFilter> getOrganizationVendorFilters(@RequestParam("organizationId") int organizationId) {
-        return userService.getAllVendorFilters(organizationId);
+        return suppliermgmtUserService.getAllVendorFilters(organizationId);
     }
 
     @SmcSecurity(securityFunction = SecurityFunction.VENDOR_FILTER)
     @RequestMapping(value = "/save-user-vendor-selections", method = {RequestMethod.POST })
     @ResponseBody
     public boolean saveUserVendorFilters(@RequestParam("vendorIds") List<Integer> vendorIds) {
-        userService.saveUserVendorFilterSelections(vendorIds);
+        suppliermgmtUserService.saveUserVendorFilterSelections(vendorIds);
         return vendorIds.size() > 0;
     }
     
@@ -149,12 +155,12 @@ public class UserController extends BaseController {
     @RequestMapping(value = "/toggle-vendor-filter", method = {RequestMethod.POST })
     @ResponseBody
     public void toggleVendorFilter() {
-        userService.toggleVendorFilter();
+        suppliermgmtUserService.toggleVendorFilter();
         
     }
 
     //***** HELPER METHODS *****//
-    private void populateNewBuddyUserList(List<Buddies> newBuddyList,List<User> usersList,List<LabelValue> deptDetailList, String loggedInUserSso, List<String> newBuddyArray) 
+    private void populateNewBuddyUserList(List<Buddies> newBuddyList, List<User> usersList,List<LabelValue> deptDetailList, String loggedInUserSso, List<String> newBuddyArray) 
 	{
 		
 		Map<Integer,String> userDeptMap=new HashMap<Integer,String>();
@@ -173,7 +179,7 @@ public class UserController extends BaseController {
 				{
 					Buddies buddy=new Buddies();
 					buddy.setBuddySso(u.getSso());
-					buddy.setUserDept(userDeptMap.get(u.getUserDept()));
+					buddy.setUserDept(u.getUserDepartment().getDepartmentUserTitle());
 					buddy.setSso(loggedInUserSso);
 					buddy.setSelectionType(ApplicationConstants.ALL_SELECTION_TYPE);
 					newBuddyList.add(buddy);
@@ -219,21 +225,6 @@ public class UserController extends BaseController {
 			}
 		}
 		
-	}
-
-    private void populateUserLists(List<User> userList, List<User> planningUsersList, List<User> purchasingUsersList) 
-	{
-		for(User u:userList)
-		{
-			if(u.getUserDept()==ApplicationConstants.PURCHASE_DEPT_ID&&!purchasingUsersList.contains(u))
-			{
-				purchasingUsersList.add(u);
-			}
-			if(u.getUserDept()==ApplicationConstants.PLAN_DEPT_ID&&!planningUsersList.contains(u))
-			{
-				planningUsersList.add(u);
-			}
-		}
 	}
 
 	private void populateExistingBuddyUserList(List<String> existingBuddySsoList,List<Buddies> existingBuddyList) 
@@ -325,13 +316,13 @@ public class UserController extends BaseController {
                     StringUtils.equalsIgnoreCase(selectionType, ApplicationConstants.ALL_BUYER_SELECTION_TYPE)||
                     StringUtils.equalsIgnoreCase(selectionType, ApplicationConstants.ALL_PLANNING_SELECTION_TYPE)){
                 loggedInUser.setSelectionType(selectionType);
-                userService.addBuddyBasedOnselectionType(loggedInUser, loggedInUserSso);
+                suppliermgmtUserService.addBuddyBasedOnselectionType(loggedInUser, loggedInUserSso);
                 if(!newRandomBuddyList.isEmpty()){
-                    userService.addBuddyList(newRandomBuddyList, loggedInUserSso);
+                    suppliermgmtUserService.addBuddyList(newRandomBuddyList, loggedInUserSso);
                 }
 
             }else{
-                userService.addBuddyList(newBuddyList, loggedInUserSso);
+                suppliermgmtUserService.addBuddyList(newBuddyList, loggedInUserSso);
             }
         }catch(Exception e){
             handleException(e);

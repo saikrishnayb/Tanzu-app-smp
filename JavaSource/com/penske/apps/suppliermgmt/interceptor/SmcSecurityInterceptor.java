@@ -12,11 +12,12 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.penske.apps.adminconsole.exceptions.UnauthorizedSecurityFunctionException;
-import com.penske.apps.suppliermgmt.annotation.SmcSecurity;
+import com.penske.apps.smccore.base.annotation.SmcSecurity;
+import com.penske.apps.smccore.base.domain.User;
+import com.penske.apps.smccore.base.domain.enums.SecurityFunction;
+import com.penske.apps.smccore.base.domain.enums.UserType;
 import com.penske.apps.suppliermgmt.annotation.VendorAllowed;
-import com.penske.apps.suppliermgmt.annotation.SmcSecurity.SecurityFunction;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
-import com.penske.apps.suppliermgmt.model.UserContext;
 
 /**
  * Intercepter that checks to see if the method has a @{@link SmcSecurity} annotation and if it
@@ -45,9 +46,9 @@ public class SmcSecurityInterceptor extends HandlerInterceptorAdapter {
         SmcSecurity smcSecurity = handlerMethod.getMethod().getAnnotation(SmcSecurity.class);
         String requestURI = httpServletRequest.getRequestURI();
 
-        UserContext user = sessionBean.getUserContext();
+        User user = sessionBean.getUser();
 
-        boolean isVendorUserAccesingPenskeOnly = !user.isVisibleToPenske() && vendorAllowed == null;
+        boolean isVendorUserAccesingPenskeOnly = user.getUserType() != UserType.PENSKE && vendorAllowed == null;
         if (isVendorUserAccesingPenskeOnly)
             throw new UnauthorizedSecurityFunctionException(handlerMethod, requestURI);
 
@@ -65,7 +66,6 @@ public class SmcSecurityInterceptor extends HandlerInterceptorAdapter {
                 doesNotHaveSecurityAccess = false;
                 break;
             }
-
         }
 
         if (doesNotHaveSecurityAccess)

@@ -20,9 +20,9 @@ import com.penske.apps.adminconsole.model.HoldPayment;
 import com.penske.apps.adminconsole.model.Template;
 import com.penske.apps.smccore.base.configuration.ProfileType;
 import com.penske.apps.suppliermgmt.MyBatisDaoTest;
+import com.penske.apps.suppliermgmt.TestData;
 import com.penske.apps.suppliermgmt.configuration.ApplicationConfiguration;
 import com.penske.apps.suppliermgmt.configuration.EmbeddedDataSourceConfiguration;
-import com.penske.apps.suppliermgmt.model.UserContext;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -35,12 +35,12 @@ import com.penske.apps.suppliermgmt.model.UserContext;
 }) 
 @ActiveProfiles(ProfileType.TEST)
 @Transactional
-public class ComponentDaoTest extends MyBatisDaoTest{
-
+public class ComponentDaoTest extends MyBatisDaoTest
+{
 	@Autowired
 	private ComponentDao componentDao;
 	
-	
+	private TestData data = new TestData();
 
 	@Before
 	public void setup()
@@ -176,9 +176,7 @@ public class ComponentDaoTest extends MyBatisDaoTest{
     @Test
 	public void shouldAddHoldPayments() {
     	HoldPayment test = new HoldPayment(1,1);
-    	UserContext userContext = new UserContext();
-    	userContext.setUserSSO("600166698");
-    	componentDao.addHoldPayments(Arrays.asList(test), userContext);
+    	componentDao.addHoldPayments(Arrays.asList(test), data.user);
     }
 
     @Test

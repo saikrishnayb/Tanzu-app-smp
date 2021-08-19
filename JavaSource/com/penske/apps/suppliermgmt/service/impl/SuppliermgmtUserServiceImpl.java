@@ -30,25 +30,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.penske.apps.adminconsole.model.Vendor;
+import com.penske.apps.smccore.base.domain.User;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
-import com.penske.apps.suppliermgmt.dao.SalesnetDAO;
 import com.penske.apps.suppliermgmt.dao.AdminConsoleUserDAO;
+import com.penske.apps.suppliermgmt.dao.SalesnetDAO;
 import com.penske.apps.suppliermgmt.domain.Organization;
 import com.penske.apps.suppliermgmt.domain.UserVendorFilterSelection;
 import com.penske.apps.suppliermgmt.exception.SMCException;
 import com.penske.apps.suppliermgmt.model.Buddies;
 import com.penske.apps.suppliermgmt.model.LabelValue;
 import com.penske.apps.suppliermgmt.model.OrgFilter;
-import com.penske.apps.suppliermgmt.model.User;
-import com.penske.apps.suppliermgmt.model.UserContext;
 import com.penske.apps.suppliermgmt.model.VendorFilter;
-import com.penske.apps.suppliermgmt.service.UserService;
+import com.penske.apps.suppliermgmt.service.SuppliermgmtUserService;
 import com.penske.apps.suppliermgmt.util.ApplicationConstants;
 
 
 
 @Service
-public class UserServiceImpl implements UserService {
+public class SuppliermgmtUserServiceImpl implements SuppliermgmtUserService {
 
 	@Autowired
 	private AdminConsoleUserDAO userDao;
@@ -58,18 +57,6 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private SuppliermgmtSessionBean sessionBean;
-	
-	@Override
-	public List<User> getUserDetails(boolean active) throws SMCException {
-		try{
-			 List<User> userDetails = userDao.getUserList(ApplicationConstants.PENSKE_USER_TYPE, active);
-		     return userDetails;
-		} catch(SQLException ex){
-			throw new SMCException(ex.getErrorCode(),ex.getMessage(),ex);
-		}catch(Exception e){
-			throw new SMCException(0,e.getMessage(),e);
-		}
-	}    		 
 
 	@Override
 	public void addBuddyList(List<Buddies> newBuddyList, String sso) throws SMCException {
@@ -155,8 +142,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<OrgFilter> getAllOrgFilters() {
         
-        UserContext userContext = sessionBean.getUserContext();
-        Integer userId = userContext.getUserId();
+        User user = sessionBean.getUser();
+        Integer userId = user.getUserId();
         
         List<OrgFilter> orgFilters = new ArrayList<OrgFilter>();
         
@@ -210,8 +197,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public void saveUserVendorFilterSelections(Collection<Integer> vendorIds) {
 
-        UserContext userContext = sessionBean.getUserContext();
-        Integer userId = userContext.getUserId();
+        User user = sessionBean.getUser();
+        Integer userId = user.getUserId();
         
         userDao.deletePreviousUserVendorFilters(userId);
         
@@ -224,8 +211,8 @@ public class UserServiceImpl implements UserService {
     
     @Override
     public void toggleVendorFilter() {
-    	UserContext userContext = sessionBean.getUserContext();
-    	Integer userId = userContext.getUserId();
+    	User user = sessionBean.getUser();
+    	Integer userId = user.getUserId();
     	
     	userDao.toggleVendorFilter(userId);
     	

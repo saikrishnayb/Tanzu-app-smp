@@ -11,7 +11,7 @@
 	</div>
 		<!-- Code for disabling the Buddy link -->
 		<c:set var="displayLink"  value="display" scope="page"/>
-		<c:if test="${(userDetails.userType eq 2) || (not empty errorModel.message)}">
+		<c:if test="${(vendorUser) || (not empty errorModel.message)}">
 			<c:set var="displayLink" value="hide" scope="page"/>
 		</c:if>
 		<div id="utility">

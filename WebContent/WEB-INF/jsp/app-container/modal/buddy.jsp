@@ -39,14 +39,14 @@
 					<c:when test="${user.sso == loggedInUserSso}">
 						 <li>
 							<Label>
-								<input type="checkbox" checked="checked" class="plannerCheckBoxValues" disabled="disabled" value="${user.sso}/${user.userDept} " >${user.firstName} ${user.lastName}
+								<input type="checkbox" checked="checked" class="plannerCheckBoxValues" disabled="disabled" value="${user.sso}/${user.userDepartment.departmentId} " >${user.firstName} ${user.lastName}
 							</Label>	
 						</li>
 					</c:when>
 					<c:otherwise>
 						 <li>
 						 	<Label>
-								<input type="checkbox" id="${user.sso}" class="plannerCheckBox plannerCheckBoxValues" value="${user.sso}/${user.userDept} " onclick="unSelectHeader('plan');">${user.firstName} ${user.lastName}
+								<input type="checkbox" id="${user.sso}" class="plannerCheckBox plannerCheckBoxValues" value="${user.sso}/${user.userDepartment.departmentId} " onclick="unSelectHeader('plan');">${user.firstName} ${user.lastName}
 							</Label>
 						</li>
 					</c:otherwise>
@@ -64,14 +64,14 @@
 					<c:when test="${user.sso == loggedInUserSso}">
 						<li>
 							<Label>
-								<input type="checkbox" checked="checked" class="buyerCheckBoxValues" disabled="disabled" value="${user.sso}/${user.userDept}" >${user.firstName} ${user.lastName}
+								<input type="checkbox" checked="checked" class="buyerCheckBoxValues" disabled="disabled" value="${user.sso}/${user.userDepartment.departmentId}" >${user.firstName} ${user.lastName}
 							</Label>
 						</li>				
 					</c:when>
 					<c:otherwise >
 						<li>
 							<Label>
-								<input type="checkbox" id="${user.sso}" class="buyerCheckBox buyerCheckBoxValues" value="${user.sso}/${user.userDept}" onclick="unSelectHeader('buy');">${user.firstName} ${user.lastName}
+								<input type="checkbox" id="${user.sso}" class="buyerCheckBox buyerCheckBoxValues" value="${user.sso}/${user.userDepartment.departmentId}" onclick="unSelectHeader('buy');">${user.firstName} ${user.lastName}
 							</Label>
 						</li>
 					</c:otherwise>

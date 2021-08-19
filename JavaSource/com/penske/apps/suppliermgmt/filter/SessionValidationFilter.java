@@ -17,7 +17,6 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
-import com.penske.apps.suppliermgmt.model.UserContext;
 import com.penske.apps.suppliermgmt.servlet.SMCLogOff;
 import com.penske.apps.suppliermgmt.util.ApplicationConstants;
 import com.penske.business.ldap.CPBLDAPSessionInfo;
@@ -37,7 +36,6 @@ import com.penske.business.ldap.CPBLDAPSessionInfo;
  * @version $$Revision:
  * @since 1.0
  * @see HttpSession
- * @see UserContext
  */
 public class SessionValidationFilter implements Filter {
     private static Logger LOGGER = Logger.getLogger(SessionValidationFilter.class);

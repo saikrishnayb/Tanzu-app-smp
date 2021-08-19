@@ -13,15 +13,15 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface SmcSecurity {
+public @interface SmcSecurityOld2 {
 
-    public SecurityFunction[] securityFunction();
+    public SecurityFunctionOld2[] securityFunction();
 
     /**
      * Enum containing all the security functions pertaining to the SMCOP module. This is not an
      * exhaustive list.
      */
-    public static enum SecurityFunction {
+    public static enum SecurityFunctionOld2 {
         ADMIN_CONSOLE_TAB,
 
         MANAGE_USERS,
@@ -51,8 +51,8 @@ public @interface SmcSecurity {
         OEM_BUILD_MATRIX,
     	OEM_BUILD_MATRIX_DEBUG;
     	
-        public static SecurityFunction findByName(String name) {
-            for (SecurityFunction securityFunction : values())
+        public static SecurityFunctionOld2 findByName(String name) {
+            for (SecurityFunctionOld2 securityFunction : values())
                 if (securityFunction.name().equals(name)) return securityFunction;
             return null;
         }

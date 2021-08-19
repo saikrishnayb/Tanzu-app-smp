@@ -1,6 +1,6 @@
 package com.penske.apps.adminconsole.model;
 
-public class UserDept {
+public class AdminConsoleUserDept {
 	private String userDept;
 	private String description;
 	private int userDeptId;

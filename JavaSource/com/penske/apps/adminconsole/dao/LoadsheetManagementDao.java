@@ -17,8 +17,8 @@ import com.penske.apps.adminconsole.model.RuleDefinitions;
 import com.penske.apps.adminconsole.model.RuleMaster;
 import com.penske.apps.adminconsole.model.TemplateComponentRuleAssociation;
 import com.penske.apps.smccore.base.annotation.NonVendorQuery;
+import com.penske.apps.smccore.base.domain.User;
 import com.penske.apps.suppliermgmt.annotation.DBSmc;
-import com.penske.apps.suppliermgmt.model.UserContext;
 
 @DBSmc
 public interface LoadsheetManagementDao {
@@ -63,16 +63,16 @@ public interface LoadsheetManagementDao {
     public List<String> getAllUnitTemplateRuleNamesByTemplateId(@Param("ruleId") int ruleId, @Param("templateId") int templateId);
 
     @NonVendorQuery
-    public void insertRuleMasterDetails(@Param("rule") RuleMaster rule,@Param("user") UserContext user);
+    public void insertRuleMasterDetails(@Param("rule") RuleMaster rule, @Param("user") User user);
 
     @NonVendorQuery
-    public void insertRuleDefinitions(@Param("ruleDefList") List<RuleDefinitions> ruleDefList,@Param("user") UserContext user);
+    public void insertRuleDefinitions(@Param("ruleDefList") List<RuleDefinitions> ruleDefList, @Param("user") User user);
 
     @NonVendorQuery
-    public void updateRuleMasterDetails(@Param("rule") RuleMaster rule,@Param("user") UserContext user);
+    public void updateRuleMasterDetails(@Param("rule") RuleMaster rule, @Param("user") User user);
 
     @NonVendorQuery
-    public void updateRuleDefinitions(@Param("ruleDef") RuleDefinitions ruleDef,@Param("user") UserContext user);
+    public void updateRuleDefinitions(@Param("ruleDef") RuleDefinitions ruleDef, @Param("user") User user);
 
     @NonVendorQuery
     public RuleMaster getRuleDetails(@Param("ruleId") int ruleId);
@@ -105,22 +105,22 @@ public interface LoadsheetManagementDao {
     public List<LoadSheetComponentDetails> getUnAssignedComponents(@Param("category") String category,@Param("type") String type);
 
     @NonVendorQuery
-    public void insertSeqMasterDetails(@Param("seqMaster") LoadsheetSequenceMaster seqMaster,@Param("user") UserContext user);
+    public void insertSeqMasterDetails(@Param("seqMaster") LoadsheetSequenceMaster seqMaster, @Param("user") User user);
 
     @NonVendorQuery
-    public void insertGrpMasterDetails(@Param("grpMaster") LoadsheetSequenceGroupMaster grpMaster,@Param("user") UserContext user);
+    public void insertGrpMasterDetails(@Param("grpMaster") LoadsheetSequenceGroupMaster grpMaster, @Param("user") User user);
 
     @NonVendorQuery
-    public void insertCmpGrpSeqDetails(@Param("cmpGrpSeqList") List<LoadsheetCompGrpSeq> cmpGrpSeqList,@Param("user") UserContext user);
+    public void insertCmpGrpSeqDetails(@Param("cmpGrpSeqList") List<LoadsheetCompGrpSeq> cmpGrpSeqList, @Param("user") User user);
 
     @NonVendorQuery
     public LoadsheetSequenceMaster getSequenceMasterDetails(@Param("seqMasterId") int seqMasterId);
 
     @NonVendorQuery
-    public void updateSeqMasterDetails(@Param("seqMaster") LoadsheetSequenceMaster seqMaster,@Param("user") UserContext user);
+    public void updateSeqMasterDetails(@Param("seqMaster") LoadsheetSequenceMaster seqMaster, @Param("user") User user);
 
     @NonVendorQuery
-    public void updateGrpMasterDetails(@Param("grpMaster") LoadsheetSequenceGroupMaster grpMaster,@Param("user") UserContext user);
+    public void updateGrpMasterDetails(@Param("grpMaster") LoadsheetSequenceGroupMaster grpMaster, @Param("user") User user);
 
     @NonVendorQuery
     public void deleteGrpMasterDetails(@Param("groupMasterIdList") List<Integer> groupMasterIdList,@Param("seqMasterId") int seqMasterId);
@@ -129,7 +129,7 @@ public interface LoadsheetManagementDao {
     public void deleteGrpMaster(@Param("seqMasterId") int seqMasterId);
 
     @NonVendorQuery
-    public void updateCmpGrpSeqDeatils(@Param("cmpGrpSeq") LoadsheetCompGrpSeq cmpGrpSeq,@Param("user") UserContext user);
+    public void updateCmpGrpSeqDeatils(@Param("cmpGrpSeq") LoadsheetCompGrpSeq cmpGrpSeq, @Param("user") User user);
 
     @NonVendorQuery
     public void deleteCmpGrpSeqDetails(@Param("compGrpSeqIdList") List<Integer> compGrpSeqIdList,@Param("grpMasterId") int grpMasterId);

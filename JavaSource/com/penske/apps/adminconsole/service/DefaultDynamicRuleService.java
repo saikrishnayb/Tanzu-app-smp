@@ -111,11 +111,6 @@ public class DefaultDynamicRuleService implements DynamicRuleService {
 				if(reOrderRequired){
 					dynamicRuleDao.reOrderPriority(rule.getPriority());
 				}
-	//		}
-			//if ("I".equalsIgnoreCase(rule.getStatus())){
-				//TODO - Check with dav to set -1 / 0 , We can't set NULL
-			//	rule.setPriority(0);
-			//}
 			dynamicRuleDao.modifyDynamicRule(rule);
 		}
 	}

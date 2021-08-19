@@ -1,4 +1,7 @@
 package com.penske.apps.suppliermgmt.service;
+
+import com.penske.apps.smccore.base.domain.enums.UserType;
+
 /**
  ************************************************************************************
  * File Name     : HelpService
@@ -18,7 +21,7 @@ package com.penske.apps.suppliermgmt.service;
 
 public interface HelpService { 
 	
-	public String getHelp(int userTypeId);
+	public String getHelp(UserType userType);
 }
 
 

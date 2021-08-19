@@ -6,7 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.penske.apps.smccore.base.util.DateUtil;
 
-public class User {
+public class EditableUser {
 	private int userId;
 	private String userName;
 	private String email;
@@ -15,7 +15,7 @@ public class User {
 	private String phone;
 	private String extension;
 	private String status;
-	private UserType userType;
+	private AdminConsoleUserType userType;
 	private String description;
 	private Role role;
 	private Vendor vendor;
@@ -23,7 +23,7 @@ public class User {
 	private ImageFile signFile;
 	private boolean hasSignFile;
 	private boolean hasInitFile;
-	private UserDept userDept;
+	private AdminConsoleUserDept userDept;
 	private String ssoId;
 	private boolean deactivatible;
 	private String createdBy;
@@ -114,7 +114,7 @@ public class User {
 		return status;
 	}
 
-	public UserType getUserType() {
+	public AdminConsoleUserType getUserType() {
 		return userType;
 	}
 
@@ -146,7 +146,7 @@ public class User {
 		return hasInitFile;
 	}
 
-	public UserDept getUserDept() {
+	public AdminConsoleUserDept getUserDept() {
 		return userDept;
 	}
 
@@ -269,7 +269,7 @@ public class User {
 			this.status = "Inactive";
 	}
 
-	public void setUserType(UserType userType) {
+	public void setUserType(AdminConsoleUserType userType) {
 		this.userType = userType;
 	}
 
@@ -301,7 +301,7 @@ public class User {
 		this.hasInitFile = hasInitFile;
 	}
 
-	public void setUserDept(UserDept userDept) {
+	public void setUserDept(AdminConsoleUserDept userDept) {
 		this.userDept = userDept;
 	}
 
@@ -428,7 +428,7 @@ public class User {
 		return name.matches("(^[\\D\\s'.]+$)");
 	}
 	
-	public boolean validateUserWithSSOData(User ssoUser){
+	public boolean validateUserWithSSOData(EditableUser ssoUser){
 		boolean isUpdated = false;
 		if((ssoUser.getEmail() !=null && !ssoUser.getEmail().equalsIgnoreCase(this.email)) ||
 			(ssoUser.getFirstName() !=null && !ssoUser.getFirstName().equalsIgnoreCase(this.firstName)) ||

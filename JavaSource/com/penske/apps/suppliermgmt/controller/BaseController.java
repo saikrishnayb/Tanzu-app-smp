@@ -16,25 +16,24 @@
  */
 package com.penske.apps.suppliermgmt.controller;
 
-
-import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.penske.apps.smccore.base.beans.LookupManager;
+import com.penske.apps.smccore.base.domain.LookupContainer;
+import com.penske.apps.smccore.base.domain.User;
+import com.penske.apps.smccore.base.domain.enums.LookupKey;
 import com.penske.apps.smccore.base.exception.HumanReadableException;
 import com.penske.apps.suppliermgmt.annotation.Version1Controller;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.model.ErrorModel;
-import com.penske.apps.suppliermgmt.model.LookUp;
-import com.penske.apps.suppliermgmt.model.UserContext;
-import com.penske.apps.suppliermgmt.util.ApplicationConstants;
-import com.penske.apps.suppliermgmt.util.LookupManager;
 
 @Version1Controller
 public class BaseController {
@@ -42,6 +41,8 @@ public class BaseController {
 	
 	 @Autowired
 	 private SuppliermgmtSessionBean sessionBean;
+	 @Autowired
+	 private LookupManager lookupManager;
 	
  /**
 	 * Global exception handler for handling exceptions via the errors
@@ -68,19 +69,17 @@ public class BaseController {
 		ErrorModel model = new ErrorModel();
 		try{
 			//getting support num from lookup
-			LookupManager lookupManger=new LookupManager();
-			List<LookUp> suppNumlist=lookupManger.getLookUpListByName(ApplicationConstants.SUPP_NUM);
-			LookUp lookUp=null;
-			UserContext userContext = sessionBean.getUserContext();
-			String userSSO = userContext == null ? "" : userContext.getUserSSO();
-			String randomNumber=getRandomNumber();
+			LookupContainer lookups = lookupManager.getLookupContainer();
+			String supportPhoneNumber = lookups.getSingleLookupValue(LookupKey.SUPPORT_PHONE_NUM);
+			
+			User user = sessionBean.getUser();
+			String userSSO = user == null ? "" : user.getSso();
+			String randomNumber = getRandomNumber();
 			LOGGER.error("Caught Exception  Reference Number is:"+randomNumber+" And Logged in User is:"+userSSO+" Exception is::"+ex.toString(),ex);
 			model.setMessage("Application Error Occured. Reference Number is "+randomNumber+".");
 			
-			if(suppNumlist!=null){
-				lookUp=suppNumlist.get(0);
-				mv.addObject("supportNum",lookUp.getLookUpValue());
-			}
+			if(StringUtils.isNotBlank(supportPhoneNumber))
+				mv.addObject("supportNum",supportPhoneNumber);
 		}
 		catch(Exception e){
 			LOGGER.error("Exception occured in handleException method of BaseController"+e.toString(),e);
@@ -96,20 +95,19 @@ public class BaseController {
     	ModelAndView mv = new ModelAndView("error/v1/GlobalErrorPage");
         ErrorModel model = new ErrorModel();
         try {
-            UserContext userContext = sessionBean.getUserContext();
-            String userSSO = userContext == null ? "" : userContext.getUserSSO();
+            User user = sessionBean.getUser();
+            String userSSO = user == null ? "" : user.getSso();
             String randomNumber = UUID.randomUUID().toString();
             LOGGER.error("Caught Unhandled Exception.  Reference Number is:" + randomNumber + " And Logged in User is:" + userSSO
             + " and Exception is::" + ex.toString(), ex);
             model.setMessage(ex.getHumanReadableMessage() + " Reference number is " + randomNumber);
+            
             // getting support num from lookup
-            LookupManager lookupManger = new LookupManager();
-            List<LookUp> suppNumlist = lookupManger.getLookUpListByName(ApplicationConstants.SUPP_NUM);
-            LookUp lookUp = null;
-            if (suppNumlist != null) {
-                lookUp = suppNumlist.get(0);
-                mv.addObject("supportNum", lookUp.getLookUpValue());
-            }
+            LookupContainer lookups = lookupManager.getLookupContainer();
+			String supportPhoneNumber = lookups.getSingleLookupValue(LookupKey.SUPPORT_PHONE_NUM);
+            if (StringUtils.isNotBlank(supportPhoneNumber))
+                mv.addObject("supportNum", supportPhoneNumber);
+            
         } catch (Exception e) {
             LOGGER.error("Exception occured in handleException method of BaseController" + e.toString(), e);
             mv.addObject("supportNum", "1-866-926-7240");
@@ -118,7 +116,6 @@ public class BaseController {
         mv.addObject(model);
         return mv;
     }
-
 	
 	/**
 	 * Global exception handler for handling ajax exceptions via the errors
@@ -127,8 +124,8 @@ public class BaseController {
 	 * @return
 	 */
 	public void handleAjaxException(Exception e, HttpServletResponse response) {
-		UserContext userContext = sessionBean.getUserContext();
-		String userSSO = userContext == null ? "" : userContext.getUserSSO();
+		User user = sessionBean.getUser();
+		String userSSO = user == null ? "" : user.getSso();
 		LOGGER.error("Exception in Ajax Request.  Reference Number is:"+getRandomNumber()+" And Logged in User is:"+userSSO+" and Exception is"+ e.toString(),e);
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);/* setting response status to 500*/
 	}

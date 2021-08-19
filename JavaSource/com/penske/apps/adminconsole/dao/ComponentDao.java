@@ -12,9 +12,9 @@ import com.penske.apps.adminconsole.model.Template;
 import com.penske.apps.adminconsole.model.TemplatePoAssociation;
 import com.penske.apps.smccore.base.annotation.NonVendorQuery;
 import com.penske.apps.smccore.base.annotation.SkipQueryTest;
+import com.penske.apps.smccore.base.domain.User;
 import com.penske.apps.suppliermgmt.annotation.DBSmc;
 import com.penske.apps.suppliermgmt.domain.ComponentGroup;
-import com.penske.apps.suppliermgmt.model.UserContext;
 /**
  * 
  * @author 600144005
@@ -100,7 +100,7 @@ public interface ComponentDao {
     public List<HoldPayment> getHoldPaymentsByComponentId(@Param("componentId") int componentId);
 
     @NonVendorQuery
-	public void addHoldPayments(@Param("holdPaymentstoAdd") List<HoldPayment> holdPaymentstoAdd, @Param("user") UserContext user);
+	public void addHoldPayments(@Param("holdPaymentstoAdd") List<HoldPayment> holdPaymentstoAdd, @Param("user") User user);
 
     @NonVendorQuery
 	public void deleteHoldPayments(@Param("holdPaymentsToDelete") List<HoldPayment> holdPaymentsToDelete);

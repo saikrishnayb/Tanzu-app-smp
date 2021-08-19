@@ -40,12 +40,12 @@ import com.penske.apps.adminconsole.service.ComponentVendorTemplateService;
 import com.penske.apps.adminconsole.service.LoadSheetManagementService;
 import com.penske.apps.adminconsole.service.VendorService;
 import com.penske.apps.adminconsole.util.CommonUtils;
+import com.penske.apps.smccore.base.annotation.SmcSecurity;
+import com.penske.apps.smccore.base.domain.User;
 import com.penske.apps.smccore.base.domain.enums.CorpCode;
-import com.penske.apps.suppliermgmt.annotation.SmcSecurity;
-import com.penske.apps.suppliermgmt.annotation.SmcSecurity.SecurityFunction;
+import com.penske.apps.smccore.base.domain.enums.SecurityFunction;
 import com.penske.apps.suppliermgmt.annotation.Version1Controller;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
-import com.penske.apps.suppliermgmt.model.UserContext;
 
 /**
  * 
@@ -129,8 +129,8 @@ public class ComponentsRestController {
     @ResponseBody
     public int insertSubCategory(SubCategory categoryData,HttpServletResponse response) throws Exception {
         try{
-        	UserContext userContext = sessionBean.getUserContext();
-            String userSSO = userContext.getUserSSO();
+        	User user = sessionBean.getUser();
+            String userSSO = user.getSso();
             categoryData.setCreatedBy(userSSO);
             if(categoryManagementService.checkSubCategoryExist(categoryData, true)){
                 categoryManagementService.insertSubCategory(categoryData);
@@ -251,8 +251,8 @@ public class ComponentsRestController {
     public String addTemplate(@RequestParam("tempDesc") String tempDesc,@RequestParam("poCatAssID") String poCatAssID,@RequestBody List<Components> compList, HttpServletResponse response){
         String status=null;
     	try{
-        	UserContext userContext = sessionBean.getUserContext();
-            String userSSO = userContext.getUserSSO();
+        	User user = sessionBean.getUser();
+            String userSSO = user.getSso();
 	        Template template=new Template();
 	        template.setTemplateDesc(tempDesc);
 	        template.setPoCatAssID(poCatAssID);
@@ -280,8 +280,8 @@ public class ComponentsRestController {
     public String updateTemplate(@RequestParam("templateId") int templateId,@RequestParam("tempDesc") String tempDesc,@RequestParam("poCatAssID") String poCatAssID,@RequestBody List<Components> compList, HttpServletResponse response){
     	String status=null;
     	try{
-        	UserContext userContext = sessionBean.getUserContext();
-            String userSSO = userContext.getUserSSO();
+        	User user = sessionBean.getUser();
+            String userSSO = user.getSso();
 	        Template template=new Template();
 	        template.setTemplateID(templateId);
 	        template.setTemplateDesc(tempDesc);
@@ -518,7 +518,7 @@ public class ComponentsRestController {
     @RequestMapping("/get-hold-payment-content")
     public ModelAndView getHoldPayment(@RequestParam("componentId") int componentId){
         ModelAndView mav = new ModelAndView("/admin-console/components/modal/hold-payment-modal");
-        UserContext user = sessionBean.getUserContext();
+        User user = sessionBean.getUser();
         Component component = componentService.getComponentById(componentId);
         List<CorpCode> corpCodes = Arrays.asList(CorpCode.values());
         Map<String, CorpCode> corpByCorpCode = corpCodes.stream()
@@ -537,7 +537,7 @@ public class ComponentsRestController {
     
     @RequestMapping(value="/save-hold-payment", method = RequestMethod.POST)
     public void saveHoldPayment(@RequestParam("componentId") int componentId, @RequestParam(value="vendorIds[]", required=false) List<Integer> vendorIds, HttpServletResponse response){
-        UserContext user = sessionBean.getUserContext();
+        User user = sessionBean.getUser();
         Component component = componentService.getComponentById(componentId);
         if(component == null)
         	throw new IllegalArgumentException("Component not found");

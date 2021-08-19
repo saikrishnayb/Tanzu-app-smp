@@ -18,8 +18,8 @@ import com.penske.apps.adminconsole.model.HoldPayment;
 import com.penske.apps.adminconsole.model.LoadSheetComponentDetails;
 import com.penske.apps.adminconsole.model.Template;
 import com.penske.apps.adminconsole.model.TemplatePoAssociation;
+import com.penske.apps.smccore.base.domain.User;
 import com.penske.apps.suppliermgmt.domain.ComponentGroup;
-import com.penske.apps.suppliermgmt.model.UserContext;
 
 /**
  * 
@@ -240,7 +240,7 @@ public class DefaultComponentService implements ComponentService {
     }
     
     @Override
-    public void saveHoldPayments(Component component, List<Integer> vendorIds, UserContext user) {
+    public void saveHoldPayments(Component component, List<Integer> vendorIds, User user) {
     	List<HoldPayment> holdPayments = componentDao.getHoldPaymentsByComponentId(component.getComponentId());
     	Map<Integer, HoldPayment> holdPaymentsByVendorId = holdPayments.stream()
     			.collect(Collectors.toMap(HoldPayment::getVendorId, hp->hp));

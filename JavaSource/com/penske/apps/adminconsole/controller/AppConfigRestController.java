@@ -31,13 +31,13 @@ import com.penske.apps.adminconsole.service.SearchTemplateService;
 import com.penske.apps.adminconsole.service.TabService;
 import com.penske.apps.adminconsole.service.TermsAndConditionsService;
 import com.penske.apps.adminconsole.util.CommonUtils;
-import com.penske.apps.suppliermgmt.annotation.SmcSecurity;
-import com.penske.apps.suppliermgmt.annotation.SmcSecurity.SecurityFunction;
+import com.penske.apps.smccore.base.annotation.SmcSecurity;
+import com.penske.apps.smccore.base.domain.User;
+import com.penske.apps.smccore.base.domain.enums.SecurityFunction;
 import com.penske.apps.suppliermgmt.annotation.Version1Controller;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.model.AppConfigSessionData;
 import com.penske.apps.suppliermgmt.model.AppConfigSessionData.LoadSheetCategoryDetails;
-import com.penske.apps.suppliermgmt.model.UserContext;
 
 /**
  * This Controller class contains all of the AJAX request methods for any
@@ -93,8 +93,8 @@ public class AppConfigRestController {
     @ResponseBody
     public void modifyGlobalException(@RequestParam(value = "exceptionId") int exceptionId, @RequestParam(value = "providervendorId") int providervendorId, @RequestParam(value = "poCategoryAssociationId") int poCategoryAssociationId) {
 
-    	UserContext userContext = sessionBean.getUserContext();
-        String userSSO = userContext.getUserSSO();
+    	User user = sessionBean.getUser();
+        String userSSO = user.getSso();
         exceptionService.modifyGlobalException(exceptionId, providervendorId, poCategoryAssociationId,userSSO);
     }
 
@@ -151,8 +151,8 @@ public class AppConfigRestController {
     @RequestMapping(value = "/add-dynamic-rule", method = RequestMethod.POST)
     @ResponseBody
     public void addDynamicRule(DynamicRule rule, HttpServletResponse response) {
-    	UserContext userContext = sessionBean.getUserContext();
-        String userSSO = userContext.getUserSSO();
+    	User user = sessionBean.getUser();
+        String userSSO = user.getSso();
         rule.setCreatedBy(userSSO);
         rule.setModifiedBy(userSSO);
         try {
@@ -175,8 +175,8 @@ public class AppConfigRestController {
     @ResponseBody
     public void modifyDynamicRule(DynamicRule rule, HttpServletResponse response) {
         try {
-        	UserContext userContext = sessionBean.getUserContext();
-            String userSSO = userContext.getUserSSO();
+        	User user = sessionBean.getUser();
+            String userSSO = user.getSso();
             rule.setModifiedBy(userSSO);
             dynamicRuleService.modifyDynamicRule(rule);
         } catch (DynamicRulePriorityException dpe) {
@@ -317,8 +317,8 @@ public class AppConfigRestController {
     @RequestMapping(value = "/save-rule-association-modal-data", method = RequestMethod.POST)
     @ResponseBody
     public void saveRuleAssociationModalData(@ModelAttribute("componentRule") ComponentRuleAssociation componentRule, HttpServletResponse response) throws Exception {
-    	UserContext userContext = sessionBean.getUserContext();
-        String userSSO = userContext.getUserSSO();
+    	User user = sessionBean.getUser();
+        String userSSO = user.getSso();
         componentRule.setCreatedBy(userSSO);
         try {
             loadsheetManagementService.saveComponentRules(componentRule);

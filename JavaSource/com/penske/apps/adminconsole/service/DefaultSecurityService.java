@@ -11,19 +11,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.penske.apps.adminconsole.dao.SecurityDao;
-import com.penske.apps.adminconsole.model.HeaderUser;
+import com.penske.apps.adminconsole.model.EditableUser;
 import com.penske.apps.adminconsole.model.Org;
 import com.penske.apps.adminconsole.model.Permission;
 import com.penske.apps.adminconsole.model.Role;
 import com.penske.apps.adminconsole.model.SignatureInitial;
-import com.penske.apps.adminconsole.model.User;
-import com.penske.apps.adminconsole.model.UserDept;
-import com.penske.apps.adminconsole.model.UserType;
+import com.penske.apps.adminconsole.model.AdminConsoleUserType;
+import com.penske.apps.adminconsole.model.AdminConsoleUserDept;
+import com.penske.apps.adminconsole.model.UserSearchForm;
 import com.penske.apps.adminconsole.model.VendorTree;
 import com.penske.apps.adminconsole.util.ApplicationConstants;
+import com.penske.apps.smccore.base.domain.User;
+import com.penske.apps.smccore.base.domain.enums.UserType;
 import com.penske.apps.suppliermgmt.exception.SMCException;
 import com.penske.apps.suppliermgmt.model.ErrorModel;
-import com.penske.apps.suppliermgmt.model.UserContext;
 import com.penske.business.ldap.sso.CPBGESSOUser;
 import com.penske.util.security.priv.CPTSso;
 
@@ -45,11 +46,11 @@ public class DefaultSecurityService implements SecurityService{
 	private SecurityDao securityDao;
 
 	@Override
-	public User getEditInfo(String userId, String userType) {
+	public EditableUser getEditInfo(String userId, String userType) {
 		boolean isPenskeUser = "Penske".equalsIgnoreCase(userType);
 		int userIdNo = Integer.parseInt(userId);
 
-		User user = new User();
+		EditableUser user = new EditableUser();
 
 		if(isPenskeUser){
 			user = securityDao.getPenskeUserInfo(userIdNo);
@@ -74,12 +75,12 @@ public class DefaultSecurityService implements SecurityService{
 	}
 
 	@Override
-	public void modifyUserStatus(int userId, UserContext currentUser) {
+	public void modifyUserStatus(int userId, User currentUser) {
 		
 		String userSSO="";
-		if(currentUser.isVisibleToPenske()){
+		if(currentUser.getUserType() == UserType.PENSKE){
 			List<Role> myRoleList = securityDao.getPenskeRoles(currentUser.getRoleId());
-			User user = securityDao.getUser(userId);
+			EditableUser user = securityDao.getUser(userId);
 			userSSO = user.getUserName();
 			boolean deactivatible = false;
 			for(Role role: myRoleList){
@@ -91,7 +92,7 @@ public class DefaultSecurityService implements SecurityService{
 			if(!deactivatible)
 				return;
 		}
-		securityDao.modifyUserStatus(userId,currentUser.getUserSSO());
+		securityDao.modifyUserStatus(userId,currentUser.getSso());
 		securityDao.deleteUserFromBuddy(userSSO);
 	}
 
@@ -157,7 +158,7 @@ public class DefaultSecurityService implements SecurityService{
 	}
 
 	@Override
-	public void modifyUserInfo(User user, int[] vendorIds, UserContext currentUser) {
+	public void modifyUserInfo(EditableUser user, int[] vendorIds, User currentUser) {
 		//check edit information
 		boolean validUser = !user.validateUserInfo();
 		
@@ -168,7 +169,7 @@ public class DefaultSecurityService implements SecurityService{
 		
 		boolean isPenskeUser = (ApplicationConstants.PENSKE_USER == userTypeId);
 		boolean isSupplierUser = (ApplicationConstants.SUPPLIER_USER == userTypeId);
-		user.setModifiedBy(currentUser.getUserSSO());
+		user.setModifiedBy(currentUser.getSso());
 		//make edit changes
 		//updated for adding comments to the base64 changes
 		if (isPenskeUser) {
@@ -196,7 +197,7 @@ public class DefaultSecurityService implements SecurityService{
 				}
 			}
 			if(signatureInitial== null){
-				user.setCreatedBy(currentUser.getUserSSO());
+				user.setCreatedBy(currentUser.getSso());
 				securityDao.addUserInitials(user);
 			}else{
 				securityDao.modifyPenskeUser(user);
@@ -208,7 +209,7 @@ public class DefaultSecurityService implements SecurityService{
 		}
 		securityDao.modifyUserInfo(user);
 		if(user.getUserDept() !=null){
-			UserDept depart=securityDao.getUserDeptsById(user.getUserDept().getUserDeptId());
+			AdminConsoleUserDept depart=securityDao.getUserDeptsById(user.getUserDept().getUserDeptId());
 			if(depart !=null){
 				user.getUserDept().setUserDept(depart.getUserDept());
 				securityDao.updateBuddies(user);
@@ -234,13 +235,13 @@ public class DefaultSecurityService implements SecurityService{
 	}
 
 	@Override
-	public void addUser(User user, int[] vendorIds, UserContext currentUser) {
-		user.setCreatedBy(currentUser.getUserSSO());
+	public void addUser(EditableUser user, int[] vendorIds, User currentUser) {
+		user.setCreatedBy(currentUser.getSso());
 		//user.setGessouid(user.getSsoId()); // If it is pensker
 		securityDao.addUser(user);
 		user.setUserId(securityDao.getNewUserId());
 		if(user.getUserDept() !=null){
-			UserDept depart=securityDao.getUserDeptsById(user.getUserDept().getUserDeptId());
+			AdminConsoleUserDept depart=securityDao.getUserDeptsById(user.getUserDept().getUserDeptId());
 			if(depart !=null){
 				user.getUserDept().setUserDept(depart.getUserDept());
 				securityDao.addBuddies(user);
@@ -272,9 +273,9 @@ public class DefaultSecurityService implements SecurityService{
 	}
 
 	@Override
-	public List<Role> getSupplierRoles(String manufacturer, UserContext currentUser) {
+	public List<Role> getSupplierRoles(String manufacturer, User currentUser) {
 		
-		if(currentUser.isVisibleToPenske()){
+		if(currentUser.getUserType() == UserType.PENSKE){
 			return securityDao.getPenskeUserSupplierRoles(manufacturer);
 		} else {
 			return securityDao.getVendorUserSpecificRoles( currentUser.getRoleId());
@@ -282,9 +283,9 @@ public class DefaultSecurityService implements SecurityService{
 	}
 
 	@Override
-	public List<User> getSearchUserList(HeaderUser userSearchForm, UserContext currentUser) {
+	public List<EditableUser> getSearchUserList(UserSearchForm userSearchForm, User currentUser) {
 		
-		HeaderUser sqlSearchForm = new HeaderUser();
+		UserSearchForm sqlSearchForm = new UserSearchForm();
 		
 		StringBuilder emailBuff = new StringBuilder();
 		StringBuilder firstNameBuff = new StringBuilder();
@@ -310,13 +311,13 @@ public class DefaultSecurityService implements SecurityService{
 		
 		sqlSearchForm.setOrgId(currentUser.getOrgId());
 		sqlSearchForm.setOrgIds(userSearchForm.getOrgIds());
-		List<User> userList = securityDao.getUserSearchList(sqlSearchForm);
+		List<EditableUser> userList = securityDao.getUserSearchList(sqlSearchForm);
 		List<Role> roleList = securityDao.getPenskeRoles(currentUser.getRoleId());
 		
 		if(userSearchForm.getUserTypeId() == ApplicationConstants.PENSKE_USER){
-			Iterator<User> userIt = userList.iterator();
+			Iterator<EditableUser> userIt = userList.iterator();
 			while(userIt.hasNext()){
-				User user = userIt.next();
+				EditableUser user = userIt.next();
 				user.setDeactivatible(true);
 				if(user.getUserType().getUserType().equalsIgnoreCase("Penske")){
 					boolean keep = false;
@@ -333,9 +334,9 @@ public class DefaultSecurityService implements SecurityService{
 			}
 		} else if(userSearchForm.getUserTypeId() == ApplicationConstants.SUPPLIER_USER){
 			roleList = securityDao.getVendorRoles(true,currentUser.getRoleId(),currentUser.getOrgId());
-			Iterator<User> userIt = userList.iterator();
+			Iterator<EditableUser> userIt = userList.iterator();
 			while(userIt.hasNext()){
-				User user = userIt.next();
+				EditableUser user = userIt.next();
 				boolean keep = false;
 				for(Role role: roleList){
 					if(role.getRoleId() ==  user.getRole().getRoleId()){
@@ -362,17 +363,17 @@ public class DefaultSecurityService implements SecurityService{
 	}
 
 	@Override
-	public List<UserDept> getUserDepts() {
+	public List<AdminConsoleUserDept> getUserDepts() {
 		return securityDao.getAllUserDepts();
 	}
 
 	@Override
-	public List<UserType> getUserTypes() {
+	public List<AdminConsoleUserType> getUserTypes() {
 		return  securityDao.getAllUserTypes();
 	}
 	
 	@Override
-	public User getUser(int userId) {
+	public EditableUser getUser(int userId) {
 		return securityDao.getUser(userId);
 	}
 	
@@ -383,8 +384,8 @@ public class DefaultSecurityService implements SecurityService{
 	}
 	
 	@Override
-	public User doesUserExistVendor(String userName, int userId,boolean isVandorFlow,String isCreateOrEdit) {
-		User rtnUserBean = new User();
+	public EditableUser doesUserExistVendor(String userName, int userId,boolean isVandorFlow,String isCreateOrEdit) {
+		EditableUser rtnUserBean = new EditableUser();
 		rtnUserBean.setReturnFlg(-1);
 		
 		//Short-circuit if the name contains anything but letters and numbers
@@ -422,11 +423,11 @@ public class DefaultSecurityService implements SecurityService{
 	}
 	
 	@Override
-	public User doesUserExistInPenske(String userId) throws SMCException
+	public EditableUser doesUserExistInPenske(String userId) throws SMCException
 	{
 		CPTSso oSSO = null;
 		CPBGESSOUser oUser = null;
-		User rtnUserBean = new User();
+		EditableUser rtnUserBean = new EditableUser();
 		oSSO = new CPTSso();		
 		// Querying Penske's LDAP to check whether a userid is present.
 		oUser = oSSO.findUser(userId);
@@ -439,7 +440,7 @@ public class DefaultSecurityService implements SecurityService{
 		return rtnUserBean;
 	}
 
-	private User populateUserBean(CPBGESSOUser oUser,User rtnUserBean) {
+	private EditableUser populateUserBean(CPBGESSOUser oUser,EditableUser rtnUserBean) {
 		rtnUserBean.setEmail(oUser.getEmailAddress());
 		rtnUserBean.setFirstName(oUser.getGivenName());
 		rtnUserBean.setLastName(oUser.getSurName());
@@ -449,7 +450,7 @@ public class DefaultSecurityService implements SecurityService{
 	}
 
 	@Override
-	public void refreshUserWithSSOData(User editableUser) {
+	public void refreshUserWithSSOData(EditableUser editableUser) {
 		securityDao.refreshUserWithSSOData(editableUser);
 	}
 
@@ -466,7 +467,7 @@ public class DefaultSecurityService implements SecurityService{
 	}
 
 	@Override
-	public List<Org> getOrgList(Org orgSearch, UserContext currentUser) {
+	public List<Org> getOrgList(Org orgSearch, User currentUser) {
 		int orgId = currentUser.getOrgId();
 		String orgName = orgSearch == null ? null : orgSearch.getOrgName();
 		Integer parentOrgId = orgSearch == null ? null : orgSearch.getParentOrgId();
@@ -565,25 +566,23 @@ public class DefaultSecurityService implements SecurityService{
 	}
 
 	@Override
-	public List<User> getVendorUserList(UserContext currentUser) {
-		List<User> userList=securityDao.getVendorUserList(currentUser);
-	//	if(currentUser.getUserTypeId()==ApplicationConstants.SUPPLIER_USER){
-			List<Role> roleList = securityDao.getVendorRoles(true,currentUser.getRoleId(),currentUser.getOrgId());
-			Iterator<User> userIt = userList.iterator();
-			while(userIt.hasNext()){
-				User user = userIt.next();
-				boolean keep = false;
-				for(Role role: roleList){
-					if(role.getRoleId() ==  user.getRole().getRoleId()){
-						keep = true;
-						break;
-					}
-				}
-				if(!keep){
-					userIt.remove();
+	public List<EditableUser> getVendorUserList(User currentUser) {
+		List<EditableUser> userList = securityDao.getVendorUserList(currentUser);
+		List<Role> roleList = securityDao.getVendorRoles(true,currentUser.getRoleId(),currentUser.getOrgId());
+		Iterator<EditableUser> userIt = userList.iterator();
+		while(userIt.hasNext()){
+			EditableUser user = userIt.next();
+			boolean keep = false;
+			for(Role role: roleList){
+				if(role.getRoleId() ==  user.getRole().getRoleId()){
+					keep = true;
+					break;
 				}
 			}
-	//	}
+			if(!keep){
+				userIt.remove();
+			}
+		}
 		return userList;
 	}
 
@@ -593,7 +592,7 @@ public class DefaultSecurityService implements SecurityService{
 	}
 
 	@Override
-	public List<UserType> getVendorUserTypes() {
+	public List<AdminConsoleUserType> getVendorUserTypes() {
 		return securityDao.getVendorUserTypes();
 	}
 

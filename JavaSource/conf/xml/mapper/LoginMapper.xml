@@ -2,116 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.2//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.penske.apps.suppliermgmt.dao.LoginDAO">
 
- 	
-	<select id="getUserDetails"	parameterType="com.penske.apps.suppliermgmt.model.User" resultMap="userDetailsMap">
-		
-SELECT 
-        USER_ID,
-		SSO,
-		FIRST_NAME,
-		LAST_NAME, 
-		EMAIL,
-		PHONE,
-		STATUS, 
-		EXTENSION,
-		ROLE_ID,
-		DEPT_ID,
-		TYPE_ID,
-		ORG_ID
-		FROM SMC.SMC_USER_MASTER 
-		WHERE UPPER(SSO)=UPPER(#{sso})
-		AND STATUS =#{status}
-	</select>  
-	
-	<resultMap id="userDetailsMap" type="com.penske.apps.suppliermgmt.model.User">
-	    <result property="userId" column="USER_ID" javaType="int" jdbcType="VARCHAR"/>
-		<result property="sso" column="SSO" javaType="String" jdbcType="VARCHAR"/>
-		<result property="firstName" column="FIRST_NAME" javaType="String" jdbcType="VARCHAR"/>
-		<result property="lastName" column="LAST_NAME" javaType="String" jdbcType="VARCHAR"/>
-		<result property="email" column="EMAIL" javaType="String" jdbcType="VARCHAR"/>
-		<result property="phone" column="PHONE" javaType="String" jdbcType="VARCHAR"/>
-		<result property="status" column="STATUS" javaType="String" jdbcType="CHAR"/>
-		<result property="extension" column="EXTENSION" javaType="String" jdbcType="VARCHAR"/>
-		<result property="userType" column="TYPE_ID" javaType="int" jdbcType="VARCHAR"/>
-    	<result property="roleId" column="ROLE_ID" javaType="int" jdbcType="INTEGER"/>
-    	<result property="userDept" column="DEPT_ID" javaType="int" jdbcType="VARCHAR"/>
-    	<result property="orgId" column="ORG_ID" javaType="int" jdbcType="VARCHAR"/>
- 	</resultMap>
- 	
- 	  <select id="getAssociatedVendors" parameterType="int" resultMap="associatedVendorsMap">
-			SELECT  SVC.VENDOR_ID,
-		        SVC.VENDOR_NUMBER,
-		        SVC.CORP,
-		        SVC.VENDOR_NAME,
-		        SVC.NOTIFICATION_EXCEPTION,
-		        SVC.ANNUAL_AGREEMENT,
-		        SVC.MFR 
-		FROM    SMC.SMC_VENDOR_MASTER SVC 
-		JOIN    SMC.SMC_ORG_VENDOR_ASSOC SOVA 
-		 ON SVC.VENDOR_ID = SOVA.VENDOR_ID 
-		WHERE SOVA.ORG_ID=#{orgId}
-		AND SVC.STATUS='A'
-	</select> 
-		
-	<resultMap id="associatedVendorsMap" type="com.penske.apps.suppliermgmt.model.VendorLocation">
-	<result property="vendorId" column="VENDOR_ID" javaType="int" jdbcType="INTEGER"/>
-		<result property="vendorNumber" column="VENDOR_NUMBER" javaType="int" jdbcType="INTEGER"/>
-		<result property="corpCode" column="CORP" javaType="String" jdbcType="VARCHAR"/>
-		<result property="vendorName" column="VENDOR_NAME" javaType="String" jdbcType="VARCHAR"/>
-		<result property="notificationException" column="NOTIFICATION_EXCEPTION" javaType="String" jdbcType="CHAR"/>
-		<result property="annualAgreement" column="ANNUAL_AGREEMENT" javaType="String" jdbcType="CHAR"/>
-       	<result property="manufacturer" column="MFR" javaType="String" jdbcType="VARCHAR"/> 
-	</resultMap>
-	
-	 <select id="getTabs" parameterType="int" resultMap="tabsMap">
-      SELECT DISTINCT(ST.TAB_ID) AS TAB_ID,
-      	ST.TAB_KEY,
-        ST.TABNAME,
-		ST.DISPLAY_SEQUENCE,
-		ST.IMG_URL,
-		SST.TEMPLATE_KEY,
-		ST.DASHBOARD_TAB
-		FROM SMC.SMC_TAB_MASTER ST 
-		JOIN SMC.SMC_SECURITY_FUNCTION SF 
-		ON ST.TAB_ID = SF.TAB_ID 
-		JOIN SMC.SMC_ROLE_SEC_FUNCTIONS RSF
-		ON RSF.SEC_FUNC_ID = SF.SEC_FUNC_ID
-		JOIN SMC.SMC_SEARCH_TEMPLATES SST
-		ON ST.TEMPLATE_ID = SST.TEMPLATE_ID
-		WHERE RSF.ROLE_ID=#{roleId}
-		AND ST.STATUS='A'
-	</select>  
-		
-	<resultMap id="tabsMap" type="com.penske.apps.suppliermgmt.model.Tab">
-		<result property="tabKey" column="TAB_KEY" javaType="String" jdbcType="VARCHAR"/>
-		<result property="tabName" column="TABNAME" javaType="String" jdbcType="VARCHAR"/>
-		<result property="displaySequence" column="DISPLAY_SEQUENCE" javaType="int" jdbcType="INTEGER"/>
-		<result property="imageUrl" column="IMG_URL" javaType="String" jdbcType="VARCHAR"/>
-		<result property="defaultTemplateKey" column="TEMPLATE_KEY" javaType="String" jdbcType="VARCHAR"/>
-		<result property="dashboardTab" column="DASHBOARD_TAB" javaType="int" jdbcType="INTEGER"/>
-	</resultMap> 
-	
-  	<select id="getSecurityFunctions" resultType="String">
-		SELECT SF.NAME 
-		FROM SMC.SMC_SECURITY_FUNCTION SF 
-		JOIN SMC.SMC_TAB_MASTER ST
-		ON SF.TAB_ID = ST.TAB_ID 
-		JOIN SMC.SMC_ROLE_SEC_FUNCTIONS RSF
-		ON RSF.SEC_FUNC_ID = SF.SEC_FUNC_ID
-		WHERE RSF.ROLE_ID=#{roleId}
-		AND ST.TAB_KEY=#{tabKey}
-		AND SF.STATUS ='A' 
-	</select> 
-  
-    <select id="getAllSecurityFunctionsWithUser" resultType="String">
-       SELECT securityFunction.NAME 
-         FROM SMC.SMC_SECURITY_FUNCTION securityFunction 
-         JOIN SMC.SMC_ROLE_SEC_FUNCTIONS roleFunctions
-              ON roleFunctions.SEC_FUNC_ID = securityFunction.SEC_FUNC_ID
-        WHERE roleFunctions.ROLE_ID = #{roleId}
-          AND securityFunction.STATUS='A'
-    </select>
-    
     <select id="getUserVendorFilterSelections" resultType="com.penske.apps.suppliermgmt.domain.UserVendorFilterSelection">
          SELECT orgMaster.ORG_ID,
                 vendorFilter.VENDOR_ID,
@@ -127,12 +17,12 @@ SELECT
            AND orgMaster.PARENT_ORG_ID = 1 -- only loads orgs which have a parent equal to 1 (Penske) -- Dave Roth
   </select>
   
-  <select id="getUserLoginHistory" resultType="com.penske.apps.suppliermgmt.domain.UserLoginHistory">
+  <select id="getUserLoginHistory" resultType="UserLoginHistory">
        SELECT COUNT(*) AS loginCount,
               MIN(LOGIN_TIME) AS firstLoginDate,
               MAX(LOGIN_TIME) AS lastLoginDate
          FROM SMC.SMC_USER_LOGIN
-        WHERE SSO = #{userSSO}
+        WHERE SSO = #{user.sso}
     </select>
   
   <insert id="putUserLogin">
@@ -142,7 +32,7 @@ SELECT
                 
                 (VALUES 
                     (
-                        CAST(#{user.userSSO} AS VARCHAR(100)),
+                        CAST(#{user.sso} AS VARCHAR(100)),
                         CAST(#{serverLocation} AS VARCHAR(30)),
                         CAST(#{loginDate} AS TIMESTAMP)
                     )

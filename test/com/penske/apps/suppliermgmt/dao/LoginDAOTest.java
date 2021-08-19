@@ -12,13 +12,13 @@ import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.penske.apps.smccore.CoreTestUtil;
 import com.penske.apps.smccore.base.configuration.ProfileType;
+import com.penske.apps.smccore.base.domain.User;
+import com.penske.apps.smccore.base.domain.enums.UserType;
 import com.penske.apps.suppliermgmt.MyBatisDaoTest;
 import com.penske.apps.suppliermgmt.configuration.ApplicationConfiguration;
 import com.penske.apps.suppliermgmt.configuration.EmbeddedDataSourceConfiguration;
-import com.penske.apps.suppliermgmt.dao.LoginDAO;
-import com.penske.apps.suppliermgmt.model.User;
-import com.penske.apps.suppliermgmt.model.UserContext;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes={ApplicationConfiguration.class, EmbeddedDataSourceConfiguration.class})
@@ -33,54 +33,23 @@ import com.penske.apps.suppliermgmt.model.UserContext;
 public class LoginDAOTest extends MyBatisDaoTest{
 
 	@Autowired
-	private LoginDAO loginDao;
+	private LoginDAO dao;
 
 	@Before
 	public void setup()
 	{
-		loginDao = this.trackMethodCalls(loginDao, LoginDAO.class);
+		dao = this.trackMethodCalls(dao, LoginDAO.class);
 	}
-	
-    @Test
-    public void shouldGetUserDetails() {
-    	User userModel = new User();
-    	userModel.setSso("600166698");
-    	userModel.setStatus("A");
-    	loginDao.getUserDetails(userModel);
-    }
-
-    @Test 
-    public void shouldGetAssociatedVendors() {
-    	loginDao.getAssociatedVendors(1);
-    }
-
-    @Test
-    public void shouldGetTabs() {
-    	loginDao.getTabs(1);
-    }
-
-    @Test
-    public void shouldGetSecurityFunctions() {
-    	loginDao.getSecurityFunctions(1, "TAB_OF");
-    }
-
-    @Test
-    public void shouldGetAllSecurityFunctionsWithUser() {
-    	UserContext userContext = new UserContext();
-    	userContext.setRoleId(1);
-    	loginDao.getAllSecurityFunctionsWithUser(userContext);
-    }
 
     @Test
     public void shouldGetUserVendorFilterSelections() {
-    	loginDao.getUserVendorFilterSelections(1);
+    	dao.getUserVendorFilterSelections(1);
     }
 
     @Test
-    public void shouldGetUserLoginHistory() {
-    	UserContext userContext = new UserContext();
-    	userContext.setUserSSO("600166698");
-    	loginDao.getUserLoginHistory(userContext);
-    }
-
+	public void shouldGetUserLoginHistory()
+	{
+    	User user = CoreTestUtil.createUser(1234, "600555555", "Joe", "Test", "joe.test@penske.com", UserType.PENSKE);
+		dao.getUserLoginHistory(user);
+	}
 }

@@ -48,7 +48,7 @@ public class CommonModelAttributesHandlerInterceptor extends HandlerInterceptorA
 			addAttributeIfAbsent(request, modelAndView, "commonStaticUrl", staticUrl.toString());
 			
 			//User object, to print user info on pages
-			addAttributeIfAbsent(request, modelAndView, "currentUser", sessionBean.getUserContext());
+			addAttributeIfAbsent(request, modelAndView, "currentUser", sessionBean.getUser());
 			
 			//baseUrl contains the URL segment that should be prepended to static resources (ex: JavaScript, CSS, images) in JSP pages
 			addAttributeIfAbsent(request, modelAndView, "baseUrl", sessionBean.getBaseUrl());

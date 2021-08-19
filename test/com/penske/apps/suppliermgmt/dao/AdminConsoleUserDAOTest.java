@@ -71,15 +71,6 @@ public class AdminConsoleUserDAOTest extends MyBatisDaoTest{
     }
 
     @Test
-    public void shouldGetUserList() {
-    	try {
-			dao.getUserList(1, false);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-    }
-
-    @Test
     public void shouldAddBuddyBasedOnselectionType() {
     	Buddies buddy = new Buddies();
     	buddy.setSso("600166698");

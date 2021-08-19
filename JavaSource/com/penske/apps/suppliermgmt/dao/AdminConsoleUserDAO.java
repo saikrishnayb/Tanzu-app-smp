@@ -30,7 +30,6 @@ import com.penske.apps.suppliermgmt.domain.Organization;
 import com.penske.apps.suppliermgmt.domain.UserVendorFilterSelection;
 import com.penske.apps.suppliermgmt.model.Buddies;
 import com.penske.apps.suppliermgmt.model.LabelValue;
-import com.penske.apps.suppliermgmt.model.User;
 
 @DBSmc
 public interface AdminConsoleUserDAO {
@@ -40,9 +39,6 @@ public interface AdminConsoleUserDAO {
 
     @NonVendorQuery
     public void addBuddyList(List<Buddies> newBuddyList)throws  SQLException;
-
-    @NonVendorQuery
-    public List<User> getUserList(@Param("userType") int userType, @Param("active") boolean active)throws  SQLException;
 
     @NonVendorQuery
     public void addBuddyBasedOnselectionType(Buddies buddy);

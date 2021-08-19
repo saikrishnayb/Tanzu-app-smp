@@ -18,7 +18,6 @@ import com.penske.apps.smccore.base.configuration.ProfileType;
 import com.penske.apps.suppliermgmt.MyBatisDaoTest;
 import com.penske.apps.suppliermgmt.configuration.ApplicationConfiguration;
 import com.penske.apps.suppliermgmt.configuration.EmbeddedDataSourceConfiguration;
-import com.penske.apps.suppliermgmt.model.UserContext;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes={ApplicationConfiguration.class, EmbeddedDataSourceConfiguration.class})
@@ -39,18 +38,15 @@ public class RoleDaoTest extends MyBatisDaoTest {
 	private String tabKey = "SMCOF";
 	private int functionId = 2;
 	private Role role;
-	private UserContext user;
 	
 	@Before
 	public void setup()
 	{
-		user = new UserContext();
-		user.setUserSSO("600166698");
 		role = new Role();
 		role.setRoleName("TestRole");
 		role.setBaseRoleId(1);
 		role.setRoleDescription("test");
-		role.setCreatedBy(user.getUserSSO());
+		role.setCreatedBy("600166698");
     	roleDao = this.trackMethodCalls(roleDao, RoleDao.class);
 	}
 	

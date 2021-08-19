@@ -3,6 +3,6 @@
 <mapper namespace="com.penske.apps.suppliermgmt.dao.HelpDAO">
  	
 	<select id="getHelp" resultType="String">
-		SELECT HELP_TEXT FROM SMC.SMC_HELP WHERE USER_TYPE=#{userType}
+		SELECT HELP_TEXT FROM SMC.SMC_HELP WHERE USER_TYPE = #{userType}
 	</select>  
 </mapper>

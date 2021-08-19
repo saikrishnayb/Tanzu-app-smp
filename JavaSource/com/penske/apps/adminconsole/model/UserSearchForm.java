@@ -9,7 +9,7 @@ import java.util.List;
  *
  */
 
-public class HeaderUser {
+public class UserSearchForm {
 	
 	private int userId;				// user ID
 	private String ssoId;				// SSO (for Penske users only)

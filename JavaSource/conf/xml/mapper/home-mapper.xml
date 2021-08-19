@@ -31,7 +31,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-ma
 		JOIN 	SMC.SMC_TAB_MASTER ST
 		ON 		SAH.TAB_ID = ST.TAB_ID
 		
-		WHERE	ST.TAB_KEY = #{value}
+		WHERE	ST.TAB_KEY = #{tab}
 		
 		ORDER BY SAH.DISPLAY_SEQUENCE ASC
 	</select>
@@ -51,13 +51,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-ma
 		
 		WHERE	SA.HEADER_ID = #{headerId}
 		<!-- Penske User -->
-		<if test="userType == 1">
-			AND SA.VISIBILITY_PENSKE = 1
-		</if>
-		<!-- Vendor User -->
-		<if test="userType == 2">
-			AND SA.VISIBILITY_VENDOR = 1
-		</if>
+		<choose>
+			<when test="userType == penskeUserType">
+				AND SA.VISIBILITY_PENSKE = 1
+			</when>
+			<otherwise>
+				AND SA.VISIBILITY_VENDOR = 1
+			</otherwise>
+		</choose>
 		ORDER BY SA.DISPLAY_SEQUENCE ASC
 	</select>
  

@@ -12,12 +12,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.penske.apps.adminconsole.dao.SecurityDao;
 import com.penske.apps.adminconsole.exceptions.UserServiceException;
-import com.penske.apps.adminconsole.model.User;
-import com.penske.apps.adminconsole.util.ApplicationConstants;
+import com.penske.apps.adminconsole.model.EditableUser;
 import com.penske.apps.adminconsole.util.CommonUtils;
 import com.penske.apps.adminconsole.util.IUserConstants;
-import com.penske.apps.suppliermgmt.model.LookUp;
-import com.penske.apps.suppliermgmt.util.LookupManager;
+import com.penske.apps.smccore.base.beans.LookupManager;
+import com.penske.apps.smccore.base.domain.LookupContainer;
+import com.penske.apps.smccore.base.domain.enums.LookupKey;
 import com.penske.apps.ucsc.exception.UsrCreationSvcException;
 import com.penske.apps.ucsc.model.CreatedUser;
 import com.penske.apps.ucsc.model.LDAPAttributes;
@@ -41,7 +41,7 @@ public class UserCreationServiceImpl implements UserCreationService {
 
 	@Override
 	@Transactional
-	public User insertUserInfo(User userObj) throws UserServiceException {
+	public EditableUser insertUserInfo(EditableUser userObj) throws UserServiceException {
 		try{
 			userObj.setUserName(userObj.getSsoId());
 			if(userObj.getReturnFlg() != 1){ // userObj.getReturnFlg() != 1 -- User not available in the LDAP. This flag is set after validating userid with LDAP.
@@ -93,7 +93,7 @@ public class UserCreationServiceImpl implements UserCreationService {
 		return userObj;
 	}
 
-	private User insertUserToLDAP(User userObj) throws UserServiceException, UsrCreationSvcException {
+	private EditableUser insertUserToLDAP(EditableUser userObj) throws UserServiceException, UsrCreationSvcException {
 		if(!CommonUtils.validUserID(userObj.getUserName())){
 			logger.error("UserID " + userObj.getUserName() + " does not conform to standards.");
 			throw new UserServiceException(IUserConstants.NOT_STANDARD_SSO_ERROR_CODE);
@@ -123,7 +123,7 @@ public class UserCreationServiceImpl implements UserCreationService {
 	
 	@Override
 	@Transactional
-	public User updateUserInfo(User userObj,boolean isDeactive)  throws UserServiceException {
+	public EditableUser updateUserInfo(EditableUser userObj,boolean isDeactive)  throws UserServiceException {
 		try{
 			userObj.setUserName(userObj.getSsoId());
 			CPTSso oSSO = null;
@@ -184,7 +184,7 @@ public class UserCreationServiceImpl implements UserCreationService {
 		return userObj;
 	}
 
-	public List<LDAPAttributes> assignLDAPattribute(User userBean){
+	public List<LDAPAttributes> assignLDAPattribute(EditableUser userBean){
 		List<LDAPAttributes> attributeList=new ArrayList<LDAPAttributes>();
 		attributeList.add(createLDAPattribute(LDAPConstants.FIRST_NAME, userBean.getFirstName()));
 		attributeList.add(createLDAPattribute(LDAPConstants.INITIALS, userBean.getInitString()));
@@ -204,9 +204,12 @@ public class UserCreationServiceImpl implements UserCreationService {
 		return  attribute;
 	}
 	
-	private MailRequest populateMailRequestObj(User userObj){
+	private MailRequest populateMailRequestObj(EditableUser userObj){
+		
+		LookupContainer lookups = lookupManager.getLookupContainer();
+		
 		MailRequest mailRequest=new MailRequest();
-		mailRequest.setFromAddress(lookupManager.getLookUpListByName(ApplicationConstants.EBS_FROM_ADDRESS).get(0).getLookUpValue());
+		mailRequest.setFromAddress(lookups.getSingleLookupValue(LookupKey.EBS_FROM_ADDRESS));
 		List<String> toAddress=new ArrayList<String>();
 		toAddress.add(userObj.getEmail());
 		mailRequest.setToRecipientsList(toAddress);
@@ -219,8 +222,10 @@ public class UserCreationServiceImpl implements UserCreationService {
 		return mailRequest;
 	}
 	
-	private String buildMailBodyNewUser(User userObject)
+	private String buildMailBodyNewUser(EditableUser userObject)
 	{
+		LookupContainer lookups = lookupManager.getLookupContainer();
+		
 		StringBuffer mailBody = new StringBuffer();		
 		Calendar cal = Calendar.getInstance();
 		try{
@@ -238,62 +243,26 @@ public class UserCreationServiceImpl implements UserCreationService {
 			mailBody.append("<BR/>&nbsp;Date/Time: ").append(cal.getTime());
 			mailBody.append("<BR/>");
 			
-			String signInURL=null;
-			if(lookupManager !=null){
-				List<LookUp> list= lookupManager.getLookUpListByName(ApplicationConstants.PENSKE_SIGN_ON_URL);
-				if(list !=null){
-					LookUp lookUpObj=lookupManager.getLookUpListByName(ApplicationConstants.PENSKE_SIGN_ON_URL).get(0);
-					if(lookUpObj !=null){
-						signInURL=lookupManager.getLookUpListByName(ApplicationConstants.PENSKE_SIGN_ON_URL).get(0).getLookUpValue();
-						if(signInURL==null){
-							logger.info("signInURL is null");
-						}
-					}else{
-						logger.info("lookUpObj is null");
-					}
-				}else{
-					logger.info("list is null for "+ApplicationConstants.PENSKE_SIGN_ON_URL);
-				}
-			}else{
-				logger.info("lookupManager is null");
-			}
+			String signInURL = lookups.getSingleLookupValue(LookupKey.PENSKE_SIGN_ON_URL);
+			
 			mailBody.append("<BR/>To begin you will need to activate your SSO account by changing your password and creating a challenge question. <a href='")
 			.append(signInURL).append("'>Click here").append("</a> to change your password and create a challenge question.");
 			mailBody.append("<BR/>");
 			
-			String smcURL=null;
-			if(lookupManager !=null){
-				List<LookUp> list= lookupManager.getLookUpListByName(ApplicationConstants.SMC_APPLICATION_URL);
-				if(list !=null){
-					LookUp lookUpObj=lookupManager.getLookUpListByName(ApplicationConstants.SMC_APPLICATION_URL).get(0);
-					if(lookUpObj !=null){
-						smcURL=lookupManager.getLookUpListByName(ApplicationConstants.SMC_APPLICATION_URL).get(0).getLookUpValue();
-						if(smcURL==null){
-							logger.info("smcURL is null");
-						}
-					}else{
-						logger.info("lookUpObj is null");
-					}
-				}else{
-					logger.info("list is null for "+ApplicationConstants.SMC_APPLICATION_URL);
-				}
-			}else{
-				logger.info("lookupManager is null");
-			}
+			String smcURL = lookups.getSingleLookupValue(LookupKey.SMC_APP_LINK);;
+			
 			mailBody.append("<BR/>You may access your SSO ID by <a href='").append(smcURL).append("'> clicking here").append("</a>, only after completing the above activation process.");
 			mailBody.append("<BR/>");
 			mailBody.append("<BR/>If you have any questions, contact Penske's customer service Monday through Friday at ");
 			mailBody.append("<BR/>");
-			mailBody.append("<BR/>Phone: ").append(lookupManager.getLookUpListByName(ApplicationConstants.PENSKE_CUST_SERVICE_TOLL_FREE).get(0).getLookUpValue());
-			mailBody.append("<BR/>Email: ").append(lookupManager
-					.getLookUpListByName(
-							ApplicationConstants.PENSKE_CUST_SERVICE_EMAIL).get(0).getLookUpValue());
+			mailBody.append("<BR/>Phone: ").append(lookups.getSingleLookupValue(LookupKey.CUSTOMER_SERVICE_PHONE_NUM));
+			mailBody.append("<BR/>Email: ").append(lookups.getSingleLookupValue(LookupKey.CUSTOMER_SERVICE_EMAIL));
 			mailBody.append("<BR/>");
 			mailBody.append("<BR/>Thank you,");
 			mailBody.append("<BR/>");
 			mailBody.append("<BR/>Penske IT Service Desk");
-			mailBody.append("<BR/>").append(lookupManager.getLookUpListByName(ApplicationConstants.PENSKE_IT_SERVICE_TOLL_FREE).get(0).getLookUpValue());
-			mailBody.append("<BR/>").append(lookupManager.getLookUpListByName(ApplicationConstants.PENSKE_IT_SERVICE_EMAIL).get(0).getLookUpValue());
+			mailBody.append("<BR/>").append(lookups.getSingleLookupValue(LookupKey.IT_SERVICE_PHONE_NUM));
+			mailBody.append("<BR/>").append(lookups.getSingleLookupValue(LookupKey.IT_SERVICE_EMAIL));
 			mailBody.append("<BR/>");
 			mailBody.append("<BR/>This is an automated message; please do not reply to it.");
 			mailBody.append("<BR/>");
@@ -312,8 +281,10 @@ public class UserCreationServiceImpl implements UserCreationService {
 		return mailBody.toString();
 	}
 	
-	private String buildMailBodyExistingUser(User userObject)
+	private String buildMailBodyExistingUser(EditableUser userObject)
 	{
+		LookupContainer lookups = lookupManager.getLookupContainer();
+		
 		StringBuffer mailBody = new StringBuffer();
 		try{
 			mailBody.append("<HTML><BODY>");
@@ -324,40 +295,20 @@ public class UserCreationServiceImpl implements UserCreationService {
 			mailBody.append(" in the SUPPLIER MANAGEMENT CENTER (SMC) application.");
 			mailBody.append("<BR/>");
 			
-			String smcURL=null;
-			if(lookupManager !=null){
-				List<LookUp> list= lookupManager.getLookUpListByName(ApplicationConstants.SMC_APPLICATION_URL);
-				if(list !=null){
-					LookUp lookUpObj=lookupManager.getLookUpListByName(ApplicationConstants.SMC_APPLICATION_URL).get(0);
-					if(lookUpObj !=null){
-						smcURL=lookupManager.getLookUpListByName(ApplicationConstants.SMC_APPLICATION_URL).get(0).getLookUpValue();
-						if(smcURL==null){
-							logger.info("smcURL is null");
-						}
-					}else{
-						logger.info("lookUpObj is null");
-					}
-				}else{
-					logger.info("list is null for "+ApplicationConstants.SMC_APPLICATION_URL);
-				}
-			}else{
-				logger.info("lookupManager is null");
-			}
+			String smcURL = lookups.getSingleLookupValue(LookupKey.SMC_APP_LINK);
 			
 			mailBody.append("<BR/>You may use your Single Sign-On (SSO) ID to access the application by ").append("<a href='").append(smcURL).append("'>clicking here").append("</a>");
 			mailBody.append("<BR/>");
 			mailBody.append("<BR/>If you have any questions, contact Penske's customer service Monday through Friday at ");
 			mailBody.append("<BR/>");
-			mailBody.append("<BR/>Phone: ").append(lookupManager.getLookUpListByName(ApplicationConstants.PENSKE_CUST_SERVICE_TOLL_FREE).get(0).getLookUpValue());
-			mailBody.append("<BR/>Email: ").append(lookupManager
-					.getLookUpListByName(
-							ApplicationConstants.PENSKE_CUST_SERVICE_EMAIL).get(0).getLookUpValue());
+			mailBody.append("<BR/>Phone: ").append(lookups.getSingleLookupValue(LookupKey.CUSTOMER_SERVICE_PHONE_NUM));
+			mailBody.append("<BR/>Email: ").append(lookups.getSingleLookupValue(LookupKey.CUSTOMER_SERVICE_EMAIL));
 			mailBody.append("<BR/>");
 			mailBody.append("<BR/>Thank you,");
 			mailBody.append("<BR/>");
 			mailBody.append("<BR/>Penske IT Service Desk");
-			mailBody.append("<BR/>").append(lookupManager.getLookUpListByName(ApplicationConstants.PENSKE_IT_SERVICE_TOLL_FREE).get(0).getLookUpValue());
-			mailBody.append("<BR/>").append(lookupManager.getLookUpListByName(ApplicationConstants.PENSKE_IT_SERVICE_EMAIL).get(0).getLookUpValue());
+			mailBody.append("<BR/>").append(lookups.getSingleLookupValue(LookupKey.IT_SERVICE_PHONE_NUM));
+			mailBody.append("<BR/>").append(lookups.getSingleLookupValue(LookupKey.IT_SERVICE_EMAIL));
 			mailBody.append("<BR/>");
 			mailBody.append("<BR/>This is an automated message; please do not reply to it.");
 			mailBody.append("<BR/>");
@@ -380,7 +331,7 @@ public class UserCreationServiceImpl implements UserCreationService {
 	
 	@Override
 	public boolean isEligibleToDeactivate(int userId,boolean isVendorUser,String currentUser) throws UserServiceException{
-		User user=securityDao.getVendorUserInfo(userId);
+		EditableUser user=securityDao.getVendorUserInfo(userId);
 		if(user !=null){
 			user.setModifiedBy(currentUser);
 			if(isVendorUser){
@@ -390,10 +341,5 @@ public class UserCreationServiceImpl implements UserCreationService {
 			}
 		}
 		return true;
-	}
-	
-	@Override
-	public String getSupportNumber(){
-		return lookupManager.getLookUpListByName(ApplicationConstants.SUPPORT_NUM).get(0).getLookUpValue();
 	}
 }

@@ -5,8 +5,8 @@ package com.penske.apps.suppliermgmt.util;
 
 import org.springframework.context.ApplicationContext;
 
+import com.penske.apps.smccore.base.domain.User;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
-import com.penske.apps.suppliermgmt.model.UserContext;
 
 /**
  * Spring-managed singleton bean that allows non-spring-managed beans (like MyBatis plugins)
@@ -35,13 +35,13 @@ public class SpringBeanHelper
 	 * Gets the currently-logged-in user from the session bean. This should only be used when normal Spring dependency injection is impossible (ex: MyBatis plugins).
 	 * @return The object for the currently-logged-in user, or null if no such object exists in the session bean.
 	 */
-	public static UserContext getUserContext()
+	public static User getUser()
 	{
 		if(CTX == null)
 			return null;
 		SuppliermgmtSessionBean sessionBean = CTX.getBean(SuppliermgmtSessionBean.class);
 		if(sessionBean == null)
 			return null;
-		return sessionBean.getUserContext();
+		return sessionBean.getUser();
 	}
 }

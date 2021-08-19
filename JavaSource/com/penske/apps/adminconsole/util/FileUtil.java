@@ -16,18 +16,11 @@ package com.penske.apps.adminconsole.util;
  * ****************************************************************************************************************
  **/
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.web.multipart.MultipartFile;
-
-
-import com.penske.apps.suppliermgmt.model.LookUp;
-import com.penske.apps.suppliermgmt.util.LookupManager;
 
 public final class FileUtil
 {
@@ -63,21 +56,6 @@ public final class FileUtil
     		return UploadInvalidReason.FILE_TOO_BIG;
     	
     	return null;
-    }
-    
-    /**
-     * Gets the default set of valid file extensions for upload from SMC_LOOKUP.
-     * @return The set of extensions
-     */
-    public static Set<String> getValidExtensions()
-    {
-    	LookupManager lookupManager = new LookupManager();
-		List<LookUp> fileTypeLookups = lookupManager.getLookUpListByName(ApplicationConstants.FILETYPE);
-		Set<String> validExtensions = new HashSet<String>(fileTypeLookups.size());
-		for(LookUp lookup : fileTypeLookups)
-			validExtensions.add(StringUtils.lowerCase(StringUtils.trim(lookup.getLookUpValue())));
-		
-		return validExtensions;
     }
     
     /**

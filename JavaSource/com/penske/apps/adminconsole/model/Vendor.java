@@ -13,8 +13,8 @@ public class Vendor {
 	private String corpCode;					// the corp code
 	private String notificationException;			// notification exception [1 = yes, 0 = no]
 	private String annualAgreement;				// annual agreement [1 = yes, 0 = no]
-	private User planningAnalyst;				// the user designated as the planning analyst
-	private User supplySpecialist;				// the user designated as the supply specialist
+	private EditableUser planningAnalyst;				// the user designated as the planning analyst
+	private EditableUser supplySpecialist;				// the user designated as the supply specialist
 	private String searchMfrCode;
 	private List<String> mfrCodes;			// the manufacturer code
 	private String companyName;					// the company name (related to the corp code)
@@ -72,11 +72,11 @@ public class Vendor {
 		this.annualAgreement = annualAgreement;
 	}
 
-	public User getPlanningAnalyst() {
+	public EditableUser getPlanningAnalyst() {
 		return planningAnalyst;
 	}
 
-	public User getSupplySpecialist() {
+	public EditableUser getSupplySpecialist() {
 		return supplySpecialist;
 	}
 
@@ -185,11 +185,11 @@ public class Vendor {
 		this.notificationException = notificationException;
 	}
 
-	public void setPlanningAnalyst(User planningAnalyst) {
+	public void setPlanningAnalyst(EditableUser planningAnalyst) {
 		this.planningAnalyst = planningAnalyst;
 	}
 
-	public void setSupplySpecialist(User supplySpecialist) {
+	public void setSupplySpecialist(EditableUser supplySpecialist) {
 		this.supplySpecialist = supplySpecialist;
 	}
 

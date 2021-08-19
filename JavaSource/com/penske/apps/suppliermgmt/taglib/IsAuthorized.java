@@ -9,12 +9,11 @@
  * ************************************************************************************/
 package com.penske.apps.suppliermgmt.taglib;
 
-import java.util.Map;
-
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
-import com.penske.apps.suppliermgmt.model.UserContext;
+import com.penske.apps.smccore.base.domain.User;
+import com.penske.apps.smccore.base.domain.enums.SecurityFunction;
 import com.penske.apps.suppliermgmt.util.SpringBeanHelper;
 
 
@@ -62,33 +61,18 @@ public class IsAuthorized extends BodyTagSupport {
 	 */
 	public int  doStartTag() throws JspException
 	{
+		SecurityFunction securityFunction = SecurityFunction.findByName(secFunction);
+		User user =   SpringBeanHelper.getUser();
 		
+		if(user == null)
+			return SKIP_BODY;
+		if(secFunction == null)
+			return SKIP_BODY;
 		
-		UserContext userRuleModel =   SpringBeanHelper.getUserContext();
-		if(userRuleModel!=null){
-			Map<String, Map<String, String>> userRuleMap =userRuleModel.getTabSecFunctionMap();	
-			if(userRuleMap != null){
-				
-				Map<String,String> secFunctions=userRuleMap.get(tabName);
-				if(secFunction.equalsIgnoreCase("USERS_MANAGEMENT")){
-					if (userRuleMap.containsKey(tabName)&&(secFunctions!=null && (secFunctions.containsKey("MANAGE_VENDOR_USERS")
-							|| secFunctions.containsKey("MANAGE_USERS")))){
-							{
-								
-								return EVAL_BODY_INCLUDE;
-							}
-						}
-				}
-				
-				if (userRuleMap.containsKey(tabName)&&secFunctions.containsKey(secFunction)&&secFunctions!=null){
-					{
-						
-						return EVAL_BODY_INCLUDE;
-					}
-				}
-			}
-		}
-		return SKIP_BODY;
+		if(user.hasSecurityFunction(securityFunction))
+			return EVAL_BODY_INCLUDE;
+		else
+			return SKIP_BODY;
 	}
 
 	/**

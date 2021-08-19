@@ -11,12 +11,13 @@ import org.springframework.stereotype.Service;
 import com.penske.apps.adminconsole.dao.SecurityDao;
 import com.penske.apps.adminconsole.dao.VendorDao;
 import com.penske.apps.adminconsole.model.Alert;
-import com.penske.apps.adminconsole.model.User;
+import com.penske.apps.adminconsole.model.EditableUser;
 import com.penske.apps.adminconsole.model.Vendor;
 import com.penske.apps.adminconsole.model.VendorContact;
-import com.penske.apps.adminconsole.util.ApplicationConstants;
-import com.penske.apps.suppliermgmt.model.UserContext;
-import com.penske.apps.suppliermgmt.util.LookupManager;
+import com.penske.apps.smccore.base.beans.LookupManager;
+import com.penske.apps.smccore.base.domain.LookupContainer;
+import com.penske.apps.smccore.base.domain.User;
+import com.penske.apps.smccore.base.domain.enums.LookupKey;
 
 @Service
 public class DefaultVendorService implements VendorService {
@@ -71,12 +72,12 @@ public class DefaultVendorService implements VendorService {
 	}
 	
 	@Override
-	public List<User> getAllPlanningAnalysts() {
+	public List<EditableUser> getAllPlanningAnalysts() {
 		return vendorDao.getAllPlanningAnalysts();
 	}
 
 	@Override
-	public List<User> getAllSupplySpecialists() {
+	public List<EditableUser> getAllSupplySpecialists() {
 		return vendorDao.getAllSupplySpecialists();
 	}
 	
@@ -91,7 +92,7 @@ public class DefaultVendorService implements VendorService {
 	}
 
 	@Override
-	public Vendor modifyVendorSingleUpdate(Vendor vendor, UserContext user) {
+	public Vendor modifyVendorSingleUpdate(Vendor vendor, User user) {
 		if(validateVendor(vendor)) return null;
 		
 		updateBaseVendorRecord(vendor, user);
@@ -102,7 +103,7 @@ public class DefaultVendorService implements VendorService {
 	}
 	
 	@Override
-	public void modifyVendorsMassUpdate(Vendor vendor, UserContext user, int... vendorIds) {
+	public void modifyVendorsMassUpdate(Vendor vendor, User user, int... vendorIds) {
 		// Planning Analyst user ID cannot be zero or negative.
 		if (vendor.getPlanningAnalyst().getUserId() <= 0) return;		
 		
@@ -116,7 +117,7 @@ public class DefaultVendorService implements VendorService {
 		}
 	}	
 	
-	private void updateBaseVendorRecord(Vendor vendor, UserContext user) {
+	private void updateBaseVendorRecord(Vendor vendor, User user) {
 	
 		int vendorId = vendor.getVendorId();
 		Vendor vendorBeforeUpdate = getEditVendorInformation(vendorId);
@@ -136,7 +137,7 @@ public class DefaultVendorService implements VendorService {
 		}
 	}
 	
-	private void updateVendorContactInformation(Vendor vendor, UserContext user) {
+	private void updateVendorContactInformation(Vendor vendor, User user) {
 		String currentUser = user.getSso();
 		VendorContact primary = vendor.getPrimaryContact();
 		VendorContact secondary = vendor.getSecondaryContact();
@@ -183,19 +184,22 @@ public class DefaultVendorService implements VendorService {
 	}
 	
 	@Override
-	public void sendEmailToAnalyst(Vendor vendor, UserContext user) {
+	public void sendEmailToAnalyst(Vendor vendor, User user) {
+		
+		LookupContainer lookups = lookupManager.getLookupContainer();
+		
 		if (vendor == null || vendor.getPlanningAnalyst() == null || user == null) {
 			return;
 		}
 
-		List<User> allAnalysts = getAllPlanningAnalysts();
-		Optional<User> opt = allAnalysts.stream().filter(a -> a.getUserId() == vendor.getPlanningAnalyst().getUserId())
+		List<EditableUser> allAnalysts = getAllPlanningAnalysts();
+		Optional<EditableUser> opt = allAnalysts.stream().filter(a -> a.getUserId() == vendor.getPlanningAnalyst().getUserId())
 				.findFirst();
 		if (!opt.isPresent()) {
 			return;
 		}
 
-		User analyst = opt.get();
+		EditableUser analyst = opt.get();
 		if (StringUtils.isBlank(analyst.getEmail())) {
 			return;
 		}
@@ -204,9 +208,8 @@ public class DefaultVendorService implements VendorService {
 				+ "] that a new Vendor [" + vendor.getVendorName() + "] is assigned.");
 		try {
 			MailRequest mailRequest = new MailRequest();
-			mailRequest.setUserId(user.getUserSSO());
-			mailRequest.setFromAddress(
-					lookupManager.getLookUpListByName(ApplicationConstants.EBS_FROM_ADDRESS).get(0).getLookUpValue());
+			mailRequest.setUserId(user.getSso());
+			mailRequest.setFromAddress(lookups.getSingleLookupValue(LookupKey.EBS_FROM_ADDRESS));
 			mailRequest.setToList(analyst.getEmail().trim());
 			mailRequest.setSubject("New Vendor is Assigned");
 
@@ -231,7 +234,7 @@ public class DefaultVendorService implements VendorService {
 
 			securityDao.addEmailSent(mailRequest);// Email Content to SMC_EMAIL - uses EBS
 		} catch (Exception e) {
-			logger.error("E-mail sending failed for user [" + user.getUserName() + "]", e);
+			logger.error("E-mail sending failed for user [" + user.getSso() + "]", e);
 		}
 	}
 	

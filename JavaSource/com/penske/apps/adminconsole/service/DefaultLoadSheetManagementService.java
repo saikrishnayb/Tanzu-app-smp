@@ -27,8 +27,8 @@ import com.penske.apps.adminconsole.model.LoadsheetSequenceMaster;
 import com.penske.apps.adminconsole.model.RuleDefinitions;
 import com.penske.apps.adminconsole.model.RuleMaster;
 import com.penske.apps.adminconsole.model.TemplateComponentRuleAssociation;
+import com.penske.apps.smccore.base.domain.User;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
-import com.penske.apps.suppliermgmt.model.UserContext;
 
 @Service
 public class DefaultLoadSheetManagementService implements LoadSheetManagementService {
@@ -101,11 +101,11 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 	}
 	/* this method will insert/update the component-rule visibility mapping for selected rule.*/
 	private void createOrUpdateTemplateComponentRules(RuleMaster ruleMaster,char operationType){
-		UserContext user = sessionBean.getUserContext();
+		User user = sessionBean.getUser();
 		TemplateComponentRuleAssociation templateComponentRuleAssociation = new TemplateComponentRuleAssociation();
 		templateComponentRuleAssociation.setTemplateComponentId(ruleMaster.getTemplateComponentId());
 		templateComponentRuleAssociation.setRuleId(ruleMaster.getRuleId());
-		templateComponentRuleAssociation.setCreatedBy(user.getUserSSO());
+		templateComponentRuleAssociation.setCreatedBy(user.getSso());
         if(ruleMaster.isForRules() && !ruleMaster.isRequired() && !ruleMaster.isEditable() && !ruleMaster.isViewable()){
         	templateComponentRuleAssociation.setLsOverride('N');
         }
@@ -145,7 +145,7 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 	@Transactional
 	public int createNewRule(RuleMaster rule){
 		try{
-			UserContext user = sessionBean.getUserContext();
+			User user = sessionBean.getUser();
 			rule.setDescription(rule.getDescription().trim());
 			loadsheetManagementDao.insertRuleMasterDetails(rule, user);
 			populateRuleMaster(rule);
@@ -170,7 +170,7 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 	@Transactional
 	public void updateRuleDetails(RuleMaster rule){
 		try{
-			UserContext user = sessionBean.getUserContext();
+			User user = sessionBean.getUser();
 			List<RuleDefinitions> newRuleDefList=new ArrayList<RuleDefinitions> ();
 			rule.setDescription(rule.getDescription().trim());
 			loadsheetManagementDao.updateRuleMasterDetails(rule, user);
@@ -457,7 +457,7 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 	@Transactional
 	public void createLoadSheetSequencing(LoadsheetSequenceMaster seqMaster) {
 			
-		UserContext user = sessionBean.getUserContext();
+		User user = sessionBean.getUser();
 		List<LoadsheetCompGrpSeq> cmpGrpSeqList=null;
 		LoadsheetCompGrpSeq cmpGrpSeq;
 		//if category type is empty then set default type(VOD-351).
@@ -509,7 +509,7 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 	@Transactional
 	public void updateLoadsheetSequencingDetails(LoadsheetSequenceMaster seqMaster) {
 		
-		UserContext user = sessionBean.getUserContext();
+		User user = sessionBean.getUser();
 		List<LoadsheetCompGrpSeq> newCompGrpSeqList=null;
 		List<Integer> existingCompIds=null; //list for deleting the deleted components using NOT IN
 		List<Integer> existingGroupIds=new ArrayList<Integer>();
@@ -673,9 +673,9 @@ public class DefaultLoadSheetManagementService implements LoadSheetManagementSer
 	@Override
 	public void updateComponentRulesPriority(List<Integer> ruleList,int templateComponentId){
 		int priority = 1;
-		UserContext user = sessionBean.getUserContext();
+		User user = sessionBean.getUser();
 		for(Integer ruleId:ruleList){
-	        loadsheetManagementDao.updateComponentRulePriority(templateComponentId,ruleId,priority,user.getUserSSO());
+	        loadsheetManagementDao.updateComponentRulePriority(templateComponentId,ruleId,priority,user.getSso());
 		    priority++;
 		}
 	}

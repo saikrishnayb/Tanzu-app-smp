@@ -7,12 +7,9 @@ import com.penske.apps.suppliermgmt.exception.SMCException;
 import com.penske.apps.suppliermgmt.model.Buddies;
 import com.penske.apps.suppliermgmt.model.LabelValue;
 import com.penske.apps.suppliermgmt.model.OrgFilter;
-import com.penske.apps.suppliermgmt.model.User;
 import com.penske.apps.suppliermgmt.model.VendorFilter;
 
-public interface UserService {
-
-	public List<User> getUserDetails(boolean active) throws SMCException;
+public interface SuppliermgmtUserService {
 
 	public void  addBuddyList(List<Buddies> newBuddyList, String sso) throws SMCException;
 	

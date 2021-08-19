@@ -4,19 +4,19 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-import com.penske.apps.adminconsole.model.HeaderUser;
+import com.penske.apps.adminconsole.model.EditableUser;
 import com.penske.apps.adminconsole.model.Org;
 import com.penske.apps.adminconsole.model.Permission;
 import com.penske.apps.adminconsole.model.Role;
 import com.penske.apps.adminconsole.model.SignatureInitial;
-import com.penske.apps.adminconsole.model.User;
-import com.penske.apps.adminconsole.model.UserDept;
-import com.penske.apps.adminconsole.model.UserType;
+import com.penske.apps.adminconsole.model.AdminConsoleUserDept;
+import com.penske.apps.adminconsole.model.UserSearchForm;
+import com.penske.apps.adminconsole.model.AdminConsoleUserType;
 import com.penske.apps.adminconsole.model.VendorTree;
 import com.penske.apps.adminconsole.service.MailRequest;
 import com.penske.apps.smccore.base.annotation.NonVendorQuery;
+import com.penske.apps.smccore.base.domain.User;
 import com.penske.apps.suppliermgmt.annotation.DBSmc;
-import com.penske.apps.suppliermgmt.model.UserContext;
 
 /**
  * dao methods for security-mapper.
@@ -28,14 +28,14 @@ import com.penske.apps.suppliermgmt.model.UserContext;
 public interface SecurityDao {
 
     @NonVendorQuery
-    public User getPenskeUserInfo(int userId);
+    public EditableUser getPenskeUserInfo(int userId);
 
     @NonVendorQuery
-    public User getVendorUserInfo(@Param("userId") int userId);
+    public EditableUser getVendorUserInfo(@Param("userId") int userId);
 
     //user form content
     @NonVendorQuery
-    public User getUser(int userId);
+    public EditableUser getUser(int userId);
 
     //vendor
     @NonVendorQuery
@@ -52,10 +52,10 @@ public interface SecurityDao {
 
     //penske
     @NonVendorQuery
-    public List<UserDept> getAllUserDepts();
+    public List<AdminConsoleUserDept> getAllUserDepts();
 
     @NonVendorQuery
-    public List<UserType> getAllUserTypes();
+    public List<AdminConsoleUserType> getAllUserTypes();
 
     @NonVendorQuery
     public List<Role> getPenskeRoles(int roleId);
@@ -74,7 +74,7 @@ public interface SecurityDao {
     public List<Role> getAllUserRoles();
 
     @NonVendorQuery
-    public List<User> getUserSearchList(HeaderUser userSearchForm);
+    public List<EditableUser> getUserSearchList(UserSearchForm userSearchForm);
 
     //create user
     @NonVendorQuery
@@ -85,22 +85,22 @@ public interface SecurityDao {
 
     //table modifications
     @NonVendorQuery
-    public void modifyUserInfo(User user);
+    public void modifyUserInfo(EditableUser user);
 
     @NonVendorQuery
-    public void modifyPenskeUser(User user);
+    public void modifyPenskeUser(EditableUser user);
 
     @NonVendorQuery
-    public boolean addUser(User user);
+    public boolean addUser(EditableUser user);
 
     @NonVendorQuery
     public void modifyUserStatus(@Param("userId")int userId,  @Param("modifiedBy")String modifiedBy);
 
     @NonVendorQuery
-    public void addUserInitials(User user);
+    public void addUserInitials(EditableUser user);
 
     @NonVendorQuery
-    public void refreshUserWithSSOData(User editableUser);
+    public void refreshUserWithSSOData(EditableUser editableUser);
 
     @NonVendorQuery
     public void deleteInitialsImage(@Param("userId")int userId,@Param("ssoId")String ssoId);
@@ -143,13 +143,13 @@ public interface SecurityDao {
     public SignatureInitial getSignatureInitialByUserId(int userId);
 
     @NonVendorQuery
-    public void addBuddies(User user);
+    public void addBuddies(EditableUser user);
 
     @NonVendorQuery
-    public UserDept getUserDeptsById(@Param("deptId") int deptId);
+    public AdminConsoleUserDept getUserDeptsById(@Param("deptId") int deptId);
 
     @NonVendorQuery
-    public void updateBuddies(User user);
+    public void updateBuddies(EditableUser user);
 
     @NonVendorQuery
     public Integer getUsersByOrgId(@Param("orgId")int orgId);
@@ -165,13 +165,13 @@ public interface SecurityDao {
 
     //Vendor User Change - 03/02/16
     @NonVendorQuery
-    public List<User> getVendorUserList(UserContext currentUser);
+    public List<EditableUser> getVendorUserList(@Param("user") User currentUser);
 
     @NonVendorQuery
     public List<Role> getVendorRoles(@Param("isVendor") boolean isVendor,@Param("roleId") int roleId,@Param("orgId") int orgId);
 
     @NonVendorQuery
-    public List<UserType> getVendorUserTypes();
+    public List<AdminConsoleUserType> getVendorUserTypes();
 
     @NonVendorQuery
     public List<Org> getVendorOrg(@Param("isVendor") boolean isVendor,@Param("orgId") int orgId);

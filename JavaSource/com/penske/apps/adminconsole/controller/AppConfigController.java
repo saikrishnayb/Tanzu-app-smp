@@ -2,7 +2,6 @@ package com.penske.apps.adminconsole.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,17 +35,16 @@ import com.penske.apps.adminconsole.service.SearchTemplateService;
 import com.penske.apps.adminconsole.service.TermsAndConditionsService;
 import com.penske.apps.adminconsole.service.UploadService;
 import com.penske.apps.adminconsole.util.ApplicationConstants;
-import com.penske.apps.adminconsole.util.CommonUtils;
+import com.penske.apps.smccore.base.annotation.SmcSecurity;
+import com.penske.apps.smccore.base.domain.User;
+import com.penske.apps.smccore.base.domain.enums.SecurityFunction;
 import com.penske.apps.smccore.base.util.Util;
-import com.penske.apps.suppliermgmt.annotation.SmcSecurity;
-import com.penske.apps.suppliermgmt.annotation.SmcSecurity.SecurityFunction;
 import com.penske.apps.suppliermgmt.annotation.TransporterUploadService;
 import com.penske.apps.suppliermgmt.annotation.VendorUploadService;
 import com.penske.apps.suppliermgmt.annotation.Version1Controller;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.model.AppConfigSessionData;
 import com.penske.apps.suppliermgmt.model.AppConfigSessionData.LoadSheetCategoryDetails;
-import com.penske.apps.suppliermgmt.model.UserContext;
 
 /**
  * Controller handling all mapping and functionality for the Admin Console App Config sub tab
@@ -82,15 +80,14 @@ public class AppConfigController {
     @RequestMapping(value = {"/navigate-app-config"})
     public ModelAndView navigateAppConfig() {
 
-        Set<SecurityFunction> securityFunctions = sessionBean.getUserContext().getSecurityFunctions();
+    	User user = sessionBean.getUser();
 
         List<LeftNav> leftNavs = SubTab.APP_CONFIG.getLeftNavs();
-
         for (LeftNav leftNav : leftNavs) {
 
             SecurityFunction securityFunction = leftNav.getSecurityFunction();
 
-            boolean noAccess = securityFunction != null && !securityFunctions.contains(securityFunction);
+            boolean noAccess = securityFunction != null && !user.hasSecurityFunction(securityFunction);
             if (noAccess) continue;
 
             return new ModelAndView("redirect:/app/" + leftNav.getUrlEntry());
@@ -109,8 +106,8 @@ public class AppConfigController {
     @RequestMapping("/excelUploads")
     public ModelAndView getExcelUploadPage(){
         ModelAndView mav = new ModelAndView("/admin-console/app-config/excelUploads");
-        UserContext userContext = sessionBean.getUserContext();
-        mav.addObject("access",CommonUtils.hasAccess(ApplicationConstants.UPLOAD_EXCEL, userContext));
+        User user = sessionBean.getUser();
+        mav.addObject("access",user.hasSecurityFunction(SecurityFunction.UPLOAD_EXCEL));
         return mav;
     }
 
@@ -127,10 +124,10 @@ public class AppConfigController {
     @RequestMapping(method = RequestMethod.POST, value = "/upload")
     public ModelAndView uploadTransportExcelFile(@RequestParam(value = "file") MultipartFile file, @RequestParam(value = "uploadSelect") String uploadSelect) throws Exception
     {
-        UserContext userContext = sessionBean.getUserContext();
+        User user = sessionBean.getUser();
 
         ModelAndView mav = new ModelAndView("/admin-console/app-config/excelUploads");
-        mav.addObject("access",CommonUtils.hasAccess(ApplicationConstants.UPLOAD_EXCEL, userContext));
+        mav.addObject("access",user.hasSecurityFunction(SecurityFunction.UPLOAD_EXCEL));
 
         //The file name is required for the save function.
         String fileName = file.getOriginalFilename();
@@ -158,7 +155,7 @@ public class AppConfigController {
             ExcelUploadHandler<VendorReport> excelUploadHandler = new VendorUploadHandler();
 
             //this is for use in the vendor upload.
-            excelUploadHandler.setUserId(userContext.getUserSSO());
+            excelUploadHandler.setUserId(user.getSso());
 
             //Message to be displayed back to the screen.
             message = excelUploadHandler.saveDocument(fileName, file, objVendorService, false);
@@ -178,13 +175,13 @@ public class AppConfigController {
     public ModelAndView getDynamicRulesPage(){
         ModelAndView mav = new ModelAndView("/admin-console/app-config/dynamic-rules");
 
-        UserContext userContext = sessionBean.getUserContext();
+        User user = sessionBean.getUser();
 
         mav.addObject("activeDynamicRules", dynamicRuleService.getAllDynamicRulesByStatus("A"));
         mav.addObject("inactiveDynamicRules", dynamicRuleService.getAllDynamicRulesByStatus("I"));
         mav.addObject("corpCodes", dynamicRuleService.getAllCorpCodes());
         mav.addObject("makes", dynamicRuleService.getAllVehicleMakes());
-        mav.addObject("access",CommonUtils.hasAccess(ApplicationConstants.DYNAMICRULE, userContext));
+        mav.addObject("access", user.hasSecurityFunction(SecurityFunction.DYNAMIC_RULES_MANAGEMENT));
         return mav;
     }
 

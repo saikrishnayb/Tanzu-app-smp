@@ -18,11 +18,12 @@ package com.penske.apps.suppliermgmt.dao;
 import org.apache.ibatis.annotations.Param;
 
 import com.penske.apps.smccore.base.annotation.NonVendorQuery;
+import com.penske.apps.smccore.base.domain.enums.UserType;
 import com.penske.apps.suppliermgmt.annotation.DBSmc;
 
 @DBSmc
 public interface HelpDAO {
 
     @NonVendorQuery
-    public String getHelp(@Param("userType") String userType);
+    public String getHelp(@Param("userType") UserType userType);
 }

@@ -15,7 +15,6 @@ import com.penske.apps.smccore.base.configuration.ProfileType;
 import com.penske.apps.suppliermgmt.MyBatisDaoTest;
 import com.penske.apps.suppliermgmt.configuration.ApplicationConfiguration;
 import com.penske.apps.suppliermgmt.configuration.EmbeddedDataSourceConfiguration;
-import com.penske.apps.suppliermgmt.dao.LookUpDAO;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes={ApplicationConfiguration.class, EmbeddedDataSourceConfiguration.class})
@@ -42,5 +41,4 @@ public class LookUpDAOTest extends MyBatisDaoTest{
 	public void shouldGetAllLookupList() {
 		lookUpDAO.getAllLookupList();
 	}
-
 }

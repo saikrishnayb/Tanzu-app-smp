@@ -49,11 +49,11 @@ import com.penske.apps.buildmatrix.model.ProximityViewModel;
 import com.penske.apps.buildmatrix.service.BuildMatrixCorpService;
 import com.penske.apps.buildmatrix.service.BuildMatrixCroService;
 import com.penske.apps.buildmatrix.service.BuildMatrixSmcService;
+import com.penske.apps.smccore.base.annotation.SmcSecurity;
+import com.penske.apps.smccore.base.domain.User;
+import com.penske.apps.smccore.base.domain.enums.SecurityFunction;
 import com.penske.apps.suppliermgmt.annotation.DefaultController;
-import com.penske.apps.suppliermgmt.annotation.SmcSecurity;
-import com.penske.apps.suppliermgmt.annotation.SmcSecurity.SecurityFunction;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
-import com.penske.apps.suppliermgmt.model.UserContext;
 
 
 /**
@@ -85,7 +85,7 @@ public class BuildMatrixController {
 	@RequestMapping(value = "/navigate-oem-build-matrix", method = { RequestMethod.GET })
 	public ModelAndView navigateOEMBuildMatrix() {
 
-		Set<SecurityFunction> securityFunctions = sessionBean.getUserContext().getSecurityFunctions();
+		User user = sessionBean.getUser();
 
 		List<LeftNav> leftNavs = SubTab.OEM_BUILD_MATRIX.getLeftNavs();
 
@@ -93,7 +93,7 @@ public class BuildMatrixController {
 
 			SecurityFunction securityFunction = leftNav.getSecurityFunction();
 
-			boolean noAccess = securityFunction != null && !securityFunctions.contains(securityFunction);
+			boolean noAccess = securityFunction != null && !user.hasSecurityFunction(securityFunction);
 			if (noAccess)
 				continue;
 
@@ -285,11 +285,11 @@ public class BuildMatrixController {
 		List<CroOrderKey> selectedOrderKeys = orderSelectionForm.getCroOrderKeys();
 		List<ApprovedOrder> selectedOrders = buildMatrixCroService.getApprovedOrdersByIds(selectedOrderKeys);
 		List<ApprovedOrder> ordersToAdd = buildMatrixSmcService.getUnfulfilledOrders(selectedOrders);
-		UserContext userContext = sessionBean.getUserContext();
+		User user = sessionBean.getUser();
 		
 		int buildId = 0;
 		if(formBuildId == null) {
-			BuildSummary newBuild = buildMatrixSmcService.startNewBuild(ordersToAdd, orderSelectionForm.getUnitsToConsiderByCroOrderKey(), orderSelectionForm.isGuidance(), userContext);
+			BuildSummary newBuild = buildMatrixSmcService.startNewBuild(ordersToAdd, orderSelectionForm.getUnitsToConsiderByCroOrderKey(), orderSelectionForm.isGuidance(), user);
 			buildId = newBuild.getBuildId();
 		}
 		else {
@@ -569,7 +569,6 @@ public class BuildMatrixController {
  	public ModelAndView getInvalidSlots(@RequestParam("plantId") String plantId, @RequestParam("slotTypeId") String slotTypeId) 
 	{
  		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/invalid-slot-maintenance");
- 		String mfr = "";
 		if (StringUtils.equals(plantId, ApplicationConstants.String_ZERO)) 
 		{
 			Set<Integer> invalidSlotIds = buildMatrixSmcService.getInvalidSlotIds();

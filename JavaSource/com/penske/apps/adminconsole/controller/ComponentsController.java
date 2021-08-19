@@ -22,13 +22,11 @@ import com.penske.apps.adminconsole.model.Template;
 import com.penske.apps.adminconsole.service.CategoryManagementService;
 import com.penske.apps.adminconsole.service.ComponentService;
 import com.penske.apps.adminconsole.service.ComponentVendorTemplateService;
-import com.penske.apps.adminconsole.util.ApplicationConstants;
-import com.penske.apps.adminconsole.util.CommonUtils;
-import com.penske.apps.suppliermgmt.annotation.SmcSecurity;
-import com.penske.apps.suppliermgmt.annotation.SmcSecurity.SecurityFunction;
+import com.penske.apps.smccore.base.annotation.SmcSecurity;
+import com.penske.apps.smccore.base.domain.User;
+import com.penske.apps.smccore.base.domain.enums.SecurityFunction;
 import com.penske.apps.suppliermgmt.annotation.Version1Controller;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
-import com.penske.apps.suppliermgmt.model.UserContext;
 
 
 /**
@@ -52,7 +50,7 @@ public class ComponentsController {
     @RequestMapping(value = {"/navigate-components"})
     public ModelAndView navigateAppConfig() {
 
-        Set<SecurityFunction> securityFunctions = sessionBean.getUserContext().getSecurityFunctions();
+        Set<SecurityFunction> securityFunctions = sessionBean.getUser().getSecurityFunctions();
 
         List<LeftNav> leftNavs = SubTab.COMPONENTS.getLeftNavs();
 
@@ -99,10 +97,10 @@ public class ComponentsController {
     public ModelAndView getCategoryAssociationPage(){
 
         List<CategoryAssociation> categoryAssociations = categoryManagementService.getAllCategoryAssociation();
-        UserContext userContext = sessionBean.getUserContext();
+        User user = sessionBean.getUser();
         ModelAndView modelAndView = new ModelAndView("/admin-console/components/category-association");
         modelAndView.addObject("categoryAssociation",categoryAssociations);
-        modelAndView.addObject("access",CommonUtils.hasAccess(ApplicationConstants.COMPONENTS, userContext));
+        modelAndView.addObject("access", user.hasSecurityFunction(SecurityFunction.MANAGE_CATEGORY_ASSOCIATION));
         return modelAndView;
 
     }

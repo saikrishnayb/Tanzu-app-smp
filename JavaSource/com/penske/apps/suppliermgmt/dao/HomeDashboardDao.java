@@ -8,6 +8,8 @@ import org.apache.ibatis.annotations.Param;
 
 import com.penske.apps.smccore.base.annotation.NonVendorQuery;
 import com.penske.apps.smccore.base.annotation.SkipQueryTest;
+import com.penske.apps.smccore.base.domain.enums.SmcTab;
+import com.penske.apps.smccore.base.domain.enums.UserType;
 import com.penske.apps.suppliermgmt.annotation.DBSmc;
 import com.penske.apps.suppliermgmt.domain.AlertCount;
 import com.penske.apps.suppliermgmt.model.Alert;
@@ -38,11 +40,11 @@ public interface HomeDashboardDao {
     @NonVendorQuery //FIXME: should this be filtered by vendor?
     public List<Tab> selectTabs(@Param("dashBoardId") int dashBoardId, @Param("roleId")int roleId, @Param("status") String status);
 
-    @NonVendorQuery //FIXME: should this be filtered by vendor?
-    public List<AlertHeader> selectHeaders(String tabKey);
+    @NonVendorQuery
+    public List<AlertHeader> selectHeaders(@Param("tab") SmcTab tab);
 
-    @NonVendorQuery //FIXME: should this be filtered by vendor?
-    public List<Alert> selectAlerts(@Param("headerId")int headerId,@Param("userType")int userType);
+    @NonVendorQuery
+    public List<Alert> selectAlerts(@Param("headerId")int headerId, @Param("userType") UserType userType, @Param("penskeUserType") UserType penskeUserType);
 
     @SkipQueryTest
     @NonVendorQuery("Uses a stored procedure - can't filter by vendor ID")  //TODO: Review Query

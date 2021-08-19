@@ -21,9 +21,9 @@ import com.penske.apps.adminconsole.model.Manufacturer;
 import com.penske.apps.adminconsole.service.CostAdjustmentOptionService;
 import com.penske.apps.adminconsole.service.CostToleranceService;
 import com.penske.apps.adminconsole.util.CommonUtils;
+import com.penske.apps.smccore.base.annotation.SmcSecurity;
+import com.penske.apps.smccore.base.domain.enums.SecurityFunction;
 import com.penske.apps.smccore.base.exception.AppValidationException;
-import com.penske.apps.suppliermgmt.annotation.SmcSecurity;
-import com.penske.apps.suppliermgmt.annotation.SmcSecurity.SecurityFunction;
 
 /**
  * A controller to answer AJAX requests on the App Config subtab, for pages that use the v2 page template.

@@ -12,16 +12,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.penske.apps.smccore.base.beans.LookupManager;
+import com.penske.apps.smccore.base.domain.LookupContainer;
+import com.penske.apps.smccore.base.domain.User;
+import com.penske.apps.smccore.base.domain.enums.LookupKey;
+import com.penske.apps.smccore.base.domain.enums.SmcTab;
+import com.penske.apps.smccore.base.domain.enums.UserType;
 import com.penske.apps.suppliermgmt.annotation.VendorAllowed;
 import com.penske.apps.suppliermgmt.annotation.Version1Controller;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.model.AlertHeader;
-import com.penske.apps.suppliermgmt.model.LookUp;
 import com.penske.apps.suppliermgmt.model.Tab;
-import com.penske.apps.suppliermgmt.model.UserContext;
 import com.penske.apps.suppliermgmt.service.HomeDashboardService;
-import com.penske.apps.suppliermgmt.util.ApplicationConstants;
-import com.penske.apps.suppliermgmt.util.LookupManager;
 
 
 /************************************************************************************
@@ -46,28 +48,29 @@ public class HomeController extends BaseController{
 
     @Autowired
     private SuppliermgmtSessionBean sessionBean;
+    
+    @Autowired
+    private LookupManager lookupManager;
 
     @VendorAllowed
     @RequestMapping("/displayHome")
     public ModelAndView displayHome(){
-        ModelAndView modelandView = null;
+    	LookupContainer lookups = lookupManager.getLookupContainer();
+        ModelAndView modelAndView = null;
         try{
-            UserContext userModel = sessionBean.getUserContext();
-            modelandView=new ModelAndView("app-container/appContainer");
+            User user = sessionBean.getUser();
+            modelAndView=new ModelAndView("app-container/appContainer");
+            
             //getting support num from lookup
-            LookupManager lookupManger=new LookupManager();
-            List<LookUp> suppNumlist=lookupManger.getLookUpListByName(ApplicationConstants.SUPP_NUM);
-            LookUp lookUp=null;
-            if(suppNumlist!=null){
-                lookUp=suppNumlist.get(0);
-                modelandView.addObject("supportNum",lookUp.getLookUpValue());
-            }
+            String supportNumber = lookups.getSingleLookupValue(LookupKey.SUPPORT_PHONE_NUM);
+            modelAndView.addObject("supportNum", supportNumber);
 
-            modelandView.addObject("userDetails",userModel);
+            modelAndView.addObject("vendorUser", user.getUserType() == UserType.VENDOR);
+            modelAndView.addObject("userDetails",user);
         }catch(Exception e){
-            modelandView = handleException(e);
+            modelAndView = handleException(e);
         }
-        return modelandView;
+        return modelAndView;
     }
 
     /**
@@ -80,42 +83,30 @@ public class HomeController extends BaseController{
     @VendorAllowed
     @RequestMapping(value = "/homePage", method = {RequestMethod.GET})
     public ModelAndView getHomePage(@RequestParam("tabId") String tabId){
+    	LookupContainer lookups = lookupManager.getLookupContainer();
         ModelAndView modelandView = new ModelAndView("/home/home");
-        String defaultTab="";
-        List<String> tabIdList=new ArrayList<String>();
         List<AlertHeader> alertHeaders=new ArrayList<AlertHeader>();
         try{
-            UserContext userModel = sessionBean.getUserContext();
-            List<Tab> tabs = homeService.selectTabs(userModel);
-            for(Tab tab:tabs) {
-                tabIdList.add(tab.getTabKey());
-            }
+        	User user = sessionBean.getUser();
+        	SmcTab smcTab = SmcTab.findByTabKey(tabId);
+        	
+            List<Tab> tabs = homeService.selectTabs(user);
+            SmcTab defaultTab = tabs.stream()
+            	.map(Tab::getSmcTab)
+            	.filter(t -> t == smcTab)
+            	.findAny()
+            	.orElse(tabs.get(0).getSmcTab());
+            
+            if(defaultTab == SmcTab.ORDER_FULFILLMENT && user.getUserType() == UserType.VENDOR)
+            	defaultTab = tabs.get(1).getSmcTab();
+            
+            if(defaultTab != null)
+                alertHeaders = homeService.getAlerts(user, defaultTab);
 
-            if(tabIdList.contains(tabId)) {
-                defaultTab=tabId;
-            }else{
-                if(tabs!=null && !tabs.isEmpty()){
-                    defaultTab = tabs.get(0).getTabKey();
-
-                    if (defaultTab.equals("TAB_OF") && userModel.isVendorUser())
-                        defaultTab = tabs.get(1).getTabKey();
-
-                }
-            }
-
-            if(!"".equalsIgnoreCase(defaultTab)){
-                alertHeaders = homeService.getAlerts(userModel.getUserSSO(), defaultTab,userModel.getUserType());
-            }
-
-            LookupManager lookupManger=new LookupManager();
-            List<LookUp> suppNumlist=lookupManger.getLookUpListByName(ApplicationConstants.SUPP_NUM);
-            LookUp lookUp=null;
-            if(suppNumlist!=null){
-                lookUp=suppNumlist.get(0);
-                modelandView.addObject("supportNum",lookUp.getLookUpValue());
-            }
+            String supportNumber = lookups.getSingleLookupValue(LookupKey.SUPPORT_PHONE_NUM);
+            modelandView.addObject("supportNum", supportNumber);
             modelandView.addObject("tabs",tabs);
-            modelandView.addObject("TabKey", defaultTab);
+            modelandView.addObject("TabKey", defaultTab.getTabKey());
             modelandView.addObject("alertHeaders", alertHeaders);//To display alerts with count
         }catch(Exception e){
             modelandView = handleException(e);
@@ -135,9 +126,10 @@ public class HomeController extends BaseController{
     public @ResponseBody ModelAndView getAlerts(HttpServletResponse response,@RequestParam("tabKey") String tabKey){
         ModelAndView model = new ModelAndView("/home/home");
         try{
-            UserContext userModel = sessionBean.getUserContext();
+        	SmcTab smcTab = SmcTab.findByTabKey(tabKey);
+            User user = sessionBean.getUser();
             model.addObject("TabKey", tabKey);
-            model.addObject("alertHeaders", homeService.getAlerts(userModel.getUserSSO(), tabKey,userModel.getUserType()));
+            model.addObject("alertHeaders", homeService.getAlerts(user, smcTab));
         }catch(Exception e ){
             handleAjaxException(e, response);
         }

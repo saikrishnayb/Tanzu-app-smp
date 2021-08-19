@@ -9,9 +9,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.penske.apps.adminconsole.service.CostAdjustmentOptionService;
 import com.penske.apps.adminconsole.service.CostToleranceService;
+import com.penske.apps.smccore.base.annotation.SmcSecurity;
+import com.penske.apps.smccore.base.domain.enums.SecurityFunction;
 import com.penske.apps.suppliermgmt.annotation.DefaultController;
-import com.penske.apps.suppliermgmt.annotation.SmcSecurity;
-import com.penske.apps.suppliermgmt.annotation.SmcSecurity.SecurityFunction;
 
 /**
  * Controller to render pages on the App Config sub-tab that use the v2 page template.

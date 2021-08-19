@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -38,8 +37,9 @@ import org.apache.ibatis.type.SimpleTypeRegistry;
 import org.apache.log4j.Logger;
 
 import com.penske.apps.smccore.base.annotation.NonVendorQuery;
+import com.penske.apps.smccore.base.domain.User;
+import com.penske.apps.smccore.base.domain.enums.UserType;
 import com.penske.apps.smccore.base.exception.HumanReadableException;
-import com.penske.apps.suppliermgmt.model.UserContext;
 import com.penske.apps.suppliermgmt.util.SpringBeanHelper;
 
 /**
@@ -79,16 +79,16 @@ public class VendorQueryWrappingPlugin implements Interceptor
 		boolean filterByVendorId = shouldFilterByVendorId(invokedMethod);
 		if(filterByVendorId)
 		{
-			UserContext currentUser = SpringBeanHelper.getUserContext();
+			User currentUser = SpringBeanHelper.getUser();
 			if(currentUser == null)
 				throw new IllegalStateException("Could not find logged-in user for query " + statement.getId() + ". Can not determine user's type or associated vendors.");
 			
 			//Only do vendor ID filtering for vendor users
-			if(currentUser.isVendorUser())
+			if(currentUser.getUserType() == UserType.VENDOR)
 			{
-				Set<Integer> vendorIds = new HashSet<Integer>(currentUser.getAssociatedVendorIds());
+				Set<Integer> vendorIds = currentUser.getAssociatedVendorIds();
 				if(vendorIds == null || vendorIds.isEmpty())
-					throw new IllegalStateException("Vendor user " + currentUser.getUserSSO() + " has no associated vendor IDs. Could not filter query " + statement.getId() + " by vendor.");
+					throw new IllegalStateException("Vendor user " + currentUser.getSso() + " has no associated vendor IDs. Could not filter query " + statement.getId() + " by vendor.");
 				
 				Object parameter = args[1];
 				

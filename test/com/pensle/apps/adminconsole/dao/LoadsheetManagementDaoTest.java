@@ -25,10 +25,11 @@ import com.penske.apps.adminconsole.model.RuleDefinitions;
 import com.penske.apps.adminconsole.model.RuleMaster;
 import com.penske.apps.adminconsole.model.TemplateComponentRuleAssociation;
 import com.penske.apps.smccore.base.configuration.ProfileType;
+import com.penske.apps.smccore.base.domain.User;
 import com.penske.apps.suppliermgmt.MyBatisDaoTest;
+import com.penske.apps.suppliermgmt.TestData;
 import com.penske.apps.suppliermgmt.configuration.ApplicationConfiguration;
 import com.penske.apps.suppliermgmt.configuration.EmbeddedDataSourceConfiguration;
-import com.penske.apps.suppliermgmt.model.UserContext;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes={ApplicationConfiguration.class, EmbeddedDataSourceConfiguration.class})
@@ -44,14 +45,14 @@ public class LoadsheetManagementDaoTest extends MyBatisDaoTest {
 
 	@Autowired
 	private LoadsheetManagementDao loadsheetManagementDao;
+
+	private final TestData data = new TestData();
 	
-	private UserContext user;
+	private User user = data.user;
 
 	@Before
 	public void setup()
 	{
-		user = new UserContext();
-    	user.setUserSSO("600166698");
 		loadsheetManagementDao = this.trackMethodCalls(loadsheetManagementDao, LoadsheetManagementDao.class);
 	}
 	
@@ -104,7 +105,7 @@ public class LoadsheetManagementDaoTest extends MyBatisDaoTest {
     public void shouldSaveComponentVisibilityRules() {
     	ComponentRuleAssociation componentRule = new ComponentRuleAssociation();
     	componentRule.setComponentVisibilityId(1);
-    	componentRule.setCreatedBy(user.getUserSSO());
+    	componentRule.setCreatedBy(user.getSso());
     	componentRule.setDisplayName("Rule");
     	ConfigureRule rule = new ConfigureRule();
     	rule.setRuleId(1);
@@ -135,7 +136,7 @@ public class LoadsheetManagementDaoTest extends MyBatisDaoTest {
     	rule.setRuleName("Rule");
     	rule.setDescription("Rule desc");
     	
-    	loadsheetManagementDao.insertRuleMasterDetails(rule, user);
+    	loadsheetManagementDao.insertRuleMasterDetails(rule, data.user);
     }
 
     @Test
@@ -147,7 +148,7 @@ public class LoadsheetManagementDaoTest extends MyBatisDaoTest {
     	rule.setComponentType("T");
     	rule.setOperand("+");
     	rule.setValue("val");
-    	loadsheetManagementDao.insertRuleDefinitions(Arrays.asList(rule), user);
+    	loadsheetManagementDao.insertRuleDefinitions(Arrays.asList(rule), data.user);
     }
 
     @Test
@@ -155,7 +156,7 @@ public class LoadsheetManagementDaoTest extends MyBatisDaoTest {
     	RuleMaster rule = new RuleMaster();
     	rule.setRuleName("Rule");
     	rule.setDescription("Rule desc");
-    	loadsheetManagementDao.updateRuleMasterDetails(rule, user);
+    	loadsheetManagementDao.updateRuleMasterDetails(rule, data.user);
     }
 
     @Test
@@ -167,7 +168,7 @@ public class LoadsheetManagementDaoTest extends MyBatisDaoTest {
     	rule.setComponentType("T");
     	rule.setOperand("+");
     	rule.setValue("val");
-    	loadsheetManagementDao.updateRuleDefinitions(rule, user);
+    	loadsheetManagementDao.updateRuleDefinitions(rule, data.user);
     }
 
     @Test
@@ -228,7 +229,7 @@ public class LoadsheetManagementDaoTest extends MyBatisDaoTest {
     	seqMaster.setCategory("cat");
     	seqMaster.setType("type");
     	seqMaster.setOem("oem");
-    	loadsheetManagementDao.insertSeqMasterDetails(seqMaster, user);
+    	loadsheetManagementDao.insertSeqMasterDetails(seqMaster, data.user);
     }
 
     @Test
@@ -237,7 +238,7 @@ public class LoadsheetManagementDaoTest extends MyBatisDaoTest {
     	grpMaster.setSeqMasterId(1);
     	grpMaster.setName("grpMas");
     	grpMaster.setDisplaySeq(1);
-    	loadsheetManagementDao.insertGrpMasterDetails(grpMaster, user);
+    	loadsheetManagementDao.insertGrpMasterDetails(grpMaster, data.user);
     }
 
     @Test
@@ -246,7 +247,7 @@ public class LoadsheetManagementDaoTest extends MyBatisDaoTest {
     	cmpGrpSeq.setGrpMasterId(1);
     	cmpGrpSeq.setComponentId("2");
     	cmpGrpSeq.setDisplaySeq(3);
-    	loadsheetManagementDao.insertCmpGrpSeqDetails(Arrays.asList(cmpGrpSeq), user);
+    	loadsheetManagementDao.insertCmpGrpSeqDetails(Arrays.asList(cmpGrpSeq), data.user);
     }
 
     @Test
@@ -263,7 +264,7 @@ public class LoadsheetManagementDaoTest extends MyBatisDaoTest {
     	seqMaster.setType("type");
     	seqMaster.setOem("oem");
     	seqMaster.setId(1);
-    	loadsheetManagementDao.updateSeqMasterDetails(seqMaster, user);
+    	loadsheetManagementDao.updateSeqMasterDetails(seqMaster, data.user);
     }
 
     @Test
@@ -272,7 +273,7 @@ public class LoadsheetManagementDaoTest extends MyBatisDaoTest {
     	grpMaster.setSeqMasterId(1);
     	grpMaster.setName("grpMas");
     	grpMaster.setDisplaySeq(1);
-    	loadsheetManagementDao.updateGrpMasterDetails(grpMaster, user);
+    	loadsheetManagementDao.updateGrpMasterDetails(grpMaster, data.user);
     }
 
     @Test
@@ -291,7 +292,7 @@ public class LoadsheetManagementDaoTest extends MyBatisDaoTest {
     	cmpGrpSeq.setGrpMasterId(1);
     	cmpGrpSeq.setComponentId("2");
     	cmpGrpSeq.setDisplaySeq(3);
-    	loadsheetManagementDao.updateCmpGrpSeqDeatils(cmpGrpSeq, user);
+    	loadsheetManagementDao.updateCmpGrpSeqDeatils(cmpGrpSeq, data.user);
     }
 
     @Test
@@ -346,13 +347,13 @@ public class LoadsheetManagementDaoTest extends MyBatisDaoTest {
     	templateComponentRuleAssociation.setRuleId(2);
     	templateComponentRuleAssociation.setPriority(3);
     	templateComponentRuleAssociation.setLsOverride('Y');
-    	templateComponentRuleAssociation.setCreatedBy(user.getUserSSO());
+    	templateComponentRuleAssociation.setCreatedBy(user.getSso());
     	loadsheetManagementDao.saveTemplateComponentVisibilityRules(templateComponentRuleAssociation);
     }
 
     @Test
 	public void shouldUpdateComponentRulePriority() {
-    	loadsheetManagementDao.updateComponentRulePriority(1, 1, 3, user.getUserSSO());
+    	loadsheetManagementDao.updateComponentRulePriority(1, 1, 3, user.getSso());
     }
     
     @Test
@@ -362,7 +363,7 @@ public class LoadsheetManagementDaoTest extends MyBatisDaoTest {
     	templateComponentRuleAssociation.setRuleId(2);
     	templateComponentRuleAssociation.setPriority(3);
     	templateComponentRuleAssociation.setLsOverride('Y');
-    	templateComponentRuleAssociation.setCreatedBy(user.getUserSSO());
+    	templateComponentRuleAssociation.setCreatedBy(user.getSso());
     	loadsheetManagementDao.updateTemplateComponentVisibilityRules(templateComponentRuleAssociation);
     }
    

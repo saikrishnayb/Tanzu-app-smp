@@ -187,7 +187,7 @@ $(document).ready(function() {
 				$editSsoIdDiv.removeClass('displayNone');}
 
 			if($editUserDeptDiv.hasClass('displayNone')){
-				$editUserDept.attr('name', 'userDept.userDeptId');
+				$editUserDept.attr('name', 'userDept');
 				$editUserDeptDiv.removeClass('displayNone');}
 
 			if($editSignFileDiv.hasClass('displayNone')){

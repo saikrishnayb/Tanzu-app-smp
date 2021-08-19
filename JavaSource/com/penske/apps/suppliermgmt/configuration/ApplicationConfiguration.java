@@ -7,7 +7,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Profile;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
@@ -17,12 +16,10 @@ import com.penske.apps.buildmatrix.controller.BuildMatrixControllerMarker;
 import com.penske.apps.buildmatrix.dao.BuildMatrixMapperMarker;
 import com.penske.apps.buildmatrix.service.BuildMatrixServiceMarker;
 import com.penske.apps.smccore.base.configuration.CoreConfiguration;
-import com.penske.apps.smccore.base.configuration.ProfileType;
 import com.penske.apps.suppliermgmt.controller.ControllerMarker;
 import com.penske.apps.suppliermgmt.dao.MapperMarker;
 import com.penske.apps.suppliermgmt.interceptor.InterceptorMarker;
 import com.penske.apps.suppliermgmt.service.ServiceMarker;
-import com.penske.apps.suppliermgmt.util.LookupManager;
 import com.penske.apps.suppliermgmt.util.SpringBeanHelper;
 
 /**
@@ -54,12 +51,6 @@ public class ApplicationConfiguration {
 		resolver.setPrefix("/WEB-INF/jsp/");
 		resolver.setSuffix(".jsp");
 		return resolver;
-	}
-
-	@Bean(initMethod="loadLookUpData")
-	@Profile(ProfileType.NOT_TEST)
-	public LookupManager lookupManager() {
-		return new LookupManager();
 	}
 	
 	@Bean

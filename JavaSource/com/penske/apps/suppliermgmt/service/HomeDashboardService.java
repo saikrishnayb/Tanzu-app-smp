@@ -2,9 +2,10 @@ package com.penske.apps.suppliermgmt.service;
 
 import java.util.List;
 
+import com.penske.apps.smccore.base.domain.User;
+import com.penske.apps.smccore.base.domain.enums.SmcTab;
 import com.penske.apps.suppliermgmt.model.AlertHeader;
 import com.penske.apps.suppliermgmt.model.Tab;
-import com.penske.apps.suppliermgmt.model.UserContext;
 
 
 /**
@@ -13,6 +14,6 @@ import com.penske.apps.suppliermgmt.model.UserContext;
  * @author Seth.Bauman 600143568
  */
 public interface HomeDashboardService {
-	public List<Tab> selectTabs(UserContext userModel);
-	public List<AlertHeader> getAlerts(String SSO,String TabKey,int userType);
+	public List<Tab> selectTabs(User user);
+	public List<AlertHeader> getAlerts(User user,SmcTab tab);
 }

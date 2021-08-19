@@ -13,10 +13,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.penske.apps.smccore.base.configuration.ProfileType;
+import com.penske.apps.smccore.base.domain.enums.UserType;
 import com.penske.apps.suppliermgmt.MyBatisDaoTest;
 import com.penske.apps.suppliermgmt.configuration.ApplicationConfiguration;
 import com.penske.apps.suppliermgmt.configuration.EmbeddedDataSourceConfiguration;
-import com.penske.apps.suppliermgmt.dao.HelpDAO;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes={ApplicationConfiguration.class, EmbeddedDataSourceConfiguration.class})
@@ -41,7 +41,6 @@ public class HelpDAOTest extends MyBatisDaoTest{
 	
 	@Test
 	public void shouldGetHelp() {
-		String userType = "PENSKE";
-		helpDao.getHelp(userType);
+		helpDao.getHelp(UserType.PENSKE);
 	}
 }

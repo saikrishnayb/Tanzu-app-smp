@@ -1,6 +1,6 @@
 package com.penske.apps.adminconsole.model;
 
-public class UserType {
+public class AdminConsoleUserType {
 
 	private String userType;
 	private String description;

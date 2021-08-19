@@ -5,7 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.penske.apps.adminconsole.model.Alert;
-import com.penske.apps.adminconsole.model.User;
+import com.penske.apps.adminconsole.model.EditableUser;
 import com.penske.apps.adminconsole.model.Vendor;
 import com.penske.apps.adminconsole.model.VendorContact;
 import com.penske.apps.smccore.base.annotation.NonVendorQuery;
@@ -17,10 +17,10 @@ public interface VendorDao {
     public List<Vendor> getVendorsBySearchConditions(@Param("orgId")int orgId,@Param("vendor") Vendor vendor);
     
     @NonVendorQuery
-    public List<User> getAllPlanningAnalysts();
+    public List<EditableUser> getAllPlanningAnalysts();
 
     @NonVendorQuery
-    public List<User> getAllSupplySpecialists();
+    public List<EditableUser> getAllSupplySpecialists();
 
     @NonVendorQuery // TODO: No harm to leave this annotation on here, but we should prob never look
                     // athis in the future

@@ -3,7 +3,8 @@ package com.penske.apps.suppliermgmt.taglib;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
-import com.penske.apps.suppliermgmt.model.UserContext;
+import com.penske.apps.smccore.base.domain.User;
+import com.penske.apps.smccore.base.domain.enums.UserType;
 import com.penske.apps.suppliermgmt.util.SpringBeanHelper;
 
 public class PenskeOnly extends BodyTagSupport {
@@ -13,11 +14,11 @@ public class PenskeOnly extends BodyTagSupport {
     @Override
     public int doStartTag() throws JspException {
 
-        UserContext userContext = SpringBeanHelper.getUserContext();
+        User user = SpringBeanHelper.getUser();
 
-        if (userContext == null) return SKIP_BODY;
+        if (user == null) return SKIP_BODY;
 
-        boolean visibleToPenske = userContext.isVisibleToPenske();
+        boolean visibleToPenske = user.getUserType() == UserType.PENSKE;
 
         if (visibleToPenske)
             return EVAL_BODY_INCLUDE;

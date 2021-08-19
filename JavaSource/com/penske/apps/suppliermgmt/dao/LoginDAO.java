@@ -23,40 +23,22 @@ import org.apache.ibatis.annotations.Param;
 
 import com.penske.apps.smccore.base.annotation.NonVendorQuery;
 import com.penske.apps.smccore.base.annotation.SkipQueryTest;
+import com.penske.apps.smccore.base.domain.User;
 import com.penske.apps.suppliermgmt.annotation.DBSmc;
 import com.penske.apps.suppliermgmt.domain.UserLoginHistory;
 import com.penske.apps.suppliermgmt.domain.UserVendorFilterSelection;
-import com.penske.apps.suppliermgmt.model.Tab;
-import com.penske.apps.suppliermgmt.model.User;
-import com.penske.apps.suppliermgmt.model.UserContext;
-import com.penske.apps.suppliermgmt.model.VendorLocation;
 
 @DBSmc
 public interface LoginDAO {
 
     @NonVendorQuery
-    public User getUserDetails(User userModel);
-
-    @NonVendorQuery // This need to be here since we need to get the ass vendors ids at least
-    public List<VendorLocation> getAssociatedVendors(int orgId);
-
-    @NonVendorQuery
-    public List<Tab> getTabs(int roleId);
-
-    @NonVendorQuery
-    public List<String> getSecurityFunctions(@Param("roleId") int roleId,@Param("tabKey") String tabKey);
-
-    @NonVendorQuery
-    public List<String> getAllSecurityFunctionsWithUser(UserContext userContext);
-
-    @NonVendorQuery
     public List<UserVendorFilterSelection> getUserVendorFilterSelections(@Param("userId") int userId);
 
     @NonVendorQuery
-    public UserLoginHistory getUserLoginHistory(UserContext userContext);
+    public UserLoginHistory getUserLoginHistory(@Param("user") User user);
 
-    @SkipQueryTest
     @NonVendorQuery
-    public void putUserLogin(@Param("user") UserContext user, @Param("serverLocation") String serverLocation, @Param("loginDate") Date loginDate);
+    @SkipQueryTest
+    public void putUserLogin(@Param("user") User user, @Param("serverLocation") String serverLocation, @Param("loginDate") Date loginDate);
 
 }

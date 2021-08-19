@@ -58,10 +58,10 @@ import com.penske.apps.buildmatrix.model.SaveSlotsForm;
 import com.penske.apps.buildmatrix.model.SplitByTypeForm;
 import com.penske.apps.buildmatrix.service.BuildMatrixCorpService;
 import com.penske.apps.buildmatrix.service.BuildMatrixSmcService;
-import com.penske.apps.suppliermgmt.annotation.SmcSecurity;
-import com.penske.apps.suppliermgmt.annotation.SmcSecurity.SecurityFunction;
+import com.penske.apps.smccore.base.annotation.SmcSecurity;
+import com.penske.apps.smccore.base.domain.User;
+import com.penske.apps.smccore.base.domain.enums.SecurityFunction;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
-import com.penske.apps.suppliermgmt.model.UserContext;
 
 /**
  * Controller to service AJAX requests for navigating between screens in the change order module
@@ -107,8 +107,8 @@ public class BuildMatrixRestController {
 	@SmcSecurity(securityFunction = { SecurityFunction.OEM_BUILD_MATRIX })
 	@RequestMapping("/submit-build")
 	public void submitBuild(BuildMixForm buildMixForm) {
-		UserContext userContext = sessionBean.getUserContext();
-		buildMatrixSmcService.submitBuild(buildMixForm, userContext);
+		User user = sessionBean.getUser();
+		buildMatrixSmcService.submitBuild(buildMixForm, user);
 	}
 	
 	// EXPORT TO EXCEL //
@@ -748,7 +748,7 @@ public class BuildMatrixRestController {
 	@RequestMapping("/update-reservation-data")
 	public void updateReservationData(@RequestParam("slotReservationId") int slotReservationId, @RequestParam("slotId") int slotId,
 									  @RequestParam("plantId") int plantId, @RequestParam("unitNumber") String unitNumber, @RequestParam("bodyMfr") String bodyMfr) {
-		UserContext user = sessionBean.getUserContext();
+		User user = sessionBean.getUser();
 		buildMatrixSmcService.updateReservationData(slotReservationId, slotId, bodyMfr, plantId, unitNumber, user);
 	}
 	

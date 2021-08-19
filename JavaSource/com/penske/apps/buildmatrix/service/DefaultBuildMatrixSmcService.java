@@ -28,7 +28,6 @@ import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.log4j.Logger;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
@@ -103,15 +102,13 @@ import com.penske.apps.buildmatrix.model.SaveSlotsForm;
 import com.penske.apps.buildmatrix.model.SaveSlotsForm.SlotInfo;
 import com.penske.apps.buildmatrix.model.SplitByTypeForm;
 import com.penske.apps.buildmatrix.model.SplitByTypeForm.BodySplitRow;
+import com.penske.apps.smccore.base.domain.User;
 import com.penske.apps.smccore.base.util.BatchRunnable;
 import com.penske.apps.smccore.base.util.Util;
-import com.penske.apps.suppliermgmt.model.UserContext;
 
 @Service
 public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 
-	private static Logger logger = Logger.getLogger(DefaultBuildMatrixSmcService.class);
-	
 	@Autowired
 	BuildMatrixSmcDAO buildMatrixSmcDAO;
 	
@@ -353,13 +350,13 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	
 	// BUILD FUNCTIONS //
 	@Override
-	public BuildSummary startNewBuild(List<ApprovedOrder> selectedOrders, Map<CroOrderKey, Integer> unitsToConsiderByCroOrderKey, boolean guidance, UserContext userContext) {
+	public BuildSummary startNewBuild(List<ApprovedOrder> selectedOrders, Map<CroOrderKey, Integer> unitsToConsiderByCroOrderKey, boolean guidance, User user) {
 		int bodiesOnOrder = unitsToConsiderByCroOrderKey.values().stream()
 				.collect(summingInt(val->val));
 		int maxBeforeWeeks = buildMatrixSmcDAO.getBuildMaximumWeeksBefore();
 		int maxAfterWeeks = buildMatrixSmcDAO.getBuildMaximumWeeksAfter();
 		
-		BuildSummary newBuild = new BuildSummary(bodiesOnOrder, userContext, maxBeforeWeeks, maxAfterWeeks, guidance);
+		BuildSummary newBuild = new BuildSummary(bodiesOnOrder, user, maxBeforeWeeks, maxAfterWeeks, guidance);
 		buildMatrixSmcDAO.insertNewBuild(newBuild);
 		int buildId = newBuild.getBuildId();
 		for(ApprovedOrder order: selectedOrders) {
@@ -399,7 +396,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	}
 	
 	@Override
-	public void submitBuild(BuildMixForm buildMixForm, UserContext userContext) {
+	public void submitBuild(BuildMixForm buildMixForm, User user) {
 		int buildId = buildMixForm.getBuildId();
 		
 		int itemOrder = 1;
@@ -419,7 +416,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 			guidanceMode = "N";
 		
 		buildMatrixSmcDAO.insertBusinessAwards(awardsToInsert);
-		buildMatrixSmcDAO.submitBuild(buildId, guidanceMode, BuildStatus.SUBMITTED, userContext.getUserSSO());
+		buildMatrixSmcDAO.submitBuild(buildId, guidanceMode, BuildStatus.SUBMITTED, user.getSso());
 	}
 	
 	// CRO BUILD REQUESTS //
@@ -1656,7 +1653,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 	}
 	
 	@Override
-	public void updateReservationData(int slotReservationId, int slotId, String bodyMfr, int plantId, String unitNumber, UserContext user)
+	public void updateReservationData(int slotReservationId, int slotId, String bodyMfr, int plantId, String unitNumber, User user)
 	{
 		buildMatrixSmcDAO.updateSlotReservations(slotReservationId, slotId, bodyMfr, plantId, unitNumber, user.getSso());
 	}

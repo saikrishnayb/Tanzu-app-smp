@@ -9,7 +9,7 @@ import com.penske.apps.adminconsole.model.HoldPayment;
 import com.penske.apps.adminconsole.model.LoadSheetComponentDetails;
 import com.penske.apps.adminconsole.model.Template;
 import com.penske.apps.adminconsole.model.TemplatePoAssociation;
-import com.penske.apps.suppliermgmt.model.UserContext;
+import com.penske.apps.smccore.base.domain.User;
 
 /**
  * 
@@ -56,5 +56,5 @@ public interface ComponentService {
 
 	public Component getComponentById(int componentId);
 
-	public void saveHoldPayments(Component component, List<Integer> vendorIds, UserContext user);
+	public void saveHoldPayments(Component component, List<Integer> vendorIds, User user);
 }

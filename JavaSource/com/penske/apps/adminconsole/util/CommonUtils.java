@@ -18,7 +18,6 @@ import org.apache.log4j.Logger;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.penske.apps.adminconsole.model.Components;
 import com.penske.apps.adminconsole.model.Role;
-import com.penske.apps.suppliermgmt.model.UserContext;
 
 
 /**
@@ -118,24 +117,6 @@ public class CommonUtils {
 		}
 
 		 return true;					
-	}
-	
-	public static boolean hasAccess(String secFunction,UserContext userRuleModel){
-			if(userRuleModel!=null){
-				Map<String, Map<String, String>> userRuleMap =userRuleModel.getTabSecFunctionMap();	
-				if(userRuleMap != null){
-					
-					Map<String,String> secFunctions=userRuleMap.get(ApplicationConstants.TAB);
-					
-					if (userRuleMap.containsKey(ApplicationConstants.TAB)&&secFunctions.containsKey(secFunction)&&secFunctions!=null){
-						{
-							
-							return true;
-						}
-					}
-				}    
-		}
-			return false;
 	}
 
     /**

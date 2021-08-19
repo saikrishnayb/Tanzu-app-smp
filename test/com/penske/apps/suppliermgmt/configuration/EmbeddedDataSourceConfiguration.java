@@ -2,7 +2,6 @@ package com.penske.apps.suppliermgmt.configuration;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collections;
 import java.util.List;
 
 import javax.naming.NamingException;
@@ -18,7 +17,9 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import com.penske.apps.smccore.CoreTestUtil;
 import com.penske.apps.smccore.base.annotation.qualifier.CoreDataSourceQualifier;
+import com.penske.apps.smccore.base.beans.LookupManager;
 import com.penske.apps.smccore.base.configuration.ProfileType;
 import com.penske.apps.smccore.base.plugins.TimingBean;
 import com.penske.apps.smccore.base.plugins.TimingBeanImpl;
@@ -28,8 +29,6 @@ import com.penske.apps.suppliermgmt.annotation.DBSalesnet;
 import com.penske.apps.suppliermgmt.annotation.DBSmc;
 import com.penske.apps.suppliermgmt.beans.DefaultSuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
-import com.penske.apps.suppliermgmt.model.LookUp;
-import com.penske.apps.suppliermgmt.util.LookupManager;
 import com.penske.apps.ucsc.exception.UsrCreationSvcException;
 import com.penske.apps.ucsc.model.CreatedUser;
 import com.penske.apps.ucsc.model.LDAPAttributes;
@@ -57,6 +56,12 @@ public class EmbeddedDataSourceConfiguration {
 
         return dataSourceTransactionManager;
     }
+	
+    @Bean
+    public LookupManager lookupManager()
+    {
+    	return CoreTestUtil.createLookupManager();
+    }
 
     @Bean
     @DBSmc
@@ -68,20 +73,6 @@ public class EmbeddedDataSourceConfiguration {
         EmbeddedDatabase datasource = new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.HSQL).build();
 
         return datasource;
-    }
-
-    /**
-     * Creates a dummy lookup manager that has no lookup values.
-     */
-    @Bean
-    public LookupManager lookupManager()
-    {
-    	return new LookupManager(){
-    		@Override public List<LookUp> getLookUpListByName(String lookUpName)
-    		{
-    			return Collections.emptyList();
-    		}
-    	};
     }
 
     /**

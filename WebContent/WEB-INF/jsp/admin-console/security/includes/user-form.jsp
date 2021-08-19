@@ -29,22 +29,22 @@
 							
 							<a class="buttonSecondary floatRight ssolookup" href="#" style="height: 15px;margin-right: 42px;">SSO Lookup</a></div>
 							</c:if>
-						<div class="single-line-content email-container" <c:if test = "${isCreatePage == true && currentUser.visibleToPenske}">class="displayNone"</c:if>  style="margin-top: 18px;">
+						<div class="single-line-content email-container" <c:if test = "${isCreatePage == true && currentUser.userType == penskeUserType}">class="displayNone"</c:if>  style="margin-top: 18px;">
 							<label for="email">Email <span class=requiredField>*</span></label> 
 							<input id="email" name="email" tabindex=-1 type="text" class="input alpha alpha-email borderless" value="${editableUser.email}" readonly/>
 						</div>
 
-						<div class="single-line-content first-name-container" <c:if test = "${isCreatePage == true && currentUser.visibleToPenske}">class="displayNone"</c:if>>
+						<div class="single-line-content first-name-container" <c:if test = "${isCreatePage == true && currentUser.userType == penskeUserType}">class="displayNone"</c:if>>
 							<label for="first-name">First Name <span class=requiredField>*</span></label> 
 							<input id="first-name" name="firstName" tabindex=-1 type="text" class="input alpha alpha-name borderless" value="${editableUser.firstName}" readonly/>
 						</div>
 
-						<div class="single-line-content last-name-container" <c:if test = "${isCreatePage == true && currentUser.visibleToPenske}">class="displayNone"</c:if>>
+						<div class="single-line-content last-name-container" <c:if test = "${isCreatePage == true && currentUser.userType == penskeUserType}">class="displayNone"</c:if>>
 							<label for="last-name">Last Name <span class=requiredField>*</span></label> 
 							<input id="last-name" name="lastName" tabindex=-1 class="input alpha alpha-name borderless" type="text" value="${editableUser.lastName}" readonly/>
 						</div>
 
-						<div class="single-line-content phone-container" <c:if test = "${isCreatePage == true && currentUser.visibleToPenske}">class="displayNone"</c:if>>
+						<div class="single-line-content phone-container" <c:if test = "${isCreatePage == true && currentUser.userType == penskeUserType}">class="displayNone"</c:if>>
 							<label for="phone">Phone </label> 
 							<input id="phone" tabindex=-1 class="input phone numeric numeric-phone borderless optional" name="phone" type="text" value="${editableUser.phone}" readonly/> 
 							<input id="extension" tabindex=-1 class="input extension optional numeric numeric-extension borderless" name="extension" type="text" value="${editableUser.extension}" placeholder="ext." readonly/>
@@ -62,7 +62,7 @@
 								 </c:if>
 								 </c:if>
 								 <c:if test = "${isCreatePage == true}">
-								 <c:if test="${currentUser.userType eq type.userTypeId}">
+								 <c:if test="${currentUser.userType.typeId eq type.userTypeId}">
 								  <input id="userType.description" tabindex=-1 class="input alpha alpha-name borderless" name="userType.description" type="text" value="${type.description}" readonly/>  
 								  <input id="user-type" tabindex=-1 class="input numeric numeric-whole usertype borderless" name="userType.userTypeId" type="hidden" value="${type.userTypeId}" readonly/>  
 								 </c:if>
@@ -84,7 +84,7 @@
 						</div>
 					
 
-						<div class="single-line-content" <c:if test = "${isCreatePage == true && currentUser.visibleToPenske}"> class="displayNone"</c:if>>
+						<div class="single-line-content" <c:if test = "${isCreatePage == true && currentUser.userType == penskeUserType}"> class="displayNone"</c:if>>
 							<label for="user-role">User Role<span class=requiredField>*</span></label> 
 							<select id="user-role" tabindex=3 name="role.roleId" class="input numeric numeric-whole">
 								<option value="">Select User Role</option>
@@ -95,12 +95,12 @@
 						</div>
 			
 						<div id="user-dept-div" class="single-line-content <c:if test="${editableUser.userType.userTypeId ne 1}"> displayNone</c:if>
-																		   <c:if test = "${isCreatePage == true && currentUser.vendorUser}">displayNone</c:if>">
+																		   <c:if test = "${isCreatePage == true && currentUser.userType == vendorUserType}">displayNone</c:if>">
 							<label for="user-dept">User Dept</label> 
 							<select id="user-dept" tabindex=4
 								<c:if test="${editableUser.userType.userTypeId eq 1}">name="userDept.userDeptId"</c:if>
 								class="input numeric numeric-whole<c:if test="${editableUser.userType.description eq 'Supplier User'}"> optional</c:if>
-																  <c:if test="${currentUser.vendorUser}"> optional</c:if>">
+																  <c:if test="${currentUser.userType == vendorUserType}"> optional</c:if>">
 								<option value="">Select User Depart</option>
 								<c:forEach items="${userDepts}" var="dept">
 									<option value="${dept.userDeptId}"
@@ -114,7 +114,7 @@
 						<!-- *****************************************************file upload******************************************************** -->
 
 						<div id="signature-file-div" class="single-line-content file-input-container <c:if test = "${editableUser.userType.userTypeId ne 1}">displayNone </c:if>
-																									 <c:if test = "${isCreatePage == true && currentUser.vendorUser}">displayNone</c:if>">
+																									 <c:if test = "${isCreatePage == true && currentUser.userType == vendorUserType}">displayNone</c:if>">
 							<label>Signature File</label> 
 							<span class="file-input-span">
 								<input type="file" tabindex="-1" class="input sign-file-hidden-input optional" name="signatureImage"/>
@@ -127,7 +127,7 @@
 							<a id="signature-preview"><img src="${commonStaticUrl}/images/search.png"/></a></c:if>
 						</div>
 						<div id="initials-file-div" class="single-line-content file-input-container <c:if test = "${editableUser.userType.userTypeId ne 1}">displayNone </c:if>
-																									<c:if test = "${isCreatePage == true && currentUser.vendorUser}">displayNone</c:if>">
+																									<c:if test = "${isCreatePage == true && currentUser.userType == vendorUserType}">displayNone</c:if>">
 							<label>Initials File</label> 
 							<span class="file-input-span">
 								<input type="file" tabindex="-1" class="input init-file-hidden-input optional" name="initialsImage"/>

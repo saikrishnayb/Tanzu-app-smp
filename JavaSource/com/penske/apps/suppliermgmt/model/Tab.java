@@ -2,6 +2,8 @@ package com.penske.apps.suppliermgmt.model;
 
 import java.util.List;
 
+import com.penske.apps.smccore.base.domain.enums.SmcTab;
+
 
 
 /**
@@ -33,6 +35,11 @@ public class Tab{
 	private String defaultTemplateKey;
 	private Integer dashboardTab;
 	private List<AlertHeader> alertHeaders;	  // the list of alert headers for the tab
+	
+	public SmcTab getSmcTab()
+	{
+		return SmcTab.findByTabKey(this.tabKey);
+	}
 	
 	public String getTabName() {
 		return tabName;

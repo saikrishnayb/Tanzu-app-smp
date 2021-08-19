@@ -259,7 +259,7 @@
 		INSERT INTO SMC.SMC_COMPONENT_HOLD_PAYMENT (COMPONENT_ID, VENDOR_ID, CREATED_BY,CREATED_DATE,MODIFIED_BY,MODIFIED_DATE)
 		VALUES 
 			<foreach collection="holdPaymentstoAdd" item="holdPayment" separator="," >
-				(#{holdPayment.componentId}, #{holdPayment.vendorId}, #{user.userSSO}, CURRENT_TIMESTAMP, #{user.userSSO}, CURRENT_TIMESTAMP)
+				(#{holdPayment.componentId}, #{holdPayment.vendorId}, #{user.sso}, CURRENT_TIMESTAMP, #{user.sso}, CURRENT_TIMESTAMP)
 			</foreach>
 	</insert>
 	

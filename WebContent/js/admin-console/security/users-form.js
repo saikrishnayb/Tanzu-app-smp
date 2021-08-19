@@ -215,7 +215,7 @@ $(document).ready(function() {
 			$ssoId.attr('name', 'ssoId');
 			//$ssoIdDiv.removeClass('displayNone');
 
-			$userDept.attr('name', 'userDept.userDeptId');
+			$userDept.attr('name', 'userDept');
 			$userDeptDiv.removeClass('displayNone');
 
 			$editSignFileDiv.removeClass('displayNone');

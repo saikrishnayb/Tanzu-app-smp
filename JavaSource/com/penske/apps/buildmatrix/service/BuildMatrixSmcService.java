@@ -40,7 +40,7 @@ import com.penske.apps.buildmatrix.model.ProductionSlotsUtilizationSummary;
 import com.penske.apps.buildmatrix.model.SaveRegionSlotsForm;
 import com.penske.apps.buildmatrix.model.SaveSlotsForm;
 import com.penske.apps.buildmatrix.model.SplitByTypeForm;
-import com.penske.apps.suppliermgmt.model.UserContext;
+import com.penske.apps.smccore.base.domain.User;
 
 public interface BuildMatrixSmcService {
 	
@@ -91,13 +91,13 @@ public interface BuildMatrixSmcService {
 	public List<BuildSummary> getAllBuildHistory();
 
 	// BUILD FUNCTIONS //
-	public BuildSummary startNewBuild(List<ApprovedOrder> selectedOrders, Map<CroOrderKey, Integer> unitsToConsiderByCroOrderKey, boolean guidance, UserContext userContext);
+	public BuildSummary startNewBuild(List<ApprovedOrder> selectedOrders, Map<CroOrderKey, Integer> unitsToConsiderByCroOrderKey, boolean guidance, User user);
 
 	public BuildSummary updateExistingBuild(Integer buildId, Map<CroOrderKey, Integer> unitsToConsiderByCroOrderKey, List<ApprovedOrder> selectedOrders);
 
 	public BuildSummary getBuildSummary(Integer buildId);
 	
-	public void submitBuild(BuildMixForm buildMixForm, UserContext userContext);
+	public void submitBuild(BuildMixForm buildMixForm, User user);
 	
 	// CRO BUILD REQUESTS //
 	public List<CROBuildRequest> getCroOrdersForBuild(Integer buildId);
@@ -204,7 +204,7 @@ public interface BuildMatrixSmcService {
 	public ImportRegionSlotsResults importRegionSlotMaintenace(MultipartFile file, String fileName, int slotTypeId,
 			int year, String region) throws IOException;
 
-	void updateReservationData(int slotReservationId, int slotId, String bodyMfr, int plantId, String unitNumber, UserContext user);
+	void updateReservationData(int slotReservationId, int slotId, String bodyMfr, int plantId, String unitNumber, User user);
 	
 	public List<String> getDebugInformation(int slotReservationId, int buildId);
 	

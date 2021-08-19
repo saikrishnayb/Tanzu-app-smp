@@ -228,7 +228,6 @@ $pageErrorContainer.on('click', '.close', function() {
 /*************** Helper Functions ***************/
 function handleAjaxError(ajaxError, status) {
 	
-	//FIXME: test - (non-validation, and validation) (with and without stack trace) (with and without paths / extra info) (security exception, vendor and penske)
 	if(ajaxError == null || ajaxError.length === 0) {
 		var supportNum = sessionStorage.getItem('supportPhoneNum');
 		ajaxError = {

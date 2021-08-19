@@ -16,8 +16,8 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.penske.apps.adminconsole.exceptions.UnauthorizedSecurityFunctionException;
+import com.penske.apps.smccore.base.domain.enums.SecurityFunction;
 import com.penske.apps.smccore.base.exception.HumanReadableException;
-import com.penske.apps.suppliermgmt.annotation.SmcSecurity.SecurityFunction;
 import com.penske.apps.suppliermgmt.exception.ExceptionLoggingInfo;
 
 /**
@@ -81,7 +81,7 @@ public class LoggingHandlerExceptionResolver implements HandlerExceptionResolver
         //Try to determine the user and IDs that were being worked on at the time of the error
         String sso;
         try {
-            sso = sessionBean.getUserContext() == null ? null : sessionBean.getUserContext().getUserSSO();
+            sso = sessionBean.getUser() == null ? null : sessionBean.getUser().getSso();
             
             //If it's not in the session bean, try to get them from the session itself
             if(sso == null)

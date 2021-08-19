@@ -16,11 +16,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import com.penske.apps.smccore.base.domain.User;
 import com.penske.apps.smccore.base.plugins.CoreTimingType;
 import com.penske.apps.smccore.base.plugins.TimingBean;
 import com.penske.apps.smccore.base.plugins.TimingType;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
-import com.penske.apps.suppliermgmt.model.UserContext;
 
 /**
  * Logs the server name, the SSO of the user, the request URL, and the time each request came into the server.
@@ -118,11 +118,11 @@ public class RequestLoggingHandlerInterceptor extends HandlerInterceptorAdapter
 	
 	private String getSSSOID()
 	{
-		UserContext userContext = sessionBean.getUserContext();
-		if(userContext == null)
+		User user = sessionBean.getUser();
+		if(user == null)
 			return null;
 		
-		return userContext.getUserSSO();
+		return user.getSso();
 	}
 	
 	/**

@@ -5,8 +5,8 @@ import java.sql.Date;
 import org.apache.commons.lang3.StringUtils;
 
 import com.penske.apps.buildmatrix.domain.enums.BuildStatus;
+import com.penske.apps.smccore.base.domain.User;
 import com.penske.apps.smccore.base.util.DateUtil;
-import com.penske.apps.suppliermgmt.model.UserContext;
 
 public class BuildSummary {
 	private Integer buildId;
@@ -30,11 +30,11 @@ public class BuildSummary {
 	
 	protected BuildSummary() {}
 	
-	public BuildSummary(int reqQty, UserContext userContext, int maxWeeksBefore, int maxWeeksAfter, boolean guidance) {
+	public BuildSummary(int reqQty, User user, int maxWeeksBefore, int maxWeeksAfter, boolean guidance) {
 		this.reqQty = reqQty;
 		this.buildStatus = BuildStatus.STARTED;
-		this.startedByName = userContext.getFirstName() + " " + userContext.getLastName();
-		this.startedBySso = userContext.getUserSSO();
+		this.startedByName = user.getFullName();
+		this.startedBySso = user.getSso();
 		this.maxWeeksBefore = maxWeeksBefore;
 		this.maxWeeksAfter = maxWeeksAfter;
 		this.guidanceMode = guidance ? "Y" : "N";

@@ -1,41 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.2//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.penske.apps.suppliermgmt.dao.AdminConsoleUserDAO">
- 	
-	<select id="getUserList"   resultMap="userDetailsMap">		
-		SELECT 
-		USER_ID,
-		SSO,
-		UPPER(FIRST_NAME) as FIRST_NAME,
-		UPPER(LAST_NAME) as LAST_NAME, 
-		EMAIL,
-		PHONE,
-		STATUS, 
-		EXTENSION,
-		DEPT_ID,
-		TYPE_ID
-		ROLE_ID
-		FROM SMC.SMC_USER_MASTER SUI 
-		WHERE TYPE_ID=#{userType}
-		<if test="active">
-		AND STATUS = 'A'
-		</if>
-		ORDER BY DEPT_ID		
-	</select>  
-		<resultMap id="userDetailsMap" type="com.penske.apps.suppliermgmt.model.User">
-	    <result property="userId" column="USER_ID" javaType="int" jdbcType="INTEGER"/>
-	    <result property="sso" column="SSO" javaType="String" jdbcType="VARCHAR"/>
-	    <result property="email" column="EMAIL" javaType="String" jdbcType="VARCHAR"/>
-	    <result property="firstName" column="FIRST_NAME" javaType="String" jdbcType="VARCHAR"/>
-	   	<result property="lastName" column="LAST_NAME" javaType="String" jdbcType="VARCHAR"/>
-		<result property="phone" column="PHONE" javaType="String" jdbcType="VARCHAR"/>
-		<result property="extension" column="EXTENSION" javaType="String" jdbcType="VARCHAR"/>
-		<result property="status" column="STATUS" javaType="String" jdbcType="CHAR"/>
-		<result property="userType" column="TYPE_ID" javaType="int" jdbcType="INTEGER"/>
-		<result property="roleId" column="ROLE_ID" javaType="int" jdbcType="INTEGER"/>
-		<result property="userDept" column="DEPT_ID" javaType="int" jdbcType="INTEGER"/>
-					
-	</resultMap>
+	
 	<delete id = "deleteBuddyList" parameterType = "com.penske.apps.suppliermgmt.model.Buddies"> 
  		DELETE FROM SMC.SMC_BUDDIES 
  		WHERE 
