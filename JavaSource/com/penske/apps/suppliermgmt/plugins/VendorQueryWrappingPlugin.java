@@ -38,7 +38,6 @@ import org.apache.log4j.Logger;
 
 import com.penske.apps.smccore.base.annotation.NonVendorQuery;
 import com.penske.apps.smccore.base.domain.User;
-import com.penske.apps.smccore.base.domain.enums.UserType;
 import com.penske.apps.smccore.base.exception.HumanReadableException;
 import com.penske.apps.suppliermgmt.util.SpringBeanHelper;
 
@@ -84,7 +83,7 @@ public class VendorQueryWrappingPlugin implements Interceptor
 				throw new IllegalStateException("Could not find logged-in user for query " + statement.getId() + ". Can not determine user's type or associated vendors.");
 			
 			//Only do vendor ID filtering for vendor users
-			if(currentUser.getUserType() == UserType.VENDOR)
+			if(currentUser.isVendorUser())
 			{
 				Set<Integer> vendorIds = currentUser.getAssociatedVendorIds();
 				if(vendorIds == null || vendorIds.isEmpty())

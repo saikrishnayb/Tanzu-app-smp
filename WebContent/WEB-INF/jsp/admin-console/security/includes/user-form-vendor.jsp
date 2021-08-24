@@ -33,7 +33,7 @@
 						<input id="vendor-ids" name="vendorIds" type="text" class="displayNone" class="input"/>
 						<input type="hidden" id="isCreateOrEdit" value="${isCreatePage}">
 						<input type="hidden" id="returnFlg" name="returnFlg" value="${returnFlg}">
-						<div class="single-line-content email-container" <c:if test = "${isCreatePage == true && currentUser.visibleToPenske}">class="displayNone"</c:if>  style="margin-top: 18px;">
+						<div class="single-line-content email-container" <c:if test = "${isCreatePage == true && currentUser.penskeUser}">class="displayNone"</c:if>  style="margin-top: 18px;">
 							<label for="email">Email <span class=requiredField>*</span></label> 
 							<input id="email" tabindex="1" name="email" type="text" class='input alpha alpha-email' value="${editableUser.email}"/>
 						</div>
@@ -51,17 +51,17 @@
 							</div>						
 						</c:if>
 						
-						<div class="single-line-content first-name-container" <c:if test = "${isCreatePage == true && currentUser.visibleToPenske}">class="displayNone"</c:if>>
+						<div class="single-line-content first-name-container" <c:if test = "${isCreatePage == true && currentUser.penskeUser}">class="displayNone"</c:if>>
 							<label for="first-name">First Name <span class=requiredField>*</span></label> 
 							<input id="first-name" tabindex=3 name="firstName" type="text" class="input alpha alpha-name " value="${editableUser.firstName}" />
 						</div>
 
-						<div class="single-line-content last-name-container" <c:if test = "${isCreatePage == true && currentUser.visibleToPenske}">class="displayNone"</c:if>>
+						<div class="single-line-content last-name-container" <c:if test = "${isCreatePage == true && currentUser.penskeUser}">class="displayNone"</c:if>>
 							<label for="last-name">Last Name <span class=requiredField>*</span></label> 
 							<input id="last-name" tabindex=4 name="lastName" class="input alpha alpha-name " type="text" value="${editableUser.lastName}" />
 						</div>
 
-						<div class="single-line-content phone-container" <c:if test = "${isCreatePage == true && currentUser.visibleToPenske}">class="displayNone"</c:if>>
+						<div class="single-line-content phone-container" <c:if test = "${isCreatePage == true && currentUser.penskeUser}">class="displayNone"</c:if>>
 							<label for="phone">Phone </label> 
 							<input id="phone" tabindex=5 class="input phone numeric numeric-phone  optional" name="phone" type="text" value="${editableUser.phone}" /> 
 							<input id="extension" tabindex=6 class="input extension optional numeric numeric-extension " name="extension" type="text" value="${editableUser.extension}" placeholder="ext." />

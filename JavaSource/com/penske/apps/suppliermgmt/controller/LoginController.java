@@ -68,7 +68,7 @@ public class LoginController extends BaseController {
             	return null;
             
             	
-        	User user = userService.getUser(userSSO);
+        	User user = userService.getUser(userSSO, true);
         	
         	if(user == null)
             	errorMessage = "Your SSOID not configured in SMC";
