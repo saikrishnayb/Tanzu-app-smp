@@ -134,12 +134,6 @@
 					<div id="table-wrapper">
 					<div id="table-scroll">
 					<table id="assignedComponentsTable">
-						<col style="width:10%"/>
-						<col style="width:5%"/>
-						<col style="width:7%"/>
-						<col style="width:25%"/>
-						<col style="width:25%"/>
-						<col style="width:28%"/>
 						<thead class="header fixedHeader">
 							<tr>
 								<th style="width:10%" class="pointer-column"></th>
@@ -215,10 +209,6 @@
 					<div id="table-wrapper">
 					<div id="table-scroll">
 					<table id="unAssignedComponentsTable" class="display no-group" style="height:200px;">
-						<col style="width:10%"/>
-						<col style="width:30%"/>
-						<col style="width:30%"/>
-						<col style="width:30%"/>
 						<thead class="header fixedHeader" >
 							<tr>
 								<th style="width:10%" class="pointer-column"></th>
