@@ -254,10 +254,6 @@ public class Vendor {
         return mfrCodes;
     }
     
-    public String getFirstMfrCodes() {
-        return mfrCodes == null? "" : mfrCodes.get(0);
-    }
-    
     //***** MODIFIED ACCESSORS *****//
     /**
      * Package-private setter - MyBatis only.
