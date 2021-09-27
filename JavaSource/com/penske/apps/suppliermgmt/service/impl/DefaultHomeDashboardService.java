@@ -1,5 +1,7 @@
 package com.penske.apps.suppliermgmt.service.impl;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,13 +10,17 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.penske.apps.smccore.base.domain.ConfirmationAlertData;
+import com.penske.apps.smccore.base.domain.FulfillmentAlertData;
+import com.penske.apps.smccore.base.domain.ProductionAlertData;
+import com.penske.apps.smccore.base.domain.SmcAlert;
 import com.penske.apps.smccore.base.domain.User;
 import com.penske.apps.smccore.base.domain.enums.SmcTab;
 import com.penske.apps.smccore.base.domain.enums.UserType;
+import com.penske.apps.smccore.base.service.AlertsService;
 import com.penske.apps.suppliermgmt.dao.HomeDashboardDao;
-import com.penske.apps.suppliermgmt.domain.AlertCount;
-import com.penske.apps.suppliermgmt.model.Alert;
 import com.penske.apps.suppliermgmt.model.AlertHeader;
+import com.penske.apps.suppliermgmt.model.AlertView;
 import com.penske.apps.suppliermgmt.model.Tab;
 import com.penske.apps.suppliermgmt.service.HomeDashboardService;
 import com.penske.apps.suppliermgmt.util.ApplicationConstants;
@@ -41,6 +47,8 @@ public class DefaultHomeDashboardService implements HomeDashboardService {
 
 	@Autowired
 	private HomeDashboardDao homeDashboardDao;
+	@Autowired
+	private AlertsService alertsService;
 
 	private static final Logger LOGGER = Logger.getLogger(DefaultHomeDashboardService.class);
 
@@ -51,38 +59,16 @@ public class DefaultHomeDashboardService implements HomeDashboardService {
 
 		// Iterate through each tab and get the necessary Alert Headers and Alerts.
 		for (Tab currentTab : tabs) {
-			// Get the list of Alert Headers for the current tab.
-			SmcTab tabKey = currentTab.getSmcTab();
-			List<AlertHeader> headers = homeDashboardDao.selectHeaders(tabKey);
-
-			// Iterate through each alert header and get the necessary Alerts.
-			for (AlertHeader currentHeader : headers) {
-				// Get the list of Alerts for the current alert header.
-				currentHeader.setAlerts(homeDashboardDao.selectAlerts(currentHeader.getHeaderId(),user.getUserType(), UserType.PENSKE));
-
-				// Set alert links for the dashboard if the alerts are actionable.
-				for (Alert alert : currentHeader.getAlerts()) {
-					if (alert.getActionable() == 1) {
-						switch(tabKey){
-						case ORDER_FULFILLMENT : alert.setLink("./order-fulfillment?alertId=" + alert.getAlertId());
-						break;
-						case ORDER_CONFIRMATION: alert.setLink("./order-confirmation?alertId=" + alert.getAlertId());
-						break;
-						case PRODUCTION: alert.setLink("./production?alertId=" + alert.getAlertId());
-						break;
-						default : break;
-						}
-					}
-				}
-			}
-
-			currentTab.setAlertHeaders(headers);
-
 			// Put the tab name in all caps for display on the dashboard.
 			currentTab.setTabName(currentTab.getTabName().toUpperCase());
 		}
 
 		return tabs;
+	}
+	
+	@Override
+	public List<AlertHeader> getAlertHeaders(SmcTab tabKey) {
+		return homeDashboardDao.selectHeaders(tabKey);
 	}
 
 	/**
@@ -90,49 +76,61 @@ public class DefaultHomeDashboardService implements HomeDashboardService {
 	 * @param current SSOId,tabKey
 	 * @return List<AlertHeader>
 	 */
-	public List<AlertHeader> getAlerts(User user, SmcTab tabKey) {
+	public Map<Integer, List<AlertView>> getAlertsByHeaderId(User user, SmcTab tabKey, List<AlertHeader> alertHeaders) {
 
-		LOGGER.debug("Inside getAlerts()");
-		List<AlertHeader> headers = homeDashboardDao.selectHeaders(tabKey);
-
-		Map<String, AlertCount> alertCounts = new HashMap<String, AlertCount>();
+		FulfillmentAlertData fulfillmentAlertData;
+		ConfirmationAlertData confirmationAlertData;
+		ProductionAlertData productionAlertData;
 
 		switch(tabKey){
-		case ORDER_FULFILLMENT : alertCounts = homeDashboardDao.getOrderFullfillmentCountsByAlertKey(user.getSso());
-		break;
-		case ORDER_CONFIRMATION: alertCounts = homeDashboardDao.getOrderConfirmationAlertCountsByAlertKey(user.getSso());
-		break;
-		case PRODUCTION: alertCounts = homeDashboardDao.getProductionAlertCountsByAlertKey(user.getSso());
-		break;
-		default : break;
+		case ORDER_FULFILLMENT : 
+			fulfillmentAlertData = alertsService.getFulfillmentAlertData(user);
+			confirmationAlertData = null;
+			productionAlertData = null;
+			break;
+		case ORDER_CONFIRMATION: 
+			fulfillmentAlertData = null;
+			confirmationAlertData = alertsService.getConfirmationAlertDataByVendorId(user);
+			productionAlertData = null;
+			break;
+		case PRODUCTION: 
+			fulfillmentAlertData = null;
+			confirmationAlertData = null;
+			productionAlertData = alertsService.getProductionAlertDataByVendorId(user);
+			break;
+		default : 
+			fulfillmentAlertData = null;
+			confirmationAlertData = null;
+			productionAlertData = null;
+			break;
 		}
-		for (AlertHeader currentHeader : headers) {
+		Map<Integer, List<AlertView>> result = new HashMap<>();
+		for (AlertHeader currentHeader : alertHeaders) {
 
-			currentHeader.setAlerts(homeDashboardDao.selectAlerts(currentHeader.getHeaderId(), user.getUserType(), UserType.PENSKE));
+			List<SmcAlert> alerts = alertsService.getAlertsForTab(tabKey, currentHeader.getHeaderId(), user.getUserType(), UserType.PENSKE);
 
-			for(Alert alert : currentHeader.getAlerts()){
-				String alertKey = alert.getAlertKey();
+			for(SmcAlert alert : alerts){
+				int alertCount = alert.getAlertType().extractCount(fulfillmentAlertData, confirmationAlertData, productionAlertData);
 
-				AlertCount alertCount = alertCounts.get(alertKey);
-
-				boolean noAlertCount = alertCount == null;
-				if(noAlertCount) continue;
-
-				alert.updateAlertCount(alertCount);
-
-				if(alert.getActionable() == 1) {
+				String alertLink = "";
+				if(alert.isActionable()) {
 					switch(tabKey){
-					case ORDER_FULFILLMENT : alert.setLink("./order-fulfillment?alertId=" + alert.getAlertId());
-					break;
-					case ORDER_CONFIRMATION: alert.setLink("./order-confirmation?alertId=" + alert.getAlertId());
-					break;
-					case PRODUCTION: alert.setLink("./production?alertId=" + alert.getAlertId());
-					break;
+					case ORDER_FULFILLMENT : 
+						alertLink = "./order-fulfillment?alertId=" + alert.getAlertID();
+						break;
+					case ORDER_CONFIRMATION: 
+						alertLink = "./order-confirmation?alertId=" + alert.getAlertID();
+						break;
+					case PRODUCTION: 
+						alertLink = "./production?alertId=" + alert.getAlertID();
+						break;
 					default : break;
 					}
 				}
+				List<AlertView> alertViews = result.computeIfAbsent(alert.getHeaderId(), list -> new ArrayList<>());
+				alertViews.add(new AlertView(alert, alertCount, alertLink));
 			}
 		}
-		return headers;
+		return result;
 	}
 }

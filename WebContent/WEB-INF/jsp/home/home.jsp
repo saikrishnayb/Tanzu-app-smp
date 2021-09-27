@@ -72,7 +72,8 @@
 				<div id ="alertTable"  <c:if test="${hideTable}">style="display:none"</c:if> >
 					<div class="tab-header" id="${TabKey}">
 					<c:forEach var="alertHeader" items="${alertHeaders}">
-						<c:if test="${!empty alertHeader.alerts}">
+						<c:set var="alerts" value="${alertsByHeaderId.get(alertHeader.headerId)}" />
+						<c:if test="${!empty alerts}">
 						<c:set var="tabKey" value="${TabKey}"/>
 						<div class="header width-full">
 							<table class="width-full">
@@ -90,15 +91,18 @@
 									</tr>
 								</thead>
 								<tbody>
-								<c:forEach var="alert" items="${alertHeader.alerts}">
+								<c:forEach var="alertView" items="${alerts}">
+									<c:set var="alert" value="${alertView.alert}" />
+									<c:set var="alertCount" value="${alertView.alertCount}" />
+									<c:set var="alertLink" value="${alertView.alertLink}" />
 									<c:choose>
-											<c:when test="${alert.alertKey eq 'ALRT_PROD_DATA_CONFLICT'}">		
+											<c:when test="${alert.alertType.alertKey eq 'ALRT_PROD_DATA_CONFLICT'}">		
 												<c:set var="isValidAlert" value="N"/>						
 												<tl:isAuthorized tabName="Production" secFunction="DATA_CONFLICT_MENU">
 													<c:set var="isValidAlert" value="Y"/>
 												</tl:isAuthorized>
 											</c:when>
-											<c:when test="${alert.alertKey eq 'ALRT_ALL_MISSING_INFO'}">
+											<c:when test="${alert.alertType.alertKey eq 'ALRT_ALL_MISSING_INFO'}">
 												<c:set var="isValidAlert" value="N"/>						
 												<tl:isAuthorized tabName="Production" secFunction="PROVIDE_MISSING_INFORMATION">
 													<c:set var="isValidAlert" value="Y"/>
@@ -119,18 +123,18 @@
 	
 										<td>
 										<c:choose>
-											<c:when test="${alert.actionable eq 1 and not empty alert.link and alert.count != 0}">
+											<c:when test="${alert.actionable and not empty alertLink and alertCount != 0}">
 												<c:choose>
-													<c:when test="${alert.alertKey eq 'ALRT_PROD_DATA_CONFLICT'}">
+													<c:when test="${alert.alertType.alertKey eq 'ALRT_PROD_DATA_CONFLICT'}">
 														<tl:isAuthorized tabName="Production" secFunction="DATA_CONFLICT_MENU">
-														<a id="CountId-${TabKey}-${alert.templateKey }" onClick="redirectToTab('dataConflict');return false">${alert.count}</a>
+														<a id="CountId-${TabKey}-${alert.templateKey }" onClick="redirectToTab('dataConflict');return false">${alertCount}</a>
 														</tl:isAuthorized>
 													</c:when>
-													<c:when test="${(alert.alertKey eq 'ALRT_OF_VEND_ANLYST_ASSG_REQ') || (alert.alertKey eq 'ALRT_OF_NEW_VEND_SETUP_REQ') || (alert.alertKey eq 'ALRT_OF_VEND_USER_SETUP_REQ')}">
-														<a id="CountId-${TabKey}-${alert.alertKey }" onClick="redirectToTemplate('${TabKey}','${alert.alertKey}');return false">${alert.count}</a>
+													<c:when test="${(alert.alertType.alertKey eq 'ALRT_OF_VEND_ANLYST_ASSG_REQ') || (alert.alertType.alertKey eq 'ALRT_OF_NEW_VEND_SETUP_REQ') || (alert.alertType.alertKey eq 'ALRT_OF_VEND_USER_SETUP_REQ')}">
+														<a id="CountId-${TabKey}-${alert.alertType.alertKey }" onClick="redirectToTemplate('${TabKey}','${alert.alertType.alertKey}');return false">${alertCount}</a>
 													</c:when>
 													<c:otherwise>
-														<a id="CountId-${TabKey}-${alert.templateKey }" onClick="redirectToTemplate('${TabKey}','${alert.templateKey}');return false">${alert.count}</a>
+														<a id="CountId-${TabKey}-${alert.templateKey }" onClick="redirectToTemplate('${TabKey}','${alert.templateKey}');return false">${alertCount}</a>
 													</c:otherwise>
 												</c:choose>
 											</c:when>
@@ -138,10 +142,6 @@
 										</c:choose>
 											</td>
 											<td>
-												<c:if test="${alert.flag == 'Y' and TabKey ne 'TAB_PROD'}">
-												<input type="hidden" class = "flags" value="Y"/>
-												<img rel="tooltip" class="centerImage" src="${commonStaticUrl}/images/warning.png" title="${alert.complianceText}"/>
-											</c:if>
 										</td>
 									</tr>
 									</c:if>

@@ -35,14 +35,14 @@ public class Alert {
 	private String complianceText;
 	
 	//Modified Accessors
-		public void updateAlertCount(AlertCount alertCount) {
-		    
-		    if(alertCount == null)
-		        throw new IllegalArgumentException("AlertCount must not be null");
-		    
-		    this.count = alertCount.getAlertCount();
-		    this.flag = alertCount.getNonCompliant();
-		}
+	public void updateAlertCount(AlertCount alertCount) {
+	    
+	    if(alertCount == null)
+	        throw new IllegalArgumentException("AlertCount must not be null");
+	    
+	    this.count = alertCount.getAlertCount();
+	    this.flag = alertCount.getNonCompliant();
+	}
 
 	// Getters
 	public int getAlertId() {
