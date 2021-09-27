@@ -1,7 +1,9 @@
 package com.penske.apps.suppliermgmt.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -22,6 +24,7 @@ import com.penske.apps.suppliermgmt.annotation.VendorAllowed;
 import com.penske.apps.suppliermgmt.annotation.Version1Controller;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.model.AlertHeader;
+import com.penske.apps.suppliermgmt.model.AlertView;
 import com.penske.apps.suppliermgmt.model.Tab;
 import com.penske.apps.suppliermgmt.service.HomeDashboardService;
 
@@ -86,6 +89,7 @@ public class HomeController extends BaseController{
     	LookupContainer lookups = lookupManager.getLookupContainer();
         ModelAndView modelandView = new ModelAndView("/home/home");
         List<AlertHeader> alertHeaders=new ArrayList<AlertHeader>();
+        Map<Integer, List<AlertView>> alertsByHeaderId = new HashMap<>();
         try{
         	User user = sessionBean.getUser();
         	SmcTab smcTab = SmcTab.findByTabKey(tabId);
@@ -100,14 +104,18 @@ public class HomeController extends BaseController{
             if(defaultTab == SmcTab.ORDER_FULFILLMENT && user.getUserType() == UserType.VENDOR)
             	defaultTab = tabs.get(1).getSmcTab();
             
-            if(defaultTab != null)
-                alertHeaders = homeService.getAlerts(user, defaultTab);
+            
+            if(defaultTab != null) {
+            	alertHeaders = homeService.getAlertHeaders(defaultTab);
+                alertsByHeaderId = homeService.getAlertsByHeaderId(user, defaultTab, alertHeaders);
+            }
 
             String supportNumber = lookups.getSingleLookupValue(LookupKey.SUPPORT_PHONE_NUM);
             modelandView.addObject("supportNum", supportNumber);
             modelandView.addObject("tabs",tabs);
             modelandView.addObject("TabKey", defaultTab.getTabKey());
             modelandView.addObject("alertHeaders", alertHeaders);//To display alerts with count
+            modelandView.addObject("alertsByHeaderId", alertsByHeaderId);
         }catch(Exception e){
             modelandView = handleException(e);
         }
@@ -128,8 +136,13 @@ public class HomeController extends BaseController{
         try{
         	SmcTab smcTab = SmcTab.findByTabKey(tabKey);
             User user = sessionBean.getUser();
+            
+            List<AlertHeader> alertHeaders = homeService.getAlertHeaders(smcTab);
+            Map<Integer, List<AlertView>> alertsByHeaderId = homeService.getAlertsByHeaderId(user, smcTab, alertHeaders);
+            
             model.addObject("TabKey", tabKey);
-            model.addObject("alertHeaders", homeService.getAlerts(user, smcTab));
+            model.addObject("alertHeaders", alertHeaders);
+            model.addObject("alertsByHeaderId", alertsByHeaderId);
         }catch(Exception e ){
             handleAjaxException(e, response);
         }
