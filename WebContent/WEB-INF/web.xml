@@ -5,56 +5,18 @@
          version="3.0"
          id="WebApp_ID">
 	
-	<display-name>suppliermgmt</display-name>
-	<context-param>
-		<param-name>webAppRootKey</param-name>
-		<param-value>suppliermgmt</param-value>
-	</context-param>
-
-	<context-param>
-		<param-name>log4jConfigLocation</param-name>
-		<param-value>classpath:conf/xml/log4j.xml</param-value>
-	</context-param>
+	<!--
+		IMPORTANT: This web app uses Servlet 3.0 and a Spring WebApplicationInitializer.
+			Servlets are defined here, but active spring profiles are set the WebApplicationInitializer.
+			If you're looking for configuration for filters, listeners, etc., then please see the WebAppInitializer class in the servlet package.
+			The only properties defined here are the ones that can't currently (as of WebSphere 8.5.5.9) be defined in Java code, and the servlet mappings.
+			We define the servlet mappings here because WebSphere reads the web.xml file to find what URLs it needs to set up when generating configuration settings for the Apache server plugin.
+	-->
 	
 	<session-config>
 		<session-timeout>240</session-timeout>
 	</session-config>
 	
-	<listener>
-		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
-	</listener>
-
-	<!-- Filters -->	
- 	<filter>
-		<filter-name>DummySecurityFilter</filter-name>
-		<filter-class>com.penske.apps.suppliermgmt.filter.DummySecurityFilter</filter-class>
-	</filter>
-	
-	<filter>
-		<filter-name>SessionValidationFilter</filter-name>
-		<filter-class>com.penske.apps.suppliermgmt.filter.SessionValidationFilter</filter-class>
-	</filter>
-	
-	<filter>
-		<filter-name>SerializableFilter</filter-name>
-		<filter-class>com.penske.apps.suppliermgmt.filter.SerializableFilter</filter-class>
-	</filter>
-	
-	<filter-mapping>
-		<filter-name>DummySecurityFilter</filter-name>
-		<url-pattern>/entry/*</url-pattern>
-	</filter-mapping>
-	
-	<filter-mapping>
-		<filter-name>SessionValidationFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-	
-	<filter-mapping>
-		<filter-name>SerializableFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-	 
 	<!-- Servlets -->
 	<servlet>
 		<servlet-name>ApplicationEntry</servlet-name>
@@ -77,15 +39,7 @@
 			<param-name>contextConfigLocation</param-name>
 			<param-value>com.penske.apps.suppliermgmt.configuration.WebConfiguration</param-value>
 		</init-param>
-		<init-param>
-			<param-name>spring.profiles.active</param-name>
-			<param-value>local</param-value>
-		</init-param>
-		<!-- This parameter is needed just for suppliermgmt so it can build the navigation URLS to the other SMC apps correctly in the QA2 environment -->
-        <init-param>
-        	<param-name>isQA2</param-name>
-        	<param-value>false</param-value>
-        </init-param>
+		<load-on-startup>1</load-on-startup>
 	</servlet>
 	
 	<servlet-mapping>

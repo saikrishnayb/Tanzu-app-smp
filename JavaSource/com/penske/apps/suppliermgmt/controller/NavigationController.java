@@ -159,14 +159,7 @@ public class NavigationController extends BaseController {
     private boolean isQA2Environment()
     {
     	List<String> profiles = getActiveSpringProfiles();
-    	if(!profiles.contains(ProfileType.QA))
-    		return false;
-    	
-    	String qa2Parameter = springEnvironment.getProperty("isQA2");
-    	if(StringUtils.equals(qa2Parameter, "true"))
-    		return true;
-    	else
-    		return false;
+    	return profiles.contains(ProfileType.QA2);
     }
     
     private List<String> getActiveSpringProfiles() {

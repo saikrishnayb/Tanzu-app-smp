@@ -3,36 +3,16 @@
 	
 	<target name="prePackageHook" depends="setClassPath">
 		
-		<!-- Have to have special logic for handling QA2 environment - targeted directories come from a different place. -->
-		<if>
-			<equals arg1="${applnName}" arg2="suppliermgmt" />
-			<then>
-				<property name="smc.config.dir" value="${config.dir}" />
-			</then>
-			<else>
-				<property name="smc.config.dir" value="${appln.src.dir}/${configfilelocation}/qa2" />
-			</else>
-		</if>
-		
 		<!--
 			These JARs are just there for testing, and should not be included in the WAR file deployed to WebSphere.
 			They are deleted from the WAR build directory, and are later copied into the test build directory.
 		-->
 		<property name="smc.test.includes" value="mockito-core-*.jar,junit-*.jar,hamcrest-*.jar,hsqldb*.jar,byte-buddy-*.jar,objenesis-*.jar" />
 		
-		<!-- Copy logging config to conf directory -->
-		<echo message=" to  dir '${build.webinf.classes}/conf/xml' from ${smc.config.dir}" />
-		<copy todir="${build.webinf.classes}/conf/xml" overwrite="true">
-			<fileset dir="${smc.config.dir}">
-				<include name="log4j.xml" />
-			</fileset>
-		</copy>
-
 		<!--Copy the web deployment files to WEB-INF directory -->
-		<echo message=" to  dir '${build.webinf}' from ${smc.config.dir}" />
+		<echo message=" to  dir '${build.webinf}' from ${appln.src.dir}/${configfilelocation}" />
 		<copy todir="${build.webinf}" overwrite="true">
-			<fileset dir="${smc.config.dir}">
-				<include name="web.xml" />
+			<fileset dir="${appln.src.dir}/${configfilelocation}">
 				<include name="ibm-web-ext.xml" />
 			</fileset>
 		</copy>
