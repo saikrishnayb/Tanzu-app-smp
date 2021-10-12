@@ -95,7 +95,7 @@ public class HomeController extends BaseController{
         	SmcTab smcTab = SmcTab.findByTabKey(tabId);
         	
             List<Tab> tabs = homeService.selectTabs(user);
-            SmcTab defaultTab = tabs.stream()
+            SmcTab defaultTab = tabs.isEmpty() ? null : tabs.stream()
             	.map(Tab::getSmcTab)
             	.filter(t -> t == smcTab)
             	.findAny()
@@ -113,7 +113,7 @@ public class HomeController extends BaseController{
             String supportNumber = lookups.getSingleLookupValue(LookupKey.SUPPORT_PHONE_NUM);
             modelandView.addObject("supportNum", supportNumber);
             modelandView.addObject("tabs",tabs);
-            modelandView.addObject("TabKey", defaultTab.getTabKey());
+            modelandView.addObject("TabKey", defaultTab != null ? defaultTab.getTabKey() : null);
             modelandView.addObject("alertHeaders", alertHeaders);//To display alerts with count
             modelandView.addObject("alertsByHeaderId", alertsByHeaderId);
         }catch(Exception e){
