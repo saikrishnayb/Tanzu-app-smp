@@ -101,8 +101,12 @@ public class HomeController extends BaseController{
             	.findAny()
             	.orElse(tabs.get(0).getSmcTab());
             
-            if(defaultTab == SmcTab.ORDER_FULFILLMENT && user.getUserType() == UserType.VENDOR)
-            	defaultTab = tabs.get(1).getSmcTab();
+            if(defaultTab == SmcTab.ORDER_FULFILLMENT && user.getUserType() == UserType.VENDOR) {
+            	if(tabs.size() > 1)
+            		defaultTab = tabs.get(1).getSmcTab();
+            	else
+            		defaultTab = null;
+            }
             
             
             if(defaultTab != null) {
