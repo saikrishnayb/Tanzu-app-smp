@@ -22,3 +22,11 @@
 .common-tree-container .common-tree-content label {
   display: block;
 }
+
+#vendor-filter-fuzzy-search-clear {
+	margin-right: 10px;
+}
+
+#vendor-filter-fuzzy-search {
+	width: 400px;
+}
