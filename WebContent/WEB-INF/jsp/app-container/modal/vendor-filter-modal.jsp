@@ -5,6 +5,7 @@
 <div class="modal-content" data-modal-title="Vendor Filter" data-modal-width="500">
 
   <div class="modal-body">
+  	<a id="vendor-filter-fuzzy-search-clear" class="secondaryLink">Clear</a><input id="vendor-filter-fuzzy-search" type="text">
     <c:forEach items="${allOrgFilters}" var="orgFilter">
     
       <c:set value="${empty orgFilter.vendorFilters}" var="noVendors"/>
@@ -16,7 +17,7 @@
           <label>
             <input type="checkbox" class="org-input" value="${orgFilter.orgId}"
               <c:if test="${orgFilter.orgSelected}">checked</c:if>
-            /> ${orgFilter.orgName}
+            /> <span class="org-name">${orgFilter.orgName}</span>
           </label>
           
         </div>
