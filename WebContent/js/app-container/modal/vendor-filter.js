@@ -99,20 +99,28 @@ $('.btn-clear-vendors').on('click', function() {
 $('#vendor-filter-fuzzy-search').on('keyup', function(){
 	var $searchBox = $(this);
 	var query = $searchBox.val().trim().toUpperCase();
+	var queryArray = query.split(' ');
 	
 	$('.common-tree-container').each(function() {
 		var $container = $(this);
 		
 		if(query == '') {
-			$container.removeClass('hidden');
+			$container.show();
 		}
 		else {
 			var orgName = $container.find('label .org-name').text().trim();
 			var orgNameArray = orgName.split(' ');
-			if(orgNameArray.includes(query))
-				$container.removeClass('hidden');
+			
+			var matches = true;
+			queryArray.forEach(function(queryItem){
+				if(!orgNameArray.includes(queryItem))
+					matches = false;
+			});
+			
+			if(matches)
+				$container.show();
 			else
-				$container.addClass('hidden');
+				$container.hide();
 		}
 	});
 	
