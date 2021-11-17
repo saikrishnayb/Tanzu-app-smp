@@ -83,7 +83,12 @@
 						panl.USER_ID AS "planningAnalyst.userId",
 						panl.FIRST_NAME AS "planningAnalyst.firstName",
 						panl.LAST_NAME AS "planningAnalyst.lastName",
-						supp.USER_ID AS "supplySpecialist.userId"
+						supp.USER_ID AS "supplySpecialist.userId",
+						purv.PVSAD1 AS shippingAddress1,
+						purv.PVSAD2 AS shippingAddress2,
+						purv.PVSCTY AS shippingCity,
+						purv.PVSST AS shippingState,
+						purv.PVSZIP AS shippingZipCode
 		
 				FROM	SMC.SMC_VENDOR_MASTER vend 
 						JOIN SMC.SMC_ORG_VENDOR_ASSOC org
