@@ -86,7 +86,7 @@ $(document).ready(function() {
 		closeOnEscape: false
 	});
 	
-	$('.vendor-address-icon').on('click',function() {
+	$vendorTable.on('click', '.vendor-address-icon', function() {
 		var $this = $(this);
 		var collapsed = $this.hasClass('va-collapsed');
 		var $td = $this.closest('td');
