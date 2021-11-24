@@ -113,8 +113,8 @@ form > span.errorMsg {
 	display: inline-block;
 }
 
-.vendor-address-icon {
-	cursor: pointer;	
+.vendor-address-expand-collapse {
+	cursor: pointer;
 }
 
 .vendor-address {
