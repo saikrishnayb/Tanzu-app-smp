@@ -50,7 +50,7 @@ $(document).ready(function() {
 										}
 	});
 	
-	$('.expand-collapse-div').html('<a id="expand-collapse-link" class="expand">Expand All</a>')
+	$('.expand-collapse-div').html('<a id="expand-link" class="expand">Expand All</a> / <a id="collapse-link" class="collapse">Collapse All</a>')
 	
 	/* ----------- Modal Declarations ----------- */
 	$editVendorModal.dialog({
@@ -86,56 +86,32 @@ $(document).ready(function() {
 		closeOnEscape: false
 	});
 	
-	$vendorTable.on('click', '.vendor-address-icon', function() {
-		var $this = $(this);
-		var collapsed = $this.hasClass('va-collapsed');
-		var $td = $this.closest('td');
-		
-		if(collapsed){
-			$td.find('.vendor-address').show();
-			$this.attr("src", "https://staticdev.penske.com/common/images/expanded.png");
-			$this.removeClass('va-collapsed');
-		}
-		else {
-			$td.find('.vendor-address').hide();
-			$this.attr("src", "https://staticdev.penske.com/common/images/collapsed.png");
-			$this.addClass('va-collapsed');
-		}
-		
+	$vendorTable.on('click', '.vendor-address-expand-collapse', function() {
+		toggleVendorAddress(this);
 	});
 	
-	$('#expand-collapse-link').on('click',function(){
-		var $this = $(this);
-		var expand = $this.hasClass('expand');
-		
-		if(expand){
-			$vendorTable.find('tbody tr').each(function(){
-				var $row = $(this);
-				var $td = $row.find('.vendor-name');
-				var $vendorIcon = $td.find('.vendor-address-icon')
-				
-				$td.find('.vendor-address').show();
-				$vendorIcon.attr("src", "https://staticdev.penske.com/common/images/expanded.png");
-				$vendorIcon.removeClass('va-collapsed');
-			});
+	$('#expand-link').on('click', function() {
+		$.each($vendorTable.dataTable().fnGetNodes(), function() {
+			var $row = $(this);
+			var $vendorLink = $row.find('.vendor-address-expand-collapse');
+			var $vendorIcon = $vendorLink.find('.vendor-address-icon');
 			
-			$this.text('Collapse All')
-			$this.removeClass('expand');
-		}
-		else {
-			$vendorTable.find('tbody tr').each(function(){
-				var $row = $(this);
-				var $td = $row.find('.vendor-name');
-				var $vendorIcon = $td.find('.vendor-address-icon')
-				
-				$td.find('.vendor-address').hide();
-				$vendorIcon.attr("src", "https://staticdev.penske.com/common/images/collapsed.png");
-				$vendorIcon.addClass('va-collapsed');
-			});
+			//Expand all the ones that are currently collapsed
+			if($vendorIcon.hasClass('va-collapsed'))
+				toggleVendorAddress($vendorLink);
+		})
+	});
+	
+	$('#collapse-link').on('click', function() {
+		$.each($vendorTable.dataTable().fnGetNodes(), function() {
+			var $row = $(this);
+			var $vendorLink = $row.find('.vendor-address-expand-collapse');
+			var $vendorIcon = $vendorLink.find('.vendor-address-icon');
 			
-			$this.text('Expand All')
-			$this.addClass('expand');
-		}
+			//Collapse all the ones that aren't currently collapsed
+			if(!$vendorIcon.hasClass('va-collapsed'))
+				toggleVendorAddress($vendorLink);
+		});
 	});
 	
 	/* ------------ Advanced Search ------------ */
@@ -356,3 +332,23 @@ function submitAdvancedSearch() {
 		$form.submit();
 	}
 }
+
+function toggleVendorAddress(expandCollapseLink) {
+	var $icon = $(expandCollapseLink).find('.vendor-address-icon')
+	var collapsed = $icon.hasClass('va-collapsed');
+	var $td = $icon.closest('td');
+	
+	if(collapsed){
+		$td.find('.vendor-address').show();
+		$icon.attr("src", $icon.data('expanded-src'));
+		$icon.removeClass('va-collapsed');
+	}
+	else {
+		$td.find('.vendor-address').hide();
+		$icon.attr("src", $icon.data('collapsed-src'));
+		$icon.addClass('va-collapsed');
+	}
+}
+
+//Comment to assist Chrome debugger tools
+//# sourceURL=vendors.js
