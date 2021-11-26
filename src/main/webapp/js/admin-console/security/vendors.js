@@ -10,7 +10,7 @@ $(document).ready(function() {
 	/* ----------- Datatable Declaration ----------- */
 	var iDisplayLength = 100;//tableRowLengthCalc();
 	
-	$vendorTable.dataTable({ 					//All of the below are optional
+	var $vendorDataTable = $vendorTable.dataTable({ 					//All of the below are optional
 				"aaSorting": [[ 2, "asc" ]], 	//default sort column
 				"bPaginate": true, 				//enable pagination
 				"bLengthChange": true, 		//enable change of records per page, not recommended
@@ -25,6 +25,7 @@ $(document).ready(function() {
 				"sPaginationType": "full_numbers", //Shows first/previous 1,2,3,4 next/last buttons
 				"iDisplayLength": 100 , 			//number of records per page for pagination
 				"oLanguage": {"sEmptyTable": "No vendors were found."}, //Message displayed when no records are found
+				"sDom" : '<"vendor-table-top"l<"expand-collapse-div"">"f>tipr',
 				"fnDrawCallback": function() { 	//This will hide the pagination menu if we only have 1 page.
 											var paginateRow = $(this).parent().children('div.dataTables_paginate');
 											var pageCount = Math.ceil((this.fnSettings().fnRecordsDisplay()) / this.fnSettings()._iDisplayLength);
@@ -48,6 +49,8 @@ $(document).ready(function() {
 											
 										}
 	});
+	
+	$('.expand-collapse-div').html('<a id="expand-link" class="expand">Expand All</a> / <a id="collapse-link" class="collapse">Collapse All</a>')
 	
 	/* ----------- Modal Declarations ----------- */
 	$editVendorModal.dialog({
@@ -81,6 +84,34 @@ $(document).ready(function() {
 		resizable: false,
 		title: 'Modify Vendor',
 		closeOnEscape: false
+	});
+	
+	$vendorTable.on('click', '.vendor-address-expand-collapse', function() {
+		toggleVendorAddress(this);
+	});
+	
+	$('#expand-link').on('click', function() {
+		$.each($vendorTable.dataTable().fnGetNodes(), function() {
+			var $row = $(this);
+			var $vendorLink = $row.find('.vendor-address-expand-collapse');
+			var $vendorIcon = $vendorLink.find('.vendor-address-icon');
+			
+			//Expand all the ones that are currently collapsed
+			if($vendorIcon.hasClass('va-collapsed'))
+				toggleVendorAddress($vendorLink);
+		})
+	});
+	
+	$('#collapse-link').on('click', function() {
+		$.each($vendorTable.dataTable().fnGetNodes(), function() {
+			var $row = $(this);
+			var $vendorLink = $row.find('.vendor-address-expand-collapse');
+			var $vendorIcon = $vendorLink.find('.vendor-address-icon');
+			
+			//Collapse all the ones that aren't currently collapsed
+			if(!$vendorIcon.hasClass('va-collapsed'))
+				toggleVendorAddress($vendorLink);
+		});
 	});
 	
 	/* ------------ Advanced Search ------------ */
@@ -127,7 +158,7 @@ $(document).ready(function() {
 	     return false;
 	    }
 	   });
-	
+
 	// Allow the user to see their advanced search terms if they just performed a search.
 /*	if ($advancedForm.find('input:text[value!=""]').length > 0) {
 	//	$('#advanced-search').trigger('click');
@@ -301,3 +332,23 @@ function submitAdvancedSearch() {
 		$form.submit();
 	}
 }
+
+function toggleVendorAddress(expandCollapseLink) {
+	var $icon = $(expandCollapseLink).find('.vendor-address-icon')
+	var collapsed = $icon.hasClass('va-collapsed');
+	var $td = $icon.closest('td');
+	
+	if(collapsed){
+		$td.find('.vendor-address').show();
+		$icon.attr("src", $icon.data('expanded-src'));
+		$icon.removeClass('va-collapsed');
+	}
+	else {
+		$td.find('.vendor-address').hide();
+		$icon.attr("src", $icon.data('collapsed-src'));
+		$icon.addClass('va-collapsed');
+	}
+}
+
+//Comment to assist Chrome debugger tools
+//# sourceURL=vendors.js

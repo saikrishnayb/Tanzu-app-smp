@@ -108,3 +108,21 @@ form > span.errorMsg {
 	font-style: italic;
 	color: #555;
 }
+
+.expand-collapse-div {
+	display: inline-block;
+}
+
+.vendor-address-expand-collapse {
+	cursor: pointer;
+}
+
+.vendor-address {
+	margin-top: 5px;
+	margin-left: 15px;
+	line-height: 20px;
+}
+
+td {
+	vertical-align: unset;
+}

@@ -121,7 +121,22 @@
 								<input type="hidden" name="supplySpecialist" value="${vendor.supplySpecialist.userId}" />
 							</td>
 							<td class="corp-code">${vendor.corpCode}</td>
-							<td class="vendor-name">${vendor.vendorName}</td>
+							<td class="vendor-name">
+								<span class="vendor-address-expand-collapse">
+									<img src="https://staticdev.penske.com/common/images/collapsed.png"
+										data-collapsed-src="https://staticdev.penske.com/common/images/collapsed.png"
+										data-expanded-src="https://staticdev.penske.com/common/images/expanded.png"
+										class="vendor-address-icon va-collapsed" />
+									${vendor.vendorName}
+								</span>
+								<br>
+								<div class="vendor-address ui-helper-hidden">
+									<label>Shipping Address</label><br>
+									${vendor.shippingAddress1}<br>
+									${vendor.shippingAddress2}<br>
+									${vendor.shippingCity}, ${vendor.shippingState} ${vendor.shippingZipCode}	
+								</div>
+							</td>
 							<td class="vendor-number">${vendor.vendorNumber}</td>
 							<td class="mfr-code">
                 <c:forEach items="${vendor.mfrCodes}" var="mfrCode" varStatus="loopTagStatus">
