@@ -205,7 +205,8 @@
 		AND		vend.CORP = #{vendor.corpCode}
 		</if>
 		<if test="vendor.searchMfrCode != null" >
-		AND		vend.MFR = #{vendor.searchMfrCode}
+		<bind name="formattedSearchMfrCode" value="'%,' + vendor.getSearchMfrCode() + '%'" />
+		AND		ediVendor.mfrCodes LIKE #{formattedSearchMfrCode}
 		</if>
 		<if test="vendor.notificationException !=null and  vendor.notificationException != '-1' ">
 		AND		vend.NOTIFICATION_EXCEPTION = #{vendor.notificationException}
@@ -227,6 +228,7 @@
 			AND vend.VENDOR_ID not in(select VENDOR_ID from SMC_ORG_VENDOR_ASSOC where ORG_ID !=1)
 		</if>
 		AND vend.STATUS = 'A'
+		ORDER BY vend.VENDOR_NAME
 	</select>
 	
 	<select id="getEditVendorInformation" resultMap="VendorMap">
