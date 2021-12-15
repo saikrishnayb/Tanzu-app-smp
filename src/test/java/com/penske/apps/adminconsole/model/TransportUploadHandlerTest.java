@@ -1,4 +1,4 @@
-package com.pensle.apps.adminconsole.model;
+package com.penske.apps.adminconsole.model;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -19,9 +19,6 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.junit.Test;
-
-import com.penske.apps.adminconsole.model.Transport;
-import com.penske.apps.adminconsole.model.TransportUploadHandler;
 
 public class TransportUploadHandlerTest {
 	

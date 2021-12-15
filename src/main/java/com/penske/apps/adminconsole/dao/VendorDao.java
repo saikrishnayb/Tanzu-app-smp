@@ -9,11 +9,15 @@ import com.penske.apps.adminconsole.model.EditableUser;
 import com.penske.apps.adminconsole.model.Vendor;
 import com.penske.apps.adminconsole.model.VendorContact;
 import com.penske.apps.smccore.base.annotation.NonVendorQuery;
+import com.penske.apps.smccore.base.annotation.SkipQueryTest;
 import com.penske.apps.suppliermgmt.annotation.DBSmc;
 
 @DBSmc
 public interface VendorDao {
+	
+	@SkipQueryTest("XMLSERIALIZE is not available in HSQLDB")
     public List<Vendor> getAllVendors(@Param("orgId")int orgId);
+	@SkipQueryTest("XMLSERIALIZE is not available in HSQLDB")
     public List<Vendor> getVendorsBySearchConditions(@Param("orgId")int orgId,@Param("vendor") Vendor vendor);
     
     @NonVendorQuery
@@ -28,6 +32,7 @@ public interface VendorDao {
 
     public Vendor getViewVendorInformation(int vendorId);
 
+    @SkipQueryTest("XMLSERIALIZE is not available in HSQLDB")
     public Vendor getEditVendorInformation(int vendorId);
 
     @NonVendorQuery
@@ -44,10 +49,8 @@ public interface VendorDao {
 
     @NonVendorQuery
     public List<Alert> getAllAlerts();
-    
-    @NonVendorQuery
-    public List<Vendor> getAllViewVendorInfo();
-    
+
+    @SkipQueryTest("XMLSERIALIZE is not available in HSQLDB")
     @NonVendorQuery
 	public Vendor getVendorById(int vendorId);
 }

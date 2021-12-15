@@ -4,7 +4,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.pensle.apps.adminconsole.model.TransportUploadHandlerTest;
+import com.penske.apps.adminconsole.model.TransportUploadHandlerTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
