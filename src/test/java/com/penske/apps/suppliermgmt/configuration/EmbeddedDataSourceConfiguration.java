@@ -70,7 +70,14 @@ public class EmbeddedDataSourceConfiguration {
     @CoreDataSourceQualifier
     public DataSource smcDataSource() throws NamingException {
     	
-        EmbeddedDatabase datasource = new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.HSQL).build();
+    	//This one single connection provides all the data sources for all the different DAOs.
+    	// It's very hard to use multiple connections in unit testing with HSQL, so we use this to pretend.
+        EmbeddedDatabase datasource = new EmbeddedDatabaseBuilder()
+        	.setType(EmbeddedDatabaseType.HSQL)
+        	.addScript("/setup/create-penske-database.sql")
+        	.addScript("/setup/create-corp-database.sql")
+        	.addScript("/setup/create-smc-database.sql")
+        	.build();
 
         return datasource;
     }

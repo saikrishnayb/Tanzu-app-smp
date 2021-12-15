@@ -156,7 +156,7 @@
 				vend.CORP AS corpCode,
 				vend.VENDOR_NAME AS vendorName,
 				vend.VENDOR_NUMBER AS vendorNumber,
-				ediVendor.mfrCodes AS mfrCodes,
+				SUBSTR(ediVendor.mfrCodes, 2, length(ediVendor.mfrCodes) - 1)  AS mfrCodes,
 				vend.ANNUAL_AGREEMENT AS annualAgreement,
 				prim.FIRST_NAME AS "primaryContact.firstName",
 				prim.LAST_NAME AS "primaryContact.lastName",
@@ -205,7 +205,7 @@
 		AND		vend.CORP = #{vendor.corpCode}
 		</if>
 		<if test="vendor.searchMfrCode != null" >
-		<bind name="formattedSearchMfrCode" value="'%,' + vendor.getSearchMfrCode() + '%'" />
+		<bind name="formattedSearchMfrCode" value="'%' + vendor.getSearchMfrCode() + '%'" />
 		AND		ediVendor.mfrCodes LIKE #{formattedSearchMfrCode}
 		</if>
 		<if test="vendor.notificationException !=null and  vendor.notificationException != '-1' ">
@@ -293,12 +293,12 @@
 		SELECT	d.DMNAME AS companyName,
 				vl.CORP AS corpCode,
 				vl.VENDOR_NUMBER AS vendorNumber,
-				vn.PVNAME AS vendorName,
-				vn.PVADDR AS vendorAddress,
-				vn.PVATTN AS attention,
-				TRIM(vn.PVCTST) AS city,
-				vn.PVSTAT AS state,
-				vn.PVZIPA AS zipCode,
+				vn.VENDOR_NAME AS vendorName,
+				vn.VENDOR_ADDRESS_LINE_1 AS vendorAddress,
+				vn.VENDOR_ATTENTION AS attention,
+				TRIM(vn.VENDOR_CITY_NAME) AS city,
+				vn.VENDOR_STATE_PROVINCE AS state,
+				vn.VENDOR_ZIP_POSTAL_CODE AS zipCode,
 				p.PVTRMS AS paymentTerms,
 				p.PVONAM AS orderName,
 				p.PVOAD1 AS mailingAddress1,
@@ -318,8 +318,8 @@
 				ON	vl.CORP = p.PVCORP
 				AND	vl.VENDOR_NUMBER = p.PVNBR
 				LEFT OUTER JOIN PENSKE.VENNAM vn
-				ON	vn.PVCORP = p.PVCORP
-				AND	vn.PVACCT = p.PVNBR,
+				ON	vn.COMPANY_CODE = p.PVCORP
+				AND	vn.VENDOR_NUMBER = p.PVNBR,
 				CORP.FDSTMST d
 		
 		WHERE	vl.CORP = d.DMCORP
@@ -349,7 +349,7 @@
 				EMAIL = #{email},
 				RESPONSIBILITY = #{responsibility},
 				MODIFIED_BY= #{modifiedBy},
-				MODIFIED_DATE=CURRENT TIMESTAMP
+				MODIFIED_DATE=CURRENT_TIMESTAMP
 				
 		WHERE	VENDOR_ID = #{vendorId}
 		AND		CONTACT_TYPE = #{contactType}
@@ -358,7 +358,7 @@
 	<insert id="addVendorContact">
 		INSERT INTO SMC.SMC_VENDOR_CONTACT
 		( VENDOR_ID, CONTACT_TYPE, FIRST_NAME,  LAST_NAME,  EMAIL,  PHONE,  RESPONSIBILITY,CREATED_BY,MODIFIED_BY,CREATED_DATE,MODIFIED_DATE )
-		VALUES( #{vendorId}, #{contactType}, #{firstName}, #{lastName}, #{email}, #{phoneNumber}, #{responsibility},#{createdBy},#{createdBy},CURRENT TIMESTAMP,CURRENT TIMESTAMP)
+		VALUES( #{vendorId}, #{contactType}, #{firstName}, #{lastName}, #{email}, #{phoneNumber}, #{responsibility},#{createdBy},#{createdBy},CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)
 	</insert>
 	
 	<delete id="removeVendorContact">
@@ -372,40 +372,4 @@
 		Select ALERT_KEY as alertType,ALERT_NAME as alertName from smc.V_SMC_ALERTS WHERE HEADER_KEY='HDR_OF_VENDACTITEMS'
 	</select>
 	
-	<select id="getAllViewVendorInfo" resultType="com.penske.apps.adminconsole.model.Vendor">
-		SELECT	d.DMNAME AS companyName,
-				vl.CORP AS corpCode,
-				vl.VENDOR_NUMBER AS vendorNumber,
-				vn.PVNAME AS vendorName,
-				vn.PVADDR AS vendorAddress,
-				vn.PVATTN AS attention,
-				TRIM(vn.PVCTST) AS city,
-				vn.PVSTAT AS state,
-				vn.PVZIPA AS zipCode,
-				p.PVTRMS AS paymentTerms,
-				p.PVONAM AS orderName,
-				p.PVOAD1 AS mailingAddress1,
-				p.PVOAD2 AS mailingAddress2,
-				p.PVOCTY AS mailingCity,
-				p.PVOST AS mailingState,
-				p.PVOZIP AS mailingZipCode,
-				p.PVSAD1 AS shippingAddress1,
-				p.PVSAD2 AS shippingAddress2,
-				p.PVSCTY AS shippingCity,
-				p.PVSST AS shippingState,
-				p.PVSZIP AS shippingZipCode,
-                vl.VENDOR_ID
-		
-		FROM	SMC.SMC_VENDOR_MASTER vl
-				LEFT OUTER JOIN CORP.FPURVND p
-				ON	vl.CORP = p.PVCORP
-				AND	vl.VENDOR_NUMBER = p.PVNBR
-				LEFT OUTER JOIN PENSKE.VENNAM vn
-				ON	vn.PVCORP = p.PVCORP
-				AND	vn.PVACCT = p.PVNBR,
-				CORP.FDSTMST d
-		
-		WHERE	vl.CORP = d.DMCORP
-		AND		d.DMTYPE = 'COMPANY'
-	</select>
 </mapper>
