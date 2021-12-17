@@ -1,6 +1,7 @@
 package com.penske.apps.adminconsole.service;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,7 @@ public class DefaultTabService implements TabService {
 	@Autowired
 	public TabDao tabDao;
 	
-	private static Logger logger = Logger.getLogger(DefaultTabService.class);
+	private static Logger logger = LogManager.getLogger(DefaultTabService.class);
 
 	@Override
 	public void updateDefaultTemplate(SearchTemplateForm searchTemplateForm) {

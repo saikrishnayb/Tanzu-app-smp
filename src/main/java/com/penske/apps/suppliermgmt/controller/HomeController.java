@@ -5,8 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,6 +23,7 @@ import com.penske.apps.smccore.base.domain.User;
 import com.penske.apps.smccore.base.domain.enums.LookupKey;
 import com.penske.apps.smccore.base.domain.enums.SmcTab;
 import com.penske.apps.smccore.base.domain.enums.UserType;
+import com.penske.apps.smccore.base.util.SpringConfigUtil;
 import com.penske.apps.suppliermgmt.annotation.VendorAllowed;
 import com.penske.apps.suppliermgmt.annotation.Version1Controller;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
@@ -46,6 +50,8 @@ import com.penske.apps.suppliermgmt.service.HomeDashboardService;
 @RequestMapping("/home")
 public class HomeController extends BaseController{
 
+	private static final Logger logger = LogManager.getLogger(HomeController.class);
+	
     @Autowired
     private HomeDashboardService homeService;
 
@@ -153,5 +159,16 @@ public class HomeController extends BaseController{
         return model;
     }
 
-
+    /**
+	 * Prints information about the current log4j configuration to the logs
+	 * @param request The request 
+	 */
+	@RequestMapping(value="/printLogConfiguration")
+	@ResponseBody
+	public void printLogConfiguration(HttpServletRequest request)
+	{
+		String contextPath = request.getContextPath();
+		String logConfiguration = SpringConfigUtil.getLogConfiguration(contextPath);
+		logger.info("\n" + logConfiguration);
+	}
 }

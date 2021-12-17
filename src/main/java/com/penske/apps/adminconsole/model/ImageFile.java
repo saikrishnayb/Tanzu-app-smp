@@ -2,11 +2,12 @@ package com.penske.apps.adminconsole.model;
 
 import java.io.IOException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.web.multipart.MultipartFile;
 
 public class ImageFile {
-	private static Logger logger = Logger.getLogger(ImageFile.class);
+	private static Logger logger = LogManager.getLogger(ImageFile.class);
 	
 	private int length;
 	private byte[] bytes;

@@ -5,7 +5,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.collections4.ListUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +24,7 @@ import com.penske.apps.suppliermgmt.annotation.TransporterUploadService;
 @TransporterUploadService
 public class TransporterServiceImpl  implements UploadService<Transport>{
 
-    private static Logger logger = Logger.getLogger(TransporterServiceImpl.class);
+    private static Logger logger = LogManager.getLogger(TransporterServiceImpl.class);
 
     @Autowired
     TransporterDao objDao;

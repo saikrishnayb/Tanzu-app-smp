@@ -27,14 +27,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.penske.business.ldap.CPBLDAPSessionInfo;
 import com.penske.util.CPTBaseServlet;
 
 
 public class DummySecurityFilter implements Filter {
-	private static Logger LOGGER = Logger.getLogger(DummySecurityFilter.class);
+	private static Logger LOGGER = LogManager.getLogger(DummySecurityFilter.class);
 
 	public DummySecurityFilter() 
 	{

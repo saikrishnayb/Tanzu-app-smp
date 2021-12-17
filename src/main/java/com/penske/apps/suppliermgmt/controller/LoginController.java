@@ -7,7 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -43,7 +44,7 @@ public class LoginController extends BaseController {
     @Autowired
     private SuppliermgmtSessionBean sessionBean;
 
-    private static final Logger LOGGER = Logger.getLogger(LoginController.class);
+    private static final Logger LOGGER = LogManager.getLogger(LoginController.class);
 
     @VendorAllowed
     @RequestMapping(value = "/validate", method = {RequestMethod.GET, RequestMethod.POST })

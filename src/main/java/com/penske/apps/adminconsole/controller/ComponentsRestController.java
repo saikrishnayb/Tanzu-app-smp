@@ -11,7 +11,8 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -60,7 +61,7 @@ import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 @RequestMapping("/admin-console/components")
 public class ComponentsRestController {
 
-    private static final Logger LOGGER = Logger.getLogger(ComponentsRestController.class);
+    private static final Logger LOGGER = LogManager.getLogger(ComponentsRestController.class);
 
     @Autowired
     private SuppliermgmtSessionBean sessionBean;

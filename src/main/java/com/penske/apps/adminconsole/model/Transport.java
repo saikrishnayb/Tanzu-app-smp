@@ -3,7 +3,8 @@ package com.penske.apps.adminconsole.model;
 import java.text.DateFormat;
 import java.util.Date;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.penske.apps.smccore.base.util.DateUtil;
 /**
@@ -15,7 +16,7 @@ import com.penske.apps.smccore.base.util.DateUtil;
  */
 public class Transport{
 	
-	private static final Logger logger = Logger.getLogger(Transport.class);
+	private static final Logger logger = LogManager.getLogger(Transport.class);
 	
 	public Transport(boolean pilot) {
 		super();
