@@ -107,9 +107,9 @@ public class WebAppInitializer implements WebApplicationInitializer
 				.add(builder.newLayout("PatternLayout").addAttribute("pattern", "[%d{ISO8601}]%n%n%-5p%n%n%c%n%n%m%n%n"))
 				.addAttribute("bufferSize", 0)
 				.addAttribute("smtpHost", "mail.penske.com")
-				.addAttribute("from", "log4j." + activeProfile + "@suppliermgmt.penske.com")
+				.addAttribute("from", "log4j." + activeProfile + "@" + CONTEXT_ROOT + ".penske.com")
 				.addAttribute("to", "smc.developers@penske.com")
-				.addAttribute("subject", "Suppliermgmt - " + activeProfile + " - Errors")
+				.addAttribute("subject", StringUtils.capitalize(CONTEXT_ROOT) + " - " + activeProfile + " - Errors")
 			);
 			emailAppender = builder.newAppenderRef("email");
 		}
@@ -145,10 +145,10 @@ public class WebAppInitializer implements WebApplicationInitializer
 
 		//Turn logs down for certain things that tend to be very verbose at DEBUG level
 		builder.add(builder.newLogger(ResultSet.class.getName(),					Level.ERROR))
-			.add(builder.newLogger(SqlSessionUtils.class.getName(),				Level.INFO))
+			.add(builder.newLogger(SqlSessionUtils.class.getName(),					Level.INFO))
 			.add(builder.newLogger(SpringManagedTransaction.class.getName(),		Level.INFO))
-			.add(builder.newLogger(DataSourceUtils.class.getName(),				Level.INFO))
-			.add(builder.newLogger(HttpEntityMethodProcessor.class.getName(),	Level.INFO))
+			.add(builder.newLogger(DataSourceUtils.class.getName(),					Level.INFO))
+			.add(builder.newLogger(HttpEntityMethodProcessor.class.getName(),		Level.INFO))
 			.add(builder.newLogger(RequestResponseBodyMethodProcessor.class.getName(),	Level.INFO));
 
 		//Performance trace logging is turned off in production
