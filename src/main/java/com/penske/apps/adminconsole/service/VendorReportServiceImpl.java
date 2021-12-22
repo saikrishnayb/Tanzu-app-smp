@@ -11,7 +11,8 @@ import java.util.List;
 import java.util.TimeZone;
 
 import org.apache.commons.collections4.ListUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +33,7 @@ import com.penske.apps.suppliermgmt.annotation.VendorUploadService;
 @VendorUploadService
 public class VendorReportServiceImpl implements UploadService<VendorReport>
 {
-    private static Logger logger = Logger.getLogger(VendorReportServiceImpl.class);
+    private static Logger logger = LogManager.getLogger(VendorReportServiceImpl.class);
 
     @Autowired
     VendorReportDao objDao;

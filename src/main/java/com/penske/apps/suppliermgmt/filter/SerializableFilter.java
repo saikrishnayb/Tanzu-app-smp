@@ -16,11 +16,12 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class SerializableFilter implements Filter{
 	
-	private static Logger LOGGER = Logger.getLogger(SerializableFilter.class);
+	private static Logger LOGGER = LogManager.getLogger(SerializableFilter.class);
 	
 	public SerializableFilter() 
 	{

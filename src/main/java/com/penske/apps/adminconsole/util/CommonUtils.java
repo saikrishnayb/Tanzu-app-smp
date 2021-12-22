@@ -13,7 +13,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.penske.apps.adminconsole.model.Components;
@@ -27,7 +28,7 @@ import com.penske.apps.adminconsole.model.Role;
  */
 public class CommonUtils {
 	
-	private static Logger logger = Logger.getLogger(CommonUtils.class);
+	private static Logger logger = LogManager.getLogger(CommonUtils.class);
 	private static final ObjectMapper jsonMapper = new ObjectMapper();
 	
 	public static String getCompnentCheckSum(List<Components> compList){

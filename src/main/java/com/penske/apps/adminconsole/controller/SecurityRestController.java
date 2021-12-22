@@ -6,7 +6,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -57,7 +58,7 @@ public class SecurityRestController {
     @Autowired
     private LookupManager lookupManager;
 
-    private static final Logger LOGGER = Logger.getLogger(SecurityRestController.class);
+    private static final Logger LOGGER = LogManager.getLogger(SecurityRestController.class);
 
     /* ================== Users ================== */
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_USERS)

@@ -3,7 +3,6 @@
  */
 package com.penske.apps.suppliermgmt.servlet;
 
-import java.io.IOException;
 import java.sql.ResultSet;
 
 import javax.servlet.FilterRegistration;
@@ -11,13 +10,15 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
-import org.apache.log4j.RollingFileAppender;
-import org.apache.log4j.net.SMTPAppender;
-import org.apache.log4j.varia.LevelRangeFilter;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.builder.api.AppenderRefComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
+import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
+import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.mybatis.spring.SqlSessionUtils;
 import org.mybatis.spring.transaction.SpringManagedTransaction;
 import org.springframework.jdbc.datasource.DataSourceUtils;
@@ -75,7 +76,7 @@ public class WebAppInitializer implements WebApplicationInitializer
 			addFilters(container, activeProfile);
 		} catch(RuntimeException ex) {
 			String errorMessage = "Exception occurred during startup: " + ex.getMessage() + "\n\n" + StringUtils.join(ex.getStackTrace(), "\n");
-			Logger.getLogger(this.getClass()).error(errorMessage);
+			LogManager.getLogger(this.getClass()).error(errorMessage);
 			throw ex;
 		}
 	}
@@ -88,83 +89,76 @@ public class WebAppInitializer implements WebApplicationInitializer
 		else
 			logFolderName = CONTEXT_ROOT;
 		
+		
+		ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder()
+			.setConfigurationName(CONTEXT_ROOT);
+		
 		//***** Appender Setup *****//
-		//Set up file logging (both normal and splunk)
-		RollingFileAppender fileAppender;
-		RollingFileAppender splunkAppender;
-		try {
-			fileAppender =		new RollingFileAppender(new PatternLayout("%d %-5p (%F:%M():%L)  - %m%n"),		"/logs/apps/" + logFolderName + "/log.txt");
-			splunkAppender =	new RollingFileAppender(new PatternLayout("%d [%t] %-5p (%F:%M():%L) - %m%n"),	"/logs/apps/" + logFolderName + "/splunk.spk");
-		} catch(IOException ex) {
-			throw new RuntimeException(ex.getMessage(), ex);
-		}
-		fileAppender.setMaxBackupIndex(10);
-		fileAppender.setMaxFileSize("1024KB");
-		fileAppender.activateOptions();
-		splunkAppender.setMaxBackupIndex(9);
-		splunkAppender.setMaxFileSize("1000KB");
-		splunkAppender.activateOptions();
+		AppenderRefComponentBuilder fileAppender = 		SpringConfigUtil.makeRollingFileAppender(builder, "file", "1024KB", 10, "%d %-5p (%F:%M():%L)  - %m%n", "/logs/apps/" + logFolderName + "/log.txt");
+		AppenderRefComponentBuilder splunkAppender =	SpringConfigUtil.makeRollingFileAppender(builder, "splunk", "1000KB", 9, "%d [%t] %-5p (%F:%M():%L) - %m%n", "/logs/apps/" + logFolderName + "/splunk.spk");
 
 		//Setup email logging - email doesn't get sent from local machines - too much email
-		SMTPAppender emailAppender;
+		AppenderRefComponentBuilder emailAppender;
 		if(SpringConfigUtil.isProfile(activeProfile, ProfileType.DEVELOPMENT, ProfileType.QA, ProfileType.QA2, ProfileType.PRODUCTION))
 		{
-			LevelRangeFilter emailFilter = new LevelRangeFilter();
-			emailFilter.setLevelMin(Level.ERROR);
-			emailFilter.setLevelMax(Level.FATAL);
-			
-			emailAppender = new SMTPAppender();
-			emailAppender.setName("email");
-			emailAppender.addFilter(emailFilter);
-			emailAppender.setBufferSize(1);
-			emailAppender.setSMTPHost("mail.penske.com");
-			emailAppender.setFrom("log4j." + activeProfile + "@suppliermgmt.penske.com");
-			emailAppender.setTo("smc.developers@penske.com");
-			emailAppender.setSubject("Suppliermgmt - " + activeProfile + " - Errors");
-			emailAppender.setLayout(new PatternLayout("[%d{ISO8601}]%n%n%-5p%n%n%c%n%n%m%n%n"));
-			emailAppender.activateOptions();
+			builder.add(builder.newAppender("email", "SMTP")
+				.add(builder.newFilter("ThresholdFilter", Filter.Result.ACCEPT, Filter.Result.DENY)
+					.addAttribute("level", Level.ERROR))
+				.add(builder.newLayout("PatternLayout").addAttribute("pattern", "[%d{ISO8601}]%n%n%-5p%n%n%c%n%n%m%n%n"))
+				.addAttribute("bufferSize", 0)
+				.addAttribute("smtpHost", "mail.penske.com")
+				.addAttribute("from", "log4j." + activeProfile + "@" + CONTEXT_ROOT + ".penske.com")
+				.addAttribute("to", "smc.developers@penske.com")
+				.addAttribute("subject", StringUtils.capitalize(CONTEXT_ROOT) + " - " + activeProfile + " - Errors")
+			);
+			emailAppender = builder.newAppenderRef("email");
 		}
 		else
 			emailAppender = null;
 		
 		//Setup console logging - console logging only happens in local - shared environments should use file logging
-		ConsoleAppender consoleAppender;
+		AppenderRefComponentBuilder consoleAppender;
 		if(SpringConfigUtil.isProfile(activeProfile, ProfileType.LOCAL))
-			consoleAppender = new ConsoleAppender(new PatternLayout("%d %-5p (%F:%M():%L) - %m%n"));
+		{
+			builder.add(builder.newAppender("console", "Console")
+				.add(builder.newLayout("PatternLayout")
+					.addAttribute("pattern", "%d %-5p (%F:%M():%L) - %m%n")
+				)
+			);
+			consoleAppender = builder.newAppenderRef("console");
+		}
 		else
 			consoleAppender = null;
 		
-		//***** Add Appenders *****//
-		Logger rootLogger = Logger.getRootLogger();
-		
-		if(fileAppender != null) 	rootLogger.addAppender(fileAppender);
-		if(consoleAppender != null)	rootLogger.addAppender(consoleAppender);
-		if(emailAppender != null)	rootLogger.addAppender(emailAppender);
-		
-		Logger splunkLogger = Logger.getLogger("splunk");
-		//Things written to splunk should not be written to the root logger
-		splunkLogger.setAdditivity(false);
+		//***** Add Appenders and Set Levels *****//
+		//Most things log at DEBUG level
+		RootLoggerComponentBuilder rootLogger = builder.newRootLogger(Level.DEBUG)
+			.add(fileAppender);
+		if(consoleAppender != null)	rootLogger.add(consoleAppender);
+		if(emailAppender != null)	rootLogger.add(emailAppender);
+		builder.add(rootLogger);
 
-		if(splunkAppender != null)	splunkLogger.addAppender(splunkAppender);
-		
-		//***** Logger Levels *****//
-		rootLogger.setLevel(Level.DEBUG);
-		splunkLogger.setLevel(Level.DEBUG);
-		
+		//Splunk logs separately
+		builder.add(builder.newLogger("splunk", Level.DEBUG)
+			.addAttribute("additivity", false)
+			.add(splunkAppender));
+
 		//Turn logs down for certain things that tend to be very verbose at DEBUG level
-		Logger.getLogger(ResultSet.class)					.setLevel(Level.ERROR);
-		Logger.getLogger(SqlSessionUtils.class)				.setLevel(Level.INFO);
-		Logger.getLogger(SpringManagedTransaction.class)	.setLevel(Level.INFO);
-		Logger.getLogger(DataSourceUtils.class)				.setLevel(Level.INFO);
-		Logger.getLogger(HttpEntityMethodProcessor.class)	.setLevel(Level.INFO);
-		Logger.getLogger(RequestResponseBodyMethodProcessor.class)	.setLevel(Level.INFO);
+		builder.add(builder.newLogger(ResultSet.class.getName(),					Level.ERROR))
+			.add(builder.newLogger(SqlSessionUtils.class.getName(),					Level.INFO))
+			.add(builder.newLogger(SpringManagedTransaction.class.getName(),		Level.INFO))
+			.add(builder.newLogger(DataSourceUtils.class.getName(),					Level.INFO))
+			.add(builder.newLogger(HttpEntityMethodProcessor.class.getName(),		Level.INFO))
+			.add(builder.newLogger(RequestResponseBodyMethodProcessor.class.getName(),	Level.INFO));
 
 		//Performance trace logging is turned off in production
 		if(!SpringConfigUtil.isProfile(activeProfile, ProfileType.PRODUCTION))
 		{
-			Logger.getLogger(QueryLoggingPlugin.class)				.setLevel(Level.TRACE);
-			Logger.getLogger(RequestLoggingHandlerInterceptor.class).setLevel(Level.TRACE);
+			builder.add(builder.newLogger(QueryLoggingPlugin.class.getName(),				Level.TRACE))
+				.add(builder.newLogger(RequestLoggingHandlerInterceptor.class.getName(),	Level.TRACE));
 		}
+		
+		Configurator.initialize(builder.build());
 	}
 	
 	private void addFilters(ServletContext container, String activeProfile)

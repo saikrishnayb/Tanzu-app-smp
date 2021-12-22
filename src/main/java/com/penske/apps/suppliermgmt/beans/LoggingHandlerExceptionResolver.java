@@ -8,7 +8,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
@@ -26,7 +27,7 @@ import com.penske.apps.suppliermgmt.exception.ExceptionLoggingInfo;
 @Component
 public class LoggingHandlerExceptionResolver implements HandlerExceptionResolver, Ordered
 {
-    private static final Logger logger = Logger.getLogger(LoggingHandlerExceptionResolver.class);
+    private static final Logger logger = LogManager.getLogger(LoggingHandlerExceptionResolver.class);
 
     @Autowired(required=false)
     private SuppliermgmtSessionBean sessionBean;

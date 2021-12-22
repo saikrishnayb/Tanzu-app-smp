@@ -10,7 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
@@ -29,8 +30,8 @@ import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 @Component
 public class RequestLoggingHandlerInterceptor extends HandlerInterceptorAdapter
 {
-	private static final Logger logger = Logger.getLogger(RequestLoggingHandlerInterceptor.class);
-	private static final Logger splunk = Logger.getLogger("splunk");
+	private static final Logger logger = LogManager.getLogger(RequestLoggingHandlerInterceptor.class);
+	private static final Logger splunk = LogManager.getLogger("splunk");
 	/** True if detailed request timing information should be written to TRACE-level logs. */
 	private boolean logTimings = false;
 	

@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
@@ -27,7 +28,7 @@ import com.penske.apps.adminconsole.util.VsportalConstants;
  */
 public class VendorUploadHandler extends ExcelUploadHandler<VendorReport>{
 	
-	private static final Logger logger = Logger.getLogger(VendorUploadHandler.class);
+	private static final Logger logger = LogManager.getLogger(VendorUploadHandler.class);
 	private static final String EOR = "Report Completed!";
 	
 	private int penkseIdColNum = 0;

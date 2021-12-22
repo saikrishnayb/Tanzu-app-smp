@@ -59,11 +59,6 @@ public enum PoCategoryType
 	private static final List<PoCategoryType> NO_MANUFACTURER_CATEGORIES = Arrays.asList(NONE, DECAL);
 	
 	/**
-     * The PO categpries that have a vehicle master record
-     */
-    private static final List<PoCategoryType> VEHICLE_MASTER_CATEGORIES = Arrays.asList(TRUCK, TRACTOR, TRAILER, CAR, DOLLY, DEMOUNT);
-	
-	/**
 	 * Static map to speed lookups by the PO Category's name.
 	 */
 	private static final Map<String, PoCategoryType> typesByCategoryName = new HashMap<String, PoCategoryType>();

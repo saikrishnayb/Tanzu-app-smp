@@ -15,7 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.penske.apps.suppliermgmt.servlet.SMCLogOff;
 import com.penske.apps.suppliermgmt.util.ApplicationConstants;
@@ -38,7 +39,7 @@ import com.penske.business.ldap.CPBLDAPSessionInfo;
  * @see HttpSession
  */
 public class SessionValidationFilter implements Filter {
-    private static Logger LOGGER = Logger.getLogger(SessionValidationFilter.class);
+    private static Logger LOGGER = LogManager.getLogger(SessionValidationFilter.class);
 
     /**
      * Default destroy method, does nothing

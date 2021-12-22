@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -48,8 +47,6 @@ public class DefaultHomeDashboardService implements HomeDashboardService {
 	private HomeDashboardDao homeDashboardDao;
 	@Autowired
 	private AlertsService alertsService;
-
-	private static final Logger LOGGER = Logger.getLogger(DefaultHomeDashboardService.class);
 
 	@Override
 	public List<Tab> selectTabs(User user) {

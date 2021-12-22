@@ -22,7 +22,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -37,7 +38,7 @@ import com.penske.apps.suppliermgmt.model.ErrorModel;
 
 @Version1Controller
 public class BaseController {
-	 private static Logger LOGGER = Logger.getLogger(BaseController.class);
+	 private static Logger LOGGER = LogManager.getLogger(BaseController.class);
 	
 	 @Autowired
 	 private SuppliermgmtSessionBean sessionBean;

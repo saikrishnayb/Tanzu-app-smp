@@ -18,7 +18,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFDataFormatter;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
@@ -50,7 +51,7 @@ public abstract class ExcelUploadHandler<T> {
 	/**
 	 * Declare Variables
 	 */
-	private static final Logger logger = Logger.getLogger("ExcelUploadHandler");
+	private static final Logger logger = LogManager.getLogger("ExcelUploadHandler");
 
 	private String userId = "";
 

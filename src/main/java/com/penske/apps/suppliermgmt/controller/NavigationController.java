@@ -8,7 +8,8 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,7 +52,7 @@ public class NavigationController extends BaseController {
     @Autowired
     private SuppliermgmtSessionBean sessionBean;
 
-    private static Logger LOGGER = Logger.getLogger(NavigationController.class);
+    private static Logger LOGGER = LogManager.getLogger(NavigationController.class);
 
     @VendorAllowed
     @RequestMapping(value = "/navigate", method = RequestMethod.POST)

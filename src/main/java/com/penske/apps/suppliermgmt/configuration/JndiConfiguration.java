@@ -8,7 +8,8 @@ import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,7 +31,7 @@ import com.penske.apps.suppliermgmt.annotation.UserCreationServiceUrl;
 @Profile(ProfileType.NOT_TEST)
 public class JndiConfiguration {
 
-	private static final Logger logger = Logger.getLogger(JndiConfiguration.class);
+	private static final Logger logger = LogManager.getLogger(JndiConfiguration.class);
 
 	@Bean
 	@DBSmc

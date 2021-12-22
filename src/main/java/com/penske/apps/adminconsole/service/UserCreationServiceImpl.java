@@ -5,7 +5,8 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +29,7 @@ import com.penske.util.security.priv.CPTSso;
 @Service
 public class UserCreationServiceImpl implements UserCreationService {
 
-	private static final Logger logger = Logger.getLogger(UserCreationServiceImpl.class);
+	private static final Logger logger = LogManager.getLogger(UserCreationServiceImpl.class);
 	
 	@Autowired
 	private SecurityDao securityDao;

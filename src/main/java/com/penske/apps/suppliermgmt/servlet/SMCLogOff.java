@@ -25,7 +25,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.penske.apps.suppliermgmt.util.ApplicationConstants;
 import com.penske.util.CPTBaseServlet;
@@ -38,7 +39,7 @@ public class SMCLogOff extends HttpServlet {
 	 */
 	private static final long serialVersionUID = -6798430280467550983L;
 	//	 Initialize Logger Object
-	private static final Logger LOGGER = Logger.getLogger(SMCLogOff.class);
+	private static final Logger LOGGER = LogManager.getLogger(SMCLogOff.class);
 	/**
 	 * @see javax.servlet.http.HttpServlet#void
 	 *      (javax.servlet.http.HttpServletRequest,

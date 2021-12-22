@@ -2,7 +2,8 @@ package com.penske.apps.adminconsole.service;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,7 @@ public class DefaultTermsAndConditionsService implements TermsAndConditionsServi
 	@Autowired
 	private GlobalSettingsDao globalSettingsDao;
 	
-	private static Logger logger = Logger.getLogger(DefaultTermsAndConditionsService.class);
+	private static Logger logger = LogManager.getLogger(DefaultTermsAndConditionsService.class);
 	
 	//Returns list of all terms and conditions
 	@Override

@@ -34,7 +34,8 @@ import org.apache.ibatis.reflection.wrapper.ObjectWrapper;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.type.SimpleTypeRegistry;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.penske.apps.smccore.base.annotation.NonVendorQuery;
 import com.penske.apps.smccore.base.domain.User;
@@ -58,7 +59,7 @@ import com.penske.apps.suppliermgmt.util.SpringBeanHelper;
 })
 public class VendorQueryWrappingPlugin implements Interceptor
 {
-    private static final Logger logger = Logger.getLogger(VendorQueryWrappingPlugin.class);
+    private static final Logger logger = LogManager.getLogger(VendorQueryWrappingPlugin.class);
 	private static final String WRAPPER_SQL_PREFIX = "SELECT inside.* FROM (";
 	private static final String WRAPPER_SQL_MIDDLE = ") inside WHERE VENDOR_ID IN (";
 	private static final String WRAPPER_SQL_SUFFIX = ")";

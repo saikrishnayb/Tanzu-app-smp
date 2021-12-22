@@ -55,12 +55,12 @@
 				<dependency>
 					<groupId>com.penske.smc.common</groupId>
 					<artifactId>smccore</artifactId>
-					<version>1.0.0-SMC-SMCCOR1-1-8bd92ec</version>
+					<version>1.0.0-develop-SNAPSHOT</version>
 				</dependency>
 				<dependency>
 					<groupId>com.penske.smc.common</groupId>
 					<artifactId>smccore</artifactId>
-					<version>1.0.0-SMC-SMCCOR1-1-8bd92ec</version>
+					<version>1.0.0-develop-SNAPSHOT</version>
 					<classifier>tests</classifier>
 					<scope>test</scope>
 				</dependency>
@@ -88,12 +88,6 @@
 		<dependency>
 			<groupId>com.penske.mis.common.customlib</groupId>
 			<artifactId>usrcreationsvc-client</artifactId>
-			<scope>${sharedLibScope}</scope>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.16</version>
 			<scope>${sharedLibScope}</scope>
 		</dependency>
 		
@@ -144,9 +138,9 @@
 			<version>1.6.9</version>
 		</dependency>
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.5</version>
+		    <groupId>org.apache.logging.log4j</groupId>
+		    <artifactId>log4j-core</artifactId>
+		    <version>2.16.0</version>
 		</dependency>
 		
 		<!-- Runtime-only JARs -->
@@ -154,6 +148,18 @@
 			<groupId>cglib</groupId>
 			<artifactId>cglib-nodep</artifactId>
 			<version>3.1</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j-impl</artifactId>
+			<version>2.16.0</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>1.7.25</version>
 			<scope>runtime</scope>
 		</dependency>
 		
