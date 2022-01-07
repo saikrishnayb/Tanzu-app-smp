@@ -85,8 +85,14 @@ $('.btn-save-vendor-filter').on('click', function() {
     else
       $(".vendor-filter-toggle-container").addClass('hidden');
     
-    //refreshes the page, without "resend data" warning
-    document.querySelector('#mainFrame').contentWindow.location.href = document.querySelector('#mainFrame').contentWindow.location.href 
+	var currentTab = $('nav ul li.current a', parent.document).attr('id');
+	if (currentTab == 'Home') {
+		hideLoading();
+		$('#mainFrame').contents().find('div.selected-tab').click();
+	} else {
+		//refreshes the page, without "resend data" warning
+		document.querySelector('#mainFrame').contentWindow.location.href = document.querySelector('#mainFrame').contentWindow.location.href 
+	}
   });
 });
 
