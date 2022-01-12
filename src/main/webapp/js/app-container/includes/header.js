@@ -94,19 +94,22 @@ $(document).ready(function() {
     
   });
   
-  $utilityList.on('click', '.vendor-filter-toggle', function() {
-    
-    showLoading();
-    var $toggleVendorFilterPromise = $.post(getContextRoot() + "/userController/toggle-vendor-filter");
-    
-    $toggleVendorFilterPromise.done(function(){
-      $(".vendor-filter-toggle-container").toggleClass('on');
-      document.getElementById('mainFrame').contentWindow.location.reload(true);
-    }).error(function(){
-      hideLoading();
-    })
-    
-  });
+$utilityList.on('click', '.vendor-filter-toggle', function() {
+	showLoading();
+	var $toggleVendorFilterPromise = $.post(getContextRoot() + "/userController/toggle-vendor-filter");
+	
+	$toggleVendorFilterPromise.done(function() {
+		$(".vendor-filter-toggle-container").toggleClass('on');
+		var currentTab = $('nav ul li.current a', parent.document).attr('id');
+		if (currentTab == 'Home') {
+			$('#mainFrame').contents().find('div.selected-tab').click();
+		} else {
+			document.getElementById('mainFrame').contentWindow.location.reload(true);
+		}
+	}).error(function() {
+		hideLoading();
+	})
+});
 
   $('nav ul li a').on('mousedown', function() {
 	closeValidationWindow();
