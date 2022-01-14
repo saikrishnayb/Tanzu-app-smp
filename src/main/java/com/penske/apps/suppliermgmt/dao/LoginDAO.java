@@ -41,4 +41,7 @@ public interface LoginDAO {
     @SkipQueryTest
     public void putUserLogin(@Param("user") User user, @Param("serverLocation") String serverLocation, @Param("loginDate") Date loginDate);
 
+    @NonVendorQuery
+	public void deleteOtp(@Param("user") User user);
+
 }
