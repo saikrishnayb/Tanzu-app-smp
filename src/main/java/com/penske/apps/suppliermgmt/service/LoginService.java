@@ -37,4 +37,6 @@ public interface LoginService {
      */
     public UserLoginHistory recordUserLogin(HttpServletRequest request, User user);
 
+	public void deleteOTP(User user);
+
 }

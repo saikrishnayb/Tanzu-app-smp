@@ -769,4 +769,10 @@
  			#{vendorNumber}
  		</foreach>
  	</delete>
+ 	
+ 	<insert id="insertOtp">
+		INSERT INTO SMC.SMC_USER_OTP (USER_ID, OTP)
+		VALUES (#{userObj.userId}, #{userObj.defaultPassword}) 
+	</insert>
+	
  </mapper>

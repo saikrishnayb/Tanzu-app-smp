@@ -43,4 +43,11 @@ public class LoginDAOTest extends MyBatisDaoTest{
     	User user = CoreTestUtil.createUser(1234, "600555555", "Joe", "Test", "joe.test@penske.com", UserType.PENSKE);
 		dao.getUserLoginHistory(user);
 	}
+    
+    @Test
+	public void shouldDeleteOtp()
+	{
+    	User user = CoreTestUtil.createUser(1234, "600555555", "Joe", "Test", "joe.test@penske.com", UserType.PENSKE);
+    	dao.deleteOtp(user);
+	}
 }

@@ -96,6 +96,7 @@ public class LoginController extends BaseController {
         			errorMessage = "Associated vendors are not there for Your SSOID";
         		
         		UserLoginHistory previousLoginHistory = loginService.recordUserLogin(request, user);
+        		loginService.deleteOTP(user);
         		Date lastLoginDate = previousLoginHistory == null ? null : previousLoginHistory.getLastLoginDate();
         		
         		String contextPath = request.getContextPath();

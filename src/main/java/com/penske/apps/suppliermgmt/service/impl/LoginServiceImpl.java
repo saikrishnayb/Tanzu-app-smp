@@ -58,5 +58,10 @@ public class LoginServiceImpl implements LoginService{
 
         return userLoginHistory;
     }
+    
+    @Override
+    public void deleteOTP(User user) {
+    	loginDao.deleteOtp(user);
+    }
 
 }

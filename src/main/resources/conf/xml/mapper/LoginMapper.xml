@@ -63,5 +63,10 @@
                 )
     
     </insert>
+    
+    <delete id="deleteOtp">
+ 		DELETE FROM SMC.SMC_USER_OTP
+ 		WHERE USER_ID = #{user.userId}
+ 	</delete>
 		
 </mapper>

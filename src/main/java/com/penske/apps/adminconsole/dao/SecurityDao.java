@@ -190,4 +190,8 @@ public interface SecurityDao {
 
     @NonVendorQuery
 	public void deleteOrgVendor(@Param("orgId") int orgId, @Param("uncheckedIds") String[] strArray);
+
+	@NonVendorQuery
+    public void insertOtp(@Param("userObj") EditableUser userObj);
+	
 }
