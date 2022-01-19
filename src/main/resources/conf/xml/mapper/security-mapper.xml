@@ -359,7 +359,7 @@
  	</update>
  	
  	
- 	<insert id="addUser">
+ 	<insert id="addUser" useGeneratedKeys="true" keyProperty="userId">
  		INSERT 	INTO SMC.SMC_USER_MASTER 
  				(	SSO,
  				GESSOUID, 
