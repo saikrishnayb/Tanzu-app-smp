@@ -79,7 +79,8 @@ public class UserCreationServiceImpl implements UserCreationService {
 								.replace(", ", ","));
 						}
 						securityDao.addEmailSent(mailRequest);//Email Content to SMC_EMAIL - uses EBS
-						securityDao.insertOtp(userObj);
+						if(StringUtils.isBlank(userObj.getDefaultPassword()))
+							securityDao.insertOtp(userObj);
 				}catch (Exception e) {
 					logger.error("Mail Sending failed for user [ "+userObj.getUserName()+" ]",e);
 				}
