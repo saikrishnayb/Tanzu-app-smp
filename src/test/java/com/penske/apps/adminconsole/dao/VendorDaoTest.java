@@ -54,15 +54,6 @@ public class VendorDaoTest extends MyBatisDaoTest
 	}
 
 	@Test
-	public void shouldGetViewVendorInformation()
-	{
-		setPenskeUser();
-		dao.getViewVendorInformation(1234);
-		setVendorUser();
-		dao.getViewVendorInformation(1234);
-	}
-
-	@Test
 	public void shouldModifyVendorInfo()
 	{
 		Vendor vendor = new Vendor();

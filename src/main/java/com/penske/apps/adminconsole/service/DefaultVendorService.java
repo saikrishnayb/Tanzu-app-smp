@@ -36,12 +36,16 @@ public class DefaultVendorService implements VendorService {
 	
 	@Override
 	public Vendor getVendorById(int vendorId) {
-	    return vendorDao.getVendorById(vendorId);
+	    List<Vendor> vendors = vendorDao.getVendors(null, vendorId, null);
+	    if(vendors == null || vendors.isEmpty())
+	    	throw new IllegalArgumentException("Could not find vendor with ID " + vendorId);
+	    
+	    return vendors.get(0);
 	}
 	
 	@Override
 	public List<Vendor> getAllVendors(int orgId) {
-	    List<Vendor> allVendors = vendorDao.getAllVendors(orgId);
+	    List<Vendor> allVendors = vendorDao.getVendors(orgId, null, null);
 		return allVendors;
 	}
 
@@ -69,7 +73,7 @@ public class DefaultVendorService implements VendorService {
 			vendor.setVendorName(vendor.getVendorName().toUpperCase());
 		}
 		
-		return vendorDao.getVendorsBySearchConditions(orgId,vendor);
+		return vendorDao.getVendors(orgId, null, vendor);
 	}
 	
 	@Override
@@ -82,16 +86,6 @@ public class DefaultVendorService implements VendorService {
 		return vendorDao.getAllSupplySpecialists();
 	}
 	
-	@Override
-	public Vendor getViewVendorInformation(int vendorId) {
-		return vendorDao.getViewVendorInformation(vendorId);
-	}
-
-	@Override
-	public Vendor getEditVendorInformation(int vendorId) {
-		return vendorDao.getEditVendorInformation(vendorId);
-	}
-
 	@Override
 	public Vendor modifyVendorSingleUpdate(Vendor vendor, User user) {
 		if(validateVendor(vendor)) return null;
@@ -121,7 +115,7 @@ public class DefaultVendorService implements VendorService {
 	private void updateBaseVendorRecord(Vendor vendor, User user) {
 	
 		int vendorId = vendor.getVendorId();
-		Vendor vendorBeforeUpdate = getEditVendorInformation(vendorId);
+		Vendor vendorBeforeUpdate = getVendorById(vendorId);
 		int prevAnalystId = vendorBeforeUpdate != null && vendorBeforeUpdate.getPlanningAnalyst() != null
 				? vendorBeforeUpdate.getPlanningAnalyst().getUserId()
 				: 0;
