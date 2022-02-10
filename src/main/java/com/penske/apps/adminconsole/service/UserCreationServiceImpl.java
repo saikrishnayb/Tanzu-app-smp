@@ -1,10 +1,11 @@
 package com.penske.apps.adminconsole.service;
 
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,10 @@ import com.penske.apps.adminconsole.model.EditableUser;
 import com.penske.apps.adminconsole.util.CommonUtils;
 import com.penske.apps.adminconsole.util.IUserConstants;
 import com.penske.apps.smccore.base.beans.LookupManager;
+import com.penske.apps.smccore.base.dao.EmailDAO;
+import com.penske.apps.smccore.base.domain.EmailTemplate;
 import com.penske.apps.smccore.base.domain.LookupContainer;
+import com.penske.apps.smccore.base.domain.enums.EmailTemplateType;
 import com.penske.apps.smccore.base.domain.enums.LookupKey;
 import com.penske.apps.ucsc.exception.UsrCreationSvcException;
 import com.penske.apps.ucsc.model.CreatedUser;
@@ -36,6 +40,9 @@ public class UserCreationServiceImpl implements UserCreationService {
 	
 	@Autowired
 	private UserInfoService remoteCreationService;
+	
+	@Autowired
+	private EmailDAO emailDAO;
 	
 	@Autowired
 	private LookupManager lookupManager;
@@ -210,78 +217,42 @@ public class UserCreationServiceImpl implements UserCreationService {
 	private MailRequest populateMailRequestObj(EditableUser userObj){
 		
 		LookupContainer lookups = lookupManager.getLookupContainer();
+		EmailTemplate template = emailDAO.getEmailTemplate(EmailTemplateType.NEW_USER);
 		
 		MailRequest mailRequest=new MailRequest();
 		mailRequest.setFromAddress(lookups.getSingleLookupValue(LookupKey.EBS_FROM_ADDRESS));
 		List<String> toAddress=new ArrayList<String>();
 		toAddress.add(userObj.getEmail());
 		mailRequest.setToRecipientsList(toAddress);
-		mailRequest.setSubject("Welcome to Supplier Management Center");
+		mailRequest.setSubject(template.getSubjectTemplate());
+		
 		if(userObj.getReturnFlg()==1){
 			mailRequest.setMessageContent(buildMailBodyExistingUser(userObj));
 		}else{
-			mailRequest.setMessageContent(buildMailBodyNewUser(userObj));
+			mailRequest.setMessageContent(buildMailBodyNewUser(userObj, template));
 		}
 		return mailRequest;
 	}
 	
-	private String buildMailBodyNewUser(EditableUser userObject)
+	private String buildMailBodyNewUser(EditableUser userObject, EmailTemplate template)
 	{
 		LookupContainer lookups = lookupManager.getLookupContainer();
 		
-		StringBuffer mailBody = new StringBuffer();		
-		Calendar cal = Calendar.getInstance();
-		try{
-			mailBody.append("<HTML><BODY>");
-			mailBody.append("<BR/>Dear ").append(userObject.getFirstName()).append(" ").append(userObject.getLastName()).append(",");
-			mailBody.append("<BR/>");
-			mailBody.append("<BR/>A Single Sign-On (SSO) account has been created for you.");
-			mailBody.append("<BR/>");
-			mailBody.append("<BR/>Please note the details of your new SSO account below.");
-			mailBody.append("<BR/>");
-			mailBody.append("<BR/>&nbsp;Name: ").append(userObject.getFirstName()).append(" ").append(userObject.getLastName());
-			mailBody.append("<BR/>&nbsp;SSO ID: ").append(userObject.getUserName());
-			mailBody.append("<BR/>&nbsp;Default one time use password: ").append(userObject.getDefaultPassword());
-			mailBody.append("<BR/>&nbsp;Email Address: ").append(userObject.getEmail());
-			mailBody.append("<BR/>&nbsp;Date/Time: ").append(cal.getTime());
-			mailBody.append("<BR/>");
+		String signInURL = lookups.getSingleLookupValue(LookupKey.PENSKE_SIGN_ON_URL);
+		String smcURL = lookups.getSingleLookupValue(LookupKey.SMC_APP_LINK);;
+		String customerServicePhone = lookups.getSingleLookupValue(LookupKey.CUSTOMER_SERVICE_PHONE_NUM);
+		
+		List<Pair<String, String>> replacements = Arrays.asList(
+			Pair.of("[SSO_ID]", userObject.getSsoId()),
+			Pair.of("[OTP]", userObject.getDefaultPassword()),
+			Pair.of("[PENSKE_SIGN_ON_URL]", signInURL),
+			Pair.of("[SMC_APP_LINK_HREF]", smcURL),
+			Pair.of("[SMC_APP_LINK]", smcURL),
+			Pair.of("[CUSTOMER_SERVICE_PHONE_NUM]", customerServicePhone)
+		);
 			
-			String signInURL = lookups.getSingleLookupValue(LookupKey.PENSKE_SIGN_ON_URL);
-			
-			mailBody.append("<BR/>To begin you will need to activate your SSO account by changing your password and creating a challenge question. <a href='")
-			.append(signInURL).append("'>Click here").append("</a> to change your password and create a challenge question.");
-			mailBody.append("<BR/>");
-			
-			String smcURL = lookups.getSingleLookupValue(LookupKey.SMC_APP_LINK);;
-			
-			mailBody.append("<BR/>You may access your SSO ID by <a href='").append(smcURL).append("'> clicking here").append("</a>, only after completing the above activation process.");
-			mailBody.append("<BR/>");
-			mailBody.append("<BR/>If you have any questions, contact Penske's customer service Monday through Friday at ");
-			mailBody.append("<BR/>");
-			mailBody.append("<BR/>Phone: ").append(lookups.getSingleLookupValue(LookupKey.CUSTOMER_SERVICE_PHONE_NUM));
-			mailBody.append("<BR/>Email: ").append(lookups.getSingleLookupValue(LookupKey.CUSTOMER_SERVICE_EMAIL));
-			mailBody.append("<BR/>");
-			mailBody.append("<BR/>Thank you,");
-			mailBody.append("<BR/>");
-			mailBody.append("<BR/>Penske IT Service Desk");
-			mailBody.append("<BR/>").append(lookups.getSingleLookupValue(LookupKey.IT_SERVICE_PHONE_NUM));
-			mailBody.append("<BR/>").append(lookups.getSingleLookupValue(LookupKey.IT_SERVICE_EMAIL));
-			mailBody.append("<BR/>");
-			mailBody.append("<BR/>This is an automated message; please do not reply to it.");
-			mailBody.append("<BR/>");
-			mailBody.append("<BR/>Note: The information will be used to authorize your access to this and other SSO-enabled sites and may be shared with other Penske affiliates to authorize your access to SSO-enabled sites (wherever located worldwide) that they may operate and that you choose to visit.");
-			mailBody.append("<BR/>");
-			mailBody.append("<BR/><I>The information contained in this e-mail is intended only for the individual or ");
-			mailBody.append("entity to which it is addressed. Its contents (including any attachments) may contain "); 
-			mailBody.append("confidential and/or privileged information. If you are not an intended recipient, you are "); 
-			mailBody.append("prohibited from using, disclosing, disseminating, copying or printing its contents. If you "); 
-			mailBody.append("received this e-mail in error, please immediately notify the sender by reply e-mail and "); 
-			mailBody.append("delete and destroy the message.  Thank you.</I>");			
-			mailBody.append("</BODY></HTML>");
-		}catch(Exception e){
-			logger.error(e.getLocalizedMessage(), e);
-		}
-		return mailBody.toString();
+		String body = template.getActualBody(replacements);
+		return body;
 	}
 	
 	private String buildMailBodyExistingUser(EditableUser userObject)
