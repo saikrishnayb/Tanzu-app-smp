@@ -38,7 +38,7 @@ public class DefaultVendorService implements VendorService {
 	public Vendor getVendorById(int vendorId) {
 	    List<Vendor> vendors = vendorDao.getVendors(null, vendorId, null);
 	    if(vendors == null || vendors.isEmpty())
-	    	throw new IllegalArgumentException("Could not find vendor with ID " + vendorId);
+	    	return null;
 	    
 	    return vendors.get(0);
 	}
