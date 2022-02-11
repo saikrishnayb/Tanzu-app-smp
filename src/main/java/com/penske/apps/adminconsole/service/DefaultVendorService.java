@@ -1,24 +1,26 @@
 package com.penske.apps.adminconsole.service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.penske.apps.adminconsole.dao.SecurityDao;
 import com.penske.apps.adminconsole.dao.VendorDao;
 import com.penske.apps.adminconsole.model.Alert;
 import com.penske.apps.adminconsole.model.EditableUser;
 import com.penske.apps.adminconsole.model.Vendor;
 import com.penske.apps.adminconsole.model.VendorContact;
-import com.penske.apps.smccore.base.beans.LookupManager;
-import com.penske.apps.smccore.base.domain.LookupContainer;
+import com.penske.apps.smccore.base.dao.EmailDAO;
+import com.penske.apps.smccore.base.domain.EmailTemplate;
+import com.penske.apps.smccore.base.domain.SmcEmail;
 import com.penske.apps.smccore.base.domain.User;
-import com.penske.apps.smccore.base.domain.enums.LookupKey;
+import com.penske.apps.smccore.base.domain.enums.EmailTemplateType;
 
 @Service
 public class DefaultVendorService implements VendorService {
@@ -29,10 +31,7 @@ public class DefaultVendorService implements VendorService {
 	private VendorDao vendorDao;
 	
 	@Autowired
-	private SecurityDao securityDao;
-	
-	@Autowired
-	private LookupManager lookupManager;
+	private EmailDAO emailDAO;
 	
 	@Override
 	public Vendor getVendorById(int vendorId) {
@@ -186,9 +185,6 @@ public class DefaultVendorService implements VendorService {
 	
 	@Override
 	public void sendEmailToAnalyst(Vendor vendor, User user) {
-		
-		LookupContainer lookups = lookupManager.getLookupContainer();
-		
 		if (vendor == null || vendor.getPlanningAnalyst() == null || user == null) {
 			return;
 		}
@@ -207,36 +203,25 @@ public class DefaultVendorService implements VendorService {
 
 		logger.info("Sending e-mail to Analyst [" + analyst.getFirstName() + " " + analyst.getLastName()
 				+ "] that a new Vendor [" + vendor.getVendorName() + "] is assigned.");
-		try {
-			MailRequest mailRequest = new MailRequest();
-			mailRequest.setUserId(user.getSso());
-			mailRequest.setFromAddress(lookups.getSingleLookupValue(LookupKey.EBS_FROM_ADDRESS));
-			mailRequest.setToList(analyst.getEmail().trim());
-			mailRequest.setSubject("New Vendor is Assigned");
-
-			StringBuilder mailBody = new StringBuilder(512);
-			mailBody.append("<html><body>");
-			mailBody.append("<p>" + analyst.getFirstName() + ",</p>");
-			mailBody.append("<p>Supplier Management Center assigned you a new Vendor.</p>");
-
-			mailBody.append("<p><b>Vendor Name</b><br>" + vendor.getVendorName() + "</p>");
-			mailBody.append("<p><b>Vendor Number</b><br>" + vendor.getVendorNumber() + "</p>");
-
-			VendorContact primaryContact = vendor.getPrimaryContact();
-			String primaryContactName = primaryContact != null
-					? primaryContact.getFirstName() + " " + primaryContact.getLastName()
-					: "";
-			mailBody.append("<p><b>Vendor&apos;s Primary Contact</b><br>" + primaryContactName + "</p>");
-
-			mailBody.append("<p>Please update your reports accordingly.</p>");
-			mailBody.append("<p>Thank you,<br>Supplier Management Center</p>");
-			mailBody.append("</body></html>");
-			mailRequest.setMessageContent(mailBody.toString());
-
-			securityDao.addEmailSent(mailRequest);// Email Content to SMC_EMAIL - uses EBS
-		} catch (Exception e) {
-			logger.error("E-mail sending failed for user [" + user.getSso() + "]", e);
-		}
+		
+		VendorContact primaryContact = vendor.getPrimaryContact();
+		String primaryContactName = primaryContact != null
+				? primaryContact.getFirstName() + " " + primaryContact.getLastName()
+				: "";
+		
+		List<Pair<String, String>> replacements = Arrays.asList(
+			Pair.of("[ANALYST_NAME]", analyst.getFirstName()),
+			Pair.of("[VENDOR_NAME]", vendor.getVendorName()),
+			Pair.of("[VENDOR_NUMBER]", String.valueOf(vendor.getVendorNumber())),
+			Pair.of("[PRIMARY_CONTACT_NAME]", primaryContactName)
+		);
+		
+		EmailTemplate template = emailDAO.getEmailTemplate(EmailTemplateType.VENDOR_ASSIGNED);
+		String subject = template.getActualSubject(replacements);
+		String body = template.getActualBody(replacements);
+		
+		SmcEmail email = new SmcEmail(EmailTemplateType.VENDOR_ASSIGNED, user.getSso(), analyst.getEmail().trim(), null, null, body, subject);
+		emailDAO.insertSmcEmail(email);		
 	}
 	
 	private boolean validateVendor(Vendor vendor) {

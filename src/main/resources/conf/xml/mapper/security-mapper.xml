@@ -725,15 +725,6 @@
   	 </where>
 	</select>
 	
-	<insert id="addEmailSent">
-		Insert into SMC.SMC_EMAIL (USER_SSO, TO_ADDRESS,EMAIL_BODY, EMAIL_SUBJECT, CREATED_DATE,
-		CREATED_BY, IS_PROCESSED) VALUES(#{userId},
-		#{toList}, #{messageContent}, #{subject}, CURRENT_TIMESTAMP, #{userId}, 'N')
-		  <selectKey resultType="int" keyProperty="emailAuditId" order="AFTER" >
-          	 SELECT IDENTITY_VAL_LOCAL() as identity_val FROM SYSIBM.SYSDUMMY1
-		</selectKey> 
-	</insert>
-	
 	<delete id="deleteUserFromBuddy">
 		DELETE FROM SMC.SMC_BUDDIES WHERE BUDDY_SSO=#{userSSO}
 		AND SSO !=#{userSSO}
