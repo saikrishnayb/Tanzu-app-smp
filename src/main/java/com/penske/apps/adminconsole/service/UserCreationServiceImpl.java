@@ -217,7 +217,7 @@ public class UserCreationServiceImpl implements UserCreationService {
 	private MailRequest populateMailRequestObj(EditableUser userObj){
 		
 		LookupContainer lookups = lookupManager.getLookupContainer();
-		EmailTemplate template = emailDAO.getEmailTemplate(EmailTemplateType.NEW_USER);
+		EmailTemplate template = emailDAO.getEmailTemplate(EmailTemplateType.NEW_VENDOR_USER);
 		
 		MailRequest mailRequest=new MailRequest();
 		mailRequest.setFromAddress(lookups.getSingleLookupValue(LookupKey.EBS_FROM_ADDRESS));
