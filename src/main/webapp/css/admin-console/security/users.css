@@ -243,3 +243,177 @@ background-color:white !important;
         padding-right: 5px;
         width: 138px;
     }
+    
+/* Start of custom Bootstrap Dropdown custom CSS */
+
+.bootStrapDropDown{
+	font-size: 13px !important; 
+	font-weight: normal !important;
+	color: #454545 !important;
+	text-decoration: none !important;
+	background-color: #FFFFFF;
+	padding: 5px;
+	display: -moz-inline-box; 
+	display: inline-block; 
+	min-width: 70px;
+	text-align: center;
+	border:1px solid #ccc;
+	border:1px solid rgba(0,0,0,0.15);
+	border-radius:4px
+	
+}
+
+.caret {
+  color: gray !important;
+  display: inline-block;
+  width: 0;
+  height: 0;
+  margin-top: -3px;
+  margin-left: 2px;
+  margin-right: 2px;
+  vertical-align: middle;
+  border-top: 6px dashed;
+  border-top: 5px solid\9;
+  border-right: 5px solid transparent;
+  border-left: 5px solid transparent;
+}
+
+.btn-default:active,.btn-default.active,.open>.dropdown-toggle.btn-default{
+color:#333;background-color:#e6e6e6;border-color:#adadad}
+.btn-default:active:hover,.btn-default.active:hover,.open>.dropdown-toggle.btn-default:hover,.btn-default:active:focus,.btn-default.active:focus,.open>.dropdown-toggle.btn-default:focus,.btn-default:active.focus,.btn-default.active.focus,.open>.dropdown-toggle.btn-default.focus{
+color:#333;background-color:#d4d4d4;border-color:#8c8c8c}
+.btn-default:active,.btn-default.active,.open>.dropdown-toggle.btn-default{
+background-image:none}
+.btn-primary:active,.btn-primary.active,.open>.dropdown-toggle.btn-primary{
+color:#fff;background-color:#286090;border-color:#204d74}
+.btn-primary:active:hover,.btn-primary.active:hover,.open>.dropdown-toggle.btn-primary:hover,.btn-primary:active:focus,.btn-primary.active:focus,.open>.dropdown-toggle.btn-primary:focus,.btn-primary:active.focus,.btn-primary.active.focus,.open>.dropdown-toggle.btn-primary.focus{
+color:#fff;background-color:#204d74;border-color:#122b40}
+.btn-primary:active,.btn-primary.active,.open>.dropdown-toggle.btn-primary{
+background-image:none}
+.btn-success:active,.btn-success.active,.open>.dropdown-toggle.btn-success{
+color:#fff;background-color:#449d44;border-color:#398439}
+.btn-success:active:hover,.btn-success.active:hover,.open>.dropdown-toggle.btn-success:hover,.btn-success:active:focus,.btn-success.active:focus,.open>.dropdown-toggle.btn-success:focus,.btn-success:active.focus,.btn-success.active.focus,.open>.dropdown-toggle.btn-success.focus{
+color:#fff;background-color:#398439;border-color:#255625}
+.btn-success:active,.btn-success.active,.open>.dropdown-toggle.btn-success{
+background-image:none}
+.btn-info:active,.btn-info.active,.open>.dropdown-toggle.btn-info{
+color:#fff;background-color:#31b0d5;border-color:#269abc}
+.btn-info:active:hover,.btn-info.active:hover,.open>.dropdown-toggle.btn-info:hover,.btn-info:active:focus,.btn-info.active:focus,.open>.dropdown-toggle.btn-info:focus,.btn-info:active.focus,.btn-info.active.focus,.open>.dropdown-toggle.btn-info.focus{
+color:#fff;background-color:#269abc;border-color:#1b6d85}
+.btn-info:active,.btn-info.active,.open>.dropdown-toggle.btn-info{
+background-image:none}
+.btn-warning:active,.btn-warning.active,.open>.dropdown-toggle.btn-warning{
+color:#fff;background-color:#ec971f;border-color:#d58512}
+.btn-warning:active:hover,.btn-warning.active:hover,.open>.dropdown-toggle.btn-warning:hover,.btn-warning:active:focus,.btn-warning.active:focus,.open>.dropdown-toggle.btn-warning:focus,.btn-warning:active.focus,.btn-warning.active.focus,.open>.dropdown-toggle.btn-warning.focus{
+color:#fff;background-color:#d58512;border-color:#985f0d}
+.btn-warning:active,.btn-warning.active,.open>.dropdown-toggle.btn-warning{
+background-image:none}
+.btn-danger:active,.btn-danger.active,.open>.dropdown-toggle.btn-danger{
+color:#fff;background-color:#c9302c;border-color:#ac2925}
+.btn-danger:active:hover,.btn-danger.active:hover,.open>.dropdown-toggle.btn-danger:hover,.btn-danger:active:focus,.btn-danger.active:focus,.open>.dropdown-toggle.btn-danger:focus,.btn-danger:active.focus,.btn-danger.active.focus,.open>.dropdown-toggle.btn-danger.focus{
+color:#fff;background-color:#ac2925;border-color:#761c19}
+.btn-danger:active,.btn-danger.active,.open>.dropdown-toggle.btn-danger{
+background-image:none}
+.dropup,.dropdown{
+position:relative}
+.dropdown-toggle:focus{
+outline:0}
+.dropdown-menu{
+position:absolute;top:100%;left:0;z-index:1000;display:none;float:left;min-width:160px;padding:5px 0;margin:2px 0 0;list-style:none;font-size:14px;text-align:left;background-color:#fff;border:1px solid #ccc;border:1px solid rgba(0,0,0,0.15);border-radius:4px;-webkit-box-shadow:0 6px 12px rgba(0,0,0,0.175);box-shadow:0 6px 12px rgba(0,0,0,0.175);-webkit-background-clip:padding-box;background-clip:padding-box}
+.dropdown-menu.pull-right{
+right:0;left:auto}
+.dropdown-menu .divider{
+height:1px;margin:9px 0;overflow:hidden;background-color:#e5e5e5}
+.dropdown-menu>li>a{
+display:block;padding:3px 20px;clear:both;font-weight:normal;line-height:1.42857143;color:#333;white-space:nowrap}
+.dropdown-menu>li>a:hover,.dropdown-menu>li>a:focus{
+text-decoration:none;color:#262626;background-color:#f5f5f5}
+.dropdown-menu>.active>a,.dropdown-menu>.active>a:hover,.dropdown-menu>.active>a:focus{
+color:#fff;text-decoration:none;outline:0;background-color:#337ab7}
+.dropdown-menu>.disabled>a,.dropdown-menu>.disabled>a:hover,.dropdown-menu>.disabled>a:focus{
+color:#777}
+.dropdown-menu>.disabled>a:hover,.dropdown-menu>.disabled>a:focus{
+text-decoration:none;background-color:transparent;background-image:none;filter:progid:DXImageTransform.Microsoft.gradient(enabled = false);cursor:not-allowed}
+.open>.dropdown-menu{
+display:block}
+.open>a{
+outline:0}
+.dropdown-menu-right{
+left:auto;right:0}
+.dropdown-menu-left{
+left:0;right:auto}
+.dropdown-header{
+display:block;padding:3px 20px;font-size:12px;line-height:1.42857143;color:#777;white-space:nowrap}
+.dropdown-backdrop{
+position:fixed;left:0;right:0;bottom:0;top:0;z-index:990}
+.pull-right>.dropdown-menu{
+right:0;left:auto}
+.dropup .caret,.navbar-fixed-bottom .dropdown .caret{
+border-top:0;border-bottom:4px dashed;border-bottom:4px solid \9;content:""}
+.dropup .dropdown-menu,.navbar-fixed-bottom .dropdown .dropdown-menu{
+top:auto;bottom:100%;margin-bottom:2px}
+@media (min-width:1024px){
+.navbar-right .dropdown-menu{
+left:auto;right:0}
+.navbar-right .dropdown-menu-left{
+left:0;right:auto}
+}
+.btn-group>.btn:not(:first-child):not(:last-child):not(.dropdown-toggle){
+border-radius:0}
+.btn-group>.btn:first-child:not(:last-child):not(.dropdown-toggle){
+border-bottom-right-radius:0;border-top-right-radius:0}
+.btn-group>.btn:last-child:not(:first-child),.btn-group>.dropdown-toggle:not(:first-child){
+border-bottom-left-radius:0;border-top-left-radius:0}
+.btn-group>.btn-group{
+float:left}
+.btn-group>.btn-group:not(:first-child):not(:last-child)>.btn{
+border-radius:0}
+.btn-group>.btn-group:first-child:not(:last-child)>.btn:last-child,.btn-group>.btn-group:first-child:not(:last-child)>.dropdown-toggle{
+border-bottom-right-radius:0;border-top-right-radius:0}
+.btn-group>.btn-group:last-child:not(:first-child)>.btn:first-child{
+border-bottom-left-radius:0;border-top-left-radius:0}
+.btn-group .dropdown-toggle:active,.btn-group.open .dropdown-toggle{
+outline:0}
+.btn-group>.btn+.dropdown-toggle{
+padding-left:8px;padding-right:8px}
+.btn-group>.btn-lg+.dropdown-toggle{
+padding-left:12px;padding-right:12px}
+.btn-group.open .dropdown-toggle{
+-webkit-box-shadow:inset 0 3px 5px rgba(0,0,0,0.125);box-shadow:inset 0 3px 5px rgba(0,0,0,0.125)}
+.btn-group.open .dropdown-toggle.btn-link{
+-webkit-box-shadow:none;box-shadow:none}
+.btn-group-vertical>.btn-group:first-child:not(:last-child)>.btn:last-child,.btn-group-vertical>.btn-group:first-child:not(:last-child)>.dropdown-toggle{
+border-bottom-right-radius:0;border-bottom-left-radius:0}
+.btn-group-justified>.btn-group .dropdown-menu{
+left:auto}
+.input-group .form-control:first-child,.input-group-addon:first-child,.input-group-btn:first-child>.btn,.input-group-btn:first-child>.btn-group>.btn,.input-group-btn:first-child>.dropdown-toggle,.input-group-btn:last-child>.btn:not(:last-child):not(.dropdown-toggle),.input-group-btn:last-child>.btn-group:not(:last-child)>.btn{
+border-bottom-right-radius:0;border-top-right-radius:0}
+.input-group-addon:first-child{
+border-right:0}
+.input-group .form-control:last-child,.input-group-addon:last-child,.input-group-btn:last-child>.btn,.input-group-btn:last-child>.btn-group>.btn,.input-group-btn:last-child>.dropdown-toggle,.input-group-btn:first-child>.btn:not(:first-child),.input-group-btn:first-child>.btn-group:not(:first-child)>.btn{
+border-bottom-left-radius:0;border-top-left-radius:0}
+.panel-heading>.dropdown .dropdown-toggle{
+color:inherit}
+
+.dropdown {
+  display: inline-block;
+}
+.dropdown .dropdown-toggle {
+  padding: 5px!important;
+  font-size: 13px !important;
+  font-weight: bold;
+}
+.dropdown .dropdown-toggle .caret {
+  position: static;
+  color: #ffffff;
+}
+.dropdown .dropdown-menu {
+  list-style: none !important;
+  margin: 0 !important;
+}
+
+.dropdown a {
+  text-decoration: none !important;
+}
+
+/* End of Bootstrap Dropdown custom CSS */
