@@ -128,6 +128,25 @@ public class SecurityRestController {
         mav.addObject("tabPermissionsMap", securityService.getPermissions(roleId));
         return mav;
     }
+    
+    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
+    @RequestMapping(value ="get-resend-email-modal-content")
+    public ModelAndView getResendEmail(@RequestParam(value="userId") String userId) {
+        ModelAndView mav = new ModelAndView("/admin-console/security/modal/resend-email-modal-content");
+        
+        EditableUser editableUser = securityService.getEditInfo(userId, "VENDOR");
+        mav.addObject("editableUser", editableUser);
+
+        return mav;
+    }
+    
+    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
+    @RequestMapping(value ="resend-email")
+    public void resendEmail(@RequestParam(value="userId") String userId) {
+    	User user = sessionBean.getUser();
+        EditableUser editableUser = securityService.getEditInfo(userId, "VENDOR");
+        userCreationService.resendVendorEmail(user, editableUser);
+    }
 
     @VendorAllowed
     @SmcSecurity(securityFunction = {SecurityFunction.MANAGE_USERS, SecurityFunction.MANAGE_VENDOR_USERS, SecurityFunction.MANAGE_ORG})

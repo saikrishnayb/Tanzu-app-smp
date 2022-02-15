@@ -221,6 +221,29 @@ $usersTable.on("click", ".edit-vendor-user", function(){
 		
 	});
 });
+
+$usersTable.on("click", ".resend-email", function(){
+	var $this =  $(this);
+	var userId = $this.closest('.user-row').find('.user-id').val();
+	
+	var $getResendModalContentPromise = $.get('get-resend-email-modal-content.htm', {userId:userId});
+	
+	$getResendModalContentPromise.done(function(data){
+		$usersModal.html(data);
+		ModalUtil.openModal($usersModal);
+		
+	});
+});
+
+$usersModal.on('click', '#resend-confirm', function() {
+	var userId = $('#resend-confirm').data('user-id');
+	
+	var $resendEmailContentPromise = $.get('resend-email.htm', {userId:userId});
+	
+	$resendEmailContentPromise.done(function(){
+		ModalUtil.closeModal($usersModal);
+	});
+});
 	
 if($('#search-content').data('has-been-searched')==true && $('#search-content').data('vendor-user-search')==true){
 	$("#search-content").removeClass("displayNone").addClass("displayBlock");

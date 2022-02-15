@@ -21,6 +21,7 @@ import com.penske.apps.smccore.base.beans.LookupManager;
 import com.penske.apps.smccore.base.dao.EmailDAO;
 import com.penske.apps.smccore.base.domain.EmailTemplate;
 import com.penske.apps.smccore.base.domain.LookupContainer;
+import com.penske.apps.smccore.base.domain.User;
 import com.penske.apps.smccore.base.domain.enums.EmailTemplateType;
 import com.penske.apps.smccore.base.domain.enums.LookupKey;
 import com.penske.apps.ucsc.exception.UsrCreationSvcException;
@@ -101,6 +102,29 @@ public class UserCreationServiceImpl implements UserCreationService {
 		}
 		
 		return userObj;
+	}
+	
+	@Override
+	public void resendVendorEmail(User user, EditableUser editableUser) {
+		String otp = securityDao.getOtpForUser(editableUser);
+		if(StringUtils.isBlank(otp))
+			throw new IllegalArgumentException("Cannot find OTP for user. SSO: " + editableUser.getSsoId());
+		editableUser.setDefaultPassword(otp);
+		try{
+				MailRequest mailRequest=populateMailRequestObj(editableUser);
+				mailRequest.setUserId(user.getSso());
+				if(mailRequest.getToRecipientsList() !=null && !mailRequest.getToRecipientsList().isEmpty()){
+					mailRequest.setToList(mailRequest
+						.getToRecipientsList()
+						.toString()
+						.substring(1,mailRequest.getToRecipientsList().toString().length() - 1)
+						.replace(", ", ","));
+				}
+				securityDao.addEmailSent(mailRequest);//Email Content to SMC_EMAIL - uses EBS
+		}catch (Exception e) {
+			logger.error("Mail Sending failed for user [ "+editableUser.getUserName()+" ]",e);
+		}
+		
 	}
 
 	private EditableUser insertUserToLDAP(EditableUser userObj) throws UserServiceException, UsrCreationSvcException {

@@ -193,5 +193,8 @@ public interface SecurityDao {
 
 	@NonVendorQuery
     public void insertOtp(@Param("userObj") EditableUser userObj);
+
+	@NonVendorQuery
+	public String getOtpForUser(@Param("editableUser") EditableUser editableUser);
 	
 }

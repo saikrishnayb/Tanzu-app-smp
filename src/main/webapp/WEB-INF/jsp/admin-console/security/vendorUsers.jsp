@@ -112,7 +112,7 @@
 											<a class="edit-vendor-user">Edit User</a>
 										</li>
 										<li>
-											<a>Re-send Enrollment Email</a>
+											<a class="resend-email">Re-send Enrollment Email</a>
 										</li>
 										<li>
 											<a class="deactivate-vendor-user">Delete User</a>
