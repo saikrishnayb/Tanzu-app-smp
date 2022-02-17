@@ -2,6 +2,7 @@ package com.penske.apps.adminconsole.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -82,36 +83,42 @@ public class UserCreationServiceImpl implements UserCreationService {
 						LookupContainer lookups = lookupManager.getLookupContainer();
 						List<Pair<String, String>> replacements = Arrays.asList(
 							Pair.of("[USER_NAME]", userObj.getFirstName() + " " + userObj.getLastName()),
-							Pair.of("[SMC_URL]", lookups.getSingleLookupValue(LookupKey.SMC_APP_LINK)),
+							Pair.of("[SMC_APP_LINK]", lookups.getSingleLookupValue(LookupKey.SMC_APP_LINK)),
 							Pair.of("[CUSTOMER_SERVICE_PHONE_NUM]", lookups.getSingleLookupValue(LookupKey.CUSTOMER_SERVICE_PHONE_NUM)),
 							Pair.of("[CUSTOMER_SERVICE_EMAIL]", lookups.getSingleLookupValue(LookupKey.CUSTOMER_SERVICE_EMAIL)),
 							Pair.of("[IT_SERVICE_PHONE_NUM]", lookups.getSingleLookupValue(LookupKey.IT_SERVICE_PHONE_NUM)),
 							Pair.of("[IT_SERVICE_EMAIL]", lookups.getSingleLookupValue(LookupKey.IT_SERVICE_EMAIL))
 						);
 						
-						EmailTemplate template = emailDAO.getEmailTemplate(EmailTemplateType.EXISTING_USER);
+						EmailTemplate template = emailDAO.getEmailTemplate(EmailTemplateType.EXISTING_VENDOR_USER);
 						String subject = template.getActualSubject(replacements);
 						String body = template.getActualBody(replacements);
 						
-						SmcEmail email = new SmcEmail(EmailTemplateType.EXISTING_USER, userObj.getSsoId(), userObj.getEmail(), null, null, body, subject);
+						SmcEmail email = new SmcEmail(EmailTemplateType.EXISTING_VENDOR_USER, userObj.getSsoId(), userObj.getEmail(), null, null, body, subject);
 						emailDAO.insertSmcEmail(email);		
 					} else {
 						// New User
 						LookupContainer lookups = lookupManager.getLookupContainer();
 						List<Pair<String, String>> replacements = Arrays.asList(
+							Pair.of("[USER_NAME]", userObj.getFirstName() + " " + userObj.getLastName()),
+							Pair.of("[USER_NAME]", userObj.getFirstName() + " " + userObj.getLastName()),
 							Pair.of("[SSO_ID]", userObj.getSsoId()),
 							Pair.of("[OTP]", userObj.getDefaultPassword()),
+							Pair.of("[USER_EMAIL]", userObj.getEmail()),
+							Pair.of("[DATE_TIME]", Calendar.getInstance().getTime().toString()),
 							Pair.of("[PENSKE_SIGN_ON_URL]", lookups.getSingleLookupValue(LookupKey.PENSKE_SIGN_ON_URL)),
-							Pair.of("[SMC_APP_LINK_HREF]", lookups.getSingleLookupValue(LookupKey.SMC_APP_LINK)),
 							Pair.of("[SMC_APP_LINK]", lookups.getSingleLookupValue(LookupKey.SMC_APP_LINK)),
-							Pair.of("[CUSTOMER_SERVICE_PHONE_NUM]", lookups.getSingleLookupValue(LookupKey.CUSTOMER_SERVICE_PHONE_NUM))
+							Pair.of("[CUSTOMER_SERVICE_PHONE_NUM]", lookups.getSingleLookupValue(LookupKey.CUSTOMER_SERVICE_PHONE_NUM)),
+							Pair.of("[CUSTOMER_SERVICE_EMAIL]", lookups.getSingleLookupValue(LookupKey.CUSTOMER_SERVICE_EMAIL)),
+							Pair.of("[IT_SERVICE_PHONE_NUM]", lookups.getSingleLookupValue(LookupKey.IT_SERVICE_PHONE_NUM)),
+							Pair.of("[IT_SERVICE_EMAIL]", lookups.getSingleLookupValue(LookupKey.IT_SERVICE_EMAIL))
 						);
 						
-						EmailTemplate template = emailDAO.getEmailTemplate(EmailTemplateType.NEW_USER);
+						EmailTemplate template = emailDAO.getEmailTemplate(EmailTemplateType.NEW_VENDOR_USER);
 						String subject = template.getActualSubject(replacements);
 						String body = template.getActualBody(replacements);
 						
-						SmcEmail email = new SmcEmail(EmailTemplateType.NEW_USER, userObj.getSsoId(), userObj.getEmail(), null, null, body, subject);
+						SmcEmail email = new SmcEmail(EmailTemplateType.NEW_VENDOR_USER, userObj.getSsoId(), userObj.getEmail(), null, null, body, subject);
 						emailDAO.insertSmcEmail(email);		
 					}
 
