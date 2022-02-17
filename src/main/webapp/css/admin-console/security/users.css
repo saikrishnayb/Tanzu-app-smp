@@ -416,4 +416,14 @@ color:inherit}
   text-decoration: none !important;
 }
 
+.ui-accordion-header.ui-state-hover {
+  background: #2d73cf;
+  color: #fff;
+  border: 1px solid #aaa;
+}
+
+.ui-accordion-header a {
+	color: #fff !important;
+}
+
 /* End of Bootstrap Dropdown custom CSS */
