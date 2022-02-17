@@ -3,7 +3,7 @@
 <html>
 <head>
 	<title>SMC Home</title>
-	<%@ include file="../../../jsp/global/v2/header.jsp" %>
+	<%@ include file="../../../jsp/global/v1/header.jsp" %>
 
 	<link href="${baseUrl}/css/admin-console/security/users.css" rel="stylesheet" type="text/css"/>
 </head>
@@ -132,7 +132,7 @@
 	</div>
 	<input type="hidden" id="tabNavUser" value="left-nav-users">
 	
-	<%@ include file="../../../jsp/global/v2/footer.jsp" %>
+	<%@ include file="../../../jsp/global/v1/footer.jsp" %>
 	<script src="${baseUrl}/js/admin-console/security/users.js" type="text/javascript"></script>
 </body>
 

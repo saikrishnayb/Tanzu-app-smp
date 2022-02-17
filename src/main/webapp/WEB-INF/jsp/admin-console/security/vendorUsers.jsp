@@ -3,10 +3,18 @@
 <html>
 <head>
 	<title>SMC Home</title>
-	<%@ include file="../../../jsp/global/v2/header.jsp" %>
+	<%@ include file="../../../jsp/global/v1/header.jsp" %>
+	<link href="${baseUrl}/css/global/v1/jquery/jquery.multiselect.css"rel="stylesheet" type="text/css" />
 	<link href="${baseUrl}/css/admin-console/security/users.css" rel="stylesheet" type="text/css"/>
+	<link href="${baseUrl}/css/global/v1/jquery/jquery.multiselect.filter.css"rel="stylesheet" type="text/css" />
 </head>
 
+<!-- ******************************edit modal******************************** -->
+<div id="edit-modal" class="modal edit-user-modal" title="Edit User Information"></div>
+
+<!-- ***************************deactivate modal********************************** -->
+<div id="deactivate-modal" class="deactivate-modal modal" title="Confirm Account Deactivation">
+</div>
 <!-- *******************************user account table************************** -->
 <body>
 	<%@ include file="../../../jsp/global/navigation/sub-nav.jsp" %>
@@ -99,26 +107,11 @@
 						</tr>
 					</thead>
 					<tbody>
-						<c:forEach items="${userList}" var="user" varStatus="userLoop">
+						<c:forEach items="${userList}" var="user">
 						<tr class="user-row">
 							<td class="editable centerAlign">
-								<div class="dropdown">
-						            <a class="bootStrapDropDown dropdown-toggle" data-toggle="dropdown">
-						              Actions
-						              <span class="caret"></span>
-						            </a>
-						            <ul class="dropdown-menu">
-										<li>
-											<a class="edit-vendor-user">Edit User</a>
-										</li>
-										<li>
-											<a class="resend-email">Re-send Enrollment Email</a>
-										</li>
-										<li>
-											<a class="deactivate-vendor-user">Delete User</a>
-										</li>
-									</ul>
-								</div>
+								<a class="rightMargin edit-vendor-user">Edit</a>
+								<img src="${commonStaticUrl}/images/delete.png" class="centerImage rightMargin deactivate-vendor-user <c:if test="${user.deactivatible eq true}">deactivate-vendor-user</c:if>"/>
 								<input class="user-id" type=hidden value="${user.userId}"/>
 							</td>
 							<td><c:out value="${user.firstName}" /></td>
@@ -149,14 +142,12 @@
 	 </c:otherwise>
 </c:choose>	
 		</div>
-		
-		<!-- Modals -->
-		<div id="user-modal" class="modal row"></div>
-		
 	</div>
 	<input type="hidden" id="tabNavUser" value="left-nav-vendor-users">
 	
-	<%@ include file="../../../jsp/global/v2/footer.jsp" %>
+	<%@ include file="../../../jsp/global/v1/footer.jsp" %>
+	<script type="text/javascript" src="${baseUrl}/js/global/v1/jquery/jquery.multiselect.js"></script>
+	<script type="text/javascript" src="${baseUrl}/js/global/v1/jquery/jquery.multiselect.filter.js"></script>
 	<script src="${baseUrl}/js/admin-console/security/users.js" type="text/javascript"></script>
 </body>
 
