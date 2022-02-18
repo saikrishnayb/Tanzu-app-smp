@@ -2,20 +2,11 @@ var $tabNavUser=$('#tabNavUser').val();
 selectCurrentNavigation("tab-security",$tabNavUser);
 
 // Selectors
-var $usersTable = $('#users-table');
+var $vendorUsersTable = $('#vendor-users-table');
 var $usersModal = $('#user-modal');
-var $searchButtonsContainer = $('#search-buttons-div');
-// Advanced Search Fields
-var $searchFName = $('#search-first-name');
-var $searchLName = $('#search-last-name');
-var $searchRole = $('#search-role');
-var $searchEmail = $('#search-email');
-var $searchuserType = $('#search-user-type');
-var $searchUserForm = $('#search-user-form');
-var $inputs = $('#search-first-name','#search-last-name','#search-role','#search-email');
 
-
-// Initializes multiselect
+// Initializes multiselect - have to initalize here instead of the separate js because we need to wait for the page to fully load 
+// before this gets initialized or we'll get a .multiselect is not a function error
 $('#search-org').multiselect({
 minWidth:220,
 noneSelectedText:"",
@@ -23,147 +14,71 @@ open: function(){
   $(".ui-multiselect-menu ").css('width','335px');
 }
 }).multiselectfilter({width : 250});
-	
+
 // Initializes the modal
 ModalUtil.initializeModal($usersModal);
 
-// Initializes data table
-var iDisplayLength = 10;//tableRowLengthCalc();
-
-//user summary table
-$usersTable.dataTable( { //All of the below are optional
-	"aaSorting": [[ 1, "asc" ]], //default sort column
-	"bPaginate": true, //enable pagination
-	"bStateSave": true,
-	"bAutoWidth": false, //cray cray
-	"bLengthChange": true, //enable change of records per page, not recommended
-	"bFilter": true, //Allows dynamic filtering of results, do not enable if using ajax for pagination
-	"bSort": true, //Allow sorting by column header
-	"bInfo": true, //Showing 1 to 10 of 11 entries
-	"aoColumnDefs": [
-					 {"bSortable": false, "aTargets": [ 0 ]}, //stops first column from being sortable
-					 { "sWidth": "100px", "aTargets": [ 0 ] },
-					 { "sType": "date", "aTargets": [ "lastLogin" ] },
-					 {"bSearchable": false, "aTargets": [0]}
+// Initializes the DataTable
+$vendorUsersTable.DataTable( { //All of the below are optional
+	"order": [[ 1, "asc" ]], //default sort column
+	"paging": true, //enable pagination
+	"stateSave": true,
+	"autoWidth": false, //cray cray
+	"lengthChange": true, //enable change of records per page, not recommended
+	"searching": true, //Allows dynamic filtering of results, do not enable if using ajax for pagination
+	"ordering": true, //Allow sorting by column header
+	"info": true, //Showing 1 to 10 of 11 entries
+	"columnDefs": [
+					 {'orderable': false, targets: [ 0 ]}, //stops first column from being sortable
+					 { 'width': "100px", targets: [ 0 ] },
+					 { 'type': "date", targets: [ "lastLogin" ] },
+					 {'searchable': false, targets: [0]}
 					 ],
-	"sPaginationType": "full_numbers", //Shows first/previous 1,2,3,4 next/last buttons
-	"iDisplayLength": 100 , //number of records per page for pagination
-	"oLanguage": {"sEmptyTable": "No Results Found"}, //Message displayed when no records are found
-	"fnDrawCallback": function() { //This will hide the pagination menu if we only have 1 page.
-	var paginateRow = $(this).parent().children('div.dataTables_paginate');
-	var pageCount = Math.ceil((this.fnSettings().fnRecordsDisplay()) / this.fnSettings()._iDisplayLength);
+	"paginationType": "full_numbers", //Shows first/previous 1,2,3,4 next/last buttons
+	"pageLength": 100 , //number of records per page for pagination
+	"language": {"emptyTable": "No Results Found"}, //Message displayed when no records are found
+	"drawCallback": function() { //This will hide the pagination menu if we only have 1 page.
+		var paginateRow = $(this).parent().children('div.dataTables_paginate');
+		var pageCount = Math.ceil((this.fnSettings().fnRecordsDisplay()) / this.fnSettings()._iDisplayLength);
 	 
-	if (pageCount > 1)  {
-		paginateRow.css("display", "block");
-	} else {
-		paginateRow.css("display", "none");
-	}
+		if (pageCount > 1)  {
+			paginateRow.css("display", "block");
+		} else {
+			paginateRow.css("display", "none");
+		}
 	
-	//This will hide "Showing 1 to 5 of 11 entries" if we have 0 rows.
-	var infoRow = $(this).parent().children('div.dataTables_info');
-	var rowCount = this.fnSettings().fnRecordsDisplay();
-	if (rowCount > 0) {
-		infoRow.css("display", "block");
-	} else {
-		infoRow.css("display", "none");
-	}
+		//This will hide "Showing 1 to 5 of 11 entries" if we have 0 rows.
+		var infoRow = $(this).parent().children('div.dataTables_info');
+		var rowCount = this.fnSettings().fnRecordsDisplay();
+		if (rowCount > 0) {
+			infoRow.css("display", "block");
+		} else {
+			infoRow.css("display", "none");
+		}
 	
-	parent.iframeResizer.resizeIframe();
+		parent.iframeResizer.resizeIframe();
 	}
-} );
+});
 	
 	
 	
 //---------------------------------------Listeners----------------------------------------
-//reset search fields
-$searchButtonsContainer.on('click', '.reset', function(){
-	$searchEmail.val('');
-	$searchFName.val('');
-	$searchLName.val('');
-	$searchRole.val('');
-	$searchuserType.children().removeAttr("selected");
-	$searchuserType.find('.default-option').attr('selected', 'selected');
-	
-	$searchEmail.removeClass('errorMsgInput');
-	$searchFName.removeClass('errorMsgInput');
-	$searchLName.removeClass('errorMsgInput');
-	$searchRole.removeClass('errorMsgInput');
-	$searchuserType.removeClass('errorMsgInput');
-	$('.error-messages-container').addClass('displayNone');
-	$('#search-org').multiselect("widget").find(':checkbox').removeAttr('checked');
-	$('#search-org').val([]);
-	$('#search-org').multiselect("widget").find(':checkbox').removeAttr('aria-selected');
-	$('#search-org').multiselect('update');
-});
-	
-//search for user accounts
-$searchButtonsContainer.on('click', '.search', function(){
-	var  $searchForm = $('#search-user-form');
-	$searchForm.submit();
-});
-	
-$('#search-user-form').on('keypress', function(e) {
-	var $searchUserForm = $('#search-user-form');
-	//Show the advanced search form if the user had just used it.
-	if( ($searchUserForm.find('[name="firstName"]').val().length > 0) || ($searchUserForm.find('[name="lastName"]').val().length > 0) ||
-	($searchUserForm.find('[name="email"]').val().length > 0) || ($searchUserForm.find('[name="roleId"]').val().length > 0)){
-			if (e.which == 13) {
-				$searchButtonsContainer.find('.search').trigger('click');
-				event.preventDefault();
-			}
-	}
-});
-		
-//search for vendor user accounts
-$searchButtonsContainer.on('click', '.vendorSearch', function(){
-	var  $searchForm = $('#search-vendor-user-form');
-	$searchForm.submit();
-});
-	
-
-$('#search-vendor-user-form').on('keypress', function(e) {
-	var $searchUserForm = $('#search-vendor-user-form');
-	//Show the advanced search form if the user had just used it.
-	if( ($searchUserForm.find('[name="firstName"]').val().length > 0) || ($searchUserForm.find('[name="lastName"]').val().length > 0) ||
-	($searchUserForm.find('[name="email"]').val().length > 0) || ($searchUserForm.find('[name="roleId"]').val().length > 0) ||
-	($('#search-vendor-user-form').find('[name=orgIds]').multiselect("widget").find(':checkbox:checked').length > 0)){
-			if (e.which == 13) {
-				$searchButtonsContainer.find('.vendorSearch').trigger('click');
-				event.preventDefault();
-			}
-		
-	}
-});
-	
-if($("#search-content").is(":visible")){
-	if($("#advancedSearch").is(":visible")){
-		//Currently Expanded
-		$("#advancedSearch").text('Hide Search Criteria');
-	}
-}
-else{
-	if($("#advancedSearch").is(":hidden")){
-		//Currently Collapsed
-		$("#advancedSearch").text('Show Search Criteria');
-	}
-}
-	
 //penske user deactivate modal
-$usersTable.on("click", ".deactivate", function(){
+$vendorUsersTable.on("click", ".deactivate", function(){
 	var $this =  $(this);
 	var $isVendorUser=false;
 	deactivteUser($this,$isVendorUser);
 });
 
 //vendor user deactivate modal
-$usersTable.on("click", ".deactivate-vendor-user", function(){
+$vendorUsersTable.on("click", ".deactivate-vendor-user", function(){
 	var $this =  $(this);
 	var $isVendorUser=true;
 	deactivteUser($this,$isVendorUser);
 });
 	
 //edit modal
-$usersTable.on("click", ".edit-user", function(){
+$vendorUsersTable.on("click", ".edit-user", function(){
 	
 	var $this =  $(this);
 	var userId = $this.closest('.user-row').find('.user-id').val();
@@ -206,7 +121,7 @@ $usersModal.on('click', '#cancelButton', function() {
 });
 	
 //edit modal
-$usersTable.on("click", ".edit-vendor-user", function(){
+$vendorUsersTable.on("click", ".edit-vendor-user", function(){
 	
 	var $this =  $(this);
 	var userId = $this.closest('.user-row').find('.user-id').val();
@@ -222,7 +137,7 @@ $usersTable.on("click", ".edit-vendor-user", function(){
 	});
 });
 
-$usersTable.on("click", ".resend-email", function(){
+$vendorUsersTable.on("click", ".resend-email", function(){
 	var $this =  $(this);
 	var userId = $this.closest('.user-row').find('.user-id').val();
 	
