@@ -55,12 +55,12 @@
 				<dependency>
 					<groupId>com.penske.smc.common</groupId>
 					<artifactId>smccore</artifactId>
-					<version>1.1.0-SMC-SMCCOR2-1-660101d</version>
+					<version>1.1.0-develop-SNAPSHOT</version>
 				</dependency>
 				<dependency>
 					<groupId>com.penske.smc.common</groupId>
 					<artifactId>smccore</artifactId>
-					<version>1.1.0-SMC-SMCCOR2-1-660101d</version>
+					<version>1.1.0-develop-SNAPSHOT</version>
 					<classifier>tests</classifier>
 					<scope>test</scope>
 				</dependency>

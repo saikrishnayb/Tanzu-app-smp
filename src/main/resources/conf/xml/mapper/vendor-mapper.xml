@@ -7,55 +7,8 @@
  	  <id column="VENDOR_ID"       property="vendorId"/>
  	  <result column="mfrCodes"    property="mfrCodes"/>
  	</resultMap>
- 	
- 	<select id="getVendorById" resultMap="VendorMap">
- 	
-     WITH ediVendor AS (
-       SELECT  XMLSERIALIZE(XMLAGG(XMLTEXT(CONCAT(',', EDI_MFR ))) as VARCHAR(1024)) AS mfrCodes,
-               EDI_VENDOR,
-               EDI_CORP
-         
-         FROM CORP.NVOEDIVND
-            
-         GROUP BY EDI_VENDOR, EDI_CORP
-    )
-    
-		 SELECT vend.VENDOR_ID,
-				    vend.CORP AS corpCode,
-						vend.VENDOR_NAME AS vendorName,
-						vend.VENDOR_NUMBER AS vendorNumber,
-						vend.ANNUAL_AGREEMENT AS annualAgreement,
-						ediVendor.mfrCodes,
-						pvscty as city, 
-						pvsst as state, 
-						pvszip as zipCode,
-						prim.FIRST_NAME AS "primaryContact.firstName",
-						prim.LAST_NAME AS "primaryContact.lastName",
-						prim.PHONE AS "primaryContact.phoneNumber",
-						vend.NOTIFICATION_EXCEPTION AS notificationException,
-						panl.USER_ID AS "planningAnalyst.userId",
-						panl.FIRST_NAME AS "planningAnalyst.firstName",
-						panl.LAST_NAME AS "planningAnalyst.lastName",
-						supp.USER_ID AS "supplySpecialist.userId"
-		
-				FROM	SMC.SMC_VENDOR_MASTER vend 
-						LEFT OUTER JOIN SMC.SMC_VENDOR_CONTACT prim
-						ON	vend.VENDOR_ID = prim.VENDOR_ID
-						AND	prim.CONTACT_TYPE = 'PRIMARY'
-						LEFT OUTER JOIN SMC.SMC_USER_MASTER panl
-						ON	vend.PLANNING_ANALYST = panl.USER_ID
-						LEFT OUTER JOIN SMC.SMC_USER_MASTER supp
-						ON	vend.SUPPLY_SPECIALIST = supp.USER_ID
-						INNER JOIN corp.fpurvnd purv
-						on purv.pvcorp = vend.corp and purv.pvnbr = vend.vendor_number
- LEFT JOIN ediVendor 
-            ON ediVendor.EDI_VENDOR = vend.VENDOR_NUMBER
-            AND ediVendor.EDI_CORP = vend.CORP
-				WHERE vend.VENDOR_ID=#{vendorId} and vend.STATUS = 'A'
-		ORDER BY vend.VENDOR_NAME
-	</select>
 
- 	<select id="getAllVendors" resultMap="VendorMap">
+ 	<select id="getVendors" resultMap="VendorMap">
  	
      WITH ediVendor AS (
        SELECT  XMLSERIALIZE(XMLAGG(XMLTEXT(CONCAT(',', EDI_MFR ))) as VARCHAR(1024)) AS mfrCodes,
@@ -79,16 +32,35 @@
 						prim.FIRST_NAME AS "primaryContact.firstName",
 						prim.LAST_NAME AS "primaryContact.lastName",
 						prim.PHONE AS "primaryContact.phoneNumber",
+						prim.EMAIL AS "primaryContact.email",
+						prim.RESPONSIBILITY AS "primaryContact.responsibility",
+						sec.FIRST_NAME AS "secondaryContact.firstName",
+						sec.LAST_NAME AS "secondaryContact.lastName",
+						sec.PHONE AS "secondaryContact.phoneNumber",
+						sec.EMAIL AS "secondaryContact.email",
+						sec.RESPONSIBILITY AS "secondaryContact.responsibility",
 						vend.NOTIFICATION_EXCEPTION AS notificationException,
 						panl.USER_ID AS "planningAnalyst.userId",
 						panl.FIRST_NAME AS "planningAnalyst.firstName",
 						panl.LAST_NAME AS "planningAnalyst.lastName",
 						supp.USER_ID AS "supplySpecialist.userId",
+						purv.PVTRMS AS paymentTerms,
+						purv.PVONAM AS orderName,
+						purv.PVOAD1 AS mailingAddress1,
+						purv.PVOAD2 AS mailingAddress2,
+						purv.PVOCTY AS mailingCity,
+						purv.PVOST AS mailingState,
+						purv.PVOZIP AS mailingZipCode,
 						purv.PVSAD1 AS shippingAddress1,
 						purv.PVSAD2 AS shippingAddress2,
 						purv.PVSCTY AS shippingCity,
 						purv.PVSST AS shippingState,
-						purv.PVSZIP AS shippingZipCode
+						purv.PVSZIP AS shippingZipCode,
+						vend.PLANNING_ANALYST AS "planningAnalyst.userId",
+						vend.SUPPLY_SPECIALIST AS "supplySpecialist.userId",
+						vennam.VENDOR_ADDRESS_LINE_1 AS vendorAddress,
+						vennam.VENDOR_ATTENTION AS attention,
+						dist.DMNAME AS companyName
 		
 				FROM	SMC.SMC_VENDOR_MASTER vend 
 						JOIN SMC.SMC_ORG_VENDOR_ASSOC org
@@ -96,16 +68,69 @@
 						LEFT OUTER JOIN SMC.SMC_VENDOR_CONTACT prim
 						ON	vend.VENDOR_ID = prim.VENDOR_ID
 						AND	prim.CONTACT_TYPE = 'PRIMARY'
+						LEFT OUTER JOIN SMC.SMC_VENDOR_CONTACT sec
+						ON	vend.VENDOR_ID = sec.VENDOR_ID
+						AND	sec.CONTACT_TYPE = 'SECONDARY'
 						LEFT OUTER JOIN SMC.SMC_USER_MASTER panl
 						ON	vend.PLANNING_ANALYST = panl.USER_ID
 						LEFT OUTER JOIN SMC.SMC_USER_MASTER supp
 						ON	vend.SUPPLY_SPECIALIST = supp.USER_ID
 						INNER JOIN corp.fpurvnd purv
 						on purv.pvcorp = vend.corp and purv.pvnbr = vend.vendor_number
+						LEFT OUTER JOIN PENSKE.VENNAM vennam
+						ON	vennam.COMPANY_CODE = purv.PVCORP AND vennam.VENDOR_NUMBER = purv.PVNBR
+						LEFT OUTER JOIN CORP.FDSTMST dist
+						ON vend.CORP = dist.DMCORP AND dist.DMTYPE = 'COMPANY'
  		LEFT JOIN ediVendor 
             ON ediVendor.EDI_VENDOR = vend.VENDOR_NUMBER
             AND ediVendor.EDI_CORP = vend.CORP
-				WHERE org.ORG_ID=#{orgId} and vend.STATUS = 'A'
+		WHERE vend.STATUS = 'A'
+		<choose>
+    		<when test="vendor != null and vendor.alertType != null and vendor.alertType=='ALRT_OF_VEND_USER_SETUP_REQ'">
+    	    	AND org.ORG_ID !=1 AND org.ORG_ID NOT IN (SELECT DISTINCT ORG_ID FROM SMC.SMC_USER_MASTER WHERE TYPE_ID=2)
+    		</when>
+    		<when test="orgId != null">
+		       AND org.ORG_ID=#{orgId}
+		    </when>
+		</choose>
+		<if test="vendorId != null">
+			AND vend.VENDOR_ID=#{vendorId}
+		</if>
+		<if test="vendor != null">
+			<if test="vendor.vendorName != null">
+				<bind name="formattedVendorName" value="vendor.getVendorName() + '%'" />
+				AND	vend.VENDOR_NAME like #{formattedVendorName}
+			</if>
+			<if test="vendor.vendorNumber != 0">
+				AND	vend.VENDOR_NUMBER = #{vendor.vendorNumber}
+			</if>
+			<if test="vendor.corpCode != null">
+				AND	vend.CORP = #{vendor.corpCode}
+			</if>
+			<if test="vendor.searchMfrCode != null" >
+			<bind name="formattedSearchMfrCode" value="'%' + vendor.getSearchMfrCode() + '%'" />
+				AND	ediVendor.mfrCodes LIKE #{formattedSearchMfrCode}
+			</if>
+			<if test="vendor.notificationException !=null and  vendor.notificationException != '-1' ">
+				AND	vend.NOTIFICATION_EXCEPTION = #{vendor.notificationException}
+			</if>
+			<if test="vendor.annualAgreement != null and vendor.annualAgreement != '-1' ">
+				AND	vend.ANNUAL_AGREEMENT = #{vendor.annualAgreement}
+			</if>
+			<if test="vendor.planningAnalyst.userId &gt; 0">
+				AND	vend.PLANNING_ANALYST = #{vendor.planningAnalyst.userId}
+			</if>
+			<if test="vendor.supplySpecialist.userId &gt; 0">
+				AND	vend.SUPPLY_SPECIALIST = #{vendor.supplySpecialist.userId}
+			</if>
+			
+			<if test="vendor.alertType != null and vendor.alertType=='ALRT_OF_VEND_ANLYST_ASSG_REQ'">
+				AND vend.PLANNING_ANALYST is null		 
+		   </if>
+			<if test="vendor.alertType != null and vendor.alertType=='ALRT_OF_NEW_VEND_SETUP_REQ'">
+				AND vend.VENDOR_ID not in(select VENDOR_ID from SMC_ORG_VENDOR_ASSOC where ORG_ID !=1)
+			</if>
+		</if>
 		ORDER BY vend.VENDOR_NAME
 	</select>
 	
@@ -139,145 +164,6 @@
 		ORDER BY firstName
 	</select>
 	
-	<select id="getVendorsBySearchConditions" resultMap="VendorMap">
-	
-     WITH ediVendor AS (
-       SELECT  XMLSERIALIZE(XMLAGG(XMLTEXT(CONCAT(',', EDI_MFR ))) as VARCHAR(1024)) AS mfrCodes,
-               EDI_VENDOR,
-               EDI_CORP
-         
-         FROM CORP.NVOEDIVND
-            
-         GROUP BY EDI_VENDOR, EDI_CORP
-    )
-    
-		SELECT	vend.VENDOR_ID,
-                 vend.VENDOR_ID AS vendorId,
-				vend.CORP AS corpCode,
-				vend.VENDOR_NAME AS vendorName,
-				vend.VENDOR_NUMBER AS vendorNumber,
-				SUBSTR(ediVendor.mfrCodes, 2, length(ediVendor.mfrCodes) - 1)  AS mfrCodes,
-				vend.ANNUAL_AGREEMENT AS annualAgreement,
-				prim.FIRST_NAME AS "primaryContact.firstName",
-				prim.LAST_NAME AS "primaryContact.lastName",
-				prim.PHONE AS "primaryContact.phoneNumber",
-				vend.NOTIFICATION_EXCEPTION AS notificationException,
-				panl.USER_ID AS "planningAnalyst.userId",
-				panl.FIRST_NAME AS "planningAnalyst.firstName",
-				panl.LAST_NAME AS "planningAnalyst.lastName",
-				supp.USER_ID AS "supplySpecialist.userId"
-		
-		FROM	SMC.SMC_VENDOR_MASTER vend 
-			LEFT OUTER JOIN SMC.SMC_ORG_VENDOR_ASSOC org
-				ON	vend.VENDOR_ID = org.VENDOR_ID
-			LEFT OUTER JOIN SMC.SMC_USER_MASTER panl
-				ON	vend.PLANNING_ANALYST = panl.USER_ID
-				LEFT OUTER JOIN SMC.SMC_USER_MASTER supp
-			ON	vend.SUPPLY_SPECIALIST = supp.USER_ID
-				LEFT OUTER JOIN SMC.SMC_VENDOR_CONTACT prim
-				ON	vend.VENDOR_ID = prim.VENDOR_ID
-				AND	prim.CONTACT_TYPE = 'PRIMARY'
-				 LEFT JOIN ediVendor 
-            ON ediVendor.EDI_VENDOR = vend.VENDOR_NUMBER
-            AND ediVendor.EDI_CORP = vend.CORP
-		
-		WHERE 1=1 
-		 <choose>
-    		<when test="vendor.alertType != null and vendor.alertType=='ALRT_OF_VEND_USER_SETUP_REQ'">
-    			 AND org.ORG_ID !=1 AND org.ORG_ID NOT IN (SELECT DISTINCT ORG_ID FROM SMC.SMC_USER_MASTER WHERE TYPE_ID=2)
-    		</when>
-    		<otherwise>
-		      AND org.ORG_ID=#{orgId}
-		    </otherwise>
-		</choose>
-		<!--   IN(
-						SELECT ORG_ID FROM SMC.SMC_ORG_MASTER
-		    			START WITH ORG_ID=#{orgId} CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID ORDER BY ORG_ID 
-				)-->
-		<if test="vendor.vendorName != null">
-		<bind name="formattedVendorName" value="vendor.getVendorName() + '%'" />
-		AND		vend.VENDOR_NAME like #{formattedVendorName}
-		</if>
-		<if test="vendor.vendorNumber != 0">
-		AND		vend.VENDOR_NUMBER = #{vendor.vendorNumber}
-		</if>
-		<if test="vendor.corpCode != null">
-		AND		vend.CORP = #{vendor.corpCode}
-		</if>
-		<if test="vendor.searchMfrCode != null" >
-		<bind name="formattedSearchMfrCode" value="'%' + vendor.getSearchMfrCode() + '%'" />
-		AND		ediVendor.mfrCodes LIKE #{formattedSearchMfrCode}
-		</if>
-		<if test="vendor.notificationException !=null and  vendor.notificationException != '-1' ">
-		AND		vend.NOTIFICATION_EXCEPTION = #{vendor.notificationException}
-		</if>
-		<if test="vendor.annualAgreement != null and vendor.annualAgreement != '-1' ">
-		AND		vend.ANNUAL_AGREEMENT = #{vendor.annualAgreement}
-		</if>
-		<if test="vendor.planningAnalyst.userId &gt; 0">
-		AND		vend.PLANNING_ANALYST = #{vendor.planningAnalyst.userId}
-		</if>
-		<if test="vendor.supplySpecialist.userId &gt; 0">
-		AND		vend.SUPPLY_SPECIALIST = #{vendor.supplySpecialist.userId}
-		</if>
-		
-		<if test="vendor.alertType != null and vendor.alertType=='ALRT_OF_VEND_ANLYST_ASSG_REQ'">
-			AND  vend.PLANNING_ANALYST is null		 
-	   </if>
-		<if test="vendor.alertType != null and vendor.alertType=='ALRT_OF_NEW_VEND_SETUP_REQ'">
-			AND vend.VENDOR_ID not in(select VENDOR_ID from SMC_ORG_VENDOR_ASSOC where ORG_ID !=1)
-		</if>
-		AND vend.STATUS = 'A'
-		ORDER BY vend.VENDOR_NAME
-	</select>
-	
-	<select id="getEditVendorInformation" resultMap="VendorMap">
-	
-				    WITH ediVendor AS (
-			       SELECT  XMLSERIALIZE(XMLAGG(XMLTEXT(CONCAT(',', EDI_MFR ))) as VARCHAR(1024)) AS mfrCodes,
-			               EDI_VENDOR,
-			               EDI_CORP
-			         
-			         FROM CORP.NVOEDIVND
-			            
-			         GROUP BY EDI_VENDOR, EDI_CORP
-			    )
-    
-    
-					SELECT	v.VENDOR_ID,
-			            v.VENDOR_ID AS vendorId,
-									v.VENDOR_NUMBER AS vendorNumber,
-									v.CORP AS corpCode,
-									ediVendor.mfrCodes AS mfrCodes,
-									v.VENDOR_NAME AS vendorName,
-									v.NOTIFICATION_EXCEPTION AS notificationException,
-									vc1.FIRST_NAME AS "primaryContact.firstName",
-									vc1.LAST_NAME AS "primaryContact.lastName",
-									vc1.PHONE AS "primaryContact.phoneNumber",
-									vc1.EMAIL AS "primaryContact.email",
-									vc1.RESPONSIBILITY AS "primaryContact.responsibility",
-									vc2.FIRST_NAME AS "secondaryContact.firstName",
-									vc2.LAST_NAME AS "secondaryContact.lastName",
-									vc2.PHONE AS "secondaryContact.phoneNumber",
-									vc2.EMAIL AS "secondaryContact.email",
-									vc2.RESPONSIBILITY AS "secondaryContact.responsibility",
-									v.ANNUAL_AGREEMENT AS annualAgreement,
-									v.PLANNING_ANALYST AS "planningAnalyst.userId",
-									v.SUPPLY_SPECIALIST AS "supplySpecialist.userId"
-					
-					  FROM SMC.SMC_VENDOR_MASTER v 
- LEFT OUTER JOIN SMC.SMC_VENDOR_CONTACT vc1
-				         ON	v.VENDOR_ID = vc1.VENDOR_ID
-				         AND	vc1.CONTACT_TYPE = 'PRIMARY'
- LEFT OUTER JOIN SMC.SMC_VENDOR_CONTACT vc2
-								 ON	v.VENDOR_ID = vc2.VENDOR_ID
-								 AND vc2.CONTACT_TYPE = 'SECONDARY'
-	     LEFT JOIN ediVendor 
-		             ON ediVendor.EDI_VENDOR = v.VENDOR_NUMBER
-		             AND ediVendor.EDI_CORP = v.CORP
-		       WHERE v.VENDOR_ID = #{value}
-	</select>
-	
 	<select id="getVendorContact" resultType="Integer">
 		SELECT	1
 
@@ -287,44 +173,6 @@
 		WHERE	v.VENDOR_ID = c.VENDOR_ID
 		AND		c.CONTACT_TYPE = #{contactType}
 		AND		v.VENDOR_ID = #{vendorId}
-	</select>
-	
-	<select id="getViewVendorInformation" resultType="com.penske.apps.adminconsole.model.Vendor">
-		SELECT	d.DMNAME AS companyName,
-				vl.CORP AS corpCode,
-				vl.VENDOR_NUMBER AS vendorNumber,
-				vn.VENDOR_NAME AS vendorName,
-				vn.VENDOR_ADDRESS_LINE_1 AS vendorAddress,
-				vn.VENDOR_ATTENTION AS attention,
-				TRIM(vn.VENDOR_CITY_NAME) AS city,
-				vn.VENDOR_STATE_PROVINCE AS state,
-				vn.VENDOR_ZIP_POSTAL_CODE AS zipCode,
-				p.PVTRMS AS paymentTerms,
-				p.PVONAM AS orderName,
-				p.PVOAD1 AS mailingAddress1,
-				p.PVOAD2 AS mailingAddress2,
-				p.PVOCTY AS mailingCity,
-				p.PVOST AS mailingState,
-				p.PVOZIP AS mailingZipCode,
-				p.PVSAD1 AS shippingAddress1,
-				p.PVSAD2 AS shippingAddress2,
-				p.PVSCTY AS shippingCity,
-				p.PVSST AS shippingState,
-				p.PVSZIP AS shippingZipCode,
-                vl.VENDOR_ID
-		
-		FROM	SMC.SMC_VENDOR_MASTER vl
-				LEFT OUTER JOIN CORP.FPURVND p
-				ON	vl.CORP = p.PVCORP
-				AND	vl.VENDOR_NUMBER = p.PVNBR
-				LEFT OUTER JOIN PENSKE.VENNAM vn
-				ON	vn.COMPANY_CODE = p.PVCORP
-				AND	vn.VENDOR_NUMBER = p.PVNBR,
-				CORP.FDSTMST d
-		
-		WHERE	vl.CORP = d.DMCORP
-		AND		d.DMTYPE = 'COMPANY'
-		AND		vl.VENDOR_ID = #{value}
 	</select>
 	
 	<update id="modifyVendorInfo">

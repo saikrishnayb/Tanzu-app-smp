@@ -16,10 +16,6 @@ public interface VendorService {
 	
 	public List<EditableUser> getAllSupplySpecialists();
 	
-	public Vendor getViewVendorInformation(int vendorId);
-	
-	public Vendor getEditVendorInformation(int vendorId);
-	
 	public Vendor modifyVendorSingleUpdate(Vendor vendor, User user);
 	
 	public void modifyVendorsMassUpdate(Vendor vendor, User user, int... vendorIdsToApplyChange);
