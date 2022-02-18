@@ -1,5 +1,6 @@
 package com.penske.apps.adminconsole.service;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -25,6 +26,7 @@ import com.penske.apps.smccore.base.domain.LookupContainer;
 import com.penske.apps.smccore.base.domain.SmcEmail;
 import com.penske.apps.smccore.base.domain.enums.EmailTemplateType;
 import com.penske.apps.smccore.base.domain.enums.LookupKey;
+import com.penske.apps.suppliermgmt.annotation.CommonStaticUrl;
 import com.penske.apps.ucsc.exception.UsrCreationSvcException;
 import com.penske.apps.ucsc.model.CreatedUser;
 import com.penske.apps.ucsc.model.LDAPAttributes;
@@ -48,6 +50,10 @@ public class UserCreationServiceImpl implements UserCreationService {
 	
 	@Autowired
 	private EmailDAO emailDAO;
+	
+	@Autowired
+	@CommonStaticUrl
+	private URL commonStaticUrl;
 	
 	@Override
 	@Transactional
@@ -98,25 +104,9 @@ public class UserCreationServiceImpl implements UserCreationService {
 						emailDAO.insertSmcEmail(email);		
 					} else {
 						// New User
-						LookupContainer lookups = lookupManager.getLookupContainer();
-						List<Pair<String, String>> replacements = Arrays.asList(
-							Pair.of("[USER_NAME]", userObj.getFirstName() + " " + userObj.getLastName()),
-							Pair.of("[USER_NAME]", userObj.getFirstName() + " " + userObj.getLastName()),
-							Pair.of("[SSO_ID]", userObj.getSsoId()),
-							Pair.of("[OTP]", userObj.getDefaultPassword()),
-							Pair.of("[USER_EMAIL]", userObj.getEmail()),
-							Pair.of("[DATE_TIME]", Calendar.getInstance().getTime().toString()),
-							Pair.of("[PENSKE_SIGN_ON_URL]", lookups.getSingleLookupValue(LookupKey.PENSKE_SIGN_ON_URL)),
-							Pair.of("[SMC_APP_LINK]", lookups.getSingleLookupValue(LookupKey.SMC_APP_LINK)),
-							Pair.of("[CUSTOMER_SERVICE_PHONE_NUM]", lookups.getSingleLookupValue(LookupKey.CUSTOMER_SERVICE_PHONE_NUM)),
-							Pair.of("[CUSTOMER_SERVICE_EMAIL]", lookups.getSingleLookupValue(LookupKey.CUSTOMER_SERVICE_EMAIL)),
-							Pair.of("[IT_SERVICE_PHONE_NUM]", lookups.getSingleLookupValue(LookupKey.IT_SERVICE_PHONE_NUM)),
-							Pair.of("[IT_SERVICE_EMAIL]", lookups.getSingleLookupValue(LookupKey.IT_SERVICE_EMAIL))
-						);
-						
 						EmailTemplate template = emailDAO.getEmailTemplate(EmailTemplateType.NEW_VENDOR_USER);
-						String subject = template.getActualSubject(replacements);
-						String body = template.getActualBody(replacements);
+						String subject = template.getSubjectTemplate();
+						String body = buildMailBodyNewUser(userObj, template);
 						
 						SmcEmail email = new SmcEmail(EmailTemplateType.NEW_VENDOR_USER, userObj.getSsoId(), userObj.getEmail(), null, null, body, subject);
 						emailDAO.insertSmcEmail(email);		
@@ -137,6 +127,28 @@ public class UserCreationServiceImpl implements UserCreationService {
 		}
 		
 		return userObj;
+	}
+	
+	private String buildMailBodyNewUser(EditableUser userObject, EmailTemplate template)
+	{
+		LookupContainer lookups = lookupManager.getLookupContainer();
+		
+		String signInURL = lookups.getSingleLookupValue(LookupKey.PENSKE_SIGN_ON_URL);
+		String smcURL = lookups.getSingleLookupValue(LookupKey.SMC_APP_LINK);;
+		String customerServicePhone = lookups.getSingleLookupValue(LookupKey.CUSTOMER_SERVICE_PHONE_NUM);
+		
+		List<Pair<String, String>> replacements = Arrays.asList(
+			Pair.of("[SSO_ID]", userObject.getSsoId()),
+			Pair.of("[OTP]", userObject.getDefaultPassword()),
+			Pair.of("[PENSKE_SIGN_ON_URL]", signInURL),
+			Pair.of("[SMC_APP_LINK_HREF]", smcURL),
+			Pair.of("[SMC_APP_LINK]", smcURL),
+			Pair.of("[CUSTOMER_SERVICE_PHONE_NUM]", customerServicePhone),
+			Pair.of("[COMMON_STATIC_URL]", commonStaticUrl.toString())
+		);
+			
+		String body = template.getActualBody(replacements);
+		return body;
 	}
 
 	private EditableUser insertUserToLDAP(EditableUser userObj) throws UserServiceException, UsrCreationSvcException {
