@@ -3,7 +3,6 @@ package com.penske.apps.adminconsole.service;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -58,38 +57,38 @@ public class UserCreationServiceImpl implements UserCreationService {
 	
 	@Override
 	@Transactional
-	public EditableUser insertUserInfo(EditableUser userObj) throws UserServiceException {
+	public EditableUser insertUserInfo(User currentUser, EditableUser createdUser) throws UserServiceException {
 		try{
-			userObj.setUserName(userObj.getSsoId());
-			if(userObj.getReturnFlg() != 1){ // userObj.getReturnFlg() != 1 -- User not available in the LDAP. This flag is set after validating userid with LDAP.
+			createdUser.setUserName(createdUser.getSsoId());
+			if(createdUser.getReturnFlg() != 1){ // userObj.getReturnFlg() != 1 -- User not available in the LDAP. This flag is set after validating userid with LDAP.
 				logger.info("Add User to LDAP..");
-				insertUserToLDAP(userObj);
+				insertUserToLDAP(createdUser);
 			}else{
 				logger.info(" Modify User to LDAP..");
 				CPTSso oSSO = new CPTSso();
-				CPBGESSOUser oB2BUser = oSSO.findUser(userObj.getUserName().trim());
+				CPBGESSOUser oB2BUser = oSSO.findUser(createdUser.getUserName().trim());
 				//CPTDate datStop  = null;
 				//datStop = CPTDate.createDateFromMMDDYYYY( "12/31/4712" );
 				//oB2BUser.setGESSOEffectiveEndDate(datStop.convertDateForLDAP());
 				oB2BUser.setGESSOStatus("A");
-				oB2BUser.setCommonName(userObj.getLastName() + ", " + userObj.getFirstName());
-				oB2BUser.setEmailAddress(userObj.getEmail());
-				oB2BUser.setGivenName(userObj.getFirstName());
-				oB2BUser.setSurName(userObj.getLastName());
-				oB2BUser.setPhone(userObj.getPhone());
-				userObj.setGessouid(oB2BUser.getGESSOUID());
-				oSSO.modifyUser(oB2BUser, userObj.getUserName());
+				oB2BUser.setCommonName(createdUser.getLastName() + ", " + createdUser.getFirstName());
+				oB2BUser.setEmailAddress(createdUser.getEmail());
+				oB2BUser.setGivenName(createdUser.getFirstName());
+				oB2BUser.setSurName(createdUser.getLastName());
+				oB2BUser.setPhone(createdUser.getPhone());
+				createdUser.setGessouid(oB2BUser.getGESSOUID());
+				oSSO.modifyUser(oB2BUser, createdUser.getUserName());
 			}
 			//Add to DB
-			boolean status=securityDao.addUser(userObj);
+			boolean status=securityDao.addUser(createdUser);
 			if(status){
 				logger.info(" Add user operation was successful. Send mail to Vendor User");
 				try{
-					if (userObj.getReturnFlg() == 1) {
+					if (createdUser.getReturnFlg() == 1) {
 						// Existing User
 						LookupContainer lookups = lookupManager.getLookupContainer();
 						List<Pair<String, String>> replacements = Arrays.asList(
-							Pair.of("[USER_NAME]", userObj.getFirstName() + " " + userObj.getLastName()),
+							Pair.of("[USER_NAME]", createdUser.getFirstName() + " " + createdUser.getLastName()),
 							Pair.of("[SMC_APP_LINK]", lookups.getSingleLookupValue(LookupKey.SMC_APP_LINK)),
 							Pair.of("[CUSTOMER_SERVICE_PHONE_NUM]", lookups.getSingleLookupValue(LookupKey.CUSTOMER_SERVICE_PHONE_NUM)),
 							Pair.of("[CUSTOMER_SERVICE_EMAIL]", lookups.getSingleLookupValue(LookupKey.CUSTOMER_SERVICE_EMAIL)),
@@ -101,22 +100,22 @@ public class UserCreationServiceImpl implements UserCreationService {
 						String subject = template.getActualSubject(replacements);
 						String body = template.getActualBody(replacements);
 						
-						SmcEmail email = new SmcEmail(EmailTemplateType.EXISTING_VENDOR_USER, userObj.getSsoId(), userObj.getEmail(), null, null, body, subject);
+						SmcEmail email = new SmcEmail(EmailTemplateType.EXISTING_VENDOR_USER, currentUser.getSso(), createdUser.getEmail(), null, null, body, subject);
 						emailDAO.insertSmcEmail(email);		
 					} else {
 						// New User
 						EmailTemplate template = emailDAO.getEmailTemplate(EmailTemplateType.NEW_VENDOR_USER);
 						String subject = template.getSubjectTemplate();
-						String body = buildMailBodyNewUser(userObj, template);
+						String body = buildMailBodyNewUser(createdUser, template);
 						
-						SmcEmail email = new SmcEmail(EmailTemplateType.NEW_VENDOR_USER, userObj.getSsoId(), userObj.getEmail(), null, null, body, subject);
+						SmcEmail email = new SmcEmail(EmailTemplateType.NEW_VENDOR_USER, currentUser.getSso(), createdUser.getEmail(), null, null, body, subject);
 						emailDAO.insertSmcEmail(email);		
 					}
 
-					if(!StringUtils.isBlank(userObj.getDefaultPassword()))
-							securityDao.insertOtp(userObj);
+					if(!StringUtils.isBlank(createdUser.getDefaultPassword()))
+							securityDao.insertOtp(createdUser);
 				}catch (Exception e) {
-					logger.error("Mail Sending failed for user [ "+userObj.getUserName()+" ]",e);
+					logger.error("Mail Sending failed for user [ "+createdUser.getUserName()+" ]",e);
 				}
 			}
 		}
@@ -127,7 +126,7 @@ public class UserCreationServiceImpl implements UserCreationService {
 			throw new UserServiceException(e.getMessage());
 		}
 		
-		return userObj;
+		return createdUser;
 	}
 	
 	private String buildMailBodyNewUser(EditableUser userObject, EmailTemplate template)
