@@ -93,7 +93,7 @@
     <result property="parentOrganizationId" column="PARENT_ORG_ID"/>
     
     <collection property="vendors" column="{orgId = ORG_ID}" ofType="com.penske.apps.adminconsole.model.Vendor" 
-                                                             select="com.penske.apps.adminconsole.dao.VendorDao.getAllVendors"
+                                                             select="com.penske.apps.adminconsole.dao.VendorDao.getVendors"
                                                              fetchType="lazy"/>
     
   </resultMap>
