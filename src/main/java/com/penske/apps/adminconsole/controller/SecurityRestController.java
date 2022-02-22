@@ -600,7 +600,7 @@ public class SecurityRestController {
     public ModelAndView getEditVendorInformation(@RequestParam("vendorId") int vendorId) {
         ModelAndView mav = new ModelAndView("/admin-console/security/modal/edit-vendor-modal");
 
-        mav.addObject("vendor", vendorService.getEditVendorInformation(vendorId));
+        mav.addObject("vendor", vendorService.getVendorById(vendorId));
         mav.addObject("analysts", vendorService.getAllPlanningAnalysts());
         mav.addObject("specialists", vendorService.getAllSupplySpecialists());
 
@@ -613,7 +613,7 @@ public class SecurityRestController {
     public ModelAndView getViewVendorInformation(@RequestParam("vendorId") int vendorId) {
         ModelAndView mav = new ModelAndView("/admin-console/security/modal/view-vendor-modal");
 
-        mav.addObject("vendor", vendorService.getViewVendorInformation(vendorId));
+        mav.addObject("vendor", vendorService.getVendorById(vendorId));
 
         return mav;
     }

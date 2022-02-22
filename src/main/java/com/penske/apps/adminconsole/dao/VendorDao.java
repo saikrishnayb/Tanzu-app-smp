@@ -16,9 +16,7 @@ import com.penske.apps.suppliermgmt.annotation.DBSmc;
 public interface VendorDao {
 	
 	@SkipQueryTest("XMLSERIALIZE is not available in HSQLDB")
-    public List<Vendor> getAllVendors(@Param("orgId")int orgId);
-	@SkipQueryTest("XMLSERIALIZE is not available in HSQLDB")
-    public List<Vendor> getVendorsBySearchConditions(@Param("orgId")int orgId,@Param("vendor") Vendor vendor);
+    public List<Vendor> getVendors(@Param("orgId") Integer orgId, @Param("vendorId") Integer vendorId, @Param("vendor") Vendor vendor);
     
     @NonVendorQuery
     public List<EditableUser> getAllPlanningAnalysts();
@@ -29,11 +27,6 @@ public interface VendorDao {
     @NonVendorQuery // TODO: No harm to leave this annotation on here, but we should prob never look
                     // athis in the future
     public Integer getVendorContact(@Param("contactType") String contactType, @Param("vendorId") int vendorId);
-
-    public Vendor getViewVendorInformation(int vendorId);
-
-    @SkipQueryTest("XMLSERIALIZE is not available in HSQLDB")
-    public Vendor getEditVendorInformation(int vendorId);
 
     @NonVendorQuery
     public void modifyVendorInfo(@Param("vendor") Vendor vendor, @Param("updatedBy") String updatedBy);
@@ -50,7 +43,4 @@ public interface VendorDao {
     @NonVendorQuery
     public List<Alert> getAllAlerts();
 
-    @SkipQueryTest("XMLSERIALIZE is not available in HSQLDB")
-    @NonVendorQuery
-	public Vendor getVendorById(int vendorId);
 }
