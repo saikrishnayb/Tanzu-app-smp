@@ -414,7 +414,7 @@ public class SecurityRestController {
 
             User currentUser = sessionBean.getUser();
             user.setCreatedBy(currentUser.getSso());
-            userCreationService.insertUserInfo(user);
+            userCreationService.insertUserInfo(currentUser, user);
         }
         catch (UserServiceException e) {
             if(IUserConstants.DUP_SSO_ERROR_CODE==e.getErrorCode()){
