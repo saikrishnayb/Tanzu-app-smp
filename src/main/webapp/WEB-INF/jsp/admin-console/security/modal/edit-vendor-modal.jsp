@@ -33,7 +33,7 @@
 	<span class="floatLeft clear-left errorMsg">* indicates a required field.</span>
 	
 	<label class="floatLeft width-250 clear-left">Vendor Notification Exception <span class="errorMsg">*</span></label>
-	<select tabindex=1 class="floatLeft width-200" name="notificationException">
+	<select  class="floatLeft width-200" name="notificationException">
 		<option value="">Select...</option>
 		<option value="Y" <c:if test="${vendor.notificationException eq 'Y'}">selected</c:if>>Yes</option>
 		<option value="N" <c:if test="${vendor.notificationException eq 'N'}">selected</c:if>>No</option>
@@ -45,19 +45,19 @@
 	<input class="primary-contact" type="hidden" name="primaryContact.vendorId" value="${vendor.vendorId}" />
 	
 	<label class="floatLeft width-250 clear-left">Contact First Name</label>
-	<input class="floatLeft width-200 primary-contact" tabindex=2 name="primaryContact.firstName" value="${vendor.primaryContact.firstName}" maxlength="50" autocomplete="off" />
+	<input class="floatLeft width-200 primary-contact"  name="primaryContact.firstName" value="${vendor.primaryContact.firstName}" maxlength="50" autocomplete="off" />
 	
 	<label class="floatLeft width-250 clear-left">Contact Last Name</label>
-	<input class="floatLeft width-200 primary-contact" tabindex=3 name="primaryContact.lastName" value="${vendor.primaryContact.lastName}" maxlength="50" autocomplete="off" />
+	<input class="floatLeft width-200 primary-contact" name="primaryContact.lastName" value="${vendor.primaryContact.lastName}" maxlength="50" autocomplete="off" />
 	
 	<label class="floatLeft width-250 clear-left">Contact Phone Number</label>
-	<input class="floatLeft width-200 primary-contact" tabindex=4 name="primaryContact.phoneNumber" value="${vendor.primaryContact.phoneNumber}" maxlength="10" autocomplete="off" />
+	<input class="floatLeft width-200 primary-contact"  name="primaryContact.phoneNumber" value="${vendor.primaryContact.phoneNumber}" maxlength="10" autocomplete="off" />
 	
 	<label class="floatLeft width-250 clear-left">Contact Email</label>
-	<input class="floatLeft width-200 primary-contact"  tabindex=5 name="primaryContact.email" value="${vendor.primaryContact.email}" maxlength="100" autocomplete="off" />
+	<input class="floatLeft width-200 primary-contact"   name="primaryContact.email" value="${vendor.primaryContact.email}" maxlength="100" autocomplete="off" />
 	
 	<label class="floatLeft width-250 clear-left">Contact Responsibility</label>
-	<select class="floatLeft width-200 primary-contact"  tabindex=6  name="primaryContact.responsibility">
+	<select class="floatLeft width-200 primary-contact"    name="primaryContact.responsibility">
 		<option value="">Select...</option>
 		<option value="1" <c:if test="${vendor.primaryContact.responsibility eq 1}">selected</c:if>>Purchasing</option>
 		<option value="2" <c:if test="${vendor.primaryContact.responsibility eq 2}">selected</c:if>>Production</option>
@@ -70,19 +70,19 @@
 	<input class="secondary-contact" type="hidden" name="secondaryContact.vendorId" value="${vendor.vendorId}" />
 	
 	<label class="floatLeft width-250 clear-left">Contact First Name</label>
-	<input class="floatLeft width-200 secondary-contact" tabindex=7 name="secondaryContact.firstName" value="${vendor.secondaryContact.firstName}" maxlength="50" autocomplete="off" />
+	<input class="floatLeft width-200 secondary-contact"  name="secondaryContact.firstName" value="${vendor.secondaryContact.firstName}" maxlength="50" autocomplete="off" />
 	
 	<label class="floatLeft width-250 clear-left">Contact Last Name</label>
-	<input class="floatLeft width-200 secondary-contact"  tabindex=8 name="secondaryContact.lastName" value="${vendor.secondaryContact.lastName}" maxlength="50" autocomplete="off" />
+	<input class="floatLeft width-200 secondary-contact"  name="secondaryContact.lastName" value="${vendor.secondaryContact.lastName}" maxlength="50" autocomplete="off" />
 	
 	<label class="floatLeft width-250 clear-left">Contact Phone Number</label>
-	<input class="floatLeft width-200 secondary-contact" tabindex=9  name="secondaryContact.phoneNumber" value="${vendor.secondaryContact.phoneNumber}" maxlength="10" autocomplete="off" />
+	<input class="floatLeft width-200 secondary-contact"   name="secondaryContact.phoneNumber" value="${vendor.secondaryContact.phoneNumber}" maxlength="10" autocomplete="off" />
 	
 	<label class="floatLeft width-250 clear-left">Contact Email</label>
-	<input class="floatLeft width-200 secondary-contact" tabindex=10 name="secondaryContact.email" value="${vendor.secondaryContact.email}" maxlength="100" autocomplete="off" />
+	<input class="floatLeft width-200 secondary-contact"  name="secondaryContact.email" value="${vendor.secondaryContact.email}" maxlength="100" autocomplete="off" />
 	
 	<label class="floatLeft width-250 clear-left">Contact Responsibility</label>
-	<select class="floatLeft width-200 secondary-contact" tabindex=11 name="secondaryContact.responsibility">
+	<select class="floatLeft width-200 secondary-contact"  name="secondaryContact.responsibility">
 		<option value="">Select...</option>
 		<option value="1" <c:if test="${vendor.secondaryContact.responsibility eq 1}">selected</c:if>>Purchasing</option>
 		<option value="2" <c:if test="${vendor.secondaryContact.responsibility eq 2}">selected</c:if>>Production</option>
@@ -92,14 +92,14 @@
 	<div class="floatLeft spacer width-full"></div>
 	
 	<label class="floatLeft width-250 clear-left">Annual Agreement <span class="errorMsg">*</span></label>
-	<select class="floatLeft width-200" tabindex=12 name="annualAgreement">
+	<select class="floatLeft width-200"  name="annualAgreement">
 		<option value="">Select...</option>
 		<option value="Y" <c:if test="${vendor.annualAgreement eq 'Y'}">selected</c:if>>Yes</option>
 		<option value="N" <c:if test="${vendor.annualAgreement eq 'N'}">selected</c:if>>No</option>
 	</select>
 	
 	<label class="floatLeft width-250 clear-left">Assigned Vehicle Planning Analyst <span class="errorMsg">*</span></label>
-	<select class="floatLeft width-200" tabindex=13 name="planningAnalyst.userId">
+	<select class="floatLeft width-200"  name="planningAnalyst.userId">
 		<option value="">Select...</option>
 		<c:forEach var="analyst" items="${analysts}">
 		<option value="${analyst.userId}" <c:if test="${vendor.planningAnalyst.userId eq analyst.userId}">selected</c:if>>${analyst.firstName} ${analyst.lastName}</option>
@@ -107,7 +107,7 @@
 	</select>
 	
 	<label class="floatLeft width-250 clear-left">Assigned Vehicle Supply Specialist</label>
-	<select class="floatLeft width-200" tabindex=14 name="supplySpecialist.userId">
+	<select class="floatLeft width-200" name="supplySpecialist.userId">
 		<option value="">Select...</option>
 		<c:forEach var="specialist" items="${specialists}">
 		<option value="${specialist.userId}" 
@@ -116,8 +116,8 @@
 	</select>
 	
 	<div class="floatRight button-div clear-both">
-		<a tabindex=15 class="secondaryLink  cancel">Cancel</a>
-		<a tabindex=16 class="buttonPrimary  save">Save</a>
+		<a  class="secondaryLink  cancel">Cancel</a>
+		<a  class="buttonPrimary  save">Save</a>
 		<div class="error floatRight hidden">
 			<img src="${commonStaticUrl}/images/warning.png">
 			<span class="errorMsg"></span>
