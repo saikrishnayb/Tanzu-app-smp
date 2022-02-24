@@ -13,8 +13,8 @@
 	<div class="row modal-footer" style="margin-top:20px;">
 		<div class="col-xs-12">
 			<div class="edit-buttons">
-				<a id="cancelButton" class="secondaryLink cancel" tabIndex="10">Cancel</a>
-				<a id="save-user-vendor-edit" class='buttonPrimary ${isCreatePage? "createVendorUser" : "saveVendor"}' tabIndex="11">Save</a>
+				<a id="cancelButton" class="secondaryLink cancel">Cancel</a>
+				<a id="save-user-vendor-edit" class='buttonPrimary ${isCreatePage? "createVendorUser" : "saveVendor"}'>Save</a>
 				<div class="error-messages-container displayNone">
 					<img src="${commonStaticUrl}/images/warning.png"></img>
 					<span class=errorMsg>One or more required fields not filled in correctly.</span>
