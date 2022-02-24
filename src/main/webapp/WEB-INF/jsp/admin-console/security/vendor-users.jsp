@@ -21,7 +21,7 @@
 			    	<div class="row">			
 						<div class="col-xs-12">
 							<span class="addRow pull-right">
-								<a href="${baseAppUrl}/admin-console/security/create-vendor-user-page.htm">Create User
+								<a id="create-vendor-user">Create User
 									<img src="${commonStaticUrl}/images/add.png" class="centerImage handCursor" alt="Add Row"/>
 								</a>
 							</span>
@@ -101,7 +101,7 @@
 		</div>
 		
 		<!-- Modals -->
-		<div id="user-modal" class="modal row"></div>
+		<div id="vendor-user-modal" class="modal row"></div>
 		
 	</div>
 	<input type="hidden" id="tabNavUser" value="left-nav-vendor-users-v2">

@@ -134,7 +134,7 @@ public class SecurityController {
 
         if(isSupplier || userSearchForm.isVendorSearch()){
             userSearchForm.setUserTypeId(ApplicationConstants.SUPPLIER_USER);
-            mav = new ModelAndView("/admin-console/security/vendorUsers");
+            mav = new ModelAndView("/admin-console/security/vendor-users");
             mav.addObject("roleList", securityService.getVendorRoles(false,user.getRoleId(),user.getOrgId()));
             mav.addObject("accessVendor", user.hasSecurityFunction(SecurityFunction.MANAGE_VENDOR_USERS));
             List<Org> orgList = securityService.getOrgList(null, user);

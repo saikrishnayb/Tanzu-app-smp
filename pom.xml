@@ -90,6 +90,11 @@
 			<artifactId>usrcreationsvc-client</artifactId>
 			<scope>${sharedLibScope}</scope>
 		</dependency>
+		<dependency>
+		    <groupId>com.penske.mis.common.customlib</groupId>
+		    <artifactId>ldapjdk</artifactId>
+		    <scope>${sharedLibScope}</scope>
+		</dependency>
 		
 		<!-- Publicly-available JARs -->
 		<dependency>

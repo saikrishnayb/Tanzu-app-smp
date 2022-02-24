@@ -8,11 +8,6 @@
 	float: left;
 }
 
-.user-form-container{
-	width: 33%;
-	float:left;
-}
-
 .user-form-container > form > .single-line-content > label{
 	width: 30%;
 	display:inline-block;
@@ -151,12 +146,6 @@ fieldset {
 	width: 45%;
 	margin-right: 10px;
 	float: left;
-}
-
-.accordion-headers {
-	float: right;
-	width: 65%;
-	margin-right: 10px;
 }
 
 .component-accordions{

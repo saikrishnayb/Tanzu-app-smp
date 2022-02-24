@@ -3,7 +3,7 @@ selectCurrentNavigation("tab-security",$tabNavUser);
 
 // Selectors
 var $vendorUsersTable = $('#vendor-users-table');
-var $usersModal = $('#user-modal');
+var $vendorUsersModal = $('#vendor-user-modal');
 
 // Initializes multiselect - have to initalize here instead of the separate js because we need to wait for the page to fully load 
 // before this gets initialized or we'll get a .multiselect is not a function error
@@ -16,7 +16,7 @@ open: function(){
 }).multiselectfilter({width : 250});
 
 // Initializes the modal
-ModalUtil.initializeModal($usersModal);
+ModalUtil.initializeModal($vendorUsersModal);
 
 // Initializes the DataTable
 $vendorUsersTable.DataTable( { //All of the below are optional
@@ -87,15 +87,15 @@ $vendorUsersTable.on("click", ".edit-user", function(){
 	var $getEditUserModalContentPromise = $.get('get-edit-user-modal-content.htm', {userId:userId, userType:userType, roleId:roleId});
 	
 	$getEditUserModalContentPromise.done(function(data){
-		$usersModal.html(data);
-		ModalUtil.openModal($usersModal);
+		$vendorUsersModal.html(data);
+		ModalUtil.openModal($vendorUsersModal);
 		$('#ui-dialog-title-edit-modal').prop('title','testtooltip');
 		
 	});
 });
 	
 //deactivate execution
-$usersModal.on("click", ".deactivate-confirm", function(){
+$vendorUsersModal.on("click", ".deactivate-confirm", function(){
 	var userId = $('#user-id').val();
 	var isVendorUser = $('#is-vendor-user').val();
 	var $deactivateUserPromise = $.post('deactivate-user.htm', {userId:userId,isVendorUser:isVendorUser});
@@ -111,29 +111,39 @@ $usersModal.on("click", ".deactivate-confirm", function(){
 				$('#users-table').dataTable().fnDeleteRow(nRow);
 			}
 		});
-		ModalUtil.closeModal($usersModal);
+		ModalUtil.closeModal($vendorUsersModal);
 	});
 });
 
 // Cancel
-$usersModal.on('click', '#cancelButton', function() {
-	ModalUtil.closeModal($usersModal);
+$vendorUsersModal.on('click', '#cancelButton', function() {
+	ModalUtil.closeModal($vendorUsersModal);
 });
 	
-//edit modal
+// edit modal
 $vendorUsersTable.on("click", ".edit-vendor-user", function(){
 	
 	var $this =  $(this);
 	var userId = $this.closest('.user-row').find('.user-id').val();
 	var userType = "VENDOR";
 	var roleId = $this.closest('.user-row').find('.role-id').val();
-	var $getEditUserModalContentPromise = $.get('get-edit-vendor-user-modal-content.htm', {userId:userId, userType:userType, roleId:roleId});
+	var $getEditUserModalContentPromise = $.get('get-create-edit-vendor-user', {isCreate:false, userId:userId, userType:userType, roleId:roleId});
 	
 	$getEditUserModalContentPromise.done(function(data){
-		$usersModal.html(data);
-		ModalUtil.openModal($usersModal);
-		$usersModal.find("#first-name").focus();
+		$vendorUsersModal.html(data);
+		ModalUtil.openModal($vendorUsersModal);
+		$vendorUsersModal.find("#first-name").focus();
 		
+	});
+});
+
+// Create
+$('#create-vendor-user').on('click', function(){
+	var $getCreateVendorUserModalContentPromise = $.get('get-create-edit-vendor-user', {isCreate:true, userId:null, userType:null, roleId:null});
+	
+	$getCreateVendorUserModalContentPromise.done(function(data){
+		$vendorUsersModal.html(data);
+		ModalUtil.openModal($vendorUsersModal);
 	});
 });
 
@@ -144,19 +154,19 @@ $vendorUsersTable.on("click", ".resend-email", function(){
 	var $getResendModalContentPromise = $.get('get-resend-email-modal-content.htm', {userId:userId});
 	
 	$getResendModalContentPromise.done(function(data){
-		$usersModal.html(data);
-		ModalUtil.openModal($usersModal);
+		$vendorUsersModal.html(data);
+		ModalUtil.openModal($vendorUsersModal);
 		
 	});
 });
 
-$usersModal.on('click', '#resend-confirm', function() {
+$vendorUsersModal.on('click', '#resend-confirm', function() {
 	var userId = $('#resend-confirm').data('user-id');
 	
 	var $resendEmailContentPromise = $.get('resend-email.htm', {userId:userId});
 	
 	$resendEmailContentPromise.done(function(){
-		ModalUtil.closeModal($usersModal);
+		ModalUtil.closeModal($vendorUsersModal);
 	});
 });
 	
@@ -224,12 +234,12 @@ function deactivteUser($this,$isVendorUser){
 	var email = $this.closest('.user-row').find('.user-email').text();
 	var userId = $this.closest('.user-row').find('.user-id').val();
 	var $getDeactivateUserModalContentPromise = $.get('get-deactivate-user-modal-content.htm', {email:email, userId:userId
-		, isVendorUser:$isVendorUser});
+		, isVendorUser:$isVendorUser, isV2: true});
 	
 	
 	$getDeactivateUserModalContentPromise.done(function(data){
-		$usersModal.html(data);
-		ModalUtil.openModal($usersModal);
+		$vendorUsersModal.html(data);
+		ModalUtil.openModal($vendorUsersModal);
 	});
 }
 //# sourceURL=users.js

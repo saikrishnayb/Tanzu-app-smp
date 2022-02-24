@@ -378,7 +378,7 @@ function deactivteUser($this,$isVendorUser,$confirmAccountDeactivationModal){
 	var email = $this.closest('.user-row').find('.user-email').text();
 	var userId = $this.closest('.user-row').find('.user-id').val();
 	var $getDeactivateUserModalContentPromise = $.get('get-deactivate-user-modal-content.htm', {email:email, userId:userId
-		, isVendorUser:$isVendorUser});
+		, isVendorUser:$isVendorUser, isV2: false});
 	
 	
 	$getDeactivateUserModalContentPromise.done(function(data){
