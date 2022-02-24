@@ -209,10 +209,11 @@ $('#refreshSSODetails').on("click", function(){
 	//var $ssoUserLookup = $.get('sso-user-lookup.htm', {ssoId: ssoId});
 	$.ajax({
 		  type: "GET",
-		  url: "./sso-user-lookup-refresh.htm?userId="+ userId + '&userType='+userType+ '&_=' + currentTimeStamp, 
+		  url: "./sso-user-lookup-refresh.htm?userId="+ userId + '&userType='+userType+ '&_=' + currentTimeStamp + '&isV2=' + true, 
 		  global: false,
 		  success: function(data){
-				  $("#sso-updated-information").html(data);
+				  $createEditVendorUserModal.html(data);
+				  ModalUtil.openModal($createEditVendorUserModal);
 		  },
 		  error: function(XMLHttpRequest, textStatus, errorThrown) {
 			  
@@ -224,11 +225,10 @@ $('#refreshSSODetails').on("click", function(){
 				  $errMsg.text('Error while loading user data for this SSO.');
 				  $('.error-messages-container').removeClass('displayNone');
 			  }
-			
 		  }
 		 
 		});
-	 ModalUtil.openModal($createEditVendorUserModal);
+	 
 });
 
 //phone masking
@@ -449,15 +449,19 @@ $('.saveVendor').on("click", function(){
 							if(!isUserIdMatch) return true;
 							
 							var $userRow = $(this).closest('.user-row');
-							var nRow = $userRow[0];
+							var $userRowDT = $vendorUsersDataTable.row($userRow);
+							var rowData =  $userRowDT.data()
 			
-							$('#users-table').dataTable().fnUpdate(data.firstName, nRow, 1,false);
-							$('#users-table').dataTable().fnUpdate(data.lastName, nRow, 2,false);
-							$('#users-table').dataTable().fnUpdate(data.email, nRow, 3,false);
-							$('#users-table').dataTable().fnUpdate(data.phone, nRow, 4,false);
-							//$('#users-table').dataTable().fnUpdate(data.userType.userType, nRow, 6,false);
-							$('#users-table').dataTable().fnUpdate(data.role.roleName + "<input class='role-id' type=hidden value='" + data.role.roleId + "'/>", nRow, 5,false);
+							rowData[1] = data.firstName
+							rowData[2] = data.lastName
+							rowData[3] = data.email
+							rowData[4] = data.phone
+							rowData[5] = data.role.roleName + "<input class='role-id' type=hidden value='" + data.role.roleId + "'/>"
 			
+							$userRowDT.data(rowData);
+			
+							$userRowDT.invalidate();
+							$vendorUsersDataTable.draw();
 							ModalUtil.closeModal($vendorUsersModal);
 						});
 					});

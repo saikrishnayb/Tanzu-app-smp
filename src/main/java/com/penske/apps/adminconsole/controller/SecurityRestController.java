@@ -724,8 +724,12 @@ public class SecurityRestController {
     @SmcSecurity(securityFunction = {SecurityFunction.MANAGE_USERS, SecurityFunction.MANAGE_VENDOR_USERS})
     @RequestMapping("sso-user-lookup-refresh")
     @ResponseBody
-    public ModelAndView ssoLookupRefresh(@RequestParam(value="userId") String userId, @RequestParam(value="userType") String userType,HttpServletResponse response) {
-        ModelAndView mav = new ModelAndView("/admin-console/security/modal/sso-refresh-modal-content-v2");
+    public ModelAndView ssoLookupRefresh(@RequestParam(value="userId") String userId, @RequestParam(value="userType") String userType, @RequestParam(value="isV2") boolean isV2, HttpServletResponse response) {
+        ModelAndView mav; 
+        if(isV2)
+        	mav = new ModelAndView("/admin-console/security/modal/sso-refresh-modal-content-v2");
+        else
+        	mav = new ModelAndView("/admin-console/security/modal/sso-refresh-modal-content");
 
         if("1".equalsIgnoreCase(userType)){
             userType = "Penske";

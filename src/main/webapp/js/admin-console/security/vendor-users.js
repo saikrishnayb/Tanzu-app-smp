@@ -19,7 +19,7 @@ open: function(){
 ModalUtil.initializeModal($vendorUsersModal);
 
 // Initializes the DataTable
-$vendorUsersTable.DataTable( { //All of the below are optional
+var $vendorUsersDataTable = $vendorUsersTable.DataTable( { //All of the below are optional
 	"order": [[ 1, "asc" ]], //default sort column
 	"paging": true, //enable pagination
 	"stateSave": true,
