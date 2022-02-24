@@ -4,8 +4,8 @@
 
 <%@ include file="../includes/user-form.jsp"%>
 <div class="edit-buttons">
-	<a class="secondaryLink cancel" tabIndex="5">Cancel</a>
-	<a id="save-user-edit" class="buttonPrimary save" tabIndex="6">Save</a>
+	<a class="secondaryLink cancel" >Cancel</a>
+	<a id="save-user-edit" class="buttonPrimary save" >Save</a>
 	<div class="error-messages-container displayNone">
 		<img src="${commonStaticUrl}/images/warning.png"></img>
 		<span class=errorMsg>One or more required fields not filled in correctly.</span>
