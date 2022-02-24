@@ -17,7 +17,7 @@
 				data-has-been-searched="${hasBeenSearched}" 
 				data-vendor-user-search="${vendorUsersPage}">
 				<div class="row">
-					<form id="${vendorUsersPage ? search-vendor-user-form : search-user-form}" action="./users-search.htm" method="GET">
+					<form id='${vendorUsersPage ? "search-vendor-user-form" : "search-user-form"}' action="./users-search.htm" method="GET">
 						<div class="col-xs-4">
 							<div class="row">
 								<div class="col-xs-4 text-right">

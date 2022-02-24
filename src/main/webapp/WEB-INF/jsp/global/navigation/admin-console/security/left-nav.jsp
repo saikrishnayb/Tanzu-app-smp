@@ -21,15 +21,10 @@
 		
 		<c:if test="${allowVendorUserManagement}">
 			<div>
-				<a href="${baseAppUrl}/admin-console/security/vendorUsers.htm" id="left-nav-vendor-users">Vendor Users</a>
+				<a href="${baseAppUrl}/admin-console/security/vendor-users.htm" id="left-nav-vendor-users-v2">Vendor Users</a>
 			</div>
 		</c:if>
 		
-		<c:if test="${allowVendorUserManagement}">
-			<div>
-				<a href="${baseAppUrl}/admin-console/security/vendor-users.htm" id="left-nav-vendor-users-v2">Vendor Users (New)</a>
-			</div>
-		</c:if>
 	</c:if>
 	<tl:isAuthorized tabName="Admin Console" secFunction="MANAGE_ROLES">
 		<div class="leftNavGroup">

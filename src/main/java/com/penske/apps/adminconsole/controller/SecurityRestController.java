@@ -100,34 +100,6 @@ public class SecurityRestController {
 
         return mav;
     }
-
-    @VendorAllowed
-    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
-    @RequestMapping(value ="get-edit-vendor-user-modal-content")
-    @ResponseBody
-    public ModelAndView getEditVendorInfo(@RequestParam(value="userId") String userId, @RequestParam(value="userType") String userType, @RequestParam(value="roleId") String roleId) {
-        ModelAndView mav = new ModelAndView("/admin-console/security/modal/edit-vendor-user-modal-content");
-        User user = sessionBean.getUser();
-        boolean isVendor = user.getUserType() == UserType.VENDOR;
-        EditableUser editableUser = securityService.getEditInfo(userId, userType);
-        mav.addObject("isCreatePage", false);
-        mav.addObject("userTypes", securityService.getVendorUserTypes());
-        mav.addObject("currentUser", user);
-
-        List<Role> vendorRoles = securityService.getVendorRoles(isVendor, user.getRoleId(), user.getOrgId());
-        Collections.sort(vendorRoles, Role.ROLE_NAME_ASC);
-
-        mav.addObject("userRoles", vendorRoles);
-
-        List<Org> vendorOrg = securityService.getVendorOrg(isVendor, user.getOrgId());
-        Collections.sort(vendorOrg, Org.ORG_NAME_ASC);
-        mav.addObject("penskeUserType", UserType.PENSKE);
-        mav.addObject("vendorUserType", UserType.VENDOR);
-        mav.addObject("orgList", vendorOrg);
-        mav.addObject("editableUser", editableUser);
-        mav.addObject("tabPermissionsMap", securityService.getPermissions(roleId));
-        return mav;
-    }
     
     @VendorAllowed
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
@@ -232,7 +204,7 @@ public class SecurityRestController {
             @RequestParam(value="isVendorUser") boolean isVendorUser, @RequestParam(value="isV2") boolean isV2) {
     	ModelAndView mav;
     	if(isV2)
-    		mav = new ModelAndView("/admin-console/security/modal/deactivate-user-modal-content-v2");
+    		mav = new ModelAndView("/admin-console/security/modal/deactivate-user-v2");
     	else
     		mav = new ModelAndView("/admin-console/security/modal/deactivate-user-modal-content");
 
@@ -410,28 +382,6 @@ public class SecurityRestController {
             mav.addObject("userDepts", securityService.getUserDepts());
         }
         List<Org> orgList = securityService.getPenskeUserOrgList();
-        Collections.sort(orgList, Org.ORG_NAME_ASC);
-        mav.addObject("penskeUserType", UserType.PENSKE);
-        mav.addObject("vendorUserType", UserType.VENDOR);
-        mav.addObject("orgList", orgList);
-        // If the page is an error page.
-        mav.addObject("isCreatePage", true);
-
-        return mav;
-    }
-
-    @VendorAllowed
-    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
-    @RequestMapping(value ="/create-vendor-user-page")
-    @ResponseBody
-    public ModelAndView getCreateVendorUserPage() {
-        ModelAndView mav = new ModelAndView("/admin-console/security/create-vendor-user");
-        User user = sessionBean.getUser();
-        mav.addObject("currentUser", user);
-        boolean isVendor = user.getUserType() == UserType.VENDOR;
-        mav.addObject("userTypes", securityService.getVendorUserTypes());
-        mav.addObject("userRoles", securityService.getVendorRoles(isVendor, user.getRoleId(), user.getOrgId()));
-        List<Org> orgList = securityService.getVendorOrg(isVendor, user.getOrgId());
         Collections.sort(orgList, Org.ORG_NAME_ASC);
         mav.addObject("penskeUserType", UserType.PENSKE);
         mav.addObject("vendorUserType", UserType.VENDOR);

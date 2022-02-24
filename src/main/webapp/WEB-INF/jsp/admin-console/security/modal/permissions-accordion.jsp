@@ -26,4 +26,4 @@
 				<h3><center>No permission attached to this Role</center></h3>
 			</c:otherwise>
 	</c:choose>
-<script src="${baseUrl}/js/admin-console/security/includes/permissions-accordion.js" type="text/javascript"></script>
+<script src="${baseUrl}/js/admin-console/security/permissions-accordion.js" type="text/javascript"></script>
