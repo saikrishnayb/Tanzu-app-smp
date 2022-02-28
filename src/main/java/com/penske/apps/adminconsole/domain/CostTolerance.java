@@ -13,8 +13,8 @@ import com.penske.apps.smccore.base.exception.BusinessRuleException;
  * the datatable on the Cost Sheet Tolerances page.
  * 
  * @author Maxim.Timofeev
+ * @author 600139252
  */
-//FIXME: test
 public class CostTolerance
 {
 	/** Internal database ID */
