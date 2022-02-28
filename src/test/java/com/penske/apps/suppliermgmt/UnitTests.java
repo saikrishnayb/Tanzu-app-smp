@@ -4,6 +4,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.penske.apps.adminconsole.domain.CostToleranceTest;
 import com.penske.apps.adminconsole.model.TransportUploadHandlerTest;
 
 @RunWith(Suite.class)
@@ -11,6 +12,7 @@ import com.penske.apps.adminconsole.model.TransportUploadHandlerTest;
 	//Utility classes
 	
 	//Domain Classes
+	CostToleranceTest.class,
 	
 	//Service Tests
     

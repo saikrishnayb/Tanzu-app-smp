@@ -18,18 +18,14 @@
 						<label for="poCategory">PO Category</label>
 					</div>
 					<div class="col-xs-6">
-						<select id="poCategory" name="poCategory" ${tolerance.toleranceId > 0 ? "disabled" : ""} >
+						<select id="poCategory" name="poCategory" ${tolerance.toleranceId > 0 ? "disabled" : ""} required >
 							<option value="">Select...</option>
 							<c:forEach var="category" items ="${poCategoryList}">
-								<option value="${category.poCategoryName}" ${category.poCategoryName == tolerance.poCategory.poCategoryName ? "selected" : ""}>
+								<option value="${category}" ${category == tolerance.poCategory ? "selected" : ""}>
 									${category.poCategoryName}
 								</option>
 							</c:forEach>
 						</select>
-					</div>
-					<div id="errCategory" class="error hidden col-xs-12">
-						<img src="${commonStaticUrl}/images/warning.png">
-						<span class="errorMsg">Please select PO Category</span>
 					</div>
 				</div>
 
@@ -38,7 +34,7 @@
 						<label for="mfrCode">Make</label>
 					</div>
 					<div class="col-xs-6">
-						<select id="mfrCode" name="mfrCode" ${tolerance.toleranceId > 0 ? "disabled" : ""} >
+						<select id="mfrCode" name="mfrCode" ${tolerance.toleranceId > 0 ? "disabled" : ""}>
 							<option value="">Select...</option>
 							<c:forEach var="make" items ="${vehicleMakeList}">
 								<option value="<c:out value='{${make.mfrCode}}'/>" ${make.mfrCode == tolerance.mfrCode ? "selected" : ""}>
@@ -47,9 +43,14 @@
 							</c:forEach>
 						</select>
 					</div>
-					<div id="errMake" class="error hidden col-xs-12">
-						<img src="${commonStaticUrl}/images/warning.png">
-						<span class="errorMsg">Please select Make</span>
+				</div>
+
+				<div class="form-group">
+					<div class="col-xs-4">
+						<label for="tolerance">PO Vendor Number</label>
+					</div>
+					<div class="col-xs-6">
+						<input id="po-vendor-number" name="poVendorNumber" type="text" autocomplete="off" value="${tolerance.poVendorNumber}" class="numeric numeric-whole" ${tolerance ne null ? "disabled" : ""} />
 					</div>
 				</div>
 
@@ -58,11 +59,7 @@
 						<label for="tolerance">Cost Tolerance</label>
 					</div>
 					<div class="col-xs-6">
-						<input id="tolerance" name="tolerance" type="text" autocomplete="off" value="${tolerance.tolerance}" />
-					</div>
-					<div id="errTolerance" class="error hidden col-xs-12">
-						<img src="${commonStaticUrl}/images/warning.png">
-						<span class="errorMsg">Please enter Cost Tolerance as numeric value</span>
+						<input id="tolerance" name="tolerance" type="text" autocomplete="off" value="${tolerance.tolerance}" class="numeric numeric-decimal" min="0" required />
 					</div>
 				</div>
 
@@ -71,12 +68,7 @@
 	</div>
 
 	<div class="modal-footer">
-		<a href="#" id="cancelButton" class="secondaryLink" >Cancel</a>
-		<c:if test="${tolerance.toleranceId gt 0}">
-			<a href="#" id="actionButton" class="buttonPrimary clear-left buttonDisabled" onclick="doSave(); return false;" >Save</a>
-		</c:if>
-		<c:if test="${tolerance.toleranceId eq 0}">
-			<a href="#" id="actionButton" class="buttonPrimary clear-left buttonDisabled" onclick="doAdd(); return false;" >Add</a>
-		</c:if>
+		<a href="javascript:void(0);" id="cancelButton" class="secondaryLink" >Cancel</a>
+		<a href="javascript:void(0);" class="buttonPrimary clear-left btn-save-tolerance" >${tolerance eq null ? 'Add' : 'Save'}</a>
 	</div>
 </div>

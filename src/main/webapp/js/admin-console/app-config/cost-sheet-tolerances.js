@@ -7,6 +7,8 @@ var commonStaticUrl = sessionStorage.getItem('commonStaticUrl');
 // Initializes the modal
 ModalUtil.initializeModal($toleranceModal);
 
+ritsu.initialize({useBootstrap3Styling: true});
+
 // Initializes data table
 var $toleranceDataTable = $toleranceTable.DataTable({
 	"aoColumnDefs": [
@@ -27,7 +29,7 @@ var $toleranceDataTable = $toleranceTable.DataTable({
 // Opens the modal when a user clicks the Edit link
 $toleranceTable.on('click', '.edit-tolerance', function() {
 	var costToleranceId = $(this).closest('.tolerance-row').find('.tolerance-id').val();
-	var $getTolerancePromise = $.get("get-cost-sheet-tolerance-modal.htm", {costToleranceId: costToleranceId});
+	var $getTolerancePromise = $.get("get-cost-sheet-tolerance-modal.htm", {toleranceId: costToleranceId});
 	$getTolerancePromise.done(function(data) {
 		$toleranceModal.html(data);
 		ModalUtil.openModal($toleranceModal);
@@ -37,7 +39,7 @@ $toleranceTable.on('click', '.edit-tolerance', function() {
 // Deletes the tolerance when a user clicks the delete button
 $toleranceTable.on('click', '.delete-button', function() {
 	var costToleranceId = $(this).closest('.tolerance-row').find('.tolerance-id').val();
-	var $deleteTolerancePromise = $.post("delete-cost-sheet-tolerance.htm", {costToleranceId: costToleranceId});
+	var $deleteTolerancePromise = $.post("delete-cost-sheet-tolerance.htm", {toleranceId: costToleranceId});
 	$deleteTolerancePromise.done(function(data) {
 		updateTable(data);
 	});
@@ -53,17 +55,6 @@ $("#toleranceTable_filter").prepend(strHTML);
 // OnChange of PO Category
 $toleranceModal.on('change', '#poCategory', function() {
 	rePopulateMakes();
-	validate();
-});
-
-// OnChange of Make
-$toleranceModal.on('change', '#mfrCode', function() {
-	validate();
-});
-
-// Checks Tolerance not empty
-$toleranceModal.on('input', '#tolerance', function() {
-	validate();
 });
 
 // Action on Enter key
@@ -81,8 +72,7 @@ $toleranceModal.on('click', '#cancelButton', function(e) {
 
 // Opens Add tolerance modal
 function addTolerance() {
-	var costToleranceId = 0;
-	var $getTolerancePromise = $.get("get-cost-sheet-tolerance-modal.htm", {costToleranceId: costToleranceId});
+	var $getTolerancePromise = $.get("get-cost-sheet-tolerance-modal.htm");
 	$getTolerancePromise.done(function(data) {
 		$toleranceModal.html(data);
 		ModalUtil.openModal($toleranceModal);
@@ -90,33 +80,24 @@ function addTolerance() {
 	});
 }
 
-// Saves the tolerance
-function doSave() {
-	if (!validate()) {
-		return false;
-	}
-
+$toleranceModal.on('click', '.btn-save-tolerance', function() {
 	var $form = $toleranceModal.find('#tolerance-form');
-	var $updateTolerancePromise = $.post("update-cost-sheet-tolerance.htm", $form.serialize());
+	
+	var isValid = ritsu.validate($form);
+	ritsu.showErrorMessages($form);
+	
+	if(isValid !== true)
+		return false;
+	
+	var toleranceId = $form.find('input[name=toleranceId]').val();
+	var url = toleranceId ? 'update-cost-sheet-tolerance.htm' : 'add-cost-sheet-tolerance.htm';
+	
+	var $updateTolerancePromise = $.post(url, $form.serialize());
 	$updateTolerancePromise.done(function(data) {
 		ModalUtil.closeModal($toleranceModal);
 		updateTable(data);
 	});
-}
-
-// Adds the tolerance
-function doAdd() {
-	if (!validate()) {
-		return false;
-	}
-
-	var $form = $toleranceModal.find('#tolerance-form');
-	var $addTolerancePromise = $.post("add-cost-sheet-tolerance.htm", $form.serialize());
-	$addTolerancePromise.done(function(data) {
-		ModalUtil.closeModal($toleranceModal);
-		updateTable(data);
-	});
-}
+});
 
 // Re-populates the makes select
 function rePopulateMakes() {

@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-import com.penske.apps.adminconsole.model.CostTolerance;
+import com.penske.apps.adminconsole.domain.CostTolerance;
 import com.penske.apps.adminconsole.model.Manufacturer;
 import com.penske.apps.smccore.base.annotation.NonVendorQuery;
 import com.penske.apps.suppliermgmt.annotation.DBSmc;
@@ -22,10 +22,7 @@ public interface CostToleranceDao {
 	public List<Manufacturer> getAllManufacturers();
 
 	@NonVendorQuery
-	public List<CostTolerance> getAllTolerances();
-
-	@NonVendorQuery
-	public CostTolerance getTolerance(@Param("costToleranceId") int costToleranceId);
+	public List<CostTolerance> getTolerances(@Param("costToleranceId") Integer costToleranceId);
 
 	@NonVendorQuery
 	public void addTolerance(@Param("costTolerance") CostTolerance costTolerance);
