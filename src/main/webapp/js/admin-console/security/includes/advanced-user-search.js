@@ -49,7 +49,7 @@ $('#search-user-form').on('keypress', function(e) {
 //search for vendor user accounts
 $searchButtonsContainer.on('click', '.vendorUsersSearch', function(){
 	var  $searchForm = $('#search-vendor-user-form');
-	$searchForm.submit();
+	getVendorUserTableContents($searchForm.serialize())
 });
 	
 

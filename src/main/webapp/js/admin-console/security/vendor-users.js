@@ -28,12 +28,49 @@ var $vendorUsersDataTable = $vendorUsersTable.DataTable( { //All of the below ar
 	"searching": true, //Allows dynamic filtering of results, do not enable if using ajax for pagination
 	"ordering": true, //Allow sorting by column header
 	"info": true, //Showing 1 to 10 of 11 entries
+	createdRow: function (row, data) {
+		$(row).attr('data-user-id', data.userId);
+		$(row).attr('data-role-id', data.role.roleId);
+	},
 	"columnDefs": [
-					 {'orderable': false, targets: [ 0 ]}, //stops first column from being sortable
-					 { 'width': "100px", targets: [ 0 ] },
+					 {'visible': false, targets: [0]},
+					 {'searchable': false, targets: [0]},
+					 {'className': 'user-id-td', targets: [0]},
+				     {'className': 'user-email', targets: [4]},
+					 {'orderable': false, targets: [ 1 ]}, //stops first column from being sortable
+					 { 'width': "100px", targets: [ 1 ] },
 					 { 'type': "date", targets: [ "lastLogin" ] },
-					 {'searchable': false, targets: [0]}
+					 {'searchable': false, targets: [1]}
 					 ],
+	"columns": [
+		{ data: 'userId'},
+		{ defaultContent: 
+		'<div class="dropdown">' +
+			'<a class="bootStrapDropDown dropdown-toggle" data-toggle="dropdown">'+
+				'Actions' + 
+				'<span class="caret"></span>' +
+			'</a>' +
+	        '<ul class="dropdown-menu">' +
+				'<li>' +
+					'<a class="edit-vendor-user">Edit User</a>' +
+				'</li>' +
+				'<li>' +
+					'<a class="resend-email">Re-send Enrollment Email</a>' +
+				'</li>' +
+				'<li>' +
+					'<a class="deactivate-vendor-user">Delete User</a>' +
+				'</li>' +
+			'</ul>' +
+		'</div>'},
+        { data: 'firstName' },
+        { data: 'lastName' },
+		{ data: 'email' },
+        { data: 'formattedPhone' },
+		{ data: 'role.roleName' },
+		{ data: 'org' },
+		{ data: 'formattedCreatedDate' },
+		{ data: 'formattedLastLoginDate'}
+    ],
 	"paginationType": "full_numbers", //Shows first/previous 1,2,3,4 next/last buttons
 	"pageLength": 100 , //number of records per page for pagination
 	"language": {"emptyTable": "No Results Found"}, //Message displayed when no records are found
@@ -59,39 +96,17 @@ var $vendorUsersDataTable = $vendorUsersTable.DataTable( { //All of the below ar
 		parent.iframeResizer.resizeIframe();
 	}
 });
-	
-	
-	
-//---------------------------------------Listeners----------------------------------------
-//penske user deactivate modal
-$vendorUsersTable.on("click", ".deactivate", function(){
-	var $this =  $(this);
-	var $isVendorUser=false;
-	deactivteUser($this,$isVendorUser);
+
+$(function() {
+	getVendorUserTableContents(null);	
 });
+//---------------------------------------Listeners----------------------------------------
 
 //vendor user deactivate modal
 $vendorUsersTable.on("click", ".deactivate-vendor-user", function(){
 	var $this =  $(this);
 	var $isVendorUser=true;
 	deactivteUser($this,$isVendorUser);
-});
-	
-//edit modal
-$vendorUsersTable.on("click", ".edit-user", function(){
-	
-	var $this =  $(this);
-	var userId = $this.closest('.user-row').find('.user-id').val();
-	var userType = $this.closest('.user-row').find('.user-type').text();
-	var roleId = $this.closest('.user-row').find('.role-id').val();
-	var $getEditUserModalContentPromise = $.get('get-edit-user-modal-content.htm', {userId:userId, userType:userType, roleId:roleId});
-	
-	$getEditUserModalContentPromise.done(function(data){
-		$vendorUsersModal.html(data);
-		ModalUtil.openModal($vendorUsersModal);
-		$('#ui-dialog-title-edit-modal').prop('title','testtooltip');
-		
-	});
 });
 	
 //deactivate execution
@@ -124,9 +139,9 @@ $vendorUsersModal.on('click', '#cancelButton', function() {
 $vendorUsersTable.on("click", ".edit-vendor-user", function(){
 	
 	var $this =  $(this);
-	var userId = $this.closest('.user-row').find('.user-id').val();
+	var userId = $this.closest('tr').data('user-id');
 	var userType = "VENDOR";
-	var roleId = $this.closest('.user-row').find('.role-id').val();
+	var roleId = $this.closest('tr').data('role-id');
 	var $getEditUserModalContentPromise = $.get('get-create-edit-vendor-user', {isCreate:false, userId:userId, userType:userType, roleId:roleId});
 	
 	$getEditUserModalContentPromise.done(function(data){
@@ -149,7 +164,7 @@ $('#create-vendor-user').on('click', function(){
 
 $vendorUsersTable.on("click", ".resend-email", function(){
 	var $this =  $(this);
-	var userId = $this.closest('.user-row').find('.user-id').val();
+	var userId = $this.closest('tr').data('user-id');
 	
 	var $getResendModalContentPromise = $.get('get-resend-email-modal-content.htm', {userId:userId});
 	
@@ -231,8 +246,8 @@ function validateSearchForm($searchForm){
 }
 
 function deactivteUser($this,$isVendorUser){
-	var email = $this.closest('.user-row').find('.user-email').text();
-	var userId = $this.closest('.user-row').find('.user-id').val();
+	var email = $this.closest('tr').find('.user-email').text();
+	var userId = $this.closest('tr').data('user-id')
 	var $getDeactivateUserModalContentPromise = $.get('get-deactivate-user-modal-content.htm', {email:email, userId:userId
 		, isVendorUser:$isVendorUser, isV2: true});
 	
@@ -242,4 +257,27 @@ function deactivteUser($this,$isVendorUser){
 		ModalUtil.openModal($vendorUsersModal);
 	});
 }
-//# sourceURL=users.js
+
+function getVendorUserTableContents(userSearchForm) {
+	parent.showLoading();	
+	$getVendorUserTableContents = $.ajax( {
+	    type: 'GET',
+	    url: 'get-vendor-user-table-contents', 
+	    data: userSearchForm,
+		global: false,
+		beforeSend: function() {
+	      LoadingUtil.showLoadingOverlay(true);
+	    }
+	  });
+	
+	$getVendorUserTableContents.done(function(data){
+		
+		$vendorUsersDataTable.clear();
+    	$vendorUsersDataTable.rows.add(data);
+    	$vendorUsersDataTable.draw();
+		LoadingUtil.hideLoadingOverlay();
+		parent.hideLoading();	
+	});
+	
+}
+//# sourceURL=vendor-users.js

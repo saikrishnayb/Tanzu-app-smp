@@ -21,6 +21,7 @@ import com.penske.apps.adminconsole.model.EditableUser;
 import com.penske.apps.adminconsole.model.ImageFile;
 import com.penske.apps.adminconsole.model.Org;
 import com.penske.apps.adminconsole.model.Role;
+import com.penske.apps.adminconsole.model.UserSearchForm;
 import com.penske.apps.adminconsole.model.Vendor;
 import com.penske.apps.adminconsole.service.RoleService;
 import com.penske.apps.adminconsole.service.SecurityService;
@@ -149,6 +150,16 @@ public class SecurityRestController {
     	User user = sessionBean.getUser();
         EditableUser editableUser = securityService.getEditInfo(userId, "VENDOR");
         userCreationService.resendVendorEmail(user, editableUser);
+    }
+    
+    @VendorAllowed
+    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
+    @RequestMapping(value ="get-vendor-user-table-contents")
+    @ResponseBody
+    public List<EditableUser> getSearchedVendorUserTableContents(UserSearchForm userSearchForm) {
+    	User user = sessionBean.getUser();
+    	List<EditableUser> vendorUsers = securityService.getSearchUserList(userSearchForm, user);
+    	return vendorUsers;
     }
 
     @VendorAllowed

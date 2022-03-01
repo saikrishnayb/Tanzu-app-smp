@@ -32,6 +32,7 @@
 							<table id="vendor-users-table" >
 								<thead>
 									<tr>
+										<th></th>
 										<th class="viewCol"></th>
 										<th>First Name</th>
 										<th>Last Name</th>
@@ -44,47 +45,7 @@
 									</tr>
 								</thead>
 								<tbody>
-									<c:forEach items="${userList}" var="user" varStatus="userLoop">
-									<tr class="user-row">
-										<td class="editable centerAlign">
-											<div class="dropdown">
-									            <a class="bootStrapDropDown dropdown-toggle" data-toggle="dropdown">
-									              Actions
-									              <span class="caret"></span>
-									            </a>
-									            <ul class="dropdown-menu">
-													<li>
-														<a class="edit-vendor-user">Edit User</a>
-													</li>
-													<li>
-														<a class="resend-email">Re-send Enrollment Email</a>
-													</li>
-													<li>
-														<a class="deactivate-vendor-user">Delete User</a>
-													</li>
-												</ul>
-											</div>
-											<input class="user-id" type=hidden value="${user.userId}"/>
-										</td>
-										<td>${user.firstName}</td>
-										<td>${user.lastName}</td>
-										<td class="user-email">${user.email}</td>
-										<td>${user.phone} <c:if test="${(user.extension ne '') || (not empty user.extension)}">ext. ${user.extension}</c:if></td>
-										<td>${user.role.roleName} <input class="role-id" type=hidden value="${user.role.roleId}"/></td>
-										<td>${user.org}</td>
-										<td>${user.formattedCreatedDate}</td>
-										<td>
-											<c:choose>
-				                				<c:when test= "${user.lastLoginDate eq null}">
-			                  						(Never)
-			                					</c:when>
-				                				<c:otherwise>
-				                  					${user.getFormattedLastLoginDate()}
-			                					</c:otherwise>
-			              					</c:choose>
-			              				</td>
-									</tr>
-									</c:forEach>
+									<!-- Uses Javascript implementation -->
 								</tbody>
 							</table>
 						</div>

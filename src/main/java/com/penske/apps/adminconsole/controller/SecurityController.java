@@ -303,7 +303,6 @@ public class SecurityController {
     private ModelAndView getVendorUsersPageData(){
         ModelAndView mav = new ModelAndView("/admin-console/security/vendor-users");
         User user = sessionBean.getUser();
-        mav.addObject("userList", securityService.getVendorUserList(user));
         // If the user is a supplier.
         boolean isVendor = user.getUserType() == UserType.VENDOR;
         mav.addObject("roleList", securityService.getVendorRoles(isVendor,user.getRoleId(),user.getOrgId()));

@@ -314,15 +314,19 @@ $createEditVendorUserModal.on("click",'.refresh-confirm',function(){
 			if(!isUserIdMatch) return true;
 			
 			var $userRow = $(this).closest('.user-row');
-			var nRow = $userRow[0];
+			var $userRowDT = $vendorUsersDataTable.row($userRow);
+			var rowData =  $userRowDT.data()
 
-			$('#users-table').dataTable().fnUpdate(data.firstName, nRow, 1,false);
-			$('#users-table').dataTable().fnUpdate(data.lastName, nRow, 2,false);
-			$('#users-table').dataTable().fnUpdate(data.email, nRow, 3,false);
-			//var phone=formatPhone(data.phone);
-			$('#users-table').dataTable().fnUpdate(data.phone, nRow, 4,false);
-			$('#users-table').dataTable().fnUpdate(data.userType.userType, nRow, 6,false);
-			$('#users-table').dataTable().fnUpdate(data.role.roleName + "<input class='role-id' type=hidden value='" + data.role.roleId + "'/>", nRow, 7,false);
+			rowData[1] = data.firstName
+			rowData[2] = data.lastName
+			rowData[3] = data.email
+			rowData[4] = data.phone
+			rowData[5] = data.role.roleName
+
+			$userRowDT.data(rowData);
+			$userRow.data('role-id', data.role.roleId);
+			$userRowDT.invalidate();
+			$vendorUsersDataTable.draw();
 			ModalUtil.closeModal($createEditVendorUserModal);
 			ModalUtil.closeModal($vendorUsersModal);
 		});
@@ -364,7 +368,9 @@ $('.createVendorUser').on("click", function(){
 				
 				var $createUserPromise = $.post('./create-vendor-user.htm', $userForm.serialize());
 				$createUserPromise.done(function() {
-					location.assign('./vendor-users.htm');
+					var  $searchForm = $('#search-vendor-user-form');
+					getVendorUserTableContents($searchForm.serialize());
+					ModalUtil.closeModal($vendorUsersModal);
 				});
 				$createUserPromise.fail(function(xhr, ajaxOptions, thrownError) {
 					 if(xhr.responseText.indexOf('USER_SERVICE_DUP_SSO:1')>0){
@@ -456,10 +462,10 @@ $('.saveVendor').on("click", function(){
 							rowData[2] = data.lastName
 							rowData[3] = data.email
 							rowData[4] = data.phone
-							rowData[5] = data.role.roleName + "<input class='role-id' type=hidden value='" + data.role.roleId + "'/>"
+							rowData[5] = data.role.roleName
 			
 							$userRowDT.data(rowData);
-			
+							$userRow.data('role-id', data.role.roleId);
 							$userRowDT.invalidate();
 							$vendorUsersDataTable.draw();
 							ModalUtil.closeModal($vendorUsersModal);
