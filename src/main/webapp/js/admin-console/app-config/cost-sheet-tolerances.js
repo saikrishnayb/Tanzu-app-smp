@@ -12,8 +12,7 @@ ritsu.initialize({useBootstrap3Styling: true});
 // Initializes data table
 var $toleranceDataTable = $toleranceTable.DataTable({
 	"aoColumnDefs": [
-		{ 'sWidth':"100px", "aTargets":[0]},
-		{ 'bSortable': false, 'aTargets':[0, 3]},
+		{ 'bSortable': false, 'aTargets':[0, 4]},
 		{ "bSearchable": false, "aTargets": [0]}
 	],
 	"bAutoWidth": false,
