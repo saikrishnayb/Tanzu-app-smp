@@ -2,6 +2,8 @@ package com.penske.apps.adminconsole.service;
 
 import java.util.List;
 
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+
 import com.penske.apps.adminconsole.model.Alert;
 import com.penske.apps.adminconsole.model.EditableUser;
 import com.penske.apps.adminconsole.model.Vendor;
@@ -25,4 +27,6 @@ public interface VendorService {
 	void sendEmailToAnalyst(Vendor vendor, User user);
 
 	Vendor getVendorById(int vendorId);
+
+	public SXSSFWorkbook exportVendorActivity(User user, List<EditableUser> vendorUsers);
 }

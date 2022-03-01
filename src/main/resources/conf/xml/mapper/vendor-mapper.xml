@@ -220,4 +220,19 @@
 		Select ALERT_KEY as alertType,ALERT_NAME as alertName from smc.V_SMC_ALERTS WHERE HEADER_KEY='HDR_OF_VENDACTITEMS'
 	</select>
 	
+	<select id="getVendorPoInformation" resultType="com.penske.apps.adminconsole.model.VendorPoInformation">
+		SELECT 
+			VENDOR_NUMBER as vendorNumber,
+			MAX(CREATED_DATE) AS lastPoDate,
+			COUNT(*) AS posIssuedInLast3Years
+		FROM SMC.SMC_PURCHASING_HEADER
+		WHERE CREATED_DATE > CURRENT_TIMESTAMP - 3 YEAR
+		AND VENDOR_NUMBER IN (
+			<foreach item="vendorNumber" collection="vendorNumbers" separator=",">
+				#{vendorNumber}
+			</foreach>
+		)
+		GROUP BY VENDOR_NUMBER 
+	</select>
+	
 </mapper>

@@ -1,13 +1,33 @@
 package com.penske.apps.adminconsole.service;
 
+import static java.util.stream.Collectors.toList;
+
+import java.awt.Color;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.xssf.streaming.SXSSFRow;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFColor;
+import org.apache.poi.xssf.usermodel.extensions.XSSFCellBorder.BorderSide;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,11 +36,13 @@ import com.penske.apps.adminconsole.model.Alert;
 import com.penske.apps.adminconsole.model.EditableUser;
 import com.penske.apps.adminconsole.model.Vendor;
 import com.penske.apps.adminconsole.model.VendorContact;
+import com.penske.apps.adminconsole.model.VendorPoInformation;
 import com.penske.apps.smccore.base.dao.EmailDAO;
 import com.penske.apps.smccore.base.domain.EmailTemplate;
 import com.penske.apps.smccore.base.domain.SmcEmail;
 import com.penske.apps.smccore.base.domain.User;
 import com.penske.apps.smccore.base.domain.enums.EmailTemplateType;
+import com.penske.apps.smccore.base.util.DateUtil;
 
 @Service
 public class DefaultVendorService implements VendorService {
@@ -291,4 +313,267 @@ public class DefaultVendorService implements VendorService {
 	public List<Alert> getAllAlerts(){
 		return vendorDao.getAllAlerts();
 	}
+	
+	@Override
+	public SXSSFWorkbook exportVendorActivity(User user, List<EditableUser> vendorUsers) {
+
+		List<Vendor> vendors = this.getAllVendors(user.getOrgId());
+		
+		List<VendorPoInformation> vendorPoInformationList = vendorDao.getVendorPoInformation(vendors.stream().map(v->v.getVendorNumber()).collect(Collectors.toList()));
+		Map<Integer, VendorPoInformation> vendorPoInformationByVendorNum = vendorPoInformationList.stream().collect(Collectors.toMap(vpi->vpi.getVendorNumber(), vpi->vpi));
+		
+		List<EditableUser> sortedVendorUsers = vendorUsers.stream()
+				.sorted(Comparator.comparing(vu -> vu.getVendor().getVendorName()))
+				.collect(toList());
+		
+		return generateVendorActivityExcel(vendors, vendorPoInformationByVendorNum, sortedVendorUsers);
+	}
+
+	private SXSSFWorkbook generateVendorActivityExcel(List<Vendor> vendors, Map<Integer, VendorPoInformation> vendorPoInformationByVendorNum, List<EditableUser> vendorUsers) {
+		SXSSFWorkbook workbook = new SXSSFWorkbook();
+		SXSSFSheet vendorActivityWorkSheet = workbook.createSheet("Vendor Activity");
+		SXSSFSheet vendorAccessWorkSheet = workbook.createSheet("Vendor Access");
+		
+		workbook.setCompressTempFiles(true);
+
+        workbook.getCreationHelper();
+        
+        populateVendorActivitySheet(workbook, vendorActivityWorkSheet, vendors, vendorPoInformationByVendorNum);
+        
+        populateVendorAccessSheet(workbook, vendorAccessWorkSheet, vendorUsers);
+        
+		return workbook;
+	}
+	
+	//********** VENDOR ACTIVITY SHEET **********//
+	private void populateVendorActivitySheet(SXSSFWorkbook workbook, SXSSFSheet worksheet, List<Vendor> vendors, Map<Integer, VendorPoInformation> vendorPoInformationByVendorNum) {
+		generateVendorActivityHeader(workbook, worksheet);
+		
+		int index = 1;
+		for(Vendor vendor: vendors) {
+			VendorPoInformation vendorPoInformation = vendorPoInformationByVendorNum.get(vendor.getVendorNumber());
+			if(vendorPoInformation == null)
+				throw new IllegalArgumentException("Could not find vendor PO info for Vendor Number: " + vendor.getVendorNumber());
+			
+			SXSSFRow row = worksheet.createRow(index);
+			populateVendorActivityRow(workbook, row, vendor, vendorPoInformation);
+			index++;
+		}
+	}
+	
+	private void generateVendorActivityHeader(SXSSFWorkbook workbook, SXSSFSheet worksheet) {
+		Row headerDataRow=worksheet.createRow(0);
+		CellStyle styleHeader = getHeaderStyle(workbook);
+		
+		Cell headerDataCell=null;
+        //Create our static headers
+        headerDataCell=headerDataRow.createCell(0);
+        headerDataCell.setCellValue("Vendor Name");
+        headerDataCell.setCellStyle(styleHeader);
+
+        headerDataCell=headerDataRow.createCell(1);
+        headerDataCell.setCellValue("Vendor ID");
+        headerDataCell.setCellStyle(styleHeader);
+        
+        headerDataCell=headerDataRow.createCell(2);
+        headerDataCell.setCellValue("MFR");
+        headerDataCell.setCellStyle(styleHeader);
+        
+        headerDataCell=headerDataRow.createCell(3);
+        headerDataCell.setCellValue("Annual Agreement");
+        headerDataCell.setCellStyle(styleHeader);
+        
+        headerDataCell=headerDataRow.createCell(4);
+        headerDataCell.setCellValue("Primary Contact");
+        headerDataCell.setCellStyle(styleHeader);
+        
+        headerDataCell=headerDataRow.createCell(5);
+        headerDataCell.setCellValue("Contact Phone");
+        headerDataCell.setCellStyle(styleHeader);
+        
+        headerDataCell=headerDataRow.createCell(6);
+        headerDataCell.setCellValue("Assigned Analyst");
+        headerDataCell.setCellStyle(styleHeader);
+        
+        headerDataCell=headerDataRow.createCell(7);
+        headerDataCell.setCellValue("Date of Last PO Issued");
+        headerDataCell.setCellStyle(styleHeader);
+        
+        headerDataCell=headerDataRow.createCell(8);
+        headerDataCell.setCellValue("# PO's Issued Last 3 Years");
+        headerDataCell.setCellStyle(styleHeader);
+	}
+	
+	private void populateVendorActivityRow(SXSSFWorkbook workbook, SXSSFRow row, Vendor vendor, VendorPoInformation vendorPoInformation) {
+		XSSFCellStyle cellStyle = getCellStyle(workbook);
+		
+		Cell dataCell=null;
+		
+		dataCell = row.createCell(0);
+        dataCell.setCellStyle(cellStyle);
+        dataCell.setCellValue(vendor.getVendorName());
+        
+        dataCell = row.createCell(1);
+        dataCell.setCellStyle(cellStyle);
+        dataCell.setCellValue(vendor.getVendorId());
+        
+        dataCell = row.createCell(2);
+        dataCell.setCellStyle(cellStyle);
+        dataCell.setCellValue(String.join(", ", vendor.getMfrCodes()));
+        
+        dataCell = row.createCell(3);
+        dataCell.setCellStyle(cellStyle);
+        dataCell.setCellValue("Y".equals(vendor.getAnnualAgreement()) ? "Yes" : "No");
+        
+        dataCell = row.createCell(4);
+        dataCell.setCellStyle(cellStyle);
+        dataCell.setCellValue(vendor.getPrimaryContact().getFirstName() + " " + vendor.getPrimaryContact().getLastName());
+        
+        dataCell = row.createCell(5);
+        dataCell.setCellStyle(cellStyle);
+        dataCell.setCellValue(vendor.getPrimaryContact().getPhoneNumber());
+        
+        dataCell = row.createCell(6);
+        dataCell.setCellStyle(cellStyle);
+        dataCell.setCellValue(vendor.getPlanningAnalyst().getFirstName() + " " + vendor.getPlanningAnalyst().getLastName());
+        
+        dataCell = row.createCell(7);
+        dataCell.setCellStyle(cellStyle);
+        dataCell.setCellValue(DateUtil.formatDateUS(vendorPoInformation.getLastPoDate()));
+        
+        dataCell = row.createCell(8);
+        dataCell.setCellStyle(cellStyle);
+        dataCell.setCellValue(vendorPoInformation.getPosIssuedInLast3Years());
+	}
+	
+	//********** VENDOR ACCESS SHEET **********//
+	private void populateVendorAccessSheet(SXSSFWorkbook workbook, SXSSFSheet worksheet, List<EditableUser> vendorUsers) {
+		generateVendorAccessHeader(workbook, worksheet);
+		
+		int index = 1;
+		for(EditableUser vendorUser: vendorUsers) {
+			SXSSFRow row = worksheet.createRow(index);
+			populateVendorAccessRow(workbook, row, vendorUser);
+			index++;
+		}
+	}
+	
+	private void generateVendorAccessHeader(SXSSFWorkbook workbook, SXSSFSheet worksheet) {
+		Row headerDataRow=worksheet.createRow(0);
+		CellStyle styleHeader = getHeaderStyle(workbook);
+		
+		Cell headerDataCell=null;
+        //Create our static headers
+        headerDataCell=headerDataRow.createCell(0);
+        headerDataCell.setCellValue("Vendor Name");
+        headerDataCell.setCellStyle(styleHeader);
+
+        headerDataCell=headerDataRow.createCell(1);
+        headerDataCell.setCellValue("Vendor ID");
+        headerDataCell.setCellStyle(styleHeader);
+        
+        headerDataCell=headerDataRow.createCell(2);
+        headerDataCell.setCellValue("First Name");
+        headerDataCell.setCellStyle(styleHeader);
+        
+        headerDataCell=headerDataRow.createCell(3);
+        headerDataCell.setCellValue("Last Name");
+        headerDataCell.setCellStyle(styleHeader);
+        
+        headerDataCell=headerDataRow.createCell(4);
+        headerDataCell.setCellValue("Email");
+        headerDataCell.setCellStyle(styleHeader);
+        
+        headerDataCell=headerDataRow.createCell(5);
+        headerDataCell.setCellValue("Org");
+        headerDataCell.setCellStyle(styleHeader);
+        
+        headerDataCell=headerDataRow.createCell(6);
+        headerDataCell.setCellValue("Created Date");
+        headerDataCell.setCellStyle(styleHeader);
+        
+        headerDataCell=headerDataRow.createCell(7);
+        headerDataCell.setCellValue("Last Login");
+        headerDataCell.setCellStyle(styleHeader);
+	}
+	
+	private void populateVendorAccessRow(SXSSFWorkbook workbook, SXSSFRow row, EditableUser vendorUser) {
+		XSSFCellStyle cellStyle = getCellStyle(workbook);
+		
+		Cell dataCell=null;
+		
+		dataCell = row.createCell(0);
+        dataCell.setCellStyle(cellStyle);
+        dataCell.setCellValue(vendorUser.getVendor().getVendorName());
+        
+        dataCell = row.createCell(1);
+        dataCell.setCellStyle(cellStyle);
+        dataCell.setCellValue(vendorUser.getVendor().getVendorId());
+        
+        dataCell = row.createCell(2);
+        dataCell.setCellStyle(cellStyle);
+        dataCell.setCellValue(vendorUser.getFirstName());
+        
+        dataCell = row.createCell(3);
+        dataCell.setCellStyle(cellStyle);
+        dataCell.setCellValue(vendorUser.getLastName());
+        
+        dataCell = row.createCell(4);
+        dataCell.setCellStyle(cellStyle);
+        dataCell.setCellValue(vendorUser.getEmail());
+        
+        dataCell = row.createCell(5);
+        dataCell.setCellStyle(cellStyle);
+        dataCell.setCellValue(vendorUser.getOrg());
+        
+        dataCell = row.createCell(6);
+        dataCell.setCellStyle(cellStyle);
+        dataCell.setCellValue(vendorUser.getFormattedCreatedDate());
+        
+        dataCell = row.createCell(7);
+        dataCell.setCellStyle(cellStyle);
+        dataCell.setCellValue(vendorUser.getFormattedLastLoginDate());
+	}
+	
+	private CellStyle getHeaderStyle(SXSSFWorkbook workbook) {
+		Font fontHeader = workbook.createFont();
+		fontHeader.setFontName("Serif");
+        fontHeader.setBold(true);
+		
+		CellStyle styleHeader = workbook.createCellStyle();
+        styleHeader.setBorderLeft(BorderStyle.THIN);
+        styleHeader.setBorderRight(BorderStyle.THIN);
+        styleHeader.setBorderTop(BorderStyle.THIN);
+        styleHeader.setBorderBottom(BorderStyle.THIN);
+        
+        styleHeader.setFont(fontHeader);
+        styleHeader.setAlignment(HorizontalAlignment.CENTER);
+        styleHeader.setVerticalAlignment(VerticalAlignment.BOTTOM);
+        styleHeader.setWrapText(true);
+        
+        return styleHeader;
+	}
+	
+	private XSSFCellStyle getCellStyle(SXSSFWorkbook workbook) {
+		Font fontcell = workbook.createFont();
+
+        XSSFColor lightGrey = new XSSFColor(new Color(215, 216, 217));
+
+        XSSFCellStyle dataCellEditable = (XSSFCellStyle) workbook.createCellStyle();
+        dataCellEditable.setLocked(false);
+        dataCellEditable.setFillForegroundColor((short) 41);
+        dataCellEditable.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        dataCellEditable.setBorderLeft(BorderStyle.THIN);
+        dataCellEditable.setBorderRight(BorderStyle.THIN);
+        dataCellEditable.setBorderTop(BorderStyle.THIN);
+        dataCellEditable.setBorderBottom(BorderStyle.THIN);
+        dataCellEditable.setBorderColor(BorderSide.LEFT, lightGrey);
+        dataCellEditable.setBorderColor(BorderSide.RIGHT, lightGrey);
+        dataCellEditable.setBorderColor(BorderSide.BOTTOM, lightGrey);
+        dataCellEditable.setBorderColor(BorderSide.TOP, lightGrey);
+        dataCellEditable.setFont(fontcell);
+        
+        return dataCellEditable;
+	}
+	
 }

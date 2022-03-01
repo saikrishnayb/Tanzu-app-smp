@@ -15,6 +15,9 @@
 			<%@ include file="../../../jsp/global/navigation/admin-console/security/left-nav.jsp" %>
 			
 			<div class="leftNavAdjacentContainer">
+				<tl:isAuthorized tabName="Admin Console" secFunction="EXPORT_VENDOR_ACTIVITY">
+					<a id="export-vendor-activity" class="buttonSecondary" style="margin-bottom: 10px;">Export</a>
+				</tl:isAuthorized>
 				<!-- Advanced Search -->
 				<span id="advanced-search" class="expandableContent handCursor 
 				<c:if test="${hasBeenSearched eq false}">collapsedImage</c:if>
