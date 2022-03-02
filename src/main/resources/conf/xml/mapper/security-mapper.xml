@@ -641,6 +641,7 @@
 				U.ROLE_ID AS "role.roleId",
 				R.ROLE_NAME AS "role.roleName",
 				O.NAME as "org",
+				O.ORG_ID as "orgId",
 				L.LAST_LOGIN AS lastLoginDate,
 				U.CREATED_DATE AS createdDate
 				

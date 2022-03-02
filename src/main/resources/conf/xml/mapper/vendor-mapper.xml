@@ -60,7 +60,8 @@
 						vend.SUPPLY_SPECIALIST AS "supplySpecialist.userId",
 						vennam.VENDOR_ADDRESS_LINE_1 AS vendorAddress,
 						vennam.VENDOR_ATTENTION AS attention,
-						dist.DMNAME AS companyName
+						dist.DMNAME AS companyName,
+						org.ORG_ID as orgId
 		
 				FROM	SMC.SMC_VENDOR_MASTER vend 
 						JOIN SMC.SMC_ORG_VENDOR_ASSOC org

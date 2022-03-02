@@ -7,6 +7,14 @@ public class VendorPoInformation {
 	private LocalDate lastPoDate;
 	private int posIssuedInLast3Years;
 	
+	protected VendorPoInformation() {}
+	
+	public VendorPoInformation(int vendorNumber) {
+		this.vendorNumber = vendorNumber;
+		this.lastPoDate = null;
+		this.posIssuedInLast3Years = 0;
+	}
+	
 	public int getVendorNumber() {
 		return vendorNumber;
 	}

@@ -294,8 +294,10 @@ $(document).ready(function() {
 	});
 	
 	$('#export-vendor-activity').on('click', function(){
+		showLoading();
+		
 		var today = new Date();
-		var filename = 'Vendor_Activity';
+		var filename = 'Vendor_Activity_';
 	
 		var mm = today.getMonth() + 1;
 		if (mm < 10) {
@@ -349,15 +351,12 @@ $(document).ready(function() {
 	
 	        }
 	        
-	        _clearSpinners();
-	
-	      }else if(xhr.readyState == XMLHttpRequest.DONE && xhr.status == 500) {
-	        ModalUtil.openInfoModal('Something went wrong downloading the file in the server, please try again later');
-	        _clearSpinners();
 	      }
 	      
 	    }
 		xhr.send();
+		
+		hideLoading();
 	});
 });
 

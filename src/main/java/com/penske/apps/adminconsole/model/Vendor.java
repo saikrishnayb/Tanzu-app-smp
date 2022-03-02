@@ -18,6 +18,7 @@ public class Vendor {
 	private String searchMfrCode;
 	private List<String> mfrCodes;			// the manufacturer code
 	private String companyName;					// the company name (related to the corp code)
+	private int orgId;						// the org id this vendor belongs to
 
 	/* Vendor Contacts */
 	private VendorContact primaryContact;		// the primary contact
@@ -63,7 +64,6 @@ public class Vendor {
 		return corpCode;
 	}
 
-	
 	public String getAnnualAgreement() {
 		return annualAgreement;
 	}
@@ -80,9 +80,12 @@ public class Vendor {
 		return supplySpecialist;
 	}
 
-
 	public String getCompanyName() {
 		return companyName;
+	}
+	
+	public int getOrgId() {
+		return orgId;
 	}
 
 	public VendorContact getPrimaryContact() {
