@@ -35,7 +35,8 @@
 				U.ROLE_ID AS "role.roleId",
 				R.ROLE_NAME AS "role.roleName",
 				L.LAST_LOGIN AS lastLoginDate ,
-				U.CREATED_DATE AS createdDate
+				U.CREATED_DATE AS createdDate,
+				CASE WHEN otp.OTP IS NULL THEN 0 ELSE 1 END as hasOtp
 	  FROM SMC.SMC_USER_MASTER U
     LEFT JOIN  L
     ON U.SSO = L.SSO
@@ -45,6 +46,8 @@
     ON U.TYPE_ID = T.TYPE_ID
     JOIN SMC.SMC_ORG_MASTER O
     ON U.ORG_ID = O.ORG_ID
+    LEFT JOIN  SMC.SMC_USER_OTP otp
+    ON U.USER_ID = otp.USER_ID
 		WHERE
 				<if test="email != ''">
 					UPPER(U.EMAIL) LIKE #{email} AND

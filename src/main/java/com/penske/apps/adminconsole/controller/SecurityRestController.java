@@ -23,10 +23,12 @@ import com.penske.apps.adminconsole.model.Org;
 import com.penske.apps.adminconsole.model.Role;
 import com.penske.apps.adminconsole.model.UserSearchForm;
 import com.penske.apps.adminconsole.model.Vendor;
+import com.penske.apps.adminconsole.model.VendorUser;
 import com.penske.apps.adminconsole.service.RoleService;
 import com.penske.apps.adminconsole.service.SecurityService;
 import com.penske.apps.adminconsole.service.UserCreationService;
 import com.penske.apps.adminconsole.service.VendorService;
+import com.penske.apps.adminconsole.util.ApplicationConstants;
 import com.penske.apps.adminconsole.util.CommonUtils;
 import com.penske.apps.adminconsole.util.IUserConstants;
 import com.penske.apps.smccore.base.annotation.SmcSecurity;
@@ -156,9 +158,12 @@ public class SecurityRestController {
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
     @RequestMapping(value ="get-vendor-user-table-contents")
     @ResponseBody
-    public List<EditableUser> getSearchedVendorUserTableContents(UserSearchForm userSearchForm) {
+    public List<VendorUser> getSearchedVendorUserTableContents(UserSearchForm userSearchForm) {
     	User user = sessionBean.getUser();
-    	List<EditableUser> vendorUsers = securityService.getSearchUserList(userSearchForm, user);
+    	userSearchForm.setUserTypeId(ApplicationConstants.SUPPLIER_USER);
+    	
+    	List<VendorUser> vendorUsers = securityService.getVendorUsers(userSearchForm, user);
+    	
     	return vendorUsers;
     }
 

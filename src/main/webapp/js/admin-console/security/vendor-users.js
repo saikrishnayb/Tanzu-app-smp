@@ -31,6 +31,7 @@ var $vendorUsersDataTable = $vendorUsersTable.DataTable( { //All of the below ar
 	createdRow: function (row, data) {
 		$(row).attr('data-user-id', data.userId);
 		$(row).attr('data-role-id', data.role.roleId);
+		$(row).attr('data-has-otp', data.hasOtp);
 	},
 	"columnDefs": [
 					 {'visible': false, targets: [0]},
@@ -44,24 +45,27 @@ var $vendorUsersDataTable = $vendorUsersTable.DataTable( { //All of the below ar
 					 ],
 	"columns": [
 		{ data: 'userId'},
-		{ defaultContent: 
-		'<div class="dropdown">' +
-			'<a class="bootStrapDropDown dropdown-toggle" data-toggle="dropdown">'+
-				'Actions' + 
-				'<span class="caret"></span>' +
-			'</a>' +
-	        '<ul class="dropdown-menu">' +
-				'<li>' +
-					'<a class="edit-vendor-user">Edit User</a>' +
-				'</li>' +
-				'<li>' +
-					'<a class="resend-email">Re-send Enrollment Email</a>' +
-				'</li>' +
-				'<li>' +
-					'<a class="deactivate-vendor-user">Delete User</a>' +
-				'</li>' +
-			'</ul>' +
-		'</div>'},
+		{ render: function ( colData, type, rowData, meta ) {
+				var beginning = '<div class="dropdown">' +
+									'<a class="bootStrapDropDown dropdown-toggle" data-toggle="dropdown">'+
+										'Actions' + 
+										'<span class="caret"></span>' +
+									'</a>' +
+							        '<ul class="dropdown-menu">' +
+										'<li>' +
+											'<a class="edit-vendor-user">Edit User</a>' +
+										'</li>'
+				var middle = rowData.hasOtp ? '<li class="resend-email-li">' +
+						'<a class="resend-email">Re-send Enrollment Email</a>' +
+					'</li>' : '';
+				var end = '<li>' +
+									'<a class="deactivate-vendor-user">Delete User</a>' +
+								'</li>' +
+							'</ul>' +
+						'</div>'
+				return beginning + middle + end;
+			}
+		},
         { data: 'firstName' },
         { data: 'lastName' },
 		{ data: 'email' },
@@ -165,7 +169,11 @@ $('#create-vendor-user').on('click', function(){
 $vendorUsersTable.on("click", ".resend-email", function(){
 	var $this =  $(this);
 	var userId = $this.closest('tr').data('user-id');
+	var hasOtp = $this.closest('tr').data('hasOtp');
 	
+	if(!hasOtp)
+		return false;
+		
 	var $getResendModalContentPromise = $.get('get-resend-email-modal-content.htm', {userId:userId});
 	
 	$getResendModalContentPromise.done(function(data){

@@ -41,6 +41,7 @@ public class EditableUser {
 	private boolean dailyOptIn;
 	private Date lastLoginDate;
 	private Date createdDate;
+	private boolean hasOtp;
 
 	public String getOrg() {
 		return org;
@@ -532,5 +533,9 @@ public class EditableUser {
 		}
 		else
 			return phone + " ext. " + extension;
+	}
+
+	public boolean isHasOtp() {
+		return hasOtp;
 	}
 }
