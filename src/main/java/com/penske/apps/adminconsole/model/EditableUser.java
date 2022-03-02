@@ -511,6 +511,9 @@ public class EditableUser {
 	}
 	
 	public String getFormattedLastLoginDate() {
+		if(lastLoginDate == null)
+			return "(Never)";
+		
 		String formattedLastLoginDate = DateUtil.formatDateTimeUS(lastLoginDate);
 		return formattedLastLoginDate;
 	}
@@ -521,5 +524,13 @@ public class EditableUser {
 
 	public String getFormattedCreatedDate() {
 		return DateUtil.formatDateTimeUS(createdDate);
+	}
+	
+	public String getFormattedPhone() {
+		if(StringUtils.isBlank(extension)) {
+			return phone;
+		}
+		else
+			return phone + " ext. " + extension;
 	}
 }

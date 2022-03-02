@@ -79,7 +79,7 @@ public class SecurityController {
         boolean isSupplier = user.getUserType() == UserType.VENDOR;
         // If the user is a supplier.
         if (isSupplier)
-            return getVendorMainContentPage();
+            return getVendorUsers();
         else
         {
             UserSearchForm userSearchForm = new UserSearchForm();
@@ -92,14 +92,14 @@ public class SecurityController {
         mav.addObject("access", user.hasSecurityFunction(SecurityFunction.MANAGE_USERS));
         return mav;
     }
-
+    
     @VendorAllowed
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
-    @RequestMapping(value ={"/vendorUsers"})
-    public ModelAndView getVendorMainContentPage(){
+    @RequestMapping(value ={"/vendor-users"})
+    public ModelAndView getVendorUsers(){
         User user = sessionBean.getUser();
         if(user.hasSecurityFunction(SecurityFunction.MANAGE_VENDOR_USERS))
-            return getVendorPageData();
+            return getVendorUsersPageData();
         if(user.hasSecurityFunction(SecurityFunction.MANAGE_ROLES))
             return getRolesPage();
         if(user.hasSecurityFunction(SecurityFunction.MANAGE_ORG))
@@ -119,7 +119,7 @@ public class SecurityController {
 
         if(isSupplier || userSearchForm.isVendorSearch()){
             userSearchForm.setUserTypeId(ApplicationConstants.SUPPLIER_USER);
-            mav = new ModelAndView("/admin-console/security/vendorUsers");
+            mav = new ModelAndView("/admin-console/security/vendor-users");
             mav.addObject("roleList", securityService.getVendorRoles(false,user.getRoleId(),user.getOrgId()));
             mav.addObject("accessVendor", user.hasSecurityFunction(SecurityFunction.MANAGE_VENDOR_USERS));
             List<Org> orgList = securityService.getOrgList(null, user);
@@ -299,11 +299,10 @@ public class SecurityController {
         mav.addObject("myOrg", user.getOrgId());
         return mav;
     }
-
-    private ModelAndView getVendorPageData(){
-        ModelAndView mav = new ModelAndView("/admin-console/security/vendorUsers");
+    
+    private ModelAndView getVendorUsersPageData(){
+        ModelAndView mav = new ModelAndView("/admin-console/security/vendor-users");
         User user = sessionBean.getUser();
-        mav.addObject("userList", securityService.getVendorUserList(user));
         // If the user is a supplier.
         boolean isVendor = user.getUserType() == UserType.VENDOR;
         mav.addObject("roleList", securityService.getVendorRoles(isVendor,user.getRoleId(),user.getOrgId()));
@@ -313,6 +312,7 @@ public class SecurityController {
         mav.addObject("hasBeenSearched", false);
         mav.addObject("userTypeList", securityService.getUserTypes());
         mav.addObject("accessVendor", user.hasSecurityFunction(SecurityFunction.MANAGE_VENDOR_USERS));
+        mav.addObject("vendorUsersPage", true);
         return mav;
     }
 

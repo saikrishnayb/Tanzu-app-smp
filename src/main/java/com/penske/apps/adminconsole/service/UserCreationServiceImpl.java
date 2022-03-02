@@ -151,6 +151,21 @@ public class UserCreationServiceImpl implements UserCreationService {
 		return body;
 	}
 
+	@Override
+	public void resendVendorEmail(User user, EditableUser editableUser) {
+		String otp = securityDao.getOtpForUser(editableUser);
+		if(StringUtils.isBlank(otp))
+			throw new IllegalArgumentException("Cannot find OTP for user. SSO: " + editableUser.getSsoId());
+		editableUser.setDefaultPassword(otp);
+
+		EmailTemplate template = emailDAO.getEmailTemplate(EmailTemplateType.NEW_VENDOR_USER);
+		String subject = template.getSubjectTemplate();
+		String body = buildMailBodyNewUser(editableUser, template);
+		
+		SmcEmail email = new SmcEmail(EmailTemplateType.NEW_VENDOR_USER, editableUser.getSsoId(), editableUser.getEmail(), null, null, body, subject);
+		emailDAO.insertSmcEmail(email);
+	}
+
 	private EditableUser insertUserToLDAP(EditableUser userObj) throws UserServiceException, UsrCreationSvcException {
 		if(!CommonUtils.validUserID(userObj.getUserName())){
 			logger.error("UserID " + userObj.getUserName() + " does not conform to standards.");

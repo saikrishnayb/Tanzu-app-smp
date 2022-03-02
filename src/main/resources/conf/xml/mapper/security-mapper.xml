@@ -766,4 +766,11 @@
 		VALUES (#{userObj.userId}, #{userObj.defaultPassword}) 
 	</insert>
 	
+	<select id="getOtpForUser" resultType="String">
+		SELECT
+			OTP 
+		FROM SMC.SMC_USER_OTP 
+		WHERE USER_ID = #{editableUser.userId}
+	</select>
+	
  </mapper>

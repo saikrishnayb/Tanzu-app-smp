@@ -8,4 +8,5 @@ public interface UserCreationService {
 	public EditableUser insertUserInfo(User user, EditableUser userBean) throws UserServiceException;
 	public EditableUser updateUserInfo(EditableUser userBean,boolean isDeactive) throws UserServiceException;
 	public boolean isEligibleToDeactivate(int userId,boolean isVendorUser,String currentUser) throws UserServiceException;
+	public void resendVendorEmail(User user, EditableUser editableUser);
 }

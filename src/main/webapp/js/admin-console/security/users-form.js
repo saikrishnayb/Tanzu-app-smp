@@ -496,7 +496,7 @@ $(document).ready(function() {
 		showLoading();
 		$.ajax({
 			  type: "GET",
-			  url: "./sso-user-lookup-refresh.htm?userId="+ userId + '&userType='+userType+ '&_=' + currentTimeStamp, 
+			  url: "./sso-user-lookup-refresh.htm?userId="+ userId + '&userType='+userType+ '&_=' + currentTimeStamp + '&isV2=' + false, 
 			  global: false,
 			  success: function(data){
 				 hideLoading();

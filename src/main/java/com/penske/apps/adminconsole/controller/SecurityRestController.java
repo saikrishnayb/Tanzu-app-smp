@@ -21,6 +21,7 @@ import com.penske.apps.adminconsole.model.EditableUser;
 import com.penske.apps.adminconsole.model.ImageFile;
 import com.penske.apps.adminconsole.model.Org;
 import com.penske.apps.adminconsole.model.Role;
+import com.penske.apps.adminconsole.model.UserSearchForm;
 import com.penske.apps.adminconsole.model.Vendor;
 import com.penske.apps.adminconsole.service.RoleService;
 import com.penske.apps.adminconsole.service.SecurityService;
@@ -100,33 +101,65 @@ public class SecurityRestController {
 
         return mav;
     }
-
+    
     @VendorAllowed
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
-    @RequestMapping(value ="get-edit-vendor-user-modal-content")
+    @RequestMapping(value ="get-create-edit-vendor-user")
     @ResponseBody
-    public ModelAndView getEditVendorInfo(@RequestParam(value="userId") String userId, @RequestParam(value="userType") String userType, @RequestParam(value="roleId") String roleId) {
-        ModelAndView mav = new ModelAndView("/admin-console/security/modal/edit-vendor-user-modal-content");
+    public ModelAndView getCreateEditVendor(@RequestParam(value="isCreate") boolean isCreate, @RequestParam(value="userId", required=false) String userId, @RequestParam(value="userType", required=false) String userType, @RequestParam(value="roleId", required=false) String roleId) {
+        ModelAndView mav = new ModelAndView("/admin-console/security/modal/create-edit-vendor-user");
+        
         User user = sessionBean.getUser();
-        boolean isVendor = user.getUserType() == UserType.VENDOR;
-        EditableUser editableUser = securityService.getEditInfo(userId, userType);
-        mav.addObject("isCreatePage", false);
-        mav.addObject("userTypes", securityService.getVendorUserTypes());
         mav.addObject("currentUser", user);
+        boolean isVendor = user.getUserType() == UserType.VENDOR;
+        if(!isCreate) {
+        	EditableUser editableUser = securityService.getEditInfo(userId, userType);
+        	mav.addObject("editableUser", editableUser);
+        	mav.addObject("tabPermissionsMap", securityService.getPermissions(roleId));
+        }
 
         List<Role> vendorRoles = securityService.getVendorRoles(isVendor, user.getRoleId(), user.getOrgId());
         Collections.sort(vendorRoles, Role.ROLE_NAME_ASC);
 
         mav.addObject("userRoles", vendorRoles);
+        mav.addObject("userTypes", securityService.getVendorUserTypes());
 
         List<Org> vendorOrg = securityService.getVendorOrg(isVendor, user.getOrgId());
         Collections.sort(vendorOrg, Org.ORG_NAME_ASC);
         mav.addObject("penskeUserType", UserType.PENSKE);
         mav.addObject("vendorUserType", UserType.VENDOR);
         mav.addObject("orgList", vendorOrg);
-        mav.addObject("editableUser", editableUser);
-        mav.addObject("tabPermissionsMap", securityService.getPermissions(roleId));
+        mav.addObject("isCreatePage", isCreate);
         return mav;
+    }
+    
+    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
+    @RequestMapping(value ="get-resend-email-modal-content")
+    public ModelAndView getResendEmail(@RequestParam(value="userId") String userId) {
+        ModelAndView mav = new ModelAndView("/admin-console/security/modal/resend-email-modal-content");
+        
+        EditableUser editableUser = securityService.getEditInfo(userId, "VENDOR");
+        mav.addObject("editableUser", editableUser);
+
+        return mav;
+    }
+    
+    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
+    @RequestMapping(value ="resend-email")
+    public void resendEmail(@RequestParam(value="userId") String userId) {
+    	User user = sessionBean.getUser();
+        EditableUser editableUser = securityService.getEditInfo(userId, "VENDOR");
+        userCreationService.resendVendorEmail(user, editableUser);
+    }
+    
+    @VendorAllowed
+    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
+    @RequestMapping(value ="get-vendor-user-table-contents")
+    @ResponseBody
+    public List<EditableUser> getSearchedVendorUserTableContents(UserSearchForm userSearchForm) {
+    	User user = sessionBean.getUser();
+    	List<EditableUser> vendorUsers = securityService.getSearchUserList(userSearchForm, user);
+    	return vendorUsers;
     }
 
     @VendorAllowed
@@ -135,6 +168,18 @@ public class SecurityRestController {
     @ResponseBody
     public ModelAndView getPermissionsInfo(@RequestParam(value="roleId") String roleId) {
         ModelAndView mav = new ModelAndView("/admin-console/security/modal/permissions-accordion");
+
+        mav.addObject("tabPermissionsMap", securityService.getPermissions(roleId));
+
+        return mav;
+    }
+    
+    @VendorAllowed
+    @SmcSecurity(securityFunction = {SecurityFunction.MANAGE_USERS, SecurityFunction.MANAGE_VENDOR_USERS, SecurityFunction.MANAGE_ORG})
+    @RequestMapping(value ="get-permissions-accordions")
+    @ResponseBody
+    public ModelAndView getPermissionsAccordions(@RequestParam(value="roleId") String roleId) {
+        ModelAndView mav = new ModelAndView("/admin-console/security/includes/permissions-accordion-v2");
 
         mav.addObject("tabPermissionsMap", securityService.getPermissions(roleId));
 
@@ -167,8 +212,12 @@ public class SecurityRestController {
     @RequestMapping("get-deactivate-user-modal-content")
     @ResponseBody
     public ModelAndView getDeactivateInfo(@RequestParam(value="email") String email, @RequestParam(value="userId") String userId,
-            @RequestParam(value="isVendorUser") boolean isVendorUser) {
-        ModelAndView mav = new ModelAndView("/admin-console/security/modal/deactivate-user-modal-content");
+            @RequestParam(value="isVendorUser") boolean isVendorUser, @RequestParam(value="isV2") boolean isV2) {
+    	ModelAndView mav;
+    	if(isV2)
+    		mav = new ModelAndView("/admin-console/security/modal/deactivate-user-v2");
+    	else
+    		mav = new ModelAndView("/admin-console/security/modal/deactivate-user-modal-content");
 
         mav.addObject("email", email);
         mav.addObject("userId", userId);
@@ -344,28 +393,6 @@ public class SecurityRestController {
             mav.addObject("userDepts", securityService.getUserDepts());
         }
         List<Org> orgList = securityService.getPenskeUserOrgList();
-        Collections.sort(orgList, Org.ORG_NAME_ASC);
-        mav.addObject("penskeUserType", UserType.PENSKE);
-        mav.addObject("vendorUserType", UserType.VENDOR);
-        mav.addObject("orgList", orgList);
-        // If the page is an error page.
-        mav.addObject("isCreatePage", true);
-
-        return mav;
-    }
-
-    @VendorAllowed
-    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
-    @RequestMapping(value ="/create-vendor-user-page")
-    @ResponseBody
-    public ModelAndView getCreateVendorUserPage() {
-        ModelAndView mav = new ModelAndView("/admin-console/security/create-vendor-user");
-        User user = sessionBean.getUser();
-        mav.addObject("currentUser", user);
-        boolean isVendor = user.getUserType() == UserType.VENDOR;
-        mav.addObject("userTypes", securityService.getVendorUserTypes());
-        mav.addObject("userRoles", securityService.getVendorRoles(isVendor, user.getRoleId(), user.getOrgId()));
-        List<Org> orgList = securityService.getVendorOrg(isVendor, user.getOrgId());
         Collections.sort(orgList, Org.ORG_NAME_ASC);
         mav.addObject("penskeUserType", UserType.PENSKE);
         mav.addObject("vendorUserType", UserType.VENDOR);
@@ -708,8 +735,12 @@ public class SecurityRestController {
     @SmcSecurity(securityFunction = {SecurityFunction.MANAGE_USERS, SecurityFunction.MANAGE_VENDOR_USERS})
     @RequestMapping("sso-user-lookup-refresh")
     @ResponseBody
-    public ModelAndView ssoLookupRefresh(@RequestParam(value="userId") String userId, @RequestParam(value="userType") String userType,HttpServletResponse response) {
-        ModelAndView mav = new ModelAndView("/admin-console/security/modal/sso-refresh-modal-content");
+    public ModelAndView ssoLookupRefresh(@RequestParam(value="userId") String userId, @RequestParam(value="userType") String userType, @RequestParam(value="isV2") boolean isV2, HttpServletResponse response) {
+        ModelAndView mav; 
+        if(isV2)
+        	mav = new ModelAndView("/admin-console/security/modal/sso-refresh-modal-content-v2");
+        else
+        	mav = new ModelAndView("/admin-console/security/modal/sso-refresh-modal-content");
 
         if("1".equalsIgnoreCase(userType)){
             userType = "Penske";
