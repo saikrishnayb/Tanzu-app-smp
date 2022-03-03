@@ -24,6 +24,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
+import com.penske.apps.adminconsole.domain.AdminConsoleTypeAliasMarker;
 import com.penske.apps.buildmatrix.domain.BuildMatrixTypeAlias;
 import com.penske.apps.smccore.base.annotation.qualifier.VendorQueryWrappingPluginQualifier;
 import com.penske.apps.smccore.base.configuration.CoreMapperConfiguration;
@@ -66,6 +67,7 @@ public class BaseMapperConfiguration
 		//***** TYPE ALIASES *****//
 		Set<String> typeAliasPackages = SpringConfigUtil.getPackageNames(
 			TypeAliasMarker.class,
+			AdminConsoleTypeAliasMarker.class,
 			BuildMatrixTypeAlias.class
 		);
 		

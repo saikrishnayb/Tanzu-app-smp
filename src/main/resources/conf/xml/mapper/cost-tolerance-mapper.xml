@@ -29,35 +29,31 @@
 		ORDER BY MFCODE
 	</select>
 
-	<select id="getAllTolerances" resultType="com.penske.apps.adminconsole.model.CostTolerance">
+	<select id="getTolerances" resultType="CostTolerance">
 		SELECT
 			TOLERANCE_ID AS toleranceId,
 			PO_CATEGORY AS poCategory,
 			MF_CODE AS mfrCode,
-			TOLERANCE AS tolerance
+			TOLERANCE AS tolerance,
+			PO_VENDOR_NUMBER AS poVendorNumber
 		FROM SMC.SMC_COST_TOLERANCES
+		WHERE 1 = 1
+		<if test="costToleranceId != null">
+		  AND TOLERANCE_ID = #{costToleranceId}
+		</if>
 	</select>
 
-	<select id="getTolerance" resultType="com.penske.apps.adminconsole.model.CostTolerance">
-		SELECT
-			TOLERANCE_ID AS toleranceId,
-			PO_CATEGORY AS poCategory,
-			MF_CODE AS mfrCode,
-			TOLERANCE AS tolerance
-		FROM SMC.SMC_COST_TOLERANCES
-		WHERE
-			TOLERANCE_ID = #{costToleranceId}
-	</select>
-
-	<insert id="addTolerance">
+	<insert id="addTolerance" useGeneratedKeys="true" keyProperty="costToleranceId">
 		INSERT INTO SMC.SMC_COST_TOLERANCES (
 			PO_CATEGORY,
 			MF_CODE,
-			TOLERANCE
+			TOLERANCE,
+			PO_VENDOR_NUMBER
 		) VALUES (
 			#{costTolerance.poCategory},
 			#{costTolerance.mfrCode},
-			#{costTolerance.tolerance}
+			#{costTolerance.tolerance},
+			#{costTolerance.poVendorNumber}
 		)
 	</insert>
 

@@ -1,388 +1,172 @@
+/**
+ * @author john.shiffler (600139252)
+ */
 package com.penske.apps.adminconsole.controller;
 
-import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.penske.apps.adminconsole.exceptions.DynamicRulePriorityException;
-import com.penske.apps.adminconsole.exceptions.TemplateNameAlreadyExistsException;
-import com.penske.apps.adminconsole.model.Alert;
-import com.penske.apps.adminconsole.model.ComponentRuleAssociation;
-import com.penske.apps.adminconsole.model.DynamicRule;
-import com.penske.apps.adminconsole.model.GlobalException;
-import com.penske.apps.adminconsole.model.SearchTemplate;
-import com.penske.apps.adminconsole.model.SearchTemplateForm;
-import com.penske.apps.adminconsole.service.AlertService;
-import com.penske.apps.adminconsole.service.DynamicRuleService;
-import com.penske.apps.adminconsole.service.ExceptionService;
-import com.penske.apps.adminconsole.service.LoadSheetManagementService;
-import com.penske.apps.adminconsole.service.SearchTemplateService;
-import com.penske.apps.adminconsole.service.TabService;
-import com.penske.apps.adminconsole.service.TermsAndConditionsService;
+import com.penske.apps.adminconsole.domain.CostTolerance;
+import com.penske.apps.adminconsole.enums.PoCategoryType;
+import com.penske.apps.adminconsole.model.CostAdjustmentOption;
+import com.penske.apps.adminconsole.model.Manufacturer;
+import com.penske.apps.adminconsole.service.CostAdjustmentOptionService;
+import com.penske.apps.adminconsole.service.CostToleranceService;
 import com.penske.apps.adminconsole.util.CommonUtils;
 import com.penske.apps.smccore.base.annotation.SmcSecurity;
-import com.penske.apps.smccore.base.domain.User;
 import com.penske.apps.smccore.base.domain.enums.SecurityFunction;
-import com.penske.apps.suppliermgmt.annotation.Version1Controller;
-import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
-import com.penske.apps.suppliermgmt.model.AppConfigSessionData;
-import com.penske.apps.suppliermgmt.model.AppConfigSessionData.LoadSheetCategoryDetails;
+import com.penske.apps.smccore.base.exception.AppValidationException;
 
 /**
- * This Controller class contains all of the AJAX request methods for any
- * pages that fall under the App Config tree of the application.
- * @author 600132441 M.Leis
- *
+ * A controller to answer AJAX requests on the App Config subtab, for pages that use the v2 page template.
  */
-@Version1Controller
+@RestController
 @RequestMapping("/admin-console/app-config")
-public class AppConfigRestController {
+public class AppConfigRestController
+{
+	@Autowired
+	private CostAdjustmentOptionService costAdjustmentOptionService;
+	@Autowired
+	private CostToleranceService costToleranceService;
 
-    private static final Logger LOGGER = LogManager.getLogger(AppConfigRestController.class);
+	/* ================== Cost Sheet Adjustment Options ================== */
+	@SmcSecurity(securityFunction = SecurityFunction.COST_SHEET_ADJUSTMENT_OPTIONS)
+	@RequestMapping("get-cost-sheet-adjustment-option-modal")
+	@ResponseBody
+	public ModelAndView getCostAdjustmentOptionModal(@RequestParam(value = "caOptionId") int caOptionId) {
+		ModelAndView mav = new ModelAndView("/admin-console/app-config/modal/cost-sheet-adjustment-option-modal");
 
-    @Autowired
-    private SuppliermgmtSessionBean sessionBean;
-    
-    @Autowired
-    private ExceptionService exceptionService;
-    @Autowired
-    private DynamicRuleService dynamicRuleService;
-    @Autowired
-    private AlertService alertService;
-    @Autowired
-    private TabService tabService;
-    @Autowired
-    private SearchTemplateService searchTemplateService;
-    @Autowired
-    private TermsAndConditionsService termsAndConditionsService;
-    @Autowired
-    private LoadSheetManagementService loadsheetManagementService;
+		CostAdjustmentOption caOption = caOptionId > 0 ? costAdjustmentOptionService.getAdjustmentOption(caOptionId)
+				: new CostAdjustmentOption();
+		mav.addObject("adjustmentOption", caOption);
 
-    /* ================== Global Exceptions ================== */
-    /*    * 
-    * @param exceptionId
-    * 
-    * @param unitNumber - To display in edit modal light box
-    * 
-    * @param poNumber	- To display in  edit modal light box
-    */
-    @RequestMapping("get-global-exceptions-edit-modal")
-    @ResponseBody
-    public ModelAndView getGlobalExceptionsEditModal(@RequestParam(value = "exceptionId") int exceptionId,@RequestParam(value="unitNumber", required=false) String unitNumber,@RequestParam(value="poNumber",required=false) int poNumber) {
+		return mav;
+	}
 
-        ModelAndView mav = new ModelAndView("/admin-console/app-config/modal/edit-global-exceptions-modal");
-        List<GlobalException> exception = exceptionService.getException(exceptionId);
-        mav.addObject("poNumber", poNumber);
-        mav.addObject("unitNumber", unitNumber);
-        mav.addObject("exception", exception);
-        return mav;
-    }
+	@SmcSecurity(securityFunction = SecurityFunction.COST_SHEET_ADJUSTMENT_OPTIONS)
+	@RequestMapping(value = "add-cost-sheet-adjustment-option", method = RequestMethod.POST)
+	@ResponseBody
+	public ModelAndView addCostAdjustmentOption(CostAdjustmentOption caOption) {
+		ModelAndView mav = new ModelAndView("/admin-console/app-config/fragment/cost-sheet-adjustment-option-table");
 
-    @RequestMapping("edit-global-exception")
-    @ResponseBody
-    public void modifyGlobalException(@RequestParam(value = "exceptionId") int exceptionId, @RequestParam(value = "providervendorId") int providervendorId, @RequestParam(value = "poCategoryAssociationId") int poCategoryAssociationId) {
+		try {
+			costAdjustmentOptionService.addAdjustmentOption(caOption);
+		} catch (org.springframework.dao.DuplicateKeyException ex) {
+			throw new AppValidationException(
+					"Order code '" + caOption.getOrderCode() + "' is already an adjustment option");
+		}
 
-    	User user = sessionBean.getUser();
-        String userSSO = user.getSso();
-        exceptionService.modifyGlobalException(exceptionId, providervendorId, poCategoryAssociationId,userSSO);
-    }
+		mav.addObject("adjustmentOptions", costAdjustmentOptionService.getAllAdjustmentOptions());
 
-    @SmcSecurity(securityFunction = SecurityFunction.GLOBAL_EXCEPTIONS_MANAGEMENT)
-    @RequestMapping("get-global-exceptions-delete-modal")
-    @ResponseBody
-    public ModelAndView getGlobalExceptionsDeleteModal(@RequestParam(value = "exceptionId") int exceptionId) {
-        ModelAndView mav = new ModelAndView("/admin-console/app-config/modal/delete-global-exception-modal");
-        List<GlobalException> exception = exceptionService.getException(exceptionId);
-        mav.addObject("exception", exception);
-        return mav;
-    }
+		return mav;
+	}
 
-    @SmcSecurity(securityFunction = SecurityFunction.GLOBAL_EXCEPTIONS_MANAGEMENT)
-    @RequestMapping("delete-global-exception")
-    @ResponseBody
-    public void deleteGlobalException(@RequestParam(value = "exceptionId") int exceptionId) {
+	@SmcSecurity(securityFunction = SecurityFunction.COST_SHEET_ADJUSTMENT_OPTIONS)
+	@RequestMapping(value = "update-cost-sheet-adjustment-option", method = RequestMethod.POST)
+	@ResponseBody
+	public ModelAndView updateCostAdjustmentOption(CostAdjustmentOption caOption) {
+		ModelAndView mav = new ModelAndView("/admin-console/app-config/fragment/cost-sheet-adjustment-option-table");
 
-        exceptionService.deleteGlobalException(exceptionId);
-    }
+		try {
+			costAdjustmentOptionService.updateAdjustmentOption(caOption);
+		} catch (org.springframework.dao.DuplicateKeyException ex) {
+			throw new AppValidationException(
+					"Order code '" + caOption.getOrderCode() + "' is already an adjustment option");
+		}
 
-    /* ================== Dynamic Rules ================== */
-    @SmcSecurity(securityFunction = SecurityFunction.DYNAMIC_RULES_MANAGEMENT)
-    @RequestMapping(value = "/get-rule-modal-data", method = RequestMethod.POST)
-    @ResponseBody
-    public ModelAndView getModalData(@RequestParam("make") String make, @RequestParam("modalName") String modalName) {
-        ModelAndView mav = new ModelAndView("/admin-console/app-config/modal/" + modalName + "-rule-modal");
+		mav.addObject("adjustmentOptions", costAdjustmentOptionService.getAllAdjustmentOptions());
 
-        mav.addObject("corpCodes", dynamicRuleService.getAllCorpCodes());
-        mav.addObject("makes", dynamicRuleService.getAllVehicleMakes());
-        mav.addObject("statusValues", dynamicRuleService.getAvailableStatus());
+		return mav;
+	}
 
-        if (make.length() > 0) {
-            mav.addObject("models", dynamicRuleService.getVehicleModelsByMake(make));
-        }
-        // if(status !=null && !status.isEmpty() && "Inactive".equalsIgnoreCase(status.trim())){
-        mav.addObject("maxPriority", dynamicRuleService.getMaxPriority());
-        // }
-        return mav;
-    }
+	@SmcSecurity(securityFunction = SecurityFunction.COST_SHEET_ADJUSTMENT_OPTIONS)
+	@RequestMapping(value = "delete-cost-sheet-adjustment-option", method = RequestMethod.POST)
+	@ResponseBody
+	public ModelAndView deleteCostAdjustmentOption(@RequestParam(value = "caOptionId") int caOptionId) {
+		ModelAndView mav = new ModelAndView("/admin-console/app-config/fragment/cost-sheet-adjustment-option-table");
 
-    @SmcSecurity(securityFunction = SecurityFunction.GLOBAL_EXCEPTIONS_MANAGEMENT)
-    @RequestMapping(value = "/get-models-by-make", method = RequestMethod.POST)
-    @ResponseBody
-    public ModelAndView getVehicleModelsByMake(@RequestParam("make") String make, @RequestParam("modalName") String modalName) {
-        ModelAndView mav = new ModelAndView("/admin-console/app-config/modal/" + modalName + "-rule-modal");
+		costAdjustmentOptionService.deleteAdjustmentOption(caOptionId);
 
-        mav.addObject("models", dynamicRuleService.getVehicleModelsByMake(make));
+		mav.addObject("adjustmentOptions", costAdjustmentOptionService.getAllAdjustmentOptions());
 
-        return mav;
-    }
+		return mav;
+	}
 
-    @SmcSecurity(securityFunction = SecurityFunction.GLOBAL_EXCEPTIONS_MANAGEMENT)
-    @RequestMapping(value = "/add-dynamic-rule", method = RequestMethod.POST)
-    @ResponseBody
-    public void addDynamicRule(DynamicRule rule, HttpServletResponse response) {
-    	User user = sessionBean.getUser();
-        String userSSO = user.getSso();
-        rule.setCreatedBy(userSSO);
-        rule.setModifiedBy(userSSO);
-        try {
-            dynamicRuleService.addDynamicRule(rule);
-        } catch (DynamicRulePriorityException dpe) {
-            try {
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, dpe.getErrorMessage());
-                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                response.getWriter().write(dpe.getErrorMessage());
-                response.flushBuffer();
-                // throw dpe;
-            } catch (IOException e) {
-            	LOGGER.error(e.getMessage());
-            }
-        }
-    }
+	/* ================== Cost Sheet Tolerances ================== */
+	@SmcSecurity(securityFunction = SecurityFunction.COST_SHEET_TOLERANCES)
+	@RequestMapping("get-cost-sheet-tolerance-modal")
+	@ResponseBody
+	public ModelAndView getCostToleranceModal(@RequestParam(value = "toleranceId", required = false) Integer costToleranceId)
+	{
+		ModelAndView mav = new ModelAndView("/admin-console/app-config/modal/cost-sheet-tolerance-modal");
+		
+		CostTolerance costTolerance = costToleranceService.getTolerance(costToleranceId);
 
-    @SmcSecurity(securityFunction = SecurityFunction.GLOBAL_EXCEPTIONS_MANAGEMENT)
-    @RequestMapping(value = "/modify-dynamic-rule", method = RequestMethod.POST)
-    @ResponseBody
-    public void modifyDynamicRule(DynamicRule rule, HttpServletResponse response) {
-        try {
-        	User user = sessionBean.getUser();
-            String userSSO = user.getSso();
-            rule.setModifiedBy(userSSO);
-            dynamicRuleService.modifyDynamicRule(rule);
-        } catch (DynamicRulePriorityException dpe) {
-            try {
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, dpe.getErrorMessage());
-                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                response.getWriter().write(dpe.getErrorMessage());
-                response.flushBuffer();
-                // throw dpe;
-            } catch (IOException e) {
-            	LOGGER.error(e.getMessage());
-            }
-        }
-    }
+		mav.addObject("tolerance", costTolerance);
 
-    @SmcSecurity(securityFunction = SecurityFunction.GLOBAL_EXCEPTIONS_MANAGEMENT)
-    @RequestMapping(value = "/delete-dynamic-rule", method = RequestMethod.POST)
-    @ResponseBody
-    public void modifyDynamicRuleStatus(@RequestParam("dynamicRuleId") int dynamicRuleId) {
-        dynamicRuleService.deleteDynamicRule(dynamicRuleId);
-    }
+		List<PoCategoryType> poCategoryList = Arrays.asList(PoCategoryType.values());
+		mav.addObject("poCategoryList", poCategoryList);
 
-    /* ================== Search Templates ================== */
-    @SmcSecurity(securityFunction = SecurityFunction.SEARCH_TEMPLATES)
-    @RequestMapping("get-search-template-modal-content")
-    @ResponseBody
-    public ModelAndView getSearchTemplateModalContent(@RequestParam(value = "templateId") int templateId) {
-        ModelAndView mav = new ModelAndView("/admin-console/app-config/modal/search-template-modal-content");
+		List<Manufacturer> vehicleMakeList = costToleranceService.getVehicleMakeList();
+		mav.addObject("vehicleMakeList", vehicleMakeList);
+		mav.addObject("makesJson", CommonUtils.serializeJson(vehicleMakeList, true));
 
-        SearchTemplate searchTemplate = searchTemplateService.getSearchTemplate(templateId);
+		return mav;
+	}
 
-        mav.addObject("searchTemplate", searchTemplate);
+	@SmcSecurity(securityFunction = SecurityFunction.COST_SHEET_TOLERANCES)
+	@RequestMapping(value = "add-cost-sheet-tolerance", method = RequestMethod.POST)
+	@ResponseBody
+	public ModelAndView addCostTolerance(
+		@RequestParam("poCategory") PoCategoryType poCategory,
+		@RequestParam(value = "mfrCode", required = false) String mfrCode,
+		@RequestParam(value = "poVendorNumber", required = false) Integer poVendorNumber,
+		@RequestParam("tolerance") BigDecimal tolerance
+	) {
+		ModelAndView mav = new ModelAndView("/admin-console/app-config/fragment/cost-sheet-tolerance-table");
 
-        return mav;
-    }
+		costToleranceService.addTolerance(poCategory, mfrCode, poVendorNumber, tolerance);
 
-    @SmcSecurity(securityFunction = SecurityFunction.SEARCH_TEMPLATES)
-    @RequestMapping("update-search-template")
-    @ResponseBody
-    public SearchTemplate updateSearchTemplate(SearchTemplateForm searchTemplateForm) {
-        searchTemplateService.updateSearchTemplate(searchTemplateForm);
+		mav.addObject("tolerances", costToleranceService.getAllTolerances());
 
-        if (searchTemplateForm.getDefaultForTab() != null) {
-            if (searchTemplateForm.getDefaultForTab().equals("YES"))
-                tabService.updateDefaultTemplate(searchTemplateForm);
-        }
+		return mav;
+	}
 
-        SearchTemplate searchTemplate = searchTemplateService.getSearchTemplate(searchTemplateForm.getTemplateId());
+	@SmcSecurity(securityFunction = SecurityFunction.COST_SHEET_TOLERANCES)
+	@RequestMapping(value = "update-cost-sheet-tolerance", method = RequestMethod.POST)
+	@ResponseBody
+	public ModelAndView updateCostTolerance(@RequestParam("toleranceId") int toleranceId, @RequestParam("tolerance") BigDecimal tolerance)
+	{
+		ModelAndView mav = new ModelAndView("/admin-console/app-config/fragment/cost-sheet-tolerance-table");
 
-        return searchTemplate;
-    }
+		CostTolerance costTolerance = costToleranceService.getTolerance(toleranceId);
+		
+		costToleranceService.updateTolerance(costTolerance, tolerance);
 
-    @SmcSecurity(securityFunction = SecurityFunction.SEARCH_TEMPLATES)
-    @RequestMapping("is-search-template-name-available")
-    @ResponseBody
-    public void isSearchTemplateNameAvailable(@RequestParam("templateName") String templateName, @RequestParam("templateId") int templateId) {
-        if (searchTemplateService.doesSearchTemplateNameExist(templateName, templateId)) {
-            String errorMessage = "A search template already exists with the name " + templateName + ".";
-            throw new TemplateNameAlreadyExistsException(errorMessage);
-        }
-    }
+		mav.addObject("tolerances", costToleranceService.getAllTolerances());
 
-    /* ================== Alerts ================== */
-    @SmcSecurity(securityFunction = SecurityFunction.ALERT_MANAGEMENT)
-    @RequestMapping("/get-search-templates")
-    @ResponseBody
-    public ModelAndView getSearchTemplates() {
-        ModelAndView mav = new ModelAndView("/admin-console/app-config/modal/edit-alert-detail-modal");
+		return mav;
+	}
 
-        // Load the Alerts and Alert Headers for the datatable.
-        mav.addObject("templates", alertService.getAllTemplateNames());
+	@SmcSecurity(securityFunction = SecurityFunction.COST_SHEET_TOLERANCES)
+	@RequestMapping(value = "delete-cost-sheet-tolerance", method = RequestMethod.POST)
+	@ResponseBody
+	public ModelAndView deleteCostTolerance(@RequestParam(value = "toleranceId") int toleranceId) {
+		ModelAndView mav = new ModelAndView("/admin-console/app-config/fragment/cost-sheet-tolerance-table");
 
-        return mav;
-    }
+		costToleranceService.deleteTolerance(toleranceId);
 
-    @SmcSecurity(securityFunction = SecurityFunction.ALERT_MANAGEMENT)
-    @RequestMapping("/update-alert-header")
-    @ResponseBody
-    public void updateAlertHeader(Alert alert) {
-        // Update the Alert Header based on information provided by the user.
-        alertService.modifyAlertHeader(alert);
-    }
+		mav.addObject("tolerances", costToleranceService.getAllTolerances());
 
-    @SmcSecurity(securityFunction = SecurityFunction.ALERT_MANAGEMENT)
-    @RequestMapping("/update-alert-detail")
-    @ResponseBody
-    public void updateAlertDetail(Alert alert) {
-        // Update the Alert Header based on information provided by the user.
-        alertService.modifyAlertDetail(alert);
-    }
-
-    /* ================== Terms And Conditions ================== */
-    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_TC)
-    @RequestMapping("update-t-and-c-frequency")
-    @ResponseBody
-    public void updateTermsAndConditionsFrequency(@RequestParam(value = "frequencyDays") String frequencyDays) {
-        try {
-            Integer.parseInt(frequencyDays);
-        } catch (Exception e) {
-            // Frequency was not a number, what to do here?
-        	LOGGER.debug(e);
-
-            return;
-        }
-
-        termsAndConditionsService.updateTermsAndConditionsFrequency(frequencyDays);
-    }
-
-    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_TC)
-    @RequestMapping("view-t-and-c")
-    @ResponseBody
-    public String viewTermsAndConditions(@RequestParam(value = "versionNumber") int versionNumber) {
-        return termsAndConditionsService.getTermsAndConditionsText(versionNumber);
-    }
-
-    /* ================== Get Rule Association model ================== */
-    @RequestMapping(value = "/get-rule-association-modal-data", method = RequestMethod.POST)
-    @ResponseBody
-    public ModelAndView getRuleAssociationModalData(@ModelAttribute("componentRule") ComponentRuleAssociation componentRule, @RequestParam("componentId") int componentId, @RequestParam("componentVisibleId") int componentVisibleId, @RequestParam(value = "viewMode") String viewMode, @RequestParam(value = "displayName") String displayName) {
-        ModelAndView mav = new ModelAndView("/admin-console/app-config/modal/add-rule-association-modal");
-        componentRule.setRule(loadsheetManagementService.getComponentVisibilityRules(componentVisibleId));
-        componentRule.setComponentVisibilityId(componentVisibleId);
-        componentRule.setDisplayName(displayName);
-        mav.addObject("rules", loadsheetManagementService.getComponentRules());
-        mav.addObject("componentRule", componentRule);
-        mav.addObject("viewMode", viewMode);
-
-        // Adding details to session for create rule back button
-        AppConfigSessionData appConfigData = sessionBean.getAppConfigSessionData();
-        LoadSheetCategoryDetails catDetails = appConfigData.getCategoryDetails();
-        if (catDetails != null)
-        	catDetails.updateComponentVisibleId(componentId, componentVisibleId);
-
-        return mav;
-    }
-
-    /* ================== Save Rule Association ================== */
-    @RequestMapping(value = "/save-rule-association-modal-data", method = RequestMethod.POST)
-    @ResponseBody
-    public void saveRuleAssociationModalData(@ModelAttribute("componentRule") ComponentRuleAssociation componentRule, HttpServletResponse response) throws Exception {
-    	User user = sessionBean.getUser();
-        String userSSO = user.getSso();
-        componentRule.setCreatedBy(userSSO);
-        try {
-            loadsheetManagementService.saveComponentRules(componentRule);
-        } catch (Exception e) {
-        	LOGGER.info(e);
-            CommonUtils.getCommonErrorAjaxResponse(response, "Error ocuured while adding the rules, please contact system admin.");
-        }
-    }
-
-    /* =========================DELETE Rule ======================== */
-    @RequestMapping(value = "/delete-rule", method = RequestMethod.POST)
-    @ResponseBody
-    public void deleteTheRuleDetails(@RequestParam("ruleId") int ruleId, HttpServletResponse response) throws Exception {
-
-        try {
-            loadsheetManagementService.DeleteRuleDetails(ruleId);
-        } catch (Exception e) {
-        	LOGGER.info(e);
-            CommonUtils.getCommonErrorAjaxResponse(response, "");
-        }
-    }
-
-    /* ========== Check For Unique rule Name =============== */
-    @RequestMapping(value = "/check-unique-rule-name", method = RequestMethod.POST)
-    @ResponseBody
-    public boolean checkForUniqueRuleName(@RequestParam("ruleName") String ruleName, @RequestParam("ruleId") int ruleId) {
-
-        return loadsheetManagementService.checkForUniqueLoadsheetRuleName(ruleName, ruleId);
-    }
-
-    /* =========================DELETE Rule ======================== */
-    @RequestMapping(value = "/delete-sequence", method = RequestMethod.POST)
-    @ResponseBody
-    public void deleteSequence(@RequestParam("sequenceId") int sequenceId, HttpServletResponse response) throws Exception {
-
-        try {
-            loadsheetManagementService.deleteLoadsheetSequence(sequenceId);
-        } catch (Exception e) {
-        	LOGGER.info(e);
-            CommonUtils.getCommonErrorAjaxResponse(response, "");
-        }
-    }
-
-    /* ========== Check For Unique sequence Name =============== */
-    @RequestMapping(value = "/check-unique-name", method = RequestMethod.POST)
-    @ResponseBody
-    public int checkForUniqueName(@RequestParam("seqName") String seqName, @RequestParam("seqId") int seqId, @RequestParam("category") String category, @RequestParam("type") String type, @RequestParam("mfr") String mfr) {
-        int UniqueStatus = 0;
-        boolean status = loadsheetManagementService.checkForUniqueSequenceName(seqName, seqId);
-        if (status) {
-            if (StringUtils.isNotBlank(category)) {
-                int count = loadsheetManagementService.checkForUniqueSequence(category, type, mfr, seqId);
-                if (count > 0) {
-                    UniqueStatus = 2; // duplicate sequence for category,type and mfr.
-                } else {
-                    UniqueStatus = 0; // sequence is unique.
-                }
-            }
-            return UniqueStatus;
-        } else {
-            UniqueStatus = 1;
-            return UniqueStatus; // duplicate sequence name.
-        }
-    }
-
+		return mav;
+	}
 }

@@ -7,6 +7,7 @@
 				<th class="viewCol"></th>
 				<th>PO Category</th>
 				<th>Make</th>
+				<th>PO Vendor #</th>
 				<th>Cost Tolerance</th>
 			</tr>
 		</thead>
@@ -22,6 +23,7 @@
 				</td>
 				<td><c:out value="${tolerance.poCategory.poCategoryName}" /></td>
 				<td><c:out value="${tolerance.mfrCode}" /></td>
+				<td><c:out value="${tolerance.poVendorNumber}" /></td>
 				<td>$<c:out value="${tolerance.tolerance}" /></td>
 			</tr>
 			</c:forEach>
