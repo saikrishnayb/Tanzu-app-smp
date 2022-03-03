@@ -488,7 +488,6 @@
 	order by VENDOR_NAME ,VENDOR_NUMBER 
  	</select>
  	
- 	
  	<insert id="addOrgVendor">
  		MERGE INTO 
                 SMC.SMC_ORG_VENDOR_ASSOC vendorAssoc

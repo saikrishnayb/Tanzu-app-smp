@@ -236,4 +236,17 @@
 		GROUP BY VENDOR_NUMBER 
 	</select>
 	
+	<select id="getOrgVendorAssociationsByVendorIds" resultType="com.penske.apps.adminconsole.domain.OrgVendorAssociation">
+		SELECT
+			ASSOCIATION_ID, 
+			ORG_ID,
+			VENDOR_ID
+		FROM SMC.SMC_ORG_VENDOR_ASSOC
+		where VENDOR_ID IN (
+			<foreach item="vendorId" collection="vendorIds" separator=",">
+	 			#{vendorId}
+	 		</foreach>
+		)
+	</select>
+	
 </mapper>

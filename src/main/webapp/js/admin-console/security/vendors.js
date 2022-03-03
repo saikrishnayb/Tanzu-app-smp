@@ -311,6 +311,8 @@ $(document).ready(function() {
 		}
 		filename += '_' + dd;
 		
+		filename += '.xlsx';
+		
 		var xhr = new XMLHttpRequest();
 	    xhr.open('POST', 'export-vendor-activity');
 	    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -350,13 +352,11 @@ $(document).ready(function() {
 	          }, 1000);
 	
 	        }
-	        
+	        hideLoading();
 	      }
 	      
 	    }
 		xhr.send();
-		
-		hideLoading();
 	});
 });
 

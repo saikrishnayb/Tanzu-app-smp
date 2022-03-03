@@ -1,46 +1,39 @@
 package com.penske.apps.adminconsole.service;
 
-import static java.util.stream.Collectors.toList;
-
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFColor;
-import org.apache.poi.xssf.usermodel.extensions.XSSFCellBorder.BorderSide;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.penske.apps.adminconsole.dao.VendorDao;
+import com.penske.apps.adminconsole.domain.OrgVendorAssociation;
 import com.penske.apps.adminconsole.model.Alert;
 import com.penske.apps.adminconsole.model.EditableUser;
 import com.penske.apps.adminconsole.model.Vendor;
+import com.penske.apps.adminconsole.model.VendorAccessGroup;
 import com.penske.apps.adminconsole.model.VendorAccessRow;
 import com.penske.apps.adminconsole.model.VendorContact;
 import com.penske.apps.adminconsole.model.VendorPoInformation;
+import com.penske.apps.adminconsole.util.ApplicationConstants;
 import com.penske.apps.smccore.base.dao.EmailDAO;
 import com.penske.apps.smccore.base.domain.EmailTemplate;
 import com.penske.apps.smccore.base.domain.SmcEmail;
@@ -322,36 +315,38 @@ public class DefaultVendorService implements VendorService {
 	public SXSSFWorkbook exportVendorActivity(User user, List<EditableUser> vendorUsers) {
 
 		List<Vendor> vendors = this.getAllVendors(user.getOrgId());
+		List<Integer> vendorIds = vendors.stream().map(v->v.getVendorId()).collect(Collectors.toList());
+		List<Integer> vendorNumbers = vendors.stream().map(v->v.getVendorNumber()).collect(Collectors.toList());
 		
-		List<VendorPoInformation> vendorPoInformationList = vendorDao.getVendorPoInformation(vendors.stream().map(v->v.getVendorNumber()).collect(Collectors.toList()));
-		Map<Integer, VendorPoInformation> vendorPoInformationByVendorNum = vendorPoInformationList.stream().collect(Collectors.toMap(vpi->vpi.getVendorNumber(), vpi->vpi));
+		List<OrgVendorAssociation> orgVendorAssociations = vendorDao.getOrgVendorAssociationsByVendorIds(vendorIds);
+		List<VendorPoInformation> vendorPoInformationList = vendorDao.getVendorPoInformation(vendorNumbers);
 		
-		List<EditableUser> sortedVendorUsers = vendorUsers.stream()
-				.sorted(Comparator.comparing(vu -> vu.getOrg(), Comparator.nullsLast(Comparator.naturalOrder())))
-				.collect(toList());
-		
-		return generateVendorActivityExcel(vendors, vendorPoInformationByVendorNum, sortedVendorUsers);
+		return generateVendorActivityExcel(vendors, vendorPoInformationList, vendorUsers, orgVendorAssociations);
 	}
 
-	private SXSSFWorkbook generateVendorActivityExcel(List<Vendor> vendors, Map<Integer, VendorPoInformation> vendorPoInformationByVendorNum, List<EditableUser> vendorUsers) {
+	private SXSSFWorkbook generateVendorActivityExcel(List<Vendor> vendors, List<VendorPoInformation> vendorPoInformations, List<EditableUser> vendorUsers, List<OrgVendorAssociation> orgVendorAssociations) {
 		SXSSFWorkbook workbook = new SXSSFWorkbook();
 		SXSSFSheet vendorActivityWorkSheet = workbook.createSheet("Vendor Activity");
+		vendorActivityWorkSheet.setDefaultColumnWidth(100 * 256);
 		SXSSFSheet vendorAccessWorkSheet = workbook.createSheet("Vendor Access");
+		vendorAccessWorkSheet.setDefaultColumnWidth(100 * 256);
 		
 		workbook.setCompressTempFiles(true);
 
         workbook.getCreationHelper();
         
-        populateVendorActivitySheet(workbook, vendorActivityWorkSheet, vendors, vendorPoInformationByVendorNum);
+        populateVendorActivitySheet(workbook, vendorActivityWorkSheet, vendors, vendorPoInformations);
         
-        populateVendorAccessSheet(workbook, vendorAccessWorkSheet, vendors, vendorUsers);
+        populateVendorAccessSheet(workbook, vendorAccessWorkSheet, vendors, vendorUsers, orgVendorAssociations);
         
 		return workbook;
 	}
 	
 	//********** VENDOR ACTIVITY SHEET **********//
-	private void populateVendorActivitySheet(SXSSFWorkbook workbook, SXSSFSheet worksheet, List<Vendor> vendors, Map<Integer, VendorPoInformation> vendorPoInformationByVendorNum) {
+	private void populateVendorActivitySheet(SXSSFWorkbook workbook, SXSSFSheet worksheet, List<Vendor> vendors, List<VendorPoInformation> vendorPoInformations) {
 		generateVendorActivityHeader(workbook, worksheet);
+		
+		Map<Integer, VendorPoInformation> vendorPoInformationByVendorNum = vendorPoInformations.stream().collect(Collectors.toMap(vpi->vpi.getVendorNumber(), vpi->vpi));
 		
 		int index = 1;
 		for(Vendor vendor: vendors) {
@@ -374,42 +369,52 @@ public class DefaultVendorService implements VendorService {
         headerDataCell=headerDataRow.createCell(0);
         headerDataCell.setCellValue("Vendor Name");
         headerDataCell.setCellStyle(styleHeader);
+        worksheet.setColumnWidth(0, 50 * 200);
 
         headerDataCell=headerDataRow.createCell(1);
         headerDataCell.setCellValue("Vendor ID");
         headerDataCell.setCellStyle(styleHeader);
+        worksheet.setColumnWidth(1, 50 * 200);
         
         headerDataCell=headerDataRow.createCell(2);
         headerDataCell.setCellValue("MFR");
         headerDataCell.setCellStyle(styleHeader);
+        worksheet.setColumnWidth(2, 50 * 200);
         
         headerDataCell=headerDataRow.createCell(3);
         headerDataCell.setCellValue("Annual Agreement");
         headerDataCell.setCellStyle(styleHeader);
+        worksheet.setColumnWidth(3, 50 * 200);
         
         headerDataCell=headerDataRow.createCell(4);
         headerDataCell.setCellValue("Primary Contact");
         headerDataCell.setCellStyle(styleHeader);
+        worksheet.setColumnWidth(4, 50 * 200);
         
         headerDataCell=headerDataRow.createCell(5);
         headerDataCell.setCellValue("Contact Phone");
         headerDataCell.setCellStyle(styleHeader);
+        worksheet.setColumnWidth(5, 50 * 200);
         
         headerDataCell=headerDataRow.createCell(6);
         headerDataCell.setCellValue("Assigned Analyst");
         headerDataCell.setCellStyle(styleHeader);
+        worksheet.setColumnWidth(6, 50 * 200);
         
         headerDataCell=headerDataRow.createCell(7);
         headerDataCell.setCellValue("Date of Last PO Issued");
         headerDataCell.setCellStyle(styleHeader);
+        worksheet.setColumnWidth(7, 50 * 200);
         
         headerDataCell=headerDataRow.createCell(8);
         headerDataCell.setCellValue("# PO's Issued Last 3 Years");
         headerDataCell.setCellStyle(styleHeader);
+        worksheet.setColumnWidth(8, 50 * 200);
 	}
 	
 	private void populateVendorActivityRow(SXSSFWorkbook workbook, SXSSFRow row, Vendor vendor, VendorPoInformation vendorPoInformation) {
 		XSSFCellStyle cellStyle = getCellStyle(workbook);
+		XSSFCellStyle dateStyle = getDateCellStyle(workbook);
 		
 		Cell dataCell=null;
 		
@@ -442,7 +447,7 @@ public class DefaultVendorService implements VendorService {
         dataCell.setCellValue(vendor.getPlanningAnalyst() != null ? vendor.getPlanningAnalyst().getFirstName() + " " + vendor.getPlanningAnalyst().getLastName() : "");
         
         dataCell = row.createCell(7);
-        dataCell.setCellStyle(cellStyle);
+        dataCell.setCellStyle(dateStyle);
         dataCell.setCellValue(vendorPoInformation.getLastPoDate() != null ? DateUtil.formatDateUS(vendorPoInformation.getLastPoDate()) : "");
         
         dataCell = row.createCell(8);
@@ -451,14 +456,14 @@ public class DefaultVendorService implements VendorService {
 	}
 	
 	//********** VENDOR ACCESS SHEET **********//
-	private void populateVendorAccessSheet(SXSSFWorkbook workbook, SXSSFSheet worksheet, List<Vendor> vendors, List<EditableUser> vendorUsers) {
+	private void populateVendorAccessSheet(SXSSFWorkbook workbook, SXSSFSheet worksheet, List<Vendor> vendors, List<EditableUser> vendorUsers, List<OrgVendorAssociation> orgVendorAssociations) {
 		generateVendorAccessHeader(workbook, worksheet);
 		
-		Map<Integer, List<VendorAccessRow>> vendorAccessRowsByVendorId = getVendorAccessRows(vendors, vendorUsers);
+		List<VendorAccessGroup> vendorAccessGroups = getVendorAccessRows(vendors, vendorUsers, orgVendorAssociations);
 		
 		int index = 1;
-		for(List<VendorAccessRow> vendorAccessRows: vendorAccessRowsByVendorId.values()) {
-			for(VendorAccessRow vendorAccessRow : vendorAccessRows) {
+		for(VendorAccessGroup group: vendorAccessGroups) {
+			for(VendorAccessRow vendorAccessRow : group.getVendorAccessRows()) {
 				SXSSFRow row = worksheet.createRow(index);
 				populateVendorAccessRow(workbook, row, vendorAccessRow);
 				index++;
@@ -469,29 +474,33 @@ public class DefaultVendorService implements VendorService {
 		}
 	}
 	
-	private Map<Integer, List<VendorAccessRow>> getVendorAccessRows(List<Vendor> vendors, List<EditableUser> vendorUsers) {
-		Map<Integer, List<VendorAccessRow>> result = new TreeMap<>();
+	private List<VendorAccessGroup> getVendorAccessRows(List<Vendor> vendors, List<EditableUser> vendorUsers, List<OrgVendorAssociation> orgVendorAssociations) {
+		List<VendorAccessGroup> result = new ArrayList<>();
 		
-		Map<Integer, List<Vendor>> vendorsByOrgId = vendors.stream().collect(Collectors.groupingBy(v->v.getOrgId()));
 		Map<Integer, List<EditableUser>> vendorUsersByOrgId = vendorUsers.stream().collect(Collectors.groupingBy(vu->vu.getOrgId()));
+		Map<Integer, List<OrgVendorAssociation>> orgVendorAssociationsByVendorId = orgVendorAssociations.stream().collect(Collectors.groupingBy(ova-> ova.getVendorId()));
 		
-		for(Entry<Integer, List<Vendor>> entry: vendorsByOrgId.entrySet()) {
-			int orgId = entry.getKey();
-			if(orgId == 1)
+		for(Vendor vendor: vendors) {
+			List<OrgVendorAssociation> orgVendorAssociationsForVendor = orgVendorAssociationsByVendorId.get(vendor.getVendorId());
+			List<VendorAccessRow> vendorAccessRowsForVendor = new ArrayList<>();
+			if(orgVendorAssociationsForVendor == null || orgVendorAssociationsForVendor.isEmpty())
 				continue;
 			
-			List<Vendor> vendorsInOrg = entry.getValue();
-			List<EditableUser> vendorUsersInOrg = vendorUsersByOrgId.get(orgId);
-			
-			if(vendorUsersInOrg == null || vendorUsersInOrg.isEmpty())
-				continue;
-			
-			for(Vendor vendor: vendorsInOrg) {
+			for(OrgVendorAssociation ova: orgVendorAssociationsForVendor) {
+				if(ova.getOrgId() == ApplicationConstants.PENSKE_ORG_ID)
+					continue;
+					
+				List<EditableUser> vendorUsersInOrg = vendorUsersByOrgId.get(ova.getOrgId());
+				
+				if(vendorUsersInOrg == null || vendorUsersInOrg.isEmpty())
+					continue;
+				
 				for(EditableUser vendorUser: vendorUsersInOrg) {
-					List<VendorAccessRow> vendorAccessRowsForVendor = result.computeIfAbsent(vendor.getVendorId(), list -> new ArrayList<>());
 					vendorAccessRowsForVendor.add(new VendorAccessRow(vendor, vendorUser));
 				}
 			}
+			if(vendorAccessRowsForVendor != null && !vendorAccessRowsForVendor.isEmpty())
+				result.add(new VendorAccessGroup(vendor.getVendorName(), vendorAccessRowsForVendor));
 		}
 		
 		return result;
@@ -506,34 +515,42 @@ public class DefaultVendorService implements VendorService {
         headerDataCell=headerDataRow.createCell(0);
         headerDataCell.setCellValue("Vendor Name");
         headerDataCell.setCellStyle(styleHeader);
+        worksheet.setColumnWidth(0, 50 * 200);
 
         headerDataCell=headerDataRow.createCell(1);
         headerDataCell.setCellValue("Vendor ID");
         headerDataCell.setCellStyle(styleHeader);
+        worksheet.setColumnWidth(1, 50 * 200);
         
         headerDataCell=headerDataRow.createCell(2);
         headerDataCell.setCellValue("First Name");
         headerDataCell.setCellStyle(styleHeader);
+        worksheet.setColumnWidth(2, 50 * 200);
         
         headerDataCell=headerDataRow.createCell(3);
         headerDataCell.setCellValue("Last Name");
         headerDataCell.setCellStyle(styleHeader);
+        worksheet.setColumnWidth(3, 50 * 200);
         
         headerDataCell=headerDataRow.createCell(4);
         headerDataCell.setCellValue("Email");
         headerDataCell.setCellStyle(styleHeader);
+        worksheet.setColumnWidth(4, 50 * 200);
         
         headerDataCell=headerDataRow.createCell(5);
         headerDataCell.setCellValue("Org");
         headerDataCell.setCellStyle(styleHeader);
+        worksheet.setColumnWidth(5, 50 * 200);
         
         headerDataCell=headerDataRow.createCell(6);
         headerDataCell.setCellValue("Created Date");
         headerDataCell.setCellStyle(styleHeader);
+        worksheet.setColumnWidth(6, 50 * 200);
         
         headerDataCell=headerDataRow.createCell(7);
         headerDataCell.setCellValue("Last Login");
         headerDataCell.setCellStyle(styleHeader);
+        worksheet.setColumnWidth(7, 50 * 200);
 	}
 	
 	private void populateVendorAccessRow(SXSSFWorkbook workbook, SXSSFRow row, VendorAccessRow vendorAccessRow) {
@@ -580,14 +597,9 @@ public class DefaultVendorService implements VendorService {
         fontHeader.setBold(true);
 		
 		CellStyle styleHeader = workbook.createCellStyle();
-        styleHeader.setBorderLeft(BorderStyle.THIN);
-        styleHeader.setBorderRight(BorderStyle.THIN);
-        styleHeader.setBorderTop(BorderStyle.THIN);
-        styleHeader.setBorderBottom(BorderStyle.THIN);
         
         styleHeader.setFont(fontHeader);
         styleHeader.setAlignment(HorizontalAlignment.CENTER);
-        styleHeader.setVerticalAlignment(VerticalAlignment.BOTTOM);
         styleHeader.setWrapText(true);
         
         return styleHeader;
@@ -595,24 +607,30 @@ public class DefaultVendorService implements VendorService {
 	
 	private XSSFCellStyle getCellStyle(SXSSFWorkbook workbook) {
 		Font fontcell = workbook.createFont();
-
-        XSSFColor lightGrey = new XSSFColor(new Color(215, 216, 217));
+		fontcell.setFontName("Serif");
 
         XSSFCellStyle dataCellEditable = (XSSFCellStyle) workbook.createCellStyle();
-        dataCellEditable.setLocked(false);
-        dataCellEditable.setFillForegroundColor((short) 41);
-        dataCellEditable.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-        dataCellEditable.setBorderLeft(BorderStyle.THIN);
-        dataCellEditable.setBorderRight(BorderStyle.THIN);
-        dataCellEditable.setBorderTop(BorderStyle.THIN);
-        dataCellEditable.setBorderBottom(BorderStyle.THIN);
-        dataCellEditable.setBorderColor(BorderSide.LEFT, lightGrey);
-        dataCellEditable.setBorderColor(BorderSide.RIGHT, lightGrey);
-        dataCellEditable.setBorderColor(BorderSide.BOTTOM, lightGrey);
-        dataCellEditable.setBorderColor(BorderSide.TOP, lightGrey);
+        
         dataCellEditable.setFont(fontcell);
+        dataCellEditable.setAlignment(HorizontalAlignment.CENTER);
+        dataCellEditable.setWrapText(true);
         
         return dataCellEditable;
+	}
+	
+	private XSSFCellStyle getDateCellStyle(SXSSFWorkbook workbook) {
+		Font fontcell = workbook.createFont();
+		fontcell.setFontName("Serif");
+
+        XSSFCellStyle dateCellStyle = (XSSFCellStyle) workbook.createCellStyle();
+        CreationHelper creationHelper = workbook.getCreationHelper();
+        
+        dateCellStyle.setFont(fontcell);
+        dateCellStyle.setAlignment(HorizontalAlignment.CENTER);
+        dateCellStyle.setWrapText(true);
+        dateCellStyle.setDataFormat(creationHelper.createDataFormat().getFormat(ApplicationConstants.DATE_FORMAT));
+		
+        return dateCellStyle;
 	}
 	
 }

@@ -640,7 +640,7 @@ public class SecurityRestController {
 			try(OutputStream out = response.getOutputStream()) {
 				response.setHeader("Set-Cookie", "fileDownload=true; path=/");
 				response.setContentType(ApplicationConstants.EXCEL_CONTENT_TYPE_XLSX);
-				response.setHeader(ApplicationConstants.CONTENT_DISPOSITION_HEADER,"attachment;filename=\"Order Confirmation-Template.xlsx\"");
+				response.setHeader(ApplicationConstants.CONTENT_DISPOSITION_HEADER,"attachment;filename=\"Vendor_Activity.xlsx\"");
 				response.setHeader("Pragma",ApplicationConstants.EXCEL_HEADER_TYPE);
 				response.setHeader("Expires",ApplicationConstants.EXCEL_EXPIRES);
 				response.setContentType(ApplicationConstants.EXCEL_CONTENT_TYPE);

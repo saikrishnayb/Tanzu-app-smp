@@ -11,6 +11,7 @@ public class ApplicationConstants {
 	public static final String TERMS_AND_CONDITIONS_DAYS = "Terms and Conditions Days";
 	public static final int PENSKE_USER = 1;
 	public static final int SUPPLIER_USER = 2;
+	public static final int PENSKE_ORG_ID = 1;
 
 	public static final String DYNAMIC_RULE_ERROR_1="CORP/MANUFACTURER/MODEL/MODEL_YEAR Already exists for a different Dynamic Rule with";
 	
@@ -82,4 +83,5 @@ public class ApplicationConstants {
 	public static final String NO = "N";
 	public static final String RESERVATION_STATUS_ASSIGNED = "A";
 	public static final String BODYMAKE_ATTRIBUTE_KEY = "BODYMAKE";
+	
 }
