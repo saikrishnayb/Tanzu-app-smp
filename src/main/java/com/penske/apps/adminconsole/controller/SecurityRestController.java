@@ -148,6 +148,7 @@ public class SecurityRestController {
     
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
     @RequestMapping(value ="resend-email")
+    @ResponseBody
     public void resendEmail(@RequestParam(value="userId") String userId) {
     	User user = sessionBean.getUser();
         EditableUser editableUser = securityService.getEditInfo(userId, "VENDOR");
