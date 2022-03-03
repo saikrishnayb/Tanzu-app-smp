@@ -11,15 +11,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.penske.apps.adminconsole.dao.SecurityDao;
+import com.penske.apps.adminconsole.model.AdminConsoleUserDept;
+import com.penske.apps.adminconsole.model.AdminConsoleUserType;
 import com.penske.apps.adminconsole.model.EditableUser;
 import com.penske.apps.adminconsole.model.Org;
 import com.penske.apps.adminconsole.model.Permission;
 import com.penske.apps.adminconsole.model.Role;
 import com.penske.apps.adminconsole.model.SignatureInitial;
-import com.penske.apps.adminconsole.model.AdminConsoleUserType;
-import com.penske.apps.adminconsole.model.AdminConsoleUserDept;
 import com.penske.apps.adminconsole.model.UserSearchForm;
 import com.penske.apps.adminconsole.model.VendorTree;
+import com.penske.apps.adminconsole.model.VendorUser;
 import com.penske.apps.adminconsole.util.ApplicationConstants;
 import com.penske.apps.smccore.base.domain.User;
 import com.penske.apps.smccore.base.domain.enums.UserType;
@@ -618,5 +619,16 @@ public class DefaultSecurityService implements SecurityService{
 			}
 		}
 		return orgs;
+	}
+	
+	@Override
+	public List<VendorUser> getVendorUsers(UserSearchForm userSearchForm, User user) {
+		List<EditableUser> vendorUsers = this.getSearchUserList(userSearchForm, user);
+		
+		List<VendorUser> result = new ArrayList<>();
+		for(EditableUser vendorUser: vendorUsers)
+			result.add(new VendorUser(vendorUser));
+		
+		return result;
 	}
 }

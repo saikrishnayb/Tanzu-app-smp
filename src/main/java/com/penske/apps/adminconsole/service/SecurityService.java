@@ -3,14 +3,15 @@ package com.penske.apps.adminconsole.service;
 import java.util.HashMap;
 import java.util.List;
 
+import com.penske.apps.adminconsole.model.AdminConsoleUserDept;
+import com.penske.apps.adminconsole.model.AdminConsoleUserType;
 import com.penske.apps.adminconsole.model.EditableUser;
 import com.penske.apps.adminconsole.model.Org;
 import com.penske.apps.adminconsole.model.Permission;
 import com.penske.apps.adminconsole.model.Role;
-import com.penske.apps.adminconsole.model.AdminConsoleUserDept;
 import com.penske.apps.adminconsole.model.UserSearchForm;
-import com.penske.apps.adminconsole.model.AdminConsoleUserType;
 import com.penske.apps.adminconsole.model.VendorTree;
+import com.penske.apps.adminconsole.model.VendorUser;
 import com.penske.apps.smccore.base.domain.User;
 import com.penske.apps.suppliermgmt.exception.SMCException;
 
@@ -53,4 +54,6 @@ public interface SecurityService {
 	public List<Org> getVendorOrg(boolean isVendor,int orgId);
 	public EditableUser doesUserExistVendor(String userName, int userId,boolean isVandorFlow,String isCreateOrEdit);
 	public List<Org>  removeCurrentOrgAndChild(int orgId,List<Org> orgs);
+	
+	public List<VendorUser> getVendorUsers(UserSearchForm userSearchForm, User user);
 }
