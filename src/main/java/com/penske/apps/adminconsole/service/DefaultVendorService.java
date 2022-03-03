@@ -327,14 +327,10 @@ public class DefaultVendorService implements VendorService {
 	private SXSSFWorkbook generateVendorActivityExcel(List<Vendor> vendors, List<VendorPoInformation> vendorPoInformations, List<EditableUser> vendorUsers, List<OrgVendorAssociation> orgVendorAssociations) {
 		SXSSFWorkbook workbook = new SXSSFWorkbook();
 		SXSSFSheet vendorActivityWorkSheet = workbook.createSheet("Vendor Activity");
-		vendorActivityWorkSheet.setDefaultColumnWidth(100 * 256);
 		SXSSFSheet vendorAccessWorkSheet = workbook.createSheet("Vendor Access");
-		vendorAccessWorkSheet.setDefaultColumnWidth(100 * 256);
 		
 		workbook.setCompressTempFiles(true);
 
-        workbook.getCreationHelper();
-        
         populateVendorActivitySheet(workbook, vendorActivityWorkSheet, vendors, vendorPoInformations);
         
         populateVendorAccessSheet(workbook, vendorAccessWorkSheet, vendors, vendorUsers, orgVendorAssociations);
