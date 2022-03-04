@@ -186,5 +186,7 @@
 		
 		<%@ include file="../../../jsp/global/v1/footer.jsp" %>
 		<script src="${baseUrl}/js/admin-console/security/vendors.js" type="text/javascript"></script>
+		<script type="text/javascript" src="${baseUrl}/js/global/v2/loading-util.js"></script>
+		<script type="text/javascript" src="${baseUrl}/js/global/v2/file-download-helper.js"></script>
 	</body>
 </html>
