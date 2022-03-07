@@ -371,5 +371,23 @@ function toggleVendorAddress(expandCollapseLink) {
 	}
 }
 
+var LoadingUtil = (function() {
+  
+  var showLoadingOverlay = function() {
+    showLoading();
+  };
+  
+  var hideLoadingOverlay = function() {
+	hideLoading();
+  };
+
+  //Private Methods ************************************************************
+
+  return {
+    showLoadingOverlay: showLoadingOverlay,
+    hideLoadingOverlay: hideLoadingOverlay,
+  };
+
+})();
 //Comment to assist Chrome debugger tools
 //# sourceURL=vendors.js

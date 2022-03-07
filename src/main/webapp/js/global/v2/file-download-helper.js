@@ -1,10 +1,7 @@
 var DownloadUtil = (function() {
 
-	var downloadFileAsFormPost = function downloadFile(url, fileName, parameterName, parameter, isV1) {
+	var downloadFileAsFormPost = function downloadFile(url, fileName, parameterName, parameter) {
 
-	if(isV1 !== undefined)
-		showLoading();
-	else
 		LoadingUtil.showLoadingOverlay(true);
 
 	var xhr = new XMLHttpRequest();
@@ -47,19 +44,11 @@ var DownloadUtil = (function() {
 
         }
         
-		if(isV1 !== undefined)
-			hideLoading();
-		else
-        	_clearSpinners();
+        _clearSpinners();
 
       }else if(xhr.readyState == XMLHttpRequest.DONE && xhr.status == 500) {
-        
-        if(isV1 !== undefined)
-			hideLoading();
-		else {
 			ModalUtil.openInfoModal('Something went wrong downloading the file in the server, please try again later');
 			_clearSpinners();
-		}
       }
       
     }
