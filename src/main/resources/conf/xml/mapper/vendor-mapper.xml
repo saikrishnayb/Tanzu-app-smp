@@ -60,7 +60,8 @@
 						vend.SUPPLY_SPECIALIST AS "supplySpecialist.userId",
 						vennam.VENDOR_ADDRESS_LINE_1 AS vendorAddress,
 						vennam.VENDOR_ATTENTION AS attention,
-						dist.DMNAME AS companyName
+						dist.DMNAME AS companyName,
+						org.ORG_ID as orgId
 		
 				FROM	SMC.SMC_VENDOR_MASTER vend 
 						JOIN SMC.SMC_ORG_VENDOR_ASSOC org
@@ -218,6 +219,34 @@
 	
 	<select id="getAllAlerts" resultType="com.penske.apps.adminconsole.model.Alert">
 		Select ALERT_KEY as alertType,ALERT_NAME as alertName from smc.V_SMC_ALERTS WHERE HEADER_KEY='HDR_OF_VENDACTITEMS'
+	</select>
+	
+	<select id="getVendorPoInformation" resultType="com.penske.apps.adminconsole.model.VendorPoInformation">
+		SELECT 
+			VENDOR_NUMBER as vendorNumber,
+			MAX(CREATED_DATE) AS lastPoDate,
+			COUNT(*) AS posIssuedInLast3Years
+		FROM SMC.SMC_PURCHASING_HEADER
+		WHERE CREATED_DATE > CURRENT_TIMESTAMP - 3 YEAR
+		AND VENDOR_NUMBER IN (
+			<foreach item="vendorNumber" collection="vendorNumbers" separator=",">
+				#{vendorNumber}
+			</foreach>
+		)
+		GROUP BY VENDOR_NUMBER 
+	</select>
+	
+	<select id="getOrgVendorAssociationsByVendorIds" resultType="com.penske.apps.adminconsole.domain.OrgVendorAssociation">
+		SELECT
+			ASSOCIATION_ID, 
+			ORG_ID,
+			VENDOR_ID
+		FROM SMC.SMC_ORG_VENDOR_ASSOC
+		where VENDOR_ID IN (
+			<foreach item="vendorId" collection="vendorIds" separator=",">
+	 			#{vendorId}
+	 		</foreach>
+		)
 	</select>
 	
 </mapper>

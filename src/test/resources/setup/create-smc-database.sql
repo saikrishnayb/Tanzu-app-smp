@@ -590,6 +590,30 @@ CREATE TABLE SMC.SMC_COST_TOLERANCES (
 	PO_VENDOR_NUMBER INTEGER
 );
 
+CREATE TABLE SMC.SMC_PURCHASING_HEADER (
+	HEADER_ID             		  INTEGER             NOT NULL,
+	DCN                           INTEGER,
+	SCH_A_NO                      VARCHAR(10),
+	CORP                          CHAR(4)             NOT NULL,
+	PO_NUMBER                     INTEGER             NOT NULL,
+	PO_CATEGORY                   VARCHAR(15),
+	PO_SUB_CATEGORY               VARCHAR(100),
+	IS_DATA_CONFLICT_CHECK        CHAR(1)             NOT NULL,
+	CUSTOMER_NUMBER               VARCHAR(10),
+	CUSTOMER_NAME                 VARCHAR(100),
+	VENDOR_NUMBER                 VARCHAR(10),
+	VENDOR_NAME                   VARCHAR(100),
+	OEM                           VARCHAR(3),
+	MODEL                         VARCHAR(100),
+	MODEL_YEAR                    VARCHAR(4),
+	VEHICLE_TYPE                  VARCHAR(20),
+	VEHICLE_USE                   VARCHAR(20),
+	DEAL_APPROVED_BY              VARCHAR(100)        NOT NULL,
+	COM_REQUEST_BUYER             VARCHAR(10)         NOT NULL,
+	CREATED_BY                    VARCHAR(10),
+	CREATED_DATE                  TIMESTAMP,
+	IS_COMP_GENERATED             CHAR(1));
+
 CREATE VIEW SMC.V_SMC_ALERTS ( 
 	TAB_ID , 
 	TAB_KEY, 

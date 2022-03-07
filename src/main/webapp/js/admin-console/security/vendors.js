@@ -292,6 +292,27 @@ $(document).ready(function() {
 			$error.show();
 		}
 	});
+	
+	$('#export-vendor-activity').on('click', function(){
+		var today = new Date();
+		var filename = 'Vendor_Activity_';
+	
+		var mm = today.getMonth() + 1;
+		if (mm < 10) {
+			mm = '0' + mm;
+		}
+		filename += mm;
+		
+		var dd = today.getDate();
+		if (dd < 10) {
+			dd = '0' + dd;
+		}
+		filename += '_' + dd;
+		
+		filename += '.xlsx';
+		
+		DownloadUtil.downloadFileAsFormPost('export-vendor-activity', filename, undefined, undefined, true);
+	});
 });
 
 function toggleContent(contentId,spanId){
@@ -350,5 +371,26 @@ function toggleVendorAddress(expandCollapseLink) {
 	}
 }
 
+//This object is an adapter for the file-download-helper.js, which is from the v2 page template, so that we can use it in the v1 page template.
+// This provides functions that that JS file calls, but it implements them using the old v1 page template elements.
+// When we migrate to the v2 template for this page, we should remove this adapter, as it will conflict with the LoadingUtil object in v2.
+var LoadingUtil = (function() {
+  
+  var showLoadingOverlay = function() {
+    showLoading();
+  };
+  
+  var hideLoadingOverlay = function() {
+	hideLoading();
+  };
+
+  //Private Methods ************************************************************
+
+  return {
+    showLoadingOverlay: showLoadingOverlay,
+    hideLoadingOverlay: hideLoadingOverlay,
+  };
+
+})();
 //Comment to assist Chrome debugger tools
 //# sourceURL=vendors.js

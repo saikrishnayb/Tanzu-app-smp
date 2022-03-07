@@ -1,6 +1,7 @@
 package com.penske.apps.adminconsole.controller;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Collections;
 import java.util.List;
 
@@ -8,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -660,6 +662,29 @@ public class SecurityRestController {
     	vendorService.modifyVendorsMassUpdate(vendor, user, vendorIdsToApplyChange);
     }
 
+    @SmcSecurity(securityFunction = SecurityFunction.EXPORT_VENDOR_ACTIVITY)
+    @RequestMapping("export-vendor-activity")
+    @ResponseBody
+    public void exportVendorActivity(HttpServletResponse response) {
+    	User user = sessionBean.getUser();
+    	SXSSFWorkbook workbook = vendorService.exportVendorActivity(user, securityService.getVendorUserList(user));
+		if(workbook != null){
+			try(OutputStream out = response.getOutputStream()) {
+				response.setHeader("Set-Cookie", "fileDownload=true; path=/");
+				response.setContentType(ApplicationConstants.EXCEL_CONTENT_TYPE_XLSX);
+				response.setHeader(ApplicationConstants.CONTENT_DISPOSITION_HEADER,"attachment;filename=\"Vendor_Activity.xlsx\"");
+				response.setHeader("Pragma",ApplicationConstants.EXCEL_HEADER_TYPE);
+				response.setHeader("Expires",ApplicationConstants.EXCEL_EXPIRES);
+				response.setContentType(ApplicationConstants.EXCEL_CONTENT_TYPE);
+				workbook.write(out);
+			} catch(IOException ex) {
+				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+				throw new RuntimeException(ex.getMessage(), ex);
+			}finally{
+				workbook.dispose();
+			}
+		}
+    }
 
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDORS)
     @RequestMapping(value="sso-user-lookup" , method=RequestMethod.GET)

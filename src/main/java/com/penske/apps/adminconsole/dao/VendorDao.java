@@ -1,13 +1,16 @@
 package com.penske.apps.adminconsole.dao;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.penske.apps.adminconsole.domain.OrgVendorAssociation;
 import com.penske.apps.adminconsole.model.Alert;
 import com.penske.apps.adminconsole.model.EditableUser;
 import com.penske.apps.adminconsole.model.Vendor;
 import com.penske.apps.adminconsole.model.VendorContact;
+import com.penske.apps.adminconsole.model.VendorPoInformation;
 import com.penske.apps.smccore.base.annotation.NonVendorQuery;
 import com.penske.apps.smccore.base.annotation.SkipQueryTest;
 import com.penske.apps.suppliermgmt.annotation.DBSmc;
@@ -42,5 +45,11 @@ public interface VendorDao {
 
     @NonVendorQuery
     public List<Alert> getAllAlerts();
+
+    @NonVendorQuery
+	public List<VendorPoInformation> getVendorPoInformation(@Param("vendorNumbers") Collection<Integer> vendorNumbers);
+    
+    @NonVendorQuery
+	public List<OrgVendorAssociation> getOrgVendorAssociationsByVendorIds(@Param("vendorIds") Collection<Integer> vendorIds);
 
 }
