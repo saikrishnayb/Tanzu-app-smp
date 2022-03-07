@@ -5,9 +5,7 @@
 <div class="modal-content col-xs-12" data-modal-title='${isCreatePage ? "Create User" : "Edit User" }' data-modal-width="1198">
 	<div class="row modal-body">
 		<div class="col-xs-12">
-			<div class="row">
-				<%@ include file="../includes/vendor-user-form.jsp"%>
-			</div>
+			<%@ include file="../includes/vendor-user-form.jsp"%>
 		</div>
 	</div>
 	<div class="row modal-footer" style="margin-top:20px;">
