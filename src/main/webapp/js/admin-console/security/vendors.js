@@ -371,6 +371,9 @@ function toggleVendorAddress(expandCollapseLink) {
 	}
 }
 
+//This object is an adapter for the file-download-helper.js, which is from the v2 page template, so that we can use it in the v1 page template.
+// This provides functions that that JS file calls, but it implements them using the old v1 page template elements.
+// When we migrate to the v2 template for this page, we should remove this adapter, as it will conflict with the LoadingUtil object in v2.
 var LoadingUtil = (function() {
   
   var showLoadingOverlay = function() {
