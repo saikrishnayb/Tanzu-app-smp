@@ -3,8 +3,6 @@
  */
 package com.penske.apps.adminconsole.dao;
 
-import java.util.Arrays;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,8 +17,6 @@ import com.penske.apps.adminconsole.model.AdminConsoleUserType;
 import com.penske.apps.adminconsole.model.EditableUser;
 import com.penske.apps.adminconsole.model.Org;
 import com.penske.apps.adminconsole.model.Role;
-import com.penske.apps.adminconsole.model.UserSearchForm;
-import com.penske.apps.smccore.CoreTestUtil;
 import com.penske.apps.smccore.base.configuration.ProfileType;
 import com.penske.apps.smccore.base.domain.enums.UserType;
 import com.penske.apps.suppliermgmt.MyBatisDaoTest;
@@ -106,33 +102,10 @@ public class SecurityDAOTest extends MyBatisDaoTest
 	}
 	
 	@Test
-	public void shouldgetUserSearchList()
-	{
-		UserSearchForm form = new UserSearchForm();
-		
-		dao.getUserSearchList(form);
-		
-		form.setUserId(0);
-		form.setFirstName("Joe");
-		form.setLastName("Test");
-		form.setEmail("test@penske.com");
-		form.setUserTypeId(UserType.PENSKE.getTypeId());
-		form.setOrgIds(Arrays.asList(1, 2));
-		
-		dao.getUserSearchList(form);
-	}
-	
-	@Test
 	public void shouldgetUserName()
 	{
 		dao.getUserName("600555555", 0);
 		dao.getUserName("600555555", 57);
-	}
-	
-	@Test
-	public void shouldgetNewUserId()
-	{
-		dao.getNewUserId();
 	}
 	
 	@Test
@@ -243,6 +216,10 @@ public class SecurityDAOTest extends MyBatisDaoTest
 	@Test
 	public void shouldgetOrgVendor()
 	{
+		this.setPenskeUser();
+		dao.getOrgVendor(123);
+		
+		this.setVendorUser();
 		dao.getOrgVendor(123);
 	}
 	
@@ -268,24 +245,6 @@ public class SecurityDAOTest extends MyBatisDaoTest
 	public void shouldupdateBuddies()
 	{
 		dao.updateBuddies(makeUser(123, "600555555", UserType.PENSKE));
-	}
-	
-	@Test
-	public void shouldgetOrgChild()
-	{
-		dao.getOrgChild(123);
-	}
-	
-	@Test
-	public void shouldmodifyRoleStatusByOrgId()
-	{
-		dao.modifyRoleStatusByOrgId(123, "600555555");
-	}
-	
-	@Test
-	public void shouldgetVendorUserList()
-	{
-		dao.getVendorUserList(CoreTestUtil.createUser(123, "test@somevendor.com", "Joe", "Test", "test@somevendor.com", UserType.VENDOR));
 	}
 	
 	@Test
@@ -319,16 +278,17 @@ public class SecurityDAOTest extends MyBatisDaoTest
 		EditableUser user = new EditableUser();
 		user.setUserId(userId);
 		user.setSsoId(sso);
-		user.setGessouid("alkjliekljhg");
+		user.setGessouid("aadfas5465");
 		user.setEmail("test@penske.com");
 		user.setFirstName("John");
 		user.setLastName("Doe");
-		user.setPhone("5555555555");
+		user.setPhone("1234");
 		user.setUserType(type);
 		user.setRole(new Role());
 		user.setUserDept(dept);
 		user.setOrgId(2);
 		user.setModifiedBy("600555555");
+		user.setCreatedBy("600555555");
 		user.setDailyOptIn(false);
 		
 		return user;

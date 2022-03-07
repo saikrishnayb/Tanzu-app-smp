@@ -77,15 +77,13 @@ public interface SecurityDAO {
     @NonVendorQuery
     public List<Role> getAllUserRoles();
 
+    @SkipQueryTest("Uses heirarchical query, which HSQLDB does not support")
     @NonVendorQuery
     public List<EditableUser> getUserSearchList(UserSearchForm userSearchForm);
 
     //create user
     @NonVendorQuery
     public List<String> getUserName(@Param("userName")String userName, @Param("userId")int userId);
-
-    @NonVendorQuery
-    public int getNewUserId();
 
     //table modifications
     @NonVendorQuery
@@ -163,6 +161,7 @@ public interface SecurityDAO {
     public Integer getUsersByOrgId(@Param("orgId")int orgId);
 
     @NonVendorQuery
+    @SkipQueryTest("Uses heirarchical query, which HSQLDB does not support")
     public List<Org> getOrgChild(@Param("orgId")int orgId);
 
     @SkipQueryTest("Uses heirarchical queries, which HSQLDB does not support")
@@ -170,9 +169,10 @@ public interface SecurityDAO {
     public void removeAllRoleFunctionByOrgId(@Param("orgId") int roleId);
 
     @NonVendorQuery
+    @SkipQueryTest("Uses heirarchical query, which HSQLDB does not support")
     public void modifyRoleStatusByOrgId( @Param("orgId")int roleId,  @Param("modifiedBy")String modifiedBy);
 
-    //Vendor User Change - 03/02/16
+    @SkipQueryTest("Uses heirarchical query, which HSQLDB does not support")
     @NonVendorQuery
     public List<EditableUser> getVendorUserList(@Param("user") User currentUser);
 

@@ -387,8 +387,8 @@
 		 		#{role.roleId},#{userDept.userDeptId},#{createdBy},CURRENT_TIMESTAMP)
  	</insert>
  	
- 	<insert id="addOrg">
- 		INSERT 	INTO SMC.SMC_ORG_MASTER 
+ 	<insert id="addOrg" useGeneratedKeys="true" keyProperty="orgId">
+ 	 		INSERT 	INTO SMC.SMC_ORG_MASTER 
  				(NAME,
   DESCRIPTION,
   PARENT_ORG_ID,
@@ -397,9 +397,6 @@
  					#{orgDescription},
 		 		#{parentOrgId}, 
 		 		#{createdBy},CURRENT_TIMESTAMP)
-		   <selectKey resultType="int" keyProperty="orgId" order="AFTER" >
-           SELECT IDENTITY_VAL_LOCAL() as identity_val FROM SYSIBM.SYSDUMMY1
-		</selectKey> 
  	</insert>
  	
  	

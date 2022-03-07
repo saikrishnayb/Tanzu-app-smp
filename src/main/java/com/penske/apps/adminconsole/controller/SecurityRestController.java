@@ -717,14 +717,14 @@ public class SecurityRestController {
                 LOGGER.error(e.getMessage());
             }
         }catch (Exception e) {
-            LOGGER.debug(e);
+            LOGGER.debug(e.getMessage(), e);
             try {
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while loading user data");
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 response.getWriter().write("Error while loading user data");
                 response.flushBuffer();
             } catch (IOException ie) {
-                LOGGER.error(ie.getMessage());
+                LOGGER.error(ie.getMessage(), ie);
             }
         }
         return	user;

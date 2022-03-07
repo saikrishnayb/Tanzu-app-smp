@@ -247,13 +247,9 @@ public class DefaultSecurityService implements SecurityService{
 				securityDao.addBuddies(user);
 			}
 		}
-	//	boolean isPenskeUser = (ApplicationConstants.PENSKE_USER == user.getUserType().getUserTypeId());
 		boolean isSupplierUser = (ApplicationConstants.SUPPLIER_USER == user.getUserType().getUserTypeId());
 		//updated for adding comments to the base64 changes
 		if(isSupplierUser){
-			//for(int vendId: vendorIds){
-			//	securityDao.addVendorUserAssoc(user.getUserId(), vendId);
-			//}
 		}else{
 			if (user.getSignFile() == null) {
 				user.setSignString(new String(Base64.encodeBase64("".getBytes())));
