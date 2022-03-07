@@ -14,6 +14,7 @@ import com.penske.apps.adminconsole.model.SignatureInitial;
 import com.penske.apps.adminconsole.model.UserSearchForm;
 import com.penske.apps.adminconsole.model.VendorTree;
 import com.penske.apps.smccore.base.annotation.NonVendorQuery;
+import com.penske.apps.smccore.base.annotation.SkipQueryTest;
 import com.penske.apps.smccore.base.domain.User;
 import com.penske.apps.suppliermgmt.annotation.DBSmc;
 
@@ -24,7 +25,7 @@ import com.penske.apps.suppliermgmt.annotation.DBSmc;
  *
  */
 @DBSmc
-public interface SecurityDao {
+public interface SecurityDAO {
 
     @NonVendorQuery
     public EditableUser getPenskeUserInfo(int userId);
@@ -40,6 +41,7 @@ public interface SecurityDao {
     @NonVendorQuery
     public List<String> getAllVendorNames();
 
+    @SkipQueryTest("Uses heirarchical query, which HSQLDB does not support")
     @NonVendorQuery
     public List<Role> getPenskeUserSupplierRoles(String manufacturer);
 
@@ -56,6 +58,7 @@ public interface SecurityDao {
     @NonVendorQuery
     public List<AdminConsoleUserType> getAllUserTypes();
 
+    @SkipQueryTest("Uses heirarchical query, which HSQLDB does not support")
     @NonVendorQuery
     public List<Role> getPenskeRoles(int roleId);
 
@@ -66,9 +69,11 @@ public interface SecurityDao {
     public String getSignatureImage(int userId);
 
     //user summary page
+    @SkipQueryTest("Uses heirarchical query, which HSQLDB does not support")
     @NonVendorQuery
     public List<Role> getVendorUserSpecificRoles( @Param("roleId")int roleId);
 
+    @SkipQueryTest("Uses heirarchical queries, which HSQLDB does not support")
     @NonVendorQuery
     public List<Role> getAllUserRoles();
 
@@ -90,7 +95,7 @@ public interface SecurityDao {
     public void modifyPenskeUser(EditableUser user);
 
     @NonVendorQuery
-    public boolean addUser(EditableUser user);
+    public void addUser(EditableUser user);
 
     @NonVendorQuery
     public void modifyUserStatus(@Param("userId")int userId,  @Param("modifiedBy")String modifiedBy);
@@ -108,6 +113,7 @@ public interface SecurityDao {
     public void deleteSignatureImage(@Param("userId")int userId,@Param("ssoId")String ssoId);
 
     @NonVendorQuery
+    @SkipQueryTest("Uses heirarchical query, which HSQLDB does not support")
     public List<Org> getOrgList(@Param("orgId") int orgId, @Param("orgName") String orgName, @Param("parentOrgId") Integer parentOrgId);
 
     @NonVendorQuery
@@ -117,6 +123,7 @@ public interface SecurityDao {
     public void addOrg(Org org);
 
     @NonVendorQuery
+    @SkipQueryTest("Uses heirarchical query, which HSQLDB does not support")
     public void deleteOrg(int orgId);
 
     @NonVendorQuery
@@ -130,6 +137,7 @@ public interface SecurityDao {
     @NonVendorQuery
     public void addOrgVendor(@Param("orgId")int orgId,@Param("vendorNumber")String vendorNumber);
 
+    @SkipQueryTest("Uses heirarchical query, which HSQLDB does not support")
     @NonVendorQuery
     public int deleteVendorAssocaWithChild(@Param("orgId")int orgId);
 
@@ -151,11 +159,13 @@ public interface SecurityDao {
     public void updateBuddies(EditableUser user);
 
     @NonVendorQuery
+    @SkipQueryTest("Uses heirarchical query, which HSQLDB does not support")
     public Integer getUsersByOrgId(@Param("orgId")int orgId);
 
     @NonVendorQuery
     public List<Org> getOrgChild(@Param("orgId")int orgId);
-    //Modify Role status to 'I' when Org is Deactivate
+
+    @SkipQueryTest("Uses heirarchical queries, which HSQLDB does not support")
     @NonVendorQuery
     public void removeAllRoleFunctionByOrgId(@Param("orgId") int roleId);
 
@@ -166,31 +176,28 @@ public interface SecurityDao {
     @NonVendorQuery
     public List<EditableUser> getVendorUserList(@Param("user") User currentUser);
 
+    @SkipQueryTest("Uses heirarchical queries, which HSQLDB does not support")
     @NonVendorQuery
-    public List<Role> getVendorRoles(@Param("isVendor") boolean isVendor,@Param("roleId") int roleId,@Param("orgId") int orgId);
+    public List<Role> getVendorRoles(@Param("roleId") int roleId,@Param("orgId") int orgId);
 
     @NonVendorQuery
     public List<AdminConsoleUserType> getVendorUserTypes();
 
+    @SkipQueryTest("Uses heirarchical query, which HSQLDB does not support")
     @NonVendorQuery
     public List<Org> getVendorOrg(@Param("isVendor") boolean isVendor,@Param("orgId") int orgId);
 
     @NonVendorQuery
     public void deleteUserFromBuddy(@Param("userSSO") String userSSO);
 
+    @SkipQueryTest("Uses heirarchical query, which HSQLDB does not support")
     @NonVendorQuery
     public List<Org> getMyOrgAndChild(@Param("orgId")int orgId);
 
+    @SkipQueryTest("Uses heirarchical queries, which HSQLDB does not support")
     @NonVendorQuery
     public int removeVendorAssocFromDescendent(@Param("orgId")int orgId);
 
     @NonVendorQuery
 	public void deleteOrgVendor(@Param("orgId") int orgId, @Param("uncheckedIds") String[] strArray);
-
-	@NonVendorQuery
-    public void insertOtp(@Param("userObj") EditableUser userObj);
-
-	@NonVendorQuery
-	public String getOtpForUser(@Param("editableUser") EditableUser editableUser);
-	
 }

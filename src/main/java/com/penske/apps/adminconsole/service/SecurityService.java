@@ -49,7 +49,7 @@ public interface SecurityService {
 	
 	//Vendor User Change - 03/02/16
 	public List<EditableUser> getVendorUserList(User currentUser);
-	public List<Role> getVendorRoles(boolean isVendor, int roleId,int orgId);
+	public List<Role> getVendorRoles(int roleId, int orgId);
 	public List<AdminConsoleUserType> getVendorUserTypes();
 	public List<Org> getVendorOrg(boolean isVendor,int orgId);
 	public EditableUser doesUserExistVendor(String userName, int userId,boolean isVandorFlow,String isCreateOrEdit);

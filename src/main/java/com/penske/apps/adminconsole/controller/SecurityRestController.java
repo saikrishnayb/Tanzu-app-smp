@@ -1,6 +1,7 @@
 package com.penske.apps.adminconsole.controller;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,9 +36,12 @@ import com.penske.apps.smccore.base.annotation.SmcSecurity;
 import com.penske.apps.smccore.base.beans.LookupManager;
 import com.penske.apps.smccore.base.domain.LookupContainer;
 import com.penske.apps.smccore.base.domain.User;
+import com.penske.apps.smccore.base.domain.UserSecurity;
 import com.penske.apps.smccore.base.domain.enums.LookupKey;
 import com.penske.apps.smccore.base.domain.enums.SecurityFunction;
 import com.penske.apps.smccore.base.domain.enums.UserType;
+import com.penske.apps.smccore.base.service.UserService;
+import com.penske.apps.suppliermgmt.annotation.CommonStaticUrl;
 import com.penske.apps.suppliermgmt.annotation.VendorAllowed;
 import com.penske.apps.suppliermgmt.annotation.Version1Controller;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
@@ -59,7 +63,12 @@ public class SecurityRestController {
     @Autowired
     private UserCreationService userCreationService;
     @Autowired
+    private UserService userService;
+    @Autowired
     private LookupManager lookupManager;
+    @Autowired
+    @CommonStaticUrl
+    private URL commonStaticUrl;
 
     private static final Logger LOGGER = LogManager.getLogger(SecurityRestController.class);
 
@@ -120,7 +129,7 @@ public class SecurityRestController {
         	mav.addObject("tabPermissionsMap", securityService.getPermissions(roleId));
         }
 
-        List<Role> vendorRoles = securityService.getVendorRoles(isVendor, user.getRoleId(), user.getOrgId());
+        List<Role> vendorRoles = securityService.getVendorRoles(user.getRoleId(), user.getOrgId());
         Collections.sort(vendorRoles, Role.ROLE_NAME_ASC);
 
         mav.addObject("userRoles", vendorRoles);
@@ -150,9 +159,13 @@ public class SecurityRestController {
     @RequestMapping(value ="resend-email")
     @ResponseBody
     public void resendEmail(@RequestParam(value="userId") String userId) {
+    	LookupContainer lookups = lookupManager.getLookupContainer();
     	User user = sessionBean.getUser();
-        EditableUser editableUser = securityService.getEditInfo(userId, "VENDOR");
-        userCreationService.resendVendorEmail(user, editableUser);
+    	
+    	User vendorUser = userService.getUser(userId, false, false);
+    	UserSecurity vendorUserSecurity = userService.getUserSecurity(vendorUser);
+    	
+    	userService.sendNewUserEmail(user, vendorUser, vendorUserSecurity, true, lookups, commonStaticUrl);
     }
     
     @VendorAllowed
@@ -444,10 +457,11 @@ public class SecurityRestController {
     @ResponseBody
     public void addVendorUser(EditableUser user, HttpServletResponse response) throws Exception{
         try{
-
+        	LookupContainer lookups = lookupManager.getLookupContainer();
+        	
             User currentUser = sessionBean.getUser();
             user.setCreatedBy(currentUser.getSso());
-            userCreationService.insertUserInfo(currentUser, user);
+            userCreationService.insertUserInfo(currentUser, user, lookups, commonStaticUrl);
         }
         catch (UserServiceException e) {
             if(IUserConstants.DUP_SSO_ERROR_CODE==e.getErrorCode()){

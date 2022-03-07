@@ -12,10 +12,10 @@ import static org.junit.Assert.assertThat;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -90,14 +90,14 @@ public abstract class MyBatisDaoTest
 	{
 		User user = CoreTestUtil.createUser(123456789, "600555555", "Joe", "Test", "test@penske.com", UserType.PENSKE);
 		CoreTestUtil.addAssociatedVendors(user, 1);
-		sessionBean.initialize(user, "penske.com", new Date(), false, false, false);
+		sessionBean.initialize(user, "penske.com", LocalDateTime.now(), false, false, false);
 	}
 	
 	protected void setVendorUser()
 	{
 		User user = CoreTestUtil.createUser(987654321, "suppliertest", "Supplier", "Test", "test@morgan.com", UserType.VENDOR);
 		CoreTestUtil.addAssociatedVendors(user, 1);
-		sessionBean.initialize(user, "penske.com", new Date(), false, false, false);
+		sessionBean.initialize(user, "penske.com", LocalDateTime.now(), false, false, false);
 	}	
 	
 	@AfterClass

@@ -2,31 +2,23 @@ package com.penske.apps.adminconsole.service;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.penske.apps.adminconsole.dao.SecurityDao;
+import com.penske.apps.adminconsole.dao.SecurityDAO;
 import com.penske.apps.adminconsole.exceptions.UserServiceException;
 import com.penske.apps.adminconsole.model.EditableUser;
 import com.penske.apps.adminconsole.util.CommonUtils;
 import com.penske.apps.adminconsole.util.IUserConstants;
-import com.penske.apps.smccore.base.beans.LookupManager;
-import com.penske.apps.smccore.base.dao.EmailDAO;
-import com.penske.apps.smccore.base.domain.EmailTemplate;
 import com.penske.apps.smccore.base.domain.LookupContainer;
-import com.penske.apps.smccore.base.domain.SmcEmail;
 import com.penske.apps.smccore.base.domain.User;
-import com.penske.apps.smccore.base.domain.enums.EmailTemplateType;
-import com.penske.apps.smccore.base.domain.enums.LookupKey;
-import com.penske.apps.suppliermgmt.annotation.CommonStaticUrl;
+import com.penske.apps.smccore.base.service.UserService;
 import com.penske.apps.ucsc.exception.UsrCreationSvcException;
 import com.penske.apps.ucsc.model.CreatedUser;
 import com.penske.apps.ucsc.model.LDAPAttributes;
@@ -40,130 +32,49 @@ public class UserCreationServiceImpl implements UserCreationService {
 	private static final Logger logger = LogManager.getLogger(UserCreationServiceImpl.class);
 	
 	@Autowired
-	private SecurityDao securityDao;
-	
+	private SecurityDAO securityDao;
 	@Autowired
 	private UserInfoService remoteCreationService;
-	
 	@Autowired
-	private LookupManager lookupManager;
-	
-	@Autowired
-	private EmailDAO emailDAO;
-	
-	@Autowired
-	@CommonStaticUrl
-	private URL commonStaticUrl;
+	private UserService userService;
 	
 	@Override
-	@Transactional
-	public EditableUser insertUserInfo(User currentUser, EditableUser createdUser) throws UserServiceException {
-		try{
-			createdUser.setUserName(createdUser.getSsoId());
-			if(createdUser.getReturnFlg() != 1){ // userObj.getReturnFlg() != 1 -- User not available in the LDAP. This flag is set after validating userid with LDAP.
-				logger.info("Add User to LDAP..");
+	@Transactional(rollbackFor = {RuntimeException.class, UserServiceException.class})
+	public EditableUser insertUserInfo(User currentUser, EditableUser createdUser, LookupContainer lookups, URL commonStaticUrl) throws UserServiceException {
+		
+		createdUser.setUserName(createdUser.getSsoId());
+		if(createdUser.getReturnFlg() != 1){ // userObj.getReturnFlg() != 1 -- User not available in the LDAP. This flag is set after validating userid with LDAP.
+			logger.info("Add User to LDAP..");
+			try {
 				insertUserToLDAP(createdUser);
-			}else{
-				logger.info(" Modify User to LDAP..");
-				CPTSso oSSO = new CPTSso();
-				CPBGESSOUser oB2BUser = oSSO.findUser(createdUser.getUserName().trim());
-				//CPTDate datStop  = null;
-				//datStop = CPTDate.createDateFromMMDDYYYY( "12/31/4712" );
-				//oB2BUser.setGESSOEffectiveEndDate(datStop.convertDateForLDAP());
-				oB2BUser.setGESSOStatus("A");
-				oB2BUser.setCommonName(createdUser.getLastName() + ", " + createdUser.getFirstName());
-				oB2BUser.setEmailAddress(createdUser.getEmail());
-				oB2BUser.setGivenName(createdUser.getFirstName());
-				oB2BUser.setSurName(createdUser.getLastName());
-				oB2BUser.setPhone(createdUser.getPhone());
-				createdUser.setGessouid(oB2BUser.getGESSOUID());
-				oSSO.modifyUser(oB2BUser, createdUser.getUserName());
+			} catch (UserServiceException userException) {
+				throw userException;
+			} catch (UsrCreationSvcException e) {
+				throw new UserServiceException(e.getMessage(), e);
 			}
-			//Add to DB
-			boolean status=securityDao.addUser(createdUser);
-			if(status){
-				logger.info(" Add user operation was successful. Send mail to Vendor User");
-				try{
-					if (createdUser.getReturnFlg() == 1) {
-						// Existing User
-						LookupContainer lookups = lookupManager.getLookupContainer();
-						List<Pair<String, String>> replacements = Arrays.asList(
-							Pair.of("[USER_NAME]", createdUser.getFirstName() + " " + createdUser.getLastName()),
-							Pair.of("[SMC_APP_LINK]", lookups.getSingleLookupValue(LookupKey.SMC_APP_LINK)),
-							Pair.of("[CUSTOMER_SERVICE_PHONE_NUM]", lookups.getSingleLookupValue(LookupKey.CUSTOMER_SERVICE_PHONE_NUM)),
-							Pair.of("[CUSTOMER_SERVICE_EMAIL]", lookups.getSingleLookupValue(LookupKey.CUSTOMER_SERVICE_EMAIL)),
-							Pair.of("[IT_SERVICE_PHONE_NUM]", lookups.getSingleLookupValue(LookupKey.IT_SERVICE_PHONE_NUM)),
-							Pair.of("[IT_SERVICE_EMAIL]", lookups.getSingleLookupValue(LookupKey.IT_SERVICE_EMAIL))
-						);
-						
-						EmailTemplate template = emailDAO.getEmailTemplate(EmailTemplateType.EXISTING_VENDOR_USER);
-						String subject = template.getActualSubject(replacements);
-						String body = template.getActualBody(replacements);
-						
-						SmcEmail email = new SmcEmail(EmailTemplateType.EXISTING_VENDOR_USER, currentUser.getSso(), createdUser.getEmail(), null, null, body, subject);
-						emailDAO.insertSmcEmail(email);		
-					} else {
-						// New User
-						EmailTemplate template = emailDAO.getEmailTemplate(EmailTemplateType.NEW_VENDOR_USER);
-						String subject = template.getSubjectTemplate();
-						String body = buildMailBodyNewUser(createdUser, template);
-						
-						SmcEmail email = new SmcEmail(EmailTemplateType.NEW_VENDOR_USER, currentUser.getSso(), createdUser.getEmail(), null, null, body, subject);
-						emailDAO.insertSmcEmail(email);		
-					}
-
-					if(!StringUtils.isBlank(createdUser.getDefaultPassword()))
-							securityDao.insertOtp(createdUser);
-				}catch (Exception e) {
-					logger.error("Mail Sending failed for user [ "+createdUser.getUserName()+" ]",e);
-				}
-			}
+		}else{
+			logger.info(" Modify User to LDAP..");
+			CPTSso oSSO = new CPTSso();
+			CPBGESSOUser oB2BUser = oSSO.findUser(createdUser.getUserName().trim());
+			oB2BUser.setGESSOStatus("A");
+			oB2BUser.setCommonName(createdUser.getLastName() + ", " + createdUser.getFirstName());
+			oB2BUser.setEmailAddress(createdUser.getEmail());
+			oB2BUser.setGivenName(createdUser.getFirstName());
+			oB2BUser.setSurName(createdUser.getLastName());
+			oB2BUser.setPhone(createdUser.getPhone());
+			createdUser.setGessouid(oB2BUser.getGESSOUID());
+			oSSO.modifyUser(oB2BUser, createdUser.getUserName());
 		}
-		catch (UserServiceException userException) {
-			throw userException;
-		}		
-		catch (Exception e) {
-			throw new UserServiceException(e.getMessage());
-		}
+		
+		//Add to DB
+		securityDao.addUser(createdUser);
+		User newUser = userService.getUser(createdUser.getSsoId(), false, false);
+		
+		String oneTimePassword = createdUser.getDefaultPassword();
+		
+		userService.insertUserSecurity(currentUser, newUser, oneTimePassword, true, lookups, commonStaticUrl);
 		
 		return createdUser;
-	}
-	
-	private String buildMailBodyNewUser(EditableUser userObject, EmailTemplate template)
-	{
-		LookupContainer lookups = lookupManager.getLookupContainer();
-		
-		String signInURL = lookups.getSingleLookupValue(LookupKey.PENSKE_SIGN_ON_URL);
-		String smcURL = lookups.getSingleLookupValue(LookupKey.SMC_APP_LINK);;
-		String customerServicePhone = lookups.getSingleLookupValue(LookupKey.CUSTOMER_SERVICE_PHONE_NUM);
-		
-		List<Pair<String, String>> replacements = Arrays.asList(
-			Pair.of("[SSO_ID]", userObject.getSsoId()),
-			Pair.of("[OTP]", userObject.getDefaultPassword()),
-			Pair.of("[PENSKE_SIGN_ON_URL]", signInURL),
-			Pair.of("[SMC_APP_LINK_HREF]", smcURL),
-			Pair.of("[SMC_APP_LINK]", smcURL),
-			Pair.of("[CUSTOMER_SERVICE_PHONE_NUM]", customerServicePhone),
-			Pair.of("[COMMON_STATIC_URL]", commonStaticUrl.toString())
-		);
-			
-		String body = template.getActualBody(replacements);
-		return body;
-	}
-
-	@Override
-	public void resendVendorEmail(User user, EditableUser editableUser) {
-		String otp = securityDao.getOtpForUser(editableUser);
-		if(StringUtils.isBlank(otp))
-			throw new IllegalArgumentException("Cannot find OTP for user. SSO: " + editableUser.getSsoId());
-		editableUser.setDefaultPassword(otp);
-
-		EmailTemplate template = emailDAO.getEmailTemplate(EmailTemplateType.NEW_VENDOR_USER);
-		String subject = template.getSubjectTemplate();
-		String body = buildMailBodyNewUser(editableUser, template);
-		
-		SmcEmail email = new SmcEmail(EmailTemplateType.NEW_VENDOR_USER, editableUser.getSsoId(), editableUser.getEmail(), null, null, body, subject);
-		emailDAO.insertSmcEmail(email);
 	}
 
 	private EditableUser insertUserToLDAP(EditableUser userObj) throws UserServiceException, UsrCreationSvcException {

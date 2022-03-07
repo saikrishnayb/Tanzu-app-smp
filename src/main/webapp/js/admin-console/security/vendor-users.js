@@ -186,7 +186,7 @@ $vendorUsersTable.on("click", ".resend-email", function(){
 $vendorUsersModal.on('click', '#resend-confirm', function() {
 	var userId = $('#resend-confirm').data('user-id');
 	
-	var $resendEmailContentPromise = $.get('resend-email.htm', {userId:userId});
+	var $resendEmailContentPromise = $.get('resend-email', {userId:userId});
 	
 	$resendEmailContentPromise.done(function(){
 		ModalUtil.closeModal($vendorUsersModal);

@@ -120,7 +120,7 @@ public class SecurityController {
         if(isSupplier || userSearchForm.isVendorSearch()){
             userSearchForm.setUserTypeId(ApplicationConstants.SUPPLIER_USER);
             mav = new ModelAndView("/admin-console/security/vendor-users");
-            mav.addObject("roleList", securityService.getVendorRoles(false,user.getRoleId(),user.getOrgId()));
+            mav.addObject("roleList", securityService.getVendorRoles(user.getRoleId(),user.getOrgId()));
             mav.addObject("accessVendor", user.hasSecurityFunction(SecurityFunction.MANAGE_VENDOR_USERS));
             List<Org> orgList = securityService.getOrgList(null, user);
             Collections.sort(orgList, Org.ORG_NAME_ASC);
@@ -304,8 +304,7 @@ public class SecurityController {
         ModelAndView mav = new ModelAndView("/admin-console/security/vendor-users");
         User user = sessionBean.getUser();
         // If the user is a supplier.
-        boolean isVendor = user.getUserType() == UserType.VENDOR;
-        mav.addObject("roleList", securityService.getVendorRoles(isVendor,user.getRoleId(),user.getOrgId()));
+        mav.addObject("roleList", securityService.getVendorRoles(user.getRoleId(),user.getOrgId()));
         List<Org> orgList = securityService.getOrgList(null, user);
         Collections.sort(orgList, Org.ORG_NAME_ASC);
         mav.addObject("orgList", orgList);

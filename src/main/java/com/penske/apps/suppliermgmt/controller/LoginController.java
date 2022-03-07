@@ -1,6 +1,6 @@
 package com.penske.apps.suppliermgmt.controller;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,13 +18,13 @@ import org.springframework.web.servlet.ModelAndView;
 import com.penske.apps.smccore.base.beans.LookupManager;
 import com.penske.apps.smccore.base.domain.LookupContainer;
 import com.penske.apps.smccore.base.domain.User;
+import com.penske.apps.smccore.base.domain.UserSecurity;
 import com.penske.apps.smccore.base.domain.enums.LookupKey;
 import com.penske.apps.smccore.base.domain.enums.UserType;
 import com.penske.apps.smccore.base.service.UserService;
 import com.penske.apps.suppliermgmt.annotation.VendorAllowed;
 import com.penske.apps.suppliermgmt.annotation.Version1Controller;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
-import com.penske.apps.suppliermgmt.domain.UserLoginHistory;
 import com.penske.apps.suppliermgmt.domain.UserVendorFilterSelection;
 import com.penske.apps.suppliermgmt.model.ErrorModel;
 import com.penske.apps.suppliermgmt.service.LoginService;
@@ -95,9 +95,9 @@ public class LoginController extends BaseController {
         		if(user.getUserType() == UserType.VENDOR && user.getAssociatedVendorIds().isEmpty())
         			errorMessage = "Associated vendors are not there for Your SSOID";
         		
-        		UserLoginHistory previousLoginHistory = loginService.recordUserLogin(request, user);
-        		loginService.deleteOTP(user);
-        		Date lastLoginDate = previousLoginHistory == null ? null : previousLoginHistory.getLastLoginDate();
+        		String serverName = request.getServerName();
+        		UserSecurity security = userService.getUserSecurity(user);
+        		LocalDateTime lastLoginDate = userService.recordUserLogin(user, security, serverName);
         		
         		String contextPath = request.getContextPath();
                 sessionBean.initialize(user, contextPath, lastLoginDate, hasBuddies, hasVendors, hasVendorFilterActivated);
