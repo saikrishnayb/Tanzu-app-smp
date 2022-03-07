@@ -1,5 +1,7 @@
 package com.penske.apps.adminconsole.dao;
 
+import java.util.Arrays;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -108,6 +110,16 @@ public class VendorDaoTest extends MyBatisDaoTest
 	public void shouldGetAllAlerts()
 	{
 		dao.getAllAlerts();
+	}
+	
+	@Test
+	public void shouldGetOrgVendorAssociationsByVendorIds() {
+		dao.getOrgVendorAssociationsByVendorIds(Arrays.asList(123,124));
+	}
+	
+	@Test
+	public void shouldGetVendorPoInformation() {
+		dao.getVendorPoInformation(Arrays.asList(123,124));
 	}
 
 	//***** HELPER METHODS *****//

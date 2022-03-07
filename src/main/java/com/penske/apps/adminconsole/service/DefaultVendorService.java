@@ -3,19 +3,24 @@ package com.penske.apps.adminconsole.service;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.penske.apps.adminconsole.dao.VendorDao;
+import com.penske.apps.adminconsole.domain.OrgVendorAssociation;
 import com.penske.apps.adminconsole.model.Alert;
 import com.penske.apps.adminconsole.model.EditableUser;
 import com.penske.apps.adminconsole.model.Vendor;
+import com.penske.apps.adminconsole.model.VendorActivityReport;
 import com.penske.apps.adminconsole.model.VendorContact;
+import com.penske.apps.adminconsole.model.VendorPoInformation;
 import com.penske.apps.smccore.base.dao.EmailDAO;
 import com.penske.apps.smccore.base.domain.EmailTemplate;
 import com.penske.apps.smccore.base.domain.SmcEmail;
@@ -291,4 +296,18 @@ public class DefaultVendorService implements VendorService {
 	public List<Alert> getAllAlerts(){
 		return vendorDao.getAllAlerts();
 	}
+	
+	@Override
+	public SXSSFWorkbook exportVendorActivity(User user, List<EditableUser> vendorUsers) {
+
+		List<Vendor> vendors = this.getAllVendors(user.getOrgId());
+		List<Integer> vendorIds = vendors.stream().map(v->v.getVendorId()).collect(Collectors.toList());
+		List<Integer> vendorNumbers = vendors.stream().map(v->v.getVendorNumber()).collect(Collectors.toList());
+		
+		List<OrgVendorAssociation> orgVendorAssociations = vendorDao.getOrgVendorAssociationsByVendorIds(vendorIds);
+		List<VendorPoInformation> vendorPoInformationList = vendorDao.getVendorPoInformation(vendorNumbers);
+		
+		return new VendorActivityReport(vendors, vendorPoInformationList, vendorUsers, orgVendorAssociations).getVendorActivityReport();
+	}
+
 }

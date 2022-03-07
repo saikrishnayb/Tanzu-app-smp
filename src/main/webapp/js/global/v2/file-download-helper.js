@@ -47,8 +47,8 @@ var DownloadUtil = (function() {
         _clearSpinners();
 
       }else if(xhr.readyState == XMLHttpRequest.DONE && xhr.status == 500) {
-        ModalUtil.openInfoModal('Something went wrong downloading the file in the server, please try again later');
-        _clearSpinners();
+			ModalUtil.openInfoModal('Something went wrong downloading the file in the server, please try again later');
+			_clearSpinners();
       }
       
     }

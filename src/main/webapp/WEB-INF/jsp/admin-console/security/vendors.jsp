@@ -15,6 +15,9 @@
 			<%@ include file="../../../jsp/global/navigation/admin-console/security/left-nav.jsp" %>
 			
 			<div class="leftNavAdjacentContainer">
+				<tl:isAuthorized tabName="Admin Console" secFunction="EXPORT_VENDOR_ACTIVITY">
+					<a id="export-vendor-activity" class="buttonSecondary" style="margin-bottom: 10px;">Export</a>
+				</tl:isAuthorized>
 				<!-- Advanced Search -->
 				<span id="advanced-search" class="expandableContent handCursor 
 				<c:if test="${hasBeenSearched eq false}">collapsedImage</c:if>
@@ -183,5 +186,6 @@
 		
 		<%@ include file="../../../jsp/global/v1/footer.jsp" %>
 		<script src="${baseUrl}/js/admin-console/security/vendors.js" type="text/javascript"></script>
+		<script type="text/javascript" src="${baseUrl}/js/global/v2/file-download-helper.js"></script>
 	</body>
 </html>
