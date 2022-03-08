@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.2//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.penske.apps.adminconsole.dao.SecurityDao">
+<mapper namespace="com.penske.apps.adminconsole.dao.SecurityDAO">
 
 	<resultMap id="VendorTreeMap" type="com.penske.apps.adminconsole.model.VendorTree">
 		 <id property="vendorName" column="VENDOR_NAME" />
@@ -17,68 +17,63 @@
 	 	<result property="zipCode" column="zipCode" />
 	 </resultMap>
 	
- 	<select id="getUserSearchList" resultType="com.penske.apps.adminconsole.model.EditableUser">
- 		With L as (Select SSO, MAX(LOGIN_TIME) as LAST_LOGIN
-               FROM SMC.SMC_USER_LOGIN
-               GROUP BY SSO)
- 		SELECT 	U.USER_ID AS userId,
- 				U.SSO AS userName,
-				U.EMAIL AS email,
-				U.FIRST_NAME AS firstName,
-				U.LAST_NAME AS lastName,
-				U.PHONE AS phone,
-				U.EXTENSION AS extension,
-				U.SSO as ssoId,
-				U.STATUS AS status,
-				O.NAME as org,
-				T.USER_TYPE AS "userType.userType",
-				U.ROLE_ID AS "role.roleId",
-				R.ROLE_NAME AS "role.roleName",
-				L.LAST_LOGIN AS lastLoginDate ,
-				U.CREATED_DATE AS createdDate,
-				CASE WHEN otp.OTP IS NULL THEN 0 ELSE 1 END as hasOtp
-	  FROM SMC.SMC_USER_MASTER U
-    LEFT JOIN  L
-    ON U.SSO = L.SSO
-    JOIN SMC.smc_user_roles R
-    ON U.ROLE_ID = R.ROLE_ID
-    JOIN SMC.SMC_USER_TYPES T
-    ON U.TYPE_ID = T.TYPE_ID
-    JOIN SMC.SMC_ORG_MASTER O
-    ON U.ORG_ID = O.ORG_ID
-    LEFT JOIN  SMC.SMC_USER_OTP otp
-    ON U.USER_ID = otp.USER_ID
-		WHERE
-				<if test="email != ''">
-					UPPER(U.EMAIL) LIKE #{email} AND
-				</if>
-				<if test="roleId != 0">
-					U.ROLE_ID = #{roleId} AND
-				</if>
-				<if test="firstName != ''">
-					UPPER(U.FIRST_NAME) LIKE #{firstName} AND
-				</if>
-				<if test="lastName != ''">
-					UPPER(U.LAST_NAME) LIKE #{lastName} AND
-				</if>
-				<if test="userTypeId != 0">
-					U.TYPE_ID = #{userTypeId} AND
-				</if>
-				<if test="orgIds != null">
-          <if test ="orgIds.size() != 0">
-            U.ORG_ID IN
-            <foreach item="searchedOrgId" collection="orgIds" open="(" separator="," close=")">#{searchedOrgId}</foreach>
-            AND
-          </if>
-        </if>
-				U.STATUS = 'A' AND
-				R.STATUS = 'A' AND 
-				U.ORG_ID IN(
-					SELECT ORG_ID FROM  SMC.SMC_ORG_MASTER
-	 					START WITH ORG_ID = #{orgId} 	CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID
-				)
-				
- 	</select>
+	<select id="getUserSearchList" resultType="com.penske.apps.adminconsole.model.EditableUser">
+		With L as (
+			Select SSO, MAX(LOGIN_TIME) as LAST_LOGIN
+			FROM SMC.SMC_USER_LOGIN
+			GROUP BY SSO
+		)
+		SELECT
+			U.USER_ID AS userId,
+			U.SSO AS userName,
+			U.EMAIL AS email,
+			U.FIRST_NAME AS firstName,
+			U.LAST_NAME AS lastName,
+			U.PHONE AS phone,
+			U.EXTENSION AS extension,
+			U.SSO as ssoId,
+			U.STATUS AS status,
+			O.NAME as org,
+			T.USER_TYPE AS "userType.userType",
+			U.ROLE_ID AS "role.roleId",
+			R.ROLE_NAME AS "role.roleName",
+			L.LAST_LOGIN AS lastLoginDate ,
+			U.CREATED_DATE AS createdDate,
+			CASE WHEN sec.ONE_TIME_PW IS NULL THEN 0 ELSE 1 END as hasOtp
+		FROM SMC.SMC_USER_MASTER U
+		LEFT JOIN L ON U.SSO = L.SSO
+		JOIN SMC.smc_user_roles R ON U.ROLE_ID = R.ROLE_ID
+		JOIN SMC.SMC_USER_TYPES T ON U.TYPE_ID = T.TYPE_ID
+		JOIN SMC.SMC_ORG_MASTER O ON U.ORG_ID = O.ORG_ID
+		LEFT JOIN SMC.SMC_USER_SECURITY sec ON U.USER_ID = sec.USER_ID
+		WHERE U.STATUS = 'A'
+		  AND R.STATUS = 'A'
+		  AND U.ORG_ID IN(
+			SELECT ORG_ID
+			FROM SMC.SMC_ORG_MASTER
+			START WITH ORG_ID = #{orgId} CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID
+		  )
+		<if test="email != ''">
+			AND UPPER(U.EMAIL) LIKE #{email}
+		</if>
+		<if test="roleId != 0">
+			AND U.ROLE_ID = #{roleId}
+		</if>
+		<if test="firstName != ''">
+			AND UPPER(U.FIRST_NAME) LIKE #{firstName}
+		</if>
+		<if test="lastName != ''">
+			AND UPPER(U.LAST_NAME) LIKE #{lastName}
+		</if>
+		<if test="userTypeId != 0">
+			AND U.TYPE_ID = #{userTypeId}
+		</if>
+		<if test="orgIds != null and orgIds.size() != 0">
+			AND U.ORG_ID IN (
+				<foreach item="searchedOrgId" collection="orgIds" separator=",">#{searchedOrgId}</foreach>
+			)
+		</if>
+	</select>
  	
  	<select id="getUser" resultType="com.penske.apps.adminconsole.model.EditableUser">  
  		SELECT 	USER_ID AS userId,
@@ -304,7 +299,7 @@
 		DESCRIPTION = #{orgDescription} ,
 		PARENT_ORG_ID = #{parentOrgId},
 		MODIFIED_BY = #{modifiedBy},
-		MODIFIED_DATE = CURRENT TIMESTAMP
+		MODIFIED_DATE = CURRENT_TIMESTAMP
 
 		WHERE ORG_ID = #{orgId}
 	</update>
@@ -325,7 +320,7 @@
  		UPDATE 	SMC.SMC_USER_MASTER
  		SET 	STATUS = 'I',
  				MODIFIED_BY =#{modifiedBy},
- 				MODIFIED_DATE = CURRENT TIMESTAMP
+ 				MODIFIED_DATE = CURRENT_TIMESTAMP
  		WHERE 	USER_ID = #{userId}
  	</update>
  	
@@ -343,7 +338,7 @@
 				DEPT_ID =#{userDept.userDeptId},
 				ORG_ID =#{orgId},
 				MODIFIED_BY =#{modifiedBy},
- 				MODIFIED_DATE = CURRENT TIMESTAMP, 
+ 				MODIFIED_DATE = CURRENT_TIMESTAMP, 
  				OPTDLYEML = #{dailyOptInChar}
 				WHERE USER_ID = #{userId}
  	</update>
@@ -357,7 +352,7 @@
 				EXTENSION  = #{extension},
 				GESSOUID  = #{gessouid},
 				MODIFIED_BY =#{modifiedBy},
- 				MODIFIED_DATE = CURRENT TIMESTAMP
+ 				MODIFIED_DATE = CURRENT_TIMESTAMP
 				WHERE USER_ID = #{userId}
  	</update>
  	
@@ -389,11 +384,11 @@
 		 		'A', 
 		 		#{userType.userTypeId},
 		 		#{orgId},
-		 		#{role.roleId},#{userDept.userDeptId},#{createdBy},CURRENT TIMESTAMP)
+		 		#{role.roleId},#{userDept.userDeptId},#{createdBy},CURRENT_TIMESTAMP)
  	</insert>
  	
- 	<insert id="addOrg">
- 		INSERT 	INTO SMC.SMC_ORG_MASTER 
+ 	<insert id="addOrg" useGeneratedKeys="true" keyProperty="orgId">
+ 	 		INSERT 	INTO SMC.SMC_ORG_MASTER 
  				(NAME,
   DESCRIPTION,
   PARENT_ORG_ID,
@@ -401,10 +396,7 @@
   CREATED_DATE) VALUES 	( #{orgName} ,
  					#{orgDescription},
 		 		#{parentOrgId}, 
-		 		#{createdBy},CURRENT TIMESTAMP)
-		   <selectKey resultType="int" keyProperty="orgId" order="AFTER" >
-           SELECT IDENTITY_VAL_LOCAL() as identity_val FROM SYSIBM.SYSDUMMY1
-		</selectKey> 
+		 		#{createdBy},CURRENT_TIMESTAMP)
  	</insert>
  	
  	
@@ -419,10 +411,10 @@
  					#{initString},  
  					#{signString}, 
  					#{createdBy},
- 					CURRENT TIMESTAMP)
+ 					CURRENT_TIMESTAMP)
  	</insert>
  	<select id="getNewUserId" resultType="int">
- 		SELECT 	MAX(USER_ID)
+ 		SELECT COALESCE(MAX(USER_ID), 0)
 		FROM 	SMC.SMC_USER_MASTER
  	</select>
  	<!-- modified -->
@@ -432,7 +424,7 @@
 		INIT_FILE = #{initString} ,  
 		SIGN_FILE = #{signString},
 		MODIFIED_BY =#{modifiedBy},
- 				MODIFIED_DATE = CURRENT TIMESTAMP  
+ 				MODIFIED_DATE = CURRENT_TIMESTAMP  
 		WHERE 	USER_ID = #{userId}
  	</update>
  	
@@ -441,7 +433,7 @@
 		SET  	
 		INIT_FILE = '',  
 		MODIFIED_BY =#{ssoId},
- 				MODIFIED_DATE = CURRENT TIMESTAMP  
+ 				MODIFIED_DATE = CURRENT_TIMESTAMP  
 		WHERE 	USER_ID = #{userId}
  	</update>
  	<update id="deleteSignatureImage">
@@ -449,7 +441,7 @@
 		SET  	
 		SIGN_FILE = '',
 		MODIFIED_BY =#{ssoId},
- 				MODIFIED_DATE = CURRENT TIMESTAMP  
+ 				MODIFIED_DATE = CURRENT_TIMESTAMP  
 		WHERE 	USER_ID = #{userId}
  	</update>
  	
@@ -544,7 +536,7 @@
  				CREATED_DATE,
  				SELECTION_TYPE) 
  		VALUES 	( #{ssoId} ,
- 					#{ssoId},#{userDept.userDept},#{createdBy},CURRENT TIMESTAMP,'')
+ 					#{ssoId},#{userDept.userDept},#{createdBy},CURRENT_TIMESTAMP,'')
  	</insert>
  	
  	<select id="getUserDeptsById" resultType="com.penske.apps.adminconsole.model.AdminConsoleUserDept">
@@ -560,14 +552,6 @@
  	</update>
  	
  	<select id="getUsersByOrgId" resultType="int">
- 		<!--  SELECT COUNT(1) as cnt FROM 
-			SMC.SMC_USER_MASTER userMst 
-			JOIN 
-		SMC.SMC_ORG_MASTER org ON userMst.ORG_ID=org.ORG_ID
-			WHERE userMst.STATUS='A'
-			START  WITH org.ORG_ID = #{orgId}
- 			CONNECT BY org.PARENT_ORG_ID = PRIOR org.ORG_ID -->
- 			
  			SELECT COUNT(1) as cnt FROM 
 			SMC.SMC_USER_MASTER WHERE STATUS='A' AND ORG_ID IN
 			(
@@ -606,7 +590,7 @@
 		UPDATE	SMC.smc_user_roles
 		SET		STATUS = 'I',
 				MODIFIED_BY =#{modifiedBy},
- 				MODIFIED_DATE = CURRENT TIMESTAMP
+ 				MODIFIED_DATE = CURRENT_TIMESTAMP
 		WHERE ROLE_ID IN
 		(
 			SELECT   ROLE_ID AS roleId
@@ -705,20 +689,20 @@
  	
  	
  	<select id="getOrgList" resultType="com.penske.apps.adminconsole.model.Org">
-		WITH result (Org_id , name, parent_org_id,description)
-		AS
-		(
-		SELECT Org_id , name, parent_org_id,description from
-		SMC.SMC_ORG_MASTER
-		WHERE Org_id = #{orgId}
+		WITH result (Org_id , name, parent_org_id,description) AS (
+			SELECT Org_id , name, parent_org_id,description
+			from SMC.SMC_ORG_MASTER
+			WHERE Org_id = #{orgId}
 		UNION ALL
-		SELECT a.Org_id,a.name,a.parent_org_id,a.description
-		FROM SMC.SMC_ORG_MASTER a 
-		INNER JOIN result s ON a.parent_org_id = s.Org_id)
-		SELECT r.Org_id as orgId, r.name as orgName, r.description as orgDescription,(select name from
-		SMC.SMC_ORG_MASTER where org_id=r.parent_org_id) as parentorgname,r.parent_org_id as parentOrgId FROM
-		result r
-			<where>
+			SELECT a.Org_id,a.name,a.parent_org_id,a.description
+			FROM SMC.SMC_ORG_MASTER a 
+			INNER JOIN result s ON a.parent_org_id = s.Org_id
+		)
+		SELECT r.Org_id as orgId, r.name as orgName, r.description as orgDescription,
+			(select name from SMC.SMC_ORG_MASTER where org_id=r.parent_org_id) as parentorgname,
+			r.parent_org_id as parentOrgId
+		FROM result r
+		<where>
 		  <if test="orgName != null">
 		  	r.name=#{orgName}
 		  </if>
@@ -763,17 +747,5 @@
  			#{vendorNumber}
  		</foreach>
  	</delete>
- 	
- 	<insert id="insertOtp">
-		INSERT INTO SMC.SMC_USER_OTP (USER_ID, OTP)
-		VALUES (#{userObj.userId}, #{userObj.defaultPassword}) 
-	</insert>
-	
-	<select id="getOtpForUser" resultType="String">
-		SELECT
-			OTP 
-		FROM SMC.SMC_USER_OTP 
-		WHERE USER_ID = #{editableUser.userId}
-	</select>
 	
  </mapper>

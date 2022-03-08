@@ -15,6 +15,7 @@ import com.penske.apps.adminconsole.dao.ExceptionDaoTest;
 import com.penske.apps.adminconsole.dao.GlobalSettingsDaoTest;
 import com.penske.apps.adminconsole.dao.LoadsheetManagementDaoTest;
 import com.penske.apps.adminconsole.dao.RoleDaoTest;
+import com.penske.apps.adminconsole.dao.SecurityDAOTest;
 import com.penske.apps.adminconsole.dao.VendorDaoTest;
 import com.penske.apps.suppliermgmt.dao.AdminConsoleUserDAOTest;
 import com.penske.apps.suppliermgmt.dao.HelpDAOTest;
@@ -40,6 +41,7 @@ import com.penske.apps.suppliermgmt.dao.LookUpDAOTest;
 	CostAdjustmentOptionDaoTest.class,
 	CostToleranceDaoTest.class,
 	VendorDaoTest.class,
+	SecurityDAOTest.class,
 	
 	//suppliermgmt
 	HelpDAOTest.class,

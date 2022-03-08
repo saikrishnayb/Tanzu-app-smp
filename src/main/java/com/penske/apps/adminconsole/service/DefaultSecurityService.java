@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.penske.apps.adminconsole.dao.SecurityDao;
+import com.penske.apps.adminconsole.dao.SecurityDAO;
 import com.penske.apps.adminconsole.model.AdminConsoleUserDept;
 import com.penske.apps.adminconsole.model.AdminConsoleUserType;
 import com.penske.apps.adminconsole.model.EditableUser;
@@ -44,7 +44,7 @@ import com.penske.util.security.priv.CPTSso;
 public class DefaultSecurityService implements SecurityService{
 
 	@Autowired
-	private SecurityDao securityDao;
+	private SecurityDAO securityDao;
 
 	@Override
 	public EditableUser getEditInfo(String userId, String userType) {
@@ -240,7 +240,6 @@ public class DefaultSecurityService implements SecurityService{
 		user.setCreatedBy(currentUser.getSso());
 		//user.setGessouid(user.getSsoId()); // If it is pensker
 		securityDao.addUser(user);
-		user.setUserId(securityDao.getNewUserId());
 		if(user.getUserDept() !=null){
 			AdminConsoleUserDept depart=securityDao.getUserDeptsById(user.getUserDept().getUserDeptId());
 			if(depart !=null){
@@ -248,13 +247,9 @@ public class DefaultSecurityService implements SecurityService{
 				securityDao.addBuddies(user);
 			}
 		}
-	//	boolean isPenskeUser = (ApplicationConstants.PENSKE_USER == user.getUserType().getUserTypeId());
 		boolean isSupplierUser = (ApplicationConstants.SUPPLIER_USER == user.getUserType().getUserTypeId());
 		//updated for adding comments to the base64 changes
 		if(isSupplierUser){
-			//for(int vendId: vendorIds){
-			//	securityDao.addVendorUserAssoc(user.getUserId(), vendId);
-			//}
 		}else{
 			if (user.getSignFile() == null) {
 				user.setSignString(new String(Base64.encodeBase64("".getBytes())));
@@ -334,7 +329,7 @@ public class DefaultSecurityService implements SecurityService{
 				}
 			}
 		} else if(userSearchForm.getUserTypeId() == ApplicationConstants.SUPPLIER_USER){
-			roleList = securityDao.getVendorRoles(true,currentUser.getRoleId(),currentUser.getOrgId());
+			roleList = securityDao.getVendorRoles(currentUser.getRoleId(),currentUser.getOrgId());
 			Iterator<EditableUser> userIt = userList.iterator();
 			while(userIt.hasNext()){
 				EditableUser user = userIt.next();
@@ -569,7 +564,7 @@ public class DefaultSecurityService implements SecurityService{
 	@Override
 	public List<EditableUser> getVendorUserList(User currentUser) {
 		List<EditableUser> userList = securityDao.getVendorUserList(currentUser);
-		List<Role> roleList = securityDao.getVendorRoles(true,currentUser.getRoleId(),currentUser.getOrgId());
+		List<Role> roleList = securityDao.getVendorRoles(currentUser.getRoleId(),currentUser.getOrgId());
 		Iterator<EditableUser> userIt = userList.iterator();
 		while(userIt.hasNext()){
 			EditableUser user = userIt.next();
@@ -588,8 +583,8 @@ public class DefaultSecurityService implements SecurityService{
 	}
 
 	@Override
-	public List<Role> getVendorRoles(boolean isVendor, int roleId, int orgId) {
-		return securityDao.getVendorRoles(isVendor,roleId,orgId);
+	public List<Role> getVendorRoles(int roleId, int orgId) {
+		return securityDao.getVendorRoles(roleId,orgId);
 	}
 
 	@Override

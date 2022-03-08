@@ -1,6 +1,6 @@
 package com.penske.apps.suppliermgmt.beans;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import com.penske.apps.smccore.base.domain.User;
 import com.penske.apps.suppliermgmt.model.AppConfigSessionData;
@@ -16,7 +16,7 @@ public interface SuppliermgmtSessionBean {
 	 * @param buddyFilterApplied True if the user has buddies selected in their buddy list; false if they do not, or are not allowed to
 	 * @param vendorFilterApplied True if the user has a vendor filter applied; false if they do not, or are not allowed to
 	 */
-	public void initialize(User user, String baseUrl, Date lastUserLoginDate, boolean buddyFilterApplied, boolean vendorFilterApplied, boolean vendorFilterActive);
+	public void initialize(User user, String baseUrl, LocalDateTime lastUserLoginDate, boolean buddyFilterApplied, boolean vendorFilterApplied, boolean vendorFilterActive);
 
 	/**
      * Gets an object for the currently logged in user.

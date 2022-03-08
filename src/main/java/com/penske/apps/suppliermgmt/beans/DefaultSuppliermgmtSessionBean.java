@@ -1,7 +1,7 @@
 package com.penske.apps.suppliermgmt.beans;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -15,7 +15,7 @@ public class DefaultSuppliermgmtSessionBean implements SuppliermgmtSessionBean, 
 
     private User user;
     private String baseUrl;
-    private Date lastUserLoginDate;
+    private LocalDateTime lastUserLoginDate;
     private boolean buddyListApplied;
     private boolean vendorFilterApplied;
     private boolean vendorFilterActive;
@@ -24,7 +24,7 @@ public class DefaultSuppliermgmtSessionBean implements SuppliermgmtSessionBean, 
 
     /** {@inheritDoc} */
     @Override
-    public void initialize(User user, String baseUrl, Date lastUserLoginDate, boolean buddyListApplied, boolean vendorFilterApplied, boolean vendorFilterActive)
+    public void initialize(User user, String baseUrl, LocalDateTime lastUserLoginDate, boolean buddyListApplied, boolean vendorFilterApplied, boolean vendorFilterActive)
     {
        	if(user == null)
     		throw new IllegalArgumentException("Can not initialize user session without a logged-in user.");
