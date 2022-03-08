@@ -17,6 +17,7 @@ import com.penske.apps.adminconsole.dao.VendorDao;
 import com.penske.apps.adminconsole.domain.OrgVendorAssociation;
 import com.penske.apps.adminconsole.model.Alert;
 import com.penske.apps.adminconsole.model.EditableUser;
+import com.penske.apps.adminconsole.model.PurchasingSummary;
 import com.penske.apps.adminconsole.model.Vendor;
 import com.penske.apps.adminconsole.model.VendorActivityReport;
 import com.penske.apps.adminconsole.model.VendorContact;
@@ -308,6 +309,11 @@ public class DefaultVendorService implements VendorService {
 		List<VendorPoInformation> vendorPoInformationList = vendorDao.getVendorPoInformation(vendorNumbers);
 		
 		return new VendorActivityReport(vendors, vendorPoInformationList, vendorUsers, orgVendorAssociations).getVendorActivityReport();
+	}
+
+	@Override
+	public PurchasingSummary getPurchasingSummary(Vendor vendor) {
+		return vendor == null ? null : vendorDao.getPurchasingSummary(vendor);
 	}
 
 }

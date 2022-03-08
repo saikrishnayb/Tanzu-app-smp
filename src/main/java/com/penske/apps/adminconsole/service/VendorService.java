@@ -6,6 +6,7 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 import com.penske.apps.adminconsole.model.Alert;
 import com.penske.apps.adminconsole.model.EditableUser;
+import com.penske.apps.adminconsole.model.PurchasingSummary;
 import com.penske.apps.adminconsole.model.Vendor;
 import com.penske.apps.smccore.base.domain.User;
 
@@ -29,4 +30,6 @@ public interface VendorService {
 	Vendor getVendorById(int vendorId);
 
 	public SXSSFWorkbook exportVendorActivity(User user, List<EditableUser> vendorUsers);
+	
+	public PurchasingSummary getPurchasingSummary(Vendor vendor);
 }

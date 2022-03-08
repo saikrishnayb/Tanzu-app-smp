@@ -121,7 +121,17 @@ public class VendorDaoTest extends MyBatisDaoTest
 	public void shouldGetVendorPoInformation() {
 		dao.getVendorPoInformation(Arrays.asList(123,124));
 	}
-
+	
+	@Test
+	public void shouldGetPurchasingSummary()
+	{
+		Vendor vendor = new Vendor();
+		vendor.setVendorNumber(123);
+		vendor.setCorpCode("HPTL");
+		
+		dao.getPurchasingSummary(vendor);
+	}
+	
 	//***** HELPER METHODS *****//
 	private EditableUser makeUser(int userId)
 	{

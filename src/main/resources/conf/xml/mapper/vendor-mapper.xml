@@ -249,4 +249,15 @@
 		)
 	</select>
 	
+	<select id="getPurchasingSummary" resultType="com.penske.apps.adminconsole.model.PurchasingSummary">
+		SELECT COUNT(PO_NUMBER) AS poCount, MAX(PO_DATE) AS lastPoDate
+		FROM (
+			SELECT DISTINCT(PO_NUMBER), PO_DATE
+			FROM CORP.NVOPODL1 
+			WHERE VENDOR_NUMBER = #{vendor.vendorNumber}
+				AND CORP = #{vendor.corpCode}
+				AND PO_DATE >= ADD_MONTHS(CURRENT_DATE, -36)
+		)
+	</select>
+	
 </mapper>

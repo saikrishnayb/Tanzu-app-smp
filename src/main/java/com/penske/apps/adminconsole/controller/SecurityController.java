@@ -12,14 +12,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.penske.apps.adminconsole.enums.LeftNav;
 import com.penske.apps.adminconsole.enums.Tab.SubTab;
-import com.penske.apps.adminconsole.model.EditableUser;
 import com.penske.apps.adminconsole.model.Org;
 import com.penske.apps.adminconsole.model.Role;
 import com.penske.apps.adminconsole.model.UserSearchForm;
-import com.penske.apps.adminconsole.model.Vendor;
 import com.penske.apps.adminconsole.service.RoleService;
 import com.penske.apps.adminconsole.service.SecurityService;
-import com.penske.apps.adminconsole.service.VendorService;
 import com.penske.apps.adminconsole.util.ApplicationConstants;
 import com.penske.apps.smccore.base.annotation.SmcSecurity;
 import com.penske.apps.smccore.base.domain.User;
@@ -38,8 +35,6 @@ import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 @RequestMapping("/admin-console/security")
 public class SecurityController {
 
-    @Autowired
-    private VendorService vendorService;
     @Autowired
     private RoleService roleService;
     @Autowired
@@ -215,41 +210,6 @@ public class SecurityController {
         return mav;
     }
 
-    /* ================== Vendors ================== */
-    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDORS)
-    @RequestMapping("vendors")
-    public ModelAndView getVendorsPage() {
-        ModelAndView mav = new ModelAndView("/admin-console/security/vendors");
-        User user = sessionBean.getUser();
-        mav.addObject("vendors", vendorService.getAllVendors(user.getOrgId()));
-        mav.addObject("analysts", vendorService.getAllPlanningAnalysts());
-        mav.addObject("specialists", vendorService.getAllSupplySpecialists());
-        mav.addObject("alertTypeList", vendorService.getAllAlerts());
-        mav.addObject("isPenskeUser", user.getUserType() == UserType.PENSKE);
-        mav.addObject("hasBeenSearched", false);
-        return mav;
-    }
-
-    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDORS)
-    @RequestMapping("vendors-advanced-search")
-    public ModelAndView getVendorsAdvancedSearch(Vendor vendor) {
-        return getVendorSearchDetails(vendor);
-    }
-
-    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDORS)
-    @RequestMapping("vendors-advanced-search-alert")
-    public ModelAndView getVendorsAdvancedSearchAlert(@RequestParam(value ="alertType", required = true) String alertType) {
-        Vendor vendor=new Vendor();
-        EditableUser user = new EditableUser();
-        vendor.setPlanningAnalyst(user);
-        vendor.setSupplySpecialist(user);
-        if(alertType !=null){
-            alertType=alertType.trim();
-        }
-        vendor.setAlertType(alertType);
-        return getVendorSearchDetails(vendor);
-    }
-
     @VendorAllowed
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_ORG)
     @RequestMapping(value ={"/org"})
@@ -312,21 +272,6 @@ public class SecurityController {
         mav.addObject("userTypeList", securityService.getUserTypes());
         mav.addObject("accessVendor", user.hasSecurityFunction(SecurityFunction.MANAGE_VENDOR_USERS));
         mav.addObject("vendorUsersPage", true);
-        return mav;
-    }
-
-    private ModelAndView getVendorSearchDetails(Vendor vendor){
-    	User user = sessionBean.getUser();
-        ModelAndView mav = new ModelAndView("/admin-console/security/vendors");
-        mav.addObject("searchedVendor", vendor);
-
-        // For populating the rest of the page
-        mav.addObject("vendors", vendorService.getVendorsBySearchConditions(user.getOrgId() , vendor));
-        mav.addObject("analysts", vendorService.getAllPlanningAnalysts());
-        mav.addObject("specialists", vendorService.getAllSupplySpecialists());
-        mav.addObject("alertTypeList", vendorService.getAllAlerts());
-        mav.addObject("isPenskeUser", user.getUserType() == UserType.PENSKE);
-        mav.addObject("hasBeenSearched", true);
         return mav;
     }
 }

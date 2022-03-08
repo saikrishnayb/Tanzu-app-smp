@@ -25,7 +25,6 @@ import com.penske.apps.adminconsole.model.ImageFile;
 import com.penske.apps.adminconsole.model.Org;
 import com.penske.apps.adminconsole.model.Role;
 import com.penske.apps.adminconsole.model.UserSearchForm;
-import com.penske.apps.adminconsole.model.Vendor;
 import com.penske.apps.adminconsole.model.VendorUser;
 import com.penske.apps.adminconsole.service.RoleService;
 import com.penske.apps.adminconsole.service.SecurityService;
@@ -623,59 +622,6 @@ public class SecurityRestController {
         roleService.modifyRoleStatus(roleId,user.getSso());
     }
 
-    /* ================== Vendors ================== */
-    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDORS)
-    @RequestMapping("edit-vendor")
-    @ResponseBody
-    public ModelAndView getEditVendorInformation(@RequestParam("vendorId") int vendorId) {
-        ModelAndView mav = new ModelAndView("/admin-console/security/modal/edit-vendor-modal");
-
-        mav.addObject("vendor", vendorService.getVendorById(vendorId));
-        mav.addObject("analysts", vendorService.getAllPlanningAnalysts());
-        mav.addObject("specialists", vendorService.getAllSupplySpecialists());
-
-        return mav;
-    }
-
-    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDORS)
-    @RequestMapping("view-vendor")
-    @ResponseBody
-    public ModelAndView getViewVendorInformation(@RequestParam("vendorId") int vendorId) {
-        ModelAndView mav = new ModelAndView("/admin-console/security/modal/view-vendor-modal");
-
-        mav.addObject("vendor", vendorService.getVendorById(vendorId));
-
-        return mav;
-    }
-
-    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDORS)
-    @RequestMapping("get-analysts-and-specialists")
-    @ResponseBody
-    public ModelAndView getAllAnalystsAndSpecialists() {
-        ModelAndView mav = new ModelAndView("/admin-console/security/modal/mass-update-vendor-modal");
-
-        mav.addObject("analysts", vendorService.getAllPlanningAnalysts());
-        mav.addObject("specialists", vendorService.getAllSupplySpecialists());
-
-        return mav;
-    }
-
-	@SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDORS)
-	@RequestMapping("modify-vendor-info")
-	@ResponseBody
-	public Vendor modifyVendorInfo(Vendor vendor) {
-		User user = sessionBean.getUser();
-		return vendorService.modifyVendorSingleUpdate(vendor, user);
-	}
-
-    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDORS)
-    @RequestMapping("mass-update-vendors")
-    @ResponseBody
-    public void modifyVendorsByVendorId(Vendor vendor, @RequestParam("vendorIds") int... vendorIdsToApplyChange) {
-    	User user = sessionBean.getUser();
-    	vendorService.modifyVendorsMassUpdate(vendor, user, vendorIdsToApplyChange);
-    }
-
     @SmcSecurity(securityFunction = SecurityFunction.EXPORT_VENDOR_ACTIVITY)
     @RequestMapping("export-vendor-activity")
     @ResponseBody
@@ -698,37 +644,6 @@ public class SecurityRestController {
 				workbook.dispose();
 			}
 		}
-    }
-
-    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDORS)
-    @RequestMapping(value="sso-user-lookup" , method=RequestMethod.GET)
-    @ResponseBody
-    public EditableUser modifyVendorsByVendorId(@RequestParam("ssoId") String ssoId,HttpServletResponse response) {
-        EditableUser user = null;
-        try{
-            user = securityService.doesUserExistInPenske(ssoId);
-        }catch(SMCException sme){
-            try {
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, sme.getErrorDetails().getMessage());
-                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                response.getWriter().write(sme.getErrorDetails().getMessage());
-                response.flushBuffer();
-            } catch (IOException e) {
-                LOGGER.error(e.getMessage());
-            }
-        }catch (Exception e) {
-            LOGGER.debug(e.getMessage(), e);
-            try {
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while loading user data");
-                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                response.getWriter().write("Error while loading user data");
-                response.flushBuffer();
-            } catch (IOException ie) {
-                LOGGER.error(ie.getMessage(), ie);
-            }
-        }
-        return	user;
-
     }
 
     @VendorAllowed
