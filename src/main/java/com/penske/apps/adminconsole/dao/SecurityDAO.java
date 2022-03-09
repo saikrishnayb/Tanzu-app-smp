@@ -13,6 +13,7 @@ import com.penske.apps.adminconsole.model.Role;
 import com.penske.apps.adminconsole.model.SignatureInitial;
 import com.penske.apps.adminconsole.model.UserSearchForm;
 import com.penske.apps.adminconsole.model.VendorTree;
+import com.penske.apps.adminconsole.model.VendorUser;
 import com.penske.apps.smccore.base.annotation.NonVendorQuery;
 import com.penske.apps.smccore.base.annotation.SkipQueryTest;
 import com.penske.apps.smccore.base.domain.User;
@@ -94,6 +95,9 @@ public interface SecurityDAO {
 
     @NonVendorQuery
     public void addUser(EditableUser user);
+    
+    @NonVendorQuery
+    public void addVendorUser(VendorUser vendorUser);
 
     @NonVendorQuery
     public void modifyUserStatus(@Param("userId")int userId,  @Param("modifiedBy")String modifiedBy);
@@ -179,6 +183,9 @@ public interface SecurityDAO {
     @SkipQueryTest("Uses heirarchical queries, which HSQLDB does not support")
     @NonVendorQuery
     public List<Role> getVendorRoles(@Param("roleId") int roleId,@Param("orgId") int orgId);
+    
+    @NonVendorQuery
+    public Role getRoleById(@Param("roleId") int roleId);
 
     @NonVendorQuery
     public List<AdminConsoleUserType> getVendorUserTypes();

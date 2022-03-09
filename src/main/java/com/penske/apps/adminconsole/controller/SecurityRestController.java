@@ -24,6 +24,7 @@ import com.penske.apps.adminconsole.model.EditableUser;
 import com.penske.apps.adminconsole.model.ImageFile;
 import com.penske.apps.adminconsole.model.Org;
 import com.penske.apps.adminconsole.model.Role;
+import com.penske.apps.adminconsole.model.UserForm;
 import com.penske.apps.adminconsole.model.UserSearchForm;
 import com.penske.apps.adminconsole.model.Vendor;
 import com.penske.apps.adminconsole.model.VendorUser;
@@ -124,7 +125,7 @@ public class SecurityRestController {
         
         User user = sessionBean.getUser();
         mav.addObject("currentUser", user);
-        boolean isVendor = user.getUserType() == UserType.VENDOR;
+        
         if(!isCreate) {
         	EditableUser editableUser = securityService.getEditInfo(userId, userType);
         	mav.addObject("editableUser", editableUser);
@@ -137,7 +138,7 @@ public class SecurityRestController {
         mav.addObject("userRoles", vendorRoles);
         mav.addObject("userTypes", securityService.getVendorUserTypes());
 
-        List<Org> vendorOrg = securityService.getVendorOrg(isVendor, user.getOrgId());
+        List<Org> vendorOrg = securityService.getVendorOrg(user.isVendorUser(), user.getOrgId());
         Collections.sort(vendorOrg, Org.ORG_NAME_ASC);
         mav.addObject("penskeUserType", UserType.PENSKE);
         mav.addObject("vendorUserType", UserType.VENDOR);
@@ -457,13 +458,12 @@ public class SecurityRestController {
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
     @RequestMapping(value ="/create-vendor-user", method = RequestMethod.POST)
     @ResponseBody
-    public void addVendorUser(EditableUser user, HttpServletResponse response) throws Exception{
+    public void addVendorUser(UserForm userForm, HttpServletResponse response) throws Exception{
         try{
         	LookupContainer lookups = lookupManager.getLookupContainer();
         	
             User currentUser = sessionBean.getUser();
-            user.setCreatedBy(currentUser.getSso());
-            userCreationService.insertUserInfo(currentUser, user, lookups, commonStaticUrl);
+            userCreationService.insertUserInfo(currentUser, userForm, lookups, commonStaticUrl);
         }
         catch (UserServiceException e) {
             if(IUserConstants.DUP_SSO_ERROR_CODE==e.getErrorCode()){

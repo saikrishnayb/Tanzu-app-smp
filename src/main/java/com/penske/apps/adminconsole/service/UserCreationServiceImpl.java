@@ -14,6 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.penske.apps.adminconsole.dao.SecurityDAO;
 import com.penske.apps.adminconsole.exceptions.UserServiceException;
 import com.penske.apps.adminconsole.model.EditableUser;
+import com.penske.apps.adminconsole.model.Role;
+import com.penske.apps.adminconsole.model.UserForm;
+import com.penske.apps.adminconsole.model.VendorUser;
 import com.penske.apps.adminconsole.util.CommonUtils;
 import com.penske.apps.adminconsole.util.IUserConstants;
 import com.penske.apps.smccore.base.domain.LookupContainer;
@@ -40,13 +43,12 @@ public class UserCreationServiceImpl implements UserCreationService {
 	
 	@Override
 	@Transactional(rollbackFor = {RuntimeException.class, UserServiceException.class})
-	public EditableUser insertUserInfo(User currentUser, EditableUser createdUser, LookupContainer lookups, URL commonStaticUrl) throws UserServiceException {
+	public VendorUser insertUserInfo(User currentUser, UserForm userForm, LookupContainer lookups, URL commonStaticUrl) throws UserServiceException {
 		
-		createdUser.setUserName(createdUser.getSsoId());
-		if(createdUser.getReturnFlg() != 1){ // userObj.getReturnFlg() != 1 -- User not available in the LDAP. This flag is set after validating userid with LDAP.
+		if(userForm.getReturnFlg() != 1){ // userObj.getReturnFlg() != 1 -- User not available in the LDAP. This flag is set after validating userid with LDAP.
 			logger.info("Add User to LDAP..");
 			try {
-				insertUserToLDAP(createdUser);
+				insertUserToLDAP(userForm);
 			} catch (UserServiceException userException) {
 				throw userException;
 			} catch (UsrCreationSvcException e) {
@@ -55,41 +57,46 @@ public class UserCreationServiceImpl implements UserCreationService {
 		}else{
 			logger.info(" Modify User to LDAP..");
 			CPTSso oSSO = new CPTSso();
-			CPBGESSOUser oB2BUser = oSSO.findUser(createdUser.getUserName().trim());
+			CPBGESSOUser oB2BUser = oSSO.findUser(userForm.getSsoId().trim());
 			oB2BUser.setGESSOStatus("A");
-			oB2BUser.setCommonName(createdUser.getLastName() + ", " + createdUser.getFirstName());
-			oB2BUser.setEmailAddress(createdUser.getEmail());
-			oB2BUser.setGivenName(createdUser.getFirstName());
-			oB2BUser.setSurName(createdUser.getLastName());
-			oB2BUser.setPhone(createdUser.getPhone());
-			createdUser.setGessouid(oB2BUser.getGESSOUID());
-			oSSO.modifyUser(oB2BUser, createdUser.getUserName());
+			oB2BUser.setCommonName(userForm.getLastName() + ", " + userForm.getFirstName());
+			oB2BUser.setEmailAddress(userForm.getEmail());
+			oB2BUser.setGivenName(userForm.getFirstName());
+			oB2BUser.setSurName(userForm.getLastName());
+			oB2BUser.setPhone(userForm.getPhone());
+			userForm.setGessouid(oB2BUser.getGESSOUID());
+			oSSO.modifyUser(oB2BUser, userForm.getSsoId());
 		}
 		
-		//Add to DB
-		securityDao.addUser(createdUser);
-		User newUser = userService.getUser(createdUser.getSsoId(), false, false);
+		Role role = securityDao.getRoleById(userForm.getRoleId());
 		
-		String oneTimePassword = createdUser.getDefaultPassword();
+		VendorUser vendorUser = new VendorUser(userForm, role);
 		
-		userService.insertUserSecurity(currentUser, newUser, oneTimePassword, true, lookups, commonStaticUrl);
+		//Add to DB - In future, we should merge this with addUser once creating a user no longer uses EditableUser
+		securityDao.addVendorUser(vendorUser);
+		User newUser = userService.getUser(vendorUser.getSsoId(), false, false);
 		
-		return createdUser;
+		String oneTimePassword = userForm.getOtp();
+		boolean sendNewUserEmail = !userForm.isHoldEnrollmentEmail();
+		
+		userService.insertUserSecurity(currentUser, newUser, oneTimePassword, sendNewUserEmail, lookups, commonStaticUrl);
+		
+		return vendorUser;
 	}
 
-	private EditableUser insertUserToLDAP(EditableUser userObj) throws UserServiceException, UsrCreationSvcException {
-		if(!CommonUtils.validUserID(userObj.getUserName())){
-			logger.error("UserID " + userObj.getUserName() + " does not conform to standards.");
+	private void insertUserToLDAP(UserForm userForm) throws UserServiceException, UsrCreationSvcException {
+		if(!CommonUtils.validUserID(userForm.getSsoId())){
+			logger.error("UserID " + userForm.getSsoId() + " does not conform to standards.");
 			throw new UserServiceException(IUserConstants.NOT_STANDARD_SSO_ERROR_CODE);
 		}
 		CreatedUser user=null;
-		List<LDAPAttributes> attributeList= assignLDAPattribute(userObj);
+		List<LDAPAttributes> attributeList= assignLDAPattribute(userForm);
 		user=	remoteCreationService.createB2bLdapUser(attributeList);
 		String strServerResponse =user!=null?user.getResponseMessage():null;
 		if (!StringUtils.isEmpty(strServerResponse)){
 			if( !strServerResponse.contains(IUserConstants.OPERATION_EXECUTED_SUCCESS)) {
 				if ( strServerResponse.contains(IUserConstants.ATTR_VAL_ALREADY_EXISTS)) {
-					logger.info("UserID "+ userObj.getUserName() + " exists. Please choose a different UserID.");
+					logger.info("UserID "+ userForm.getSsoId() + " exists. Please choose a different UserID.");
 					throw new UserServiceException(IUserConstants.DUP_SSO_ERROR_CODE);
 				} else {
 					logger.info(strServerResponse);
@@ -100,9 +107,8 @@ public class UserCreationServiceImpl implements UserCreationService {
 			logger.info(" Add user operation was not successful.");
 			throw new UserServiceException(IUserConstants.EMPTY_RESPONSE_ADD_ERROR_CODE);
 		}
-		userObj.setDefaultPassword(user.getDefaultPassword());
-		userObj.setGessouid(user.getGessouid());
-		return userObj;
+		userForm.setOtp(user.getDefaultPassword());
+		userForm.setGessouid(user.getGessouid());
 	}
 	
 	@Override
@@ -168,15 +174,15 @@ public class UserCreationServiceImpl implements UserCreationService {
 		return userObj;
 	}
 
-	public List<LDAPAttributes> assignLDAPattribute(EditableUser userBean){
+	public List<LDAPAttributes> assignLDAPattribute(UserForm userForm){
 		List<LDAPAttributes> attributeList=new ArrayList<LDAPAttributes>();
-		attributeList.add(createLDAPattribute(LDAPConstants.FIRST_NAME, userBean.getFirstName()));
-		attributeList.add(createLDAPattribute(LDAPConstants.INITIALS, userBean.getInitString()));
-		attributeList.add(createLDAPattribute(LDAPConstants.LAST_NAME, userBean.getLastName()));
-		attributeList.add(createLDAPattribute(LDAPConstants.UNIQUE_ID, userBean.getUserName()));
-		attributeList.add(createLDAPattribute(LDAPConstants.EMAIL_ADDRESS, userBean.getEmail()));
-		attributeList.add(createLDAPattribute(LDAPConstants.FULL_NAME,userBean.getLastName() + "," + userBean.getFirstName()));
-		attributeList.add(createLDAPattribute(LDAPConstants.PHONE, userBean.getPhone()));
+		attributeList.add(createLDAPattribute(LDAPConstants.FIRST_NAME, userForm.getFirstName()));
+		attributeList.add(createLDAPattribute(LDAPConstants.INITIALS, null));
+		attributeList.add(createLDAPattribute(LDAPConstants.LAST_NAME, userForm.getLastName()));
+		attributeList.add(createLDAPattribute(LDAPConstants.UNIQUE_ID, userForm.getSsoId()));
+		attributeList.add(createLDAPattribute(LDAPConstants.EMAIL_ADDRESS, userForm.getEmail()));
+		attributeList.add(createLDAPattribute(LDAPConstants.FULL_NAME,userForm.getLastName() + "," + userForm.getFirstName()));
+		attributeList.add(createLDAPattribute(LDAPConstants.PHONE, userForm.getPhone()));
 		attributeList.add(createLDAPattribute(LDAPConstants.GESSO_STATUS, "A"));
 		return attributeList;
 	}

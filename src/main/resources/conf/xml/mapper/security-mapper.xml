@@ -387,6 +387,36 @@
 		 		#{role.roleId},#{userDept.userDeptId},#{createdBy},CURRENT_TIMESTAMP)
  	</insert>
  	
+ 	<insert id="addVendorUser" useGeneratedKeys="true" keyProperty="userId">
+ 		INSERT 	INTO SMC.SMC_USER_MASTER 
+ 				(	SSO,
+ 				GESSOUID, 
+ 				EMAIL,  
+ 				FIRST_NAME,  
+ 				LAST_NAME,  
+ 				PHONE,
+ 				<if test="extension != null"> 
+ 					EXTENSION,  
+ 				</if> 
+ 				STATUS,  
+ 				TYPE_ID,
+ 				ORG_ID,  
+ 				ROLE_ID,dept_id,created_by,created_date) 
+ 		VALUES 	( #{ssoId} ,
+ 					#{gessouid},
+		 		#{email}, 
+		 		#{firstName},  
+		 		#{lastName}, 
+		 		#{phone},
+		 		<if test="extension != null"> 
+		 			#{extension},  
+		 		</if>  
+		 		'A', 
+		 		#{userType.userTypeId},
+		 		#{orgId},
+		 		#{role.roleId},#{userDept.userDeptId},#{createdBy},CURRENT_TIMESTAMP)
+ 	</insert>
+ 	
  	<insert id="addOrg" useGeneratedKeys="true" keyProperty="orgId">
  	 		INSERT 	INTO SMC.SMC_ORG_MASTER 
  				(NAME,
@@ -671,6 +701,16 @@
  		ROLE_ID = #{roleId} and ROLE_ID >= 16
  		ORDER BY roleName
  	</select>
+ 	
+ 	<select id="getRoleById" resultType="com.penske.apps.adminconsole.model.Role">
+ 		SELECT 	
+ 			ROLE_NAME AS roleName,
+ 			ROLE_ID AS roleId
+ 		FROM 
+ 			SMC.smc_user_roles 
+ 		WHERE ROLE_ID = #{roleId}
+ 	</select>
+ 	
  	<select id="getVendorUserTypes" resultType="com.penske.apps.adminconsole.model.AdminConsoleUserType">
  		SELECT 	DESCRIPTION AS description,
  				TYPE_ID AS userTypeId
