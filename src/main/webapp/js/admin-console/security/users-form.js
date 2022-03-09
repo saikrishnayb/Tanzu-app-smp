@@ -759,7 +759,7 @@ $('#signature-add').on('click', function(){
 					
 					var $createUserPromise = $.post('./create-vendor-user.htm', $userForm.serialize());
 					$createUserPromise.done(function() {
-						location.assign('./vendorUsers.htm');
+						location.assign('./vendor-users.htm');
 					});
 					$createUserPromise.fail(function(xhr, ajaxOptions, thrownError) {
 						 if(xhr.responseText.indexOf('USER_SERVICE_DUP_SSO:1')>0){
