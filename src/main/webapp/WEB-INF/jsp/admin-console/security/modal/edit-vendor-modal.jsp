@@ -1,7 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<div class="modal-content col-xs-12" data-modal-title="Modify Vendor" data-modal-width="560">
+<div id="edit-vendor-modal" class="modal-content col-xs-12" data-modal-title="Modify Vendor" data-modal-width="550">
 	<form id="edit-vendor-form">
 		<input name="vendorId" type="hidden" value="${vendor.vendorId}" />
 		

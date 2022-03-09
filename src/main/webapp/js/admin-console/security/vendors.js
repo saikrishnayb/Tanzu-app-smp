@@ -1,15 +1,5 @@
 var $vendorTable = $('#vendor-table');
-var $editVendorModal = $('#edit-vendor-modal');
-var $viewVendorModal = $('#view-vendor-modal');
-var $massUpdateModal = $('#mass-update-modal');
-var $purchasingDetailsModal = $('#purchasing-details-modal');
 var $searchButtonsContainer = $('#search-buttons-div');
-
-// Initializes the modals
-ModalUtil.initializeModal($editVendorModal);
-ModalUtil.initializeModal($viewVendorModal);
-ModalUtil.initializeModal($massUpdateModal);
-ModalUtil.initializeModal($purchasingDetailsModal);
 
 $(document).ready(function() {
 	selectCurrentNavigation("tab-security", "left-nav-vendors");
@@ -159,17 +149,17 @@ $(document).ready(function() {
 		$.post('./edit-vendor.htm',
 				{'vendorId': vendorId},
 				function(data) {
-					$editVendorModal.html(data);
-					ModalUtil.openModal($editVendorModal);
+					$globalModal.append(data);
+					ModalUtil.openModal($globalModal);
 					
-					/*$editVendorModal.find('[name="planningAnalyst.userId"] option').each(function() {
+					/*$globalModal.find('[name="planningAnalyst.userId"] option').each(function() {
 						if (!analystFound && $(this).val() == analystId) {
 							$(this).attr('selected', 'selected');
 							analystFound = true;
 						}
 					});
 					
-					$editVendorModal.find('[name="supplySpecialist.userId"] option').each(function() {
+					$globalModal.find('[name="supplySpecialist.userId"] option').each(function() {
 						if (!specialistFound && $(this).val() == specialistId) {
 							$(this).attr('selected', 'selected');
 							specialistFound = true;
@@ -185,8 +175,8 @@ $(document).ready(function() {
 		$.get('./view-vendor.htm',
 				{'vendorId': vendorId},
 				function(data) {
-					$viewVendorModal.html(data);
-					ModalUtil.openModal($viewVendorModal);
+					$globalModal.append(data);
+					ModalUtil.openModal($globalModal);
 				});
 	});
 	
@@ -197,8 +187,8 @@ $(document).ready(function() {
 		$.get('./purchasing-details.htm',
 				{'vendorId': vendorId},
 				function(data) {
-					$purchasingDetailsModal.html(data);
-					ModalUtil.openModal($purchasingDetailsModal);
+					$globalModal.append(data);
+					ModalUtil.openModal($globalModal);
 				});
 	});
 	
@@ -253,13 +243,13 @@ $(document).ready(function() {
 			
 			$.post('./get-analysts-and-specialists.htm',
 					function(data) {
-						$massUpdateModal.html(data);
+						$globalModal.append(data);
 
-						$massUpdateModal.find('[name="notificationException"]').val(notificationException);
-						$massUpdateModal.find('[name="planningAnalyst.userId"]').val(planningAnalyst);
-						$massUpdateModal.find('[name="supplySpecialist.userId"]').val(supplySpecialist);
+						$globalModal.find('[name="notificationException"]').val(notificationException);
+						$globalModal.find('[name="planningAnalyst.userId"]').val(planningAnalyst);
+						$globalModal.find('[name="supplySpecialist.userId"]').val(supplySpecialist);
 	
-						ModalUtil.openModal($massUpdateModal);
+						ModalUtil.openModal($globalModal);
 					});
 		}
 		else {
@@ -346,26 +336,5 @@ function toggleVendorAddress(expandCollapseLink) {
 	}
 }
 
-//This object is an adapter for the file-download-helper.js, which is from the v2 page template, so that we can use it in the v1 page template.
-// This provides functions that that JS file calls, but it implements them using the old v1 page template elements.
-// When we migrate to the v2 template for this page, we should remove this adapter, as it will conflict with the LoadingUtil object in v2.
-//var LoadingUtil = (function() {
-//  
-//  var showLoadingOverlay = function() {
-//    showLoading();
-//  };
-//  
-//  var hideLoadingOverlay = function() {
-//	hideLoading();
-//  };
-//
-//  //Private Methods ************************************************************
-//
-//  return {
-//    showLoadingOverlay: showLoadingOverlay,
-//    hideLoadingOverlay: hideLoadingOverlay,
-//  };
-//
-//})();
 //Comment to assist Chrome debugger tools
 //# sourceURL=vendors.js

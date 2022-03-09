@@ -8,7 +8,6 @@ import org.apache.ibatis.annotations.Param;
 import com.penske.apps.adminconsole.domain.OrgVendorAssociation;
 import com.penske.apps.adminconsole.model.Alert;
 import com.penske.apps.adminconsole.model.EditableUser;
-import com.penske.apps.adminconsole.model.PurchasingSummary;
 import com.penske.apps.adminconsole.model.Vendor;
 import com.penske.apps.adminconsole.model.VendorContact;
 import com.penske.apps.adminconsole.model.VendorPoInformation;
@@ -52,7 +51,4 @@ public interface VendorDao {
     
     @NonVendorQuery
 	public List<OrgVendorAssociation> getOrgVendorAssociationsByVendorIds(@Param("vendorIds") Collection<Integer> vendorIds);
-
-    @NonVendorQuery
-    public PurchasingSummary getPurchasingSummary(@Param("vendor") Vendor vendor);
 }

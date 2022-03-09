@@ -180,18 +180,6 @@
 					</div>
 				</div>
 			</div>
-			
-			<!-- Edit Vendor Modal -->
-			<div id="edit-vendor-modal" class="modal"></div>
-			
-			<!-- View Vendor Modal -->
-			<div id="view-vendor-modal" class="modal"></div>
-			
-			<!-- Mass Update Modal -->
-			<div id="mass-update-modal" class="modal"></div>
-			
-			<!-- Purchasing Details Modal -->
-			<div id="purchasing-details-modal" class="modal"></div>
 		</div> 
 		
 		<%@ include file="../../../jsp/global/v2/footer.jsp" %>

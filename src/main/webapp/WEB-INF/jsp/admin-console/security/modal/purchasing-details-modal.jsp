@@ -1,10 +1,14 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<div class="modal-content col-xs-12" data-modal-title="Purchasing Details" data-modal-width="550">
+<div id="purchasing-details-modal" class="modal-content col-xs-12" data-modal-title="Purchasing Details" data-modal-width="550">
 	<%@ include file="../../../global/v2/modal-error-container.jsp"%>
 	<div class="row modal-body">
 		<div class="col-xs-12">
-			<h2 class="row">Vendor Information</h2>
+			<div class="row">
+				<div class="col-xs-12">
+					<h2>Vendor Information</h2>
+				</div>
+			</div>
 			<div class="row">
 				<div class="col-xs-5">
 					<label>Vendor Number</label>
@@ -22,17 +26,21 @@
 				</div>
 			</div>
 		</div>
-		<div class="row col-xs-12">
+		<div class="col-xs-12">
 			<hr>
 		</div>
 		<div class="col-xs-12">
-			<h2 class="row">Purchasing Summary</h2>
+			<div class="row">
+				<div class="col-xs-12">
+					<h2>Purchasing Summary</h2>
+				</div>
+			</div>
 			<div class="row">
 				<div class="col-xs-5">
 					<label>POs Issued (Last 3 Years)</label>
 				</div>
 				<div class="col-xs-7">
-					${purchasingSummary.poCount}
+					${purchasingSummary.posIssuedInLast3Years}
 				</div>
 			</div>
 			<div class="row">

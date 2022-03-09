@@ -1,6 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<div class="modal-content col-xs-12" data-modal-title="Modify Vendor" data-modal-width="520">
+<div id="mass-update-modal" class="modal-content col-xs-12" data-modal-title="Modify Vendor" data-modal-width="520">
 	<form id="mass-update-form">
 		<span class="floatLeft clear-left errorMsg">* indicates a required field.</span>
 		

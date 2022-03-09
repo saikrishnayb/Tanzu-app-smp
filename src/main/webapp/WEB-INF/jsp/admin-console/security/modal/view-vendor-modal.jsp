@@ -1,6 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<div class="modal-content col-xs-12" data-modal-title="Vendor Information" data-modal-width="550">
+<div id="view-vendor-modal" class="modal-content col-xs-12" data-modal-title="Vendor Information" data-modal-width="550">
 	<label class="floatLeft clear-left width-125">Company</label>
 	<span class="floatLeft">${vendor.companyName}</span>
 	

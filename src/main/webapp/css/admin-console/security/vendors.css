@@ -89,11 +89,11 @@ form .form-column {
 	width: 125px;
 }
 
-#view-vendor-modal label, #purchasing-details-modal label {
+#view-vendor-modal label, #purchasing-details-modal label, #purchasing-details-modal h2 {
 	margin: 5px 0;
 }
 
-#view-vendor-modal span, #purchasing-details-modal {
+#view-vendor-modal span {
 	margin-top: 5px;
 	margin-left: 10px;
 }

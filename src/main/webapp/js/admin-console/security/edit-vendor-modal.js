@@ -1,3 +1,5 @@
+var $editVendorModal  = $('#edit-vendor-modal');
+
 $(document).ready(function() {
 	$editVendorModal.unbind();
 	
@@ -23,8 +25,7 @@ $(document).ready(function() {
 			$.post('./modify-vendor-info.htm',
 					vendor,
 					function(data) {
-						ModalUtil.closeModal($editVendorModal);
-						//processingImageAndTextHandler('hidden');
+						ModalUtil.closeModal($globalModal);
 						updateRow(data);			
 					});
 		}
@@ -45,7 +46,7 @@ $(document).ready(function() {
 	});
 	
 	$editVendorModal.on('click', '.cancel', function() {
-		ModalUtil.closeModal($editVendorModal);
+		ModalUtil.closeModal($globalModal);
 	});
 });
 

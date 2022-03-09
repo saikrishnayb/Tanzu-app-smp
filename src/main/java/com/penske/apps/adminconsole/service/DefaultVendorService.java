@@ -1,6 +1,7 @@
 package com.penske.apps.adminconsole.service;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,7 +18,6 @@ import com.penske.apps.adminconsole.dao.VendorDao;
 import com.penske.apps.adminconsole.domain.OrgVendorAssociation;
 import com.penske.apps.adminconsole.model.Alert;
 import com.penske.apps.adminconsole.model.EditableUser;
-import com.penske.apps.adminconsole.model.PurchasingSummary;
 import com.penske.apps.adminconsole.model.Vendor;
 import com.penske.apps.adminconsole.model.VendorActivityReport;
 import com.penske.apps.adminconsole.model.VendorContact;
@@ -312,8 +312,8 @@ public class DefaultVendorService implements VendorService {
 	}
 
 	@Override
-	public PurchasingSummary getPurchasingSummary(Vendor vendor) {
-		return vendor == null ? null : vendorDao.getPurchasingSummary(vendor);
+	public List<VendorPoInformation> getVendorPoInformation(Collection<Integer> vendorNumbers) {
+		return vendorDao.getVendorPoInformation(vendorNumbers);
 	}
 
 }
