@@ -98,7 +98,7 @@
 			<c:if test="${isCreatePage and not currentUser.isVendorUser()}">
 				<div class="daily-opt-in-container">
 					<input id="hold-enrollment-email" tabindex=11 name="holdEnrollmentEmail" type="checkbox" />
-					<label for="hold-enrollment-email">Hold Enrollment Email</label> 
+					<label for="hold-enrollment-email">Hold Enrollment Email until PO Issued</label> 
 				</div>
 			</c:if>			
 		</form>
