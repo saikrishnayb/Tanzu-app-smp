@@ -32,5 +32,5 @@ public interface VendorService {
 
 	public SXSSFWorkbook exportVendorActivity(User user, List<EditableUser> vendorUsers);
 	
-	public List<VendorPoInformation> getVendorPoInformation(Collection<Integer> vendorNumbers);
+	public List<VendorPoInformation> getVendorPoInformation(Collection<Integer> vendorIds);
 }
