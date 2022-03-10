@@ -311,8 +311,8 @@ public class DefaultVendorService implements VendorService {
 	}
 
 	@Override
-	public List<VendorPoInformation> getVendorPoInformation(Collection<Integer> vendorNumbers) {
-		return vendorDao.getVendorPoInformation(vendorNumbers);
+	public List<VendorPoInformation> getVendorPoInformation(Collection<Integer> vendorIds) {
+		return vendorDao.getVendorPoInformation(vendorIds);
 	}
 
 }
