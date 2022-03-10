@@ -223,17 +223,20 @@
 	
 	<select id="getVendorPoInformation" resultType="com.penske.apps.adminconsole.model.VendorPoInformation">
 		SELECT 
-			VENDOR_NUMBER as vendorNumber,
-			MAX(CREATED_DATE) AS lastPoDate,
+			vend.VENDOR_ID as vendorId,
+			MAX(purch.CREATED_DATE) AS lastPoDate,
 			COUNT(*) AS posIssuedInLast3Years
-		FROM SMC.SMC_PURCHASING_HEADER
-		WHERE CREATED_DATE > CURRENT_TIMESTAMP - 3 YEAR
-		AND VENDOR_NUMBER IN (
-			<foreach item="vendorNumber" collection="vendorNumbers" separator=",">
-				#{vendorNumber}
+		FROM SMC.SMC_PURCHASING_HEADER purch
+		JOIN SMC.SMC_VENDOR_MASTER vend
+		ON vend.VENDOR_NUMBER = purch.VENDOR_NUMBER
+		AND vend.CORP = purch.CORP
+		WHERE purch.CREATED_DATE > CURRENT_TIMESTAMP - 3 YEAR
+		AND vend.VENDOR_ID IN (
+			<foreach item="vendorId" collection="vendorIds" separator=",">
+				#{vendorId}
 			</foreach>
 		)
-		GROUP BY VENDOR_NUMBER 
+		GROUP BY vend.VENDOR_ID
 	</select>
 	
 	<select id="getOrgVendorAssociationsByVendorIds" resultType="com.penske.apps.adminconsole.domain.OrgVendorAssociation">

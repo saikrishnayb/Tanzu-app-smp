@@ -302,10 +302,9 @@ public class DefaultVendorService implements VendorService {
 
 		List<Vendor> vendors = this.getAllVendors(user.getOrgId());
 		List<Integer> vendorIds = vendors.stream().map(v->v.getVendorId()).collect(Collectors.toList());
-		List<Integer> vendorNumbers = vendors.stream().map(v->v.getVendorNumber()).collect(Collectors.toList());
 		
 		List<OrgVendorAssociation> orgVendorAssociations = vendorDao.getOrgVendorAssociationsByVendorIds(vendorIds);
-		List<VendorPoInformation> vendorPoInformationList = vendorDao.getVendorPoInformation(vendorNumbers);
+		List<VendorPoInformation> vendorPoInformationList = vendorDao.getVendorPoInformation(vendorIds);
 		
 		return new VendorActivityReport(vendors, vendorPoInformationList, vendorUsers, orgVendorAssociations).getVendorActivityReport();
 	}
