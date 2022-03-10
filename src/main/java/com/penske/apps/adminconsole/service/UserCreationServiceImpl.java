@@ -12,11 +12,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.penske.apps.adminconsole.dao.SecurityDAO;
+import com.penske.apps.adminconsole.domain.VendorUser;
 import com.penske.apps.adminconsole.exceptions.UserServiceException;
 import com.penske.apps.adminconsole.model.EditableUser;
 import com.penske.apps.adminconsole.model.Role;
 import com.penske.apps.adminconsole.model.UserForm;
-import com.penske.apps.adminconsole.model.VendorUser;
 import com.penske.apps.adminconsole.util.CommonUtils;
 import com.penske.apps.adminconsole.util.IUserConstants;
 import com.penske.apps.smccore.base.domain.LookupContainer;

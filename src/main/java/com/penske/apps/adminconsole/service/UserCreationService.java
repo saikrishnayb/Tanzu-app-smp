@@ -2,10 +2,10 @@ package com.penske.apps.adminconsole.service;
 
 import java.net.URL;
 
+import com.penske.apps.adminconsole.domain.VendorUser;
 import com.penske.apps.adminconsole.exceptions.UserServiceException;
 import com.penske.apps.adminconsole.model.EditableUser;
 import com.penske.apps.adminconsole.model.UserForm;
-import com.penske.apps.adminconsole.model.VendorUser;
 import com.penske.apps.smccore.base.domain.LookupContainer;
 import com.penske.apps.smccore.base.domain.User;
 

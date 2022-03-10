@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.penske.apps.adminconsole.domain.VendorUser;
 import com.penske.apps.adminconsole.exceptions.UserServiceException;
 import com.penske.apps.adminconsole.model.EditableUser;
 import com.penske.apps.adminconsole.model.ImageFile;
@@ -27,7 +28,6 @@ import com.penske.apps.adminconsole.model.Role;
 import com.penske.apps.adminconsole.model.UserForm;
 import com.penske.apps.adminconsole.model.UserSearchForm;
 import com.penske.apps.adminconsole.model.Vendor;
-import com.penske.apps.adminconsole.model.VendorUser;
 import com.penske.apps.adminconsole.service.RoleService;
 import com.penske.apps.adminconsole.service.SecurityService;
 import com.penske.apps.adminconsole.service.UserCreationService;

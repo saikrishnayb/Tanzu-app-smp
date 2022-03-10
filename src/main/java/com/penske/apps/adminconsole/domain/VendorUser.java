@@ -1,9 +1,12 @@
-package com.penske.apps.adminconsole.model;
+package com.penske.apps.adminconsole.domain;
 
 import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.penske.apps.adminconsole.model.EditableUser;
+import com.penske.apps.adminconsole.model.Role;
+import com.penske.apps.adminconsole.model.UserForm;
 import com.penske.apps.smccore.base.domain.enums.UserType;
 import com.penske.apps.smccore.base.util.DateUtil;
 

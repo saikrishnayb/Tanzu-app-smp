@@ -95,9 +95,9 @@
 				<label for="daily-email-opt-in">Opt-in to Daily Summary Email</label> 
 			</div>
 			
-			<c:if test="${isCreatePage and !currentUser.isVendorUser()}">
+			<c:if test="${isCreatePage and not currentUser.isVendorUser()}">
 				<div class="daily-opt-in-container">
-					<input id="hold-enrollment-email" tabindex=11 name="holdEnrollmentEmail" type="checkbox" <c:if test="${(editableUser.dailyOptIn) || ()}">checked=checked</c:if> />
+					<input id="hold-enrollment-email" tabindex=11 name="holdEnrollmentEmail" type="checkbox" />
 					<label for="hold-enrollment-email">Hold Enrollment Email</label> 
 				</div>
 			</c:if>			

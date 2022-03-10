@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.penske.apps.adminconsole.domain.VendorUser;
 import com.penske.apps.adminconsole.model.AdminConsoleUserDept;
 import com.penske.apps.adminconsole.model.AdminConsoleUserType;
 import com.penske.apps.adminconsole.model.EditableUser;
@@ -13,7 +14,6 @@ import com.penske.apps.adminconsole.model.Role;
 import com.penske.apps.adminconsole.model.SignatureInitial;
 import com.penske.apps.adminconsole.model.UserSearchForm;
 import com.penske.apps.adminconsole.model.VendorTree;
-import com.penske.apps.adminconsole.model.VendorUser;
 import com.penske.apps.smccore.base.annotation.NonVendorQuery;
 import com.penske.apps.smccore.base.annotation.SkipQueryTest;
 import com.penske.apps.smccore.base.domain.User;
