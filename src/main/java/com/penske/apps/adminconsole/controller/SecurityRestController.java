@@ -73,9 +73,9 @@ public class SecurityRestController {
 	public ModelAndView getPurchasingDetails(@RequestParam("vendorId") int vendorId) {
 		ModelAndView mav = new ModelAndView("/admin-console/security/modal/purchasing-details-modal");
 		Vendor vendor = vendorService.getVendorById(vendorId);
-		List<VendorPoInformation> info = vendorService.getVendorPoInformation(Arrays.asList(vendor.getVendorNumber()));
+		List<VendorPoInformation> info = vendorService.getVendorPoInformation(Arrays.asList(vendor.getVendorId()));
 		mav.addObject("vendor", vendor);
-		mav.addObject("purchasingSummary", info == null || info.isEmpty() ? new VendorPoInformation(vendor.getVendorNumber()) : info.get(0));
+		mav.addObject("purchasingSummary", info == null || info.isEmpty() ? new VendorPoInformation(vendor.getVendorId()) : info.get(0));
 		return mav;
 	}
 

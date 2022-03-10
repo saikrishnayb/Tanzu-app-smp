@@ -9,7 +9,7 @@ public enum LeftNav {
 
     /** Security **/
     PENSKE_USERS(SecurityFunction.MANAGE_USERS, "admin-console/security/users.htm"),
-    VENDOR_USERS(SecurityFunction.MANAGE_VENDOR_USERS, "admin-console/security/vendorUsers.htm"),
+    VENDOR_USERS(SecurityFunction.MANAGE_VENDOR_USERS, "admin-console/security/vendor-users.htm"),
     MANAGE_ROLES(SecurityFunction.MANAGE_ROLES, "admin-console/security/roles.htm"),
     MANAGE_VENDORS(SecurityFunction.MANAGE_VENDORS, "admin-console/security/vendors.htm"),
     MANAGE_ORG(SecurityFunction.MANAGE_ORG, "admin-console/security/org.htm"),
