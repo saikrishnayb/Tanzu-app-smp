@@ -73,7 +73,7 @@ public class UserCreationServiceImpl implements UserCreationService {
 		VendorUser vendorUser = new VendorUser(userForm, role);
 		
 		//Add to DB - In future, we should merge this with addUser once creating a user no longer uses EditableUser
-		securityDao.addVendorUser(vendorUser);
+		securityDao.addVendorUser(vendorUser, currentUser);
 		User newUser = userService.getUser(vendorUser.getSsoId(), false, false);
 		
 		String oneTimePassword = userForm.getOtp();

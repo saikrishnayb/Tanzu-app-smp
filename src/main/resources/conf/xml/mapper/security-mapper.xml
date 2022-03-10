@@ -370,7 +370,8 @@
  				</if> 
  				STATUS,  
  				TYPE_ID,
- 				ORG_ID,  
+ 				ORG_ID,
+ 				OPTDLYEML,  
  				ROLE_ID,dept_id,created_by,created_date) 
  		VALUES 	( #{ssoId} ,
  					#{gessouid},
@@ -384,37 +385,47 @@
 		 		'A', 
 		 		#{userType.userTypeId},
 		 		#{orgId},
+		 		#{dailyOptInChar},
 		 		#{role.roleId},#{userDept.userDeptId},#{createdBy},CURRENT_TIMESTAMP)
  	</insert>
  	
- 	<insert id="addVendorUser" useGeneratedKeys="true" keyProperty="userId">
- 		INSERT 	INTO SMC.SMC_USER_MASTER 
- 				(	SSO,
+ 	<insert id="addVendorUser" useGeneratedKeys="true" keyProperty="vendorUser.userId">
+ 		INSERT 	INTO SMC.SMC_USER_MASTER (	
+ 				SSO,
  				GESSOUID, 
  				EMAIL,  
  				FIRST_NAME,  
  				LAST_NAME,  
  				PHONE,
- 				<if test="extension != null"> 
+ 				<if test="vendorUser.extension != null"> 
  					EXTENSION,  
  				</if> 
  				STATUS,  
  				TYPE_ID,
  				ORG_ID,  
- 				ROLE_ID,dept_id,created_by,created_date) 
- 		VALUES 	( #{ssoId} ,
- 					#{gessouid},
-		 		#{email}, 
-		 		#{firstName},  
-		 		#{lastName}, 
-		 		#{phone},
-		 		<if test="extension != null"> 
-		 			#{extension},  
+ 				ROLE_ID,
+ 				dept_id,
+ 				OPTDLYEML,
+ 				created_by,
+ 				created_date) 
+ 		VALUES 	( 
+ 				#{vendorUser.ssoId} ,
+ 				#{vendorUser.gessouid},
+		 		#{vendorUser.email}, 
+		 		#{vendorUser.firstName},  
+		 		#{vendorUser.lastName}, 
+		 		#{vendorUser.phone},
+		 		<if test="vendorUser.extension != null"> 
+		 			#{vendorUser.extension},  
 		 		</if>  
 		 		'A', 
-		 		#{userType.userTypeId},
-		 		#{orgId},
-		 		#{role.roleId},#{userDept.userDeptId},#{createdBy},CURRENT_TIMESTAMP)
+		 		#{vendorUser.userType.typeId},
+		 		#{vendorUser.orgId},
+		 		#{vendorUser.role.roleId},
+		 		null,
+		 		#{vendorUser.dailyOptInChar},
+		 		#{createdBy.sso},
+		 		CURRENT_TIMESTAMP)
  	</insert>
  	
  	<insert id="addOrg" useGeneratedKeys="true" keyProperty="orgId">

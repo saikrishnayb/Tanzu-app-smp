@@ -366,7 +366,7 @@ $('.createVendorUser').on("click", function(){
 			if(isValid){
 				
 				
-				var $createUserPromise = $getVendorUserTableContents = $.ajax( {
+				var $createUserPromise = $.ajax( {
 				    type: 'POST',
 				    url: 'create-vendor-user', 
 				    data: $userForm.serialize(),
