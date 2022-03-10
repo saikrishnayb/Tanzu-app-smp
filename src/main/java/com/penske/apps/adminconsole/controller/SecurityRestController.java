@@ -160,7 +160,7 @@ public class SecurityRestController {
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
     @RequestMapping(value ="resend-email")
     @ResponseBody
-    public void resendEmail(@RequestParam(value="userId") String userId) {
+    public void resendEmail(@RequestParam(value="userId") int userId) {
     	LookupContainer lookups = lookupManager.getLookupContainer();
     	User user = sessionBean.getUser();
     	
