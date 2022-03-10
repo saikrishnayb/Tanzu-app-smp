@@ -73,7 +73,7 @@ public class VendorActivityReportTest {
         when(vendor2.getOrgId()).thenReturn(1);
         	
         VendorPoInformation vendorPoInformation = mock(VendorPoInformation.class);
-        when(vendorPoInformation.getVendorNumber()).thenReturn(123);
+        when(vendorPoInformation.getVendorId()).thenReturn(1);
         when(vendorPoInformation.getLastPoDate()).thenReturn(LocalDate.now());
         when(vendorPoInformation.getPosIssuedInLast3Years()).thenReturn(10);
         

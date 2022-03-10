@@ -93,13 +93,13 @@ public class VendorActivityReport {
 	private void populateVendorActivitySheet(SXSSFWorkbook workbook, SXSSFSheet worksheet, List<Vendor> vendors, List<VendorPoInformation> vendorPoInformations) {
 		generateVendorActivityHeader(workbook, worksheet);
 		
-		Map<Integer, VendorPoInformation> vendorPoInformationByVendorNum = vendorPoInformations.stream().collect(Collectors.toMap(vpi->vpi.getVendorNumber(), vpi->vpi));
+		Map<Integer, VendorPoInformation> vendorPoInformationByVendorId = vendorPoInformations.stream().collect(Collectors.toMap(vpi->vpi.getVendorId(), vpi->vpi));
 		
 		int index = 1;
 		for(Vendor vendor: vendors) {
-			VendorPoInformation vendorPoInformation = vendorPoInformationByVendorNum.get(vendor.getVendorNumber());
+			VendorPoInformation vendorPoInformation = vendorPoInformationByVendorId.get(vendor.getVendorId());
 			if(vendorPoInformation == null)
-				vendorPoInformation = new VendorPoInformation(vendor.getVendorNumber());
+				vendorPoInformation = new VendorPoInformation(vendor.getVendorId());
 			
 			SXSSFRow row = worksheet.createRow(index);
 			populateVendorActivityRow(workbook, row, vendor, vendorPoInformation);

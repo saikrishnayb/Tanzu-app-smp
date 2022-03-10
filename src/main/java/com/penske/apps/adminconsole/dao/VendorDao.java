@@ -47,9 +47,8 @@ public interface VendorDao {
     public List<Alert> getAllAlerts();
 
     @NonVendorQuery
-	public List<VendorPoInformation> getVendorPoInformation(@Param("vendorNumbers") Collection<Integer> vendorNumbers);
+	public List<VendorPoInformation> getVendorPoInformation(@Param("vendorIds") Collection<Integer> vendorIds);
     
     @NonVendorQuery
 	public List<OrgVendorAssociation> getOrgVendorAssociationsByVendorIds(@Param("vendorIds") Collection<Integer> vendorIds);
-
 }

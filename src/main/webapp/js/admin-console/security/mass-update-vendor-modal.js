@@ -1,3 +1,5 @@
+var $massUpdateModal = $('#mass-update-modal');
+
 $(document).ready(function() {
 	$massUpdateModal.unbind();
 	
@@ -49,8 +51,7 @@ $(document).ready(function() {
 	});
 	
 	$massUpdateModal.on('click', '.cancel', function() {
-		$massUpdateModal.empty();
-		$massUpdateModal.dialog('close');
+		ModalUtil.closeModal($globalModal);
 	});
 });
 

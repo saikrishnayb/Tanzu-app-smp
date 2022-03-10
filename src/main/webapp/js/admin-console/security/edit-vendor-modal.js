@@ -1,3 +1,5 @@
+var $editVendorModal  = $('#edit-vendor-modal');
+
 $(document).ready(function() {
 	$editVendorModal.unbind();
 	
@@ -23,8 +25,7 @@ $(document).ready(function() {
 			$.post('./modify-vendor-info.htm',
 					vendor,
 					function(data) {
-						$editVendorModal.dialog('close');
-						processingImageAndTextHandler('hidden');
+						ModalUtil.closeModal($globalModal);
 						updateRow(data);			
 					});
 		}
@@ -45,8 +46,7 @@ $(document).ready(function() {
 	});
 	
 	$editVendorModal.on('click', '.cancel', function() {
-		$editVendorModal.empty();
-		$editVendorModal.dialog('close');
+		ModalUtil.closeModal($globalModal);
 	});
 });
 
@@ -56,8 +56,14 @@ function updateRow(data){
 	}).closest("tr");
 	var rowHtml = '<td class="editable centerAlign">'
 						+ '<input class="update-checkbox" type="checkbox" />'
-						+ '<a class="rightMargin edit-vendor">Edit</a>'
-						+ '<a class="rightMargin view-vendor">View</a>'
+						+ '<div class="dropdown">'
+						+ '<a class="bootStrapDropDown dropdown-toggle" data-toggle="dropdown">Actions<span class="caret"></span></a>'
+						+ '<ul class="dropdown-menu">'
+						+ '<li><a class="view-vendor">Vendor Information</a></li>'
+						+ '<li><a class="edit-vendor">Modify Vendor</a></li>'
+						+ '<li><a class="purchasing-details">Purchasing Details</a></li>'
+						+ '</ul>'
+						+ '</div>'
 						+ '<input type="hidden" name="vendorId"';
 	if(data.vendorId){
 		rowHtml = rowHtml + ' value= "' + data.vendorId + '" />';
