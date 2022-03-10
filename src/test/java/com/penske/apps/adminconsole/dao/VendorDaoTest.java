@@ -121,7 +121,7 @@ public class VendorDaoTest extends MyBatisDaoTest
 	public void shouldGetVendorPoInformation() {
 		dao.getVendorPoInformation(Arrays.asList(123,124));
 	}
-
+	
 	//***** HELPER METHODS *****//
 	private EditableUser makeUser(int userId)
 	{

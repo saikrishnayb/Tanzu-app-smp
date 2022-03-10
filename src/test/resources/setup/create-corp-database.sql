@@ -167,4 +167,12 @@ CREATE TABLE CORP.FVEHMFR (
 	MFTYPZ                        CHAR(1)             Default ' ',
 	MFTYPY                        CHAR(1)             Default ' ',
 	MFAADJ                        DECIMAL(3,0)        Default 0,
-	MFFDAY                        DECIMAL(3,0)        Default 0);
+	MFFDAY                        DECIMAL(3,0)        Default 0
+);
+	
+CREATE TABLE CORP.NVOPODL1 (
+	PO_NUMBER		CHAR(7)			NOT NULL,
+	PO_DATE			DATE			NOT NULL,
+	VENDOR_NUMBER	DECIMAL(7,0)	NOT NULL,
+	CORP			CHAR(4)			NOT NULL
+);

@@ -51,5 +51,4 @@ public interface VendorDao {
     
     @NonVendorQuery
 	public List<OrgVendorAssociation> getOrgVendorAssociationsByVendorIds(@Param("vendorIds") Collection<Integer> vendorIds);
-
 }

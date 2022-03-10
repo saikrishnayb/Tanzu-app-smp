@@ -4,7 +4,7 @@
 <html>
 	<head> 
 	    <title>SMC Home</title>
-	    <%@ include file="../../../jsp/global/v1/header.jsp" %>
+	    <%@ include file="../../../jsp/global/v2/header.jsp" %>
 	    
 	    <link href="${baseUrl}/css/admin-console/security/vendors.css" rel="stylesheet" type="text/css"/>
 	</head>
@@ -15,6 +15,7 @@
 			<%@ include file="../../../jsp/global/navigation/admin-console/security/left-nav.jsp" %>
 			
 			<div class="leftNavAdjacentContainer">
+				<%@ include file="../../global/v2/page-error-container.jsp"%>
 				<tl:isAuthorized tabName="Admin Console" secFunction="EXPORT_VENDOR_ACTIVITY">
 					<a id="export-vendor-activity" class="buttonSecondary" style="margin-bottom: 10px;">Export</a>
 				</tl:isAuthorized>
@@ -117,8 +118,14 @@
 						<tr>
 							<td class="editable centerAlign">
 								<input class="update-checkbox" type="checkbox" />
-								<a class="rightMargin edit-vendor">Edit</a>
-								<a class="rightMargin view-vendor">View</a>
+								<div class="dropdown">
+									<a class="bootStrapDropDown dropdown-toggle" data-toggle="dropdown">Actions<span class="caret"></span></a>
+									<ul class="dropdown-menu">
+										<li><a class="view-vendor">Vendor Information</a></li>
+										<li><a class="edit-vendor">Modify Vendor</a></li>
+										<li><a class="purchasing-details">Purchasing Details</a></li>
+									</ul>
+								</div>
 								<input type="hidden" name="vendorId" value="${vendor.vendorId}" />
 								<input type="hidden" name="notificationException" value="${vendor.notificationException}" />
 								<input type="hidden" name="supplySpecialist" value="${vendor.supplySpecialist.userId}" />
@@ -167,24 +174,15 @@
 				
 				<div class="button-div clear-both floatRight">
 					<a id="mass-update" class="buttonPrimary floatRight margin-right">Update Selected</a>
-					<div class="error floatRight hidden">
+					<div class="error floatRight ui-helper-hidden">
 						<img src="${commonStaticUrl}/images/warning.png">
 						<span class="errorMsg"></span>
 					</div>
 				</div>
 			</div>
-			
-			<!-- Edit Vendor Modal -->
-			<div id="edit-vendor-modal" class="modal"></div>
-			
-			<!-- View Vendor Modal -->
-			<div id="view-vendor-modal" class="modal"></div>
-			
-			<!-- Mass Update Modal -->
-			<div id="mass-update-modal" class="modal"></div>
 		</div> 
 		
-		<%@ include file="../../../jsp/global/v1/footer.jsp" %>
+		<%@ include file="../../../jsp/global/v2/footer.jsp" %>
 		<script src="${baseUrl}/js/admin-console/security/vendors.js" type="text/javascript"></script>
 		<script type="text/javascript" src="${baseUrl}/js/global/v2/file-download-helper.js"></script>
 	</body>

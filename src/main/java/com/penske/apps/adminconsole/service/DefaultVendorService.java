@@ -1,6 +1,7 @@
 package com.penske.apps.adminconsole.service;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -307,6 +308,11 @@ public class DefaultVendorService implements VendorService {
 		List<VendorPoInformation> vendorPoInformationList = vendorDao.getVendorPoInformation(vendorIds);
 		
 		return new VendorActivityReport(vendors, vendorPoInformationList, vendorUsers, orgVendorAssociations).getVendorActivityReport();
+	}
+
+	@Override
+	public List<VendorPoInformation> getVendorPoInformation(Collection<Integer> vendorIds) {
+		return vendorDao.getVendorPoInformation(vendorIds);
 	}
 
 }
