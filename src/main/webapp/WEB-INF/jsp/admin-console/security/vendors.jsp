@@ -174,7 +174,7 @@
 				
 				<div class="button-div clear-both floatRight">
 					<a id="mass-update" class="buttonPrimary floatRight margin-right">Update Selected</a>
-					<div class="error floatRight" style="display: none;">
+					<div class="error floatRight ui-helper-hidden">
 						<img src="${commonStaticUrl}/images/warning.png">
 						<span class="errorMsg"></span>
 					</div>

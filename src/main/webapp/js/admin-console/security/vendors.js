@@ -151,20 +151,6 @@ $(document).ready(function() {
 				function(data) {
 					$globalModal.append(data);
 					ModalUtil.openModal($globalModal);
-					
-					/*$globalModal.find('[name="planningAnalyst.userId"] option').each(function() {
-						if (!analystFound && $(this).val() == analystId) {
-							$(this).attr('selected', 'selected');
-							analystFound = true;
-						}
-					});
-					
-					$globalModal.find('[name="supplySpecialist.userId"] option').each(function() {
-						if (!specialistFound && $(this).val() == specialistId) {
-							$(this).attr('selected', 'selected');
-							specialistFound = true;
-						}
-					});*/
 				});
 	});
 	
