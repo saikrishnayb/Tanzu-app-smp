@@ -88,15 +88,19 @@
 				T.USER_TYPE AS "userType.userType",
 				U.ROLE_ID AS "role.roleId",
 				ROLE_NAME AS "role.roleName",
-				U.ORG_ID AS orgId
+				U.ORG_ID AS orgId,
+				O.NAME as org
 		FROM	SMC.SMC_USER_MASTER U, 
 				SMC.smc_user_roles R, 
-				SMC.SMC_USER_TYPES T
+				SMC.SMC_USER_TYPES T,
+				SMC.SMC_ORG_MASTER O
 		WHERE 	U.ROLE_ID = R.ROLE_ID
 				AND U.TYPE_ID = T.TYPE_ID
 				AND U.STATUS = 'A'
 				AND R.STATUS = 'A'
+				AND O.ORG_ID = U.ORG_ID
 				AND U.USER_ID = #{value}
+				
  	</select> 
  	
  	<select id="getPenskeUserInfo" resultType="com.penske.apps.adminconsole.model.EditableUser">  

@@ -306,8 +306,23 @@ $createEditVendorUserModal.on("click",'.refresh-confirm',function(){
 	});
 		
 	$editUserPromise.done(function(data){
-		var  $searchForm = $('#search-vendor-user-form');
-		getVendorUserTableContents($searchForm.serialize());
+		var userId = $('#user-id').val();
+						
+		var $userRow = $('tr[data-user-id="' + userId + '"]');
+		var $userRowDT = $vendorUsersDataTable.row($userRow);
+
+		$userRow.find('td:eq(1)').html( data.firstName );
+		$userRow.find('td:eq(2)').html( data.lastName );
+		$userRow.find('td:eq(3)').html( data.email );
+		$userRow.find('td:eq(4)').html( data.phone );
+		$userRow.find('td:eq(5)').html( data.role.roleName );
+		$userRow.find('td:eq(6)').html( data.org );
+
+		$userRow.attr('data-role-id', data.role.roleId);
+		
+		$userRowDT.invalidate('dom');
+		$vendorUsersDataTable.draw();
+		
 		ModalUtil.closeModal($vendorUsersModal);
 	});
 });
@@ -426,8 +441,23 @@ $('.saveVendor').on("click", function(){
 					var $editUserPromise = $.post('./edit-vendor-user-static.htm', $userForm.serialize());
 										
 					$editUserPromise.done(function(data){
-						var  $searchForm = $('#search-vendor-user-form');
-						getVendorUserTableContents($searchForm.serialize());
+						var userId = $('#user-id').val();
+						
+						var $userRow = $('tr[data-user-id="' + userId + '"]');
+						var $userRowDT = $vendorUsersDataTable.row($userRow);
+		
+						$userRow.find('td:eq(1)').html( data.firstName );
+						$userRow.find('td:eq(2)').html( data.lastName );
+						$userRow.find('td:eq(3)').html( data.email );
+						$userRow.find('td:eq(4)').html( data.phone );
+						$userRow.find('td:eq(5)').html( data.role.roleName );
+						$userRow.find('td:eq(6)').html( data.org );
+		
+						$userRow.attr('data-role-id', data.role.roleId);
+						
+						$userRowDT.invalidate('dom');
+						$vendorUsersDataTable.draw();
+						
 						ModalUtil.closeModal($vendorUsersModal);
 					});
 					$editUserPromise.fail(function(xhr, ajaxOptions, thrownError) {
