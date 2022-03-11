@@ -370,7 +370,8 @@
  				</if> 
  				STATUS,  
  				TYPE_ID,
- 				ORG_ID,  
+ 				ORG_ID,
+ 				OPTDLYEML, 
  				ROLE_ID,dept_id,created_by,created_date) 
  		VALUES 	( #{ssoId} ,
  					#{gessouid},
@@ -384,6 +385,7 @@
 		 		'A', 
 		 		#{userType.userTypeId},
 		 		#{orgId},
+		 		#{dailyOptInChar},
 		 		#{role.roleId},#{userDept.userDeptId},#{createdBy},CURRENT_TIMESTAMP)
  	</insert>
  	

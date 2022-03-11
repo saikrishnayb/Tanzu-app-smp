@@ -60,7 +60,7 @@ $('#search-vendor-user-form').on('keypress', function(e) {
 	($searchUserForm.find('[name="email"]').val().length > 0) || ($searchUserForm.find('[name="roleId"]').val().length > 0) ||
 	($('#search-vendor-user-form').find('[name=orgIds]').multiselect("widget").find(':checkbox:checked').length > 0)){
 			if (e.which == 13) {
-				$searchButtonsContainer.find('.vendorSearch').trigger('click');
+				$searchButtonsContainer.find('.vendorUsersSearch').trigger('click');
 				event.preventDefault();
 			}
 		

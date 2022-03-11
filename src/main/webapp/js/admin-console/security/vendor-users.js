@@ -20,7 +20,7 @@ ModalUtil.initializeModal($vendorUsersModal);
 
 // Initializes the DataTable
 var $vendorUsersDataTable = $vendorUsersTable.DataTable( { //All of the below are optional
-	"order": [[ 1, "asc" ]], //default sort column
+	"order": [[ 2, "asc" ]], //default sort column
 	"paging": true, //enable pagination
 	"stateSave": true,
 	"autoWidth": false, //cray cray
@@ -120,16 +120,12 @@ $vendorUsersModal.on("click", ".deactivate-confirm", function(){
 	var $deactivateUserPromise = $.post('deactivate-user.htm', {userId:userId,isVendorUser:isVendorUser});
 	
 	$deactivateUserPromise.done(function(data){
-		$('.user-id').each(function(){
-			var userIdMatch = $(this).val();
-			var isUserIdMatch = (userIdMatch == userId);
-			if(isUserIdMatch){
-				var $userRow = $(this).closest('.user-row');
-				var nRow = $userRow[0];
-				
-				$('#users-table').dataTable().fnDeleteRow(nRow);
-			}
-		});
+		var userId = $('#user-id').val();
+						
+		var $userRow = $('tr[data-user-id="' + userId + '"]');
+		var $userRowDT = $vendorUsersDataTable.row($userRow);
+		$userRowDT.remove();
+		$vendorUsersDataTable.draw();
 		ModalUtil.closeModal($vendorUsersModal);
 	});
 });

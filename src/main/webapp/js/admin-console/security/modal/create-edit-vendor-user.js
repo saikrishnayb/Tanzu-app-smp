@@ -306,30 +306,9 @@ $createEditVendorUserModal.on("click",'.refresh-confirm',function(){
 	});
 		
 	$editUserPromise.done(function(data){
-		var userId = $('#user-id').val();
-		$('.user-id').each(function(){
-			var userIdMatch = $(this).val();
-			var isUserIdMatch = (userIdMatch == userId);
-			
-			if(!isUserIdMatch) return true;
-			
-			var $userRow = $(this).closest('.user-row');
-			var $userRowDT = $vendorUsersDataTable.row($userRow);
-			var rowData =  $userRowDT.data()
-
-			rowData[1] = data.firstName
-			rowData[2] = data.lastName
-			rowData[3] = data.email
-			rowData[4] = data.phone
-			rowData[5] = data.role.roleName
-
-			$userRowDT.data(rowData);
-			$userRow.data('role-id', data.role.roleId);
-			$userRowDT.invalidate();
-			$vendorUsersDataTable.draw();
-			ModalUtil.closeModal($createEditVendorUserModal);
-			ModalUtil.closeModal($vendorUsersModal);
-		});
+		var  $searchForm = $('#search-vendor-user-form');
+		getVendorUserTableContents($searchForm.serialize());
+		ModalUtil.closeModal($vendorUsersModal);
 	});
 });
 	
@@ -447,29 +426,9 @@ $('.saveVendor').on("click", function(){
 					var $editUserPromise = $.post('./edit-vendor-user-static.htm', $userForm.serialize());
 										
 					$editUserPromise.done(function(data){
-						var userId = $('#user-id').val();
-						$('.user-id').each(function(){
-							var userIdMatch = $(this).val();
-							var isUserIdMatch = (userIdMatch == userId);
-							
-							if(!isUserIdMatch) return true;
-							
-							var $userRow = $(this).closest('.user-row');
-							var $userRowDT = $vendorUsersDataTable.row($userRow);
-							var rowData =  $userRowDT.data()
-			
-							rowData[1] = data.firstName
-							rowData[2] = data.lastName
-							rowData[3] = data.email
-							rowData[4] = data.phone
-							rowData[5] = data.role.roleName
-			
-							$userRowDT.data(rowData);
-							$userRow.data('role-id', data.role.roleId);
-							$userRowDT.invalidate();
-							$vendorUsersDataTable.draw();
-							ModalUtil.closeModal($vendorUsersModal);
-						});
+						var  $searchForm = $('#search-vendor-user-form');
+						getVendorUserTableContents($searchForm.serialize());
+						ModalUtil.closeModal($vendorUsersModal);
 					});
 					$editUserPromise.fail(function(xhr, ajaxOptions, thrownError) {
 						
