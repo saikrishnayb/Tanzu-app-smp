@@ -774,6 +774,7 @@ public class SecurityRestControllerOld {
         editableUser.setLastName(user.getLastName());
         editableUser.setModifiedBy(editableUser.getSsoId());
         editableUser.setGessouid(user.getGessouid());
+        editableUser.setOrg(user.getOrg());
         securityService.refreshUserWithSSOData(editableUser);
 
         return editableUser;

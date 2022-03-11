@@ -307,29 +307,23 @@ $createEditVendorUserModal.on("click",'.refresh-confirm',function(){
 		
 	$editUserPromise.done(function(data){
 		var userId = $('#user-id').val();
-		$('.user-id').each(function(){
-			var userIdMatch = $(this).val();
-			var isUserIdMatch = (userIdMatch == userId);
-			
-			if(!isUserIdMatch) return true;
-			
-			var $userRow = $(this).closest('.user-row');
-			var $userRowDT = $vendorUsersDataTable.row($userRow);
-			var rowData =  $userRowDT.data()
+						
+		var $userRow = $('tr[data-user-id="' + userId + '"]');
+		var $userRowDT = $vendorUsersDataTable.row($userRow);
 
-			rowData[1] = data.firstName
-			rowData[2] = data.lastName
-			rowData[3] = data.email
-			rowData[4] = data.phone
-			rowData[5] = data.role.roleName
+		$userRow.find('td:eq(1)').html( data.firstName );
+		$userRow.find('td:eq(2)').html( data.lastName );
+		$userRow.find('td:eq(3)').html( data.email );
+		$userRow.find('td:eq(4)').html( data.phone );
+		$userRow.find('td:eq(5)').html( data.role.roleName );
+		$userRow.find('td:eq(6)').html( data.org );
 
-			$userRowDT.data(rowData);
-			$userRow.data('role-id', data.role.roleId);
-			$userRowDT.invalidate();
-			$vendorUsersDataTable.draw();
-			ModalUtil.closeModal($createEditVendorUserModal);
-			ModalUtil.closeModal($vendorUsersModal);
-		});
+		$userRow.attr('data-role-id', data.role.roleId);
+		
+		$userRowDT.invalidate('dom');
+		$vendorUsersDataTable.draw();
+		
+		ModalUtil.closeModal($vendorUsersModal);
 	});
 });
 	
@@ -448,28 +442,23 @@ $('.saveVendor').on("click", function(){
 										
 					$editUserPromise.done(function(data){
 						var userId = $('#user-id').val();
-						$('.user-id').each(function(){
-							var userIdMatch = $(this).val();
-							var isUserIdMatch = (userIdMatch == userId);
-							
-							if(!isUserIdMatch) return true;
-							
-							var $userRow = $(this).closest('.user-row');
-							var $userRowDT = $vendorUsersDataTable.row($userRow);
-							var rowData =  $userRowDT.data()
-			
-							rowData[1] = data.firstName
-							rowData[2] = data.lastName
-							rowData[3] = data.email
-							rowData[4] = data.phone
-							rowData[5] = data.role.roleName
-			
-							$userRowDT.data(rowData);
-							$userRow.data('role-id', data.role.roleId);
-							$userRowDT.invalidate();
-							$vendorUsersDataTable.draw();
-							ModalUtil.closeModal($vendorUsersModal);
-						});
+						
+						var $userRow = $('tr[data-user-id="' + userId + '"]');
+						var $userRowDT = $vendorUsersDataTable.row($userRow);
+		
+						$userRow.find('td:eq(1)').html( data.firstName );
+						$userRow.find('td:eq(2)').html( data.lastName );
+						$userRow.find('td:eq(3)').html( data.email );
+						$userRow.find('td:eq(4)').html( data.phone );
+						$userRow.find('td:eq(5)').html( data.role.roleName );
+						$userRow.find('td:eq(6)').html( data.org );
+		
+						$userRow.attr('data-role-id', data.role.roleId);
+						
+						$userRowDT.invalidate('dom');
+						$vendorUsersDataTable.draw();
+						
+						ModalUtil.closeModal($vendorUsersModal);
 					});
 					$editUserPromise.fail(function(xhr, ajaxOptions, thrownError) {
 						
