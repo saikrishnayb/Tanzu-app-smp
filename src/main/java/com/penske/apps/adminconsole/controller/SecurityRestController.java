@@ -1,9 +1,7 @@
 package com.penske.apps.adminconsole.controller;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -18,30 +16,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.penske.apps.adminconsole.exceptions.UserServiceException;
 import com.penske.apps.adminconsole.model.EditableUser;
-import com.penske.apps.adminconsole.model.Org;
-import com.penske.apps.adminconsole.model.Role;
-import com.penske.apps.adminconsole.model.UserForm;
-import com.penske.apps.adminconsole.model.UserSearchForm;
 import com.penske.apps.adminconsole.model.Vendor;
 import com.penske.apps.adminconsole.model.VendorPoInformation;
-import com.penske.apps.adminconsole.model.VendorUser;
 import com.penske.apps.adminconsole.service.SecurityService;
-import com.penske.apps.adminconsole.service.UserCreationService;
 import com.penske.apps.adminconsole.service.VendorService;
-import com.penske.apps.adminconsole.util.ApplicationConstants;
-import com.penske.apps.adminconsole.util.IUserConstants;
 import com.penske.apps.smccore.base.annotation.SmcSecurity;
-import com.penske.apps.smccore.base.beans.LookupManager;
-import com.penske.apps.smccore.base.domain.LookupContainer;
 import com.penske.apps.smccore.base.domain.User;
-import com.penske.apps.smccore.base.domain.UserSecurity;
 import com.penske.apps.smccore.base.domain.enums.SecurityFunction;
-import com.penske.apps.smccore.base.domain.enums.UserType;
-import com.penske.apps.smccore.base.service.UserService;
-import com.penske.apps.suppliermgmt.annotation.CommonStaticUrl;
-import com.penske.apps.suppliermgmt.annotation.VendorAllowed;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.exception.SMCException;
 
@@ -61,15 +43,6 @@ public class SecurityRestController {
 	private SecurityService securityService;
 	@Autowired
 	private VendorService vendorService;
-	@Autowired
-    private UserCreationService userCreationService;
-	@Autowired
-    private UserService userService;
-    @Autowired
-    private LookupManager lookupManager;
-    @Autowired
-    @CommonStaticUrl
-    private URL commonStaticUrl;
 
 	private static final Logger LOGGER = LogManager.getLogger(SecurityRestController.class);
 
@@ -162,7 +135,25 @@ public class SecurityRestController {
 
 		return user;
 	}
-	
+
+	@SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDORS)
+	@RequestMapping("get-vendor-table-contents")
+	@ResponseBody
+	public List<Vendor> getVendorTableContents() {
+		User user = sessionBean.getUser();
+		List<Vendor> vendors = vendorService.getAllVendors(user.getOrgId());
+		return vendors;
+	}
+
+	@SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDORS)
+	@RequestMapping("get-vendor-table-contents-advanced-search")
+	@ResponseBody
+	public List<Vendor> getVendorTableContentsAdvancedSearch(Vendor vendor) {
+		User user = sessionBean.getUser();
+		List<Vendor> vendors = vendorService.getVendorsBySearchConditions(user.getOrgId(), vendor);
+		return vendors;
+	}
+
 	/* ================== Vendor Users ================== */
     @VendorAllowed
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
@@ -277,4 +268,5 @@ public class SecurityRestController {
             response.flushBuffer();
         }
     }
+
 }
