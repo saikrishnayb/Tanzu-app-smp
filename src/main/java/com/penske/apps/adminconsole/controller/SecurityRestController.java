@@ -1,7 +1,9 @@
 package com.penske.apps.adminconsole.controller;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -16,14 +18,30 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.penske.apps.adminconsole.exceptions.UserServiceException;
 import com.penske.apps.adminconsole.model.EditableUser;
+import com.penske.apps.adminconsole.model.Org;
+import com.penske.apps.adminconsole.model.Role;
+import com.penske.apps.adminconsole.model.UserForm;
+import com.penske.apps.adminconsole.model.UserSearchForm;
 import com.penske.apps.adminconsole.model.Vendor;
 import com.penske.apps.adminconsole.model.VendorPoInformation;
+import com.penske.apps.adminconsole.model.VendorUser;
 import com.penske.apps.adminconsole.service.SecurityService;
+import com.penske.apps.adminconsole.service.UserCreationService;
 import com.penske.apps.adminconsole.service.VendorService;
+import com.penske.apps.adminconsole.util.ApplicationConstants;
+import com.penske.apps.adminconsole.util.IUserConstants;
 import com.penske.apps.smccore.base.annotation.SmcSecurity;
+import com.penske.apps.smccore.base.beans.LookupManager;
+import com.penske.apps.smccore.base.domain.LookupContainer;
 import com.penske.apps.smccore.base.domain.User;
+import com.penske.apps.smccore.base.domain.UserSecurity;
 import com.penske.apps.smccore.base.domain.enums.SecurityFunction;
+import com.penske.apps.smccore.base.domain.enums.UserType;
+import com.penske.apps.smccore.base.service.UserService;
+import com.penske.apps.suppliermgmt.annotation.CommonStaticUrl;
+import com.penske.apps.suppliermgmt.annotation.VendorAllowed;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.exception.SMCException;
 
@@ -43,6 +61,15 @@ public class SecurityRestController {
 	private SecurityService securityService;
 	@Autowired
 	private VendorService vendorService;
+	@Autowired
+    private UserCreationService userCreationService;
+	@Autowired
+    private UserService userService;
+    @Autowired
+    private LookupManager lookupManager;
+    @Autowired
+    @CommonStaticUrl
+    private URL commonStaticUrl;
 
 	private static final Logger LOGGER = LogManager.getLogger(SecurityRestController.class);
 
@@ -135,4 +162,119 @@ public class SecurityRestController {
 
 		return user;
 	}
+	
+	/* ================== Vendor Users ================== */
+    @VendorAllowed
+    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
+    @RequestMapping(value ="get-create-edit-vendor-user")
+    @ResponseBody
+    public ModelAndView getCreateEditVendor(@RequestParam(value="isCreate") boolean isCreate, @RequestParam(value="userId", required=false) String userId, @RequestParam(value="userType", required=false) String userType, @RequestParam(value="roleId", required=false) String roleId) {
+        ModelAndView mav = new ModelAndView("/admin-console/security/modal/create-edit-vendor-user");
+        
+        User user = sessionBean.getUser();
+        mav.addObject("currentUser", user);
+        if(!isCreate) {
+        	EditableUser editableUser = securityService.getEditInfo(userId, userType);
+        	mav.addObject("editableUser", editableUser);
+        	mav.addObject("tabPermissionsMap", securityService.getPermissions(roleId));
+        }
+
+        List<Role> vendorRoles = securityService.getVendorRoles(user.getRoleId(), user.getOrgId());
+        Collections.sort(vendorRoles, Role.ROLE_NAME_ASC);
+
+        mav.addObject("userRoles", vendorRoles);
+        mav.addObject("userTypes", securityService.getVendorUserTypes());
+
+        List<Org> vendorOrg = securityService.getVendorOrg(user.isVendorUser(), user.getOrgId());
+        Collections.sort(vendorOrg, Org.ORG_NAME_ASC);
+        mav.addObject("penskeUserType", UserType.PENSKE);
+        mav.addObject("vendorUserType", UserType.VENDOR);
+        mav.addObject("orgList", vendorOrg);
+        mav.addObject("isCreatePage", isCreate);
+        return mav;
+    }
+    
+    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
+    @RequestMapping(value ="get-resend-email-modal-content")
+    public ModelAndView getResendEmail(@RequestParam(value="userId") String userId) {
+        ModelAndView mav = new ModelAndView("/admin-console/security/modal/resend-email-modal-content");
+        
+        EditableUser editableUser = securityService.getEditInfo(userId, "VENDOR");
+        mav.addObject("editableUser", editableUser);
+
+        return mav;
+    }
+    
+    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
+    @RequestMapping(value ="resend-email")
+    @ResponseBody
+    public void resendEmail(@RequestParam(value="userId") int userId) {
+    	LookupContainer lookups = lookupManager.getLookupContainer();
+    	User user = sessionBean.getUser();
+    	
+    	User vendorUser = userService.getUser(userId, false, false);
+    	UserSecurity vendorUserSecurity = userService.getUserSecurity(vendorUser);
+    	
+    	userService.sendNewUserEmail(user, vendorUser, vendorUserSecurity, true, lookups, commonStaticUrl);
+    }
+    
+    @VendorAllowed
+    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
+    @RequestMapping(value ="get-vendor-user-table-contents")
+    @ResponseBody
+    public List<VendorUser> getSearchedVendorUserTableContents(UserSearchForm userSearchForm) {
+    	User user = sessionBean.getUser();
+    	userSearchForm.setUserTypeId(ApplicationConstants.SUPPLIER_USER);
+    	
+    	List<VendorUser> vendorUsers = securityService.getVendorUsers(userSearchForm, user);
+    	
+    	return vendorUsers;
+    }
+    
+    @VendorAllowed
+    @SmcSecurity(securityFunction = {SecurityFunction.MANAGE_USERS, SecurityFunction.MANAGE_VENDOR_USERS, SecurityFunction.MANAGE_ORG})
+    @RequestMapping(value ="get-permissions-accordions")
+    @ResponseBody
+    public ModelAndView getPermissionsAccordions(@RequestParam(value="roleId") String roleId) {
+        ModelAndView mav = new ModelAndView("/admin-console/security/includes/permissions-accordion-v2");
+
+        mav.addObject("tabPermissionsMap", securityService.getPermissions(roleId));
+
+        return mav;
+    }
+    
+    @VendorAllowed
+    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
+    @RequestMapping(value ="/create-vendor-user", method = RequestMethod.POST)
+    @ResponseBody
+    public void addVendorUser(UserForm userForm, HttpServletResponse response) throws Exception{
+        try{
+        	LookupContainer lookups = lookupManager.getLookupContainer();
+        	
+            User currentUser = sessionBean.getUser();
+            userCreationService.insertUserInfo(currentUser, userForm, lookups, commonStaticUrl);
+        }
+        catch (UserServiceException e) {
+            if(IUserConstants.DUP_SSO_ERROR_CODE==e.getErrorCode()){
+                LOGGER.error(IUserConstants.DUP_SSO_ERROR_MESSAGE + e);
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,"USER_SERVICE_DUP_SSO:"+String.valueOf(e.getErrorCode()));
+            }else if(IUserConstants.NOT_STANDARD_SSO_ERROR_CODE==e.getErrorCode()){
+                LOGGER.error(IUserConstants.NOT_STANDARD_SSO_ERROR_MESSAGE + e);
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,"USER_SERVICE_NOT_STANDARD_SSO:"+String.valueOf(e.getErrorCode()));
+            }else{
+                LOGGER.error("Error while creating user: " + e);
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while creating user.");
+            }
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("Error while creating user. "+e.getErrorCode());
+            response.flushBuffer();
+        }
+        catch (Exception e) {
+            LOGGER.error("Error while creating user: " + e);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while creating user.");
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("Error while creating user.");
+            response.flushBuffer();
+        }
+    }
 }

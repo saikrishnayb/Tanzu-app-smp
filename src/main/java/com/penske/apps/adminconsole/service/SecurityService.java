@@ -3,7 +3,6 @@ package com.penske.apps.adminconsole.service;
 import java.util.HashMap;
 import java.util.List;
 
-import com.penske.apps.adminconsole.domain.VendorUser;
 import com.penske.apps.adminconsole.model.AdminConsoleUserDept;
 import com.penske.apps.adminconsole.model.AdminConsoleUserType;
 import com.penske.apps.adminconsole.model.EditableUser;
@@ -12,6 +11,7 @@ import com.penske.apps.adminconsole.model.Permission;
 import com.penske.apps.adminconsole.model.Role;
 import com.penske.apps.adminconsole.model.UserSearchForm;
 import com.penske.apps.adminconsole.model.VendorTree;
+import com.penske.apps.adminconsole.model.VendorUser;
 import com.penske.apps.smccore.base.domain.User;
 import com.penske.apps.suppliermgmt.exception.SMCException;
 

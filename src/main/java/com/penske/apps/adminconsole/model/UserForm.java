@@ -63,30 +63,7 @@ public class UserForm {
 	}
 
 	public void setPhone(String phone) {
-		if (phone != null) {
-			if (phone.length() > 10) {
-				StringBuilder build = new StringBuilder();
-
-				build.append(phone.substring(1, 4));
-				build.append(phone.substring(5, 8));
-				build.append(phone.substring(9, 13));
-
-				phone = build.toString();
-			} else if (phone.length() == 10) {
-				StringBuilder build = new StringBuilder();
-
-				build.append('(');
-				build.append(phone.substring(0, 3));
-				build.append(')');
-				build.append(phone.substring(3, 6));
-				build.append('-');
-				build.append(phone.substring(6));
-
-				phone = build.toString();
-			}
-
-			this.phone = phone;
-		}
+		this.phone = phone;
 	}
 
 	public String getExtension() {

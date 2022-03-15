@@ -1,12 +1,9 @@
-package com.penske.apps.adminconsole.domain;
+package com.penske.apps.adminconsole.model;
 
 import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.penske.apps.adminconsole.model.EditableUser;
-import com.penske.apps.adminconsole.model.Role;
-import com.penske.apps.adminconsole.model.UserForm;
 import com.penske.apps.smccore.base.domain.enums.UserType;
 import com.penske.apps.smccore.base.util.DateUtil;
 
@@ -50,30 +47,6 @@ public class VendorUser {
 	
 	protected VendorUser() {};
 
-	/**
-	 *	The constructor for creating a vendor user from the form submitted on the Vendor Users page
-	 */
-	public VendorUser(UserForm userForm, Role role) {
-		this.userId = null;
-		this.email= userForm.getEmail();
-		this.ssoId = userForm.getSsoId();
-		this.firstName = userForm.getFirstName();
-		this.lastName= userForm.getLastName();
-		this.phone= userForm.getPhone();
-		this.extension= userForm.getExtension();
-		this.userType = UserType.VENDOR;
-		this.org = null;
-		this.orgId = userForm.getOrgId();
-		this.gessouid = userForm.getGessouid();
-		this.dailyOptIn = userForm.isDailyOptIn();
-		this.hasOtp = false;
-		this.createdDate = null;
-		this.lastLoginDate = null;
-		
-		
-		this.role = role;
-	}
-	
 	/**
 	 *	The constructor for creating a vendor user from an Editable User. Used when loading the Vendor Users page
 	 */

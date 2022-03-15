@@ -419,7 +419,7 @@
 		 			#{vendorUser.extension},  
 		 		</if>  
 		 		'A', 
-		 		#{vendorUser.userType.typeId},
+		 		#{vendorUser.userType.userTypeId},
 		 		#{vendorUser.orgId},
 		 		#{vendorUser.role.roleId},
 		 		null,

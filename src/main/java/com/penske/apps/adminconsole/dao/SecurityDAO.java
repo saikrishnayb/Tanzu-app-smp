@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-import com.penske.apps.adminconsole.domain.VendorUser;
 import com.penske.apps.adminconsole.model.AdminConsoleUserDept;
 import com.penske.apps.adminconsole.model.AdminConsoleUserType;
 import com.penske.apps.adminconsole.model.EditableUser;
@@ -97,7 +96,7 @@ public interface SecurityDAO {
     public void addUser(EditableUser user);
     
     @NonVendorQuery
-    public void addVendorUser(@Param("vendorUser") VendorUser vendorUser, @Param("createdBy") User createdBy);
+    public void addVendorUser(@Param("vendorUser") EditableUser editableUser, @Param("createdBy") User createdBy);
 
     @NonVendorQuery
     public void modifyUserStatus(@Param("userId")int userId,  @Param("modifiedBy")String modifiedBy);
