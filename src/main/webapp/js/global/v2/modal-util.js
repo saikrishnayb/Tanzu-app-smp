@@ -148,6 +148,35 @@ var ModalUtil = new function() {
 		return $lastModal;
 
 	};
+	
+	this.displayErrorMessages = function(errorMessages, clearPrevious) {
+		var isNotArray = !Array.isArray(errorMessages);
+		if(isNotArray) errorMessages = [errorMessages];
+		
+		var colDialogErrorContainer = this.getTopMostOpenedModal()[0].querySelector('.modal-error-container');
+		var dialogErrorUl = colDialogErrorContainer.querySelector('.alert ul');
+		
+		if(clearPrevious === true) dialogErrorUl.innerHTML = '';
+		
+		for (var i = 0; i < errorMessages.length; i++) {
+		  var li = document.createElement("li");
+		  li.innerHTML = errorMessages[i];
+		  dialogErrorUl.appendChild(li);
+		}
+		
+		$(colDialogErrorContainer).show();
+	};
+	
+	this.clearAndHideErrorMessages = function($modal) {
+	    var modal = $modal === undefined? this.getTopMostOpenedModal()[0] : $modal[0];
+	
+	    var colDialogErrorContainer = modal.querySelector('.modal-error-container');
+	    var dialogErrorUl = modal.querySelector('.alert ul');
+	    dialogErrorUl.innerHTML = '';
+	
+	    $(colDialogErrorContainer).hide();
+
+	};
 };
 
 //# sourceURL=modal-util.js

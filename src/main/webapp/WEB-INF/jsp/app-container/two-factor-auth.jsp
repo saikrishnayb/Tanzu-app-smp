@@ -16,7 +16,8 @@
 		<div id="mainContent">
 			&emsp;
 			<!-- Modals -->
-			<div id="two-factor-auth-modal" class="modal row">
+			<div id="two-factor-auth-modal" class="modal">
+				<%@ include file="../../jsp/global/v2/modal-error-container.jsp"%>
 				<div class="modal-content col-xs-12" 
 					data-modal-title="Verification Required" 
 					data-modal-max-width="500" 
@@ -61,5 +62,6 @@
 		<%@ include file="includes/footer.jspf"%>		
 	</body>
 	<%@ include file="../../jsp/global/v2/footer.jsp" %>
+	<script src="${baseUrl}/js/app-container/includes/header.js" type="text/javascript"></script>
 	<script src="${baseUrl}/js/app-container/two-factor-auth.js" type="text/javascript"></script>
 </html>
