@@ -120,16 +120,12 @@ $vendorUsersModal.on("click", ".deactivate-confirm", function(){
 	var $deactivateUserPromise = $.post('deactivate-user.htm', {userId:userId,isVendorUser:isVendorUser});
 	
 	$deactivateUserPromise.done(function(data){
-		$('.user-id').each(function(){
-			var userIdMatch = $(this).val();
-			var isUserIdMatch = (userIdMatch == userId);
-			if(isUserIdMatch){
-				var $userRow = $(this).closest('.user-row');
-				var nRow = $userRow[0];
-				
-				$('#users-table').dataTable().fnDeleteRow(nRow);
-			}
-		});
+		var userId = $('#user-id').val();
+						
+		var $userRow = $('tr[data-user-id="' + userId + '"]');
+		var $userRowDT = $vendorUsersDataTable.row($userRow);
+		$userRowDT.remove();
+		$vendorUsersDataTable.draw();
 		ModalUtil.closeModal($vendorUsersModal);
 	});
 });
