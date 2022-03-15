@@ -381,9 +381,6 @@ function submitAdvancedSearch() {
 		$vendorNumber.removeClass('errorMsgInput');
 		$error.hide();
 		
-		// Remove unused fields from submitting.
-		$form.find('input:text[value=""], select[value=""]').prop('disabled', true);
-		
 		$form.submit();
 	}
 }
@@ -428,13 +425,8 @@ function getVendorTableContents(url) {
 }
 
 $(function() {
-	if ($('#search-content').hasClass('displayBlock')) {
-		$('#advanced-search-form').find('input:text[value=""], select[value=""]').prop('disabled', true);
-		getVendorTableContents('get-vendor-table-contents-advanced-search');
-		$('#advanced-search-form').find('input:text[value=""], select[value=""]').prop('disabled', false);
-	} else {
-		getVendorTableContents('get-vendor-table-contents');
-	}
+	var url = $('#search-content').hasClass('displayBlock') ? 'get-vendor-table-contents-advanced-search' : 'get-vendor-table-contents';
+	getVendorTableContents(url);
 });
 
 //Comment to assist Chrome debugger tools
