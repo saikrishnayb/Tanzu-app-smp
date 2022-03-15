@@ -135,4 +135,22 @@ public class SecurityRestController {
 
 		return user;
 	}
+
+	@SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDORS)
+	@RequestMapping("get-vendor-table-contents")
+	@ResponseBody
+	public List<Vendor> getVendorTableContents() {
+		User user = sessionBean.getUser();
+		List<Vendor> vendors = vendorService.getAllVendors(user.getOrgId());
+		return vendors;
+	}
+
+	@SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDORS)
+	@RequestMapping("get-vendor-table-contents-advanced-search")
+	@ResponseBody
+	public List<Vendor> getVendorTableContentsAdvancedSearch(Vendor vendor) {
+		User user = sessionBean.getUser();
+		List<Vendor> vendors = vendorService.getVendorsBySearchConditions(user.getOrgId(), vendor);
+		return vendors;
+	}
 }

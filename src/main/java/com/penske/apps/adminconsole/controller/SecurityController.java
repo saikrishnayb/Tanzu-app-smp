@@ -36,7 +36,6 @@ public class SecurityController {
 	public ModelAndView getVendorsPage() {
 		ModelAndView mav = new ModelAndView("/admin-console/security/vendors");
 		User user = sessionBean.getUser();
-		mav.addObject("vendors", vendorService.getAllVendors(user.getOrgId()));
 		mav.addObject("analysts", vendorService.getAllPlanningAnalysts());
 		mav.addObject("specialists", vendorService.getAllSupplySpecialists());
 		mav.addObject("alertTypeList", vendorService.getAllAlerts());
@@ -72,7 +71,6 @@ public class SecurityController {
 		mav.addObject("searchedVendor", vendor);
 
 		// For populating the rest of the page
-		mav.addObject("vendors", vendorService.getVendorsBySearchConditions(user.getOrgId(), vendor));
 		mav.addObject("analysts", vendorService.getAllPlanningAnalysts());
 		mav.addObject("specialists", vendorService.getAllSupplySpecialists());
 		mav.addObject("alertTypeList", vendorService.getAllAlerts());
