@@ -70,9 +70,13 @@ public class LoginController extends BaseController {
             
             	
         	User user = userService.getUser(userSSO, true);
+        	UserSecurity userSecurity = userService.getUserSecurity(user);
         	
         	if(user == null)
             	errorMessage = "Your SSOID not configured in SMC";
+        	else if(user.isVendorUser() && userSecurity.isAccessTokenRequired()) {
+        		forward = "app-container/two-factor-auth";
+        	}
         	else
         	{
         		boolean hasBuddies = false;
