@@ -21,7 +21,7 @@ $(document).ready(function()
          }
      });
 
-	if(existingBuddyList.length>0)
+	if(existingBuddyList !== undefined && existingBuddyList.length>0)
 	{
 		existingBuddyArray = existingBuddyList.split("[")[1];
 		existingBuddyArray=existingBuddyArray.split("]")[0];

@@ -2,9 +2,7 @@
 	<script src="<c:out value='${baseUrl}'/>/js/app-container/includes/footer.js" type="text/javascript"></script>
 	<span id="leftFooter">
 
-		<script>
-			getLeftFooter();
-		</script>
+		&emsp;
 
 	</span>
   

@@ -75,7 +75,12 @@ public class LoginController extends BaseController {
         	if(user == null)
             	errorMessage = "Your SSOID not configured in SMC";
         	else if(user.isVendorUser() && userSecurity.isAccessTokenRequired()) {
+        		userService.generateAndSendAccessCode(user, userSecurity);
         		forward = "app-container/two-factor-auth";
+        		
+        		String baseUrl = request.getContextPath();
+        		model.addObject("baseUrl", baseUrl);
+        		model.addObject("user", user);
         	}
         	else
         	{
