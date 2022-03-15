@@ -96,9 +96,9 @@ public class SecurityController {
         if(user.hasSecurityFunction(SecurityFunction.MANAGE_VENDOR_USERS))
             return getVendorUsersPageData();
         if(user.hasSecurityFunction(SecurityFunction.MANAGE_ROLES))
-            return new ModelAndView("/admin-console/security/roles");
+            return new ModelAndView("forward:roles");
         if(user.hasSecurityFunction(SecurityFunction.MANAGE_ORG))
-            return new ModelAndView("/admin-console/security/org");
+            return new ModelAndView("forward:org");
         ModelAndView mav = new ModelAndView("/admin-console/security/noAccess");
         return mav;
     }

@@ -101,20 +101,6 @@ public class VendorUser {
 		else
 			return phone + " ext. " + extension;
 	}
-	
-	/**
-	 *	Method to format the dailyOptIn (boolean for receiving daily summary emails) to a char for database 
-	 */
-	public String getDailyOptInChar() {
-		return this.dailyOptIn ? "Y" : "N";
-	}	
-	
-	/**
-	 *	Method to format the dailyOptIn Char from the DB to a boolean
-	 */
-	public void setDailyOptInFromChar(String dailyOptIn) {
-		this.dailyOptIn = "Y".equals(dailyOptIn) ? true : false;
-	}
 
 	// ***** DEFAULT ACCESSORS ***** //
 	public Integer getUserId() {

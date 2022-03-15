@@ -17,7 +17,6 @@ import com.penske.apps.adminconsole.model.AdminConsoleUserType;
 import com.penske.apps.adminconsole.model.EditableUser;
 import com.penske.apps.adminconsole.model.Org;
 import com.penske.apps.adminconsole.model.Role;
-import com.penske.apps.smccore.TestData;
 import com.penske.apps.smccore.base.configuration.ProfileType;
 import com.penske.apps.smccore.base.domain.enums.UserType;
 import com.penske.apps.suppliermgmt.MyBatisDaoTest;
@@ -35,8 +34,6 @@ public class SecurityDAOTest extends MyBatisDaoTest
 {
 	@Autowired
 	private SecurityDAO dao;
-	
-	private TestData data = new TestData();
 
 	@Before
 	public void before()
@@ -132,13 +129,6 @@ public class SecurityDAOTest extends MyBatisDaoTest
 	{
 		EditableUser user = makeUser(243, "600555555", UserType.PENSKE);
 		dao.addUser(user);
-	}
-	
-	@Test
-	public void shouldAddVendorUser()
-	{
-		EditableUser user = makeUser(243, "VendorUser", UserType.VENDOR);
-		dao.addVendorUser(user, data.userPenske);
 	}
 	
 	@Test

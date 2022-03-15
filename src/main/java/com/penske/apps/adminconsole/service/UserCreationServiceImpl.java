@@ -46,6 +46,7 @@ public class UserCreationServiceImpl implements UserCreationService {
 	public EditableUser insertUserInfo(User currentUser, UserForm userForm, LookupContainer lookups, URL commonStaticUrl) throws UserServiceException {
 		
 		Role role = securityDao.getRoleById(userForm.getRoleId());
+		CPBGESSOUser ldapUser = userService.getUserFromUserStore(userForm.getSsoId());
 		
 		EditableUser editableUser = new EditableUser();
 		editableUser.setEmail(userForm.getEmail());
@@ -59,10 +60,10 @@ public class UserCreationServiceImpl implements UserCreationService {
 		editableUser.setUserType(userType);
 		editableUser.setOrgId(userForm.getOrgId());
 		editableUser.setRole(role);
-		editableUser.setReturnFlg(userForm.getReturnFlg());
 		editableUser.setDailyOptIn(userForm.isDailyOptIn());
+		editableUser.setCreatedBy(currentUser.getSso());
 		
-		if(editableUser.getReturnFlg() != 1){ // userObj.getReturnFlg() != 1 -- User not available in the LDAP. This flag is set after validating userid with LDAP.
+		if(ldapUser == null){ // userObj.getReturnFlg() != 1 -- User not available in the LDAP. This flag is set after validating userid with LDAP.
 			logger.info("Add User to LDAP..");
 			try {
 				insertUserToLDAP(editableUser);
@@ -74,19 +75,18 @@ public class UserCreationServiceImpl implements UserCreationService {
 		}else{
 			logger.info(" Modify User to LDAP..");
 			CPTSso oSSO = new CPTSso();
-			CPBGESSOUser oB2BUser = oSSO.findUser(editableUser.getSsoId().trim());
-			oB2BUser.setGESSOStatus("A");
-			oB2BUser.setCommonName(editableUser.getLastName() + ", " + editableUser.getFirstName());
-			oB2BUser.setEmailAddress(editableUser.getEmail());
-			oB2BUser.setGivenName(editableUser.getFirstName());
-			oB2BUser.setSurName(editableUser.getLastName());
-			oB2BUser.setPhone(editableUser.getPhone());
-			editableUser.setGessouid(oB2BUser.getGESSOUID());
-			oSSO.modifyUser(oB2BUser, editableUser.getSsoId());
+			ldapUser.setGESSOStatus("A");
+			ldapUser.setCommonName(editableUser.getLastName() + ", " + editableUser.getFirstName());
+			ldapUser.setEmailAddress(editableUser.getEmail());
+			ldapUser.setGivenName(editableUser.getFirstName());
+			ldapUser.setSurName(editableUser.getLastName());
+			ldapUser.setPhone(editableUser.getPhone());
+			editableUser.setGessouid(ldapUser.getGESSOUID());
+			oSSO.modifyUser(ldapUser, editableUser.getSsoId());
 		}
 		
 		//Add to DB - In future, we should merge this with addUser once creating a user no longer uses EditableUser
-		securityDao.addVendorUser(editableUser, currentUser);
+		securityDao.addUser(editableUser);
 		User newUser = userService.getUser(editableUser.getSsoId(), false, false);
 		
 		String oneTimePassword = editableUser.getDefaultPassword();

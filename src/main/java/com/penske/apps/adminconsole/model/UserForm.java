@@ -11,13 +11,10 @@ public class UserForm {
 	private int userTypeId;
 	private int orgId;
 	private int roleId;
-	private int returnFlg;
 	private String gessouid;
 	private boolean dailyOptIn;
 	private boolean holdEnrollmentEmail;
 	
-	private String otp;
-
 	public Integer getUserId() {
 		return userId;
 	}
@@ -98,14 +95,6 @@ public class UserForm {
 		this.roleId = roleId;
 	}
 
-	public int getReturnFlg() {
-		return returnFlg;
-	}
-
-	public void setReturnFlg(int returnFlg) {
-		this.returnFlg = returnFlg;
-	}
-
 	public String getGessouid() {
 		return gessouid;
 	}
@@ -128,14 +117,6 @@ public class UserForm {
 
 	public void setHoldEnrollmentEmail(boolean holdEnrollmentEmail) {
 		this.holdEnrollmentEmail = holdEnrollmentEmail;
-	}
-
-	public String getOtp() {
-		return otp;
-	}
-
-	public void setOtp(String otp) {
-		this.otp = otp;
 	}
 	
 }

@@ -94,9 +94,6 @@ public interface SecurityDAO {
 
     @NonVendorQuery
     public void addUser(EditableUser user);
-    
-    @NonVendorQuery
-    public void addVendorUser(@Param("vendorUser") EditableUser editableUser, @Param("createdBy") User createdBy);
 
     @NonVendorQuery
     public void modifyUserStatus(@Param("userId")int userId,  @Param("modifiedBy")String modifiedBy);
