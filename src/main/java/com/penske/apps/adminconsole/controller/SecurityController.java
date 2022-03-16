@@ -1,18 +1,24 @@
 package com.penske.apps.adminconsole.controller;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.penske.apps.adminconsole.model.EditableUser;
+import com.penske.apps.adminconsole.model.Org;
 import com.penske.apps.adminconsole.model.Vendor;
+import com.penske.apps.adminconsole.service.SecurityService;
 import com.penske.apps.adminconsole.service.VendorService;
 import com.penske.apps.smccore.base.annotation.SmcSecurity;
 import com.penske.apps.smccore.base.domain.User;
 import com.penske.apps.smccore.base.domain.enums.SecurityFunction;
 import com.penske.apps.smccore.base.domain.enums.UserType;
 import com.penske.apps.suppliermgmt.annotation.DefaultController;
+import com.penske.apps.suppliermgmt.annotation.VendorAllowed;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 
 /**
@@ -29,7 +35,9 @@ public class SecurityController {
 	private VendorService vendorService;
 	@Autowired
 	private SuppliermgmtSessionBean sessionBean;
-
+	@Autowired
+	private SecurityService securityService;
+	
 	/* ================== Vendors ================== */
 	@SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDORS)
 	@RequestMapping("vendors")
@@ -78,4 +86,35 @@ public class SecurityController {
 		mav.addObject("hasBeenSearched", true);
 		return mav;
 	}
+	
+	/* ================== Vendor Users ================== */
+	@VendorAllowed
+    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
+    @RequestMapping(value ={"/vendor-users"})
+    public ModelAndView getVendorUsers(){
+        User user = sessionBean.getUser();
+        if(user.hasSecurityFunction(SecurityFunction.MANAGE_VENDOR_USERS))
+            return getVendorUsersPageData();
+        if(user.hasSecurityFunction(SecurityFunction.MANAGE_ROLES))
+            return new ModelAndView("forward:roles");
+        if(user.hasSecurityFunction(SecurityFunction.MANAGE_ORG))
+            return new ModelAndView("forward:org");
+        ModelAndView mav = new ModelAndView("/admin-console/security/noAccess");
+        return mav;
+    }
+	
+    private ModelAndView getVendorUsersPageData(){
+        ModelAndView mav = new ModelAndView("/admin-console/security/vendor-users");
+        User user = sessionBean.getUser();
+        // If the user is a supplier.
+        mav.addObject("roleList", securityService.getVendorRoles(user.getRoleId(),user.getOrgId()));
+        List<Org> orgList = securityService.getOrgList(null, user);
+        Collections.sort(orgList, Org.ORG_NAME_ASC);
+        mav.addObject("orgList", orgList);
+        mav.addObject("hasBeenSearched", false);
+        mav.addObject("userTypeList", securityService.getUserTypes());
+        mav.addObject("accessVendor", user.hasSecurityFunction(SecurityFunction.MANAGE_VENDOR_USERS));
+        mav.addObject("vendorUsersPage", true);
+        return mav;
+    }
 }

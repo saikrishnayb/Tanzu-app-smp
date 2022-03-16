@@ -179,6 +179,9 @@ public interface SecurityDAO {
     @SkipQueryTest("Uses heirarchical queries, which HSQLDB does not support")
     @NonVendorQuery
     public List<Role> getVendorRoles(@Param("roleId") int roleId,@Param("orgId") int orgId);
+    
+    @NonVendorQuery
+    public Role getRoleById(@Param("roleId") int roleId);
 
     @NonVendorQuery
     public List<AdminConsoleUserType> getVendorUserTypes();
