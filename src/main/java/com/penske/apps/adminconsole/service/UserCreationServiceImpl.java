@@ -63,7 +63,7 @@ public class UserCreationServiceImpl implements UserCreationService {
 		editableUser.setDailyOptIn(userForm.isDailyOptIn());
 		editableUser.setCreatedBy(currentUser.getSso());
 		
-		if(ldapUser == null || "A".equals(ldapUser.getGESSOStatus())){ // userObj.getReturnFlg() != 1 -- User not available in the LDAP. This flag is set after validating userid with LDAP.
+		if(ldapUser == null || !"A".equals(ldapUser.getGESSOStatus())){ // User not available in the LDAP. This flag is set after validating userid with LDAP.
 			logger.info("Add User to LDAP..");
 			try {
 				insertUserToLDAP(editableUser);
