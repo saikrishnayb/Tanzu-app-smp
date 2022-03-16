@@ -13,7 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.penske.apps.adminconsole.dao.SecurityDAO;
 import com.penske.apps.adminconsole.exceptions.UserServiceException;
+import com.penske.apps.adminconsole.model.AdminConsoleUserType;
 import com.penske.apps.adminconsole.model.EditableUser;
+import com.penske.apps.adminconsole.model.Role;
+import com.penske.apps.adminconsole.model.UserForm;
 import com.penske.apps.adminconsole.util.CommonUtils;
 import com.penske.apps.adminconsole.util.IUserConstants;
 import com.penske.apps.smccore.base.domain.LookupContainer;
@@ -40,13 +43,30 @@ public class UserCreationServiceImpl implements UserCreationService {
 	
 	@Override
 	@Transactional(rollbackFor = {RuntimeException.class, UserServiceException.class})
-	public EditableUser insertUserInfo(User currentUser, EditableUser createdUser, LookupContainer lookups, URL commonStaticUrl) throws UserServiceException {
+	public EditableUser insertUserInfo(User currentUser, UserForm userForm, LookupContainer lookups, URL commonStaticUrl) throws UserServiceException {
 		
-		createdUser.setUserName(createdUser.getSsoId());
-		if(createdUser.getReturnFlg() != 1){ // userObj.getReturnFlg() != 1 -- User not available in the LDAP. This flag is set after validating userid with LDAP.
+		Role role = securityDao.getRoleById(userForm.getRoleId());
+		CPBGESSOUser ldapUser = userService.getUserFromUserStore(userForm.getSsoId());
+		
+		EditableUser editableUser = new EditableUser();
+		editableUser.setEmail(userForm.getEmail());
+		editableUser.setSsoId(userForm.getSsoId());
+		editableUser.setFirstName(userForm.getFirstName());
+		editableUser.setLastName(userForm.getLastName());
+		editableUser.setPhone(userForm.getPhone());
+		editableUser.setExtension(userForm.getExtension());
+		AdminConsoleUserType userType = new AdminConsoleUserType();
+		userType.setUserTypeId(userForm.getUserTypeId());
+		editableUser.setUserType(userType);
+		editableUser.setOrgId(userForm.getOrgId());
+		editableUser.setRole(role);
+		editableUser.setDailyOptIn(userForm.isDailyOptIn());
+		editableUser.setCreatedBy(currentUser.getSso());
+		
+		if(ldapUser == null || !"A".equals(ldapUser.getGESSOStatus())){ // User not available in the LDAP. This flag is set after validating userid with LDAP.
 			logger.info("Add User to LDAP..");
 			try {
-				insertUserToLDAP(createdUser);
+				insertUserToLDAP(editableUser);
 			} catch (UserServiceException userException) {
 				throw userException;
 			} catch (UsrCreationSvcException e) {
@@ -55,41 +75,41 @@ public class UserCreationServiceImpl implements UserCreationService {
 		}else{
 			logger.info(" Modify User to LDAP..");
 			CPTSso oSSO = new CPTSso();
-			CPBGESSOUser oB2BUser = oSSO.findUser(createdUser.getUserName().trim());
-			oB2BUser.setGESSOStatus("A");
-			oB2BUser.setCommonName(createdUser.getLastName() + ", " + createdUser.getFirstName());
-			oB2BUser.setEmailAddress(createdUser.getEmail());
-			oB2BUser.setGivenName(createdUser.getFirstName());
-			oB2BUser.setSurName(createdUser.getLastName());
-			oB2BUser.setPhone(createdUser.getPhone());
-			createdUser.setGessouid(oB2BUser.getGESSOUID());
-			oSSO.modifyUser(oB2BUser, createdUser.getUserName());
+			ldapUser.setGESSOStatus("A");
+			ldapUser.setCommonName(editableUser.getLastName() + ", " + editableUser.getFirstName());
+			ldapUser.setEmailAddress(editableUser.getEmail());
+			ldapUser.setGivenName(editableUser.getFirstName());
+			ldapUser.setSurName(editableUser.getLastName());
+			ldapUser.setPhone(editableUser.getPhone());
+			editableUser.setGessouid(ldapUser.getGESSOUID());
+			oSSO.modifyUser(ldapUser, editableUser.getSsoId());
 		}
 		
-		//Add to DB
-		securityDao.addUser(createdUser);
-		User newUser = userService.getUser(createdUser.getSsoId(), false, false);
+		//Add to DB - In future, we should merge this with addUser once creating a user no longer uses EditableUser
+		securityDao.addUser(editableUser);
+		User newUser = userService.getUser(editableUser.getSsoId(), false, false);
 		
-		String oneTimePassword = createdUser.getDefaultPassword();
+		String oneTimePassword = editableUser.getDefaultPassword();
+		boolean sendNewUserEmail = !userForm.isHoldEnrollmentEmail();
 		
-		userService.insertUserSecurity(currentUser, newUser, oneTimePassword, true, lookups, commonStaticUrl);
+		userService.insertUserSecurity(currentUser, newUser, oneTimePassword, sendNewUserEmail, lookups, commonStaticUrl);
 		
-		return createdUser;
+		return editableUser;
 	}
 
-	private EditableUser insertUserToLDAP(EditableUser userObj) throws UserServiceException, UsrCreationSvcException {
-		if(!CommonUtils.validUserID(userObj.getUserName())){
-			logger.error("UserID " + userObj.getUserName() + " does not conform to standards.");
+	private void insertUserToLDAP(EditableUser editableUser) throws UserServiceException, UsrCreationSvcException {
+		if(!CommonUtils.validUserID(editableUser.getSsoId())){
+			logger.error("UserID " + editableUser.getSsoId() + " does not conform to standards.");
 			throw new UserServiceException(IUserConstants.NOT_STANDARD_SSO_ERROR_CODE);
 		}
 		CreatedUser user=null;
-		List<LDAPAttributes> attributeList= assignLDAPattribute(userObj);
+		List<LDAPAttributes> attributeList= assignLDAPattribute(editableUser);
 		user=	remoteCreationService.createB2bLdapUser(attributeList);
 		String strServerResponse =user!=null?user.getResponseMessage():null;
 		if (!StringUtils.isEmpty(strServerResponse)){
 			if( !strServerResponse.contains(IUserConstants.OPERATION_EXECUTED_SUCCESS)) {
 				if ( strServerResponse.contains(IUserConstants.ATTR_VAL_ALREADY_EXISTS)) {
-					logger.info("UserID "+ userObj.getUserName() + " exists. Please choose a different UserID.");
+					logger.info("UserID "+ editableUser.getSsoId() + " exists. Please choose a different UserID.");
 					throw new UserServiceException(IUserConstants.DUP_SSO_ERROR_CODE);
 				} else {
 					logger.info(strServerResponse);
@@ -100,9 +120,8 @@ public class UserCreationServiceImpl implements UserCreationService {
 			logger.info(" Add user operation was not successful.");
 			throw new UserServiceException(IUserConstants.EMPTY_RESPONSE_ADD_ERROR_CODE);
 		}
-		userObj.setDefaultPassword(user.getDefaultPassword());
-		userObj.setGessouid(user.getGessouid());
-		return userObj;
+		editableUser.setDefaultPassword(user.getDefaultPassword());
+		editableUser.setGessouid(user.getGessouid());
 	}
 	
 	@Override
@@ -168,15 +187,15 @@ public class UserCreationServiceImpl implements UserCreationService {
 		return userObj;
 	}
 
-	public List<LDAPAttributes> assignLDAPattribute(EditableUser userBean){
+	public List<LDAPAttributes> assignLDAPattribute(EditableUser editableUser){
 		List<LDAPAttributes> attributeList=new ArrayList<LDAPAttributes>();
-		attributeList.add(createLDAPattribute(LDAPConstants.FIRST_NAME, userBean.getFirstName()));
-		attributeList.add(createLDAPattribute(LDAPConstants.INITIALS, userBean.getInitString()));
-		attributeList.add(createLDAPattribute(LDAPConstants.LAST_NAME, userBean.getLastName()));
-		attributeList.add(createLDAPattribute(LDAPConstants.UNIQUE_ID, userBean.getUserName()));
-		attributeList.add(createLDAPattribute(LDAPConstants.EMAIL_ADDRESS, userBean.getEmail()));
-		attributeList.add(createLDAPattribute(LDAPConstants.FULL_NAME,userBean.getLastName() + "," + userBean.getFirstName()));
-		attributeList.add(createLDAPattribute(LDAPConstants.PHONE, userBean.getPhone()));
+		attributeList.add(createLDAPattribute(LDAPConstants.FIRST_NAME, editableUser.getFirstName()));
+		attributeList.add(createLDAPattribute(LDAPConstants.INITIALS, editableUser.getInitString()));
+		attributeList.add(createLDAPattribute(LDAPConstants.LAST_NAME, editableUser.getLastName()));
+		attributeList.add(createLDAPattribute(LDAPConstants.UNIQUE_ID, editableUser.getSsoId()));
+		attributeList.add(createLDAPattribute(LDAPConstants.EMAIL_ADDRESS, editableUser.getEmail()));
+		attributeList.add(createLDAPattribute(LDAPConstants.FULL_NAME,editableUser.getLastName() + "," + editableUser.getFirstName()));
+		attributeList.add(createLDAPattribute(LDAPConstants.PHONE, editableUser.getPhone()));
 		attributeList.add(createLDAPattribute(LDAPConstants.GESSO_STATUS, "A"));
 		return attributeList;
 	}

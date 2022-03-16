@@ -138,7 +138,7 @@ CREATE TABLE SMC.SMC_USER_MASTER (
 	EXTENSION			VARCHAR(5) 									 NULL , 
 	STATUS				CHAR(1) 									 NOT NULL , 
 	TYPE_ID				INTEGER 									 NOT NULL , 
-	DEPT_ID				INTEGER                             		 NOT NULL, 
+	DEPT_ID				INTEGER                             		 NULL, 
 	ROLE_ID				INTEGER 									 NOT NULL , 
 	OEM 				VARCHAR(20) 								 NULL , 
 	CREATED_BY			VARCHAR(100) 								 NOT NULL , 

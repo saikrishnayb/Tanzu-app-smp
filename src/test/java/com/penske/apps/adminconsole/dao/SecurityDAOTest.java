@@ -264,6 +264,11 @@ public class SecurityDAOTest extends MyBatisDaoTest
 	{
 		dao.deleteOrgVendor(123, new String[]{"567", "8967"});
 	}
+	
+	@Test
+	public void shouldGetRoleById() {
+		dao.getRoleById(1);
+	}
 
 	//***** HELPER METHODS *****//
 	private EditableUser makeUser(int userId, String sso, UserType userType)

@@ -114,61 +114,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<c:forEach var="vendor" items="${vendors}">
-						<tr>
-							<td class="editable centerAlign">
-								<input class="update-checkbox" type="checkbox" />
-								<div class="dropdown">
-									<a class="bootStrapDropDown dropdown-toggle" data-toggle="dropdown">Actions<span class="caret"></span></a>
-									<ul class="dropdown-menu">
-										<li><a class="view-vendor">Vendor Information</a></li>
-										<li><a class="edit-vendor">Modify Vendor</a></li>
-										<li><a class="purchasing-details">Purchasing Details</a></li>
-									</ul>
-								</div>
-								<input type="hidden" name="vendorId" value="${vendor.vendorId}" />
-								<input type="hidden" name="notificationException" value="${vendor.notificationException}" />
-								<input type="hidden" name="supplySpecialist" value="${vendor.supplySpecialist.userId}" />
-							</td>
-							<td class="corp-code">${vendor.corpCode}</td>
-							<td class="vendor-name">
-								<span class="vendor-address-expand-collapse">
-									<img src="https://staticdev.penske.com/common/images/collapsed.png"
-										data-collapsed-src="https://staticdev.penske.com/common/images/collapsed.png"
-										data-expanded-src="https://staticdev.penske.com/common/images/expanded.png"
-										class="vendor-address-icon va-collapsed" />
-									${vendor.vendorName}
-								</span>
-								<br>
-								<div class="vendor-address ui-helper-hidden">
-									<label>Shipping Address</label><br>
-									${vendor.shippingAddress1}<br>
-									${vendor.shippingAddress2}<br>
-									${vendor.shippingCity}, ${vendor.shippingState} ${vendor.shippingZipCode}	
-								</div>
-							</td>
-							<td class="vendor-number">${vendor.vendorNumber}</td>
-							<td class="mfr-code">
-                <c:forEach items="${vendor.mfrCodes}" var="mfrCode" varStatus="loopTagStatus">
-                  ${mfrCode} 
-                  
-                  <c:if test="${fn:length(vendor.mfrCodes) != loopTagStatus.count}">
-                    <br>
-                  </c:if>
-                </c:forEach>
-              </td>
-							<td class="annual-agreement">
-								<c:if test="${vendor.annualAgreement eq 'Y'}">Yes</c:if>
-								<c:if test="${vendor.annualAgreement eq 'N'}">No</c:if>
-							</td>
-							<td class="primary-contact">${vendor.primaryContact.firstName} ${vendor.primaryContact.lastName}</td>
-							<td class="contact-phone">${vendor.primaryContact.phoneNumber}</td>
-							<td class="planning-analyst">
-								<input name="planningAnalyst" type="hidden" value="${vendor.planningAnalyst.userId}" />
-								<span>${vendor.planningAnalyst.firstName} ${vendor.planningAnalyst.lastName}</span>
-							</td>
-						</tr>
-						</c:forEach>
+						<!-- Uses Javascript implementation -->
 					</tbody>
 				</table>
 				
@@ -184,6 +130,5 @@
 		
 		<%@ include file="../../../jsp/global/v2/footer.jsp" %>
 		<script src="${baseUrl}/js/admin-console/security/vendors.js" type="text/javascript"></script>
-		<script type="text/javascript" src="${baseUrl}/js/global/v2/file-download-helper.js"></script>
 	</body>
 </html>

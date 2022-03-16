@@ -57,12 +57,12 @@
 					<c:if test = "${isCreatePage == false}">
 						 <c:if test="${editableUser.userType.userTypeId eq type.userTypeId}">
 						 	<input id="userType.description" tabindex=7 class="input alpha alpha-name " name="userType.description" type="text" value="${type.description}" readonly/>
-						 	<input id="user-type" class="input numeric numeric-whole usertype " name="userType.userTypeId" type="hidden" value="${type.userTypeId}" />    
+						 	<input id="user-type" class="input numeric numeric-whole usertype " name="userTypeId" type="hidden" value="${type.userTypeId}" />    
 						 </c:if>
 					</c:if>
 					<c:if test = "${isCreatePage == true}">
 						<input id="userType.description" tabindex="-1" class="input alpha alpha-name borderless " name="userType.description" type="text" value="${type.description}" readonly />  
-						<input id="user-type" class="input numeric numeric-whole usertype " name="userType.userTypeId" type="hidden" value="${type.userTypeId}" />  
+						<input id="user-type" class="input numeric numeric-whole usertype " name="userTypeId" type="hidden" value="${type.userTypeId}" />  
 					</c:if>
 				</c:forEach>
 			</div>
@@ -82,7 +82,7 @@
 						
 			<div class="single-line-content">
 				<label for="user-role">User Role<span class=requiredField>*</span></label> 
-				<select id="user-role" tabindex=9 name="role.roleId" class="input numeric numeric-whole">
+				<select id="user-role" tabindex=9 name="roleId" class="input numeric numeric-whole">
 					<option value="">Select User Role</option>
 					<c:forEach items="${userRoles}" var="role">
 						<option value="${role.roleId}" <c:if test="${editableUser.role.roleName eq role.roleName}"> selected </c:if>>${role.roleName}</option>
@@ -94,7 +94,13 @@
 				<input id="daily-email-opt-in" tabindex=10 name="dailyOptIn" type="checkbox" <c:if test="${(editableUser.dailyOptIn) || (isCreatePage == true)}">checked=checked</c:if> />
 				<label for="daily-email-opt-in">Opt-in to Daily Summary Email</label> 
 			</div>
-							
+			
+			<c:if test="${isCreatePage and not currentUser.isVendorUser()}">
+				<div class="daily-opt-in-container">
+					<input id="hold-enrollment-email" tabindex=11 name="holdEnrollmentEmail" type="checkbox" />
+					<label for="hold-enrollment-email">Hold Enrollment Email until PO Issued</label> 
+				</div>
+			</c:if>			
 		</form>
 
 		<span class="errorMsg">* indicates a required field</span>

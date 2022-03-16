@@ -74,7 +74,7 @@ public class SecurityControllerOld {
         boolean isSupplier = user.getUserType() == UserType.VENDOR;
         // If the user is a supplier.
         if (isSupplier)
-            return getVendorUsers();
+            return new ModelAndView("/admin-console/security/vendor-users");
         else
         {
             UserSearchForm userSearchForm = new UserSearchForm();
@@ -88,21 +88,6 @@ public class SecurityControllerOld {
         return mav;
     }
     
-    @VendorAllowed
-    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
-    @RequestMapping(value ={"/vendor-users"})
-    public ModelAndView getVendorUsers(){
-        User user = sessionBean.getUser();
-        if(user.hasSecurityFunction(SecurityFunction.MANAGE_VENDOR_USERS))
-            return getVendorUsersPageData();
-        if(user.hasSecurityFunction(SecurityFunction.MANAGE_ROLES))
-            return getRolesPage();
-        if(user.hasSecurityFunction(SecurityFunction.MANAGE_ORG))
-            return getOrgPage();
-        ModelAndView mav = new ModelAndView("/admin-console/security/noAccess");
-        return mav;
-    }
-
     @VendorAllowed
     @SmcSecurity(securityFunction = {SecurityFunction.MANAGE_USERS, SecurityFunction.MANAGE_VENDOR_USERS})
     @RequestMapping(value = "/users-search")
@@ -257,21 +242,6 @@ public class SecurityControllerOld {
         mav.addObject("orgListDrop", securityService.getOrgList(null, user));
         mav.addObject("hasBeenSearched", true);
         mav.addObject("myOrg", user.getOrgId());
-        return mav;
-    }
-    
-    private ModelAndView getVendorUsersPageData(){
-        ModelAndView mav = new ModelAndView("/admin-console/security/vendor-users");
-        User user = sessionBean.getUser();
-        // If the user is a supplier.
-        mav.addObject("roleList", securityService.getVendorRoles(user.getRoleId(),user.getOrgId()));
-        List<Org> orgList = securityService.getOrgList(null, user);
-        Collections.sort(orgList, Org.ORG_NAME_ASC);
-        mav.addObject("orgList", orgList);
-        mav.addObject("hasBeenSearched", false);
-        mav.addObject("userTypeList", securityService.getUserTypes());
-        mav.addObject("accessVendor", user.hasSecurityFunction(SecurityFunction.MANAGE_VENDOR_USERS));
-        mav.addObject("vendorUsersPage", true);
         return mav;
     }
 }

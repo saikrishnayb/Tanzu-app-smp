@@ -360,7 +360,11 @@ $('.createVendorUser').on("click", function(){
 			if(isValid){
 				
 				
-				var $createUserPromise = $.post('./create-vendor-user.htm', $userForm.serialize());
+				var $createUserPromise = $.ajax( {
+				    type: 'POST',
+				    url: 'create-vendor-user', 
+				    data: $userForm.serialize(),
+				  });
 				$createUserPromise.done(function() {
 					var  $searchForm = $('#search-vendor-user-form');
 					getVendorUserTableContents($searchForm.serialize());
