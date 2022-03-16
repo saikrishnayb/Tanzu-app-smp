@@ -45,12 +45,22 @@
 									<label for="access-code">Access Code: </label><input id="access-code" name="access-code" class="numeric" maxLength="6" />
 								</div>
 							</div>
+							<div class="row access-code-resent-row ui-helper-hidden">
+								<div class="col-xs-12 alert alert-info">
+									A new access code has been sent to the email on file. Please enter the new access code.
+								</div>
+							</div>
 						</div>
 					</div>
 					<div class="modal-footer">
-						<div class="button-div">
+						<div class="button-div floatRight">
+							<a id="resend-access-code-btn" 
+								class="linkSecondary "
+								data-user-id="${user.userId}">
+									Resend Access Code
+							</a>
 							<a id="submit-access-code-btn" 
-								class="buttonSecondary buttonDisabled floatRight"
+								class="buttonSecondary buttonDisabled"
 								data-user-id="${user.userId}">
 									Continue
 							</a>

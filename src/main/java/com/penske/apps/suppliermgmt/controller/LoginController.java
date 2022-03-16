@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -23,7 +24,6 @@ import com.penske.apps.smccore.base.domain.enums.LookupKey;
 import com.penske.apps.smccore.base.domain.enums.UserType;
 import com.penske.apps.smccore.base.service.UserService;
 import com.penske.apps.suppliermgmt.annotation.VendorAllowed;
-import com.penske.apps.suppliermgmt.annotation.Version1Controller;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.domain.UserVendorFilterSelection;
 import com.penske.apps.suppliermgmt.model.ErrorModel;
@@ -31,7 +31,6 @@ import com.penske.apps.suppliermgmt.service.LoginService;
 import com.penske.apps.suppliermgmt.servlet.ApplicationEntry;
 
 
-@Version1Controller
 @RequestMapping(value="/login")
 public class LoginController extends BaseController {
 
@@ -48,7 +47,7 @@ public class LoginController extends BaseController {
 
     @VendorAllowed
     @RequestMapping(value = "/validate", method = {RequestMethod.GET, RequestMethod.POST })
-    protected  ModelAndView validateUser(HttpServletRequest request, HttpSession session) {
+    protected ModelAndView validateUser(HttpServletRequest request, HttpSession session) {
         LOGGER.debug("Inside validateUser() ");
         ModelAndView model=new ModelAndView();
         String forward=null;
@@ -131,6 +130,17 @@ public class LoginController extends BaseController {
         }
         return model;
 
+    }
+    
+    @VendorAllowed
+    @RequestMapping(value = "/two-factor-auth-passed", method = {RequestMethod.GET, RequestMethod.POST })
+    public ModelAndView twoFactorAuthPassed(@RequestParam("userId") int userId, HttpServletRequest request, HttpSession session) {
+    	User user = userService.getUser(userId, true, false);
+    	UserSecurity userSecurity = userService.getUserSecurity(user);
+    	
+    	userService.recordTwoFactorAuthSuccess(user,userSecurity);
+    	
+    	return this.validateUser(request, session);
     }
 
     @VendorAllowed

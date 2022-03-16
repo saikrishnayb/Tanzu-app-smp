@@ -17,8 +17,31 @@ $twoFactorAuthModal.on('paste, input', '#access-code', function(){
 		$submitAccessCodeBtn.addClass('buttonDisabled');
 });
 
+$twoFactorAuthModal.on('click', '#resend-access-code-btn', function(){
+	$('.access-code-resent-row').hide();
+	
+	var $resendAccessCodeBtn = $('#resend-access-code-btn');
+	var userId = $resendAccessCodeBtn.data('user-id');
+	
+	var $checkAccessCodePromise = $.ajax( {
+		type: 'POST',
+		url: 'resend-access-code', 
+		data: {userId: userId},
+		global: false,
+		beforeSend: function() {
+		  LoadingUtil.showLoadingOverlay(true);
+		}
+  	});
+	
+	$checkAccessCodePromise.done(function(){
+		$('.access-code-resent-row').show();
+	});
+	
+});
+
 $twoFactorAuthModal.on('click', '#submit-access-code-btn', function(){
 	ModalUtil.clearAndHideErrorMessages();
+	$('.access-code-resent-row').hide();
 	
 	var $accessCodeInput = $('#access-code');
 	var $submitAccessCodeBtn = $('#submit-access-code-btn');
@@ -44,16 +67,16 @@ $twoFactorAuthModal.on('click', '#submit-access-code-btn', function(){
 		}
   	});
 	
-	$checkAccessCodePromise.done(function(pair){
-		var accessCodeMatched = pair.left;
-		var accessCodeExpired = pair.right;
+	$checkAccessCodePromise.done(function(accessCodeResult){
+		var accessCodeMatched = accessCodeResult.accessCodeMatched;
+		var accessCodeGeneratedRecently = accessCodeResult.codeGeneratedRecently;
 		
-		var isValid = accessCodeMatched && !accessCodeExpired;
+		var isValid = accessCodeMatched && accessCodeGeneratedRecently;
 		if(isValid){
 			window.location.href = '/two-factor-auth-passed?' + $.param({userId : userId});
 		}
 		else {
-			if(accessCodeExpired)
+			if(!accessCodeGeneratedRecently)
 				ModalUtil.displayErrorMessages("Your access code has expired, and a new code has been sent to the email on file. Please enter the new access code.", true);
 			else
 				ModalUtil.displayErrorMessages("Access Code invalid, please try again.", true);
