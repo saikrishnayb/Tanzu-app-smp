@@ -2,14 +2,14 @@
 
 <div id="purchasing-details-modal" class="modal-content col-xs-12" data-modal-title="Purchasing Details" data-modal-width="550">
 	<%@ include file="../../../global/v2/modal-error-container.jsp"%>
-	<div class="row modal-body">
-		<div class="col-xs-12">
-			<div class="row">
+	<div class="row modal-body"">
+		<div class="col-xs-12 form-horizontal"">
+			<div class="form-group">
 				<div class="col-xs-12">
 					<h2>Vendor Information</h2>
 				</div>
 			</div>
-			<div class="row">
+			<div class="form-group">
 				<div class="col-xs-5">
 					<label>Vendor Number</label>
 				</div>
@@ -17,7 +17,7 @@
 					${vendor.vendorNumber}
 				</div>
 			</div>
-			<div class="row">
+			<div class="form-group">
 				<div class="col-xs-5">
 					<label>Vendor Name</label>
 				</div>
@@ -25,17 +25,17 @@
 					${vendor.vendorName}
 				</div>
 			</div>
-		</div>
-		<div class="col-xs-12">
-			<hr>
-		</div>
-		<div class="col-xs-12">
-			<div class="row">
+			<div class="form-group">
+				<div class="col-xs-12">
+					<hr>
+				</div>
+			</div>
+			<div class="form-group">
 				<div class="col-xs-12">
 					<h2>Purchasing Summary</h2>
 				</div>
 			</div>
-			<div class="row">
+			<div class="form-group">
 				<div class="col-xs-5">
 					<label>POs Issued (Last 3 Years)</label>
 				</div>
@@ -43,7 +43,7 @@
 					${purchasingSummary.posIssuedInLast3Years}
 				</div>
 			</div>
-			<div class="row">
+			<div class="form-group">
 				<div class="col-xs-5">
 					<label>Date of Last PO Issued</label>
 				</div>

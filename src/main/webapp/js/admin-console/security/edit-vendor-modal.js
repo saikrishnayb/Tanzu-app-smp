@@ -54,7 +54,7 @@ function updateRow(data){
 	var tableRow = $("input[name=vendorId]").filter(function() {
 	    return $(this).val() == data.vendorId;
 	}).closest("tr");
-	var rowHtml = '<td class="editable centerAlign">'
+	var rowHtml = '<td class="actions">'
 						+ '<input class="update-checkbox" type="checkbox" />'
 						+ '<div class="dropdown">'
 						+ '<a class="bootStrapDropDown dropdown-toggle" data-toggle="dropdown">Actions<span class="caret"></span></a>'
