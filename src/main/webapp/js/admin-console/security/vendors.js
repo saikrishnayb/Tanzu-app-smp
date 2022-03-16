@@ -17,7 +17,7 @@ var $vendorDataTable = $vendorTable.DataTable({ //All of the below are optional
 		{"orderable": false, "targets": 0},
 		{"width": "100px", "targets": 0},
 		{"searchable": false, "targets": 0},
-		{'className': 'editable centerAlign', "targets": 0},
+		{'className': 'actions', "targets": 0},
 		{'className': 'corp-code', "targets": 1},
 		{'className': 'vendor-name', "targets": 2},
 		{'className': 'vendor-number', "targets": 3},

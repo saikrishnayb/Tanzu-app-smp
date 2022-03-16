@@ -89,13 +89,19 @@ form .form-column {
 	width: 125px;
 }
 
-#view-vendor-modal label, #purchasing-details-modal label, #purchasing-details-modal h2 {
+#view-vendor-modal label {
 	margin: 5px 0;
 }
 
 #view-vendor-modal span {
 	margin-top: 5px;
 	margin-left: 10px;
+}
+
+.actions {
+	vertical-align: middle;
+	border-right: 1px solid rgb(206, 206, 206);
+	white-space: nowrap;
 }
 
 form > span.errorMsg {
