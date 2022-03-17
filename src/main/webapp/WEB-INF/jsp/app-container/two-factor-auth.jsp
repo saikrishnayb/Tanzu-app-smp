@@ -47,7 +47,8 @@
 							</div>
 							<div class="row access-code-resent-row ui-helper-hidden">
 								<div class="col-xs-12 alert alert-info">
-									A new access code has been sent to the email on file. Please enter the new access code.
+									A new access code has been sent to the email on file.<br>
+									Please enter the new access code.
 								</div>
 							</div>
 						</div>
