@@ -23,6 +23,7 @@ import com.penske.apps.smccore.base.domain.UserSecurity;
 import com.penske.apps.smccore.base.domain.enums.LookupKey;
 import com.penske.apps.smccore.base.domain.enums.UserType;
 import com.penske.apps.smccore.base.service.UserService;
+import com.penske.apps.suppliermgmt.annotation.DefaultController;
 import com.penske.apps.suppliermgmt.annotation.VendorAllowed;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.domain.UserVendorFilterSelection;
@@ -30,7 +31,7 @@ import com.penske.apps.suppliermgmt.model.ErrorModel;
 import com.penske.apps.suppliermgmt.service.LoginService;
 import com.penske.apps.suppliermgmt.servlet.ApplicationEntry;
 
-
+@DefaultController
 @RequestMapping(value="/login")
 public class LoginController extends BaseController {
 

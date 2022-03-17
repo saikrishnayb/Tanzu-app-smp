@@ -27,10 +27,6 @@ $twoFactorAuthModal.on('click', '#resend-access-code-btn', function(){
 		type: 'POST',
 		url: 'resend-access-code', 
 		data: {userId: userId},
-		global: false,
-		beforeSend: function() {
-		  LoadingUtil.showLoadingOverlay(true);
-		}
   	});
 	
 	$checkAccessCodePromise.done(function(){
@@ -61,10 +57,6 @@ $twoFactorAuthModal.on('click', '#submit-access-code-btn', function(){
 		type: 'POST',
 		url: 'check-access-code', 
 		data: {userId: userId, accessCode: accessCode},
-		global: false,
-		beforeSend: function() {
-		  LoadingUtil.showLoadingOverlay(true);
-		}
   	});
 	
 	$checkAccessCodePromise.done(function(accessCodeResult){

@@ -1,5 +1,8 @@
 package com.penske.apps.suppliermgmt.controller;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,7 +31,7 @@ public class LoginRestController {
 	@RequestMapping("check-access-code")
 	@VendorAllowed
 	@ResponseBody
-	public AccessCodeResult checkAccessCode(@RequestParam("userId") int userId, @RequestParam("accessCode") String accessCode) {
+	public AccessCodeResult checkAccessCode(@RequestParam("userId") int userId, @RequestParam("accessCode") String accessCode, HttpServletRequest request, HttpSession session) {
 		User user = userService.getUser(userId, false, false);
 		UserSecurity userSecurity = userService.getUserSecurity(user);
 		
@@ -55,7 +58,7 @@ public class LoginRestController {
 	@RequestMapping("resend-access-code")
 	@VendorAllowed
 	@ResponseBody
-	public void resendAccessCode(@RequestParam("userId") int userId) {
+	public void resendAccessCode(@RequestParam("userId") int userId, HttpServletRequest request, HttpSession session) {
 		User user = userService.getUser(userId, false, false);
 		UserSecurity userSecurity = userService.getUserSecurity(user);
 		
