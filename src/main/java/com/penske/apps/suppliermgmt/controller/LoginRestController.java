@@ -28,7 +28,7 @@ public class LoginRestController {
 	/**
 	 * Controller method to check the access code. Will return AccessCodeResult with the results of the 
 	 */
-	@RequestMapping("check-access-code")
+	@RequestMapping("/check-access-code")
 	@VendorAllowed
 	@ResponseBody
 	public AccessCodeResult checkAccessCode(@RequestParam("userId") int userId, @RequestParam("accessCode") String accessCode, HttpServletRequest request, HttpSession session) {
@@ -39,6 +39,7 @@ public class LoginRestController {
 		// and the correct message can be displayed to the user
 		boolean accessCodeValid = userSecurity.isAccessCodeValid(accessCode);
 		if(accessCodeValid) {
+			userService.recordTwoFactorAuthSuccess(user,userSecurity);
 			return new AccessCodeResult(true, true);
 		}
 		else {
@@ -55,7 +56,7 @@ public class LoginRestController {
 	/**
 	 * Controller method to generate a new access code and resend the email
 	 */
-	@RequestMapping("resend-access-code")
+	@RequestMapping("/resend-access-code")
 	@VendorAllowed
 	@ResponseBody
 	public void resendAccessCode(@RequestParam("userId") int userId, HttpServletRequest request, HttpSession session) {

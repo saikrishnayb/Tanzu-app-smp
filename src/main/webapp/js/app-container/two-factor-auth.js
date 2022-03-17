@@ -1,3 +1,5 @@
+var baseUrl = sessionStorage.getItem("baseUrl");
+
 // Selectors
 var $twoFactorAuthModal = $('#two-factor-auth-modal');
 
@@ -17,6 +19,12 @@ $twoFactorAuthModal.on('paste, input', '#access-code', function(){
 		$submitAccessCodeBtn.addClass('buttonDisabled');
 });
 
+$twoFactorAuthModal.on('keypress', '#access-code', function(e) {
+	if (e.which == 13) {
+		$('#submit-access-code-btn').click();
+	}
+});
+
 $twoFactorAuthModal.on('click', '#resend-access-code-btn', function(){
 	$('.access-code-resent-row').hide();
 	
@@ -25,7 +33,7 @@ $twoFactorAuthModal.on('click', '#resend-access-code-btn', function(){
 	
 	var $checkAccessCodePromise = $.ajax( {
 		type: 'POST',
-		url: 'resend-access-code', 
+		url: baseUrl + '/app/login/resend-access-code', 
 		data: {userId: userId},
   	});
 	
@@ -55,8 +63,12 @@ $twoFactorAuthModal.on('click', '#submit-access-code-btn', function(){
 	
 	var $checkAccessCodePromise = $.ajax( {
 		type: 'POST',
-		url: 'check-access-code', 
+		url: baseUrl + '/app/login/check-access-code', 
 		data: {userId: userId, accessCode: accessCode},
+		global: false,
+		beforeSend: function() {
+	      LoadingUtil.showLoadingOverlay(true);
+	    }
   	});
 	
 	$checkAccessCodePromise.done(function(accessCodeResult){
@@ -65,13 +77,15 @@ $twoFactorAuthModal.on('click', '#submit-access-code-btn', function(){
 		
 		var isValid = accessCodeMatched && accessCodeGeneratedRecently;
 		if(isValid){
-			window.location.href = '/two-factor-auth-passed?' + $.param({userId : userId});
+			window.location.replace(baseUrl + '/app/login/validate');
 		}
 		else {
 			if(!accessCodeGeneratedRecently)
 				ModalUtil.displayErrorMessages("Your access code has expired, and a new code has been sent to the email on file. Please enter the new access code.", true);
 			else
 				ModalUtil.displayErrorMessages("Access Code invalid, please try again.", true);
+			
+			LoadingUtil.hideLoadingOverlay();
 		}
 	});
 });

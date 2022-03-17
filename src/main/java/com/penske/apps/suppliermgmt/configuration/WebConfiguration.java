@@ -68,7 +68,7 @@ public class WebConfiguration extends WebMvcConfigurerAdapter {
     		requestLoggingInterceptor.setLogTimings(true);
     	
     	registry.addInterceptor(requestLoggingInterceptor);
-    	registry.addInterceptor(securityInterceptor);
+    	registry.addInterceptor(securityInterceptor).excludePathPatterns("/login/*");
     	registry.addInterceptor(commonModelAttributesHandlerInterceptor);
     } 
     

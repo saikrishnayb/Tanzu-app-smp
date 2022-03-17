@@ -12,7 +12,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -76,11 +75,7 @@ public class LoginController extends BaseController {
             	errorMessage = "Your SSOID not configured in SMC";
         	else if(user.isVendorUser() && userSecurity.isAccessTokenRequired()) {
         		userService.generateAndSendAccessCode(user, userSecurity);
-        		forward = "app-container/two-factor-auth";
-        		
-        		String baseUrl = request.getContextPath();
-        		model.addObject("baseUrl", baseUrl);
-        		model.addObject("user", user);
+        		forward = "forward:two-factor-auth";
         	}
         	else
         	{
@@ -134,14 +129,36 @@ public class LoginController extends BaseController {
     }
     
     @VendorAllowed
-    @RequestMapping(value = "/two-factor-auth-passed", method = {RequestMethod.GET, RequestMethod.POST })
-    public ModelAndView twoFactorAuthPassed(@RequestParam("userId") int userId, HttpServletRequest request, HttpSession session) {
-    	User user = userService.getUser(userId, true, false);
+    @RequestMapping(value = "/two-factor-auth", method = {RequestMethod.GET, RequestMethod.POST })
+    protected ModelAndView getTwoFactorAuth(HttpServletRequest request, HttpSession session) {
+    	//Pull the user's ID out of the session, and then look up the actual user object.
+    	String userSSO = (String) session.getAttribute(ApplicationEntry.USER_SSO);
+
+        if(StringUtils.isBlank(userSSO))
+        	return null;
+    	
+    	User user = userService.getUser(userSSO, true);
     	UserSecurity userSecurity = userService.getUserSecurity(user);
     	
-    	userService.recordTwoFactorAuthSuccess(user,userSecurity);
+    	if(!userSecurity.isAccessTokenRequired()) {
+    		return new ModelAndView("forward:/app/home/displayHome.htm");
+    	}
     	
-    	return this.validateUser(request, session);
+    	ModelAndView model = new ModelAndView("app-container/two-factor-auth");
+    	
+    	//Reloading LookupData
+        lookupManager.checkAndRefreshLookups();
+
+        LookupContainer lookups = lookupManager.getLookupContainer();
+    	
+    	String baseUrl = request.getContextPath();
+		model.addObject("baseUrl", baseUrl);
+		model.addObject("user", user);
+		
+		String supportNumber = lookups.getSingleLookupValue(LookupKey.SUPPORT_PHONE_NUM);
+        model.addObject("supportNum", supportNumber);
+    	
+    	return model;
     }
 
     @VendorAllowed
