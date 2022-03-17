@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.penske.apps.adminconsole.exceptions.UserServiceException;
 import com.penske.apps.adminconsole.model.EditableUser;
 import com.penske.apps.adminconsole.model.ImageFile;
 import com.penske.apps.adminconsole.model.Org;
@@ -30,7 +29,6 @@ import com.penske.apps.adminconsole.service.UserCreationService;
 import com.penske.apps.adminconsole.service.VendorService;
 import com.penske.apps.adminconsole.util.ApplicationConstants;
 import com.penske.apps.adminconsole.util.CommonUtils;
-import com.penske.apps.adminconsole.util.IUserConstants;
 import com.penske.apps.smccore.base.annotation.SmcSecurity;
 import com.penske.apps.smccore.base.beans.LookupManager;
 import com.penske.apps.smccore.base.domain.LookupContainer;
@@ -237,43 +235,6 @@ public class SecurityRestControllerOld {
         return userInfo;
     }
 
-    @VendorAllowed
-    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
-    @RequestMapping(value ="edit-vendor-user-static")
-    @ResponseBody
-    public EditableUser modifyVendorUserInfoStatic(EditableUser user, HttpServletResponse response) throws Exception{
-
-        try{
-            User currentUser = sessionBean.getUser();
-            user.setModifiedBy(currentUser.getSso());
-            userCreationService.updateUserInfo(user, false);
-            EditableUser userInfo = securityService.getUser(user.getUserId());
-            return userInfo;
-        }
-        catch (UserServiceException e) {
-            if(IUserConstants.DUP_SSO_ERROR_CODE==e.getErrorCode()){
-                LOGGER.error(IUserConstants.DUP_SSO_ERROR_MESSAGE + e);
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,"USER_SERVICE_DUP_SSO:"+String.valueOf(e.getErrorCode()));
-            }else if(IUserConstants.NOT_STANDARD_SSO_ERROR_CODE==e.getErrorCode()){
-                LOGGER.error(IUserConstants.NOT_STANDARD_SSO_ERROR_MESSAGE + e);
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,"USER_SERVICE_NOT_STANDARD_SSO:"+String.valueOf(e.getErrorCode()));
-            }else{
-                LOGGER.error("Error while creating user: " + e);
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while creating user.");
-            }
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.getWriter().write("Error while creating user. "+e.getErrorCode());
-            response.flushBuffer();
-        }
-        catch (Exception e) {
-            LOGGER.error("Error while updating user: " + e);
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while updating user.");
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.getWriter().write("Error while updating user.");
-            response.flushBuffer();
-        }
-        return null;
-    }
 
     @VendorAllowed
     @SmcSecurity(securityFunction = {SecurityFunction.MANAGE_USERS, SecurityFunction.MANAGE_VENDOR_USERS})

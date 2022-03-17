@@ -57,19 +57,19 @@
 					<c:if test = "${isCreatePage == false}">
 						 <c:if test="${editableUser.userType.userTypeId eq type.userTypeId}">
 						 	<input id="userType.description" tabindex=7 class="input alpha alpha-name " name="userType.description" type="text" value="${type.description}" readonly/>
-						 	<input id="user-type" class="input numeric numeric-whole usertype " name="userTypeId" type="hidden" value="${type.userTypeId}" />    
+						 	<input id="user-type" class="input numeric numeric-whole usertype " name="${isCreatePage? 'userTypeId' : 'userType.userTypeId'}" type="hidden" value="${type.userTypeId}" />    
 						 </c:if>
 					</c:if>
 					<c:if test = "${isCreatePage == true}">
 						<input id="userType.description" tabindex="-1" class="input alpha alpha-name borderless " name="userType.description" type="text" value="${type.description}" readonly />  
-						<input id="user-type" class="input numeric numeric-whole usertype " name="userTypeId" type="hidden" value="${type.userTypeId}" />  
+						<input id="user-type" class="input numeric numeric-whole usertype " name="${isCreatePage? 'userTypeId' : 'userType.userTypeId'}" type="hidden" value="${type.userTypeId}" />  
 					</c:if>
 				</c:forEach>
 			</div>
 						
 			<div id="bu-div"
 				class="single-line-content">
-				<label for="bu">Business Unit<span class=requiredField>*</span></label> 
+				<label for="bu">Business Unit<span class=requiredField>*</span></label> }
 					<select id="bulist" tabindex=8 class="input numeric numeric-whole" name="orgId" style="width:100%">
 					<option value=''>Select</option>
 					<c:forEach items="${orgList}" var="org">
@@ -82,7 +82,7 @@
 						
 			<div class="single-line-content">
 				<label for="user-role">User Role<span class=requiredField>*</span></label> 
-				<select id="user-role" tabindex=9 name="roleId" class="input numeric numeric-whole">
+				<select id="user-role" tabindex=9 name="${isCreatePage? 'roleId' : 'role.roleId'}" class="input numeric numeric-whole">
 					<option value="">Select User Role</option>
 					<c:forEach items="${userRoles}" var="role">
 						<option value="${role.roleId}" <c:if test="${editableUser.role.roleName eq role.roleName}"> selected </c:if>>${role.roleName}</option>
