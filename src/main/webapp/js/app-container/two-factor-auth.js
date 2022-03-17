@@ -51,6 +51,7 @@ $twoFactorAuthModal.on('click', '#resend-access-code-btn', function(){
 
 // Submit the access code to be checked against the database
 $twoFactorAuthModal.on('click', '#submit-access-code-btn', function(){
+	var $submitAccessCodeBtn = $('#submit-access-code-btn');
 	if($submitAccessCodeBtn.hasClass('buttonDisabled'))
 		return false;
 	
@@ -58,8 +59,6 @@ $twoFactorAuthModal.on('click', '#submit-access-code-btn', function(){
 	$('.access-code-resent-row').hide();
 	
 	var $accessCodeInput = $('#access-code');
-	var $submitAccessCodeBtn = $('#submit-access-code-btn');
-	
 	var accessCode = $accessCodeInput.val().trim();
 	var userId = $submitAccessCodeBtn.data('user-id');
 	
