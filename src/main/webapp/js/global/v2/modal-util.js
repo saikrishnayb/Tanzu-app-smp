@@ -67,12 +67,14 @@ var ModalUtil = new function() {
 		var modalMaxWidth      = $modalContent.data('modal-max-width');
 		var modalMinHeight     = $modalContent.data('modal-min-height');
 		var modalMaxHeight     = $modalContent.data('modal-max-height');
+		var modalNoClose       = $modalContent.data('modal-no-close');
 
 		var hasModalTitle      = modalTitle !== undefined;
 		var hasModalWidth      = modalWidth !== undefined;
 		var hasModalMaxWidth   = modalMaxWidth !== undefined;
 		var hasModalMinHeight  = modalMinHeight !== undefined;
 		var hasModalMaxHeight  = modalMaxHeight !== undefined;
+		var hasModalNoClose    = modalNoClose !== undefined;
 
 		var hasDataTable = $modalContent.data('contains-data-table') !== undefined;
 
@@ -81,6 +83,7 @@ var ModalUtil = new function() {
 		if(hasModalMaxWidth) $modal.dialog("option", "width", modalMaxWidth); //Dumb hack since maxWidth seems to not work with "auto" width
 		if(hasModalMinHeight) $modal.dialog("option", "minHeight", modalMinHeight);
 		if(hasModalMaxHeight) $modal.dialog("option", "maxHeight", modalMaxHeight);
+		if(hasModalNoClose) $modal.dialog("option", "closeOnEscape", false);
 
 
 		// To prevent things from jumping around the page when datatable initializes, hide everything and re-enabled it later
@@ -143,6 +146,35 @@ var ModalUtil = new function() {
 		}
 
 		return $lastModal;
+
+	};
+	
+	this.displayErrorMessages = function(errorMessages, clearPrevious) {
+		var isNotArray = !Array.isArray(errorMessages);
+		if(isNotArray) errorMessages = [errorMessages];
+		
+		var colDialogErrorContainer = this.getTopMostOpenedModal()[0].querySelector('.modal-error-container');
+		var dialogErrorUl = colDialogErrorContainer.querySelector('.alert ul');
+		
+		if(clearPrevious === true) dialogErrorUl.innerHTML = '';
+		
+		for (var i = 0; i < errorMessages.length; i++) {
+		  var li = document.createElement("li");
+		  li.innerHTML = errorMessages[i];
+		  dialogErrorUl.appendChild(li);
+		}
+		
+		$(colDialogErrorContainer).show();
+	};
+	
+	this.clearAndHideErrorMessages = function($modal) {
+	    var modal = $modal === undefined? this.getTopMostOpenedModal()[0] : $modal[0];
+	
+	    var colDialogErrorContainer = modal.querySelector('.modal-error-container');
+	    var dialogErrorUl = modal.querySelector('.alert ul');
+	    dialogErrorUl.innerHTML = '';
+	
+	    $(colDialogErrorContainer).hide();
 
 	};
 };

@@ -1,0 +1,24 @@
+.ui-dialog-titlebar-close {
+	display: none;
+}
+
+.row {
+	margin-bottom: 10px
+}
+
+.access-code-row {
+	margin-top: 20px;
+}
+
+#access-code {
+	width: 55px;
+	text-align: center;
+}
+
+#resend-access-code-btn {
+	margin-right: 10px;
+}
+
+.access-code-resent-row .alert.alert-info {
+	margin-bottom: 0px;
+}

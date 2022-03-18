@@ -168,7 +168,7 @@ function checkSession() {
 function blockElement(elementId){
 	calcOffset();
     $("#"+elementId).block({
-                    message: '<img src="../images/spinner-big.gif" />' 
+                    message: '<img src="' + commonStaticUrl + '/images/spinner-big.gif" />' 
     }); 
 }
 
@@ -178,7 +178,7 @@ function unBlockPopupModal(elementId){
 function blockPopupModal(elementId){
 	calcOffset();
     $("."+elementId).block({
-                    message: '<img src="../images/spinner-big.gif" />' 
+                    message: '<img src="' + commonStaticUrl + '/images/spinner-big.gif" />' 
     }); 
 }
 
@@ -332,7 +332,7 @@ function showLoadingForPage()
                   cursor:     'wait'
                 };
 
-    $.blockUI({ message: '<img src="../images/spinner-big.gif" />' });
+    $.blockUI({ message: '<img src="' + commonStaticUrl + '/images/spinner-big.gif" />' });
 
 }
 /*this function is used to block screen when child page operations are done*/
@@ -346,7 +346,7 @@ function showLoadingForChildPage()
              textAlign:  'center',
              cursor:     'wait'
            };
-	  $.blockUI({ message: '<img src="../images/spinner-big.gif" />' });
+	  $.blockUI({ message: '<img src="' + commonStaticUrl + '/images/spinner-big.gif" />' });
 
 }
 
@@ -354,7 +354,7 @@ function showLoadingForChildPage()
 function showLoadingWithMsg(){
 	 
 	 $.blockUI({ message: '<div id="messageDiv" style="width:100%;">'+
-			'<h2><div style="float:left;width:10%"><img src="../images/spinner-big.gif" />'+
+			'<h2><div style="float:left;width:10%"><img src="' + commonStaticUrl + '/images/spinner-big.gif" />'+
 			'</div><div style="float:right;width:90%;text-align:left">'+
 			'Performing Component Validation. <br/>This Process may take a minute to complete.'+
 			'</div></h2></div>' ,
@@ -383,11 +383,11 @@ function showLoading()
                     cursor:     'wait'
                   };
 	  
-	  $(document).ajaxStart($.blockUI({ message: '<img src="../images/spinner-big.gif" />' }));
+	  $(document).ajaxStart($.blockUI({ message: '<img src="' + commonStaticUrl + '/images/spinner-big.gif" />' }));
 	  
 	  /*un block code for popup is given after the popup is opened*/
       
-     /* $(document).ajaxStart($.blockUI({ message: '<img src="../images/spinner-big.gif" />' })).ajaxStop($.unblockUI);*/
+     /* $(document).ajaxStart($.blockUI({ message: '<img src="' + commonStaticUrl + '/images/spinner-big.gif" />' })).ajaxStop($.unblockUI);*/
 }
 
 function hideLoading(){

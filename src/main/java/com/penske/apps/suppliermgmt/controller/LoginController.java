@@ -22,16 +22,15 @@ import com.penske.apps.smccore.base.domain.UserSecurity;
 import com.penske.apps.smccore.base.domain.enums.LookupKey;
 import com.penske.apps.smccore.base.domain.enums.UserType;
 import com.penske.apps.smccore.base.service.UserService;
+import com.penske.apps.suppliermgmt.annotation.DefaultController;
 import com.penske.apps.suppliermgmt.annotation.VendorAllowed;
-import com.penske.apps.suppliermgmt.annotation.Version1Controller;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
 import com.penske.apps.suppliermgmt.domain.UserVendorFilterSelection;
 import com.penske.apps.suppliermgmt.model.ErrorModel;
 import com.penske.apps.suppliermgmt.service.LoginService;
 import com.penske.apps.suppliermgmt.servlet.ApplicationEntry;
 
-
-@Version1Controller
+@DefaultController
 @RequestMapping(value="/login")
 public class LoginController extends BaseController {
 
@@ -48,7 +47,7 @@ public class LoginController extends BaseController {
 
     @VendorAllowed
     @RequestMapping(value = "/validate", method = {RequestMethod.GET, RequestMethod.POST })
-    protected  ModelAndView validateUser(HttpServletRequest request, HttpSession session) {
+    protected ModelAndView validateUser(HttpServletRequest request, HttpSession session) {
         LOGGER.debug("Inside validateUser() ");
         ModelAndView model=new ModelAndView();
         String forward=null;
@@ -70,9 +69,14 @@ public class LoginController extends BaseController {
             
             	
         	User user = userService.getUser(userSSO, true);
+        	UserSecurity userSecurity = userService.getUserSecurity(user);
         	
         	if(user == null)
             	errorMessage = "Your SSOID not configured in SMC";
+        	else if(user.isVendorUser() && userSecurity.isAccessTokenRequired()) {
+        		userService.generateAndSendAccessCode(user, userSecurity);
+        		forward = "forward:two-factor-auth";
+        	}
         	else
         	{
         		boolean hasBuddies = false;
@@ -122,6 +126,36 @@ public class LoginController extends BaseController {
         }
         return model;
 
+    }
+    
+    @VendorAllowed
+    @RequestMapping(value = "/two-factor-auth", method = {RequestMethod.GET, RequestMethod.POST })
+    protected ModelAndView getTwoFactorAuth(HttpServletRequest request, HttpSession session) {
+    	//Pull the user's ID out of the session, and then look up the actual user object.
+    	String userSSO = (String) session.getAttribute(ApplicationEntry.USER_SSO);
+
+        if(StringUtils.isBlank(userSSO))
+        	return null;
+    	
+    	User user = userService.getUser(userSSO, true);
+    	UserSecurity userSecurity = userService.getUserSecurity(user);
+    	
+    	if(!userSecurity.isAccessTokenRequired()) {
+    		return new ModelAndView("forward:/app/home/displayHome.htm");
+    	}
+    	
+    	ModelAndView model = new ModelAndView("app-container/two-factor-auth");
+    	
+        LookupContainer lookups = lookupManager.getLookupContainer();
+    	
+    	String baseUrl = request.getContextPath();
+		model.addObject("baseUrl", baseUrl);
+		model.addObject("user", user);
+		
+		String supportNumber = lookups.getSingleLookupValue(LookupKey.SUPPORT_PHONE_NUM);
+        model.addObject("supportNum", supportNumber);
+    	
+    	return model;
     }
 
     @VendorAllowed
