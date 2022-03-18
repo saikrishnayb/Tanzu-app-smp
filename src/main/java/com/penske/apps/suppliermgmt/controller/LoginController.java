@@ -1,5 +1,6 @@
 package com.penske.apps.suppliermgmt.controller;
 
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -22,6 +23,7 @@ import com.penske.apps.smccore.base.domain.UserSecurity;
 import com.penske.apps.smccore.base.domain.enums.LookupKey;
 import com.penske.apps.smccore.base.domain.enums.UserType;
 import com.penske.apps.smccore.base.service.UserService;
+import com.penske.apps.suppliermgmt.annotation.CommonStaticUrl;
 import com.penske.apps.suppliermgmt.annotation.DefaultController;
 import com.penske.apps.suppliermgmt.annotation.VendorAllowed;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
@@ -40,6 +42,9 @@ public class LoginController extends BaseController {
     private LoginService loginService;
     @Autowired
     private LookupManager lookupManager;
+    @Autowired
+    @CommonStaticUrl
+    private URL commonStaticUrl;
     @Autowired
     private SuppliermgmtSessionBean sessionBean;
 
@@ -74,7 +79,7 @@ public class LoginController extends BaseController {
         	if(user == null)
             	errorMessage = "Your SSOID not configured in SMC";
         	else if(user.isVendorUser() && userSecurity.isAccessTokenRequired()) {
-        		userService.generateAndSendAccessCode(user, userSecurity);
+        		userService.generateAndSendAccessCode(user, userSecurity, lookups, commonStaticUrl);
         		forward = "forward:two-factor-auth";
         	}
         	else
