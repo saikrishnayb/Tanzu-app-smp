@@ -146,9 +146,6 @@ public class LoginController extends BaseController {
     	
     	ModelAndView model = new ModelAndView("app-container/two-factor-auth");
     	
-    	//Reloading LookupData
-        lookupManager.checkAndRefreshLookups();
-
         LookupContainer lookups = lookupManager.getLookupContainer();
     	
     	String baseUrl = request.getContextPath();

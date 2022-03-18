@@ -1,18 +1,13 @@
 package com.penske.apps.suppliermgmt.controller;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.penske.apps.smccore.base.domain.User;
 import com.penske.apps.smccore.base.domain.UserSecurity;
 import com.penske.apps.smccore.base.service.UserService;
-import com.penske.apps.suppliermgmt.annotation.VendorAllowed;
 
 /**
  * A controller to answer AJAX requests from the two factor authentication screen
@@ -29,9 +24,7 @@ public class LoginRestController {
 	 * Controller method to check the access code. Will return AccessCodeResult with the results of the 
 	 */
 	@RequestMapping("/check-access-code")
-	@VendorAllowed
-	@ResponseBody
-	public AccessCodeResult checkAccessCode(@RequestParam("userId") int userId, @RequestParam("accessCode") String accessCode, HttpServletRequest request, HttpSession session) {
+	public AccessCodeResult checkAccessCode(@RequestParam("userId") int userId, @RequestParam("accessCode") String accessCode) {
 		User user = userService.getUser(userId, false, false);
 		UserSecurity userSecurity = userService.getUserSecurity(user);
 		
@@ -57,9 +50,7 @@ public class LoginRestController {
 	 * Controller method to generate a new access code and resend the email
 	 */
 	@RequestMapping("/resend-access-code")
-	@VendorAllowed
-	@ResponseBody
-	public void resendAccessCode(@RequestParam("userId") int userId, HttpServletRequest request, HttpSession session) {
+	public void resendAccessCode(@RequestParam("userId") int userId) {
 		User user = userService.getUser(userId, false, false);
 		UserSecurity userSecurity = userService.getUserSecurity(user);
 		

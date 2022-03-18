@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<%-- This page is only for display if there is an error when displaying the outer frame. Typically, this is only at login time. --%>
+<%-- This page is only for two factor authentication since it should not be part of the main container --%>
 <html>
 	<head>
 		<%@ include file="../../jsp/global/v2/header.jsp" %>
