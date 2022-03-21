@@ -72,13 +72,13 @@ public class LoginController extends BaseController {
             if(StringUtils.isBlank(userSSO))
             	return null;
             
-            	
+            boolean enable2Factor = !"Y".equals(lookups.getSingleLookupValue(LookupKey.DISABLE_2_FACTOR_AUTHENTICATION));	
         	User user = userService.getUser(userSSO, true);
         	UserSecurity userSecurity = userService.getUserSecurity(user);
         	
         	if(user == null)
             	errorMessage = "Your SSOID not configured in SMC";
-        	else if(user.isVendorUser() && userSecurity.isAccessTokenRequired()) {
+        	else if(enable2Factor && user.isVendorUser() && userSecurity.isAccessTokenRequired()) {
         		userService.generateAndSendAccessCode(user, userSecurity, lookups, commonStaticUrl);
         		forward = "forward:two-factor-auth";
         	}
