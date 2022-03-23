@@ -14,7 +14,41 @@ public class UserForm {
 	private String gessouid;
 	private boolean dailyOptIn;
 	private boolean holdEnrollmentEmail;
-	
+	private AdminConsoleUserType userType;
+	private Role role;
+	private AdminConsoleUserDept userDept;
+	private String modifiedBy; 
+	public AdminConsoleUserType getUserType() {
+		return userType;
+	}
+
+	public void setUserType(AdminConsoleUserType userType) {
+		this.userType = userType;
+	}
+
+	public Role getRole() {
+		return role;
+	}
+
+	public void setRole(Role role) {
+		this.role = role;
+	}
+
+	public AdminConsoleUserDept getUserDept() {
+		return userDept;
+	}
+
+	public void setUserDept(AdminConsoleUserDept userDept) {
+		this.userDept = userDept;
+	}
+
+	public String getModifiedBy() {
+		return modifiedBy;
+	}
+
+	public void setModifiedBy(String modifiedBy) {
+		this.modifiedBy = modifiedBy;
+	}
 	public Integer getUserId() {
 		return userId;
 	}

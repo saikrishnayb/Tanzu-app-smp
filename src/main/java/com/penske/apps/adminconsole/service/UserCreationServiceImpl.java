@@ -21,6 +21,7 @@ import com.penske.apps.adminconsole.util.CommonUtils;
 import com.penske.apps.adminconsole.util.IUserConstants;
 import com.penske.apps.smccore.base.domain.LookupContainer;
 import com.penske.apps.smccore.base.domain.User;
+import com.penske.apps.smccore.base.exception.HumanReadableException;
 import com.penske.apps.smccore.base.service.UserService;
 import com.penske.apps.ucsc.exception.UsrCreationSvcException;
 import com.penske.apps.ucsc.model.CreatedUser;
@@ -99,8 +100,7 @@ public class UserCreationServiceImpl implements UserCreationService {
 
 	private void insertUserToLDAP(EditableUser editableUser) throws UserServiceException, UsrCreationSvcException {
 		if(!CommonUtils.validUserID(editableUser.getSsoId())){
-			logger.error("UserID " + editableUser.getSsoId() + " does not conform to standards.");
-			throw new UserServiceException(IUserConstants.NOT_STANDARD_SSO_ERROR_CODE);
+			throw new HumanReadableException("UserID " + editableUser.getSsoId() + " does not conform to standards.",false);
 		}
 		CreatedUser user=null;
 		List<LDAPAttributes> attributeList= assignLDAPattribute(editableUser);
@@ -109,16 +109,13 @@ public class UserCreationServiceImpl implements UserCreationService {
 		if (!StringUtils.isEmpty(strServerResponse)){
 			if( !strServerResponse.contains(IUserConstants.OPERATION_EXECUTED_SUCCESS)) {
 				if ( strServerResponse.contains(IUserConstants.ATTR_VAL_ALREADY_EXISTS)) {
-					logger.info("UserID "+ editableUser.getSsoId() + " exists. Please choose a different UserID.");
-					throw new UserServiceException(IUserConstants.DUP_SSO_ERROR_CODE);
+					throw new HumanReadableException("UserID "+ editableUser.getSsoId() + " exists. Please choose a different UserID.",false);
 				} else {
-					logger.info(strServerResponse);
-					throw new UserServiceException(IUserConstants.WEBSERVICE_RESPONSE_ERROR_CODE);
+					throw new HumanReadableException("Web Service Error",true);
 				}
 			}
 		}else {
-			logger.info(" Add user operation was not successful.");
-			throw new UserServiceException(IUserConstants.EMPTY_RESPONSE_ADD_ERROR_CODE);
+			throw new HumanReadableException("Add user operation was not successful.",false);
 		}
 		editableUser.setDefaultPassword(user.getDefaultPassword());
 		editableUser.setGessouid(user.getGessouid());
@@ -140,12 +137,10 @@ public class UserCreationServiceImpl implements UserCreationService {
 				if (oB2BUser != null) {
 					userObj.setGessouid(oB2BUser.getGESSOUID());
 				} else {
-					logger.info("Cant find user in LDAP.");
-					throw new UserServiceException(IUserConstants.USER_NOT_FOUND_LDAP_ERROR_CODE);
+					throw new HumanReadableException("Cannot Find User in LDAP",false);
 				}
 			}else{
-				logger.info("User Object dont have sufficent data to proceed");
-				throw new UserServiceException(IUserConstants.REQUEST_FAILED_ERROR_CODE);
+				throw new HumanReadableException("User Object dont have sufficent data to proceed",false);
 			}
 			
 			/*	if (isDeactive) {
@@ -181,8 +176,7 @@ public class UserCreationServiceImpl implements UserCreationService {
 			
 			oB2BUser = oSSO.findUser(userObj.getUserName().trim());
 		}catch (Exception e) {
-			logger.error("Exception occured while updating user  " + userObj.getUserName(), e);
-			throw new UserServiceException(e.getMessage());
+			throw new HumanReadableException("Error while updating user"+ userObj.getUserName(),false);
 		}
 		return userObj;
 	}
