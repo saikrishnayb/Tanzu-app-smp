@@ -1014,7 +1014,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		}
 			
 		List<BuildMatrixBodyPlant> bodyPlantList = buildMatrixSmcDAO.getAllBodyPlantsforSlotMaintenance();
-		ProductionSlotsMaintenanceSummary summary = new ProductionSlotsMaintenanceSummary(bodyPlantList, slotDates, slots, false);
+		ProductionSlotsMaintenanceSummary summary = new ProductionSlotsMaintenanceSummary(bodyPlantList, slotDates, slots);
 		return summary;
 	}
 	
@@ -1070,7 +1070,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 			regionAvailability = Collections.emptyList();
 		else
 			regionAvailability = buildMatrixSmcDAO.getRegionAvailabilityBySlotIdsAndRegion(slotIds, region);
-		ProductionSlotsUtilizationSummary summary = new ProductionSlotsUtilizationSummary(bodyPlantSummary, slotDates, regionAvailability, slots, false);
+		ProductionSlotsUtilizationSummary summary = new ProductionSlotsUtilizationSummary(bodyPlantSummary, slotDates, regionAvailability, slots);
 		
 		return summary;
 	}
@@ -1224,7 +1224,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		}
 			
 		List<BuildMatrixBodyPlant> bodyPlantList = buildMatrixSmcDAO.getBodyPlantsByPlantIds(plantIds);
-		ProductionSlotsMaintenanceSummary summary = new ProductionSlotsMaintenanceSummary(bodyPlantList, slotDates, slots, false);
+		ProductionSlotsMaintenanceSummary summary = new ProductionSlotsMaintenanceSummary(bodyPlantList, slotDates, slots);
 		
 		return generateSlotMaintenanceExcel(summary, bodyPlantList);
 	}
@@ -1316,7 +1316,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 			regionAvailability = Collections.emptyList();
 		else
 			regionAvailability = buildMatrixSmcDAO.getRegionAvailabilityBySlotIdsAndRegion(slotIds, region);
-		ProductionSlotsUtilizationSummary summary = new ProductionSlotsUtilizationSummary(bodyPlantSummary, slotDates, regionAvailability, slots, false);
+		ProductionSlotsUtilizationSummary summary = new ProductionSlotsUtilizationSummary(bodyPlantSummary, slotDates, regionAvailability, slots);
 		
 		return generateRegionSlotMaintenanceExcel(summary, bodyPlantSummary);
 	}
@@ -1492,7 +1492,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		}
 		
 		List<BuildMatrixBodyPlant> bodyPlantList = new ArrayList<>(bodyPlantByColIndex.values());
-		ProductionSlotsMaintenanceSummary summary = new ProductionSlotsMaintenanceSummary(bodyPlantList, slotDatesForYear, slots, true);
+		ProductionSlotsMaintenanceSummary summary = new ProductionSlotsMaintenanceSummary(bodyPlantList, slotDatesForYear, slots);
 		ImportSlotsResults results = new ImportSlotsResults(summary, bodyPlantList, datesNotInYear, plantsNotFound);
 		
 		return results;
@@ -1636,7 +1636,7 @@ public class DefaultBuildMatrixSmcService implements BuildMatrixSmcService {
 		}
 		
 		List<BuildMatrixBodyPlant> bodyPlantList = new ArrayList<>(bodyPlantByColIndex.values());
-		ProductionSlotsUtilizationSummary summary = new ProductionSlotsUtilizationSummary(bodyPlantList, slotDatesForYear, regionAvailabilityList, slots, true);
+		ProductionSlotsUtilizationSummary summary = new ProductionSlotsUtilizationSummary(bodyPlantList, slotDatesForYear, regionAvailabilityList, slots);
 		ImportRegionSlotsResults results = new ImportRegionSlotsResults(summary, bodyPlantList, datesNotInYear, plantsNotFound);
 	    
 		return results;

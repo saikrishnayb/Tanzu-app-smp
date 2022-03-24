@@ -413,7 +413,6 @@ public class BuildMatrixRestController {
 			@RequestParam("dateId") int dateId,
 			@RequestParam("plantId") int plantId,
 			@RequestParam("slotId") int slotId,
-			@RequestParam("slotRegionId") int slotRegionId,
 			@RequestParam("regionDesc") String regionDesc) {
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/modal/release-units-modal");
 		

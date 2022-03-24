@@ -21,8 +21,7 @@ public class ProductionSlotsMaintenanceSummary {
 	
 	public ProductionSlotsMaintenanceSummary(List<BuildMatrixBodyPlant> bodyPlantList, 
 			List<BuildMatrixSlotDate> slotDates,  
-			List<BuildMatrixSlot> slots,
-			boolean importModal) {
+			List<BuildMatrixSlot> slots) {
 		
 		Map<Integer, BuildMatrixBodyPlant> bodyPlantById = new HashMap<>();
 		Map<Integer, Map<Integer,BuildMatrixSlot>> slotByDateIdByPlantId = new HashMap<>();
