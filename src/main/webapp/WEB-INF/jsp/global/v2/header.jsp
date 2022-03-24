@@ -11,6 +11,7 @@
 <link href="${baseUrl}/css/global/v2/jquery/jquery.multiselect.css" rel="stylesheet" type="text/css" />
 <link href="${baseUrl}/css/global/v2/jquery/jquery.multiselect.filter.css" rel="stylesheet" type="text/css" />
 <link href="${baseUrl}/css/global/v2/bootstrap/bootstrap.css" rel="stylesheet" type="text/css"/>
+<link href="${baseUrl}/css/global/v2/bootstrap/bootstrap-overwrites.css" rel="stylesheet" type="text/css"/>
 <link href="${baseUrl}/css/global/v2/font-awesome.min.css" rel="stylesheet" type="text/css"/>
 <link href="${baseUrl}/css/global/v2/common.css" rel="stylesheet" type="text/css"/>
 <link href="${baseUrl}/css/global/v2/global.css" rel="stylesheet" type="text/css"/>
