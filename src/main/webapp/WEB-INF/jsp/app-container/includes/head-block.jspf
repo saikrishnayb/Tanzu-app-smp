@@ -8,6 +8,12 @@
 <link href="<c:out value='${commonStaticUrl}'/>/css/fixedMenu_style1.css" rel="stylesheet" type="text/css"/>
 <link href="<c:out value='${commonStaticUrl}'/>/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
 
+<script type="text/javascript">
+  sessionStorage.setItem('commonStaticContainerUrl', '${commonStaticUrl}');
+  sessionStorage.setItem('baseContainerUrl', '${baseUrl}');
+  sessionStorage.setItem('baseContainerAppUrl', '${baseAppUrl}');
+</script>
+
 <script src="<c:out value='${commonStaticUrl}'/>/js/common.js" type="text/javascript"></script>
 <script src="<c:out value='${commonStaticUrl}'/>/js/jquery-1.7.2.min.js" type="text/javascript"></script>
 <script src="<c:out value='${commonStaticUrl}'/>/js/jquery-ui-1.8.21.custom.min.js" type="text/javascript"></script>
@@ -17,9 +23,3 @@
 <script src="<c:out value='${baseUrl}'/>/js/app-container/includes/smc.js" type="text/javascript"></script>
 <script src="${baseUrl}/js/app-container/includes/modal-util.js" type="text/javascript"></script>
 <script src="${baseUrl}/js/app-container/includes/header.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-  sessionStorage.setItem('commonStaticContainerUrl', '${commonStaticUrl}');
-  sessionStorage.setItem('baseContainerUrl', '${baseUrl}');
-  sessionStorage.setItem('baseContainerAppUrl', '${baseAppUrl}');
-</script>
