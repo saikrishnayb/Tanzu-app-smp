@@ -10,10 +10,9 @@ var count=popUpInterval;
 var sessionTimeout=240;							//Time in Minutes Session Timeout value
 var tabId="0";
 var homeLink=0;
-
+var commonStaticUrl = window.sessionStorage.getItem('commonStaticContainerUrl');
 
 $(document).ready(function(){ 
-	
 	//redirect("orderconfirmation");
 	
 	
@@ -418,7 +417,6 @@ function getContextRoot() {
 	return window.sessionStorage.getItem('baseContainerAppUrl');
 }
 
-var commonStaticUrl = window.sessionStorage.getItem('commonStaticContainerUrl');
 
 function getDateFormat(inputDate)
 {
