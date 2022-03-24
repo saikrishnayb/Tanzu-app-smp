@@ -17,10 +17,8 @@ import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
@@ -28,24 +26,18 @@ import com.penske.apps.adminconsole.domain.AdminConsoleTypeAliasMarker;
 import com.penske.apps.buildmatrix.domain.BuildMatrixTypeAlias;
 import com.penske.apps.smccore.base.annotation.qualifier.VendorQueryWrappingPluginQualifier;
 import com.penske.apps.smccore.base.configuration.CoreMapperConfiguration;
-import com.penske.apps.smccore.base.configuration.ProfileType;
 import com.penske.apps.smccore.base.plugins.ClientInfoPlugin;
 import com.penske.apps.smccore.base.plugins.QueryLoggingPlugin;
-import com.penske.apps.smccore.base.plugins.TimingBean;
 import com.penske.apps.smccore.base.util.SpringConfigUtil;
 import com.penske.apps.suppliermgmt.domain.TypeAliasMarker;
-import com.penske.apps.suppliermgmt.plugins.VendorQueryWrappingPlugin;
 
 /**
  * Base configuration common to all DB connections. Individual MyBatis configurations can leverage this
  */
 @Configuration
-@Import({JndiConfiguration.class})
+@Import({MyBatisPluginConfiguration.class})
 public class BaseMapperConfiguration
 {
-	@Autowired(required = false)
-	private TimingBean timingBean;
-	
 	@Autowired(required = false)
 	private QueryLoggingPlugin queryLoggingPlugin;
 	
@@ -115,26 +107,4 @@ public class BaseMapperConfiguration
 		
 		return sessionFactory.getObject();
 	}
-	
-	@Bean
-	@Profile({ProfileType.NOT_PRODUCTION})
-	public QueryLoggingPlugin queryLoggingPlugin()
-	{
-		return new QueryLoggingPlugin(timingBean);
-	}
-
-	@Bean
-	@Profile(ProfileType.NOT_TEST)
-	public ClientInfoPlugin clientInfoPlugin()
-	{
-		return new ClientInfoPlugin();
-	}
-	
-	@Bean
-	@VendorQueryWrappingPluginQualifier
-	public Interceptor vendorWrappingPlugin()
-	{
-		return new VendorQueryWrappingPlugin();
-	}
-
 }
