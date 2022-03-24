@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -67,7 +68,7 @@ public class SecurityRestControllerOld {
     /* ================== Users ================== */
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_USERS)
     @RequestMapping(value ="get-edit-user-modal-content")
-    
+    @ResponseBody
     public ModelAndView getEditInfo(@RequestParam(value="userId") String userId, @RequestParam(value="userType") String userType, @RequestParam(value="roleId") String roleId) {
         ModelAndView mav = new ModelAndView("/admin-console/security/modal/edit-user-modal-content");
         User user = sessionBean.getUser();
@@ -108,7 +109,7 @@ public class SecurityRestControllerOld {
     @VendorAllowed
     @SmcSecurity(securityFunction = {SecurityFunction.MANAGE_USERS, SecurityFunction.MANAGE_VENDOR_USERS, SecurityFunction.MANAGE_ORG})
     @RequestMapping(value ="get-permissions-accordion-content")
-    
+    @ResponseBody
     public ModelAndView getPermissionsInfo(@RequestParam(value="roleId") String roleId) {
         ModelAndView mav = new ModelAndView("/admin-console/security/modal/permissions-accordion");
 
@@ -120,7 +121,7 @@ public class SecurityRestControllerOld {
     @VendorAllowed
     @SmcSecurity(securityFunction = {SecurityFunction.MANAGE_USERS, SecurityFunction.MANAGE_VENDOR_USERS})
     @RequestMapping("deactivate-user")
-    
+    @ResponseBody
     public void modifyUserStatus(@RequestParam(value="userId") int userId,@RequestParam(value="isVendorUser") boolean isVendorUserFlow, HttpServletResponse response) throws Exception {
         try{
         	User user = sessionBean.getUser();
@@ -141,7 +142,7 @@ public class SecurityRestControllerOld {
     @VendorAllowed
     @SmcSecurity(securityFunction = {SecurityFunction.MANAGE_USERS, SecurityFunction.MANAGE_VENDOR_USERS})
     @RequestMapping("get-deactivate-user-modal-content")
-    
+    @ResponseBody
     public ModelAndView getDeactivateInfo(@RequestParam(value="email") String email, @RequestParam(value="userId") String userId,
             @RequestParam(value="isVendorUser") boolean isVendorUser, @RequestParam(value="isV2") boolean isV2) {
     	ModelAndView mav;
@@ -159,7 +160,7 @@ public class SecurityRestControllerOld {
     @VendorAllowed
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_ORG)
     @RequestMapping("get-deactivate-org-modal-content")
-    
+    @ResponseBody
     public ModelAndView getDeactivateOrgInfo(@RequestParam(value="orgName") String orgName, @RequestParam(value="orgId") int orgId) {
         ModelAndView mav = new ModelAndView("/admin-console/security/modal/deactivate-org-modal-content");
         boolean canDelete=securityService.checkForUsers(orgId);
@@ -177,7 +178,7 @@ public class SecurityRestControllerOld {
     @VendorAllowed
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_ORG)
     @RequestMapping("delete-org")
-    
+    @ResponseBody
     public void modifyOrgStatus(@RequestParam(value="orgId") int orgId, HttpServletResponse response) throws Exception {
         try{
         	User user = sessionBean.getUser();
@@ -192,7 +193,7 @@ public class SecurityRestControllerOld {
     @VendorAllowed
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_ROLES)
     @RequestMapping(value ="get-role-list")
-    
+    @ResponseBody
     public List<Role> getRoles(@RequestParam("userTypeId") int userTypeId, @RequestParam(value="manufacturer", required=false) String manufacturer) {
     	User user = sessionBean.getUser();
 
@@ -209,7 +210,7 @@ public class SecurityRestControllerOld {
 
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_USERS)
     @RequestMapping(value ="edit-user-static")
-    
+    @ResponseBody
     public EditableUser modifyUserInfoStatic(EditableUser user, @RequestParam("vendorIds") int[] vendorIds, @RequestParam(value="signatureImage", required=false) MultipartFile signatureImage,
             @RequestParam(value="initialsImage", required=false) MultipartFile initialsImage){
 
@@ -238,7 +239,7 @@ public class SecurityRestControllerOld {
     @VendorAllowed
     @SmcSecurity(securityFunction = {SecurityFunction.MANAGE_USERS, SecurityFunction.MANAGE_VENDOR_USERS})
     @RequestMapping(value ="is-username-available",  method = RequestMethod.POST)
-    
+    @ResponseBody
     public void isUserNameAvailible(@RequestParam("ssoId")String ssoId, @RequestParam("userId") int userId,HttpServletResponse response) throws IOException {
         if(securityService.doesUserExist(ssoId, userId)) {
             try {
@@ -257,7 +258,7 @@ public class SecurityRestControllerOld {
     @VendorAllowed
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
     @RequestMapping(value ="is-username-valid",  method = RequestMethod.POST)
-    
+    @ResponseBody
     public EditableUser isUsernameValid(@RequestParam("ssoId")String ssoId, @RequestParam("userId") int userId,
             @RequestParam("isCreateOrEdit") String isCreateOrEdit,HttpServletResponse response) throws Exception {
         try{
@@ -276,7 +277,7 @@ public class SecurityRestControllerOld {
 
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_USERS)
     @RequestMapping(value ="/create-user-page")
-    
+    @ResponseBody
     public ModelAndView getCreateUSerPage() {
         ModelAndView mav = new ModelAndView("/admin-console/security/create-user");
         User user = sessionBean.getUser();
@@ -299,7 +300,7 @@ public class SecurityRestControllerOld {
 
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_USERS)
     @RequestMapping(value ="/create-user", method = RequestMethod.POST)
-    
+    @ResponseBody
     public void addUser(EditableUser user, @RequestParam("vendorIds")int[] vendorIds, @RequestParam(value="signatureImage", required=false)MultipartFile signatureImage,
             @RequestParam(value="initialsImage", required=false)MultipartFile initialsImage,HttpServletResponse response) throws Exception{
         try{
@@ -330,7 +331,7 @@ public class SecurityRestControllerOld {
     @VendorAllowed
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_ROLES)
     @RequestMapping("get-create-role-hierarchy")
-    
+    @ResponseBody
     public ModelAndView getCreateRoleHierarchy(@RequestParam("roleId") int roleId) {
         ModelAndView mav = new ModelAndView("/admin-console/security/includes/role-hierarchy");
         User user = sessionBean.getUser();
@@ -344,7 +345,7 @@ public class SecurityRestControllerOld {
     @VendorAllowed
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_ROLES)
     @RequestMapping("get-edit-role-hierarchy")
-    
+    @ResponseBody
     public ModelAndView getEditRoleHierarchy(@RequestParam("roleId") int roleId, @RequestParam("flag") int flag) {
         ModelAndView mav = new ModelAndView("/admin-console/security/includes/role-hierarchy");
         User user = sessionBean.getUser();
@@ -356,7 +357,7 @@ public class SecurityRestControllerOld {
     @VendorAllowed
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_ROLES)
     @RequestMapping("get-edit-role-permissions")
-    
+    @ResponseBody
     public ModelAndView getEditRolePermissions(@RequestParam("roleId") int roleId) {
         ModelAndView mav = new ModelAndView("/admin-console/security/includes/role-permissions");
         mav.addObject("tabs", roleService.getEditRolePermissions(roleId));
@@ -367,7 +368,7 @@ public class SecurityRestControllerOld {
     @VendorAllowed
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_ROLES)
     @RequestMapping("get-role-permissions")
-    
+    @ResponseBody
     public ModelAndView getRolePermissions(@RequestParam("roleId") int roleId) {
         ModelAndView mav = new ModelAndView("/admin-console/security/includes/role-permissions");
 
@@ -379,7 +380,7 @@ public class SecurityRestControllerOld {
     @VendorAllowed
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_ROLES)
     @RequestMapping("insert-role")
-    
+    @ResponseBody
     public void insertRole(Role role, @RequestParam("functionIds") int[] functionIds, HttpServletResponse response) throws Exception {
     	User user = sessionBean.getUser();
         role.setCreatedBy(user.getSso());
@@ -402,7 +403,7 @@ public class SecurityRestControllerOld {
     @VendorAllowed
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_ROLES)
     @RequestMapping("modify-role-submit")
-    
+    @ResponseBody
     public void modifyRole(Role role, @RequestParam("functionIds") int[] functionIds,HttpServletResponse response) throws Exception {
     	User user = sessionBean.getUser();
         role.setModifiedBy(user.getSso());
@@ -425,7 +426,7 @@ public class SecurityRestControllerOld {
     @VendorAllowed
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_ROLES)
     @RequestMapping("deactivate-role")
-    
+    @ResponseBody
     public ModelAndView deactivateRole(@RequestParam("roleId") int roleId) {
         ModelAndView mav = new ModelAndView();
         User user = sessionBean.getUser();
@@ -453,7 +454,7 @@ public class SecurityRestControllerOld {
     @VendorAllowed
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_ROLES)
     @RequestMapping("deactivate-role-confirm")
-    
+    @ResponseBody
     public void confirmRoleDeactivation(@RequestParam("roleId") int roleId) {
         User user = sessionBean.getUser();
 
@@ -462,7 +463,7 @@ public class SecurityRestControllerOld {
 
     @SmcSecurity(securityFunction = SecurityFunction.EXPORT_VENDOR_ACTIVITY)
     @RequestMapping("export-vendor-activity")
-    
+    @ResponseBody
     public void exportVendorActivity(HttpServletResponse response) {
     	User user = sessionBean.getUser();
     	SXSSFWorkbook workbook = vendorService.exportVendorActivity(user, securityService.getVendorUserList(user));
@@ -487,7 +488,7 @@ public class SecurityRestControllerOld {
     @VendorAllowed
     @SmcSecurity(securityFunction = {SecurityFunction.MANAGE_USERS, SecurityFunction.MANAGE_VENDOR_USERS})
     @RequestMapping("get-signature-preview")
-    
+    @ResponseBody
     public String getSignatureImagePreview(@RequestParam(value="userId") int userId) {
         String signFile = securityService.getSignatureImage(userId);
 
@@ -498,7 +499,7 @@ public class SecurityRestControllerOld {
     @VendorAllowed
     @SmcSecurity(securityFunction = {SecurityFunction.MANAGE_USERS, SecurityFunction.MANAGE_VENDOR_USERS})
     @RequestMapping("get-intials-preview")
-    
+    @ResponseBody
     public String getInitialsImagePreview(@RequestParam(value="userId") int userId) {
         String initFile = securityService.getInitialsImage(userId);
 
@@ -509,7 +510,7 @@ public class SecurityRestControllerOld {
     @VendorAllowed
     @SmcSecurity(securityFunction = {SecurityFunction.MANAGE_USERS, SecurityFunction.MANAGE_VENDOR_USERS})
     @RequestMapping("delete-intials")
-    
+    @ResponseBody
     public String deleteInitialsImage(@RequestParam(value="userId") int userId,@RequestParam(value="ssoId") String ssoId) {
         boolean deleted = securityService.deleteInitialsImage(userId,ssoId);
 
@@ -521,7 +522,7 @@ public class SecurityRestControllerOld {
     @VendorAllowed
     @SmcSecurity(securityFunction = {SecurityFunction.MANAGE_USERS, SecurityFunction.MANAGE_VENDOR_USERS})
     @RequestMapping("delete-signature")
-    
+    @ResponseBody
     public String deleteSignatureImage(@RequestParam(value="userId") int userId,@RequestParam(value="ssoId") String ssoId) {
         boolean  deleted = securityService.deleteSignatureImage(userId,ssoId);
 
@@ -532,7 +533,7 @@ public class SecurityRestControllerOld {
     @VendorAllowed
     @SmcSecurity(securityFunction = {SecurityFunction.MANAGE_USERS, SecurityFunction.MANAGE_VENDOR_USERS})
     @RequestMapping("sso-user-lookup-refresh")
-    
+    @ResponseBody
     public ModelAndView ssoLookupRefresh(@RequestParam(value="userId") String userId, @RequestParam(value="userType") String userType, @RequestParam(value="isV2") boolean isV2, HttpServletResponse response) {
         ModelAndView mav; 
         if(isV2)
@@ -581,7 +582,7 @@ public class SecurityRestControllerOld {
 
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_USERS)
     @RequestMapping(value ="refresh-user-with-sso-data")
-    
+    @ResponseBody
     public EditableUser refreshUserWithSSOData( @RequestParam(value="userId") String userId, @RequestParam(value="userType") String userType,HttpServletResponse response){
 
         if("1".equalsIgnoreCase(userType)){
@@ -621,7 +622,7 @@ public class SecurityRestControllerOld {
     @VendorAllowed
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_ORG)
     @RequestMapping(value ="/update-org", method = RequestMethod.POST)
-    
+    @ResponseBody
     public void updateOrg(Org org, HttpServletResponse response) throws Exception{
         try{
             User user = sessionBean.getUser();
@@ -639,7 +640,7 @@ public class SecurityRestControllerOld {
     @VendorAllowed
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_ORG)
     @RequestMapping(value ="/create-org-page")
-    
+    @ResponseBody
     public ModelAndView getCreateOrgPage() {
         ModelAndView mav = new ModelAndView("/admin-console/security/create-org");
         User user = sessionBean.getUser();
@@ -661,7 +662,7 @@ public class SecurityRestControllerOld {
     @VendorAllowed
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_ORG)
     @RequestMapping(value ="/create-org", method = RequestMethod.POST)
-    
+    @ResponseBody
     public void addOrg(Org org, HttpServletResponse response) throws Exception{
         try{
             User user = sessionBean.getUser();
@@ -679,7 +680,7 @@ public class SecurityRestControllerOld {
     @VendorAllowed
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_ORG)
     @RequestMapping(value ="/get-vendor-hierarchy-page")
-    
+    @ResponseBody
     public ModelAndView getVendorHierarchyPage(@RequestParam(value="parentOrg") int parentOrg) {
         ModelAndView mav = new ModelAndView("/admin-console/security/includes/vendor-hierarchy");
         mav.addObject("vendorList", securityService.getVendorList("","",parentOrg));
@@ -689,7 +690,7 @@ public class SecurityRestControllerOld {
     @VendorAllowed
     @SmcSecurity(securityFunction = SecurityFunction.MANAGE_ORG)
     @RequestMapping(value ="filter-vendor-list")
-    
+    @ResponseBody
     public ModelAndView filterVendorList( @RequestParam(value="corp") String corp, @RequestParam(value="parentOrg") int parentOrg,@RequestParam(value="vendor") String vendor){
         ModelAndView mav = new ModelAndView("/admin-console/security/includes/vendor-hierarchy");
         mav.addObject("vendorList", securityService.getVendorList(corp,vendor,parentOrg));//0- Filter Flow

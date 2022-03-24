@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.penske.apps.adminconsole.dao.SecurityDAO;
+import com.penske.apps.adminconsole.exceptions.UserServiceException;
 import com.penske.apps.adminconsole.model.AdminConsoleUserType;
 import com.penske.apps.adminconsole.model.EditableUser;
 import com.penske.apps.adminconsole.model.Org;
@@ -53,6 +55,8 @@ import com.penske.apps.suppliermgmt.exception.SMCException;
 @RequestMapping("/admin-console/security")
 public class SecurityRestController {
 
+	@Autowired
+	private SecurityDAO securityDao;
 	@Autowired
 	private SuppliermgmtSessionBean sessionBean;
 	@Autowired
@@ -268,7 +272,7 @@ public class SecurityRestController {
 	@SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
 	@RequestMapping(value = "/create-vendor-user", method = RequestMethod.POST)
 	
-	public void addVendorUser(UserForm userForm, HttpServletResponse response) throws Exception {
+	public void addVendorUser(UserForm userForm) {
 		LookupContainer lookups = lookupManager.getLookupContainer();
 
 		User currentUser = sessionBean.getUser();
@@ -280,7 +284,8 @@ public class SecurityRestController {
 	@SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
 	@RequestMapping(value = "edit-vendor-user-static")
 	
-	public EditableUser modifyVendorUserInfoStatic(UserForm userForm, HttpServletResponse response) throws Exception {
+	public EditableUser modifyVendorUserInfoStatic(UserForm userForm) 
+	{
 		EditableUser editableUser = new EditableUser();
 		editableUser.setEmail(userForm.getEmail());
 		editableUser.setSsoId(userForm.getSsoId());
@@ -289,15 +294,14 @@ public class SecurityRestController {
 		editableUser.setPhone(userForm.getPhone());
 		editableUser.setExtension(userForm.getExtension());
 		AdminConsoleUserType userType = new AdminConsoleUserType();
-		userType.setUserTypeId(userForm.getUserTypeId());
-		editableUser.setUserType(userForm.getUserType());
+		userType.setUserTypeId(userForm.getUserTypeId());;
+		editableUser.setUserType(userType);
 		editableUser.setUserId(userForm.getUserId());
 		editableUser.setOrgId(userForm.getOrgId());
-		editableUser.setRole(userForm.getRole());
-		editableUser.setUserDept(userForm.getUserDept());
+		Role role = securityDao.getRoleById(userForm.getRoleId());
+		editableUser.setRole(role);
 		editableUser.setGessouid(userForm.getGessouid());
 		editableUser.setDailyOptIn(userForm.isDailyOptIn());
-		editableUser.setModifiedBy(userForm.getModifiedBy());
 		User currentUser = sessionBean.getUser();
 		editableUser.setModifiedBy(currentUser.getSso());
 		userCreationService.updateUserInfo(editableUser, false);
