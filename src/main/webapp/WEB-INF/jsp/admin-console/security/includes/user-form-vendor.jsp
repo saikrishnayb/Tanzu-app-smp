@@ -26,8 +26,8 @@
 </div>   
 <fieldset id="user-fieldset" class="user-fieldset">
 				<div class="user-form-container">
-					<form id="user-form-vendor" <c:if test="${isCreatePage == true}"> action="${baseAppUrl}/admin-console/security/create-user.htm"  </c:if> 
-										 <c:if test="${isCreatePage != true}"> action="${baseAppUrl}/admin-console/security/edit-user-submit.htm" </c:if> 
+					<form id="user-form-vendor" <c:if test="${isCreatePage == true}"> action="${baseAppUrl}/admin-console/security/create-user"  </c:if> 
+										 <c:if test="${isCreatePage != true}"> action="${baseAppUrl}/admin-console/security/edit-user-submit" </c:if> 
 										 enctype="multipart/form-data" method="POST">
 						<input id="user-id" name="userId" type="text" class="displayNone" class="input" value="${editableUser.userId}"/>
 						<input id="vendor-ids" name="vendorIds" type="text" class="displayNone" class="input"/>

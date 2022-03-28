@@ -31,7 +31,7 @@
 					<form:input path="description" id="description" maxlength="100"  type="text"/>
 				</div>
 				<div class="floatRight">
-					<a class="buttonSecondary" href="goBack-createRule.htm?requestedFrom=${requestedFrom}" onclick="javascript:loadProcessImage();" >Back</a>
+					<a class="buttonSecondary" href="goBack-createRule?requestedFrom=${requestedFrom}" onclick="javascript:loadProcessImage();" >Back</a>
 				</div>
 				</div>
 				<div id="ErrorMsg" style="clear:both" class="floatLeft error-messages-container displayNone">
@@ -149,7 +149,7 @@
 						<tbody>
 							<c:forEach items="${loadSheetManagementList }" var="loadSheetDetails">
 							<tr>
-								<td class="editable centerAlign"><a onclick="javascript:loadProcessImage();" href="get-loadsheet-components.htm?categoryId=${loadSheetDetails.catTypeId}&category=${loadSheetDetails.category} &type=${loadSheetDetails.type} &viewMode=${loadSheetDetails.usesDefault}&compRqstdFrom=EDIT_RULE&componentId=${loadSheetDetails.componentId}">Go To</a></td>
+								<td class="editable centerAlign"><a onclick="javascript:loadProcessImage();" href="get-loadsheet-components?categoryId=${loadSheetDetails.catTypeId}&category=${loadSheetDetails.category} &type=${loadSheetDetails.type} &viewMode=${loadSheetDetails.usesDefault}&compRqstdFrom=EDIT_RULE&componentId=${loadSheetDetails.componentId}">Go To</a></td>
 								<td>${loadSheetDetails.category }</td>
 								<td>${loadSheetDetails.type }</td>
 								<td>${loadSheetDetails.componentGroup }</td>

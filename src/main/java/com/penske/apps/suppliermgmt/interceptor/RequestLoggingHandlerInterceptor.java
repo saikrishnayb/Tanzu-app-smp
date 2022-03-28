@@ -14,8 +14,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.penske.apps.smccore.base.domain.User;
 import com.penske.apps.smccore.base.plugins.CoreTimingType;
@@ -28,7 +28,7 @@ import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
  * On the way out, also logs various information for Splunk and processing time.
  */
 @Component
-public class RequestLoggingHandlerInterceptor extends HandlerInterceptorAdapter
+public class RequestLoggingHandlerInterceptor implements HandlerInterceptor
 {
 	private static final Logger logger = LogManager.getLogger(RequestLoggingHandlerInterceptor.class);
 	private static final Logger splunk = LogManager.getLogger("splunk");
@@ -64,7 +64,7 @@ public class RequestLoggingHandlerInterceptor extends HandlerInterceptorAdapter
 			logger.error(msg);
 		}
 		
-		return super.preHandle(request, response, handler);
+		return true;
 	}
 	
 	/**
@@ -113,8 +113,6 @@ public class RequestLoggingHandlerInterceptor extends HandlerInterceptorAdapter
 				.toString();
 			logger.error(msg);
 		}
-		
-		super.afterCompletion(request, response, handler, ex);
 	}
 	
 	private String getSSSOID()

@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.penske.apps.suppliermgmt.annotation.CommonStaticUrl;
 import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
@@ -23,7 +23,7 @@ import com.penske.apps.suppliermgmt.util.ApplicationConstants;
  * 	that we want to be always accessible to JSTL.
  */
 @Component
-public class CommonModelAttributesHandlerInterceptor extends HandlerInterceptorAdapter
+public class CommonModelAttributesHandlerInterceptor implements HandlerInterceptor
 {
 	@Autowired
 	@CommonStaticUrl
@@ -36,8 +36,6 @@ public class CommonModelAttributesHandlerInterceptor extends HandlerInterceptorA
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception
 	{
 		addMissingRequestAttributes(request, sessionBean, commonStaticUrl, modelAndView);
-		
-		super.postHandle(request, response, handler, modelAndView);
 	}
 
 	public static void addMissingRequestAttributes(HttpServletRequest request, SuppliermgmtSessionBean sessionBean, URL staticUrl, ModelAndView modelAndView) {

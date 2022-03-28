@@ -30,7 +30,7 @@
 			<div id="search-content" 
 				class="<c:if test="${hasBeenSearched eq false}">displayNone</c:if> 
 				<c:if test="${hasBeenSearched eq true}">displayBlock</c:if> clear-both">
-				<form id="search-org-form" action="./org-search.htm" class="margin-bottom-10" method="GET">
+				<form id="search-org-form" action="./org-search" class="margin-bottom-10" method="GET">
 				<fieldset>
 						<legend>Advanced Search</legend>	
 							<label class="floatLeft clear-left width-150">Org Name</label>
@@ -56,7 +56,7 @@
 			</div>
 			<div class="full-width">
 				<span class="floatRight addRow">
-					<a href="${baseAppUrl}/admin-console/security/create-org-page.htm">Create Org
+					<a href="${baseAppUrl}/admin-console/security/create-org-page">Create Org
 						<img src="${commonStaticUrl}/images/add.png" class="centerImage handCursor" alt="Add Row"/>
 					</a>
 				</span>

@@ -14,35 +14,35 @@
 		<c:if test="${allowPenskeUserManagement}">
 			<tl:penskeOnly>
 				<div>
-					<a href="${baseAppUrl}/admin-console/security/users.htm" id="left-nav-users">Penske Users</a>
+					<a href="${baseAppUrl}/admin-console/security/users" id="left-nav-users">Penske Users</a>
 				</div>
 			</tl:penskeOnly>
 		</c:if>
 		
 		<c:if test="${allowVendorUserManagement}">
 			<div>
-				<a href="${baseAppUrl}/admin-console/security/vendor-users.htm" id="left-nav-vendor-users-v2">Vendor Users</a>
+				<a href="${baseAppUrl}/admin-console/security/vendor-users" id="left-nav-vendor-users-v2">Vendor Users</a>
 			</div>
 		</c:if>
 		
 	</c:if>
 	<tl:isAuthorized tabName="Admin Console" secFunction="MANAGE_ROLES">
 		<div class="leftNavGroup">
-			<a href="${baseAppUrl}/admin-console/security/roles.htm" id="left-nav-roles">Roles</a>
+			<a href="${baseAppUrl}/admin-console/security/roles" id="left-nav-roles">Roles</a>
 		</div>
 	</tl:isAuthorized>
 
 	<tl:isAuthorized tabName="Admin Console" secFunction="MANAGE_VENDORS">
 		<tl:penskeOnly>
 			<div class="leftNavGroup">
-				<a href="${baseAppUrl}/admin-console/security/vendors.htm" id="left-nav-vendors">Vendors</a>
+				<a href="${baseAppUrl}/admin-console/security/vendors" id="left-nav-vendors">Vendors</a>
 			</div>
 		</tl:penskeOnly>
 	</tl:isAuthorized>
 
 	<tl:isAuthorized tabName="Admin Console" secFunction="MANAGE_ORG">
 		<div class="leftNavGroup">
-			<a href="${baseAppUrl}/admin-console/security/org.htm" id="left-nav-org">Org Management</a>
+			<a href="${baseAppUrl}/admin-console/security/org" id="left-nav-org">Org Management</a>
 		</div>
 	</tl:isAuthorized>
 </div>

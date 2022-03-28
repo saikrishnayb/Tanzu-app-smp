@@ -4,10 +4,10 @@
 	<div class="user-form-container col-xs-4">
 		<form id="user-form-vendor" 
 				<c:if test="${isCreatePage == true}"> 
-					action="${baseAppUrl}/admin-console/security/create-user.htm"  
+					action="${baseAppUrl}/admin-console/security/create-user"  
 				</c:if> 
 				<c:if test="${isCreatePage != true}"> 
-					action="${baseAppUrl}/admin-console/security/edit-user-submit.htm" </c:if> 
+					action="${baseAppUrl}/admin-console/security/edit-user-submit" </c:if> 
 				enctype="multipart/form-data" method="POST">
 			
 			<input id="user-id" name="userId" type="text" class="displayNone" class="input" value="${editableUser.userId}"/>

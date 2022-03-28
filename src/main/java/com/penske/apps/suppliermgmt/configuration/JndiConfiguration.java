@@ -1,15 +1,14 @@
 package com.penske.apps.suppliermgmt.configuration;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,75 +30,43 @@ import com.penske.apps.suppliermgmt.annotation.UserCreationServiceUrl;
 @Profile(ProfileType.NOT_TEST)
 public class JndiConfiguration {
 
-	private static final Logger logger = LogManager.getLogger(JndiConfiguration.class);
-
 	@Bean
 	@DBSmc
 	@CoreDataSourceQualifier
-	public DataSource dataSource() throws NamingException {
-		InitialContext context = new InitialContext();
-
-		try {
-			return (DataSource) context.lookup("jdbc/ds_suppliermgmt"); // Websphere
-		} catch (NameNotFoundException exception) {
-			logger.info(exception);
-			return (DataSource) context.lookup("java:comp/env/jdbc/ds_suppliermgmt"); // Tomcat
-		}
+	@ConfigurationProperties("spring.datasource.smc")
+	public DataSource smcDataSource()
+	{
+		return DataSourceBuilder.create().build();
 	}
 	
 	@Bean
-    @DBCro
-	public DataSource buildMatrixCroDataSource() throws NamingException
-	{
-    	InitialContext context = new InitialContext();
-    	
-    	try {
-			return (DataSource) context.lookup("jdbc/ds_cro"); // Websphere
-		} catch (NameNotFoundException exception) {
-			logger.info(exception);
-			return (DataSource) context.lookup("java:comp/env/jdbc/ds_cro"); //Tomcat
-		}
+	@DBCro
+	@ConfigurationProperties("spring.datasource.cro")
+	public DataSource croDataSource() throws NamingException {
+		return DataSourceBuilder.create().build();
 	}
 	
 	@Bean
     @DBSalesnet
-	public DataSource salesnetImportDataSource() throws NamingException
-	{
-    	InitialContext context = new InitialContext();
-    	
-    	try {
-			return (DataSource) context.lookup("jdbc/ds_smcof_salesnet"); // Websphere
-		} catch (NameNotFoundException exception) {
-			logger.info(exception);
-			return (DataSource) context.lookup("java:comp/env/jdbc/ds_smcof_salesnet"); //Tomcat
-		}
+	@ConfigurationProperties("spring.datasource.salesnet")
+	public DataSource salesnetDataSource() throws NamingException {
+		return DataSourceBuilder.create().build();
 	}
 
 	@Bean
 	@CommonStaticUrl
-	public URL commonStaticURL() throws NamingException {
-		Context context = new InitialContext();
-
-		try {
-			return (URL) context.lookup("url/url_common_static"); // Websphere
-		} catch (NameNotFoundException exception) {
-			logger.info(exception);
-			return (URL) context.lookup("java:comp/env/url/url_common_static"); // Tomcat
-		}
+	public URL commonStaticURL(@Value("${url.common.static}") String spec) throws MalformedURLException
+	{
+		return new URL(spec);
 	}
 
 	@Bean
 	@UserCreationServiceUrl
-	public URL userCreationServiceURL() throws NamingException {
-		Context context = new InitialContext();
-
-		try {
-			return (URL) context.lookup("url/url_usrcreationsvc"); // Websphere
-		} catch (NameNotFoundException exception) {
-			logger.info(exception);
-			return (URL) context.lookup("java:comp/env/url/url_usrcreationsvc"); // Tomcat
-		}
+	public URL userCreationServiceURL(@Value("${url.usercreationsvc}")String spec) throws MalformedURLException
+	{
+		return new URL(spec);
 	}
+	
 
 	@Bean
 	public MessageSource messageSource()

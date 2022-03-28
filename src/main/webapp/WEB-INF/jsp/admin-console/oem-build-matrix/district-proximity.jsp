@@ -67,7 +67,7 @@
 					 
 
 					<div class="save-proximity">
-						<a href="${baseAppUrl}/admin-console/oem-build-matrix/maintenance-summary.htm" class="buttonSecondary">Cancel</a>
+						<a href="${baseAppUrl}/admin-console/oem-build-matrix/maintenance-summary" class="buttonSecondary">Cancel</a>
 						<a id="save-proximitybtn" class="buttonPrimary buttonDisabled">Save</a>
 					</div>
 
@@ -75,7 +75,7 @@
 				<c:otherwise>
 					<div>No data found</div>
 					<div class="cancel-button-container">
-						<a href="${baseAppUrl}/admin-console/oem-build-matrix/maintenance-summary.htm" class="buttonSecondary">Cancel</a>
+						<a href="${baseAppUrl}/admin-console/oem-build-matrix/maintenance-summary" class="buttonSecondary">Cancel</a>
 					</div>
 				</c:otherwise>
 			</c:choose>

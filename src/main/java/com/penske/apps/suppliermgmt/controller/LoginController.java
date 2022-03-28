@@ -57,7 +57,7 @@ public class LoginController extends BaseController {
         ModelAndView model=new ModelAndView();
         String forward=null;
         try{
-            forward="forward:/app/home/displayHome.htm";
+            forward="forward:/app/home/displayHome";
 
             //Reloading LookupData
             lookupManager.checkAndRefreshLookups();
@@ -146,7 +146,7 @@ public class LoginController extends BaseController {
     	UserSecurity userSecurity = userService.getUserSecurity(user);
     	
     	if(!userSecurity.isAccessTokenRequired()) {
-    		return new ModelAndView("forward:/app/home/displayHome.htm");
+    		return new ModelAndView("forward:/app/home/displayHome");
     	}
     	
     	ModelAndView model = new ModelAndView("app-container/two-factor-auth");

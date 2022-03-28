@@ -21,7 +21,7 @@
 				onclick="toggleContent('search-content','advanced-search');">Show Search Criteria</span>
 				
 				<div id="search-content" class="displayNone clear-both">
-					<form id="advanced-search-form" class="margin-bottom-10" method="get" action="./roles-advanced-search.htm">
+					<form id="advanced-search-form" class="margin-bottom-10" method="get" action="./roles-advanced-search">
 						<fieldset>
 							<legend>Advanced Search</legend>
 							<label class="floatLeft clear-left width-150">Role Name</label>
@@ -78,8 +78,8 @@
 					</table>
 					
 					<span class="floatRight">
-						<a href="./create-new-role.htm">Create Role</a>
-						<a href="./create-new-role.htm"><img src="${commonStaticUrl}/images/add.png" class="centerImage handCursor" alt="Add Row"/></a>
+						<a href="./create-new-role">Create Role</a>
+						<a href="./create-new-role"><img src="${commonStaticUrl}/images/add.png" class="centerImage handCursor" alt="Add Row"/></a>
 					</span>
 				</div>
 				

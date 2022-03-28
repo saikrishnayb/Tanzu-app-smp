@@ -16,7 +16,7 @@
 			<div class="full-width">
 			<h1 style="display: inline-block;">Loadsheet Sequencing</h1>
 			<!-- show back button only if the page is opened from load sheet management View/Set Load sheet links. -->
-			<c:if test="${viewMode ne ''}"><a class="buttonSecondary floatRight clear-left back" href="loadsheet-management.htm">Back</a></c:if>
+			<c:if test="${viewMode ne ''}"><a class="buttonSecondary floatRight clear-left back" href="loadsheet-management">Back</a></c:if>
 			<input id="selectedCategory" type="hidden" name="ruleCount"  value="${selectedCategory}"/>
 	        <input type="hidden" id="selectedType" value="${selectedType}"/>
 	        <input type="hidden" id="viewMode" value="${viewMode}"/>
@@ -52,14 +52,14 @@
 						<tr class="sequence-row">
 							<td class="editable centerAlign">
 							    <c:if test="${viewMode ne 'Y' }">
-								<a class="rightMargin edit-sequence" href="open-edit-sequence.htm?seqMasterId=${sequence.id}&action=EDIT&category=${selectedCategory}&type=${selectedType}&viewMode=${viewMode}">Edit</a>
-								<a class="rightMargin copy-sequence" onclick="processingImageAndTextHandler('visible','Loading data...');" href="open-edit-sequence.htm?seqMasterId=${sequence.id}&action=COPY&category=${selectedCategory}&type=${selectedType}&viewMode=${viewMode}">Copy</a>
+								<a class="rightMargin edit-sequence" href="open-edit-sequence?seqMasterId=${sequence.id}&action=EDIT&category=${selectedCategory}&type=${selectedType}&viewMode=${viewMode}">Edit</a>
+								<a class="rightMargin copy-sequence" onclick="processingImageAndTextHandler('visible','Loading data...');" href="open-edit-sequence?seqMasterId=${sequence.id}&action=COPY&category=${selectedCategory}&type=${selectedType}&viewMode=${viewMode}">Copy</a>
 								<img src="${commonStaticUrl}/images/delete.png" id="deleteSequence" tabindex=0 class="centerImage rightMargin deactivate"/>
 								<input type="hidden"  id="sequenceId"  value="${sequence.id}"/>
 								<input type="hidden" id="sequenceName" value="${sequence.name}"/>
 								</c:if>
 								<c:if test="${viewMode eq 'Y' }">
-								<a class="rightMargin edit-sequence" onclick="processingImageAndTextHandler('visible','Loading data...');" href="open-edit-sequence.htm?seqMasterId=${sequence.id}&action=VIEW&category=${selectedCategory}&type=${selectedType}&viewMode=${viewMode}">View</a>
+								<a class="rightMargin edit-sequence" onclick="processingImageAndTextHandler('visible','Loading data...');" href="open-edit-sequence?seqMasterId=${sequence.id}&action=VIEW&category=${selectedCategory}&type=${selectedType}&viewMode=${viewMode}">View</a>
 								</c:if>
 							</td>
 							<td>${sequence.name}</td>

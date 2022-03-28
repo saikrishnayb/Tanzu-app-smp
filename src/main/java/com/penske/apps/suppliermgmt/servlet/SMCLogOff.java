@@ -13,10 +13,7 @@
 package com.penske.apps.suppliermgmt.servlet;
 
 import java.io.IOException;
-import java.net.URL;
 
-import javax.naming.InitialContext;
-import javax.naming.NameNotFoundException;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
@@ -29,17 +26,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.penske.apps.suppliermgmt.util.ApplicationConstants;
+import com.penske.apps.suppliermgmt.util.SpringBeanHelper;
 import com.penske.util.CPTBaseServlet;
 
 
 public class SMCLogOff extends HttpServlet {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -6798430280467550983L;
-	//	 Initialize Logger Object
 	private static final Logger LOGGER = LogManager.getLogger(SMCLogOff.class);
+	
 	/**
 	 * @see javax.servlet.http.HttpServlet#void
 	 *      (javax.servlet.http.HttpServletRequest,
@@ -76,16 +71,7 @@ public class SMCLogOff extends HttpServlet {
 			}
 			else
 			{
-				 //Use JNDI to get the logout URL, since this is a servlet, not a Spring-accessible bean
-				InitialContext jndiContext = new InitialContext();
-	            URL logoutUrl;
-	            try {
-	                logoutUrl = (URL) jndiContext.lookup("url/url_ssologout");	// Websphere
-	            } catch (NameNotFoundException exception) {
-	                exception.toString();
-	                logoutUrl = (URL) jndiContext.lookup("java:comp/env/url/url_ssologout"); // Tomcat
-	            }
-	            realPath = logoutUrl == null ? "" : logoutUrl.toString();
+				realPath = SpringBeanHelper.getSsoLogoutUrl();
 			}
         }
         catch (Exception nex)

@@ -1,6 +1,7 @@
 package com.penske.apps.suppliermgmt.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -54,9 +55,9 @@ public class ApplicationConfiguration {
 	}
 	
 	@Bean
-	public SpringBeanHelper springBeanHelper()
+	public SpringBeanHelper springBeanHelper(@Value("url.ssologout") String ssoLogoutUrl)
 	{
-		return new SpringBeanHelper(applicationContext);
+		return new SpringBeanHelper(applicationContext, ssoLogoutUrl);
 	}
 
 }

@@ -17,7 +17,7 @@
 				<c:choose>
 					<c:when test="${access eq true}">
 						
-						<form action="./upload.htm" method="POST" enctype="multipart/form-data" id="uploadForm">
+						<form action="./upload" method="POST" enctype="multipart/form-data" id="uploadForm">
 							<div>
 								<input type="radio" name="uploadSelect" value = "t"><label>Transport</label> 
 								<br>

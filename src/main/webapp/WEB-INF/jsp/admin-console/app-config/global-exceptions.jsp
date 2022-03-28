@@ -14,7 +14,7 @@
 			<%@ include file="../../../jsp/global/navigation/admin-console/app-config/left-nav.jsp" %>
 			
 			<div class="leftNavAdjacentContainer">
-				 <form id="search-exception-form" action="exception-search.htm" method="GET">
+				 <form id="search-exception-form" action="exception-search" method="GET">
 					<div class="customSearch">
 						<label class="labelName CustomLabel" >Component Name:</label>
 						<input name="componentNameSearch"  class="fuzzySearch" id="componentNameSearch" value="<c:out value="${searchedData.componentNameSearch}"/>" tabindex="1"></input>

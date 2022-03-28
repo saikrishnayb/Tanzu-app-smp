@@ -1,6 +1,7 @@
 package com.penske.apps.suppliermgmt.model;
 
-import org.apache.commons.lang3.StringEscapeUtils;
+
+import org.apache.commons.text.StringEscapeUtils;
 
 import com.penske.apps.suppliermgmt.domain.AlertCount;
 

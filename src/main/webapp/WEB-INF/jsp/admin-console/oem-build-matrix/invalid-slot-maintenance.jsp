@@ -34,7 +34,7 @@
 		      		<div class="row">
 		        		<div class="col-xs-12 invalid-slots-table-top">
 		        			<div class='search-div'>
-		        				<form id="filter-slots-form" action="./invalid-slots.htm" method="GET">
+		        				<form id="filter-slots-form" action="./invalid-slots" method="GET">
 		        				<div class="manufacturer-div">
 		        					<label>Manufacturer</label>
 			          				<select id="manufacturer-drpdwn">

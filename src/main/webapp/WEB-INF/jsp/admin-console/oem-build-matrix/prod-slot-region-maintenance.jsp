@@ -25,7 +25,7 @@
       		<div class="row">
         		<div class="col-xs-12 slot-region-maintenance-table-top">
         			<div class='search-div'>
-        				<form id="filter-slots-form" action="./prod-slot-region-maintenance.htm" method="GET">
+        				<form id="filter-slots-form" action="./prod-slot-region-maintenance" method="GET">
         				<div class="vehicletype-div">
         					<label>Vehicle Type</label>
 	          				<select id="vehicletype-drpdwn" name="slotType">

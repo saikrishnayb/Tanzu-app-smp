@@ -30,7 +30,7 @@
 						<label>Search: </label> <input type="text" id="slot-search" />
 					</div>
 					<div class="Filter-div" id="filter-checkbox">
-						<form id="filter-slots-form" action="./view-slot-results-filter.htm" method="GET">
+						<form id="filter-slots-form" action="./view-slot-results-filter" method="GET">
 							<input type="hidden" id="buildId" value="${buildId}" name="buildId"> 
 							<input type="hidden" id="selectedFiltersList" value="${selectedFiltersList}" name="selectedFiltersList"> 
 							<input type="hidden" id="checkedFilter" value="1" name="checkedFilter">
@@ -54,7 +54,7 @@
 						</form>
 					</div>
 					<div class="btn-div floatRight">
-						<a href="${baseAppUrl}/admin-console/oem-build-matrix/build-history.htm" class="buttonSecondary">Back</a>
+						<a href="${baseAppUrl}/admin-console/oem-build-matrix/build-history" class="buttonSecondary">Back</a>
 						<div id="actions-dpdown" class="buttonSecondary dropdown buttonDisabled">
 								<a class="bootStrapDropDown dropdown-toggle production-slot-actions"
 									data-toggle="dropdown"> Actions <span class="caret"></span>

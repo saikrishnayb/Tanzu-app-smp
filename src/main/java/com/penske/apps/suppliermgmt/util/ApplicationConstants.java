@@ -82,7 +82,7 @@ public class ApplicationConstants {
 	public static final String COUNT="COUNT";
 	public static final String TIMESTAMP_FORMAT="yyyy-MM-dd hh:mm:ss.SSS";
 	
-	public static final String VENDOR_TEMPLATE_URL = "app/admin-console/security/vendors-advanced-search-alert.htm?alertType=";
+	public static final String VENDOR_TEMPLATE_URL = "app/admin-console/security/vendors-advanced-search-alert?alertType=";
 	
 	
 	/**TAB Key constants**/
