@@ -36,6 +36,9 @@ public class SmcSecurityInterceptor implements HandlerInterceptor{
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object handler) throws Exception {
 
+    	if(!(handler instanceof HandlerMethod))
+    		return true;
+    	
         HandlerMethod handlerMethod = (HandlerMethod) handler;
 
         //During initial login, the user won't have a user object in session. The login URL is allowed for all users.

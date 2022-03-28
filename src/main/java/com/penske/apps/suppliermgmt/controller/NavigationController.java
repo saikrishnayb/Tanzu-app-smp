@@ -42,7 +42,7 @@ import com.penske.apps.suppliermgmt.util.ApplicationConstants;
  * @History : 
  ************************************************************************************/
 @Version1Controller
-@RequestMapping("/navigation")
+@RequestMapping("navigation")
 public class NavigationController extends BaseController {
 
     @Autowired

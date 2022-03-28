@@ -9,10 +9,13 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.method.HandlerTypePredicate;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.penske.apps.smccore.base.configuration.ProfileType;
@@ -58,6 +61,13 @@ public class WebConfiguration implements WebMvcConfigurer {
     	  .mediaType("html", MediaType.TEXT_HTML)
     	  .mediaType("json", MediaType.APPLICATION_JSON)
     	  .mediaType("*", MediaType.ALL);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void configurePathMatch(PathMatchConfigurer configurer)
+    {
+    	configurer.addPathPrefix("/app", HandlerTypePredicate.forAnnotation(Controller.class));
     }
     
     @Override

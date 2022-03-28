@@ -1,7 +1,7 @@
 /**
  * @author john.shiffler (600139252)
  */
-package com.penske.apps.suppliermgmt.configuration;
+package com.penske.apps.suppliermgmt.main;
 
 import java.net.MalformedURLException;
 
@@ -10,12 +10,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 
 import com.penske.apps.dlinks.filters.SSOAuthenticationFilter;
 import com.penske.apps.smccore.base.configuration.ProfileType;
 import com.penske.apps.smccore.base.util.SpringConfigUtil;
+import com.penske.apps.suppliermgmt.configuration.LoggingInitializer;
+import com.penske.apps.suppliermgmt.configuration.WebConfiguration;
 import com.penske.apps.suppliermgmt.filter.DummySecurityFilter;
 import com.penske.apps.suppliermgmt.filter.SerializableFilter;
 import com.penske.apps.suppliermgmt.filter.SessionValidationFilter;
@@ -28,6 +31,7 @@ import com.penske.apps.suppliermgmt.servlet.SMCLogOff;
  */
 @SpringBootApplication
 @PropertySource(value="classpath:/config/db.local.properties", ignoreResourceNotFound = true)
+@Import({WebConfiguration.class})
 public class SuppliermgmtApplication
 {
 	public static final String CONTEXT_ROOT = "suppliermgmt";

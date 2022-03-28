@@ -29,6 +29,7 @@ import com.penske.apps.smccore.base.configuration.ProfileType;
 import com.penske.apps.smccore.base.plugins.QueryLoggingPlugin;
 import com.penske.apps.smccore.base.util.SpringConfigUtil;
 import com.penske.apps.suppliermgmt.interceptor.RequestLoggingHandlerInterceptor;
+import com.penske.apps.suppliermgmt.main.SuppliermgmtApplication;
 import com.zaxxer.hikari.pool.HikariPool;
 
 /**
