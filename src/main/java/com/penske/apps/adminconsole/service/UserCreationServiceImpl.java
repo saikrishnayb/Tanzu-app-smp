@@ -129,7 +129,6 @@ public class UserCreationServiceImpl implements UserCreationService {
 	@Override
 	@Transactional
 	public EditableUser updateUserInfo(EditableUser userObj, boolean isDeactive) {
-		try {
 			userObj.setUserName(userObj.getSsoId());
 			CPTSso oSSO = null;
 			CPBGESSOUser oB2BUser = null;
@@ -177,9 +176,6 @@ public class UserCreationServiceImpl implements UserCreationService {
 			}
 
 			oB2BUser = oSSO.findUser(userObj.getUserName().trim());
-		} catch (Exception e) {
-			throw new HumanReadableException("Error while updating user" + userObj.getUserName(), false);
-		}
 		return userObj;
 	}
 
