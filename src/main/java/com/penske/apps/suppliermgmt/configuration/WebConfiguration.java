@@ -75,8 +75,8 @@ public class WebConfiguration implements WebMvcConfigurer {
     	if(timingBean != null)
     		requestLoggingInterceptor.setLogTimings(true);
     	
-    	registry.addInterceptor(requestLoggingInterceptor);
-    	registry.addInterceptor(securityInterceptor).excludePathPatterns("/login/*");
+    	registry.addInterceptor(requestLoggingInterceptor).addPathPatterns("/app/**");
+    	registry.addInterceptor(securityInterceptor).excludePathPatterns("/app/login/*");
     	registry.addInterceptor(commonModelAttributesHandlerInterceptor);
     } 
     

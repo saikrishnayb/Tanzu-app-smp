@@ -105,7 +105,8 @@ public class LoggingInitializer implements ApplicationContextInitializer<Configu
 			.add(builder.newLogger(DataSourceUtils.class.getName(),					Level.INFO))
 			.add(builder.newLogger(HttpEntityMethodProcessor.class.getName(),		Level.INFO))
 			.add(builder.newLogger(RequestResponseBodyMethodProcessor.class.getName(),	Level.INFO))
-			.add(builder.newLogger(HikariPool.class.getName(),						Level.INFO));
+			.add(builder.newLogger(HikariPool.class.getName(),						Level.INFO))
+		;
 
 		//Performance trace logging is turned off in production
 		if(!SpringConfigUtil.isProfile(activeProfile, ProfileType.PRODUCTION))

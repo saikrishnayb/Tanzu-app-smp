@@ -125,7 +125,6 @@ public class SuppliermgmtApplication
 	public ServletRegistrationBean<ApplicationEntry> applicationEntryServletServlet() throws MalformedURLException
 	{
 		return new ServletRegistrationBean<>(new ApplicationEntry(), "/entry/ApplicationEntry");
-
 	}
 	
 	@Bean
