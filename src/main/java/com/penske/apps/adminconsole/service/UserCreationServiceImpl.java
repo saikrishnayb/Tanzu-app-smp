@@ -190,6 +190,7 @@ public class UserCreationServiceImpl implements UserCreationService {
 				editableUser.getLastName() + "," + editableUser.getFirstName()));
 		attributeList.add(createLDAPattribute(LDAPConstants.PHONE, editableUser.getPhone()));
 		attributeList.add(createLDAPattribute(LDAPConstants.GESSO_STATUS, "A"));
+		attributeList.add(createLDAPattribute("ptlaccttype", "SMC"));
 		return attributeList;
 	}
 
