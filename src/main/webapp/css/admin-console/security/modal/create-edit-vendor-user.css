@@ -1,0 +1,10 @@
+.has-error{
+	background-color:#F7D9D9 !important
+}
+
+label {
+	margin-right: 0px;
+}
+.no-left-padding {
+	padding-left:0px;
+}

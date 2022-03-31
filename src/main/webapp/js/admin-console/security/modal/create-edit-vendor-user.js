@@ -23,6 +23,11 @@ var $initFileHiddenInput = $(".init-file-hidden-input");
 var $createEditVendorUserModal = $('#create-edit-vendor-user-modal'); 
 var $ldapUserinfoModal=$("#ldap-userinfo-modal");
 
+//Initialize ritsu
+ritsu.initialize({
+	useBootstrap3Styling: true
+});
+
 // Initializes the modals
 ModalUtil.initializeModal($createEditVendorUserModal);
 ModalUtil.initializeModal($ldapUserinfoModal);
@@ -331,11 +336,14 @@ $createEditVendorUserModal.on("click",'.refresh-confirm',function(){
 $('.createVendorUser').on("click", function(){
 	
 	if($(this).hasClass( "buttonPrimary")){
+		var invalidForm  = !ritsu.validate('#user-form-vendor');
+		
+		if(invalidForm){
+			ritsu.showErrorMessages();
+			return false;
+		}
 		
 		var ssoId = $('#sso-id').val();
-		
-		if (!isUserIdValid(ssoId)) return;
-		
 		var userId = 0;
 		
 		var $isUserNameValidPromise = $.ajax({
@@ -418,6 +426,13 @@ $('.goLDAP').on("click",function(){
 //edit vendor user
 $('.saveVendor').on("click", function(){
 	if($(this).hasClass( "buttonPrimary")){
+		var invalidForm  = !ritsu.validate('#user-form-vendor');
+		
+		if(invalidForm){
+			ritsu.showErrorMessages();
+			return false;
+		}		
+		
 		var ssoId = $('#sso-id').val();
 		var userId = $('#user-id').val();
 		
@@ -437,52 +452,44 @@ $('.saveVendor').on("click", function(){
 			var vendorIds = [];
 			
 			$('.error-messages-container').addClass('displayNone');
-			
-			var isValid = validate($userForm);
-			
-			if(isValid){
-					$('.error-messages-container').addClass('displayNone');
-					var $editUserPromise = $.post('./edit-vendor-user-static.htm', $userForm.serialize());
-										
-					$editUserPromise.done(function(data){
-						var userId = $('#user-id').val();
-						
-						var $userRow = $('tr[data-user-id="' + userId + '"]');
-						var $userRowDT = $vendorUsersDataTable.row($userRow);
-		
-						$userRow.find('td:eq(1)').html( data.firstName );
-						$userRow.find('td:eq(2)').html( data.lastName );
-						$userRow.find('td:eq(3)').html( data.email );
-						$userRow.find('td:eq(4)').html( data.phone );
-						$userRow.find('td:eq(5)').html( data.role.roleName );
-						$userRow.find('td:eq(6)').html( data.org );
-		
-						$userRow.attr('data-role-id', data.role.roleId);
-						
-						$userRowDT.invalidate('dom');
-						$vendorUsersDataTable.draw();
-						
-						ModalUtil.closeModal($vendorUsersModal);
-					});
-					$editUserPromise.fail(function(xhr, ajaxOptions, thrownError) {
-						
-						 if(xhr.responseText.indexOf('USER_SERVICE_DUP_SSO:1')>0){
-							  $errMsg.text('UserID '+ssoId+' already exists. Please choose a different UserID.');
-							  $('.error-messages-container').removeClass('displayNone');
-						  }
-						 else if(xhr.responseText.indexOf('USER_SERVICE_NOT_STANDARD_SSO:11')>0){
-							  $errMsg.text('UserID '+ ssoId + ' does not conform to standards.');
-							  $('.error-messages-container').removeClass('displayNone');
-						  }
-						 else  if(xhr.responseText.indexOf('Error while updating user')>0){
-							  $errMsg.text('Error occured while updating user..');
-							  $('.error-messages-container').removeClass('displayNone');
-						  }
-					});
-			} 
-			else {
-				$('.error-messages-container').removeClass('displayNone');
-			}
+			var $editUserPromise = $.post('./edit-vendor-user-static.htm', $userForm.serialize());
+								
+			$editUserPromise.done(function(data){
+				var userId = $('#user-id').val();
+				
+				var $userRow = $('tr[data-user-id="' + userId + '"]');
+				var $userRowDT = $vendorUsersDataTable.row($userRow);
+
+				$userRow.find('td:eq(1)').html( data.firstName );
+				$userRow.find('td:eq(2)').html( data.lastName );
+				$userRow.find('td:eq(3)').html( data.email );
+				$userRow.find('td:eq(4)').html( data.phone );
+				$userRow.find('td:eq(5)').html( data.role.roleName );
+				$userRow.find('td:eq(6)').html( data.org );
+
+				$userRow.attr('data-role-id', data.role.roleId);
+				
+				$userRowDT.invalidate('dom');
+				$vendorUsersDataTable.draw();
+				
+				ModalUtil.closeModal($vendorUsersModal);
+			});
+			$editUserPromise.fail(function(xhr, ajaxOptions, thrownError) {
+				
+				 if(xhr.responseText.indexOf('USER_SERVICE_DUP_SSO:1')>0){
+					  $errMsg.text('UserID '+ssoId+' already exists. Please choose a different UserID.');
+					  $('.error-messages-container').removeClass('displayNone');
+				  }
+				 else if(xhr.responseText.indexOf('USER_SERVICE_NOT_STANDARD_SSO:11')>0){
+					  $errMsg.text('UserID '+ ssoId + ' does not conform to standards.');
+					  $('.error-messages-container').removeClass('displayNone');
+				  }
+				 else  if(xhr.responseText.indexOf('Error while updating user')>0){
+					  $errMsg.text('Error occured while updating user..');
+					  $('.error-messages-container').removeClass('displayNone');
+				  }
+			});
+
 		});
 	}
 });
@@ -498,87 +505,6 @@ function msieversion() {
         return 0;
 }
 
-function validate($editForm){
-
-	var flag = true;
-	var userTypeId = $('#user-type').val();
-	if(ritsu.validate($editForm) == false){
-		
-		if($('#phone').hasClass('errorMsgInput')){
-			$errMsg.text('Error phone number invalid!');
-		}
-		if($('#last-name').hasClass('errorMsgInput')){
-			$errMsg.text('Error last name invalid!');
-		}
-		if($('#first-name').hasClass('errorMsgInput')){
-			$errMsg.text('Error first name invalid!');
-		}
-		if($('#email').hasClass('errorMsgInput')){
-			$errMsg.text('Error email invalid!');
-		}
-		if($('#sso-id').hasClass('errorMsgInput')){
-			$errMsg.text('Error sso id invalid!');
-		}
-		if($('#user-dept').hasClass('errorMsgInput')){
-			$errMsg.text('No department selected!');
-		}
-		if($('#user-role').hasClass('errorMsgInput')){
-			$errMsg.text('No role selected!');
-		}
-		if($('#bulist').hasClass('errorMsgInput')){
-			$errMsg.text('No Business Unit selected!');
-		}
-		if($('#user-type').hasClass('errorMsgInput')){
-			$errMsg.text('No user type selected!');
-		}
-		flag = false;
-	}
-	if(userTypeId != 2){	
-		var signFileName = $('#sign-file-name').val();
-		var initFileName = $('#init-file-name').val();
-		
-		var blankSignFile = signFileName.length === 0 || !$.trim(signFileName);
-		var blankInitFile = initFileName.length === 0 || !$.trim(initFileName);
-		
-		if(!blankSignFile){
-			var signFileHandel = signFileName.substr(signFileName.length - 4);
-			if(signFileHandel != '.jpg' && signFileHandel != '.png' && signFileHandel != 'ists'){
-				$('#sign-file-name').addClass("errorMsgInput");
-				$errMsg.text('Incorrect signature file type!');
-				flag = false;
-			}
-		}
-		
-		if(!blankInitFile){
-			var initFileHandel = initFileName.substr(initFileName.length - 4);
-			if(initFileHandel != '.jpg' && initFileHandel != '.png' && initFileHandel != 'ists'){
-				$('#init-file-name').addClass("errorMsgInput");
-				$errMsg.text('Incorrect initials file type!');
-				flag = false;
-			}
-		}
-		$('#init-file-name').removeClass("errorMsgInput");
-		$('#sign-file-name').removeClass("errorMsgInput");
-	}
-	
-	
-	
-	/*if(userTypeId == 2){
-		var count = 0;
-		$('.vendor-location-box').each(function(){
-			if($(this).is(":checked")){
-				count++;
-			}
-		});
-		if(count==0){
-			$errMsg.text('No vendor locations chosen!');
-			flag = false;
-		}
-	}*/
-	
-	return flag;
-}
-
 function toggleButton(val){
 	if(val=='disable'){
 		$('#save-user-vendor-edit').removeClass( "buttonPrimary" ).addClass( "buttonDisabled" );
@@ -592,7 +518,7 @@ function validateEmailOrUserId(isCreateOrEdit){
 	var userId = $('#user-id').val();
 	var oldUserName=$('#sso-old-id').val();
 	
-	var validUserId = isUserIdValid(ssoId);
+	var validUserId = ritsu.validate($('#user-id'));
 	
 	if(validUserId === false ) {
 		$errMsg.text("Selected username contains invalid characters. Please use only letters and numbers");
@@ -702,12 +628,6 @@ function validateEmailOrUserId(isCreateOrEdit){
 			}
 		});
 	}
-}
-
-function isUserIdValid(userId) {
-	console.log("Validating Username");
-	var alphaNumericRegex = /(^[A-Za-z0-9]+$)/;
-	return alphaNumericRegex.test(userId)
 }
 
 
