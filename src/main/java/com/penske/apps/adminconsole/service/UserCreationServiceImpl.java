@@ -240,6 +240,8 @@ public class UserCreationServiceImpl implements UserCreationService {
 			throw new HumanReadableException("Phone cannot be empty", false);
 		if(editableUser.getUserType().getUserTypeId() == 0)
 			throw new HumanReadableException("UserId cannot be 0", false);
+		if(editableUser.getOrgId() == 0)
+			throw new HumanReadableException("OrgId cannot be 0", false);
 		if(editableUser.getRole().getRoleId() == 0)
 			throw new HumanReadableException("RoleId cannot be 0", false);
 	}
