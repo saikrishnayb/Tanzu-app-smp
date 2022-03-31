@@ -21,6 +21,7 @@ import com.penske.apps.adminconsole.util.CommonUtils;
 import com.penske.apps.adminconsole.util.IUserConstants;
 import com.penske.apps.smccore.base.domain.LookupContainer;
 import com.penske.apps.smccore.base.domain.User;
+import com.penske.apps.smccore.base.exception.HumanReadableException;
 import com.penske.apps.smccore.base.service.UserService;
 import com.penske.apps.ucsc.exception.UsrCreationSvcException;
 import com.penske.apps.ucsc.model.CreatedUser;
@@ -62,6 +63,9 @@ public class UserCreationServiceImpl implements UserCreationService {
 		editableUser.setRole(role);
 		editableUser.setDailyOptIn(userForm.isDailyOptIn());
 		editableUser.setCreatedBy(currentUser.getSso());
+		
+		//Not the best way to handle validation but since we don't have a domain object this will have to do for now
+		validateEditableUser(editableUser);
 		
 		if(ldapUser == null || !"A".equals(ldapUser.getGESSOStatus())){ // User not available in the LDAP. This flag is set after validating userid with LDAP.
 			logger.info("Add User to LDAP..");
@@ -128,6 +132,8 @@ public class UserCreationServiceImpl implements UserCreationService {
 	@Transactional
 	public EditableUser updateUserInfo(EditableUser userObj,boolean isDeactive)  throws UserServiceException {
 		try{
+			validateEditableUser(userObj);
+			
 			userObj.setUserName(userObj.getSsoId());
 			CPTSso oSSO = null;
 			CPBGESSOUser oB2BUser = null;
@@ -219,5 +225,22 @@ public class UserCreationServiceImpl implements UserCreationService {
 			}
 		}
 		return true;
+	}
+	
+	private void validateEditableUser(EditableUser editableUser) {
+		if("".equals(editableUser.getEmail().trim()))
+			throw new HumanReadableException("Email cannot be empty", false);
+		if("".equals(editableUser.getSsoId().trim()))
+			throw new HumanReadableException("SSO cannot be empty", false);
+		if("".equals(editableUser.getFirstName().trim()))
+			throw new HumanReadableException("First name cannot be empty", false);
+		if("".equals(editableUser.getLastName().trim()))
+			throw new HumanReadableException("Last name cannot be empty", false);
+		if("".equals(editableUser.getPhone().trim()))
+			throw new HumanReadableException("Phone cannot be empty", false);
+		if(editableUser.getUserType().getUserTypeId() == 0)
+			throw new HumanReadableException("UserId cannot be 0", false);
+		if(editableUser.getRole().getRoleId() == 0)
+			throw new HumanReadableException("RoleId cannot be 0", false);
 	}
 }
