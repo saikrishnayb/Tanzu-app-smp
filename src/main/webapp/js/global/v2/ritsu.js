@@ -157,27 +157,6 @@ var rules = function rules() {
     return /^(\S+@\S+\.\S+)$/.test(value);
   };
 
-  var _validateAlphaName = function _validateAlphaName(element) {
-    var value=element.value;
-    var isEmpty = String.prototype.trim.call(value) === '';
-    if(isEmpty)
-    	return true;
-    /*
-    * Any letter, whitespace, period, and single quote at least once or more
-    */
-    return /(^[\w\s'.]+$)/.test(value);
-  }
-  var _validateAlphaUserName = function _validateAlphaUserName(element)
-  {
-	var value=element.value;
-    var isEmpty = String.prototype.trim.call(value) === '';
-    if(isEmpty)
-    	return true;
-    /*
-    * Any letter, whitespace, period, and single quote at least once or more
-    */
-    return /^(\S+@\S+\.\S+)$/.test(value) || /^([a-zA-Z0-9])$/.test(value);
-}
   var _validateNumericWhole = function _validateNumericWhole(element) {
 
     var value = element.value;
@@ -327,8 +306,6 @@ var rules = function rules() {
   _upsertValidationRule('alpha', 'alpha-zip', _validateAlphaZip, 'Enter a valid zip code');
   _upsertValidationRule('alpha', 'alpha-numeric', _validateAlphaNumeric, 'Enter only alphanumeric characters');
   _upsertValidationRule('alpha', 'alpha-email', _validateAlphaEmail, 'Make sure the email is correct');
-  _upsertValidationRule('alpha', 'alpha-name', _validateAlphaName,'Only letters, spaces, single quote, and period are allowed');
-  _upsertValidationRule('alpha', 'alpha-username', _validateAlphaUserName,'Only emails or numbers and letters are allowed');
   
   _upsertValidationRule('numeric', 'numeric-whole', _validateNumericWhole, _getNumericWholeErrorMessage);
   _upsertValidationRule('numeric', 'numeric-decimal', _validateNumericDecimalString, _getNumericDecimalErrorMessage);

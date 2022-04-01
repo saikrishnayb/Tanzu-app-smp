@@ -28,6 +28,25 @@ ritsu.initialize({
 	useBootstrap3Styling: true
 });
 
+//Add a rule that checks a field to see if it is a valid name
+ritsu.rules.addValidationRule({
+	ruleType : "alpha",
+	ruleClass : "alpha-name",
+	validationFunction: function(element) {
+		var value=element.value;
+	    var isEmpty = String.prototype.trim.call(value) === '';
+	    if(isEmpty)
+	    	return true;
+	    /*
+	    * Any letter, whitespace, period, and single quote at least once or more
+	    */
+	    return /(^[\w\s'.]+$)/.test(value);
+	},
+	errorMessage: function() {
+		return 'Only letters, spaces, single quote, and period are allowed.'
+	}
+});
+
 // Initializes the modals
 ModalUtil.initializeModal($createEditVendorUserModal);
 ModalUtil.initializeModal($ldapUserinfoModal);
