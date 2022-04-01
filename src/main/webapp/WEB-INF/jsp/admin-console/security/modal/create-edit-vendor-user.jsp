@@ -1,6 +1,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
  <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+ 
+<link href="${baseUrl}/css/admin-console/security/modal/create-edit-vendor-user.css" rel="stylesheet" type="text/css"/> 
 
 <div class="modal-content col-xs-12" data-modal-title='${isCreatePage ? "Create User" : "Edit User" }' data-modal-width="1198">
 	<div class="row modal-body">

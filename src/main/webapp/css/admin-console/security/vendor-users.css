@@ -21,10 +21,6 @@
 	height: 50px;
 }
 
-.extension {
-	width: 32px;
-}
-
 .vendor-locations{
 	clear: both;
 }
@@ -184,9 +180,6 @@ iframe{
 	margin-right: 40px;
 }
 
-.phone{
-	width:130px;
-}
 .custom_dialog_style{
 	
 	top:-28px !important;

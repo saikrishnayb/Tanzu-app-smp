@@ -15,95 +15,129 @@
 			<input type="hidden" id="isCreateOrEdit" value="${isCreatePage}">
 			<input type="hidden" id="returnFlg" name="returnFlg" value="${returnFlg}">
 			
-			<div class="single-line-content email-container" <c:if test = "${isCreatePage == true && currentUser.penskeUser}">class="displayNone"</c:if>  style="margin-top: 18px;">
-				<label for="email">Email <span class=requiredField>*</span></label> 
-				<input id="email" tabindex="1" name="email" type="text" class='input alpha alpha-email' value="${editableUser.email}"/>
+			<div class="form-group email-container" <c:if test = "${isCreatePage == true && currentUser.penskeUser}">class="displayNone"</c:if>  style="margin-top: 18px;">
+				<label for="email" class="col-xs-4">Email <span class=requiredField>*</span></label> 
+				<div class="col-xs-8 no-left-padding">
+					<input id="email" name="email" type="text" class='input alpha alpha-email common-form-control' required maxlength="100" value="${editableUser.email}"/>
+				</div>
 			</div>
 			
-			<div id="sso-id-div" class="single-line-content">
-					<label for="sso-id">User Name <span class=requiredField>*</span></label> 
-					<input id="sso-id" tabindex="2" name="ssoId" class='input alpha alpha-username  <c:if test = "${isCreatePage == false}"> borderless</c:if>'  type="text" value="${editableUser.ssoId}"  <c:if test = "${isCreatePage == false}">readonly</c:if> />
-					<input id="sso-old-id" type="hidden" value="${editableUser.ssoId}"/>
-					<c:if test = "${isCreatePage == false}">
-				 	<span id="refreshSSODetails" class="reloadImage"><a href="#" tabindex="-1" id="refreshSSO"></a></span>
-				  </c:if>
+			<div id="sso-id-div" class="form-group">
+				<label for="sso-id" class="col-xs-4">User Name <span class=requiredField>*</span></label> 
+				<c:choose>
+					<c:when test = "${isCreatePage == false}">
+						<div class="col-xs-7 no-left-padding">
+							<input id="sso-id" required name="ssoId" data-no-spaces class='input alpha alpha-numeric common-form-control borderless' maxlength="100" type="text" value="${editableUser.ssoId}" readonly disabled/>
+							<input id="sso-old-id" type="hidden" value="${editableUser.ssoId}"/>
+						</div>
+						<div class="col-xs-1 no-left-padding">
+					 			<span id="refreshSSODetails" class="reloadImage"><a href="#" tabindex="-1" id="refreshSSO"></a></span>
+					  	</div>
+				  	</c:when>
+				  	<c:otherwise>
+					  	<div class="col-xs-8 no-left-padding">
+							<input id="sso-id" required name="ssoId" data-no-spaces class='input alpha alpha-numeric common-form-control' maxlength="100" type="text" value="${editableUser.ssoId}" />
+							<input id="sso-old-id" type="hidden" value="${editableUser.ssoId}"/>
+						</div>
+				  	</c:otherwise>
+				 </c:choose>
 			</div>
 			
 			<c:if test = "${isCreatePage == true}">
-				<div class="single-line-content">
-					User Names can contain letters and numbers only
+				<div class="form-group">
+					<div class="col-xs-12">
+						<i>User Names can contain letters and numbers only</i>
+					</div>
 				</div>						
 			</c:if>
 							
-			<div class="single-line-content first-name-container" <c:if test = "${isCreatePage == true && currentUser.penskeUser}">class="displayNone"</c:if>>
-				<label for="first-name">First Name <span class=requiredField>*</span></label> 
-				<input id="first-name" tabindex=3 name="firstName" type="text" class="input alpha alpha-name " value="${editableUser.firstName}" />
+			<div class="form-group first-name-container" <c:if test = "${isCreatePage == true && currentUser.penskeUser}">class="displayNone"</c:if>>
+				<label for="first-name" class="col-xs-4">First Name <span class=requiredField>*</span></label> 
+				<div class="col-xs-8 no-left-padding">
+					<input id="first-name" required name="firstName" type="text" class="input alpha alpha-name common-form-control" maxlength="100" value="${editableUser.firstName}" />
+				</div>
 			</div>
 	
-			<div class="single-line-content last-name-container" <c:if test = "${isCreatePage == true && currentUser.penskeUser}">class="displayNone"</c:if>>
-				<label for="last-name">Last Name <span class=requiredField>*</span></label> 
-				<input id="last-name" tabindex=4 name="lastName" class="input alpha alpha-name " type="text" value="${editableUser.lastName}" />
+			<div class="form-group last-name-container" <c:if test = "${isCreatePage == true && currentUser.penskeUser}">class="displayNone"</c:if>>
+				<label for="last-name" class="col-xs-4">Last Name <span class=requiredField>*</span></label> 
+				<div class="col-xs-8 no-left-padding">
+					<input id="last-name" required name="lastName" class="input alpha alpha-name common-form-control" type="text" value="${editableUser.lastName}" />
+				</div>
 			</div>
 	
-			<div class="single-line-content phone-container" <c:if test = "${isCreatePage == true && currentUser.penskeUser}">class="displayNone"</c:if>>
-				<label for="phone">Phone </label> 
-				<input id="phone" tabindex=5 class="input phone numeric numeric-phone  optional" name="phone" type="text" value="${editableUser.phone}" /> 
-				<input id="extension" tabindex=6 class="input extension optional numeric numeric-extension " name="extension" type="text" value="${editableUser.extension}" placeholder="ext." />
+			<div class="form-group phone-container" <c:if test = "${isCreatePage == true && currentUser.penskeUser}">class="displayNone"</c:if>>
+				<label for="phone" class="col-xs-4">Phone </label> 
+				<div class="no-left-padding col-xs-8">
+					<div class="row no-gutters">
+						<div class="col-xs-9">
+							<input id="phone" required class="input phone numeric numeric-phone common-form-control" name="phone" type="text" value="${editableUser.phone}" /> 
+						</div>
+						<div class="col-xs-3 no-left-padding">
+							<input id="extension" class="input extension numeric common-form-control" name="extension" type="text" value="${editableUser.extension}" placeholder="ext." />
+						</div>
+					</div>
+				</div>			
 			</div>
 			
-			<div class="single-line-content">
-				<label for="user-type">User Type<span class=requiredField>*</span></label> 
-				<c:forEach items="${userTypes}" var="type">
-					<c:if test = "${isCreatePage == false}">
-						 <c:if test="${editableUser.userType.userTypeId eq type.userTypeId}">
-						 	<input id="userType.description" tabindex=7 class="input alpha alpha-name " name="userType.description" type="text" value="${type.description}" readonly/>
-						 	<input id="user-type" class="input numeric numeric-whole usertype " name="userTypeId" type="hidden" value="${type.userTypeId}" />    
-						 </c:if>
-					</c:if>
-					<c:if test = "${isCreatePage == true}">
-						<input id="userType.description" tabindex="-1" class="input alpha alpha-name borderless " name="userType.description" type="text" value="${type.description}" readonly />  
-						<input id="user-type" class="input numeric numeric-whole usertype " name="userTypeId" type="hidden" value="${type.userTypeId}" />  
-					</c:if>
-				</c:forEach>
+			<div class="form-group">
+				<label for="user-type" class="col-xs-4">User Type<span class=requiredField>*</span></label> 
+				<div class="col-xs-8 no-left-padding">
+					<c:forEach items="${userTypes}" var="type">
+						<c:if test = "${isCreatePage == false}">
+							 <c:if test="${editableUser.userType.userTypeId eq type.userTypeId}">
+							 	<input id="userType.description" class="input alpha alpha-name common-form-control" name="userType.description" type="text" value="${type.description}" readonly/>
+							 	<input id="user-type" class="input numeric numeric-whole usertype " name="userTypeId" type="hidden" value="${type.userTypeId}" />    
+							 </c:if>
+						</c:if>
+						<c:if test = "${isCreatePage == true}">
+							<input id="userType.description" tabindex="-1" class="input alpha alpha-name borderless common-form-control" name="userType.description" type="text" value="${type.description}" readonly />  
+							<input id="user-type" class="input numeric numeric-whole usertype " name="userTypeId" type="hidden" value="${type.userTypeId}" />  
+						</c:if>
+					</c:forEach>
+				</div>
 			</div>
 						
 			<div id="bu-div"
-				class="single-line-content">
-				<label for="bu">Business Unit<span class=requiredField>*</span></label> }
-					<select id="bulist" tabindex=8 class="input numeric numeric-whole" name="orgId" style="width:100%">
+				class="form-group">
+				<label for="bu" class="col-xs-4">Business Unit<span class=requiredField>*</span></label>
+				<div class="col-xs-8 no-left-padding"> 
+					<select id="bulist" required class="input numeric numeric-whole common-form-control" name="orgId">
 					<option value=''>Select</option>
 					<c:forEach items="${orgList}" var="org">
 						<option value="${org.orgId}"
 							<c:if test="${org.orgId eq editableUser.orgId}"> selected</c:if> >
 							${org.orgName}</option>
 					</c:forEach> 
-				</select>
+					</select>
+				</div>
 			</div>
 						
-			<div class="single-line-content">
-				<label for="user-role">User Role<span class=requiredField>*</span></label> 
-				<select id="user-role" tabindex=9 name="roleId" class="input numeric numeric-whole">
-					<option value="">Select User Role</option>
-					<c:forEach items="${userRoles}" var="role">
-						<option value="${role.roleId}" <c:if test="${editableUser.role.roleName eq role.roleName}"> selected </c:if>>${role.roleName}</option>
-					</c:forEach>
-				</select>
+			<div class="form-group">
+				<label for="user-role" class="col-xs-4">User Role<span class=requiredField>*</span></label>
+				<div class="col-xs-8 no-left-padding"> 
+					<select id="user-role" required name="roleId" class="input numeric numeric-whole common-form-control">
+						<option value="">Select User Role</option>
+						<c:forEach items="${userRoles}" var="role">
+							<option value="${role.roleId}" <c:if test="${editableUser.role.roleName eq role.roleName}"> selected </c:if>>${role.roleName}</option>
+						</c:forEach>
+					</select>
+				</div>
 			</div>
 	
-			<div class="daily-opt-in-container">
-				<input id="daily-email-opt-in" tabindex=10 name="dailyOptIn" type="checkbox" <c:if test="${(editableUser.dailyOptIn) || (isCreatePage == true)}">checked=checked</c:if> />
+			<div class="daily-opt-in-container col-xs-12">
+				<input id="daily-email-opt-in" name="dailyOptIn" type="checkbox" <c:if test="${(editableUser.dailyOptIn) || (isCreatePage == true)}">checked=checked</c:if> />
 				<label for="daily-email-opt-in">Opt-in to Daily Summary Email</label> 
 			</div>
 			
 			<c:if test="${isCreatePage and not currentUser.isVendorUser()}">
-				<div class="daily-opt-in-container">
-					<input id="hold-enrollment-email" tabindex=11 name="holdEnrollmentEmail" type="checkbox" />
+				<div class="daily-opt-in-container col-xs-12">
+					<input id="hold-enrollment-email" name="holdEnrollmentEmail" type="checkbox" />
 					<label for="hold-enrollment-email">Hold Enrollment Email until PO Issued</label> 
 				</div>
 			</c:if>			
 		</form>
 
-		<span class="errorMsg">* indicates a required field</span>
+		<span class="errorMsg col-xs-12">* indicates a required field</span>
 	
 	</div>
 	<div id="permissions-half" class="col-xs-8">
