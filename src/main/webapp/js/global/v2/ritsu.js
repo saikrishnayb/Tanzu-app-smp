@@ -157,6 +157,7 @@ var rules = function rules() {
     return /^(\S+@\S+\.\S+)$/.test(value);
   };
 
+
   var _validateNumericWhole = function _validateNumericWhole(element) {
 
     var value = element.value;
@@ -288,18 +289,6 @@ var rules = function rules() {
     return isValid;
   };
   
-  var _validateNumericPhone = function _validateNumericPhone(element) {
-	var value = element.value;
-    var isEmpty = String.prototype.trim.call(value) === '';
-    if(isEmpty)
-    	return true;
-    	
-    /*
-	* Has to match exactly: (xxx)xxx-xxxx
-	*/
-    return /^(\([\d]{3}\))([\d]{3}[-]{1}[\d]{4})$/.test(value);
-  };
-
 
   //Add default rules
   _upsertValidationRule('alpha', 'alpha-only', _validateAlphaOnly, 'Only letters, spaces, hypens, and periods are allowed');
@@ -311,7 +300,6 @@ var rules = function rules() {
   _upsertValidationRule('numeric', 'numeric-decimal', _validateNumericDecimalString, _getNumericDecimalErrorMessage);
   _upsertValidationRule('numeric', 'numeric-full-year', _validateNumericFullYear, _getNumericFullYearErrorMessage);
   _upsertValidationRule('numeric', 'numeric-jquery-date', _validateNumericJqueryDatePicker, 'Please select a date from the date picker');
-  _upsertValidationRule('numeric', 'numeric-phone', _validateNumericPhone, 'Please enter phone in (XXX) XXX-XXXX format');
   
   return {
     getRuleByRuleClass: getRuleByRuleClass,

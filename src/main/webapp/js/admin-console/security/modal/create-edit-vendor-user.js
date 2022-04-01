@@ -47,6 +47,25 @@ ritsu.rules.addValidationRule({
 	}
 });
 
+ritsu.rules.addValidationRule({
+	ruleType : "numeric",
+	ruleClass : "numeric-phone",
+	validationFunction: function(element) {
+		var value = element.value;
+    	var isEmpty = String.prototype.trim.call(value) === '';
+    	if(isEmpty)
+    		return true;
+    	
+	    /*
+		* Has to match exactly: (xxx)xxx-xxxx
+		*/
+	    return /^(\([\d]{3}\))([\d]{3}[-]{1}[\d]{4})$/.test(value);
+	},
+	errorMessage: function() {
+		return 'Please enter phone in (XXX) XXX-XXXX format'
+	}
+})
+
 // Initializes the modals
 ModalUtil.initializeModal($createEditVendorUserModal);
 ModalUtil.initializeModal($ldapUserinfoModal);
