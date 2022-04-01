@@ -32,7 +32,7 @@ import com.penske.apps.suppliermgmt.servlet.SMCLogOff;
 @SpringBootApplication
 @PropertySource(value="classpath:/config/db.local.properties", ignoreResourceNotFound = true)
 @Import({WebConfiguration.class})
-public class SuppliermgmtApplication
+public class AppSuppliermgmt
 {
 	public static final String CONTEXT_ROOT = "suppliermgmt";
 	
@@ -54,7 +54,7 @@ public class SuppliermgmtApplication
 			throw ex;
 		}
 		
-		SpringApplication app = new SpringApplication(SuppliermgmtApplication.class);
+		SpringApplication app = new SpringApplication(AppSuppliermgmt.class);
 		app.setAdditionalProfiles(activeProfile);
 		app.addInitializers(new LoggingInitializer());
 		app.run();

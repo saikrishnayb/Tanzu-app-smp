@@ -29,7 +29,7 @@ import com.penske.apps.smccore.base.configuration.ProfileType;
 import com.penske.apps.smccore.base.plugins.QueryLoggingPlugin;
 import com.penske.apps.smccore.base.util.SpringConfigUtil;
 import com.penske.apps.suppliermgmt.interceptor.RequestLoggingHandlerInterceptor;
-import com.penske.apps.suppliermgmt.main.SuppliermgmtApplication;
+import com.penske.apps.suppliermgmt.main.AppSuppliermgmt;
 import com.zaxxer.hikari.pool.HikariPool;
 
 /**
@@ -43,10 +43,10 @@ public class LoggingInitializer implements ApplicationContextInitializer<Configu
 	{
 		String activeProfile = getActiveProfile(applicationContext.getEnvironment());
 		
-		String logFolderName = SuppliermgmtApplication.CONTEXT_ROOT;
+		String logFolderName = AppSuppliermgmt.CONTEXT_ROOT;
 		
 		ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder()
-			.setConfigurationName(SuppliermgmtApplication.CONTEXT_ROOT);
+			.setConfigurationName(AppSuppliermgmt.CONTEXT_ROOT);
 		
 		//***** Appender Setup *****//
 		AppenderRefComponentBuilder fileAppender = 		SpringConfigUtil.makeRollingFileAppender(builder, "file", "1024KB", 10, "%d %-5p (%F:%M():%L)  - %m%n", "/logs/apps/" + logFolderName + "/log.txt");
@@ -62,9 +62,9 @@ public class LoggingInitializer implements ApplicationContextInitializer<Configu
 				.add(builder.newLayout("PatternLayout").addAttribute("pattern", "[%d{ISO8601}]%n%n%-5p%n%n%c%n%n%m%n%n"))
 				.addAttribute("bufferSize", 0)
 				.addAttribute("smtpHost", "mail.penske.com")
-				.addAttribute("from", "log4j." + activeProfile + "@" + SuppliermgmtApplication.CONTEXT_ROOT + ".penske.com")
+				.addAttribute("from", "log4j." + activeProfile + "@" + AppSuppliermgmt.CONTEXT_ROOT + ".penske.com")
 				.addAttribute("to", "smc.developers@penske.com")
-				.addAttribute("subject", StringUtils.capitalize(SuppliermgmtApplication.CONTEXT_ROOT) + " - " + activeProfile + " - Errors")
+				.addAttribute("subject", StringUtils.capitalize(AppSuppliermgmt.CONTEXT_ROOT) + " - " + activeProfile + " - Errors")
 			);
 			emailAppender = builder.newAppenderRef("email");
 		}
@@ -118,8 +118,8 @@ public class LoggingInitializer implements ApplicationContextInitializer<Configu
 		Configurator.reconfigure(builder.build());
 
 		//Print our logging config to the logs (partly to verify it's working)
-		Logger logger = LogManager.getLogger(SuppliermgmtApplication.class);
-		String logConfiguration = SpringConfigUtil.getLogConfiguration(SuppliermgmtApplication.CONTEXT_ROOT);
+		Logger logger = LogManager.getLogger(AppSuppliermgmt.class);
+		String logConfiguration = SpringConfigUtil.getLogConfiguration(AppSuppliermgmt.CONTEXT_ROOT);
 		logger.info("\n" + logConfiguration);
 	}
 	
