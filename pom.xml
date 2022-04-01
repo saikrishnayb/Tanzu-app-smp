@@ -206,7 +206,7 @@
 	        <plugin>
 	        	<artifactId>maven-war-plugin</artifactId>
 	        	<configuration>
-	        		<!-- Ensure that our local credentials do not get distributed with the JAR -->
+	        		<!-- Ensure that our local credentials do not get distributed with the WAR -->
 	        		<packagingExcludes>WEB-INF/classes/config/db.local.properties</packagingExcludes>
 	        	</configuration>
 	        </plugin>

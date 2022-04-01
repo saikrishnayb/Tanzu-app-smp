@@ -3,8 +3,6 @@
  */
 package com.penske.apps.suppliermgmt.main;
 
-import java.net.MalformedURLException;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -122,14 +120,14 @@ public class AppSuppliermgmt
 
 	@Bean
 	@Profile(ProfileType.NOT_TEST)
-	public ServletRegistrationBean<ApplicationEntry> applicationEntryServletServlet() throws MalformedURLException
+	public ServletRegistrationBean<ApplicationEntry> applicationEntryServletServlet()
 	{
 		return new ServletRegistrationBean<>(new ApplicationEntry(), "/entry/ApplicationEntry");
 	}
 	
 	@Bean
 	@Profile(ProfileType.NOT_TEST)
-	public ServletRegistrationBean<SMCLogOff> smcLogoffServlet() throws MalformedURLException
+	public ServletRegistrationBean<SMCLogOff> smcLogoffServlet()
 	{
 		return new ServletRegistrationBean<>(new SMCLogOff(), "/SMCLogOff");
 	}
