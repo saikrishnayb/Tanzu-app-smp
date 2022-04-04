@@ -233,10 +233,11 @@ public class UserCreationServiceImpl implements UserCreationService {
 	}
 	
 	private void validateEditableUser(EditableUser editableUser, EditableUser userBeingEdited) {
+		boolean isCreate = userBeingEdited == null;
 		// Null/empty checks
 		if(StringUtils.isBlank(editableUser.getEmail()))
 			throw new HumanReadableException("Email cannot be empty", false);
-		if(StringUtils.isBlank(editableUser.getSsoId()))
+		if(StringUtils.isBlank(editableUser.getSsoId()) && isCreate)
 			throw new HumanReadableException("SSO cannot be empty", false);
 		if(StringUtils.isBlank(editableUser.getFirstName()))
 			throw new HumanReadableException("First name cannot be empty", false);
@@ -251,11 +252,11 @@ public class UserCreationServiceImpl implements UserCreationService {
 		if(editableUser.getRole() == null || editableUser.getRole().getRoleId() == 0)
 			throw new HumanReadableException("RoleId cannot be 0", false);
 		
-		if(userBeingEdited != null) {
+		if(!isCreate) {
 			if(userBeingEdited.getUserId() != editableUser.getUserId())
 				throw new HumanReadableException("User IDs do not match", false);
 			
-			if(!userBeingEdited.getSsoId().equals(editableUser.getSsoId()))
+			if(!StringUtils.isBlank(editableUser.getSsoId()) && !userBeingEdited.getSsoId().equals(editableUser.getSsoId()))
 				throw new HumanReadableException("SSO cannot be edited", false);
 			
 			if(userBeingEdited.getUserType().getUserTypeId() != editableUser.getUserType().getUserTypeId())
