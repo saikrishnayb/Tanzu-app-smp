@@ -19,7 +19,7 @@ public class GlobalException {
 	private String isNew;
 	private Date modifiedDate;
 	
-	private Vendor providerVendor;
+	private List<Vendor> providerVendors;
 	private List<GlobalExceptionCategoryGroup> poCategoryGroups;
     
     public int getExceptionId() {
@@ -47,10 +47,10 @@ public class GlobalException {
         this.isNew = isNew;
     }
     public Vendor getProviderVendor() {
-        return providerVendor;
-    }
-    public void setProviderVendor(Vendor providerVendor) {
-        this.providerVendor = providerVendor;
+	    if(providerVendors == null || providerVendors.isEmpty())
+	    	return null;
+	    
+	    return providerVendors.get(0);
     }
     public List<GlobalExceptionCategoryGroup> getPoCategoryGroups() {
         return poCategoryGroups;
