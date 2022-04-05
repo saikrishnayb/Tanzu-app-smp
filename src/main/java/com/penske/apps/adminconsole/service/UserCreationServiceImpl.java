@@ -67,7 +67,7 @@ public class UserCreationServiceImpl implements UserCreationService {
 		editableUser.setCreatedBy(currentUser.getSso());
 		
 		//Not the best way to handle validation but since we don't have a domain object this will have to do for now
-		validateEditableUser(editableUser);
+		validateEditableUser(editableUser, null);
 		
 		if(ldapUser == null || !"A".equals(ldapUser.getGESSOStatus())){ // User not available in the LDAP. This flag is set after validating userid with LDAP.
 			logger.info("Add User to LDAP..");
@@ -130,9 +130,14 @@ public class UserCreationServiceImpl implements UserCreationService {
 
 	@Override
 	@Transactional
-	public EditableUser updateUserInfo(EditableUser userObj,boolean isDeactive)
-	{
-			validateEditableUser(userObj);
+	public EditableUser updateUserInfo(EditableUser userObj,boolean isDeactive) {
+			EditableUser userBeingEdited = securityDao.getUser(userObj.getUserId());
+			
+			if(userBeingEdited == null)
+				throw new HumanReadableException("Could not find user with User Id " + userObj.getUserId(), false);
+			
+			validateEditableUser(userObj, userBeingEdited);
+			
 			userObj.setUserName(userObj.getSsoId());
 			CPTSso oSSO = null;
 			CPBGESSOUser oB2BUser = null;
@@ -219,22 +224,32 @@ public class UserCreationServiceImpl implements UserCreationService {
 		return true;
 	}
 	
-	private void validateEditableUser(EditableUser editableUser) {
-		if("".equals(editableUser.getEmail().trim()))
+	private void validateEditableUser(EditableUser editableUser, EditableUser userBeingEdited) {
+		boolean isCreate = userBeingEdited == null;
+		// Null/empty checks
+		if(StringUtils.isBlank(editableUser.getEmail()))
 			throw new HumanReadableException("Email cannot be empty", false);
-		if("".equals(editableUser.getSsoId().trim()))
+		if(StringUtils.isBlank(editableUser.getSsoId()) && isCreate)
 			throw new HumanReadableException("SSO cannot be empty", false);
-		if("".equals(editableUser.getFirstName().trim()))
+		if(StringUtils.isBlank(editableUser.getFirstName()))
 			throw new HumanReadableException("First name cannot be empty", false);
-		if("".equals(editableUser.getLastName().trim()))
+		if(StringUtils.isBlank(editableUser.getLastName()))
 			throw new HumanReadableException("Last name cannot be empty", false);
-		if("".equals(editableUser.getPhone().trim()))
+		if(StringUtils.isBlank(editableUser.getPhone()))
 			throw new HumanReadableException("Phone cannot be empty", false);
-		if(editableUser.getUserType().getUserTypeId() == 0)
+		if(editableUser.getUserType() == null || editableUser.getUserType().getUserTypeId() == 0)
 			throw new HumanReadableException("UserId cannot be 0", false);
 		if(editableUser.getOrgId() == 0)
 			throw new HumanReadableException("OrgId cannot be 0", false);
-		if(editableUser.getRole().getRoleId() == 0)
+		if(editableUser.getRole() == null || editableUser.getRole().getRoleId() == 0)
 			throw new HumanReadableException("RoleId cannot be 0", false);
+		
+		if(!isCreate) {
+			if(userBeingEdited.getUserId() != editableUser.getUserId())
+				throw new HumanReadableException("User IDs do not match", false);
+			
+			if(userBeingEdited.getUserType().getUserTypeId() != editableUser.getUserType().getUserTypeId())
+				throw new HumanReadableException("User Type cannot be edited", false);
+		}
 	}
 }
