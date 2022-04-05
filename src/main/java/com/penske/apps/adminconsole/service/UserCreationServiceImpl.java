@@ -256,9 +256,6 @@ public class UserCreationServiceImpl implements UserCreationService {
 			if(userBeingEdited.getUserId() != editableUser.getUserId())
 				throw new HumanReadableException("User IDs do not match", false);
 			
-			if(!StringUtils.isBlank(editableUser.getSsoId()) && !userBeingEdited.getSsoId().equals(editableUser.getSsoId()))
-				throw new HumanReadableException("SSO cannot be edited", false);
-			
 			if(userBeingEdited.getUserType().getUserTypeId() != editableUser.getUserType().getUserTypeId())
 				throw new HumanReadableException("User Type cannot be edited", false);
 		}
