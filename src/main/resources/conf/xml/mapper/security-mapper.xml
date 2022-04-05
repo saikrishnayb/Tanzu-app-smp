@@ -86,6 +86,7 @@
 				EXTENSION AS extension,
 				U.STATUS AS status,
 				T.USER_TYPE AS "userType.userType",
+				T.TYPE_ID AS "userType.userTypeId",
 				U.ROLE_ID AS "role.roleId",
 				ROLE_NAME AS "role.roleName",
 				U.ORG_ID AS orgId,
