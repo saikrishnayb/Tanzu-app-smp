@@ -43,7 +43,7 @@ ritsu.rules.addValidationRule({
 	    return /(^[\w\s'.]+$)/.test(value);
 	},
 	errorMessage: function() {
-		return 'Only letters, spaces, single quote, and period are allowed.'
+		return 'Only letters, numbers, spaces, single quote, and period are allowed.'
 	}
 });
 
@@ -284,13 +284,7 @@ $('#phone').keypress(function(key) {
 });
 
 $('#extension').keypress(function(key) {
-	if($('#extension').val().length > 3){
-		return false;
-	}
-});
-	
-$('#extension').keypress(function(key) {
-	if(key.charCode < 48 || key.charCose > 57){
+	if(key.charCode < 48 || key.charCode > 57){
 		return false;
 	}
 });
@@ -367,6 +361,7 @@ $createEditVendorUserModal.on("click",'.refresh-confirm',function(){
 		$vendorUsersDataTable.draw();
 		
 		ModalUtil.closeModal($vendorUsersModal);
+		ModalUtil.closeModal($createEditVendorUserModal)
 	});
 });
 	
@@ -400,42 +395,33 @@ $('.createVendorUser').on("click", function(){
 
 		}).done(function(){
 			var $userForm = $('#user-form-vendor');
-			var vendorIds = [];
 			$('.error-messages-container').addClass('displayNone');
-			var isValid = validate($userForm);
-			if(isValid){
 				
-				
-				var $createUserPromise = $.ajax( {
-				    type: 'POST',
-				    url: 'create-vendor-user', 
-				    data: $userForm.serialize(),
-				  });
-				$createUserPromise.done(function() {
-					var  $searchForm = $('#search-vendor-user-form');
-					getVendorUserTableContents($searchForm.serialize());
-					ModalUtil.closeModal($vendorUsersModal);
-				});
-				$createUserPromise.fail(function(xhr, ajaxOptions, thrownError) {
-					 if(xhr.responseText.indexOf('USER_SERVICE_DUP_SSO:1')>0){
-						  $errMsg.text('UserID '+ssoId+' already exists. Please choose a different UserID.');
-						  $('.error-messages-container').removeClass('displayNone');
-					  }
-					 else if(xhr.responseText.indexOf('USER_SERVICE_NOT_STANDARD_SSO:11')>0){
-						  $errMsg.text('UserID '+ ssoId + ' does not conform to standards.');
-						  $('.error-messages-container').removeClass('displayNone');
-					  }
-					 else if(xhr.responseText.indexOf('Error while creating user')>0){
-						  $errMsg.text('Error occured while creating user..');
-						  $('.error-messages-container').removeClass('displayNone');
-					  }
-				});
-			}else{
-				$('.error-messages-container').removeClass('displayNone');
-			}
-		 //Error while creating
+			var $createUserPromise = $.ajax( {
+			    type: 'POST',
+			    url: 'create-vendor-user', 
+			    data: $userForm.serialize(),
+			  });
+			$createUserPromise.done(function() {
+				var  $searchForm = $('#search-vendor-user-form');
+				getVendorUserTableContents($searchForm.serialize());
+				ModalUtil.closeModal($vendorUsersModal);
+			});
+			$createUserPromise.fail(function(xhr, ajaxOptions, thrownError) {
+				 if(xhr.responseText.indexOf('USER_SERVICE_DUP_SSO:1')>0){
+					  $errMsg.text('UserID '+ssoId+' already exists. Please choose a different UserID.');
+					  $('.error-messages-container').removeClass('displayNone');
+				  }
+				 else if(xhr.responseText.indexOf('USER_SERVICE_NOT_STANDARD_SSO:11')>0){
+					  $errMsg.text('UserID '+ ssoId + ' does not conform to standards.');
+					  $('.error-messages-container').removeClass('displayNone');
+				  }
+				 else if(xhr.responseText.indexOf('Error while creating user')>0){
+					  $errMsg.text('Error occured while creating user..');
+					  $('.error-messages-container').removeClass('displayNone');
+				  }
+			});
 		});
-		
 	}
 });
 
@@ -635,7 +621,7 @@ function validateEmailOrUserId(isCreateOrEdit){
 		    	}
 				toggleButton("disable");
 		        break;
-		    case 3:
+		    case 4:
 		    	var errorTxt="<p>Selected username contains invalid characters. Please use letters and numbers only</p>";
 				if(isCreateOrEdit ==='true'){
 					$ldapUserinfoModal.find("#infoText").html(errorTxt);
@@ -643,7 +629,7 @@ function validateEmailOrUserId(isCreateOrEdit){
 					ModalUtil.openModal($ldapUserinfoModal);
 		    	}
 				toggleButton("disable");
-		        break;		        
+		        break;
 		    default:
 		    	if(isCreateOrEdit ==='true'){
 		    		 ModalUtil.openModal($ldapUserinfoModal);

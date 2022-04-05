@@ -41,7 +41,7 @@
             
         <div class="sso-refresh-buttons-div">
 	<a class="secondaryLink cancel" tabIndex="-1">Cancel</a> 
-	<a class="buttonPrimary refresh-confirm" tabIndex="-1">Confrim</a>
+	<a class="buttonPrimary refresh-confirm" tabIndex="-1">Confirm</a>
 </div>
 </c:if>
  <c:if test="${ssoDataUpdated.ssoUserUpdated == false}">
