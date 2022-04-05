@@ -21,6 +21,7 @@ import com.penske.apps.adminconsole.util.CommonUtils;
 import com.penske.apps.adminconsole.util.IUserConstants;
 import com.penske.apps.smccore.base.domain.LookupContainer;
 import com.penske.apps.smccore.base.domain.User;
+import com.penske.apps.smccore.base.exception.AppValidationException;
 import com.penske.apps.smccore.base.exception.HumanReadableException;
 import com.penske.apps.smccore.base.service.UserService;
 import com.penske.apps.ucsc.exception.UsrCreationSvcException;
@@ -138,7 +139,8 @@ public class UserCreationServiceImpl implements UserCreationService {
 			
 			validateEditableUser(userObj, userBeingEdited);
 			
-			userObj.setUserName(userObj.getSsoId());
+			userObj.setSsoId(userBeingEdited.getSsoId());
+			userObj.setUserName(userBeingEdited.getSsoId());
 			CPTSso oSSO = null;
 			CPBGESSOUser oB2BUser = null;
 			// Date date;
@@ -228,28 +230,26 @@ public class UserCreationServiceImpl implements UserCreationService {
 		boolean isCreate = userBeingEdited == null;
 		// Null/empty checks
 		if(StringUtils.isBlank(editableUser.getEmail()))
-			throw new HumanReadableException("Email cannot be empty", false);
+			throw new AppValidationException("Email cannot be empty");
 		if(StringUtils.isBlank(editableUser.getSsoId()) && isCreate)
-			throw new HumanReadableException("SSO cannot be empty", false);
+			throw new AppValidationException("SSO cannot be empty");
 		if(StringUtils.isBlank(editableUser.getFirstName()))
-			throw new HumanReadableException("First name cannot be empty", false);
+			throw new AppValidationException("First name cannot be empty");
 		if(StringUtils.isBlank(editableUser.getLastName()))
-			throw new HumanReadableException("Last name cannot be empty", false);
-		if(StringUtils.isBlank(editableUser.getPhone()))
-			throw new HumanReadableException("Phone cannot be empty", false);
+			throw new AppValidationException("Last name cannot be empty");
 		if(editableUser.getUserType() == null || editableUser.getUserType().getUserTypeId() == 0)
-			throw new HumanReadableException("UserId cannot be 0", false);
+			throw new AppValidationException("UserId cannot be 0");
 		if(editableUser.getOrgId() == 0)
-			throw new HumanReadableException("OrgId cannot be 0", false);
+			throw new AppValidationException("OrgId cannot be 0");
 		if(editableUser.getRole() == null || editableUser.getRole().getRoleId() == 0)
-			throw new HumanReadableException("RoleId cannot be 0", false);
+			throw new AppValidationException("RoleId cannot be 0");
 		
 		if(!isCreate) {
 			if(userBeingEdited.getUserId() != editableUser.getUserId())
-				throw new HumanReadableException("User IDs do not match", false);
+				throw new AppValidationException("User IDs do not match");
 			
 			if(userBeingEdited.getUserType().getUserTypeId() != editableUser.getUserType().getUserTypeId())
-				throw new HumanReadableException("User Type cannot be edited", false);
+				throw new AppValidationException("User Type cannot be edited");
 		}
 	}
 }

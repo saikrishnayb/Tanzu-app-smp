@@ -15,14 +15,14 @@
 			<input type="hidden" id="isCreateOrEdit" value="${isCreatePage}">
 			<input type="hidden" id="returnFlg" name="returnFlg" value="${returnFlg}">
 			
-			<div class="form-group email-container" <c:if test = "${isCreatePage == true && currentUser.penskeUser}">class="displayNone"</c:if>  style="margin-top: 18px;">
+			<div class="form-group row email-container" <c:if test = "${isCreatePage == true && currentUser.penskeUser}">class="displayNone"</c:if>  style="margin-top: 18px;">
 				<label for="email" class="col-xs-4">Email <span class=requiredField>*</span></label> 
 				<div class="col-xs-8 no-left-padding">
 					<input id="email" name="email" type="text" class='input alpha alpha-email common-form-control' required maxlength="100" value="${editableUser.email}"/>
 				</div>
 			</div>
 			
-			<div id="sso-id-div" class="form-group">
+			<div id="sso-id-div" class="form-group row">
 				<label for="sso-id" class="col-xs-4">User Name <span class=requiredField>*</span></label> 
 				<c:choose>
 					<c:when test = "${isCreatePage == false}">
@@ -44,42 +44,42 @@
 			</div>
 			
 			<c:if test = "${isCreatePage == true}">
-				<div class="form-group">
+				<div class="form-group row">
 					<div class="col-xs-12">
 						<i>User Names can contain letters and numbers only</i>
 					</div>
 				</div>						
 			</c:if>
 							
-			<div class="form-group first-name-container" <c:if test = "${isCreatePage == true && currentUser.penskeUser}">class="displayNone"</c:if>>
+			<div class="form-group row first-name-container" <c:if test = "${isCreatePage == true && currentUser.penskeUser}">class="displayNone"</c:if>>
 				<label for="first-name" class="col-xs-4">First Name <span class=requiredField>*</span></label> 
 				<div class="col-xs-8 no-left-padding">
 					<input id="first-name" required name="firstName" type="text" class="input alpha alpha-name common-form-control" maxlength="100" value="${editableUser.firstName}" />
 				</div>
 			</div>
 	
-			<div class="form-group last-name-container" <c:if test = "${isCreatePage == true && currentUser.penskeUser}">class="displayNone"</c:if>>
+			<div class="form-group row last-name-container" <c:if test = "${isCreatePage == true && currentUser.penskeUser}">class="displayNone"</c:if>>
 				<label for="last-name" class="col-xs-4">Last Name <span class=requiredField>*</span></label> 
 				<div class="col-xs-8 no-left-padding">
-					<input id="last-name" required name="lastName" class="input alpha alpha-name common-form-control" type="text" value="${editableUser.lastName}" />
+					<input id="last-name" required name="lastName" class="input alpha alpha-name common-form-control" type="text" value="${editableUser.lastName}" maxlength="100" />
 				</div>
 			</div>
 	
-			<div class="form-group phone-container" <c:if test = "${isCreatePage == true && currentUser.penskeUser}">class="displayNone"</c:if>>
+			<div class="form-group row phone-container" <c:if test = "${isCreatePage == true && currentUser.penskeUser}">class="displayNone"</c:if>>
 				<label for="phone" class="col-xs-4">Phone </label> 
 				<div class="no-left-padding col-xs-8">
 					<div class="row no-gutters">
 						<div class="col-xs-9">
-							<input id="phone" required class="input phone numeric numeric-phone common-form-control" name="phone" type="text" value="${editableUser.phone}" /> 
+							<input id="phone" class="input phone numeric numeric-phone common-form-control" name="phone" type="text" value="${editableUser.phone}" /> 
 						</div>
 						<div class="col-xs-3 no-left-padding">
-							<input id="extension" class="input extension numeric common-form-control" name="extension" type="text" value="${editableUser.extension}" placeholder="ext." />
+							<input id="extension" class="input extension numeric common-form-control" name="extension" type="text" value="${editableUser.extension}" placeholder="ext." maxlength="5" />
 						</div>
 					</div>
 				</div>			
 			</div>
 			
-			<div class="form-group">
+			<div class="form-group row">
 				<label for="user-type" class="col-xs-4">User Type<span class=requiredField>*</span></label> 
 				<div class="col-xs-8 no-left-padding">
 					<c:forEach items="${userTypes}" var="type">
@@ -98,7 +98,7 @@
 			</div>
 						
 			<div id="bu-div"
-				class="form-group">
+				class="form-group row">
 				<label for="bu" class="col-xs-4">Business Unit<span class=requiredField>*</span></label>
 				<div class="col-xs-8 no-left-padding"> 
 					<select id="bulist" required class="input numeric numeric-whole common-form-control" name="orgId">
@@ -112,7 +112,7 @@
 				</div>
 			</div>
 						
-			<div class="form-group">
+			<div class="form-group row">
 				<label for="user-role" class="col-xs-4">User Role<span class=requiredField>*</span></label>
 				<div class="col-xs-8 no-left-padding"> 
 					<select id="user-role" required name="roleId" class="input numeric numeric-whole common-form-control">

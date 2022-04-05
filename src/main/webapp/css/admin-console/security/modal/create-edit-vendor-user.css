@@ -8,3 +8,7 @@
 .no-left-padding {
 	padding-left:0px;
 }
+
+#vendor-user-modal #user-form-vendor .form-group {
+	margin-bottom: 0px;
+}

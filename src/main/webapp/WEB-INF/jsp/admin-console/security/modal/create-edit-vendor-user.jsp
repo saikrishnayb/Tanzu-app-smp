@@ -30,20 +30,22 @@
 	<div id="ldap-userinfo-modal" class="modal row">
 		<div class="modal-content ldap-user-info-modal-content col-xs-12" data-modal-title="LDAP User Info" data-modal-max-width="350" data-keep-contents="true">
 			<div class="row">
-				<p id="infoText"></p>
-				<div class="deactivate-buttons-div-ok" style="display: none;" id="ok">
-					<br/>
-					<a class="secondaryLink cancelLdap" style="float: right; vertical-align:bottom;" tabIndex="-1">Ok</a>
-				</div>
-				
-				<div class="deactivate-buttons-div" style="display: none" id="yes">
-					<input type="hidden" id="fnameM">
-					<input type="hidden" id="lnameM">
-					<input type="hidden" id="phoneM">
-					<input type="hidden" id="ssoM">
-					<input type="hidden" id="emailM">
-					<a class="secondaryLink cancelLdap" tabIndex="-1">No, Cancel</a> 
-					<a class="buttonPrimary goLDAP" tabIndex="-1">Yes, Continue</a>
+				<div class="col-xs-12">
+					<p id="infoText"></p>
+					<div class="deactivate-buttons-div-ok" style="display: none;" id="ok">
+						<br/>
+						<a class="secondaryLink cancelLdap" style="float: right; vertical-align:bottom;" tabIndex="-1">Ok</a>
+					</div>
+					
+					<div class="deactivate-buttons-div" style="display: none" id="yes">
+						<input type="hidden" id="fnameM">
+						<input type="hidden" id="lnameM">
+						<input type="hidden" id="phoneM">
+						<input type="hidden" id="ssoM">
+						<input type="hidden" id="emailM">
+						<a class="secondaryLink cancelLdap" tabIndex="-1">No, Cancel</a> 
+						<a class="buttonPrimary goLDAP" tabIndex="-1">Yes, Continue</a>
+					</div>
 				</div>
 			</div>
 		</div>
