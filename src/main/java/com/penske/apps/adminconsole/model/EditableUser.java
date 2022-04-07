@@ -307,7 +307,7 @@ public class EditableUser {
 	}
 
 	public void setSsoId(String ssoId) {
-		if (ssoId.equalsIgnoreCase("null")) {
+		if (StringUtils.equalsIgnoreCase(ssoId, "null")) {
 			ssoId = "";
 		}
 		this.ssoId = ssoId;

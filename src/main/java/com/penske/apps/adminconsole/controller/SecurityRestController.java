@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.penske.apps.adminconsole.dao.SecurityDAO;
-import com.penske.apps.adminconsole.exceptions.UserServiceException;
 import com.penske.apps.adminconsole.model.AdminConsoleUserType;
 import com.penske.apps.adminconsole.model.EditableUser;
 import com.penske.apps.adminconsole.model.Org;
@@ -288,7 +287,6 @@ public class SecurityRestController {
 	{
 		EditableUser editableUser = new EditableUser();
 		editableUser.setEmail(userForm.getEmail());
-		editableUser.setSsoId(userForm.getSsoId());
 		editableUser.setFirstName(userForm.getFirstName());
 		editableUser.setLastName(userForm.getLastName());
 		editableUser.setPhone(userForm.getPhone());
