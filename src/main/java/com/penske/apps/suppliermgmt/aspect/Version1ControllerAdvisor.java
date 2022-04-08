@@ -91,8 +91,8 @@ public class Version1ControllerAdvisor {
             }
         }
 
-        String pathInfo = request.getPathInfo();
-        String leftNavDirectory = StringUtils.substringBeforeLast(pathInfo,  "/");
+        String pathInfo = request.getServletPath();
+        String leftNavDirectory = StringUtils.substringAfter(StringUtils.substringBeforeLast(pathInfo,  "/"), "/app");
 
         boolean sidebarExists = false;
         if(servletContext != null)
@@ -111,8 +111,8 @@ public class Version1ControllerAdvisor {
 
     private ModelAndView handleHumanReadableException(HumanReadableException ex, HttpServletRequest request)
     {
-        String pathInfo = request.getPathInfo();
-        String leftNavDirectory = StringUtils.substringBeforeLast(pathInfo,  "/");
+        String pathInfo = request.getServletPath();
+        String leftNavDirectory = StringUtils.substringAfter(StringUtils.substringBeforeLast(pathInfo,  "/"), "/app");
         
         boolean sidebarExists = false;
         if(servletContext != null)
