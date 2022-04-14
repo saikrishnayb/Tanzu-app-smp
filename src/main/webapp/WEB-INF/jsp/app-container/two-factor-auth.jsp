@@ -27,7 +27,7 @@
 						<div class="col-xs-12 text-center">
 							<div class="row">
 								<div class="col-xs-12">
-									An access code has been sent to the email associated with this account.
+									An 6-digit access code has been sent to the email associated with this account.
 								</div>
 							</div>
 							<div class="row">
