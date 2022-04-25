@@ -20,7 +20,7 @@
 				<%@ include file="../../jsp/global/v2/modal-error-container.jsp"%>
 				<div class="modal-content col-xs-12" 
 					data-modal-title="Verification Required" 
-					data-modal-max-width="500" 
+					data-modal-max-width="515" 
 					data-keep-contents="true" 
 					data-modal-no-close>
 					<div class="row modal-body">
