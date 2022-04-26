@@ -1,6 +1,6 @@
 package com.penske.apps.suppliermgmt.model;
 
-import com.penske.apps.smccore.base.domain.SmcAlert;
+import com.penske.apps.smccore.search.domain.SmcAlert;
 
 public class AlertView {
 	private SmcAlert alert;
