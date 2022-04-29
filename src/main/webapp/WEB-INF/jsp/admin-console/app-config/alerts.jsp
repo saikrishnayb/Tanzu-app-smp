@@ -50,7 +50,6 @@
 								<c:if test="${alert.visibilityPenske eq 1 and alert.visibilityVendor eq 1}">Both</c:if>
 							</td>
 							<td class="template-name">
-								<input type="hidden" name="templateId" value="${alert.templateId}" />
 								<span>${alert.templateName}</span>
 							</td>
 							<td class="help-text">${alert.helpText}</td>

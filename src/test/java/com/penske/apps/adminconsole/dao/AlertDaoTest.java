@@ -42,7 +42,7 @@ public class AlertDaoTest extends MyBatisDaoTest{
 
 	@Test
     public void shouldCheckForTemplateId() {
-    	alertDao.checkForTemplateId(1, 1);
+    	alertDao.checkForTemplateId(1);
     }
 
 	@Test
@@ -59,7 +59,6 @@ public class AlertDaoTest extends MyBatisDaoTest{
     public void shouldModifyAlertDetail() {
     	Alert alert = new Alert();
     	alert.setAlertName("Header");
-    	alert.setTemplateId(1);
     	alert.setHelpText("Help Text");
     	alert.setDisplaySequence(1);
     	alert.setVisibilityPenske(1);

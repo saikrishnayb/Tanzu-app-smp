@@ -47,15 +47,11 @@ public class DefaultAlertService implements AlertService {
 		if (StringUtils.isEmpty(alert.getAlertName())) {
 			return;
 		}
-		// The template ID cannot be negative.
-		else if (alert.getTemplateId() <= 0) {
-			return;
-		}
 		// The visibility can only be 1, 2, or 3.
 		else if (alert.getVisibility() < 1 || alert.getVisibility() > 3) {
 			return;
 		}
-		else if (alertDao.checkForTemplateId(alert.getAlertId(), alert.getTemplateId()) == 1) {
+		else if (alertDao.checkForTemplateId(alert.getAlertId())==1) {
 			return;
 		}
 		

@@ -36,73 +36,6 @@ $(document).ready(function() {
 		}
 	});
 	
-	/* ----------- Edit Template Name ----------- */
-	$editDetailModal.on('click', '#edit-template-name', function() {
-		// Toggle the display of the elements used to change the template.
-		$editDetailModal.find('.template-change').toggle();
-	});
-
-	$editDetailModal.on('click', '#cancel-edit-template-name', function() {
-		var $templateDropdown = $editDetailModal.find('#template-name-change');
-		var origTemplateName = $editDetailModal.find('#template-name').text();
-		
-		$('#template-name-change').removeClass('errorMsgInput');
-		
-		// Iterate through the list of templates to select the original template.
-		$templateDropdown.find('option').each(function() {
-			if (origTemplateName == $(this).text()) {
-				$(this).prop('selected', true);
-			}
-		});
-		
-		// Toggle the display of the elements used to change the template.
-		$editDetailModal.find('.template-change').toggle();
-	});
-	
-	$editDetailModal.on('click', '#save-template-name', function() {
-		var newTemplateName = $editDetailModal.find('#template-name-change option:selected').text();
-		var newTemplateId = $editDetailModal.find('#template-name-change').val();
-		var alertId = $editDetailModal.find('[name="alertId"]').val();
-		var validTemplateId = true;
-		var $error = $editDetailModal.find('.error');
-		
-		var rows = $alertTable.dataTable().fnGetNodes();
-		
-		for (var z = 0; z < rows.length; z++) {
-			var $row = $(rows[z]);
-			
-			// This only applies to Alert Details
-			if ($row.find('.alert-type').text() == 'DETAIL' && validTemplateId) {
-				var rowAlertId = $row.find('[name="alertId"]').val();
-				var rowTemplateId = $row.find('[name="templateId"]').val();
-				
-				// If the template Id is already associated with another alert.
-				if (rowTemplateId == newTemplateId && rowAlertId != alertId) {
-					validTemplateId = false;
-				}
-			}
-		}
-		
-		if (!validTemplateId) {
-			$('#template-name-change').addClass('errorMsgInput');
-			$error.find('.errorMsg').text("Please select a non-associated template.");
-			$error.show();
-		}
-		else if (newTemplateName.length == 0) {
-			$('#template-name-change').addClass('errorMsgInput');
-		}
-		else {
-			$('#template-name-change').removeClass('errorMsgInput');
-			
-			$error.hide();
-			
-			// Save the new template name and display it to the user.
-			$editDetailModal.find('#template-name').text(newTemplateName);
-			
-			// Toggle the display of the elements used to change the template.
-			$editDetailModal.find('.template-change').toggle();
-		}
-	});
 	
 	$editHeaderModal.find('input[name="displaySequence"]').on('blur', function() {
 		var $displaySequence = $(this);
@@ -175,7 +108,7 @@ $(document).ready(function() {
 
 function validateDetailForm($form) {
 	var $alertNameChange = $form.find('[name="alertName"]');
-	var $templateNameChange = $form.find('[name="templateId"]');
+
 	var $displaySequence = $form.find('[name="displaySequence"]');
 	var $visibility = $form.find('[name="visibility"]');
 	
@@ -184,10 +117,6 @@ function validateDetailForm($form) {
 	// If the text field to change the alert name is still visible (meaning that the header name hasn't been saved yet).
 	if ($alertNameChange.is(':visible')) {
 		return 'Save the Alert Name.';
-	}
-	// If the dropdown to change the template is still visible (meaning that the header name hasn't been saved yet).
-	else if ($templateNameChange.is(':visible')) {
-		return 'Save the Associated Search Template.';
 	}
 	
 	// The display sequence cannot be blank.
