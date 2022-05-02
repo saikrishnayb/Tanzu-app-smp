@@ -51,9 +51,7 @@ public class DefaultAlertService implements AlertService {
 		else if (alert.getVisibility() < 1 || alert.getVisibility() > 3) {
 			return;
 		}
-		else if (alertDao.checkForTemplateId(alert.getAlertId())==1) {
-			return;
-		}
+
 		
 		// Set the visibility for Penske users and vendors.
 		// 1 = Visible to Vendors Only
