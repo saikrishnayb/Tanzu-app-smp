@@ -61,14 +61,6 @@
 		ORDER BY templateName
  	</select>
  	
- 	<select id="checkForTemplateId" resultType="Integer">
- 		SELECT	COUNT(*)
- 		
- 		FROM	SMC.SMC_ALERTS
- 		
- 		WHERE	ALERT_ID != #{alertId}
- 	</select>
- 	
  	<update id="modifyAlertHeader">
  		UPDATE 	SMC.SMC_ALERT_HEADER
  		

@@ -24,9 +24,6 @@ public interface AlertDao {
     public List<SearchTemplate> getAllTemplateNames();
 
     @NonVendorQuery
-    public int checkForTemplateId(@Param("alertId") int alertId);
-
-    @NonVendorQuery
     public void modifyAlertHeader(Alert alert);
 
     @NonVendorQuery
