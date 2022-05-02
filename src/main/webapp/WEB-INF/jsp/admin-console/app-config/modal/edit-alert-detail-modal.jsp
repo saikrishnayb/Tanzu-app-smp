@@ -21,16 +21,6 @@
 	
 	<label class="floatLeft clear-left width-150">Associated Search Template <span class="errorMsg">*</span></label>
 	<span id="template-name" class="floatLeft template-change"></span>
-	<select id="template-name-change" class="floatLeft template-change edit-field margin-left-fix" name="templateId">
-		<option value=""></option>
-		<c:forEach var="template" items="${templates}">
-			<option value="${template.templateId}">${template.templateName}</option>
-		</c:forEach>
-	</select>
-	<a id="edit-template-name" class="bold floatLeft secondaryLink template-change">Edit Association</a>
-	<a id="save-template-name" class="bold floatLeft secondaryLink template-change hidden">Save Association</a>
-	<a id="cancel-edit-template-name" class="bold floatLeft secondaryLink template-change hidden">Cancel</a>
-	
 	<label class="floatLeft clear-left width-150">Hover Over Help</label>
 	<input class="floatLeft width-300 margin-left-fix" tabindex=1 name="helpText" type="text" maxLength="100" autocomplete="off" />
 	

@@ -146,7 +146,6 @@ function openPopupDetailModal($row) {
 	$.post('./get-search-templates.htm',
 			function(data) {
 				$editDetailModal.html(data);
-				var $templateDropdown = $editDetailModal.find('#template-name-change');
 				
 				// Set the values in the modal's form based on information from the selected datatable row.
 				$editDetailModal.find('[name="alertId"]').val(alertId);
@@ -159,15 +158,7 @@ function openPopupDetailModal($row) {
 				$editDetailModal.find('[name="helpText"]').val(helpText);
 				$editDetailModal.find('[name="displaySequence"]').val(displaySequence);
 				$editDetailModal.find('[name="visibility"]').val(visibility);
-
-				// Set the original template to the selected value in the dropdown.
-				$templateDropdown.find('option').each(function() {
-					var $option = $(this);
-					
-					if (templateId == $option.val()) {
-						$option.prop('selected', true);
-					}
-				});
+				
 				
 				// Display only the elements that are needed upon the pop-up opening.
 				resetModalElementVisibility($editDetailModal);
@@ -196,11 +187,7 @@ function resetModalElementVisibility($modal) {
 	$modal.find('#alert-name').show();
 	$modal.find('#edit-alert-name').show();
 	
-	$modal.find('#template-name-change').hide();
-	$modal.find('#save-template-name').hide();
-	$modal.find('#cancel-edit-template-name').hide();
 	$modal.find('#template-name').show();
-	$modal.find('#edit-template-name').show();
 
 	$modal.find('.error').hide();
 	$('.errorMsgInput').removeClass('errorMsgInput');

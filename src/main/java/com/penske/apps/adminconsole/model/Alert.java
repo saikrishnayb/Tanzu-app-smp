@@ -18,7 +18,6 @@ public class Alert {
 	private String tabKey;
 	private int headerId;				// the alert header ID
 	private String headerName;			// the alert header name
-	private int templateId;				// the associated template ID
 	private String templateName;		// the associated template name
 	private int visibility;				// the visibility from the edit form
 	private int visibilityPenske;		// the visibility for Penske users
@@ -71,9 +70,6 @@ public class Alert {
 		return visibilityVendor;
 	}
 
-	public int getTemplateId() {
-		return templateId;
-	}
 
 	public String getTemplateName() {
 		return templateName;
@@ -136,9 +132,6 @@ public class Alert {
 		this.visibilityPenske = visibilityPenske;
 	}
 
-	public void setTemplateId(int templateId) {
-		this.templateId = templateId;
-	}
 
 	public void setTemplateName(String templateName) {
 		this.templateName = templateName;
