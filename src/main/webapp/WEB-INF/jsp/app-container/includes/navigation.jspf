@@ -19,8 +19,8 @@
           <tl:isAuthorized tabName="Order Fulfillment" secFunction="CHANGE_ORDERS">
              <li><a href="#" id="changeOrders" onmousedown="redirectToTab('changeOrders')">Change Orders</a></li>
           </tl:isAuthorized>
-          <tl:isAuthorized tabName="Order Fulfillment" secFunction="PORT_VARIANCE">
-             <li><a href="#" id="portVariances" onmousedown="redirectToTab('portVariances')">PORT Variances</a></li>
+          <tl:isAuthorized tabName="Order Fulfillment" secFunction="ORDER_VARIANCE">
+             <li><a href="#" id="orderVariance" onmousedown="redirectToTab('orderVariance')">OEM Change Request</a></li>
           </tl:isAuthorized>
           
           <tl:isAuthorized tabName="Order Fulfillment" secFunction="CANCELLATIONS">

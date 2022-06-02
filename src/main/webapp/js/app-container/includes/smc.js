@@ -246,9 +246,9 @@ function redirect(tabName,templateKey){
 		path = "smcof";
 		controllerName="change-orders";
 	}
-	else if (tabName=="portVariances"){
+	else if (tabName=="orderVariance"){
 		path = "smcof";
-		controllerName="port-variances";
+		controllerName="order-variance";
 	}
 	else if (tabName=="cancellations"){
 		path = "smcof";
