@@ -1,0 +1,14 @@
+#vendor-user-modal label {
+	margin-right: 0px;
+}
+#vendor-user-modal input[type="text"][disabled] {
+	background-color: unset;
+	font-style: unset;
+}
+.no-left-padding {
+	padding-left:0px;
+}
+
+#vendor-user-modal #user-form-vendor .form-group {
+	margin-bottom: 0px;
+}

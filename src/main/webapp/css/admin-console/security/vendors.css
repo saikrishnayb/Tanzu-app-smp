@@ -1,0 +1,134 @@
+.margin-bottom-10 {
+	margin-bottom: 10px;
+}
+
+#advanced-search-form .form-column {
+	width: 325px;
+	margin-top: 10px;
+}
+
+form .form-column {
+	margin-left: 30px;
+}
+
+#search-content {
+	width: 740px;
+	height: 160px;
+	
+	margin: auto;
+}
+
+#advanced-search-form .rlbl {
+	width: 130px;
+}
+
+#advanced-search-form .leftLbl {
+	width: 120px;
+}
+#advanced-search-form select {
+	width: 150px;
+	max-width: 150px;
+}
+
+#advanced-search-form input {
+	padding-left: 3px;
+	width: 180px;
+}
+
+#corp-code,
+#manufacturer-code {
+	width: 50px;
+	
+	margin-left: 2px;
+}
+
+#search-content .reset,
+.cancel {
+	margin: 5px 5px 0 0;
+}
+
+.section-header {
+	clear: both;
+	margin: 5px 0;
+	
+	color: #2D73CF;
+}
+
+#edit-vendor-modal select,
+#edit-vendor-modal .column span,
+#edit-vendor-modal input {
+	margin: 2px 0;
+}
+
+#edit-vendor-modal label {
+	margin-top: 5px;
+	margin-bottom: 2px;
+}
+
+.spacer {
+	height: 15px;
+}
+
+.button-div {
+	margin: 10px 0;
+}
+
+.error {
+	margin: 5px 10px 0 0;
+}
+
+#edit-vendor-vodal .button-div {
+	margin-right: 65px;
+}
+
+#edit-vendor-modal .first-column {
+	margin-right: 10px;
+}
+
+.width-125 {
+	width: 125px;
+}
+
+#view-vendor-modal label {
+	margin: 5px 0;
+}
+
+#view-vendor-modal span {
+	margin-top: 5px;
+	margin-left: 10px;
+}
+
+.actions {
+	vertical-align: middle;
+	border-right: 1px solid rgb(206, 206, 206);
+	white-space: nowrap;
+}
+
+form > span.errorMsg {
+	margin-bottom: 15px;
+}
+
+.no-data-msg {
+	margin-left: 50px;
+	
+	font-style: italic;
+	color: #555;
+}
+
+.expand-collapse-div {
+	display: inline-block;
+}
+
+.vendor-address-expand-collapse {
+	cursor: pointer;
+}
+
+.vendor-address {
+	margin-top: 5px;
+	margin-left: 15px;
+	line-height: 20px;
+}
+
+td {
+	vertical-align: unset;
+}

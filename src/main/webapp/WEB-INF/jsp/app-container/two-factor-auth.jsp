@@ -20,14 +20,14 @@
 				<%@ include file="../../jsp/global/v2/modal-error-container.jsp"%>
 				<div class="modal-content col-xs-12" 
 					data-modal-title="Verification Required" 
-					data-modal-max-width="500" 
+					data-modal-max-width="515" 
 					data-keep-contents="true" 
 					data-modal-no-close>
 					<div class="row modal-body">
 						<div class="col-xs-12 text-center">
 							<div class="row">
 								<div class="col-xs-12">
-									An access code has been sent to the email associated with this account.
+									A 6-digit access code has been sent to the email associated with this account.
 								</div>
 							</div>
 							<div class="row">

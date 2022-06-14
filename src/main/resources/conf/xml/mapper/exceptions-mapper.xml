@@ -5,7 +5,7 @@
    <resultMap type="com.penske.apps.adminconsole.model.GlobalExceptionCategoryGroup" id="globalExceptionCategoryGroupMap">
       <result property="poCategorySubcategory"   column="poCategorySubcategory"/>
       <result property="poCategoryAssociationId" column="poCategoryAssociationId"/>
-      <association property="vendor" javaType="com.penske.apps.adminconsole.model.Vendor" column="VENDOR_ID" select="com.penske.apps.adminconsole.dao.VendorDao.getViewVendorInformation" />
+      <collection property="vendors" javaType="ArrayList" ofType="com.penske.apps.adminconsole.model.Vendor" column="{vendorId=VENDOR_ID}" select="com.penske.apps.adminconsole.dao.VendorDao.getVendors" />
    </resultMap>
  
     <resultMap type="com.penske.apps.adminconsole.model.GlobalException" id="globalExceptionMap">
@@ -16,7 +16,7 @@
       <result property="poGroup"       column="POGROUP"/>
       <result property="exceptionId"   column="exceptionId"/>
       <result property="modifiedDate"   column="modifiedDate"/>		
-      <association property="providerVendor" javaType="com.penske.apps.adminconsole.model.Vendor" column="PROVIDER_VENDOR_ID" select="com.penske.apps.adminconsole.dao.VendorDao.getViewVendorInformation" />
+      <collection property="providerVendors" javaType="ArrayList" ofType="com.penske.apps.adminconsole.model.Vendor" column="{vendorId=PROVIDER_VENDOR_ID}" select="com.penske.apps.adminconsole.dao.VendorDao.getVendors" />
       <collection property="poCategoryGroups" column="exceptionId" select="getGlobalExceptionCategoryGroups" />
     
     </resultMap>

@@ -8,14 +8,13 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.penske.apps.smccore.base.domain.ConfirmationAlertData;
-import com.penske.apps.smccore.base.domain.FulfillmentAlertData;
-import com.penske.apps.smccore.base.domain.ProductionAlertData;
-import com.penske.apps.smccore.base.domain.SmcAlert;
 import com.penske.apps.smccore.base.domain.User;
 import com.penske.apps.smccore.base.domain.enums.SmcTab;
-import com.penske.apps.smccore.base.domain.enums.UserType;
-import com.penske.apps.smccore.base.service.AlertsService;
+import com.penske.apps.smccore.search.domain.ConfirmationAlertData;
+import com.penske.apps.smccore.search.domain.FulfillmentAlertData;
+import com.penske.apps.smccore.search.domain.ProductionAlertData;
+import com.penske.apps.smccore.search.domain.SmcAlert;
+import com.penske.apps.smccore.search.service.AlertsService;
 import com.penske.apps.suppliermgmt.dao.HomeDashboardDao;
 import com.penske.apps.suppliermgmt.model.AlertHeader;
 import com.penske.apps.suppliermgmt.model.AlertView;
@@ -103,7 +102,7 @@ public class DefaultHomeDashboardService implements HomeDashboardService {
 		Map<Integer, List<AlertView>> result = new HashMap<>();
 		for (AlertHeader currentHeader : alertHeaders) {
 
-			List<SmcAlert> alerts = alertsService.getAlertsForTab(tabKey, currentHeader.getHeaderId(), user.getUserType(), UserType.PENSKE);
+			List<SmcAlert> alerts = alertsService.getAlertsForTab(tabKey, currentHeader.getHeaderId(), user.getUserType());
 
 			for(SmcAlert alert : alerts){
 				int alertCount = alert.getAlertType().extractCount(fulfillmentAlertData, confirmationAlertData, productionAlertData);

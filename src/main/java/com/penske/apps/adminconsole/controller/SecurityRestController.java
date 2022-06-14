@@ -14,11 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.penske.apps.adminconsole.exceptions.UserServiceException;
+import com.penske.apps.adminconsole.dao.SecurityDAO;
+import com.penske.apps.adminconsole.model.AdminConsoleUserType;
 import com.penske.apps.adminconsole.model.EditableUser;
 import com.penske.apps.adminconsole.model.Org;
 import com.penske.apps.adminconsole.model.Role;
@@ -31,7 +31,6 @@ import com.penske.apps.adminconsole.service.SecurityService;
 import com.penske.apps.adminconsole.service.UserCreationService;
 import com.penske.apps.adminconsole.service.VendorService;
 import com.penske.apps.adminconsole.util.ApplicationConstants;
-import com.penske.apps.adminconsole.util.IUserConstants;
 import com.penske.apps.smccore.base.annotation.SmcSecurity;
 import com.penske.apps.smccore.base.beans.LookupManager;
 import com.penske.apps.smccore.base.domain.LookupContainer;
@@ -56,6 +55,8 @@ import com.penske.apps.suppliermgmt.exception.SMCException;
 public class SecurityRestController {
 
 	@Autowired
+	private SecurityDAO securityDao;
+	@Autowired
 	private SuppliermgmtSessionBean sessionBean;
 	@Autowired
 	private SecurityService securityService;
@@ -68,15 +69,15 @@ public class SecurityRestController {
 	@Autowired
 	private LookupManager lookupManager;
 	@Autowired
-    @CommonStaticUrl
-    private URL commonStaticUrl;
+	@CommonStaticUrl
+	private URL commonStaticUrl;
 
 	private static final Logger LOGGER = LogManager.getLogger(SecurityRestController.class);
 
 	/* ================== Vendors ================== */
 	@SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDORS)
 	@RequestMapping("edit-vendor")
-	@ResponseBody
+	
 	public ModelAndView getEditVendorInformation(@RequestParam("vendorId") int vendorId) {
 		ModelAndView mav = new ModelAndView("/admin-console/security/modal/edit-vendor-modal");
 		mav.addObject("vendor", vendorService.getVendorById(vendorId));
@@ -87,7 +88,7 @@ public class SecurityRestController {
 
 	@SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDORS)
 	@RequestMapping("view-vendor")
-	@ResponseBody
+	
 	public ModelAndView getViewVendorInformation(@RequestParam("vendorId") int vendorId) {
 		ModelAndView mav = new ModelAndView("/admin-console/security/modal/view-vendor-modal");
 		mav.addObject("vendor", vendorService.getVendorById(vendorId));
@@ -96,19 +97,20 @@ public class SecurityRestController {
 
 	@SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDORS)
 	@RequestMapping("purchasing-details")
-	@ResponseBody
+	
 	public ModelAndView getPurchasingDetails(@RequestParam("vendorId") int vendorId) {
 		ModelAndView mav = new ModelAndView("/admin-console/security/modal/purchasing-details-modal");
 		Vendor vendor = vendorService.getVendorById(vendorId);
 		List<VendorPoInformation> info = vendorService.getVendorPoInformation(Arrays.asList(vendor.getVendorId()));
 		mav.addObject("vendor", vendor);
-		mav.addObject("purchasingSummary", info == null || info.isEmpty() ? new VendorPoInformation(vendor.getVendorId()) : info.get(0));
+		mav.addObject("purchasingSummary",
+				info == null || info.isEmpty() ? new VendorPoInformation(vendor.getVendorId()) : info.get(0));
 		return mav;
 	}
 
 	@SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDORS)
 	@RequestMapping("get-analysts-and-specialists")
-	@ResponseBody
+	
 	public ModelAndView getAllAnalystsAndSpecialists() {
 		ModelAndView mav = new ModelAndView("/admin-console/security/modal/mass-update-vendor-modal");
 		mav.addObject("analysts", vendorService.getAllPlanningAnalysts());
@@ -118,7 +120,7 @@ public class SecurityRestController {
 
 	@SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDORS)
 	@RequestMapping("modify-vendor-info")
-	@ResponseBody
+	
 	public Vendor modifyVendorInfo(Vendor vendor) {
 		User user = sessionBean.getUser();
 		return vendorService.modifyVendorSingleUpdate(vendor, user);
@@ -126,7 +128,7 @@ public class SecurityRestController {
 
 	@SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDORS)
 	@RequestMapping("mass-update-vendors")
-	@ResponseBody
+	
 	public void modifyVendorsByVendorId(Vendor vendor, @RequestParam("vendorIds") int... vendorIdsToApplyChange) {
 		User user = sessionBean.getUser();
 		vendorService.modifyVendorsMassUpdate(vendor, user, vendorIdsToApplyChange);
@@ -134,7 +136,7 @@ public class SecurityRestController {
 
 	@SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDORS)
 	@RequestMapping(value = "sso-user-lookup", method = RequestMethod.GET)
-	@ResponseBody
+	
 	public EditableUser modifyVendorsByVendorId(@RequestParam("ssoId") String ssoId, HttpServletResponse response) {
 		EditableUser user = null;
 		try {
@@ -165,7 +167,7 @@ public class SecurityRestController {
 
 	@SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDORS)
 	@RequestMapping("get-vendor-table-contents")
-	@ResponseBody
+	
 	public List<Vendor> getVendorTableContents() {
 		User user = sessionBean.getUser();
 		List<Vendor> vendors = vendorService.getAllVendors(user.getOrgId());
@@ -174,7 +176,7 @@ public class SecurityRestController {
 
 	@SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDORS)
 	@RequestMapping("get-vendor-table-contents-advanced-search")
-	@ResponseBody
+	
 	public List<Vendor> getVendorTableContentsAdvancedSearch(Vendor vendor) {
 		User user = sessionBean.getUser();
 		List<Vendor> vendors = vendorService.getVendorsBySearchConditions(user.getOrgId(), vendor);
@@ -182,156 +184,127 @@ public class SecurityRestController {
 	}
 
 	/* ================== Vendor Users ================== */
-    @VendorAllowed
-    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
-    @RequestMapping(value ="get-create-edit-vendor-user")
-    @ResponseBody
-    public ModelAndView getCreateEditVendor(@RequestParam(value="isCreate") boolean isCreate, @RequestParam(value="userId", required=false) String userId, @RequestParam(value="userType", required=false) String userType, @RequestParam(value="roleId", required=false) String roleId) {
-        ModelAndView mav = new ModelAndView("/admin-console/security/modal/create-edit-vendor-user");
-        
-        User user = sessionBean.getUser();
-        mav.addObject("currentUser", user);
-        if(!isCreate) {
-        	EditableUser editableUser = securityService.getEditInfo(userId, userType);
-        	mav.addObject("editableUser", editableUser);
-        	mav.addObject("tabPermissionsMap", securityService.getPermissions(roleId));
-        }
+	@VendorAllowed
+	@SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
+	@RequestMapping(value = "get-create-edit-vendor-user")
+	
+	public ModelAndView getCreateEditVendor(@RequestParam(value = "isCreate") boolean isCreate,
+			@RequestParam(value = "userId", required = false) String userId,
+			@RequestParam(value = "userType", required = false) String userType,
+			@RequestParam(value = "roleId", required = false) String roleId) {
+		ModelAndView mav = new ModelAndView("/admin-console/security/modal/create-edit-vendor-user");
 
-        List<Role> vendorRoles = securityService.getVendorRoles(user.getRoleId(), user.getOrgId());
-        Collections.sort(vendorRoles, Role.ROLE_NAME_ASC);
+		User user = sessionBean.getUser();
+		mav.addObject("currentUser", user);
+		if (!isCreate) {
+			EditableUser editableUser = securityService.getEditInfo(userId, userType);
+			mav.addObject("editableUser", editableUser);
+			mav.addObject("tabPermissionsMap", securityService.getPermissions(roleId));
+		}
 
-        mav.addObject("userRoles", vendorRoles);
-        mav.addObject("userTypes", securityService.getVendorUserTypes());
+		List<Role> vendorRoles = securityService.getVendorRoles(user.getRoleId(), user.getOrgId());
+		Collections.sort(vendorRoles, Role.ROLE_NAME_ASC);
 
-        List<Org> vendorOrg = securityService.getVendorOrg(user.isVendorUser(), user.getOrgId());
-        Collections.sort(vendorOrg, Org.ORG_NAME_ASC);
-        mav.addObject("penskeUserType", UserType.PENSKE);
-        mav.addObject("vendorUserType", UserType.VENDOR);
-        mav.addObject("orgList", vendorOrg);
-        mav.addObject("isCreatePage", isCreate);
-        return mav;
-    }
-    
-    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
-    @RequestMapping(value ="get-resend-email-modal-content")
-    public ModelAndView getResendEmail(@RequestParam(value="userId") String userId) {
-        ModelAndView mav = new ModelAndView("/admin-console/security/modal/resend-email-modal-content");
-        
-        EditableUser editableUser = securityService.getEditInfo(userId, "VENDOR");
-        mav.addObject("editableUser", editableUser);
+		mav.addObject("userRoles", vendorRoles);
+		mav.addObject("userTypes", securityService.getVendorUserTypes());
 
-        return mav;
-    }
-    
-    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
-    @RequestMapping(value ="resend-email")
-    @ResponseBody
-    public void resendEmail(@RequestParam(value="userId") int userId) {
-    	LookupContainer lookups = lookupManager.getLookupContainer();
-    	User user = sessionBean.getUser();
-    	
-    	User vendorUser = userService.getUser(userId, false, false);
-    	UserSecurity vendorUserSecurity = userService.getUserSecurity(vendorUser);
-    	
-    	userService.sendNewUserEmail(user, vendorUser, vendorUserSecurity, true, lookups, commonStaticUrl);
-    }
-    
-    @VendorAllowed
-    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
-    @RequestMapping(value ="get-vendor-user-table-contents")
-    @ResponseBody
-    public List<VendorUser> getSearchedVendorUserTableContents(UserSearchForm userSearchForm) {
-    	User user = sessionBean.getUser();
-    	userSearchForm.setUserTypeId(ApplicationConstants.SUPPLIER_USER);
-    	
-    	List<VendorUser> vendorUsers = securityService.getVendorUsers(userSearchForm, user);
-    	
-    	return vendorUsers;
-    }
-    
-    @VendorAllowed
-    @SmcSecurity(securityFunction = {SecurityFunction.MANAGE_USERS, SecurityFunction.MANAGE_VENDOR_USERS, SecurityFunction.MANAGE_ORG})
-    @RequestMapping(value ="get-permissions-accordions")
-    @ResponseBody
-    public ModelAndView getPermissionsAccordions(@RequestParam(value="roleId") String roleId) {
-        ModelAndView mav = new ModelAndView("/admin-console/security/includes/permissions-accordion-v2");
+		List<Org> vendorOrg = securityService.getVendorOrg(user.isVendorUser(), user.getOrgId());
+		Collections.sort(vendorOrg, Org.ORG_NAME_ASC);
+		mav.addObject("penskeUserType", UserType.PENSKE);
+		mav.addObject("vendorUserType", UserType.VENDOR);
+		mav.addObject("orgList", vendorOrg);
+		mav.addObject("isCreatePage", isCreate);
+		return mav;
+	}
 
-        mav.addObject("tabPermissionsMap", securityService.getPermissions(roleId));
+	@SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
+	@RequestMapping(value = "get-resend-email-modal-content")
+	public ModelAndView getResendEmail(@RequestParam(value = "userId") String userId) {
+		ModelAndView mav = new ModelAndView("/admin-console/security/modal/resend-email-modal-content");
 
-        return mav;
-    }
-    
-    @VendorAllowed
-    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
-    @RequestMapping(value ="/create-vendor-user", method = RequestMethod.POST)
-    @ResponseBody
-    public void addVendorUser(UserForm userForm, HttpServletResponse response) throws Exception{
-        try{
-        	LookupContainer lookups = lookupManager.getLookupContainer();
-        	
-            User currentUser = sessionBean.getUser();
-            userCreationService.insertUserInfo(currentUser, userForm, lookups, commonStaticUrl);
-        }
-        catch (UserServiceException e) {
-            if(IUserConstants.DUP_SSO_ERROR_CODE==e.getErrorCode()){
-                LOGGER.error(IUserConstants.DUP_SSO_ERROR_MESSAGE + e);
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,"USER_SERVICE_DUP_SSO:"+String.valueOf(e.getErrorCode()));
-            }else if(IUserConstants.NOT_STANDARD_SSO_ERROR_CODE==e.getErrorCode()){
-                LOGGER.error(IUserConstants.NOT_STANDARD_SSO_ERROR_MESSAGE + e);
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,"USER_SERVICE_NOT_STANDARD_SSO:"+String.valueOf(e.getErrorCode()));
-            }else{
-                LOGGER.error("Error while creating user: " + e);
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while creating user.");
-            }
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.getWriter().write("Error while creating user. "+e.getErrorCode());
-            response.flushBuffer();
-        }
-        catch (Exception e) {
-            LOGGER.error("Error while creating user: " + e);
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while creating user.");
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.getWriter().write("Error while creating user.");
-            response.flushBuffer();
-        }
-    }
-    
-    @VendorAllowed
-    @SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
-    @RequestMapping(value ="edit-vendor-user-static")
-    @ResponseBody
-    public EditableUser modifyVendorUserInfoStatic(EditableUser user, HttpServletResponse response) throws Exception{
+		EditableUser editableUser = securityService.getEditInfo(userId, "VENDOR");
+		mav.addObject("editableUser", editableUser);
 
-        try{
-            User currentUser = sessionBean.getUser();
-            user.setModifiedBy(currentUser.getSso());
-            userCreationService.updateUserInfo(user, false);
-            EditableUser userInfo = securityService.getUser(user.getUserId());
-            return userInfo;
-        }
-        catch (UserServiceException e) {
-            if(IUserConstants.DUP_SSO_ERROR_CODE==e.getErrorCode()){
-                LOGGER.error(IUserConstants.DUP_SSO_ERROR_MESSAGE + e);
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,"USER_SERVICE_DUP_SSO:"+String.valueOf(e.getErrorCode()));
-            }else if(IUserConstants.NOT_STANDARD_SSO_ERROR_CODE==e.getErrorCode()){
-                LOGGER.error(IUserConstants.NOT_STANDARD_SSO_ERROR_MESSAGE + e);
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,"USER_SERVICE_NOT_STANDARD_SSO:"+String.valueOf(e.getErrorCode()));
-            }else{
-                LOGGER.error("Error while creating user: " + e);
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while creating user.");
-            }
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.getWriter().write("Error while creating user. "+e.getErrorCode());
-            response.flushBuffer();
-        }
-        catch (Exception e) {
-            LOGGER.error("Error while updating user: " + e);
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while updating user.");
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.getWriter().write("Error while updating user.");
-            response.flushBuffer();
-        }
-        return null;
-    }
+		return mav;
+	}
+
+	@SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
+	@RequestMapping(value = "resend-email")
+	
+	public void resendEmail(@RequestParam(value = "userId") int userId) {
+		LookupContainer lookups = lookupManager.getLookupContainer();
+		User user = sessionBean.getUser();
+
+		User vendorUser = userService.getUser(userId, false, false);
+		UserSecurity vendorUserSecurity = userService.getUserSecurity(vendorUser);
+
+		userService.sendNewUserEmail(user, vendorUser, vendorUserSecurity, true, lookups, commonStaticUrl);
+	}
+
+	@VendorAllowed
+	@SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
+	@RequestMapping(value = "get-vendor-user-table-contents")
+	
+	public List<VendorUser> getSearchedVendorUserTableContents(UserSearchForm userSearchForm) {
+		User user = sessionBean.getUser();
+		userSearchForm.setUserTypeId(ApplicationConstants.SUPPLIER_USER);
+
+		List<VendorUser> vendorUsers = securityService.getVendorUsers(userSearchForm, user);
+
+		return vendorUsers;
+	}
+
+	@VendorAllowed
+	@SmcSecurity(securityFunction = { SecurityFunction.MANAGE_USERS, SecurityFunction.MANAGE_VENDOR_USERS,
+			SecurityFunction.MANAGE_ORG })
+	@RequestMapping(value = "get-permissions-accordions")
+	
+	public ModelAndView getPermissionsAccordions(@RequestParam(value = "roleId") String roleId) {
+		ModelAndView mav = new ModelAndView("/admin-console/security/includes/permissions-accordion-v2");
+
+		mav.addObject("tabPermissionsMap", securityService.getPermissions(roleId));
+
+		return mav;
+	}
+
+	@VendorAllowed
+	@SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
+	@RequestMapping(value = "/create-vendor-user", method = RequestMethod.POST)
+	
+	public void addVendorUser(UserForm userForm) {
+		LookupContainer lookups = lookupManager.getLookupContainer();
+
+		User currentUser = sessionBean.getUser();
+		userCreationService.insertUserInfo(currentUser, userForm, lookups, commonStaticUrl);
+
+	}
+
+	@VendorAllowed
+	@SmcSecurity(securityFunction = SecurityFunction.MANAGE_VENDOR_USERS)
+	@RequestMapping(value = "edit-vendor-user-static")
+	
+	public EditableUser modifyVendorUserInfoStatic(UserForm userForm) 
+	{
+		EditableUser editableUser = new EditableUser();
+		editableUser.setEmail(userForm.getEmail());
+		editableUser.setFirstName(userForm.getFirstName());
+		editableUser.setLastName(userForm.getLastName());
+		editableUser.setPhone(userForm.getPhone());
+		editableUser.setExtension(userForm.getExtension());
+		AdminConsoleUserType userType = new AdminConsoleUserType();
+		userType.setUserTypeId(userForm.getUserTypeId());;
+		editableUser.setUserType(userType);
+		editableUser.setUserId(userForm.getUserId());
+		editableUser.setOrgId(userForm.getOrgId());
+		Role role = securityDao.getRoleById(userForm.getRoleId());
+		editableUser.setRole(role);
+		editableUser.setGessouid(userForm.getGessouid());
+		editableUser.setDailyOptIn(userForm.isDailyOptIn());
+		User currentUser = sessionBean.getUser();
+		editableUser.setModifiedBy(currentUser.getSso());
+		userCreationService.updateUserInfo(editableUser, false);
+		EditableUser userInfo = securityService.getUser(editableUser.getUserId());
+		return userInfo;
+	}
 
 }
