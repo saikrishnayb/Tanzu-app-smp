@@ -171,7 +171,7 @@ public class VendorActivityReport {
         
         dataCell = row.createCell(1);
         dataCell.setCellStyle(cellStyle);
-        dataCell.setCellValue(vendor.getVendorId());
+        dataCell.setCellValue(vendor.getVendorNumber());
         
         dataCell = row.createCell(2);
         dataCell.setCellStyle(cellStyle);

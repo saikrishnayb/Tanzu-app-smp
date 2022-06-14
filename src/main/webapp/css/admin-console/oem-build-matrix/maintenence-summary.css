@@ -1,0 +1,128 @@
+table.dataTable thead th{
+	padding: 10px 10px !important;
+}
+
+.plant-view {
+  width: 99%;
+}
+
+.width-60 {
+	width: 60px;
+}
+
+.numeric-jquery-date {
+  width: 80px;
+}
+
+.offline-row{
+	margin-right: 0px;
+    margin-left: 0px;
+    padding-bottom: 17px;
+}
+.padding-15{
+	padding-right: 15px
+}
+
+
+.form-group .ui-datepicker-trigger {
+  margin-left: 0px;
+  position: relative;
+  float: none;
+  top: 7px;
+}
+
+.advanced-date-operator {
+  display: inline-block;
+  width: 40px;
+}
+
+.advanced-date {
+  display: inline-block;
+  width: 72px;
+}
+
+/* .advanced-date+.ui-datepicker-trigger {
+  position: absolute;
+  margin-top: -9px;
+  margin-left: -2px;
+}
+ */
+.padding-8{
+    padding-top: 16px;
+}
+.right-padding {
+	padding-right: 20px;
+    padding-top: 20px;
+    padding-bottom: 0px;
+}
+
+.left-padding {
+	padding-left: 0;
+}
+
+.actionsheader {
+	width: 80px;
+}
+
+#offline-dates-table {
+	width: 100%;
+}
+
+.start-date {
+	width: 80px;
+}
+
+.end-date {
+	width: 80px;
+}
+
+.dateLbl {
+	font-weight: bold;
+}
+button.ui-datepicker-close {
+    display: inline-block !important;
+}
+.dropdown-header {
+	color: #333;
+	font-weight: bold !important;
+}
+
+/* .sub-list {
+	list-style: none !important;
+	margin: 0px 0px 0px 30px !important
+} */
+
+/* .sub-list-item {
+	padding-left: 10px;
+} */
+
+/* .sub-list-item a {
+	clear: both;
+	font-weight: normal;
+	line-height: 1.42857143;
+	color: #333;
+}
+
+.sub-list-item a:hover{
+    text-decoration: none;
+    color: #262626;
+    background-color: #f5f5f5;
+}
+ */
+#region-div{
+	text-align: left;
+}
+
+.region-value{
+	list-style: none;
+	padding-bottom: 10px;
+}
+
+#cancel-btn{
+	padding-right: 8px
+}
+
+.confirm-modal-content{
+	padding-top: 5px !important;
+	padding-bottom: 5px !important;
+}

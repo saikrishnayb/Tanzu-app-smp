@@ -1,0 +1,32 @@
+.status-terms-container h2 {
+	margin-top: 10px !important;
+	margin-bottom: 5px !important;
+}
+
+.status-terms-container ul {
+	list-style: none !important;
+}
+
+.status-terms-container li {
+	margin-bottom: 5px;
+}
+
+.build-history-header div{
+	display: inline-block;
+}
+
+#build-history-table {
+	margin-top: 25px;
+}
+
+.confrim-button-row{
+	padding-top: 10px;
+}
+
+.confirm-modal-content{
+	padding-top: 5px !important;
+}
+
+.actionsheader {
+	width: 100px!important;
+}

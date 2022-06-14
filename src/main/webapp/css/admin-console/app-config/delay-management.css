@@ -1,0 +1,95 @@
+.line{
+	
+	display:block;
+	width:99%;
+}
+.width{
+	
+	width:100px;
+}
+.line label{
+	
+	display:inline-block;
+	width:25%;
+}
+.push-right{
+	
+	margin-right:10px;
+}
+.line select{
+	
+	width:240px;
+}
+.buttonLine{
+	
+	float:right;
+	width:100%;
+}
+.errorDiv{
+	
+	float:left;
+}
+.float-right{
+	
+	float:right;
+}
+.blank{
+	
+	height:10px;
+}
+.msg{
+	
+	margin-left:10px;	
+}
+#delete-list-data{
+	
+	list-style: none;
+}
+.wide-label{
+	
+	display:inline-block;
+	width:100px;
+}
+.right-buttons{
+	
+	float:right;
+}
+
+.whiteRow{
+	background-color: white !important;
+}
+.grayRow{
+	background-color: #EBEBEB !important;
+}
+
+table#createRule-Table tbody tr.groupHeader td{
+	padding-top: 10px !important;
+}
+
+ table#createRule-Table tbody tr {
+	height:20px !important;
+}
+
+table#createRule-Table tbody tr td {
+	height:20px !important;
+} 
+
+input[type="text"], select {
+    margin-bottom: 0px !important;
+}
+
+/* to overide the readonly of common.css */
+textarea[readonly="readonly"], textarea[readonly], input[readonly], [readonly], [readonly=readonly], [disabled], [disabled=disabled] {
+background: lightgray !important;
+}
+
+.row_selected{
+	border-top :1px solid;
+	border-bottom :1px solid;
+}
+
+.loadSheetFooter{
+	width:50%;
+	height:15px;
+	margin-top: 1%;
+}

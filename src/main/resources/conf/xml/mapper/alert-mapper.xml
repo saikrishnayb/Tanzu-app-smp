@@ -15,7 +15,6 @@
 						'None' AS alertName,
 						1 AS visibilityPenske,
 						1 AS visibilityVendor,
-						0 AS templateId,
 						'None' AS templateName,
 						ah.HELP_TEXT AS helpText
 				
@@ -37,7 +36,6 @@
 						a.ALERT_NAME AS alertName,
 						a.VISIBILITY_PENSKE AS visibilityPenske,
 						a.VISIBILITY_VENDOR AS visibilityVendor,
-						a.TEMPLATE_ID AS templateId,
 						st.TEMPLATE_NAME AS templateName,
 						a.HELP_TEXT AS helpText
 				
@@ -63,15 +61,6 @@
 		ORDER BY templateName
  	</select>
  	
- 	<select id="checkForTemplateId" resultType="Integer">
- 		SELECT	COUNT(*)
- 		
- 		FROM	SMC.SMC_ALERTS
- 		
- 		WHERE	ALERT_ID != #{alertId}
- 		AND		TEMPLATE_ID = #{templateId}
- 	</select>
- 	
  	<update id="modifyAlertHeader">
  		UPDATE 	SMC.SMC_ALERT_HEADER
  		
@@ -86,7 +75,6 @@
  		UPDATE 	SMC.SMC_ALERTS
  		
  		SET		ALERT_NAME = #{alertName},
- 				TEMPLATE_ID = #{templateId},
  				HELP_TEXT = #{helpText},
  				DISPLAY_SEQUENCE = #{displaySequence},
  				VISIBILITY_PENSKE = #{visibilityPenske},

@@ -1,0 +1,33 @@
+body {
+  overflow-y: hidden;
+}
+
+.modal label {
+	margin-bottom: 15px;
+}
+
+#header-name,
+#template-name,
+#alert-name {
+	width: 310px;
+	
+	line-height: 22px;
+}
+
+
+.margin-left-fix {
+	margin-left: 2px;
+}
+
+.cancel,
+.error {
+	margin: 5px 10px 0 0;
+}
+
+.modal a.secondaryLink {
+	margin-left: 15px;
+}
+
+.errorMsg {
+	margin-bottom: 15px;
+}

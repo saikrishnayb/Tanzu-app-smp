@@ -1,10 +1,11 @@
 package com.penske.apps.adminconsole.model;
 
+import java.util.List;
 
 public class GlobalExceptionCategoryGroup {
     
     private String poCategorySubcategory;
-    private Vendor vendor;
+    private List<Vendor> vendors;
     private int poCategoryAssociationId;
 
     //Mybatis only
@@ -14,7 +15,10 @@ public class GlobalExceptionCategoryGroup {
         return poCategorySubcategory;
     }
     public Vendor getVendor() {
-        return vendor;
+	    if(vendors == null || vendors.isEmpty())
+	    	return null;
+	    
+	    return vendors.get(0);
     }
 
 	public int getPoCategoryAssociationId() {
