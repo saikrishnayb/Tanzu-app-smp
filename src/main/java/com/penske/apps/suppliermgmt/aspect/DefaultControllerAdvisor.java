@@ -116,8 +116,8 @@ public class DefaultControllerAdvisor
 
 	private void addStandardErrorModelAttributes(HttpServletRequest request, ModelAndView mav)
 	{
-        String pathInfo = request.getPathInfo();
-        String leftNavDirectory = StringUtils.substringBeforeLast(pathInfo,  "/");
+        String pathInfo = request.getServletPath();
+        String leftNavDirectory = StringUtils.substringAfter(StringUtils.substringBeforeLast(pathInfo,  "/"), "/app");
         boolean sidebarExists = false;
         if(servletContext != null)
         {

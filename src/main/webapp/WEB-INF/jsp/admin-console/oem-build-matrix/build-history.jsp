@@ -110,12 +110,12 @@
 											<c:when test="${buildHistory.showViewReportBtn()}">
 												<c:if test='${buildHistory.buildStatus.code eq "A"}'>
 													<a
-														href="view-slot-results-filter.htm?buildId=${buildHistory.buildId}&selectedFiltersList=A&checkedFilter=0">View
+														href="view-slot-results-filter?buildId=${buildHistory.buildId}&selectedFiltersList=A&checkedFilter=0">View
 														Slot Results</a>
 												</c:if>
 												<c:if test='${buildHistory.buildStatus.code ne "A"}'>
 													<a
-														href="view-slot-results-filter.htm?buildId=${buildHistory.buildId}&selectedFiltersList=A,E,P,U&checkedFilter=0">View
+														href="view-slot-results-filter?buildId=${buildHistory.buildId}&selectedFiltersList=A,E,P,U&checkedFilter=0">View
 														Slot Results</a>
 												</c:if>
 											

@@ -60,7 +60,7 @@ public class ApplicationEntry extends HttpServlet
 					LOGGER.info("SSO from LDAP in Suppliermgmt::"+oLdapSession.getLoginUserID());
 					LOGGER.info("First Name + Last Name "+oLdapSession.getFirstName()+ " "+oLdapSession.getLastName());
 					session.setAttribute(USER_SSO, oLdapSession.getLoginUserID());
-					forwardPage = "/app/login/validate.htm";	
+					forwardPage = "/app/login/validate";	
 				}else
 				{
 					LOGGER.info( " LDAP information not obtained for user in Suppliermgmt"+strSSO);

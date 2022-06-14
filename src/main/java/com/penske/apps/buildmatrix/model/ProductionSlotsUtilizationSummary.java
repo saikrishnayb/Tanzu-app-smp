@@ -26,8 +26,7 @@ public class ProductionSlotsUtilizationSummary {
 	public ProductionSlotsUtilizationSummary(List<BuildMatrixBodyPlant> bodyPlantList, 
 			List<BuildMatrixSlotDate> slotDates, 
 			List<BuildMatrixSlotRegionAvailability> regionAvailabilityList, 
-			List<BuildMatrixSlot> slots,
-			boolean importModal) {
+			List<BuildMatrixSlot> slots) {
 		
 		Map<Integer, BuildMatrixBodyPlant> bodyPlantById = new HashMap<>();
 		Map<Integer, Map<Integer, Pair<BuildMatrixSlot, BuildMatrixSlotRegionAvailability>>> slotAndRegionSlotByDateIdByPlantId = new HashMap<>();

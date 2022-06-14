@@ -1682,7 +1682,7 @@
 			AND SLOT_YEAR = #{year}
 	</select>
 	
-	<insert id="insertSlotDates" useGeneratedKeys="true" keyProperty="slotDateId">
+	<insert id="insertSlotDates" useGeneratedKeys="true" keyProperty="list.slotDateId">
 		INSERT INTO SMC.OBM_SLOT_DATES (
 			SLOT_YEAR,
 			SLOT_DATE,
@@ -1697,7 +1697,7 @@
 		</foreach>
 	</insert>
 	
-	<insert id="insertSlots" useGeneratedKeys="true" keyProperty="slotId">
+	<insert id="insertSlots" useGeneratedKeys="true" keyProperty="list.slotId">
 		INSERT INTO SMC.OBM_SLOTS (
 			SLOT_TYPE_ID,
 			PLANT_ID,
@@ -1768,7 +1768,7 @@
 			)
 	</insert>
 	
-	<insert id="insertSlotRegionAvailabilities" useGeneratedKeys="true" keyProperty="slotRegionId">
+	<insert id="insertSlotRegionAvailabilities" useGeneratedKeys="true" keyProperty="list.slotRegionId">
 		INSERT INTO SMC.OBM_SLOTS_BY_REGION (
 			SLOT_ID,
 			REGION,

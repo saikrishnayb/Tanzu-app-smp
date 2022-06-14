@@ -34,7 +34,7 @@
 				class="<c:if test="${hasBeenSearched eq false}">displayNone</c:if> 
 				<c:if test="${hasBeenSearched eq true}">displayBlock</c:if> 
 				tableBorder margin-top clear-both search-content">
-				<form id="search-user-form" action="./users-search.htm" method="GET">
+				<form id="search-user-form" action="./users-search" method="GET">
 					<div class="threeColumnContainer">
 						<div class="clear-float-left">	
 							<label class="rightAlign">First Name</label>
@@ -77,7 +77,7 @@
 			</div>
 			<div class="full-width">
 				<span class="floatRight addRow">
-					<a href="${baseAppUrl}/admin-console/security/create-user-page.htm">Create User
+					<a href="${baseAppUrl}/admin-console/security/create-user-page">Create User
 						<img src="${commonStaticUrl}/images/add.png" class="centerImage handCursor" alt="Add Row"/>
 					</a>
 				</span>

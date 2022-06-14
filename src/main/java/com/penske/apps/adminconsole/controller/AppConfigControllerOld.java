@@ -345,7 +345,7 @@ public class AppConfigControllerOld {
      */
     private ModelAndView redirectFromCreateRule(String requestedFrom,String componentId){
 
-        ModelAndView mav = new ModelAndView("redirect:/app/admin-console/app-config/loadsheet-rule.htm");
+        ModelAndView mav = new ModelAndView("redirect:/app/admin-console/app-config/loadsheet-rule");
         
         //Get component Details from session
         AppConfigSessionData appConfigData = sessionBean.getAppConfigSessionData();
@@ -354,7 +354,7 @@ public class AppConfigControllerOld {
         
         if(requestedFrom !=null){
             if(requestedFrom.equalsIgnoreCase("CREATE_RULE")){
-                return new ModelAndView("redirect:/app/admin-console/app-config/loadsheet-rule.htm");
+                return new ModelAndView("redirect:/app/admin-console/app-config/loadsheet-rule");
             }else{
                 if(catDetails!=null){
                     mav=getLoadsheetComponents(catDetails.getCategoryId(), catDetails.getCategory(), catDetails.getType(), catDetails.getViewMode(),compRequestedFrom,componentId);
@@ -407,7 +407,7 @@ public class AppConfigControllerOld {
 
         loadsheetManagementService.updateRuleDetails(ruleMaster);
 
-        return "redirect:/app/admin-console/app-config/edit-rule.htm?ruleId="+ruleMaster.getRuleId()+"&requestedFrom="+ruleMaster.getRequestedFrom();
+        return "redirect:/app/admin-console/app-config/edit-rule?ruleId="+ruleMaster.getRuleId()+"&requestedFrom="+ruleMaster.getRequestedFrom();
 
     }
 
@@ -511,7 +511,7 @@ public class AppConfigControllerOld {
     public ModelAndView saveLoadSheetSequence(LoadsheetSequenceMaster seqMaster){
 
         loadsheetManagementService.createLoadSheetSequencing(seqMaster);
-        return new ModelAndView("redirect:/app/admin-console/app-config/loadsheet-sequence.htm");
+        return new ModelAndView("redirect:/app/admin-console/app-config/loadsheet-sequence");
     }
 
     /* ==================== to open the Edit loadsheet sequence page==================*/
@@ -557,7 +557,7 @@ public class AppConfigControllerOld {
         String type = appConfigData.getSequenceType();
         String viewMode = appConfigData.getSequenceViewMode();
         
-        return new ModelAndView("redirect:/app/admin-console/app-config/open-edit-sequence.htm?seqMasterId="+seqMaster.getId()+"&action="+seqMaster.getPageAction()+
+        return new ModelAndView("redirect:/app/admin-console/app-config/open-edit-sequence?seqMasterId="+seqMaster.getId()+"&action="+seqMaster.getPageAction()+
                 "&category="+category+"&type="+type+"&viewMode="+viewMode);
     }
 

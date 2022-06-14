@@ -42,7 +42,7 @@ import com.penske.apps.suppliermgmt.util.ApplicationConstants;
  * @History : 
  ************************************************************************************/
 @Version1Controller
-@RequestMapping("/navigation")
+@RequestMapping("navigation")
 public class NavigationController extends BaseController {
 
     @Autowired
@@ -94,7 +94,7 @@ public class NavigationController extends BaseController {
 
             }
         } else if ("Home".equalsIgnoreCase(destination)) {
-            url.append(request.getContextPath()).append(ApplicationConstants.SLASH).append("app/home/homePage.htm?tabId=").append(controllerName);
+            url.append(request.getContextPath()).append(ApplicationConstants.SLASH).append("app/home/homePage?tabId=").append(controllerName);
         } else {
 
             boolean isDevOrLocalEnvironment = isDevOrLocalEvironment();

@@ -9,12 +9,14 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.method.HandlerTypePredicate;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.penske.apps.smccore.base.configuration.ProfileType;
 import com.penske.apps.smccore.base.plugins.TimingBean;
@@ -34,12 +36,11 @@ import com.penske.apps.suppliermgmt.interceptor.SmcSecurityInterceptor;
  */
 @Configuration
 @Import(value={ApplicationConfiguration.class})
-@EnableWebMvc
 @Profile(ProfileType.NOT_TEST)
 @ComponentScan(basePackageClasses={
 	AspectMarker.class
 })
-public class WebConfiguration extends WebMvcConfigurerAdapter {	
+public class WebConfiguration implements WebMvcConfigurer {	
     
     @Autowired
     private RequestLoggingHandlerInterceptor requestLoggingInterceptor;
@@ -53,7 +54,7 @@ public class WebConfiguration extends WebMvcConfigurerAdapter {
     /** {@inheritDoc} */
     @Override
     public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
-    	configurer.favorPathExtension(false)
+    	configurer
     	  .favorParameter(false)
     	  .ignoreAcceptHeader(false)
     	  .mediaType("atom", MediaType.APPLICATION_ATOM_XML)
@@ -61,14 +62,21 @@ public class WebConfiguration extends WebMvcConfigurerAdapter {
     	  .mediaType("json", MediaType.APPLICATION_JSON)
     	  .mediaType("*", MediaType.ALL);
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public void configurePathMatch(PathMatchConfigurer configurer)
+    {
+    	configurer.addPathPrefix("/app", HandlerTypePredicate.forAnnotation(Controller.class));
+    }
     
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
     	if(timingBean != null)
     		requestLoggingInterceptor.setLogTimings(true);
     	
-    	registry.addInterceptor(requestLoggingInterceptor);
-    	registry.addInterceptor(securityInterceptor).excludePathPatterns("/login/*");
+    	registry.addInterceptor(requestLoggingInterceptor).addPathPatterns("/app/**");
+    	registry.addInterceptor(securityInterceptor).excludePathPatterns("/app/login/*");
     	registry.addInterceptor(commonModelAttributesHandlerInterceptor);
     } 
     

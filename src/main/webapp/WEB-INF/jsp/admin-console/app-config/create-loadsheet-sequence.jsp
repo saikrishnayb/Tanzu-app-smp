@@ -96,7 +96,7 @@
 
 			<div class="floatRight" style="width:10%">
 				<div class="floatRight">
-					<a class="buttonSecondary" href="get-loadsheet-sequence.htm?categoryId=&category=${seqMaster.category}&type=${seqMaster.type}&viewMode=${viewMode}"
+					<a class="buttonSecondary" href="get-loadsheet-sequence?categoryId=&category=${seqMaster.category}&type=${seqMaster.type}&viewMode=${viewMode}"
 						onclick="javascript:loadProcessImage();">Back</a>
 				</div>
 			</div>

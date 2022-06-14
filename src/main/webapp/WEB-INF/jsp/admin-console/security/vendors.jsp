@@ -28,7 +28,7 @@
 				
 				<div id="search-content" class="<c:if test="${hasBeenSearched eq false}">displayNone</c:if> 
 				<c:if test="${hasBeenSearched eq true}">displayBlock</c:if> clear-both">
-					<form id="advanced-search-form" method="get" action="./vendors-advanced-search.htm">
+					<form id="advanced-search-form" method="get" action="./vendors-advanced-search">
 						<fieldset style="width: 765px;">
 							<legend>Advanced Search</legend>
 							<div class="form-column floatLeft margin-bottom-10">

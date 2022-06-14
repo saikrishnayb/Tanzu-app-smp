@@ -19,7 +19,7 @@
       <div class="leftNavAdjacentContainer">
         <div class="full-width">
           <span class="floatRight addRow"> 
-            <a href="${baseAppUrl}/admin-console/components/create-modify-template-page.htm?isCreatePage=true &templateId=0">
+            <a href="${baseAppUrl}/admin-console/components/create-modify-template-page?isCreatePage=true &templateId=0">
               <span>Create Template</span>
               <img src="${commonStaticUrl}/images/add.png" class="centerImage handCursor" alt="Add Row"/>
             </a>

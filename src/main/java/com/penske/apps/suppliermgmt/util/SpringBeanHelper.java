@@ -25,10 +25,12 @@ public class SpringBeanHelper
 	 * @see https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/beans/factory/access/BeanFactoryLocator.html
 	 */
 	private static ApplicationContext CTX;
+	private static String ssoLogoutUrl;
 	
-	public SpringBeanHelper(ApplicationContext context)
+	public SpringBeanHelper(ApplicationContext context, String ssoLogoutUrl)
 	{
-		CTX = context;
+		SpringBeanHelper.CTX = context;
+		SpringBeanHelper.ssoLogoutUrl = ssoLogoutUrl;
 	}
 	
 	/**
@@ -43,5 +45,10 @@ public class SpringBeanHelper
 		if(sessionBean == null)
 			return null;
 		return sessionBean.getUser();
+	}
+
+	public static String getSsoLogoutUrl()
+	{
+		return ssoLogoutUrl;
 	}
 }

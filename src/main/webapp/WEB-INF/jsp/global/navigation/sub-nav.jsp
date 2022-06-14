@@ -27,7 +27,7 @@
 					<c:set var="hasSecurityTab" value="1"></c:set>
 				</tl:isAuthorized>		
 				<c:if test="${hasSecurityTab == '1'}">
-					<li><a id="tab-security" href="${baseAppUrl}/admin-console/security/navigate-security.htm">Security</a></li>
+					<li><a id="tab-security" href="${baseAppUrl}/admin-console/security/navigate-security">Security</a></li>
 				</c:if>				
 				
 				<!--  Check if user has access to at least one lef nav inside Components -->
@@ -44,7 +44,7 @@
 				<!-- Include Components only if user has access to at least one left nav inside Components -->
 				<c:if test="${hasComponents == '1'}">
                   <tl:penskeOnly>
-					<li><a id="tab-components"  href="${baseAppUrl}/admin-console/components/navigate-components.htm">Components</a></li>
+					<li><a id="tab-components"  href="${baseAppUrl}/admin-console/components/navigate-components">Components</a></li>
                   </tl:penskeOnly>
 				</c:if>
 				
@@ -71,7 +71,7 @@
 				<!-- Include app config if user has access to at least one left nav inside app config -->
 				<c:if test="${hasAppConfig == '1'}">
                   <tl:penskeOnly>
-					<li><a id="tab-app-config" href="${baseAppUrl}/admin-console/app-config/navigate-app-config.htm">App Config</a></li>
+					<li><a id="tab-app-config" href="${baseAppUrl}/admin-console/app-config/navigate-app-config">App Config</a></li>
                   </tl:penskeOnly>
 				</c:if>
 				<c:set var="hasBuildMatrix" value="0"></c:set>
@@ -80,7 +80,7 @@
 				</tl:isAuthorized>
 				<c:if test="${hasBuildMatrix == '1'}">
                   <tl:penskeOnly>
-					<li><a id="tab-oem-build-matrix" href="${baseAppUrl}/admin-console/oem-build-matrix/navigate-oem-build-matrix.htm">Build Matrix</a></li>
+					<li><a id="tab-oem-build-matrix" href="${baseAppUrl}/admin-console/oem-build-matrix/navigate-oem-build-matrix">Build Matrix</a></li>
 				</tl:penskeOnly>
 				</c:if>
 			</ul>

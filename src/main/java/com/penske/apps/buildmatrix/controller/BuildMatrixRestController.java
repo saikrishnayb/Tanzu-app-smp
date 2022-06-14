@@ -413,7 +413,6 @@ public class BuildMatrixRestController {
 			@RequestParam("dateId") int dateId,
 			@RequestParam("plantId") int plantId,
 			@RequestParam("slotId") int slotId,
-			@RequestParam("slotRegionId") int slotRegionId,
 			@RequestParam("regionDesc") String regionDesc) {
 		ModelAndView model = new ModelAndView("/admin-console/oem-build-matrix/modal/release-units-modal");
 		
@@ -618,7 +617,7 @@ public class BuildMatrixRestController {
         
         BuildMatrixSlotType slotType = buildMatrixSmcService.getVehicleTypeById(slotTypeId);
         
-        String backUrl = "/suppliermgmt/app/admin-console/oem-build-matrix/prod-slot-maintenance.htm?slotType=" + slotTypeId + "&year=" + year;
+        String backUrl = "/suppliermgmt/app/admin-console/oem-build-matrix/prod-slot-maintenance?slotType=" + slotTypeId + "&year=" + year;
         
         model.addObject("results", results);
         model.addObject("slotType", slotType);
@@ -660,7 +659,7 @@ public class BuildMatrixRestController {
         
         BuildMatrixSlotType slotType = buildMatrixSmcService.getVehicleTypeById(slotTypeId);
         
-        String backUrl = "/suppliermgmt/app/admin-console/oem-build-matrix/prod-slot-region-maintenance.htm?slotType=" + slotTypeId 
+        String backUrl = "/suppliermgmt/app/admin-console/oem-build-matrix/prod-slot-region-maintenance?slotType=" + slotTypeId 
         		+ "&year=" + year + "&region=" + region;
         
         model.addObject("results", results);

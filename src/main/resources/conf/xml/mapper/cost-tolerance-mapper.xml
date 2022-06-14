@@ -43,7 +43,7 @@
 		</if>
 	</select>
 
-	<insert id="addTolerance" useGeneratedKeys="true" keyProperty="costToleranceId">
+	<insert id="addTolerance" useGeneratedKeys="true" keyProperty="costTolerance.toleranceId">
 		INSERT INTO SMC.SMC_COST_TOLERANCES (
 			PO_CATEGORY,
 			MF_CODE,

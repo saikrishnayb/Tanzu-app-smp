@@ -3,8 +3,8 @@
 	<div class="org-form-container">
 		<div id="component-rule-popup" ></div>
 		<div id="component-associatedToRules-alert-popup" ></div>
-		<form id="template-form"   method="POST" <c:if test="${isCreatePage eq true}"> action="${baseAppUrl}/admin-console/security/create-template.htm" </c:if>
-			<c:if test="${isCreatePage eq false}"> action="${baseAppUrl}/admin-console/security/update-template.htm" </c:if>> 
+		<form id="template-form"   method="POST" <c:if test="${isCreatePage eq true}"> action="${baseAppUrl}/admin-console/security/create-template" </c:if>
+			<c:if test="${isCreatePage eq false}"> action="${baseAppUrl}/admin-console/security/update-template" </c:if>> 
 			<input id="template-id" name="templateID" type="text" class="displayNone" class="input" value="${editableTemplate.templateID}"/>
 			<input type="hidden" id="is-create-page-id" value="${isCreatePage}" />
 			<input type="hidden" id="tempCompId" value="${tempCompId}" />

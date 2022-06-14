@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.HandlerInterceptor;
 
 import com.penske.apps.adminconsole.exceptions.UnauthorizedSecurityFunctionException;
 import com.penske.apps.smccore.base.annotation.SmcSecurity;
@@ -28,7 +28,7 @@ import com.penske.apps.suppliermgmt.beans.SuppliermgmtSessionBean;
  * @author erik.munoz 600139451
  */
 @Component
-public class SmcSecurityInterceptor extends HandlerInterceptorAdapter {
+public class SmcSecurityInterceptor implements HandlerInterceptor{
 
     @Autowired
     private SuppliermgmtSessionBean sessionBean;
@@ -36,10 +36,15 @@ public class SmcSecurityInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object handler) throws Exception {
 
+    	if(!(handler instanceof HandlerMethod))
+    		return true;
+    	
         HandlerMethod handlerMethod = (HandlerMethod) handler;
 
         //During initial login, the user won't have a user object in session. The login URL is allowed for all users.
-        if(StringUtils.endsWith(httpServletRequest.getRequestURI(), "/validate.htm"))
+        if(StringUtils.endsWith(httpServletRequest.getRequestURI(), "/validate"))
+            return true;
+        if(StringUtils.endsWith(httpServletRequest.getRequestURI(), "/error"))
             return true;
 
         VendorAllowed vendorAllowed = handlerMethod.getMethod().getAnnotation(VendorAllowed.class);

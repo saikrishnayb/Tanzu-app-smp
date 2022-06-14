@@ -5,7 +5,7 @@
 <%@ include file="../../../global/v2/modal-error-container.jsp"%>
 <div class="modal-content col-xs-12" data-modal-title="Import Region Slot Maintenance" data-modal-width="400">
 	<div class="row modal-body">
-		<form id="import-form" class="import-form form-horizontal" action="./import-region-slot-maintenance.htm" method="POST" enctype="multipart/form-data">
+		<form id="import-form" class="import-form form-horizontal" action="./import-region-slot-maintenance" method="POST" enctype="multipart/form-data">
 			<div class="error col-xs-12" id="errorMessage" style="display: none">
 				<img src="${commonStaticUrl}/images/warning.png" /> 
 				<span class="errorMsg"></span>
