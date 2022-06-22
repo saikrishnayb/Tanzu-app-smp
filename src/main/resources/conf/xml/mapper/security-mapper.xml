@@ -22,6 +22,15 @@
 			Select SSO, MAX(LOGIN_TIME) as LAST_LOGIN
 			FROM SMC.SMC_USER_LOGIN
 			GROUP BY SSO
+		),
+		ORG_TREE (ORG_ID) AS (
+				SELECT ORG_ID
+				FROM SMC.SMC_ORG_MASTER org
+				WHERE org.ORG_ID = #{orgId}
+			UNION ALL
+				SELECT child.ORG_ID
+				FROM SMC.SMC_ORG_MASTER child, ORG_TREE
+				WHERE child.PARENT_ORG_ID = ORG_TREE.ORG_ID
 		)
 		SELECT
 			U.USER_ID AS userId,
@@ -49,9 +58,7 @@
 		WHERE U.STATUS = 'A'
 		  AND R.STATUS = 'A'
 		  AND U.ORG_ID IN(
-			SELECT ORG_ID
-			FROM SMC.SMC_ORG_MASTER
-			START WITH ORG_ID = #{orgId} CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID
+			SELECT ORG_ID FROM ORG_TREE
 		  )
 		<if test="email != ''">
 			AND UPPER(U.EMAIL) LIKE #{email}
@@ -174,8 +181,6 @@
  		FROM 	SMC.smc_user_roles 
  		WHERE
  				 STATUS = 'A'
- 		
- 		CONNECT BY BASE_ROLE_ID = PRIOR ROLE_ID
  	</select>
  	
  	<select id="getVendorUserSpecificRoles" resultType="com.penske.apps.adminconsole.model.Role">
@@ -224,22 +229,39 @@
  	</select>
  	
  	<select id="getAllUserRoles" resultType="com.penske.apps.adminconsole.model.Role">
- 			SELECT ROLE_NAME AS roleName,
- 			ROLE_ID AS roleId
-	 		FROM 	SMC.SMC_USER_ROLES 
-	 		WHERE	STATUS = 'A'
-	 		START 	WITH ROLE_ID = 1
-	 		CONNECT BY BASE_ROLE_ID = PRIOR ROLE_ID
-	 		ORDER BY roleName
+ 		WITH ROLE_TREE (ROLE_ID) AS (
+				SELECT ROLE_ID
+				FROM SMC.SMC_USER_ROLES role
+				WHERE role.ROLE_ID = #{value}
+			UNION ALL
+				SELECT child.ROLE_ID
+				FROM SMC.SMC_USER_ROLES child, ROLE_TREE
+				WHERE child.BASE_ROLE_ID = ROLE_TREE.ROLE_ID
+		)
+ 		SELECT
+ 			r.ROLE_NAME AS roleName,
+ 			r.ROLE_ID AS roleId
+	 	FROM SMC.SMC_USER_ROLES r
+	 	JOIN ROLE_TREE ON ROLE_TREE.ROLE_ID = r.ROLE_ID 
+	 	WHERE STATUS = 'A'
+	 	ORDER BY roleName
  	</select>
  	
  	<select id="getPenskeRoles" resultType="com.penske.apps.adminconsole.model.Role">
- 		SELECT 	ROLE_ID AS roleId, 
- 				ROLE_NAME AS roleName
- 		FROM 	SMC.SMC_USER_ROLES 
+ 		WITH ROLE_TREE (ROLE_ID) AS (
+				SELECT ROLE_ID
+				FROM SMC.SMC_USER_ROLES role
+				WHERE role.ROLE_ID = #{value}
+			UNION ALL
+				SELECT child.ROLE_ID
+				FROM SMC.SMC_USER_ROLES child, ROLE_TREE
+				WHERE child.BASE_ROLE_ID = ROLE_TREE.ROLE_ID
+		)
+ 		SELECT 	r.ROLE_ID AS roleId, 
+ 				r.ROLE_NAME AS roleName
+ 		FROM 	SMC.SMC_USER_ROLES r
+ 		JOIN ROLE_TREE ON ROLE_TREE.ROLE_ID = r.ROLE_ID  
  		WHERE	STATUS = 'A'
- 		START 	WITH ROLE_ID = #{value}
- 		CONNECT BY BASE_ROLE_ID = PRIOR ROLE_ID
  		ORDER BY roleName
  	</select>
  	
@@ -487,10 +509,6 @@
 	  	 </if>
 	  	 <if test="orgId != ''">
 			 AND asso.ORG_ID=#{orgId} 
-			 <!--  ORG_ID IN(
-				 SELECT ORG_ID FROM SMC.SMC_ORG_MASTER
-				 START WITH ORG_ID=#{orgId} CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID ORDER BY ORG_ID
-			) -->
 		</if>
 		AND m.STATUS = 'A'
   	 </where>
@@ -568,21 +586,35 @@
  	</update>
  	
  	<select id="getUsersByOrgId" resultType="int">
+ 			WITH ORG_TREE (ORG_ID) AS (
+				SELECT ORG_ID
+				FROM SMC.SMC_ORG_MASTER org
+				WHERE org.ORG_ID = #{orgId}
+			UNION ALL
+				SELECT child.ORG_ID
+				FROM SMC.SMC_ORG_MASTER child, ORG_TREE
+				WHERE child.PARENT_ORG_ID = ORG_TREE.ORG_ID
+			)
  			SELECT COUNT(1) as cnt FROM 
 			SMC.SMC_USER_MASTER WHERE STATUS='A' AND ORG_ID IN
 			(
-				SELECT ORG_ID FROM SMC.SMC_ORG_MASTER 
-				START  WITH ORG_ID =#{orgId}
-		 		CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID ORDER BY ORG_ID
+				SELECT ORG_ID FROM ORG_TREE
 		 	)
  	</select>
  	<select id="getOrgChild" resultType="com.penske.apps.adminconsole.model.Org">
-		SELECT ORG_ID as orgId, NAME as orgName, PARENT_ORG_ID as parentOrgId FROM SMC.SMC_ORG_MASTER 
-		START  WITH PARENT_ORG_ID =#{orgId}
-	 	CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID ORDER BY ORG_ID
+	 	WITH ORG_TREE (ORG_ID) AS (
+			SELECT ORG_ID
+			FROM SMC.SMC_ORG_MASTER org
+			WHERE org.ORG_ID = #{orgId}
+		UNION ALL
+			SELECT child.ORG_ID
+			FROM SMC.SMC_ORG_MASTER child, ORG_TREE
+			WHERE child.PARENT_ORG_ID = ORG_TREE.ORG_ID
+		)
+		SELECT ORG_ID as o.orgId, o.NAME as orgName, o.PARENT_ORG_ID as parentOrgId
+		FROM SMC.SMC_ORG_MASTER o
+		JOIN ORG_TREE ON ORG_TREE.ORG_ID = o.ORG_ID  
  	</select>
- 	
- 	
  	
  	<delete id="removeAllRoleFunctionByOrgId">
 		DELETE FROM	SMC.SMC_ROLE_SEC_FUNCTIONS
@@ -629,7 +661,16 @@
 	<select id="getVendorUserList" resultType="com.penske.apps.adminconsole.model.EditableUser">
  		With L as (Select SSO, MAX(LOGIN_TIME) as LAST_LOGIN
                FROM SMC.SMC_USER_LOGIN
-               GROUP BY SSO)
+               GROUP BY SSO
+        ), ORG_TREE (ORG_ID) AS (
+				SELECT ORG_ID
+				FROM SMC.SMC_ORG_MASTER org
+				WHERE org.ORG_ID = #{user.orgId}
+			UNION ALL
+				SELECT child.ORG_ID
+				FROM SMC.SMC_ORG_MASTER child, ORG_TREE
+				WHERE child.PARENT_ORG_ID = ORG_TREE.ORG_ID
+		)
  		SELECT 	U.USER_ID AS userId,
  				U.SSO AS userName,
 				U.EMAIL AS email,
@@ -646,46 +687,56 @@
 				O.ORG_ID as "orgId",
 				L.LAST_LOGIN AS lastLoginDate,
 				U.CREATED_DATE AS createdDate
-				
 		FROM SMC.SMC_USER_MASTER U
-    LEFT JOIN  L
-    ON U.SSO = L.SSO
-    JOIN SMC.smc_user_roles R
-    ON U.ROLE_ID = R.ROLE_ID
-    JOIN SMC.SMC_USER_TYPES T
-    ON U.TYPE_ID = T.TYPE_ID
-		JOIN SMC.SMC_ORG_MASTER O
-		ON U.ORG_ID = O.ORG_ID		
-		WHERE
-				T.USER_TYPE ='VENDOR' AND
-				U.STATUS = 'A' AND
-				R.STATUS = 'A'
-				AND U.ORG_ID IN(
-					SELECT ORG_ID FROM  SMC.SMC_ORG_MASTER
-	 					START WITH ORG_ID = #{user.orgId} 	CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID
-				)
+	    LEFT JOIN  L ON U.SSO = L.SSO
+	    JOIN SMC.smc_user_roles R ON U.ROLE_ID = R.ROLE_ID
+	    JOIN SMC.SMC_USER_TYPES T ON U.TYPE_ID = T.TYPE_ID
+		JOIN SMC.SMC_ORG_MASTER O ON U.ORG_ID = O.ORG_ID		
+		WHERE T.USER_TYPE ='VENDOR'
+		  AND U.STATUS = 'A'
+		  AND R.STATUS = 'A'
+		  AND U.ORG_ID IN (
+		  	SELECT ORG_ID FROM ORG_TREE
+		  )
  	</select>
  	
  	<select id="getVendorRoles" resultType="com.penske.apps.adminconsole.model.Role">
- 		SELECT 	ROLE_NAME AS roleName,
- 				ROLE_ID AS roleId
- 		FROM 	SMC.smc_user_roles 
- 		WHERE 	STATUS = 'A' and ROLE_ID >= 16
- 		AND  OEM IN 
+ 		WITH ORG_TREE (ORG_ID) AS (
+				SELECT ORG_ID
+				FROM SMC.SMC_ORG_MASTER org
+				WHERE org.ORG_ID = #{orgId}
+			UNION ALL
+				SELECT child.ORG_ID
+				FROM SMC.SMC_ORG_MASTER child, ORG_TREE
+				WHERE child.PARENT_ORG_ID = ORG_TREE.ORG_ID
+		), ROLE_TREE (ROLE_ID) AS (
+				SELECT ROLE_ID
+				FROM SMC.SMC_USER_ROLES role
+				WHERE role.ROLE_ID = #{roleId}
+			UNION ALL
+				SELECT child.ROLE_ID
+				FROM SMC.SMC_USER_ROLES child, ROLE_TREE
+				WHERE child.BASE_ROLE_ID = ROLE_TREE.ROLE_ID
+		)
+	 		SELECT
+	 			r.ROLE_NAME AS roleName,
+	 			r.ROLE_ID AS roleId
+	 		FROM SMC.smc_user_roles r
+	 		JOIN ROLE_TREE ON ROLE_TREE.ROLE_ID = r.ROLE_ID
+	 		WHERE STATUS = 'A' and r.ROLE_ID >= 16
+	 		AND  OEM IN 
 			(
-					SELECT   ORG_ID
-					FROM     SMC.SMC_ORG_MASTER START WITH ORG_ID =#{orgId}
-				    CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID
+				SELECT ORG_ID FROM ORG_TREE
 			) 
- 		START 	WITH ROLE_ID = #{roleId}
-	 	CONNECT BY BASE_ROLE_ID = PRIOR ROLE_ID 
 	 	UNION 
-	 	 		SELECT 	ROLE_NAME AS roleName,
- 				ROLE_ID AS roleId
- 		FROM 	SMC.smc_user_roles
- 		WHERE 	STATUS = 'A' and
- 		ROLE_ID = #{roleId} and ROLE_ID >= 16
- 		ORDER BY roleName
+	 		SELECT
+	 			r.ROLE_NAME AS roleName,
+ 				r.ROLE_ID AS roleId
+ 			FROM SMC.smc_user_roles r
+ 			WHERE STATUS = 'A' and
+ 			r.ROLE_ID = #{roleId}
+ 			  AND ROLE_ID >= 16
+ 			ORDER BY roleName
  	</select>
  	
  	<select id="getRoleById" resultType="com.penske.apps.adminconsole.model.Role">
@@ -705,14 +756,23 @@
  	</select>
  	
  	<select id="getVendorOrg"  resultType="com.penske.apps.adminconsole.model.Org">
- 		 SELECT   ORG_ID as orgId,
-         NAME as orgName,
-         PARENT_ORG_ID as parentOrgId
-		 FROM     SMC.SMC_ORG_MASTER WHERE ORG_ID <![CDATA[<>]]> 1
-	 	 START 	WITH ORG_ID = #{orgId}
-		 CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID
+		WITH ORG_TREE (ORG_ID) AS (
+				SELECT ORG_ID
+				FROM SMC.SMC_ORG_MASTER org
+				WHERE org.ORG_ID = #{orgId}
+			UNION ALL
+				SELECT child.ORG_ID
+				FROM SMC.SMC_ORG_MASTER child, ORG_TREE
+				WHERE child.PARENT_ORG_ID = ORG_TREE.ORG_ID
+		)
+ 		SELECT
+ 			o.ORG_ID as orgId,
+        	o.NAME as orgName,
+        	o.PARENT_ORG_ID as parentOrgId
+		FROM SMC.SMC_ORG_MASTER o
+		JOIN ORG_TREE ON ORG_TREE.ORG_ID = o.ORG_ID
+		WHERE o.ORG_ID != 1
  	</select>
- 	
  	
  	<select id="getOrgList" resultType="com.penske.apps.adminconsole.model.Org">
 		WITH result (Org_id , name, parent_org_id,description) AS (
@@ -721,8 +781,8 @@
 			WHERE Org_id = #{orgId}
 		UNION ALL
 			SELECT a.Org_id,a.name,a.parent_org_id,a.description
-			FROM SMC.SMC_ORG_MASTER a 
-			INNER JOIN result s ON a.parent_org_id = s.Org_id
+			FROM SMC.SMC_ORG_MASTER a, result
+			WHERE result.org_id = a.parent_org_id 
 		)
 		SELECT r.Org_id as orgId, r.name as orgName, r.description as orgDescription,
 			(select name from SMC.SMC_ORG_MASTER where org_id=r.parent_org_id) as parentorgname,
@@ -744,9 +804,21 @@
 	</delete>
 	
 	<select id="getMyOrgAndChild" resultType="com.penske.apps.adminconsole.model.Org">
-		SELECT ORG_ID as orgId, NAME as orgName, PARENT_ORG_ID as parentOrgId FROM SMC.SMC_ORG_MASTER 
-		START  WITH ORG_ID =#{orgId}
-	 	CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID ORDER BY ORG_ID
+		WITH ORG_TREE (ORG_ID) AS (
+				SELECT ORG_ID
+				FROM SMC.SMC_ORG_MASTER org
+				WHERE org.ORG_ID = #{orgId}
+			UNION ALL
+				SELECT child.ORG_ID
+				FROM SMC.SMC_ORG_MASTER child, ORG_TREE
+				WHERE child.PARENT_ORG_ID = ORG_TREE.ORG_ID
+		)
+		SELECT
+			o.ORG_ID as orgId,
+			o.NAME as orgName,
+			o.PARENT_ORG_ID as parentOrgId
+		FROM SMC.SMC_ORG_MASTER o
+		JOIN ORG_TREE ON ORG_TREE.ORG_ID = o.ORG_ID 
  	</select>
  	
  	<delete id="removeVendorAssocFromDescendent">

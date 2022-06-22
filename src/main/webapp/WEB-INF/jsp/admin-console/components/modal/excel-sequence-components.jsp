@@ -39,8 +39,8 @@
                   <span class="icon-bar"></span> 
                   <span class="icon-bar"></span> 
                   <span class="icon-bar"></span> 
-                  <form:input type="hidden" path="components[${cmpIndex.count -1}].componentSequence"class="seq" value="${component.componentSequence }" /> 
-                  <form:input type="hidden"path="components[${cmpIndex.count -1}].componentId" class="componentId" value="${component.componentId}" />
+                  <form:input type="hidden" path="components[${cmpIndex.count -1}].componentSequence" class="seq" value="${component.componentSequence }" /> 
+                  <form:input type="hidden" path="components[${cmpIndex.count -1}].componentId" class="componentId" value="${component.componentId}" />
                 </td>
                 <td class="seq">${component.componentSequence}</td>
                 <td>${component.displayName }</td>
