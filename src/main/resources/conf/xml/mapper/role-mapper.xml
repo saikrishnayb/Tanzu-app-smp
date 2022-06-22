@@ -56,20 +56,23 @@
 	</select>
 		
 	<select id="getUsersByRoleId" resultType="Integer">
+		WITH ROLE_TREE (ROLE_ID) AS (
+				SELECT ROLE_ID
+				FROM SMC.SMC_USER_ROLES role
+				WHERE role.ROLE_ID = #{value}
+				  AND role.STATUS = 'A'
+			UNION ALL
+				SELECT child.ROLE_ID
+				FROM SMC.SMC_USER_ROLES child, ROLE_TREE
+				WHERE child.BASE_ROLE_ID = ROLE_TREE.ROLE_ID
+				  AND child.status = 'A'
+		)
 		SELECT	1
-
 		FROM	SMC.SMC_USER_MASTER usr
-				
 		WHERE	usr.STATUS = 'A'
-		AND		usr.ROLE_ID IN (SELECT rol.ROLE_ID
-				
-								FROM SMC.smc_user_roles rol
-								
-								START WITH 	rol.ROLE_ID = #{value}
-								AND			rol.STATUS = 'A'
-								CONNECT BY	rol.BASE_ROLE_ID = PRIOR rol.ROLE_ID
-								AND			rol.STATUS = 'A')
-						
+		  AND usr.ROLE_ID IN (
+			SELECT ROLE_ID FROM ROLE_TREE
+		  )
 		FETCH FIRST ROW ONLY
 	</select>
 	
@@ -141,48 +144,46 @@
 	</update>
 
 	<select id="getMyRoles" resultType="com.penske.apps.adminconsole.model.Role">
-			WITH result (roleId , roleName, baseRoleId,roleDescription,STATUS,oem)
-			AS
-			( 
-				SELECT role.ROLE_ID AS roleId,
-					role.ROLE_NAME AS roleName,
-					role.BASE_ROLE_ID AS baseRoleId,
-					role.DESCRIPTION AS roleDescription,
-					role.STATUS AS status,role.OEM as oem
-					FROM SMC.smc_user_roles role
-					WHERE role.ROLE_ID =#{currUserRoleId}
-					and role.STATUS = 'A'
-				UNION ALL
-				
-				SELECT  a.ROLE_ID AS roleId,
-					a.ROLE_NAME AS roleName,
-					a.BASE_ROLE_ID AS baseRoleId,
-					a.DESCRIPTION AS roleDescription,
-					a.STATUS AS status, a.OEM as oem
-					FROM SMC.smc_user_roles a
-				INNER JOIN result s ON a.BASE_ROLE_ID = s.roleId and a.STATUS = 'A'
-			) 
-			
-			SELECT r.roleId , r.roleName,(select ROLE_NAME from
-				SMC.smc_user_roles where ROLE_ID=r.baseRoleId) as
-				baseRoleName,r.roleDescription AS roleDescription,r.baseRoleId as baseRoleId,r.status as status,r.oem as oem,(SELECT NAME FROM SMC.SMC_ORG_MASTER as orgMst where r.oem=orgMst.ORG_ID) as orgName FROM result r 
-				WHERE  OEM IN (
-							SELECT   ORG_ID
-							FROM     SMC.SMC_ORG_MASTER START WITH ORG_ID =#{currOrgId} 
-						    CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID	)
-				<if test="roleName != null">
-				  <bind name="pattern" value="'%' + roleName + '%'" />
-				  AND LOWER(r.roleName) like LOWER(#{pattern})
-				</if>
-				<choose>
-					<when test="baseRoleId == -1">
-					AND	r.baseRoleId IS NULL
-					</when>
-					<when test="baseRoleId != 0">
-					AND	r.baseRoleId = #{baseRoleId}
-					</when>
-				</choose>
-			ORDER BY r.roleId
+		WITH ROLE_TREE (ROLE_ID) AS (
+			SELECT ROLE_ID
+			FROM SMC.SMC_USER_ROLES role
+			WHERE role.ROLE_ID = #{currUserRoleId}
+		UNION ALL
+			SELECT child.ROLE_ID
+			FROM SMC.SMC_USER_ROLES child, ROLE_TREE
+			WHERE child.BASE_ROLE_ID = ROLE_TREE.ROLE_ID
+		), ORG_TREE (ORG_ID) AS (
+			SELECT ORG_ID
+			FROM SMC.SMC_ORG_MASTER org
+			WHERE org.ORG_ID = #{currOrgId}
+		UNION ALL
+			SELECT child.ORG_ID
+			FROM SMC.SMC_ORG_MASTER child, ORG_TREE
+			WHERE child.PARENT_ORG_ID = ORG_TREE.ORG_ID
+		) 
+		SELECT r.ROLE_ID, r.ROLE_NAME ,(select ROLE_NAME from
+			SMC.smc_user_roles where ROLE_ID=r.BASE_ROLE_ID) as
+			baseRoleName,r.DESCRIPTION AS roleDescription,r.BASE_ROLE_ID as baseRoleId,r.status as status,r.oem as oem,
+			(SELECT NAME FROM SMC.SMC_ORG_MASTER as orgMst where r.oem=orgMst.ORG_ID) as orgName
+			FROM SMC.SMC_USER_ROLES r
+			JOIN ROLE_TREE ON ROLE_TREE.ROLE_ID = r.ROLE_ID 
+			WHERE r.STATUS = 'A'
+			  AND OEM IN (
+				SELECT ORG_ID FROM ORG_TREE
+			  )
+			<if test="roleName != null">
+			  <bind name="pattern" value="'%' + roleName + '%'" />
+			  AND LOWER(r.ROLE_NAME) like LOWER(#{pattern})
+			</if>
+			<choose>
+				<when test="baseRoleId == -1">
+				AND	r.BASE_ROLE_ID IS NULL
+				</when>
+				<when test="baseRoleId != 0">
+				AND	r.BASE_ROLE_ID= #{baseRoleId}
+				</when>
+			</choose>
+		ORDER BY r.ROLE_ID
 	</select>
 	
 	<select id="checkRoleExist" resultType="int">
@@ -191,55 +192,101 @@
 	</select>
 	
 	<select id="getMyDescendRoleWithParentOthOrg" resultType="com.penske.apps.adminconsole.model.Role">
-	 	SELECT 	ROLE_ID AS roleId, BASE_ROLE_ID as baseRoleId,ROLE_NAME AS roleName, OEM, 
-		(select ROLE_NAME from SMC.smc_user_roles where ROLE_ID=BASE_ROLE_ID) as baseRoleName,
-		(SELECT NAME FROM SMC.SMC_ORG_MASTER where ORG_ID=OEM) as orgName
-	 		FROM 	SMC.smc_user_roles 
-	 		WHERE	STATUS = 'A'  AND ROLE_ID = #{roleId}
+		 WITH ORG_TREE (ORG_ID) AS (
+				SELECT ORG_ID
+				FROM SMC.SMC_ORG_MASTER org
+				WHERE org.ORG_ID = #{orgId}
+			UNION ALL
+				SELECT child.ORG_ID
+				FROM SMC.SMC_ORG_MASTER child, ORG_TREE
+				WHERE child.PARENT_ORG_ID = ORG_TREE.ORG_ID
+		), ROLE_TREE (ROLE_ID) AS (
+				SELECT ROLE_ID
+				FROM SMC.SMC_USER_ROLES role
+				WHERE role.ROLE_ID = #{roleId}
+			UNION ALL
+				SELECT child.ROLE_ID
+				FROM SMC.SMC_USER_ROLES child, ROLE_TREE
+				WHERE child.BASE_ROLE_ID = ROLE_TREE.ROLE_ID
+		)
+		 	SELECT
+		 		ROLE_ID AS roleId,
+		 		BASE_ROLE_ID as baseRoleId,
+		 		ROLE_NAME AS roleName,
+		 		OEM, 
+				(select ROLE_NAME from SMC.smc_user_roles where ROLE_ID=BASE_ROLE_ID) as baseRoleName,
+				(SELECT NAME FROM SMC.SMC_ORG_MASTER where ORG_ID=OEM) as orgName
+		 		FROM 	SMC.smc_user_roles 
+		 		WHERE	STATUS = 'A'  AND ROLE_ID = #{roleId}
 	 	UNION
-	
-	 	SELECT 	ROLE_ID AS roleId, BASE_ROLE_ID as baseRoleId,ROLE_NAME AS roleName, OEM, 
-		(select ROLE_NAME from SMC.smc_user_roles where ROLE_ID=BASE_ROLE_ID) as baseRoleName,
-		(SELECT NAME FROM SMC.SMC_ORG_MASTER where ORG_ID=OEM) as orgName
-	 		FROM 	SMC.smc_user_roles 
+	 		SELECT
+	 			r.ROLE_ID AS roleId,
+	 			r.BASE_ROLE_ID as baseRoleId,
+	 			r.ROLE_NAME AS roleName,
+	 			r.OEM, 
+				(select ROLE_NAME from SMC.smc_user_roles where ROLE_ID=BASE_ROLE_ID) as baseRoleName,
+				(SELECT NAME FROM SMC.SMC_ORG_MASTER where ORG_ID=OEM) as orgName
+	 		FROM 	SMC.smc_user_roles r
+	 		JOIN ROLE_TREE ON ROLE_TREE.ROLE_ID = r.ROLE_ID
 	 		WHERE	STATUS = 'A'
-	      AND   OEM IN 
-			(
-					SELECT   ORG_ID
-					FROM     SMC.SMC_ORG_MASTER START WITH ORG_ID =#{orgId}
-				    CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID
-			) 
-	 		START 	WITH ROLE_ID = #{roleId}
-	 		CONNECT BY BASE_ROLE_ID = PRIOR ROLE_ID
+	      	AND OEM IN (
+				SELECT ORG_ID FROM ORG_TREE
+			)
 	 	ORDER BY roleId
 	</select> 
 	
 	
 	<select id="getMyDescendRoleByRoleIdOrgId" resultType="com.penske.apps.adminconsole.model.Role">
-		SELECT 	ROLE_ID AS roleId, BASE_ROLE_ID as baseRoleId,ROLE_NAME AS roleName, OEM
-	 		FROM 	SMC.smc_user_roles 
-	 		WHERE	STATUS = 'A'
-	      AND   OEM IN 
-			(
-					SELECT   ORG_ID
-					FROM     SMC.SMC_ORG_MASTER START WITH ORG_ID =#{orgId}
-				    CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID
-			) 
-	 		START 	WITH ROLE_ID = #{roleId}
-	 		CONNECT BY BASE_ROLE_ID = PRIOR ROLE_ID
-	 		ORDER BY ROLE_ID
+		WITH ORG_TREE (ORG_ID) AS (
+				SELECT ORG_ID
+				FROM SMC.SMC_ORG_MASTER org
+				WHERE org.ORG_ID = #{orgId}
+			UNION ALL
+				SELECT child.ORG_ID
+				FROM SMC.SMC_ORG_MASTER child, ORG_TREE
+				WHERE child.PARENT_ORG_ID = ORG_TREE.ORG_ID
+		), ROLE_TREE (ROLE_ID) AS (
+				SELECT ROLE_ID
+				FROM SMC.SMC_USER_ROLES role
+				WHERE role.ROLE_ID = #{roleId}
+			UNION ALL
+				SELECT child.ROLE_ID
+				FROM SMC.SMC_USER_ROLES child, ROLE_TREE
+				WHERE child.BASE_ROLE_ID = ROLE_TREE.ROLE_ID
+		)
+		SELECT 	r.ROLE_ID AS roleId, r.BASE_ROLE_ID as baseRoleId, r.ROLE_NAME AS roleName, r.OEM
+	 	FROM 	SMC.smc_user_roles r
+	 	JOIN ROLE_TREE ON ROLE_TREE.ROLE_ID = r.ROLE_ID
+	 	WHERE	STATUS = 'A'
+	      AND   OEM IN (
+			SELECT ORG_ID FROM ORG_TREE
+		  ) 
+	 	ORDER BY ROLE_ID
 	</select>
 	<select id="getMyDescendRoleByOrgId" resultType="String">
-		SELECT   ROLE_NAME AS roleName
-			FROM     SMC.SMC_USER_ROLES
+		WITH ORG_TREE (ORG_ID) AS (
+				SELECT ORG_ID
+				FROM SMC.SMC_ORG_MASTER org
+				WHERE org.ORG_ID = #{orgId}
+			UNION ALL
+				SELECT child.ORG_ID
+				FROM SMC.SMC_ORG_MASTER child, ORG_TREE
+				WHERE child.PARENT_ORG_ID = ORG_TREE.ORG_ID
+		), ROLE_TREE (ROLE_ID) AS (
+				SELECT ROLE_ID
+				FROM SMC.SMC_USER_ROLES role
+			UNION ALL
+				SELECT child.ROLE_ID
+				FROM SMC.SMC_USER_ROLES child, ROLE_TREE
+				WHERE child.BASE_ROLE_ID = ROLE_TREE.ROLE_ID
+		)
+		SELECT   r.ROLE_NAME AS roleName
+			FROM     SMC.SMC_USER_ROLES r
+			JOIN ROLE_TREE ON ROLE_TREE.ROLE_ID = r.ROLE_ID
 			WHERE    STATUS = 'A'
-			AND      OEM IN 
-			(
-					SELECT   ORG_ID
-					FROM     SMC.SMC_ORG_MASTER START WITH ORG_ID =#{orgId} 
-				    CONNECT BY PARENT_ORG_ID = PRIOR ORG_ID
-					ORDER BY ORG_ID
-			) CONNECT BY BASE_ROLE_ID = PRIOR ROLE_ID
+			AND      OEM IN (
+					SELECT ORG_ID FROM ORG_TREE
+			)
 		ORDER BY ROLE_NAME
 	</select>
 </mapper>
