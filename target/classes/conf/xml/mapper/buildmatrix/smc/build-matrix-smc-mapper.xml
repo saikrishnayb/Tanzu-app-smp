@@ -1,0 +1,1885 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.penske.apps.buildmatrix.dao.BuildMatrixSmcDAO">
+	
+	<!-- District Proximity workflow -->
+
+	<resultMap id="freightMileageMap" type="com.penske.apps.buildmatrix.domain.FreightMileage">
+		<result property="plantId" column="plantId" />
+		<result property="area" column="area" />
+		<result property="areaDesc" column="areaDesc"/>
+		<collection property="districts" column="{plantId=plantId,area=area}" select="getFreightMileageDistricts"></collection>
+	</resultMap>
+
+	<select id="getFreightMileageDistricts" resultType="hashmap">
+		SELECT   OFM.DISTRICT AS districtValues,
+				 OFM.DIST_DESC AS distDesc
+		FROM     SMC.OBM_FREIGHT_MILEAGE OFM
+		WHERE    OFM.PLANT_ID = #{plantId}
+		AND      OFM.AREA = #{area}
+	</select>
+
+	<select id="getPlantProximity" resultType="com.penske.apps.buildmatrix.domain.PlantProximity">
+		SELECT   proximity.PROXIMITY_ID as proximityId,
+		         proximity.PLANT_ID as plantId,
+		         proximity.TIER as tier,
+		         proximity.DISTRICT as district,
+		         mileage.DIST_DESC as distDesc
+		FROM     SMC.OBM_PLANT_PROXIMITY proximity
+		LEFT JOIN  SMC.OBM_FREIGHT_MILEAGE mileage 
+			ON mileage.PLANT_ID = proximity.PLANT_ID 
+			AND proximity.DISTRICT = mileage.DISTRICT
+		WHERE  proximity.PLANT_ID = #{plantId}
+	</select>
+
+	<select id="getFreightMileageData" resultMap="freightMileageMap">
+		SELECT   OFM.PLANT_ID AS plantId,
+		         OFM.AREA AS area,
+		         OFM.AREA_DESC AS areaDesc
+		FROM     SMC.OBM_FREIGHT_MILEAGE OFM
+		JOIN 	 SMC.OBM_REGION_PLANT_ASSOCIATION reg 
+				 ON reg.PLANT_ID = OFM.PLANT_ID AND reg.REGION =  OFM.REGION
+		WHERE    OFM.AREA <![CDATA[<>]]> ''
+		AND      OFM.PLANT_ID = #{plantId}
+		GROUP BY OFM.AREA, OFM.PLANT_ID ,OFM.AREA_DESC
+		ORDER BY OFM.AREA
+	</select>
+
+	<update id="saveDistrictProximity">
+		MERGE INTO SMC.OBM_PLANT_PROXIMITY AS proximity USING
+		(
+		VALUES
+		<foreach collection="plantProximityData" item="data" separator="," >
+			(
+				CAST(#{data.plantId} AS INTEGER),
+				CAST(#{data.tier} AS INTEGER),
+				CAST(#{data.district} AS VARCHAR(10))
+			)
+		</foreach>
+		)
+		AS input
+		(
+			PLANT_ID,TIER,DISTRICT
+		)
+		ON proximity.PLANT_ID=input.PLANT_ID AND proximity.TIER=input.TIER AND
+		proximity.DISTRICT=input.DISTRICT
+		WHEN MATCHED THEN DELETE
+		WHEN NOT MATCHED THEN
+		INSERT
+			(
+			PLANT_ID,
+			TIER,
+			DISTRICT
+			)
+		 VALUES
+			(
+			input.PLANT_ID,
+			input.TIER,
+			input.DISTRICT
+			)
+	</update>
+	
+	<!-- Plant Maintenance workflow -->
+	<resultMap id="bodyplantResultmap" type="com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant">
+		<result property="plantId" column="plantId" />
+		<result property="plantMfrCode" column="plantMfrCode" />
+		<result property="plantManufacturer" column="plantManufacturer" />
+		<result property="plantName" column="plantName" />
+		<result property="state" column="state" />
+		<result property="zip" column="zip" />
+		<result property="country" column="country" />
+		<result property="city" column="city" />
+		<collection property="offlineDates" column="{plantId=plantId}" select="getPlantOfflineDates"></collection>
+	</resultMap>
+	
+	<select id="getAllBodyPlants" resultMap="bodyplantResultmap">
+		SELECT
+			PLANT_ID AS plantId,
+			PLANT_MFR_CODE AS plantMfrCode,
+			PLANT_MANUFACTURER AS plantManufacturer,
+			PLANT_NAME AS plantName,
+			PLANT_STATE AS state,
+			PLANT_ZIP AS zip,
+			PLANT_COUNTRY AS country,
+			PLANT_CITY AS city
+		FROM SMC.OBM_PLANTS
+		ORDER BY PLANT_MANUFACTURER, PLANT_CITY
+	</select>
+	
+	<select id="getPlantData" resultMap="bodyplantResultmap">
+		SELECT
+			PLANT_ID AS plantId,
+			PLANT_MFR_CODE AS plantMfrCode,
+			PLANT_MANUFACTURER AS plantManufacturer,
+			PLANT_NAME AS plantName,
+			PLANT_STATE AS state,
+			PLANT_ZIP AS zip,
+			PLANT_COUNTRY AS country,
+			PLANT_CITY AS city
+		FROM SMC.OBM_PLANTS
+		WHERE PLANT_ID=#{plantId}
+	</select>
+	
+	<select id="getPlantOfflineDates" resultType="com.penske.apps.buildmatrix.domain.PlantOfflineDate">
+		SELECT
+			OFFLINE_DATE_ID AS offlineDateId,
+			PLANT_ID AS plantId,
+			OFFLINE_START AS offlineStartDate,
+			OFFLINE_END AS offlineEndDate
+		FROM SMC.OBM_PLANTS_OFFLINE_DATES
+		WHERE PLANT_ID=#{plantId}
+	</select>
+	
+	<update id="saveOfflineDates">
+		MERGE INTO SMC.OBM_PLANTS_OFFLINE_DATES AS offlineDates USING
+		(
+		VALUES
+		<foreach collection="offlineDates" item="offlineDate" separator="," >
+			(
+				CAST(#{offlineDate.offlineDateId} AS INTEGER),
+				CAST(#{offlineDate.plantId} AS INTEGER),
+				CAST(#{offlineDate.offlineStartDate} AS DATE),
+				CAST(#{offlineDate.offlineEndDate} AS DATE)
+			)
+		</foreach>
+		)
+		AS input
+		(
+			OFFLINE_DATE_ID,PLANT_ID,OFFLINE_START,OFFLINE_END
+		)
+		ON offlineDates.OFFLINE_DATE_ID=input.OFFLINE_DATE_ID 
+		WHEN MATCHED THEN UPDATE SET offlineDates.OFFLINE_START= input.OFFLINE_START , offlineDates.OFFLINE_END= input.OFFLINE_END
+		WHEN NOT MATCHED THEN
+		INSERT
+			(
+			PLANT_ID,
+			OFFLINE_START,
+			OFFLINE_END
+			)
+		 VALUES
+			(
+			input.PLANT_ID,
+			input.OFFLINE_START,
+			input.OFFLINE_END
+			)
+	</update>
+	
+	<update id="removeOfflineDates">
+		DELETE SMC.OBM_PLANTS_OFFLINE_DATES
+		WHERE OFFLINE_DATE_ID IN
+			<foreach collection="offlineDateToRemove" item="offlineDateId" separator="," open="(" close=")">#{offlineDateId}</foreach>
+	</update>
+	
+	<select id="getRegionAssociationData" resultType="com.penske.apps.buildmatrix.domain.RegionPlantAssociation">
+		SELECT
+			DISTINCT mileage.REGION AS region,
+			mileage.REGION_DESC AS regionDesc,
+			reg.ASSOC_ID AS regionAssociationId,
+			reg.PLANT_ID AS plantId,
+			CASE WHEN reg.REGION <![CDATA[<>]]> '' AND reg.PLANT_ID = #{plantId}
+				 THEN 'Y' 
+				 ELSE 'N' 
+			END as isAssociated
+		FROM OBM_FREIGHT_MILEAGE mileage
+			LEFT JOIN OBM_REGION_PLANT_ASSOCIATION reg 
+			ON mileage.REGION = reg.REGION AND mileage.plant_id = reg.plant_id
+		WHERE mileage.REGION <![CDATA[<>]]> ''
+		AND reg.plant_id = #{plantId}
+		ORDER BY mileage.REGION
+	</select>
+	
+	<select id="getRegionAssociationByPlantIds" resultType="com.penske.apps.buildmatrix.domain.RegionPlantAssociation">
+		SELECT
+			DISTINCT mileage.REGION AS region,
+			mileage.REGION_DESC AS regionDesc,
+			reg.ASSOC_ID AS regionAssociationId,
+			reg.PLANT_ID AS plantId,
+			'Y' as isAssociated
+		FROM OBM_FREIGHT_MILEAGE mileage
+			RIGHT JOIN OBM_REGION_PLANT_ASSOCIATION reg 
+			ON mileage.REGION = reg.REGION AND reg.PLANT_ID = mileage.PLANT_ID
+		WHERE mileage.REGION <![CDATA[<>]]> ''
+		AND reg.PLANT_ID IN (
+			<foreach collection="bodyPlantIds" item="plantId" separator="," open="" close="">
+ 				#{plantId}
+ 			</foreach>
+		)
+	</select>
+	
+	<select id="getRegionAssociationDataByRegion" resultType="com.penske.apps.buildmatrix.domain.RegionPlantAssociation">
+		SELECT
+			DISTINCT mileage.REGION AS region,
+			mileage.REGION_DESC AS regionDesc,
+			reg.ASSOC_ID AS regionAssociationId,
+			reg.PLANT_ID AS plantId,
+			'Y' as isAssociated
+		FROM OBM_FREIGHT_MILEAGE mileage
+			RIGHT JOIN OBM_REGION_PLANT_ASSOCIATION reg 
+			ON mileage.REGION = reg.REGION AND reg.PLANT_ID = mileage.PLANT_ID
+		WHERE mileage.REGION <![CDATA[<>]]> '' 
+		AND mileage.REGION =#{region}
+		ORDER BY mileage.REGION
+	</select>
+	
+	<select id="getAllRegionAssociationData" resultType="com.penske.apps.buildmatrix.domain.RegionPlantAssociation">
+		SELECT
+			DISTINCT mileage.REGION AS region,
+			mileage.REGION_DESC AS regionDesc,
+			reg.ASSOC_ID AS regionAssociationId,
+			reg.PLANT_ID AS plantId,
+			CASE WHEN reg.REGION <![CDATA[<>]]> ''
+				 THEN 'Y' 
+				 ELSE 'N' 
+			END as isAssociated
+		FROM OBM_FREIGHT_MILEAGE mileage
+			LEFT JOIN OBM_REGION_PLANT_ASSOCIATION reg 
+			ON mileage.REGION = reg.REGION
+		WHERE mileage.REGION <![CDATA[<>]]> ''
+		ORDER BY mileage.REGION
+	</select>
+	
+	<update id="savePlantRegionAssociation">
+		MERGE INTO SMC.OBM_REGION_PLANT_ASSOCIATION AS regionPlntAsso USING
+		(
+		VALUES
+		<foreach collection="regionPlantAssociationData" item="data" separator="," >
+			(
+				CAST(#{data.plantId} AS INTEGER),
+				CAST(#{data.region} AS VARCHAR(50))
+			)
+		</foreach>
+		)
+		AS input
+		(
+			PLANT_ID,REGION
+		)
+		ON regionPlntAsso.PLANT_ID=input.PLANT_ID AND regionPlntAsso.REGION=input.REGION
+		WHEN MATCHED THEN DELETE
+		WHEN NOT MATCHED THEN
+		INSERT
+			(
+			PLANT_ID,
+			REGION
+			)
+		 VALUES
+			(
+			input.PLANT_ID,
+			input.REGION
+			)
+	</update>
+	
+	<select id="getDistrictsFromFreightMileage" resultType="String">
+		SELECT	 TRIM(DISTRICT)
+		FROM     SMC.OBM_FREIGHT_MILEAGE 
+		WHERE    PLANT_ID = #{plantId} 
+		AND		 REGION IN
+		<foreach collection="regionsList" item="region" separator="," open="(" close=")">#{region}</foreach>
+	</select>
+	
+	<delete id="deleteProximityDataForRegion">
+		DELETE
+		FROM     SMC.OBM_PLANT_PROXIMITY
+		WHERE 	 PLANT_ID = #{plantId} 
+		AND 	 DISTRICT IN 
+		<foreach collection="districtsList" item="district" separator="," open="(" close=")">#{district}</foreach>
+	</delete>
+	
+	<select id="getSlotIdForPlantId" resultType="int">
+		SELECT  SLOT_ID 
+		FROM    SMC.OBM_SLOTS
+		WHERE 	PLANT_ID= #{plantId}
+	</select>
+	
+	<delete id="deleteSlotDataForRegion">
+		DELETE
+        FROM     SMC.OBM_SLOTS_BY_REGION
+        WHERE    
+            (
+               <foreach collection="slotIdList" item="SlotId" separator="OR" >
+                   <foreach collection="regionsList" item="region" separator="OR">
+                       (
+                          SLOT_ID=#{SlotId} AND REGION=#{region} AND SLOT_RESERVED = 0 AND  SLOT_ACCEPTED = 0
+                       )
+                   </foreach>
+              </foreach>
+            )
+	</delete>
+	 
+	<!-- PRODUCTION SLOT RESULTS -->
+	<select id="getProductionSlotResults" resultType="com.penske.apps.buildmatrix.domain.ProductionSlotResult">
+		SELECT
+			SLOT_RESERVE.SLOT_RESERVATION_ID AS slotReservationId,
+			SLOT_REQ.RUN_ID AS runId,
+			SLOT_REQ.ORDER_ID AS orderId,
+			SLOT_RESERVE.UNIT_NUMBER AS unitNumber,
+			SLOT_RESERVE.VEHICLE_TYPE AS vehicleType,
+			SLOT_RESERVE.RESERVATION_STATUS AS reservationStatus,
+			SLOT_REQ.PROGRAM_NAME AS programName,
+			SLOT_RESERVE.DELIVERY_LOCATION_REGION AS region,
+			SLOT_RESERVE.DELIVERY_LOCATION_AREA AS area,
+			SLOT_REQ.DESTINATION_DISTRICT AS districtNumber,
+			SLOT_REQ.DESTINATION_DISTRICT_DESC AS districtName,
+			SLOT_REQ.DESTINATION_DELIVERY_DATE AS requestedDeliveryDate,
+			PLANT.PLANT_MFR_CODE ||'-' ||PLANT.PLANT_CITY ||',' ||PLANT.PLANT_STATE AS productionSlot,
+			PLANT.PLANT_ID AS plantId,
+			DATE(to_date(SLOT_DATES.SLOT_DATE,'MM/DD/YYYY')) AS productionDate,
+			SLOT_RESERVE.CHASSIS_MAKE AS chassisMake,
+			SLOT_RESERVE.CHASSIS_MODEL AS chassisModel,
+			SLOT_RESERVE.CHASSIS_MODEL_YEAR AS chassisModelYear,
+			SLOT_RESERVE.CHASSIS_COLOR AS chassisColor,
+			SLOT_RESERVE.BODY_MAKE AS bodyMake,
+			SLOT_RESERVE.CHASSIS_LENGTH AS chassisLength,
+			SLOT_RESERVE.REAR_DOOR_MAKE AS rearDoorMake,
+			SLOT_RESERVE.REEFER_MAKE AS reeferMake,
+			SLOT_RESERVE.LIFTGATE_INSTALLED AS liftgateInstalled,
+			SLOT_RESERVE.LIFTGATE_MAKE AS liftgateMake,
+			SLOT_RESERVE.LIFTGATE_TYPE AS liftgateType,
+			SLOT_RESERVE.WHEEL_MATERIAL as wheelMaterial,
+			CASE WHEN SLOT_RESERVE.CHANGE_REQUIRED = 'Y' THEN 1 ELSE 0 END AS changeRequired,
+			SLOT_RESERVE.VEHICLE_TYPE_CHANGE_REQUIRED AS vehicleTypeChangeRequired,
+			SLOT_RESERVE.CHASSIS_MODEL_CHANGE_REQUIRED AS chassisModelChangeRequired,
+			SLOT_RESERVE.CHASSIS_MODEL_YEAR_CHANGE_REQUIRED AS chassisModelYearChangeRequired,
+			SLOT_RESERVE.CHASSIS_COLOR_CHANGE_REQUIRED AS chassisColorChangeRequired,
+			SLOT_RESERVE.CHASSIS_WHEEL_MATERIAL_CHANGE_REQUIRED AS chassisWheelMatChangeRequired,
+			SLOT_RESERVE.COMMENTS AS comments
+		FROM 
+			SMC.OBM_RUN_SUMMARY RUN_SUMMARY
+			JOIN SMC.OBM_SLOT_REQUEST SLOT_REQ
+			    ON SLOT_REQ.RUN_ID=RUN_SUMMARY.RUN_ID
+			JOIN SMC.OBM_SLOT_RESERVATION SLOT_RESERVE 
+				ON SLOT_RESERVE.SLOT_REQUEST_ID = SLOT_REQ.SLOT_REQUEST_ID
+			LEFT JOIN SMC.OBM_SLOTS SLOT 
+				ON SLOT.SLOT_ID=SLOT_RESERVE.SLOT_ID
+			LEFT JOIN SMC.OBM_PLANTS PLANT 
+				ON PLANT.PLANT_ID = SLOT.PLANT_ID
+			LEFT JOIN SMC.OBM_FREIGHT_MILEAGE MILEAGE 
+				ON MILEAGE.PLANT_ID = PLANT.PLANT_ID AND MILEAGE.DISTRICT = SLOT_REQ.DESTINATION_DISTRICT
+			LEFT JOIN SMC.OBM_SLOT_DATES SLOT_DATES 
+				ON SLOT_DATES.SLOT_DATE_ID = SLOT.SLOT_DATE_ID
+		WHERE
+			 RUN_SUMMARY.RUN_ID=#{buildId}
+			 <if test="slotReservationId != null and slotReservationId != 0">
+		 	 AND SLOT_RESERVE.SLOT_RESERVATION_ID =#{slotReservationId} 
+			</if>
+	</select>
+	
+	<select id="getSlotResultsByFilter" resultType="com.penske.apps.buildmatrix.domain.ProductionSlotResult">
+		SELECT
+			SLOT_RESERVE.SLOT_RESERVATION_ID AS slotReservationId,
+			SLOT_REQ.RUN_ID AS runId,
+			SLOT_REQ.ORDER_ID AS orderId,
+			SLOT_RESERVE.UNIT_NUMBER AS unitNumber,
+			SLOT_RESERVE.VEHICLE_TYPE AS vehicleType,
+			SLOT_RESERVE.RESERVATION_STATUS AS reservationStatus,
+			SLOT_REQ.PROGRAM_NAME AS programName,
+			SLOT_RESERVE.DELIVERY_LOCATION_REGION AS region,
+			SLOT_RESERVE.DELIVERY_LOCATION_AREA AS area,
+			SLOT_REQ.DESTINATION_DISTRICT AS districtNumber,
+			SLOT_REQ.DESTINATION_DISTRICT_DESC AS districtName,
+			SLOT_REQ.DESTINATION_DELIVERY_DATE AS requestedDeliveryDate,
+			PLANT.PLANT_MFR_CODE ||'-' ||PLANT.PLANT_CITY ||',' ||PLANT.PLANT_STATE AS productionSlot,
+			PLANT.PLANT_ID AS plantId,
+			DATE(to_date(SLOT_DATES.SLOT_DATE,'MM/DD/YYYY')) AS productionDate,
+			SLOT_RESERVE.CHASSIS_MAKE AS chassisMake,
+			SLOT_RESERVE.CHASSIS_MODEL AS chassisModel,
+			SLOT_RESERVE.CHASSIS_MODEL_YEAR AS chassisModelYear,
+			SLOT_RESERVE.CHASSIS_COLOR AS chassisColor,
+			SLOT_RESERVE.BODY_MAKE AS bodyMake,
+			SLOT_RESERVE.CHASSIS_LENGTH AS chassisLength,
+			SLOT_RESERVE.REAR_DOOR_MAKE AS rearDoorMake,
+			SLOT_RESERVE.REEFER_MAKE AS reeferMake,
+			SLOT_RESERVE.LIFTGATE_INSTALLED AS liftgateInstalled,
+			SLOT_RESERVE.LIFTGATE_MAKE AS liftgateMake,
+			SLOT_RESERVE.LIFTGATE_TYPE AS liftgateType,
+			SLOT_RESERVE.WHEEL_MATERIAL as wheelMaterial,
+			CASE WHEN SLOT_RESERVE.CHANGE_REQUIRED = 'Y' THEN 1 ELSE 0 END AS changeRequired,
+			CASE WHEN SLOT_RESERVE.VEHICLE_TYPE_CHANGE_REQUIRED = 'Y' THEN 1 ELSE 0 END AS vehicleTypeChangeRequired,
+			CASE WHEN SLOT_RESERVE.CHASSIS_MODEL_CHANGE_REQUIRED = 'Y' THEN 1 ELSE 0 END AS chassisModelChangeRequired,
+			CASE WHEN SLOT_RESERVE.CHASSIS_MODEL_YEAR_CHANGE_REQUIRED = 'Y' THEN 1 ELSE 0 END AS chassisModelYearChangeRequired,
+			CASE WHEN SLOT_RESERVE.CHASSIS_COLOR_CHANGE_REQUIRED = 'Y' THEN 1 ELSE 0 END AS chassisColorChangeRequired,
+			CASE WHEN SLOT_RESERVE.CHASSIS_WHEEL_MATERIAL_CHANGE_REQUIRED = 'Y' THEN 1 ELSE 0 END AS chassisWheelMatChangeRequired,
+			SLOT_RESERVE.COMMENTS AS comments
+		FROM 
+			SMC.OBM_RUN_SUMMARY RUN_SUMMARY
+			JOIN SMC.OBM_SLOT_REQUEST SLOT_REQ
+			    ON SLOT_REQ.RUN_ID=RUN_SUMMARY.RUN_ID
+			JOIN SMC.OBM_SLOT_RESERVATION SLOT_RESERVE 
+				ON SLOT_RESERVE.SLOT_REQUEST_ID = SLOT_REQ.SLOT_REQUEST_ID
+			LEFT JOIN SMC.OBM_SLOTS SLOT 
+				ON SLOT.SLOT_ID=SLOT_RESERVE.SLOT_ID
+			LEFT JOIN SMC.OBM_PLANTS PLANT 
+				ON PLANT.PLANT_ID = SLOT.PLANT_ID
+			LEFT JOIN SMC.OBM_FREIGHT_MILEAGE MILEAGE 
+				ON MILEAGE.PLANT_ID = PLANT.PLANT_ID AND MILEAGE.DISTRICT = SLOT_REQ.DESTINATION_DISTRICT
+			LEFT JOIN SMC.OBM_SLOT_DATES SLOT_DATES 
+				ON SLOT_DATES.SLOT_DATE_ID = SLOT.SLOT_DATE_ID
+		WHERE
+			 RUN_SUMMARY.RUN_ID=#{buildId} 
+		<if test="selectedFilters != null and selectedFilters.size > 0">
+		 AND SLOT_RESERVE.RESERVATION_STATUS IN 
+		<foreach collection="selectedFilters" item="id" separator="," open="(" close=")">#{id}</foreach>
+		</if>
+	</select>
+	
+	<select id="getProductionSlotList" resultMap="plantResultMap">
+		SELECT 
+					distinct PLANT.PLANT_ID AS plantId,
+					PLANT.PLANT_MFR_CODE ||'-' ||PLANT.PLANT_CITY ||',' ||PLANT.PLANT_STATE AS productionSlot,
+					PLANT_MFR_CODE as bodyMake
+		FROM 		SMC.OBM_PLANTS PLANT
+		LEFT JOIN  	SMC.OBM_SLOT_RESERVATION_EXCEPTION RESERVE_EXCEPTION
+		ON 			RESERVE_EXCEPTION.PLANT_ID = PLANT.PLANT_ID
+		WHERE		RESERVE_EXCEPTION.RUN_ID = #{buildId} 
+		AND			RESERVE_EXCEPTION.UNIT_NUMBER = #{unitNumber}
+	</select>
+	
+	<resultMap type="com.penske.apps.buildmatrix.domain.ProductionSlotResult" id="plantResultMap">
+		<result column="plantId"		property="plantId" />
+		<result column="productionSlot"	property="productionSlot" />
+		<result column="bodyMake"		property="bodyMake" />
+	</resultMap>
+	
+	<select id="getAllPlantsAvailableToDistrict"  parameterType="java.lang.String" resultMap="plantResultMap">
+		SELECT 		
+				PLANT_ID AS plantId,
+				PLANT_MFR_CODE ||'-' ||PLANT_CITY ||',' ||PLANT_STATE AS productionSlot,
+				PLANT_MFR_CODE as bodyMake
+		FROM 	SMC.OBM_PLANTS PLTS
+		INNER JOIN SMC.OBM_PLANT_PROXIMITY PROX ON PROX.PLANT_ID = PLTS.PLANT_ID
+		WHERE PROX.district = #{district}
+	</select>
+	
+	<select id="getAllPlants" resultMap="plantResultMap">
+		SELECT 		
+				PLANT_ID AS plantId,
+				PLANT_MFR_CODE ||'-' ||PLANT_CITY ||',' ||PLANT_STATE AS productionSlot,
+				PLANT_MFR_CODE as bodyMake
+		FROM 	SMC.OBM_PLANTS
+		ORDER BY PLANT_MFR_CODE, PLANT_CITY
+	</select>
+	
+	<update id="updateRunSummary">
+		UPDATE SMC.OBM_RUN_SUMMARY
+		SET    RUN_STATUS = 'A'
+		WHERE  RUN_ID = #{buildId}
+	</update>
+	
+	<select id="acceptBuild" statementType="CALLABLE" parameterType="int">
+	   {
+	        CALL SMC.SMC_ACCEPT_RUN
+	       	(
+	        	#{runId, mode=IN, jdbcType=INTEGER},
+	        	#{STATUS, mode=OUT, jdbcType=INTEGER}
+	       	) 
+	    }      
+	</select>
+	
+	<select id="getSlotDatesForPlant" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlotDate">
+		SELECT 
+					SLOTS.SLOT_ID AS slotId,
+					DATE(to_date(SLOT_DATES.SLOT_DATE,'MM/DD/YYYY')) AS slotDate 
+		FROM 		SMC.OBM_SLOTS SLOTS
+		LEFT JOIN 	SMC.OBM_SLOT_TYPES SLOT_TYPES 
+			   ON   SLOT_TYPES.SLOT_TYPE_ID = SLOTS.SLOT_TYPE_ID
+		LEFT JOIN 	SMC.OBM_SLOT_DATES SLOT_DATES 
+			   ON   SLOT_DATES.SLOT_DATE_ID = SLOTS.SLOT_DATE_ID
+		LEFT JOIN	SMC.OBM_SLOTS_BY_REGION REGION
+			   ON	REGION.SLOT_ID = SLOTS.SLOT_ID
+		WHERE       SLOTS.PLANT_ID = #{plantId} 
+		AND         SLOT_TYPES.SLOT_TYPE = #{vehicleType}
+		AND			REGION.REGION = #{region}
+		AND			REGION.SLOT_RESERVED + REGION.SLOT_ACCEPTED <![CDATA[<]]> REGION.SLOT_AVAILABLE	
+	</select>
+		
+	<!--***** BUILD MATRIX WORKFLOW *****-->
+	
+	<!-- BUILD HISTROY -->
+	<resultMap id="buildHistoryMap" type="com.penske.apps.buildmatrix.domain.BuildSummary" >
+		<result column="buildId"  				  property="buildId"/>
+		<result column="reqQty"  				  property="reqQty"/>
+		<result column="buildStatus" 			  property="buildStatus"/>
+		<result column="startedBySso" 		  property="startedBySso"/>
+		<result column="startedByName"  			  property="startedByName"/>
+		<result column="startedDate"  				  property="startedDate"/>
+		<result column="submittedBySso" 					  property="submittedBySso"/>
+		<result column="submittedByName" 		  property="submittedByName"/>
+		<result column="submittedDate"  			  property="submittedDate"/>
+		<result column="runStartDate"    property="runStartDate"/>
+		<result column="runEndDate" 		  property="runEndDate"/>
+		<result column="maxWeeksBefore" 		  property="maxWeeksBefore"/>
+		<result column="maxWeeksAfter"						property="maxWeeksAfter"/>
+		<result column="guidanceMode"						property="guidanceMode"/>
+		<collection property="fulfilledQty" column="{buildId=buildId}" select="getfulfilledQty"></collection>
+	</resultMap>
+	
+	
+	<select id="getAllBuildHistory" resultMap="buildHistoryMap">
+		SELECT
+			RUN_ID AS buildId,
+	        UNIT_QTY AS reqQty,
+		    RUN_STATUS AS buildStatus,
+	        starter.SSO as startedBySso,
+	        starter.FIRST_NAME||' '||starter.LAST_NAME AS startedByName,
+	        STARTED_DATE as startedDate,
+	        submitter.SSO as submittedBySso,
+	        submitter.FIRST_NAME||' '||submitter.LAST_NAME AS submittedByName,
+	        SUBMITTED_DATE as submittedDate,
+	        RUN_START_DATE as runStartDate,
+	        RUN_END_DATE as runEndDate,
+	        MAXIMUM_WEEKS_BEFORE_ALLOWED as maxWeeksBefore,
+			MAXIMUM_WEEKS_AFTER_ALLOWED as maxWeeksAfter,
+			GUIDANCE_MODE as guidanceMode
+		FROM SMC.OBM_RUN_SUMMARY runSummary
+		LEFT JOIN SMC.SMC_USER_MASTER starter ON starter.SSO = runSummary.STARTED_BY
+		LEFT JOIN SMC.SMC_USER_MASTER submitter ON submitter.SSO = runSummary.SUBMITTED_BY
+		ORDER BY 
+			(CASE WHEN buildStatus = 'P' THEN 0 ELSE 1 END), 
+			(CASE WHEN buildStatus = 'S' THEN 0 ELSE 1 END), 
+			(CASE WHEN buildStatus = 'R' THEN 0 ELSE 1 END), 
+			(CASE WHEN buildStatus = 'F' THEN 0 ELSE 1 END), 
+			buildId DESC
+	</select>
+	
+	<select id="getfulfilledQty" resultType="int">
+		SELECT SUM(QTY_FULFILLED) as fulfilledQty
+		FROM SMC.OBM_CRO_BUILD_REQUEST
+		WHERE RUN_ID =#{buildId}
+	</select>
+	
+	<!-- BUILD FUNCTIONS -->
+	<insert id="insertNewBuild" useGeneratedKeys="true" keyProperty="newBuild.buildId">
+ 		INSERT INTO SMC.OBM_RUN_SUMMARY (
+ 			RUN_STATUS,
+ 			UNIT_QTY,
+ 			STARTED_BY,
+ 			STARTED_DATE,
+ 			MAXIMUM_WEEKS_BEFORE_ALLOWED,
+			MAXIMUM_WEEKS_AFTER_ALLOWED,
+			GUIDANCE_MODE
+ 		) VALUES (
+ 			#{newBuild.buildStatus.code},
+ 			#{newBuild.reqQty},
+ 			#{newBuild.startedBySso},
+ 			CURRENT TIMESTAMP,
+ 			#{newBuild.maxWeeksBefore},
+ 			#{newBuild.maxWeeksAfter},
+ 			#{newBuild.guidanceMode}
+ 		)
+	</insert>
+	
+	<update id="updateBuild">
+		UPDATE SMC.OBM_RUN_SUMMARY
+		SET
+			UNIT_QTY = #{existingBuild.reqQty},
+		    RUN_STATUS = #{existingBuild.buildStatus},
+	        SUBMITTED_BY = #{existingBuild.submittedBySso},
+	        SUBMITTED_DATE = #{existingBuild.submittedDate},
+	        RUN_START_DATE = #{existingBuild.runStartDate},
+	        RUN_END_DATE = #{existingBuild.runEndDate}
+	    WHERE
+	    	RUN_ID = #{existingBuild.buildId}
+	</update>
+	
+	<select id="getBuildSummary" resultType="com.penske.apps.buildmatrix.domain.BuildSummary">
+		SELECT
+			RUN_ID AS buildId,
+	        UNIT_QTY AS reqQty,
+		    RUN_STATUS AS buildStatus,
+	        starter.SSO as startedBySso,
+	        starter.FIRST_NAME||' '||starter.LAST_NAME AS startedByName,
+	        STARTED_DATE as startedDate,
+	        submitter.SSO as submittedBySso,
+	        submitter.FIRST_NAME||' '||submitter.LAST_NAME AS submittedByName,
+	        SUBMITTED_DATE as submittedDate,
+	        RUN_START_DATE as runStartDate,
+	        RUN_END_DATE as runEndDate,
+	        MAXIMUM_WEEKS_BEFORE_ALLOWED as maxWeeksBefore,
+			MAXIMUM_WEEKS_AFTER_ALLOWED as maxWeeksAfter,
+		    CASE runSummary.DEBUG_MODE
+			   	WHEN 1 THEN 'TRUE'
+			   	WHEN 0 THEN 'FALSE'
+		    END as debugMode,
+		    CASE runSummary.ENHANCED_DEBUG_MODE
+			   	WHEN 1 THEN 'TRUE'
+			   	WHEN 0 THEN 'FALSE'
+		    END as enhancedDebugMode,
+		    GUIDANCE_MODE 
+		FROM SMC.OBM_RUN_SUMMARY runSummary
+		LEFT JOIN SMC.SMC_USER_MASTER starter ON starter.SSO = runSummary.STARTED_BY
+		LEFT JOIN SMC.SMC_USER_MASTER submitter ON submitter.SSO = runSummary.SUBMITTED_BY
+		WHERE RUN_ID = #{buildId}
+	</select>
+	
+	<update id="submitBuild">
+		UPDATE SMC.OBM_RUN_SUMMARY
+		SET
+			RUN_STATUS = #{status.code},
+			SUBMITTED_BY = #{sso},
+			SUBMITTED_DATE = CURRENT_TIMESTAMP,
+			GUIDANCE_MODE = #{guidanceMode}
+		WHERE
+			RUN_ID = #{buildId}
+	</update>
+	
+	<update id="updateBuildParams">
+		UPDATE SMC.OBM_RUN_SUMMARY
+		SET
+			MAXIMUM_WEEKS_BEFORE_ALLOWED = #{summary.maxWeeksBefore},
+			MAXIMUM_WEEKS_AFTER_ALLOWED = #{summary.maxWeeksAfter}
+			<if test="summary.debugUpdateFlg">
+				,
+			<choose>
+				<when test="summary.debugMode">
+				DEBUG_MODE=1,
+				</when>
+				<otherwise>
+				DEBUG_MODE=0,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="summary.enhancedDebugMode">
+				ENHANCED_DEBUG_MODE=1
+				</when>
+				<otherwise>
+				ENHANCED_DEBUG_MODE=0
+				</otherwise>
+			</choose>
+			</if>
+		WHERE
+			RUN_ID = #{summary.buildId}
+	</update>
+	
+	<!-- CRO BUILD REQUESTS -->
+	<insert id="insertCroBuildRequest" >
+ 		INSERT INTO SMC.OBM_CRO_BUILD_REQUEST (
+ 			RUN_ID,
+ 			ORDER_ID,
+ 			DELIVERY_ID,
+ 			QTY_REQUESTED,
+ 			QTY_FULFILLED
+ 		) VALUES (
+ 			#{buildId},
+ 			#{order.orderId},
+ 			#{order.deliveryId},
+ 			#{unitsToConsider},
+ 			0
+ 		)
+	</insert>
+
+	<delete id="deleteCroBuildRequestsFromBuild">
+	 	DELETE FROM SMC.OBM_CRO_BUILD_REQUEST
+	 	WHERE RUN_ID = #{existingBuildId}
+	</delete>
+
+	<select id="getCroOrdersForBuild" resultType="com.penske.apps.buildmatrix.domain.CROBuildRequest">
+		SELECT
+			CRO_BUILD_REQUEST_ID as croBuildRequestId,
+			RUN_ID as runId,
+			ORDER_ID as orderId,
+			DELIVERY_ID as deliveryId,
+			QTY_REQUESTED as requestedQty,
+			QTY_FULFILLED as fulfilledQty
+		FROM SMC.OBM_CRO_BUILD_REQUEST
+		WHERE RUN_ID = #{buildId}
+	</select>
+	
+	<select id="getCroOrdersForAllRuns" resultType="com.penske.apps.buildmatrix.domain.CROBuildRequest">
+		SELECT
+			CRO_BUILD_REQUEST_ID as croBuildRequestId,
+			RUN_ID as runId,
+			ORDER_ID as orderId,
+			DELIVERY_ID as deliveryId,
+			QTY_REQUESTED as requestedQty,
+			QTY_FULFILLED as fulfilledQty
+		FROM SMC.OBM_CRO_BUILD_REQUEST
+		WHERE 
+				(
+				<foreach collection="approvedOrders" item="order" separator="OR" >
+	 				(
+	 				 ORDER_ID=#{order.orderId} AND DELIVERY_ID=#{order.deliveryId} 
+	 				)
+	 			</foreach>
+				)
+	</select>
+	
+	<!-- AVAILABLE CHASSIS -->
+	<select id="getExcludedUnitCount" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM SMC.OBM_UNITS_EXCLUDED_FROM_BUILD
+		WHERE RUN_YEAR = #{year}
+	</select>
+	
+	<select id="getExcludedUnits" resultType="String">
+		SELECT
+			UNIT_NUMBER
+		FROM SMC.OBM_UNITS_EXCLUDED_FROM_BUILD
+		WHERE RUN_YEAR = #{year}
+	</select>
+
+	<insert id="excludeUnits">
+		INSERT INTO SMC.OBM_UNITS_EXCLUDED_FROM_BUILD
+ 					(UNIT_NUMBER, RUN_YEAR)
+ 		VALUES
+ 			<foreach collection="excludedUnits" item="unit" separator="," open="" close="">
+ 				(#{unit}, #{year})
+ 			</foreach>
+	</insert>
+
+	<delete id="deleteExcludedUnits">
+		DELETE FROM SMC.OBM_UNITS_EXCLUDED_FROM_BUILD
+		WHERE RUN_YEAR = #{year}
+		AND UNIT_NUMBER IN (
+			<foreach collection="excludedUnits" item="unit" separator="," open="" close="">
+				#{unit}
+			</foreach>
+		)
+	</delete>
+	
+	<!-- BUSINESS AWARDS -->
+	<insert id="insertBusinessAwards">
+		INSERT INTO SMC.OBM_BUSINESS_AWARD
+ 				(RUN_ID, GROUP_KEY, AWARD_KEY, AWARD_KEY_ORDER, AWARD_PERCENTAGE, AWARD_QUANTITY, AWARD_TYPE, AWARD_EXCESS)
+ 		VALUES
+ 			<foreach collection="awardsToInsert" item="award" separator="," open="" close="">
+ 				(#{award.buildId}, #{award.groupKey}, #{award.attributeValueKey}, #{award.awardOrder}, #{award.percentage}, #{award.quantity}, #{award.awardType}, #{award.awardExcess})
+ 			</foreach>
+	</insert>
+	
+	<delete id="deleteBusinessAwards">
+		DELETE FROM SMC.OBM_BUSINESS_AWARD
+ 		WHERE RUN_ID = #{buildId}
+	</delete>
+	
+	<select id="getBusinessAwards" resultType="com.penske.apps.buildmatrix.domain.BusinessAward">
+		SELECT	
+			RUN_ID as buildId,
+			GROUP_KEY as groupKey, 
+			AWARD_KEY as attributeValueKey, 
+			AWARD_KEY_ORDER as awardOrder, 
+			AWARD_PERCENTAGE as percentage, 
+			AWARD_QUANTITY as quantity, 
+			AWARD_TYPE as awardType,
+			AWARD_EXCESS as awardExcess
+		FROM
+			SMC.OBM_BUSINESS_AWARD
+		WHERE RUN_ID = #{buildId}
+	</select>
+	<!-- OEM MIX MAINTENANCE -->
+	<select id="getBusinessAwardDefaults" resultType="com.penske.apps.buildmatrix.domain.BusinessAwardDefault">
+		SELECT	
+			BUSINESS_AWARD_DEFAULT_ID as businessDefaultId,
+			GROUP_ID as groupId,
+			ITEM_ID as attributeValueId,
+			ITEM_ORDER as itemOrder,
+			DEFAULT_VALUE as defaultPercentage
+		FROM
+			SMC.OBM_BUSINESS_AWARD_DEFAULTS
+	</select>
+
+	<update id="updateBusinessAwardDefault">
+		UPDATE SMC.OBM_BUSINESS_AWARD_DEFAULTS
+		SET 
+			ITEM_ORDER = #{awardDefault.itemOrder},
+			DEFAULT_VALUE = #{awardDefault.defaultPercentage}
+		WHERE
+			ITEM_ID = #{awardDefault.attributeValueId}
+	</update>
+
+	<insert id="insertBusinessAwardDefault">
+		INSERT INTO SMC.OBM_BUSINESS_AWARD_DEFAULTS
+ 				(GROUP_ID, ITEM_ID, ITEM_ORDER, DEFAULT_VALUE)
+ 		VALUES
+ 			<foreach collection="defaultsToInsert" item="awardDefault" separator="," open="" close="">
+ 				(#{awardDefault.groupId}, #{awardDefault.attributeValueId}, #{awardDefault.itemOrder}, #{awardDefault.defaultPercentage})
+ 			</foreach>
+	</insert>
+	
+	<!--***** BUILD ATTRIBUTE *****-->
+	<resultMap type="com.penske.apps.buildmatrix.domain.BuildAttribute" id="BuildAttributeMap">
+		<id column="ATTRIBUTE_ID"					property="attributeId" />
+		<result column="ATTRIBUTE_KEY" 				property="attributeKey"/>
+		<result column="ATTRIBUTE_NAME"   			property="attributeName"/>
+		<result column="BUSINESS_AWARD_GROUP_ID"	property="groupId"/>
+		<result column="GROUP_KEY"  				property="groupKey"/>
+		<result column="GROUP_DESCRIPTION"    		property="groupDescription"/>
+		<result column="GROUP_ORDER"    			property="groupOrder"/>
+		<collection property="attributeValues"		ofType="com.penske.apps.buildmatrix.domain.BuildAttributeValue" column="ATTRIBUTE_ID" resultMap="BuildAttributeValueMap" columnPrefix="VAL_" />
+	</resultMap>
+	
+	<resultMap type="com.penske.apps.buildmatrix.domain.BuildAttributeValue" id="BuildAttributeValueMap">
+		<id column="ATTRIBUTE_VALUE_ID"			property="attributeValueId" />
+		<result column="ATTRIBUTE_VALUE"		property="attributeValue" />
+		<result column="DEFAULT_VALUE"			property="defaultPercentage" />
+		<result column="ITEM_ORDER"				property="itemOrder" />
+	</resultMap>
+	
+	<select id="getAllBuildMatrixAttributes" resultMap="BuildAttributeMap">
+		SELECT
+			attribute.ATTRIBUTE_ID,
+			attribute.ATTRIBUTE_KEY,
+			attribute.ATTRIBUTE_NAME,
+			awardGroup.BUSINESS_AWARD_GROUP_ID,
+			awardGroup.GROUP_KEY,
+			awardGroup.GROUP_DESCRIPTION,
+			awardGroup.GROUP_ORDER,
+			val.ATTRIBUTE_VALUE_ID AS VAL_ATTRIBUTE_VALUE_ID,
+			val.ATTRIBUTE_VALUE AS VAL_ATTRIBUTE_VALUE,
+			COALESCE(awardDefs.DEFAULT_VALUE, 0 ) AS VAL_DEFAULT_VALUE,
+			COALESCE(awardDefs.ITEM_ORDER, -1) AS VAL_ITEM_ORDER
+		FROM SMC.OBM_ATTRIBUTE_VALUE val
+		LEFT JOIN SMC.OBM_ATTRIBUTE attribute
+			ON attribute.ATTRIBUTE_ID = val.ATTRIBUTE_ID
+		LEFT JOIN SMC.OBM_BUSINESS_AWARD_DEFAULTS awardDefs
+			ON awardDefs.ITEM_ID = val.ATTRIBUTE_VALUE_ID
+		LEFT JOIN SMC.OBM_BUSINESS_AWARD_GROUP awardGroup
+			ON awardGroup.ATTRIBUTE_ID = val.ATTRIBUTE_ID
+		WHERE val.IS_DELETED = 'N'
+		ORDER BY attribute.ATTRIBUTE_ID
+	</select>
+	
+	<select id="getAttributesForBuild" resultMap="BuildAttributeMap">
+		SELECT
+			attribute.ATTRIBUTE_ID,
+			attribute.ATTRIBUTE_KEY,
+			attribute.ATTRIBUTE_NAME,
+			awardGroup.BUSINESS_AWARD_GROUP_ID,
+			awardGroup.GROUP_KEY,
+			awardGroup.GROUP_DESCRIPTION,
+			awardGroup.GROUP_ORDER,
+			val.ATTRIBUTE_VALUE_ID AS VAL_ATTRIBUTE_VALUE_ID,
+			val.ATTRIBUTE_VALUE AS VAL_ATTRIBUTE_VALUE,
+			COALESCE(awardDefs.DEFAULT_VALUE, 0 ) AS VAL_DEFAULT_VALUE,
+			COALESCE(awardDefs.ITEM_ORDER, -1) AS VAL_ITEM_ORDER
+		FROM SMC.OBM_ATTRIBUTE_VALUE val
+		LEFT JOIN SMC.OBM_ATTRIBUTE attribute
+			ON attribute.ATTRIBUTE_ID = val.ATTRIBUTE_ID
+		LEFT JOIN SMC.OBM_BUSINESS_AWARD_DEFAULTS awardDefs
+			ON awardDefs.ITEM_ID = val.ATTRIBUTE_VALUE_ID
+		JOIN SMC.OBM_BUSINESS_AWARD_GROUP awardGroup
+			ON awardGroup.ATTRIBUTE_ID = val.ATTRIBUTE_ID
+		WHERE val.IS_DELETED = 'N'
+		ORDER BY attribute.ATTRIBUTE_ID
+	</select>
+	
+	<select id="getBuildAttributeById" resultMap="BuildAttributeMap">
+		SELECT
+			attribute.ATTRIBUTE_ID,
+			attribute.ATTRIBUTE_KEY,
+			attribute.ATTRIBUTE_NAME,
+			awardGroup.BUSINESS_AWARD_GROUP_ID,
+			awardGroup.GROUP_KEY,
+			awardGroup.GROUP_DESCRIPTION,
+			awardGroup.GROUP_ORDER,
+			val.ATTRIBUTE_VALUE_ID AS VAL_ATTRIBUTE_VALUE_ID,
+			val.ATTRIBUTE_VALUE AS VAL_ATTRIBUTE_VALUE,
+			COALESCE(awardDefs.DEFAULT_VALUE, 0 ) AS VAL_DEFAULT_VALUE,
+			COALESCE(awardDefs.ITEM_ORDER, -1) AS VAL_ITEM_ORDER
+		FROM SMC.OBM_ATTRIBUTE_VALUE val
+		LEFT JOIN SMC.OBM_ATTRIBUTE attribute
+			ON attribute.ATTRIBUTE_ID = val.ATTRIBUTE_ID
+		LEFT JOIN SMC.OBM_BUSINESS_AWARD_DEFAULTS awardDefs
+			ON awardDefs.ITEM_ID = val.ATTRIBUTE_VALUE_ID
+		LEFT JOIN SMC.OBM_BUSINESS_AWARD_GROUP awardGroup
+			ON awardGroup.ATTRIBUTE_ID = val.ATTRIBUTE_ID
+		WHERE
+			attribute.ATTRIBUTE_ID = #{attributeId}
+		AND
+		 	val.IS_DELETED = 'N'		
+	</select>
+	
+	<select id="getBuildAttributeByAttributeKey" resultMap="BuildAttributeMap">
+		SELECT
+			attribute.ATTRIBUTE_ID,
+			attribute.ATTRIBUTE_KEY,
+			attribute.ATTRIBUTE_NAME,
+			awardGroup.BUSINESS_AWARD_GROUP_ID,
+			awardGroup.GROUP_KEY,
+			awardGroup.GROUP_DESCRIPTION,
+			awardGroup.GROUP_ORDER,
+			val.ATTRIBUTE_VALUE_ID AS VAL_ATTRIBUTE_VALUE_ID,
+			val.ATTRIBUTE_VALUE AS VAL_ATTRIBUTE_VALUE,
+			COALESCE(awardDefs.DEFAULT_VALUE, 0 ) AS VAL_DEFAULT_VALUE,
+			COALESCE(awardDefs.ITEM_ORDER, -1) AS VAL_ITEM_ORDER
+		FROM SMC.OBM_ATTRIBUTE_VALUE val
+		LEFT JOIN SMC.OBM_ATTRIBUTE attribute
+			ON attribute.ATTRIBUTE_ID = val.ATTRIBUTE_ID
+		LEFT JOIN SMC.OBM_BUSINESS_AWARD_DEFAULTS awardDefs
+			ON awardDefs.ITEM_ID = val.ATTRIBUTE_VALUE_ID
+		LEFT JOIN SMC.OBM_BUSINESS_AWARD_GROUP awardGroup
+			ON awardGroup.ATTRIBUTE_ID = val.ATTRIBUTE_ID
+		WHERE
+			attribute.ATTRIBUTE_KEY = #{attributeKey}
+		AND
+		 	val.IS_DELETED = 'N'		
+	</select>
+	
+	<update id="updateAttributeValues">
+		UPDATE 	SMC.OBM_ATTRIBUTE_VALUE 
+		SET 	IS_DELETED = 'Y'
+		WHERE  	ATTRIBUTE_ID = #{attributeId}
+        AND 	ATTRIBUTE_VALUE IN 
+		<foreach collection="attributeValues" item="id" separator="," open="(" close=")">#{id}</foreach>
+	</update>
+	
+	<update id="addOrUpdateAttribute">
+		MERGE INTO SMC.OBM_ATTRIBUTE_VALUE AS attributeValues USING
+		(
+		VALUES
+			( 
+				CAST(#{attributeId} AS INTEGER),
+				CAST(#{attributeValue.attributeValue} AS VARCHAR(30))
+			)
+		)
+		AS input
+		(
+			ATTRIBUTE_ID, ATTRIBUTE_VALUE
+		)
+		ON   input.ATTRIBUTE_ID = attributeValues.ATTRIBUTE_ID  
+		AND  input.ATTRIBUTE_VALUE = attributeValues.ATTRIBUTE_VALUE
+		WHEN MATCHED THEN UPDATE SET attributeValues.IS_DELETED= 'N'
+		WHEN NOT MATCHED THEN
+		INSERT
+			(
+			ATTRIBUTE_ID,
+			ATTRIBUTE_VALUE,
+			IS_DELETED
+			)
+		 VALUES
+			(
+			input.ATTRIBUTE_ID,
+			input.ATTRIBUTE_VALUE,
+			'N'
+			)
+	</update>
+	
+	<select id="getDeletedFlagValue" resultType="String">
+	 	SELECT   IS_DELETED AS deletedFlag
+		FROM     SMC.OBM_ATTRIBUTE_VALUE
+		WHERE    ATTRIBUTE_ID=#{attributeId}
+		AND 	 ATTRIBUTE_VALUE = #{attributeValue}
+	</select> 
+	
+ 	<select id="getAllAttributeValues" resultType="String">
+	 	SELECT   TRIM(ATTRIBUTE_VALUE)
+		FROM     SMC.OBM_ATTRIBUTE_VALUE
+		WHERE    ATTRIBUTE_ID=#{attributeId}
+		AND      IS_DELETED = 'N'
+		ORDER BY ATTRIBUTE_VALUE ASC
+		
+	</select>
+	
+	<select id="getAllBuildMatrixCapabilities" resultMap="BodyPlantCapabilityMap">
+		SELECT   ATTRIBUTE_ID AS attributeId,
+		         ATTRIBUTE_KEY AS attributeKey,
+		         ATTRIBUTE_NAME AS attributeName
+		FROM     SMC.OBM_ATTRIBUTE
+	</select>
+
+	<resultMap id="BodyPlantCapabilityMap" type="com.penske.apps.buildmatrix.domain.BodyPlantCapability" >
+		<result property="attributeId"   	column="attributeId"/>
+		<result property="attributeKey"   	column="attributeKey"/>
+		<result property="attributeName" 	column="attributeName"/>
+		<result property="attributeValue" 	column="attributeValue"/>
+		<collection property="values" 		column="attributeId" select="getAllAttributeValues"></collection>
+	</resultMap>
+
+	<select id="getAllBuildMatrixExceptions" resultType="com.penske.apps.buildmatrix.domain.BodyPlantCapability">
+		SELECT   DISALLOW_LIFTGATE_INSTALL AS liftgateInstalled,
+		         DISALLOW_REAR_DOOR_INSTALL AS rearDoorInstalled,
+		         DISALLOW_REEFER_INSTALL AS reeferInstalled,
+		         DISALLOW_VEHICLE_TYPE AS vehicleType,
+		         DISALLOW_CHASSIS_MAKE AS chassisMake,
+		         DISALLOW_GVW AS gvw,
+		         DISALLOW_BODY_MAKE AS bodyMake,
+		         DISALLOW_REAR_DOOR_MAKE AS rearDoorMake,
+		         DISALLOW_LIFTGATE_MAKE AS liftgateMake,
+		         DISALLOW_LIFTGATE_TYPE AS liftgateType,
+		         DISALLOW_FUEL_TYPE AS fuelType,
+		         DISALLOW_CHASSIS_COLOR AS chassisColor,
+		         DISALLOW_CHASSIS_LENGTH AS chassisLength,
+		         DISALLOW_WHEELBASE AS wheelbase,
+		         DISALLOW_WHEEL_MATERIAL AS wheelMaterial,
+		         DISALLOW_CORP AS corp,
+		         DISALLOW_CHASSIS_MODEL AS chassisModel,
+		         DISALLOW_CHASSIS_MODEL_YEAR AS chassisModelYear,
+		         DISALLOW_TRANSMISSION_MAKE AS transmissionMake,
+		         DISALLOW_BRAKE_TYPE AS brakeType,
+		         DISALLOW_SUSPENSION_TYPE AS suspensionType,
+		         DISALLOW_REEFER_MAKE AS reeferMake,
+		         DISALLOW_SIDE_DOOR_INSTALL AS sideDoorInstalled
+		FROM     SMC.OBM_PLANT_CAPABILITY
+		WHERE    PLANT_ID = #{plantId}
+	</select>
+	
+	<select id="getAttributesbyId" resultMap="BodyPlantCapabilityMap">
+		SELECT   ATTRIBUTE_ID AS attributeId,
+		         ATTRIBUTE_KEY AS attributeKey,
+		         ATTRIBUTE_NAME AS attributeName
+		FROM     SMC.OBM_ATTRIBUTE
+		WHERE 	 ATTRIBUTE_ID =  #{attributeId}
+	</select>
+
+	<update id="updateCapability">
+		MERGE INTO SMC.OBM_PLANT_CAPABILITY AS capability USING
+		(
+		VALUES
+			( 
+				CAST(#{plantId} AS INTEGER)
+			)
+		)
+		AS input
+		(
+			PLANT_ID
+		)
+		ON   input.PLANT_ID = capability.PLANT_ID  
+		WHEN MATCHED THEN UPDATE SET 
+		<if test="attributeKey.equals('WHEELBASE')">capability.DISALLOW_WHEELBASE = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('GVW')">capability.DISALLOW_GVW = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('WHEELMATERIAL')">capability.DISALLOW_WHEEL_MATERIAL = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('COLOR')">capability.DISALLOW_CHASSIS_COLOR = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('FUELTYPE')">capability.DISALLOW_FUEL_TYPE = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('LIFTGATEMAKE')">capability.DISALLOW_LIFTGATE_MAKE = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('LIFTGATETYPE')">capability.DISALLOW_LIFTGATE_TYPE = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('CHASSISMAKE')">capability.DISALLOW_CHASSIS_MAKE = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('REARDOORMAKE')">capability.DISALLOW_REEFER_MAKE = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('VEHICLETYPE')">capability.DISALLOW_VEHICLE_TYPE = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('REARDOORINSTALLED')">capability.DISALLOW_REAR_DOOR_INSTALL = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('LIFTGATEINSTALLED')">capability.DISALLOW_LIFTGATE_INSTALL = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('REEFERINSTALLED')">capability.DISALLOW_REEFER_INSTALL = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('BODYMAKE')">capability.DISALLOW_BODY_MAKE = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('CHASSISLENGTH')">capability.DISALLOW_CHASSIS_LENGTH = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('CORP')">capability.DISALLOW_CORP = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('CHASSISMODEL')">capability.DISALLOW_CHASSIS_MODEL = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('CHASSISMODELYEAR')">capability.DISALLOW_CHASSIS_MODEL_YEAR = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('TRANSMISSIONMAKE')">capability.DISALLOW_TRANSMISSION_MAKE = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('REEFERMAKE')">capability.DISALLOW_REEFER_MAKE = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('SIDEDOORINSTALLED')">capability.DISALLOW_SIDE_DOOR_INSTALL = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('BRAKETYPE')">capability.DISALLOW_BRAKE_TYPE = #{disallowedAttributeValues}</if>
+		<if test="attributeKey.equals('SUSPENSIONTYPE')">capability.DISALLOW_SUSPENSION_TYPE = #{disallowedAttributeValues}</if>
+		WHEN NOT MATCHED THEN
+		INSERT
+		(
+ 			PLANT_ID,
+ 			DISALLOW_LIFTGATE_INSTALL,
+ 			DISALLOW_REAR_DOOR_INSTALL,
+ 			DISALLOW_SIDE_DOOR_INSTALL,
+ 			DISALLOW_REEFER_INSTALL,
+			DISALLOW_VEHICLE_TYPE,
+ 			DISALLOW_CHASSIS_MAKE,
+ 			DISALLOW_GVW,
+ 			DISALLOW_BODY_MAKE,
+			DISALLOW_REAR_DOOR_MAKE,
+			DISALLOW_LIFTGATE_MAKE,
+ 			DISALLOW_LIFTGATE_TYPE,
+ 			DISALLOW_FUEL_TYPE,
+ 			DISALLOW_CHASSIS_COLOR,
+			DISALLOW_CHASSIS_LENGTH,
+			DISALLOW_WHEELBASE,
+			DISALLOW_WHEEL_MATERIAL,
+			DISALLOW_CORP,
+ 			DISALLOW_CHASSIS_MODEL,
+ 			DISALLOW_CHASSIS_MODEL_YEAR,
+ 			DISALLOW_TRANSMISSION_MAKE,
+			DISALLOW_BRAKE_TYPE,
+			DISALLOW_SUSPENSION_TYPE,
+			DISALLOW_REEFER_MAKE
+ 		) VALUES (
+ 			#{plantId},
+ 			<choose><when test="attributeKey.equals('LIFTGATEINSTALLED')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('REARDOORINSTALLED')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('SIDEDOORINSTALLED')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('REEFERINSTALLED')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('VEHICLETYPE')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('CHASSISMAKE')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('GVW')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('BODYMAKE')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('REARDOORMAKE')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('LIFTGATEMAKE')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('LIFTGATETYPE')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('FUELTYPE')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('COLOR')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('CHASSISLENGTH')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('WHEELBASE')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('WHEELMATERIAL')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('CORP')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('CHASSISMODEL')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('CHASSISMODELYEAR')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('TRANSMISSIONMAKE')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('BRAKETYPE')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('SUSPENSIONTYPE')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>,
+			<choose><when test="attributeKey.equals('REEFERMAKE')">#{disallowedAttributeValues}</when>
+					<otherwise>''</otherwise>
+			</choose>	
+ 		)
+	</update>
+
+	<!-- PRODUCTION SLOT AVAILBILITY MAINTENANCE -->
+	<select id="getAllVehicleTypes" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlotType">
+		SELECT   SLOT_TYPE_ID AS slotTypeId,
+		         SLOT_DESCRIPTION AS slotTypeDesc,
+		         SLOT_TYPE AS slotType,
+		         CHASSIS_LEAD_TIME as chassisLeadTime
+		FROM     SMC.OBM_SLOT_TYPES
+		ORDER BY SLOT_TYPE_ID ASC
+
+	</select>
+	
+	<select id="getVehicleTypeById" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlotType">
+		SELECT   SLOT_TYPE_ID AS slotTypeId,
+		         SLOT_DESCRIPTION AS slotTypeDesc,
+		         SLOT_TYPE AS slotType,
+		         CHASSIS_LEAD_TIME as chassisLeadTime
+		FROM     SMC.OBM_SLOT_TYPES
+		WHERE SLOT_TYPE_ID = #{slotTypeId}
+	</select>
+	
+	<select id="getVehicleTypesByIds" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlotType">
+		SELECT   SLOT_TYPE_ID AS slotTypeId,
+		         SLOT_DESCRIPTION AS slotTypeDesc,
+		         SLOT_TYPE AS slotType,
+		         CHASSIS_LEAD_TIME as chassisLeadTime
+		FROM     SMC.OBM_SLOT_TYPES
+		WHERE SLOT_TYPE_ID IN (
+			<foreach collection="slotTypeIds" item="slotTypeId" separator="," open="" close="">
+ 				#{slotTypeId}
+ 			</foreach>
+		)
+	</select>
+	
+	<select id="getYearsforSLotMaintenance" resultType="int">
+		SELECT DISTINCT SLOT_YEAR FROM SMC.OBM_SLOT_DATES
+	</select>
+	
+	<select id="getAllBodyPlantsforSlotMaintenance" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant">
+		SELECT   PLANT_ID AS plantId,
+		         PLANT_MFR_CODE AS plantMfrCode,
+		         PLANT_MANUFACTURER AS plantManufacturer,
+		         PLANT_NAME AS plantName,
+		         PLANT_STATE AS state,
+		         PLANT_ZIP AS zip,
+		         PLANT_COUNTRY AS country,
+		         PLANT_CITY AS city
+		FROM     SMC.OBM_PLANTS
+		ORDER BY PLANT_MANUFACTURER, PLANT_CITY
+	</select>
+	
+	<select id="getBodyPlantsByPlantIds" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant">
+		SELECT   PLANT_ID AS plantId,
+		         PLANT_MFR_CODE AS plantMfrCode,
+		         PLANT_MANUFACTURER AS plantManufacturer,
+		         PLANT_NAME AS plantName,
+		         PLANT_STATE AS state,
+		         PLANT_ZIP AS zip,
+		         PLANT_COUNTRY AS country,
+		         PLANT_CITY AS city
+		FROM     SMC.OBM_PLANTS
+		WHERE
+			PLANT_ID IN (
+				<foreach collection="plantIds" item="plantId" separator="," open="" close="">
+	 				#{plantId}
+	 			</foreach>
+			)
+		ORDER BY PLANT_MANUFACTURER, PLANT_CITY
+	</select>
+	
+	<select id="getBodyPlantForImport" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant">
+		SELECT   PLANT_ID AS plantId,
+		         PLANT_MFR_CODE AS plantMfrCode,
+		         PLANT_MANUFACTURER AS plantManufacturer,
+		         PLANT_NAME AS plantName,
+		         PLANT_STATE AS state,
+		         PLANT_ZIP AS zip,
+		         PLANT_COUNTRY AS country,
+		         PLANT_CITY AS city
+		FROM     SMC.OBM_PLANTS
+		WHERE
+			PLANT_MANUFACTURER = #{header.manufacturer}
+			AND PLANT_CITY = #{header.city}
+			AND PLANT_STATE = #{header.state}
+		ORDER BY PLANT_MANUFACTURER, PLANT_CITY
+	</select>
+	
+	<select id="getBodyPlantsByMfrCode" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant">
+		SELECT   PLANT_ID AS plantId,
+		         PLANT_MFR_CODE AS plantMfrCode,
+		         PLANT_MANUFACTURER AS plantManufacturer,
+		         PLANT_NAME AS plantName,
+		         PLANT_STATE AS state,
+		         PLANT_ZIP AS zip,
+		         PLANT_COUNTRY AS country,
+		         PLANT_CITY AS city
+		FROM     SMC.OBM_PLANTS
+		WHERE
+			PLANT_MFR_CODE = #{mfrCode}
+		ORDER BY PLANT_MANUFACTURER, PLANT_CITY
+	</select>
+	
+	<select id="getInvalidBodyPlants" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant">
+		SELECT   plants.PLANT_ID AS plantId,
+		         plants.PLANT_MFR_CODE AS plantMfrCode,
+		         plants.PLANT_MANUFACTURER AS plantManufacturer,
+		         plants.PLANT_NAME AS plantName,
+		         plants.PLANT_STATE AS state,
+		         plants.PLANT_ZIP AS zip,
+		         plants.PLANT_COUNTRY AS country,
+		         plants.PLANT_CITY AS city
+		FROM     SMC.OBM_PLANTS plants
+		WHERE plants.PLANT_ID IN (
+				SELECT
+					SLOT.PLANT_ID
+				FROM
+					SMC.OBM_SLOTS SLOT
+				LEFT JOIN (
+					Select 
+						region.SLOT_ID, 
+						SUM(IS_INVALID_SLOT) as isInvalid
+					from SMC.OBM_SLOTS_BY_REGION region 
+					GROUP BY region.SLOT_ID
+				) sumTable ON SLOT.SLOT_ID = sumTable.SLOT_ID
+				WHERE sumTable.isInvalid > 0
+			)
+		ORDER BY plants.PLANT_MANUFACTURER, plants.PLANT_CITY
+	</select>
+	
+	<select id="getInvalidBodyPlantsByMfrCode" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixBodyPlant">
+		SELECT   plants.PLANT_ID AS plantId,
+		         plants.PLANT_MFR_CODE AS plantMfrCode,
+		         plants.PLANT_MANUFACTURER AS plantManufacturer,
+		         plants.PLANT_NAME AS plantName,
+		         plants.PLANT_STATE AS state,
+		         plants.PLANT_ZIP AS zip,
+		         plants.PLANT_COUNTRY AS country,
+		         plants.PLANT_CITY AS city
+		FROM     SMC.OBM_PLANTS plants
+		WHERE
+			PLANT_MFR_CODE = #{mfrCode}
+			AND plants.PLANT_ID IN (
+				SELECT
+					SLOT.PLANT_ID
+				FROM
+					SMC.OBM_SLOTS SLOT
+				LEFT JOIN (
+					Select 
+						region.SLOT_ID, 
+						SUM(IS_INVALID_SLOT) as isInvalid
+					from SMC.OBM_SLOTS_BY_REGION region 
+					GROUP BY region.SLOT_ID
+				) sumTable ON SLOT.SLOT_ID = sumTable.SLOT_ID
+				WHERE sumTable.isInvalid > 0
+			)
+		ORDER BY plants.PLANT_MANUFACTURER, plants.PLANT_CITY
+	</select>
+	
+	<select id="getSlotDatesForYear" parameterType="int" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlotDate">
+		SELECT   SLOT_DATE_ID,
+		         SLOT_YEAR,
+		         WEEK_OF_YEAR,
+		         DATE(to_date(SLOT_DATE,'MM/DD/YYYY')) AS SLOT_DATE
+		FROM     SMC.OBM_SLOT_DATES
+		WHERE    SLOT_YEAR=#{year}
+	</select>
+	
+	<select id="getSlotDatesByIds" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlotDate">
+		SELECT   SLOT_DATE_ID,
+		         SLOT_YEAR,
+		         WEEK_OF_YEAR,
+		         DATE(to_date(SLOT_DATE,'MM/DD/YYYY')) AS SLOT_DATE
+		FROM     SMC.OBM_SLOT_DATES
+		WHERE    SLOT_DATE_ID IN (
+				<foreach collection="slotDateIds" item="slotDateId" separator="," open="" close="">
+	 				#{slotDateId}
+	 			</foreach>
+			)
+		ORDER BY SLOT_DATE
+	</select>
+	
+	<select id="getSlotDate" parameterType="int" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlotDate">
+		SELECT   SLOT_DATE_ID,
+		         SLOT_YEAR,
+		         WEEK_OF_YEAR,
+		         DATE(to_date(SLOT_DATE,'MM/DD/YYYY')) AS SLOT_DATE
+		FROM     SMC.OBM_SLOT_DATES
+		WHERE    SLOT_DATE_ID=#{slotDateId}
+	</select>
+	
+	<select id="getSlotsBySlotDates" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlot">
+		SELECT   SLOT.SLOT_ID AS slotId,
+		         SLOT_TYPE_ID AS slotTypeId,
+		         plant.PLANT_ID AS plantId,
+		         SLOT_DATE_ID AS slotDateId,
+		         SLOT_AVAILABLE AS availableSlots,
+		         SLOT_RESERVED AS reservedSlots,
+		         COALESCE(sumTable.allocatedSlots, 0) as allocatedRegionSlots
+		FROM     SMC.OBM_SLOTS SLOT 
+		JOIN 	 SMC.OBM_PLANTS PLANT ON SLOT.PLANT_ID = PLANT.PLANT_ID
+		LEFT JOIN (
+				Select 
+					region.SLOT_ID, 
+					SUM(SLOT_AVAILABLE) as allocatedSlots 
+				from SMC.OBM_SLOTS_BY_REGION region 
+				GROUP BY region.SLOT_ID
+			) sumTable ON SLOT.SLOT_ID = sumTable.SLOT_ID
+		WHERE    SLOT_TYPE_ID=CAST(#{slotTypeId} AS INTEGER)
+		AND      SLOT_DATE_ID IN (
+				<foreach collection="slotDateIds" item="slotDateId" separator="," open="" close="">
+	 				#{slotDateId}
+	 			</foreach>
+			)
+		ORDER BY PLANT.PLANT_MANUFACTURER, PLANT.PLANT_CITY
+	</select>
+	
+	<select id="getSlotsBySlotIds" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlot">
+		SELECT   SLOT.SLOT_ID AS slotId,
+		         SLOT_TYPE_ID AS slotTypeId,
+		         plant.PLANT_ID AS plantId,
+		         SLOT_DATE_ID AS slotDateId,
+		         SLOT_AVAILABLE AS availableSlots,
+		         SLOT_RESERVED AS reservedSlots,
+		         COALESCE(sumTable.allocatedSlots, 0) as allocatedRegionSlots
+		FROM     SMC.OBM_SLOTS SLOT 
+		JOIN 	 SMC.OBM_PLANTS PLANT ON SLOT.PLANT_ID = PLANT.PLANT_ID
+		LEFT JOIN (
+				Select 
+					region.SLOT_ID, 
+					SUM(SLOT_AVAILABLE) as allocatedSlots 
+				from SMC.OBM_SLOTS_BY_REGION region 
+				GROUP BY region.SLOT_ID
+			) sumTable ON SLOT.SLOT_ID = sumTable.SLOT_ID
+		WHERE    SLOT.SLOT_ID IN (
+				<foreach collection="slotIds" item="slotId" separator="," open="" close="">
+	 				#{slotId}
+	 			</foreach>
+			)
+		ORDER BY PLANT.PLANT_MANUFACTURER, PLANT.PLANT_CITY
+	</select>
+	
+	<select id="getSlotsBySlotDatesAndPlantIds" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlot">
+		SELECT   SLOT.SLOT_ID AS slotId,
+		         SLOT_TYPE_ID AS slotTypeId,
+		         plant.PLANT_ID AS plantId,
+		         SLOT_DATE_ID AS slotDateId,
+		         SLOT_AVAILABLE AS availableSlots,
+		         SLOT_RESERVED AS reservedSlots,
+		         COALESCE(sumTable.allocatedSlots, 0) as allocatedRegionSlots
+		FROM     SMC.OBM_SLOTS SLOT 
+		JOIN 	 SMC.OBM_PLANTS PLANT ON SLOT.PLANT_ID = PLANT.PLANT_ID
+		LEFT JOIN (
+				Select 
+					region.SLOT_ID, 
+					SUM(SLOT_AVAILABLE) as allocatedSlots 
+				from SMC.OBM_SLOTS_BY_REGION region 
+				GROUP BY region.SLOT_ID
+			) sumTable ON SLOT.SLOT_ID = sumTable.SLOT_ID
+		WHERE    SLOT_TYPE_ID=CAST(#{slotTypeId} AS INTEGER)
+		AND      SLOT_DATE_ID IN (
+				<foreach collection="slotDateIds" item="slotDateId" separator="," open="" close="">
+	 				#{slotDateId}
+	 			</foreach>
+			)
+		AND plant.PLANT_ID IN (
+				<foreach collection="plantIds" item="plantId" separator="," open="" close="">
+	 				#{plantId}
+	 			</foreach>
+		)
+		ORDER BY PLANT.PLANT_MANUFACTURER, PLANT.PLANT_CITY
+	</select>
+	
+	<select id="getInvalidSlotIdsByPlantAndSlotType" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlot">
+		SELECT   SLOT.SLOT_ID AS slotId,
+		         SLOT_TYPE_ID AS slotTypeId,
+		         plant.PLANT_ID AS plantId,
+		         SLOT_DATE_ID AS slotDateId,
+		         SLOT_AVAILABLE AS availableSlots,
+		         SLOT_RESERVED AS reservedSlots,
+		         COALESCE(sumTable.allocatedSlots, 0) as allocatedRegionSlots
+		FROM     SMC.OBM_SLOTS SLOT 
+		JOIN 	 SMC.OBM_PLANTS PLANT ON SLOT.PLANT_ID = PLANT.PLANT_ID
+		LEFT JOIN (
+				Select 
+					region.SLOT_ID, 
+					SUM(SLOT_AVAILABLE) as allocatedSlots,
+					SUM(IS_INVALID_SLOT) as isInvalid
+				from SMC.OBM_SLOTS_BY_REGION region 
+				GROUP BY region.SLOT_ID
+			) sumTable ON SLOT.SLOT_ID = sumTable.SLOT_ID
+		WHERE    SLOT_TYPE_ID=CAST(#{slotTypeId} AS INTEGER)
+		AND sumTable.isInvalid > 0
+		AND plant.PLANT_ID = #{plantId}
+	</select>
+	
+	<select id="getInvalidSlotTypesforPlant" resultType="int">
+		SELECT   
+		         DISTINCT SLOT_TYPE_ID AS slotTypeId
+		FROM     SMC.OBM_SLOTS SLOT 
+		JOIN 	 SMC.OBM_PLANTS PLANT ON SLOT.PLANT_ID = PLANT.PLANT_ID
+		LEFT JOIN (
+				Select 
+					region.SLOT_ID, 
+					SUM(region.IS_INVALID_SLOT) as isInvalid
+				from SMC.OBM_SLOTS_BY_REGION region 
+				GROUP BY region.SLOT_ID
+			) sumTable ON SLOT.SLOT_ID = sumTable.SLOT_ID
+		WHERE sumTable.isInvalid > 0
+		AND plant.PLANT_ID = #{plantId}
+	</select>
+	
+	<update id="updateSlot">
+		UPDATE 
+			SMC.OBM_SLOTS 
+		SET
+		         SLOT_AVAILABLE = #{slot.availableSlots},
+		         SLOT_RESERVED = #{slot.reservedSlots},
+		         SLOT_ACCEPTED = #{slot.acceptedSlots}
+		WHERE    SLOT_ID = #{slot.slotId}
+	</update>
+	
+	<select id="getInvalidSlotIds" resultType="int">
+		SELECT
+			SLOT_ID
+		FROM SMC.OBM_SLOTS_BY_REGION
+		WHERE IS_INVALID_SLOT = 1
+	</select>
+	
+	
+	
+	<select id="getRegionAvailabilityBySlotIdsAndRegion" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlotRegionAvailability">
+		SELECT 
+			SLOT_REGION_ID,
+			SLOT_ID,
+			REGION,
+			SLOT_AVAILABLE,
+			SLOT_RESERVED,
+			SLOT_ACCEPTED,
+			IS_INVALID_SLOT as invalidSlot
+		FROM
+			SMC.OBM_SLOTS_BY_REGION
+		WHERE
+			SLOT_ID IN (
+				<foreach collection="slotIds" item="slotId" separator="," open="" close="">
+	 				#{slotId}
+	 			</foreach>
+			)
+			AND REGION = #{region}
+	</select>
+	
+	<select id="getRegionAvailabilityBySlotIds" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlotRegionAvailability">
+		SELECT 
+			SLOT_REGION_ID,
+			SLOT_ID,
+			REGION,
+			SLOT_AVAILABLE,
+			SLOT_RESERVED,
+			SLOT_ACCEPTED,
+			IS_INVALID_SLOT as invalidSlot
+		FROM
+			SMC.OBM_SLOTS_BY_REGION
+		WHERE
+			SLOT_ID IN (
+				<foreach collection="slotIds" item="slotId" separator="," open="" close="">
+	 				#{slotId}
+	 			</foreach>
+			)
+	</select>
+	
+	<select id="getRegionAvailabilityBySlotRegionIds" resultType="com.penske.apps.buildmatrix.domain.BuildMatrixSlotRegionAvailability">
+		SELECT 
+			SLOT_REGION_ID,
+			SLOT_ID,
+			REGION,
+			SLOT_AVAILABLE,
+			SLOT_RESERVED,
+			SLOT_ACCEPTED,
+			IS_INVALID_SLOT as invalidSlot
+		FROM
+			SMC.OBM_SLOTS_BY_REGION
+		WHERE
+			SLOT_REGION_ID IN (
+				<foreach collection="slotRegionIds" item="slotRegionId" separator="," open="" close="">
+	 				#{slotRegionId}
+	 			</foreach>
+			)
+	</select>
+	
+	<update id="mergeSlotRegionAvailabilities">
+		MERGE INTO SMC.OBM_SLOTS_BY_REGION AS slotsByRegion USING
+		(
+		VALUES
+		<foreach collection="regionAvailabilityList" item="rpa" separator="," >
+			(
+				CAST(#{rpa.slotRegionId} AS INTEGER),
+				CAST(#{rpa.slotId} AS INTEGER),
+				CAST(#{rpa.region} AS VARCHAR(4)),
+				CAST(#{rpa.slotAvailable} AS INTEGER),
+				CAST(#{rpa.slotReserved} AS INTEGER),
+				CAST(#{rpa.slotAccepted} AS INTEGER),
+				CAST(#{rpa.invalidSlot} AS INTEGER)
+			)
+		</foreach>
+		)
+		AS input
+		(
+			SLOT_REGION_ID, SLOT_ID, REGION, SLOT_AVAILABLE, SLOT_RESERVED, SLOT_ACCEPTED, IS_INVALID_SLOT
+		)
+		ON  slotsByRegion.SLOT_ID=input.SLOT_ID 
+			AND slotsByRegion.REGION=input.REGION
+		WHEN NOT MATCHED THEN
+		INSERT
+			(
+			SLOT_ID,
+			REGION,
+			SLOT_AVAILABLE,
+			SLOT_RESERVED,
+			SLOT_ACCEPTED,
+			IS_INVALID_SLOT
+			)
+		 VALUES
+			(
+			input.SLOT_ID,
+			input.REGION,
+			input.SLOT_AVAILABLE,
+			input.SLOT_RESERVED,
+			input.SLOT_ACCEPTED,
+			input.IS_INVALID_SLOT
+			)
+	</update>
+	
+	<update id="updateRegionAvailability">
+		UPDATE 
+			SMC.OBM_SLOTS_BY_REGION 
+		SET
+		         SLOT_AVAILABLE = #{regionAvailability.slotAvailable},
+		         SLOT_RESERVED = #{regionAvailability.slotReserved},
+		         SLOT_ACCEPTED = #{regionAvailability.slotAccepted},
+		         IS_INVALID_SLOT = #{regionAvailability.invalidSlot}
+		WHERE    SLOT_REGION_ID = #{regionAvailability.slotRegionId}
+	</update>
+	
+	<select id="getBuildMaximumWeeksBefore" resultType="int">
+		SELECT
+		MAXIMUM_WEEKS_BEFORE_ALLOWED 
+		FROM SMC.OBM_RUN_WEEK_THRESHOLD
+		FETCH FIRST 1 ROWS ONLY
+	</select>
+	
+	<select id="getBuildMaximumWeeksAfter" resultType="int">
+		SELECT
+		MAXIMUM_WEEKS_AFTER_ALLOWED 
+		FROM SMC.OBM_RUN_WEEK_THRESHOLD
+		FETCH FIRST 1 ROWS ONLY
+	</select>
+	
+	<select id="getSlotReservationsByIdAndRegion" resultType="com.penske.apps.buildmatrix.domain.ProductionSlotResult">
+		SELECT
+			SLOT_RESERVE.SLOT_RESERVATION_ID AS slotReservationId,
+			SLOT_REQ.RUN_ID AS runId,
+			SLOT_REQ.ORDER_ID AS orderId,
+			SLOT_RESERVE.UNIT_NUMBER AS unitNumber,
+			SLOT_RESERVE.VEHICLE_TYPE AS vehicleType,
+			SLOT_RESERVE.RESERVATION_STATUS AS reservationStatus,
+			SLOT_REQ.PROGRAM_NAME AS programName,
+			MILEAGE.REGION AS region,
+			MILEAGE.AREA AS area,
+			SLOT_REQ.DESTINATION_DISTRICT AS districtNumber,
+			SLOT_REQ.DESTINATION_DISTRICT_DESC AS districtName,
+			SLOT_REQ.DESTINATION_DELIVERY_DATE AS requestedDeliveryDate,
+			PLANT.PLANT_MFR_CODE ||'-' ||PLANT.PLANT_CITY ||',' ||PLANT.PLANT_STATE AS productionSlot,
+			DATE(to_date(SLOT_DATES.SLOT_DATE,'MM/DD/YYYY')) AS productionDate,
+			SLOT_RESERVE.CHASSIS_MAKE AS chassisMake,
+			SLOT_RESERVE.CHASSIS_MODEL AS chassisModel,
+			SLOT_RESERVE.CHASSIS_MODEL_YEAR AS chassisModelYear,
+			SLOT_RESERVE.CHASSIS_COLOR AS chassisColor,
+			SLOT_RESERVE.BODY_MAKE AS bodyMake,
+			SLOT_RESERVE.CHASSIS_LENGTH AS chassisLength,
+			SLOT_RESERVE.REAR_DOOR_MAKE AS rearDoorMake,
+			SLOT_RESERVE.REEFER_MAKE AS reeferMake,
+			SLOT_RESERVE.LIFTGATE_INSTALLED AS liftgateInstalled,
+			SLOT_RESERVE.LIFTGATE_MAKE AS liftgateMake,
+			SLOT_RESERVE.LIFTGATE_TYPE AS liftgateType,
+			SLOT_RESERVE.WHEEL_MATERIAL as wheelMaterial,
+			CASE WHEN SLOT_RESERVE.CHANGE_REQUIRED = 'Y' THEN 1 ELSE 0 END AS changeRequired,
+			SLOT_RESERVE.VEHICLE_TYPE_CHANGE_REQUIRED AS vehicleTypeChangeRequired,
+			SLOT_RESERVE.CHASSIS_MODEL_CHANGE_REQUIRED AS chassisModelChangeRequired,
+			SLOT_RESERVE.CHASSIS_MODEL_YEAR_CHANGE_REQUIRED AS chassisModelYearChangeRequired,
+			SLOT_RESERVE.CHASSIS_COLOR_CHANGE_REQUIRED AS chassisColorChangeRequired,
+			SLOT_RESERVE.CHASSIS_WHEEL_MATERIAL_CHANGE_REQUIRED AS chassisWheelMatChangeRequired,
+			SLOT_RESERVE.COMMENTS AS comments
+		FROM 
+			SMC.OBM_RUN_SUMMARY RUN_SUMMARY
+			JOIN SMC.OBM_SLOT_REQUEST SLOT_REQ
+			    ON SLOT_REQ.RUN_ID=RUN_SUMMARY.RUN_ID
+			JOIN SMC.OBM_SLOT_RESERVATION SLOT_RESERVE 
+				ON SLOT_RESERVE.SLOT_REQUEST_ID = SLOT_REQ.SLOT_REQUEST_ID
+			LEFT JOIN SMC.OBM_SLOTS SLOT 
+				ON SLOT.SLOT_ID=SLOT_RESERVE.SLOT_ID
+			LEFT JOIN SMC.OBM_PLANTS PLANT 
+				ON PLANT.PLANT_ID = SLOT.PLANT_ID
+			LEFT JOIN SMC.OBM_FREIGHT_MILEAGE MILEAGE 
+				ON MILEAGE.PLANT_ID = PLANT.PLANT_ID AND MILEAGE.DISTRICT = SLOT_REQ.DESTINATION_DISTRICT
+			LEFT JOIN SMC.OBM_SLOT_DATES SLOT_DATES 
+				ON SLOT_DATES.SLOT_DATE_ID = SLOT.SLOT_DATE_ID
+		WHERE SLOT_RESERVE.SLOT_ID = #{slotId}
+		AND SLOT_RESERVE.REGION = #{region}
+		AND RUN_SUMMARY.RUN_STATUS <![CDATA[<>]]> 'A'
+		ORDER BY SLOT_RESERVE.UNIT_NUMBER
+	</select>
+	
+	<select id="checkSlotsExist" resultType="int">
+		SELECT 
+			COUNT(*) 
+		FROM 
+			SMC.OBM_SLOTS slots
+		JOIN 
+			SMC.OBM_SLOT_DATES slotDates
+		ON 
+			slots.SLOT_DATE_ID = slotDates.SLOT_DATE_ID
+		WHERE 
+			SLOT_TYPE_ID = #{slotTypeId}
+			AND SLOT_YEAR = #{year}
+	</select>
+	
+	<insert id="insertSlotDates" useGeneratedKeys="true" keyProperty="list.slotDateId">
+		INSERT INTO SMC.OBM_SLOT_DATES (
+			SLOT_YEAR,
+			SLOT_DATE,
+			WEEK_OF_YEAR
+		) VALUES
+		<foreach collection="list" item="slotDate" separator=",">
+		(
+			#{slotDate.slotYear},
+			#{slotDate.formattedSlotDate},
+			#{slotDate.weekOfYear}
+		)
+		</foreach>
+	</insert>
+	
+	<insert id="insertSlots" useGeneratedKeys="true" keyProperty="list.slotId">
+		INSERT INTO SMC.OBM_SLOTS (
+			SLOT_TYPE_ID,
+			PLANT_ID,
+			SLOT_DATE_ID,
+			SLOT_AVAILABLE,
+			SLOT_RESERVED,
+			CHASSIS_ARRIVAL_DATE,
+			CHASSIS_ARRIVAL_WEEK_OF_YEAR,
+			CHASSIS_ARRIVAL_YEAR,
+			SLOT_ACCEPTED
+		) VALUES
+		<foreach collection="list" item="slot" separator=",">
+		(
+			#{slot.slotTypeId},
+			#{slot.plantId},
+			#{slot.slotDateId},
+			#{slot.availableSlots},
+			#{slot.reservedSlots},
+			#{slot.formattedChassisArrivalDate},
+			#{slot.chassisArrivalWeekOfYear},
+			#{slot.chassisArrivalYear},
+			#{slot.acceptedSlots}
+		)
+		</foreach>
+	</insert>
+	
+	<insert id="insertSlot" useGeneratedKeys="true" keyProperty="slot.slotId">
+		INSERT INTO SMC.OBM_SLOTS (
+			SLOT_TYPE_ID,
+			PLANT_ID,
+			SLOT_DATE_ID,
+			SLOT_AVAILABLE,
+			SLOT_RESERVED,
+			CHASSIS_ARRIVAL_DATE,
+			CHASSIS_ARRIVAL_WEEK_OF_YEAR,
+			CHASSIS_ARRIVAL_YEAR,
+			SLOT_ACCEPTED
+		) VALUES
+			(
+				#{slot.slotTypeId},
+				#{slot.plantId},
+				#{slot.slotDateId},
+				#{slot.availableSlots},
+				#{slot.reservedSlots},
+				#{slot.formattedChassisArrivalDate},
+				#{slot.chassisArrivalWeekOfYear},
+				#{slot.chassisArrivalYear},
+				#{slot.acceptedSlots}
+			)
+	</insert>
+	
+	<insert id="insertSlotRegionAvailability" useGeneratedKeys="true" keyProperty="regionAvailability.slotRegionId">
+		INSERT INTO SMC.OBM_SLOTS_BY_REGION (
+			SLOT_ID,
+			REGION,
+			SLOT_AVAILABLE,
+			SLOT_RESERVED,
+			SLOT_ACCEPTED,
+			IS_INVALID_SLOT
+		) VALUES
+			(
+				#{regionAvailability.slotId},
+				#{regionAvailability.region},
+				#{regionAvailability.slotAvailable},
+				#{regionAvailability.slotReserved},
+				#{regionAvailability.slotAccepted},
+				#{regionAvailability.invalidSlot}
+			)
+	</insert>
+	
+	<insert id="insertSlotRegionAvailabilities" useGeneratedKeys="true" keyProperty="list.slotRegionId">
+		INSERT INTO SMC.OBM_SLOTS_BY_REGION (
+			SLOT_ID,
+			REGION,
+			SLOT_AVAILABLE,
+			SLOT_RESERVED,
+			SLOT_ACCEPTED,
+			IS_INVALID_SLOT
+		) VALUES
+		<foreach collection="list" item="availability" separator=",">
+		(
+			#{availability.slotId},
+			#{availability.region},
+			#{availability.slotAvailable},
+			#{availability.slotReserved},
+			#{availability.slotAccepted},
+			#{availability.invalidSlot}
+		)
+		</foreach>
+	</insert>
+	
+	<select id="deleteBuild" statementType="CALLABLE" parameterType="int">
+	   {
+	        CALL SMC.SMC_DELETE_RUN
+	       	(
+	        	#{runId, mode=IN, jdbcType=INTEGER}
+	       	) 
+	    }      
+	</select>
+	
+	<select id="reworkBuild" statementType="CALLABLE" parameterType="int">
+	   {
+	        CALL SMC.SMC_REWORK_RUN
+	       	(
+	        	#{runId, mode=IN, jdbcType=INTEGER}
+	       	) 
+	    }      
+	</select>
+	
+	<select statementType="CALLABLE" id="removeSlotResult">
+		{CALL SMC.SMC_REMOVE_SLOT_RESULT(#{slotReservationId, mode=IN, jdbcType=INTEGER})}
+	</select>
+
+	<select statementType="CALLABLE" id="releaseUnit">
+		{CALL SMC.SMC_REMOVE_UNIT_RESERVATION(#{slotReservationId, mode=IN, jdbcType=INTEGER})}
+	</select>
+	
+	<select statementType="CALLABLE" id="updateSlotReservations">
+		{CALL SMC.SMC_SAVE_SLOT_RESERVATION(#{slotReservationId, mode=IN, jdbcType=INTEGER},#{unitNumber, mode=IN, jdbcType=VARCHAR}, #{bodyMfr, mode=IN, jdbcType=INTEGER},
+											#{plantId, mode=IN, jdbcType=INTEGER},#{slotId, mode=IN, jdbcType=INTEGER}, #{sso, mode=IN, jdbcType=VARCHAR})}
+	</select>
+	
+	<select id="getDebugInformation" resultType="String">
+	 	SELECT   TRIM(RUN_TRACE)
+		FROM     SMC.OBM_RUN_DEBUG
+		WHERE    SLOT_RESERVATION_ID = #{slotReservationId}
+		AND		 RUN_ID =  #{buildId}
+		ORDER BY DEBUG_SEQ ASC
+	</select>
+	
+	<select id="getBodySplitsForBuild" resultType="com.penske.apps.buildmatrix.domain.BusinessAwardBodySplit">
+		SELECT
+			BODY_SPLIT_ID,
+			RUN_ID as buildId,
+			MAKE,
+			VAN_QTY,
+			REEFER_QTY,
+			FLATBED_QTY
+		FROM SMC.OBM_BUSINESS_AWARD_BODY_SPLIT
+		WHERE RUN_ID = #{buildId}
+	</select>
+	
+	<delete id="deleteBodySplitsForBuild">
+		DELETE FROM SMC.OBM_BUSINESS_AWARD_BODY_SPLIT
+		WHERE RUN_ID = #{buildId}
+	</delete>
+
+	<insert id="insertBusinessAwardBodySplits">
+		INSERT INTO SMC.OBM_BUSINESS_AWARD_BODY_SPLIT (
+			RUN_ID,
+			MAKE,
+			VAN_QTY,
+			REEFER_QTY,
+			FLATBED_QTY
+		) VALUES
+		<foreach collection="list" item="bodySplit" separator=",">
+		(
+			#{bodySplit.buildId},
+			#{bodySplit.make},
+			#{bodySplit.vanQty},
+			#{bodySplit.reeferQty},
+			#{bodySplit.flatbedQty}
+		)
+		</foreach>
+	</insert>
+
+	<delete id="deleteBodySplitsForBuildAndMake">
+		DELETE FROM SMC.OBM_BUSINESS_AWARD_BODY_SPLIT
+		WHERE RUN_ID = #{buildId}
+		AND MAKE = #{make}
+	</delete>
+	
+	<select id="getGuidanceSummaries" resultType="com.penske.apps.buildmatrix.domain.GuidanceSummary">
+		SELECT
+			GUIDANCE_ID,
+			GROUP_KEY,
+			AWARD_KEY,
+			GUIDANCE_TARGET,
+			GUIDANCE_ALLOCATION,
+			GUIDANCE_EXCESS
+		FROM SMC.OBM_GUIDANCE_SUMMARY
+		WHERE RUN_ID = #{buildId}
+	</select>
+	
+</mapper>

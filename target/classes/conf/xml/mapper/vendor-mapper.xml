@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.2//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.penske.apps.adminconsole.dao.VendorDao">
+ 	
+ 	<resultMap type="com.penske.apps.adminconsole.model.Vendor" id="VendorMap">
+ 	  <id column="VENDOR_ID"       property="vendorId"/>
+ 	  <result column="mfrCodes"    property="mfrCodes"/>
+ 	</resultMap>
+
+ 	<select id="getVendors" resultMap="VendorMap">
+ 	
+     WITH ediVendor AS (
+       SELECT  XMLSERIALIZE(XMLAGG(XMLTEXT(CONCAT(',', EDI_MFR ))) as VARCHAR(1024)) AS mfrCodes,
+               EDI_VENDOR,
+               EDI_CORP
+         
+         FROM CORP.NVOEDIVND
+            
+         GROUP BY EDI_VENDOR, EDI_CORP
+    )
+    
+		 SELECT vend.VENDOR_ID,
+				    vend.CORP AS corpCode,
+						vend.VENDOR_NAME AS vendorName,
+						vend.VENDOR_NUMBER AS vendorNumber,
+						vend.ANNUAL_AGREEMENT AS annualAgreement,
+						ediVendor.mfrCodes,
+						pvscty as city, 
+						pvsst as state, 
+						pvszip as zipCode,
+						prim.FIRST_NAME AS "primaryContact.firstName",
+						prim.LAST_NAME AS "primaryContact.lastName",
+						prim.PHONE AS "primaryContact.phoneNumber",
+						prim.EMAIL AS "primaryContact.email",
+						prim.RESPONSIBILITY AS "primaryContact.responsibility",
+						sec.FIRST_NAME AS "secondaryContact.firstName",
+						sec.LAST_NAME AS "secondaryContact.lastName",
+						sec.PHONE AS "secondaryContact.phoneNumber",
+						sec.EMAIL AS "secondaryContact.email",
+						sec.RESPONSIBILITY AS "secondaryContact.responsibility",
+						vend.NOTIFICATION_EXCEPTION AS notificationException,
+						panl.USER_ID AS "planningAnalyst.userId",
+						panl.FIRST_NAME AS "planningAnalyst.firstName",
+						panl.LAST_NAME AS "planningAnalyst.lastName",
+						supp.USER_ID AS "supplySpecialist.userId",
+						purv.PVTRMS AS paymentTerms,
+						purv.PVONAM AS orderName,
+						purv.PVOAD1 AS mailingAddress1,
+						purv.PVOAD2 AS mailingAddress2,
+						purv.PVOCTY AS mailingCity,
+						purv.PVOST AS mailingState,
+						purv.PVOZIP AS mailingZipCode,
+						purv.PVSAD1 AS shippingAddress1,
+						purv.PVSAD2 AS shippingAddress2,
+						purv.PVSCTY AS shippingCity,
+						purv.PVSST AS shippingState,
+						purv.PVSZIP AS shippingZipCode,
+						vend.PLANNING_ANALYST AS "planningAnalyst.userId",
+						vend.SUPPLY_SPECIALIST AS "supplySpecialist.userId",
+						vennam.VENDOR_ADDRESS_LINE_1 AS vendorAddress,
+						vennam.VENDOR_ATTENTION AS attention,
+						dist.DMNAME AS companyName,
+						org.ORG_ID as orgId
+		
+				FROM	SMC.SMC_VENDOR_MASTER vend 
+						JOIN SMC.SMC_ORG_VENDOR_ASSOC org
+						ON	vend.VENDOR_ID = org.VENDOR_ID
+						LEFT OUTER JOIN SMC.SMC_VENDOR_CONTACT prim
+						ON	vend.VENDOR_ID = prim.VENDOR_ID
+						AND	prim.CONTACT_TYPE = 'PRIMARY'
+						LEFT OUTER JOIN SMC.SMC_VENDOR_CONTACT sec
+						ON	vend.VENDOR_ID = sec.VENDOR_ID
+						AND	sec.CONTACT_TYPE = 'SECONDARY'
+						LEFT OUTER JOIN SMC.SMC_USER_MASTER panl
+						ON	vend.PLANNING_ANALYST = panl.USER_ID
+						LEFT OUTER JOIN SMC.SMC_USER_MASTER supp
+						ON	vend.SUPPLY_SPECIALIST = supp.USER_ID
+						INNER JOIN corp.fpurvnd purv
+						on purv.pvcorp = vend.corp and purv.pvnbr = vend.vendor_number
+						LEFT OUTER JOIN PENSKE.VENNAM vennam
+						ON	vennam.COMPANY_CODE = purv.PVCORP AND vennam.VENDOR_NUMBER = purv.PVNBR
+						LEFT OUTER JOIN CORP.FDSTMST dist
+						ON vend.CORP = dist.DMCORP AND dist.DMTYPE = 'COMPANY'
+ 		LEFT JOIN ediVendor 
+            ON ediVendor.EDI_VENDOR = vend.VENDOR_NUMBER
+            AND ediVendor.EDI_CORP = vend.CORP
+		WHERE vend.STATUS = 'A'
+		<choose>
+    		<when test="vendor != null and vendor.alertType != null and vendor.alertType=='ALRT_OF_VEND_USER_SETUP_REQ'">
+    	    	AND org.ORG_ID !=1 AND org.ORG_ID NOT IN (SELECT DISTINCT ORG_ID FROM SMC.SMC_USER_MASTER WHERE TYPE_ID=2)
+    		</when>
+    		<when test="orgId != null">
+		       AND org.ORG_ID=#{orgId}
+		    </when>
+		</choose>
+		<if test="vendorId != null">
+			AND vend.VENDOR_ID=#{vendorId}
+		</if>
+		<if test="vendor != null">
+			<if test="vendor.vendorName != null">
+				<bind name="formattedVendorName" value="vendor.getVendorName() + '%'" />
+				AND	vend.VENDOR_NAME like #{formattedVendorName}
+			</if>
+			<if test="vendor.vendorNumber != 0">
+				AND	vend.VENDOR_NUMBER = #{vendor.vendorNumber}
+			</if>
+			<if test="vendor.corpCode != null">
+				AND	vend.CORP = #{vendor.corpCode}
+			</if>
+			<if test="vendor.searchMfrCode != null" >
+			<bind name="formattedSearchMfrCode" value="'%' + vendor.getSearchMfrCode() + '%'" />
+				AND	ediVendor.mfrCodes LIKE #{formattedSearchMfrCode}
+			</if>
+			<if test="vendor.notificationException !=null and  vendor.notificationException != '-1' ">
+				AND	vend.NOTIFICATION_EXCEPTION = #{vendor.notificationException}
+			</if>
+			<if test="vendor.annualAgreement != null and vendor.annualAgreement != '-1' ">
+				AND	vend.ANNUAL_AGREEMENT = #{vendor.annualAgreement}
+			</if>
+			<if test="vendor.planningAnalyst.userId &gt; 0">
+				AND	vend.PLANNING_ANALYST = #{vendor.planningAnalyst.userId}
+			</if>
+			<if test="vendor.supplySpecialist.userId &gt; 0">
+				AND	vend.SUPPLY_SPECIALIST = #{vendor.supplySpecialist.userId}
+			</if>
+			
+			<if test="vendor.alertType != null and vendor.alertType=='ALRT_OF_VEND_ANLYST_ASSG_REQ'">
+				AND vend.PLANNING_ANALYST is null		 
+		   </if>
+			<if test="vendor.alertType != null and vendor.alertType=='ALRT_OF_NEW_VEND_SETUP_REQ'">
+				AND vend.VENDOR_ID not in(select VENDOR_ID from SMC_ORG_VENDOR_ASSOC where ORG_ID !=1)
+			</if>
+		</if>
+		ORDER BY vend.VENDOR_NAME
+	</select>
+	
+	<select id="getAllPlanningAnalysts" resultType="com.penske.apps.adminconsole.model.EditableUser">
+		SELECT	u.USER_ID AS userId,
+				u.FIRST_NAME AS firstName,
+				u.LAST_NAME AS lastName,
+				u.EMAIL as email
+		
+		FROM	SMC.SMC_USER_MASTER u,
+						SMC.SMC_USER_DEPT d
+				
+		WHERE	u.DEPT_ID = d.DEPT_ID
+		AND		d.USER_DEPT = 'PLANNING ANALYST'
+		
+		ORDER BY firstName
+	</select>
+	
+	<select id="getAllSupplySpecialists" resultType="com.penske.apps.adminconsole.model.EditableUser">
+		SELECT	u.USER_ID AS userId,
+				u.FIRST_NAME AS firstName,
+				u.LAST_NAME AS lastName
+		
+		FROM	SMC.SMC_USER_MASTER u,
+				SMC.SMC_USER_DEPT d
+				
+		WHERE	u.DEPT_ID = d.DEPT_ID
+		
+		AND		d.USER_DEPT = 'SUPPLY SPECIALIST'
+		
+		ORDER BY firstName
+	</select>
+	
+	<select id="getVendorContact" resultType="Integer">
+		SELECT	1
+
+		FROM	SMC.SMC_VENDOR_MASTER v,
+				SMC.SMC_VENDOR_CONTACT c
+		
+		WHERE	v.VENDOR_ID = c.VENDOR_ID
+		AND		c.CONTACT_TYPE = #{contactType}
+		AND		v.VENDOR_ID = #{vendorId}
+	</select>
+	
+	<update id="modifyVendorInfo">
+		UPDATE	SMC.SMC_VENDOR_MASTER
+		SET		NOTIFICATION_EXCEPTION = #{vendor.notificationException},
+				<if test="vendor.annualAgreement != null">
+					ANNUAL_AGREEMENT = #{vendor.annualAgreement},
+				</if>
+				PLANNING_ANALYST = #{vendor.planningAnalyst.userId},
+				SUPPLY_SPECIALIST = #{vendor.supplySpecialist.userId},
+				MODIFIED_DATE = CURRENT_TIMESTAMP,
+				MODIFIED_BY = #{updatedBy}
+		WHERE	VENDOR_ID = #{vendor.vendorId}
+	</update>
+
+	<update id="modifyVendorContactInfo">
+		UPDATE	SMC.SMC_VENDOR_CONTACT
+
+		SET		FIRST_NAME = #{firstName},
+				LAST_NAME = #{lastName},
+				PHONE = #{phoneNumber},
+				EMAIL = #{email},
+				RESPONSIBILITY = #{responsibility},
+				MODIFIED_BY= #{modifiedBy},
+				MODIFIED_DATE=CURRENT_TIMESTAMP
+				
+		WHERE	VENDOR_ID = #{vendorId}
+		AND		CONTACT_TYPE = #{contactType}
+	</update>
+	
+	<insert id="addVendorContact">
+		INSERT INTO SMC.SMC_VENDOR_CONTACT
+		( VENDOR_ID, CONTACT_TYPE, FIRST_NAME,  LAST_NAME,  EMAIL,  PHONE,  RESPONSIBILITY,CREATED_BY,MODIFIED_BY,CREATED_DATE,MODIFIED_DATE )
+		VALUES( #{vendorId}, #{contactType}, #{firstName}, #{lastName}, #{email}, #{phoneNumber}, #{responsibility},#{createdBy},#{createdBy},CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)
+	</insert>
+	
+	<delete id="removeVendorContact">
+		DELETE FROM SMC.SMC_VENDOR_CONTACT
+		
+		WHERE 	CONTACT_TYPE = #{contactType}
+		AND		VENDOR_ID = #{vendorId}
+	</delete>
+	
+	<select id="getAllAlerts" resultType="com.penske.apps.adminconsole.model.Alert">
+		Select ALERT_KEY as alertType,ALERT_NAME as alertName from smc.V_SMC_ALERTS WHERE HEADER_KEY='HDR_OF_VENDACTITEMS'
+	</select>
+	
+	<select id="getVendorPoInformation" resultType="com.penske.apps.adminconsole.model.VendorPoInformation">
+		SELECT 
+			vend.VENDOR_ID as vendorId,
+			MAX(purch.CREATED_DATE) AS lastPoDate,
+			COUNT(*) AS posIssuedInLast3Years
+		FROM SMC.SMC_PURCHASING_HEADER purch
+		JOIN SMC.SMC_VENDOR_MASTER vend
+		ON vend.VENDOR_NUMBER = purch.VENDOR_NUMBER
+		AND vend.CORP = purch.CORP
+		WHERE purch.CREATED_DATE > CURRENT_TIMESTAMP - 3 YEAR
+		AND vend.VENDOR_ID IN (
+			<foreach item="vendorId" collection="vendorIds" separator=",">
+				#{vendorId}
+			</foreach>
+		)
+		GROUP BY vend.VENDOR_ID
+	</select>
+	
+	<select id="getOrgVendorAssociationsByVendorIds" resultType="com.penske.apps.adminconsole.domain.OrgVendorAssociation">
+		SELECT
+			ASSOCIATION_ID, 
+			ORG_ID,
+			VENDOR_ID
+		FROM SMC.SMC_ORG_VENDOR_ASSOC
+		where VENDOR_ID IN (
+			<foreach item="vendorId" collection="vendorIds" separator=",">
+	 			#{vendorId}
+	 		</foreach>
+		)
+	</select>
+	
+</mapper>

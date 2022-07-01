@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.2//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.penske.apps.adminconsole.batch.dao.TransporterDao">	
+
+
+
+ 	<resultMap id="MimeTypeMap" type="com.penske.apps.adminconsole.model.MimeTypeModel"> 
+         <result property="extn" 	column="EXTENSION"/> 
+         <result property="mimeType" 	column="MIME_TYPE"/>	 
+    </resultMap> 
+
+	
+	<select id="getMimeTypeList" resultMap="MimeTypeMap"> 
+ 		 Select EXTENSION,MIME_TYPE from CORP.vfjtransporterfiletype 
+ 	</select> 
+
+  <!-- As part of VOD-1848 (April 2019), the COLUMNS for PO_CATEGORY and FREIGHT_AMOUNT are repurposed for
+       Transmission Type and Canadian Tax respectively-->
+ 	<insert id="insertTransporter" parameterType="java.util.Collection"> 
+	
+ 		Insert into CORP.NVONTRNRCV  
+ 		( 
+ 			PICKUP_VENDOR,				REPORT_STATUS,		UNIT,					PKU_NOTICE_DATE,		PRODUCTION_DATE,	HOLD_DATE,	
+ 			ADV_NOTICE_CANCEL_DATE,		OEM,				PLANT_CODE,				ORIGIN_NAME,			ORIGIN_ADD_1,		ORIGIN_ADD_2,		
+ 			ORIGIN_CITY,				ORGIN_STATE_PROV,	ORIGIN_ZIP_CODE,		ORIGIN_PHONE,			DEST_CODE,			DEST_NAME,			 
+ 			DEST_ADD_1,					DEST_ADD_2,			DEST_CITY,				DEST_STATE_PROV,		DEST_ZIP_CODE,		DEST_PHONE,				 
+ 			EST_MILES,					VIN,				BODY_SERIAL,			UNIT_GVW,				PO_CATEGORY,		VEHICLE_CATEGORY,		 
+ 			VEHICLE_TYPE,				FUEL_TYPE,			SLPR_CODE,				AERO_ROOF,				AERO_SIDE,			AERO_CAB,				 
+ 			DECKING,					NO_DECKS,			FREIGHT_AMOUNT,			ADD_ON_CHARGES,			TOTAL_AMOUNT,			 
+ 			TRNST_PO,					TRNST_PO_DATE,		UNIT_DELIVERY_DATE,		ACT_DELV_REPORTED,		FLUID_AMOUNT,		BREAKDWN_AMOUNT,		 
+ 			TOLL_AMOUNT,				MISC_AMOUNT,		REVISED_AMOUNT,			SUBMIT_PAYMENT,			PENSKE_COMMENT,		TRANSPORTER_COMMENT,	 
+ 			ASSIGN_DATE,				LAST_CHANGE_DATE,	CORP,														 
+ 			REPORT_ID,					LIFTGATE_MAKE,		LIFTGATE_MODEL,			TREDEL,					FUEL_SUR_CHARGE,	PARENT_VENDOR,
+ 			PO_NO,						ADV_NOTICE_SEQ,		TRANSMISSION_TYPE,		CANADIAN_TAX						 
+ 		)	
+ 		values  
+ 		<foreach collection="list" item="transport"  separator=",">
+ 		( 
+ 			#{transport.pickupVendor},			#{transport.status},			#{transport.unitNo},				#{transport.requestedPickupDate},		#{transport.productionDate},			#{transport.holdNotificationDate}, 
+ 			#{transport.advanceNoticeCancelDate},	#{transport.oem},				#{transport.plantCode},			#{transport.plantName},				#{transport.plantAdrs1},				#{transport.plantAdrs2}, 
+ 			#{transport.originCity},				#{transport.originState},		#{transport.originZipCode},		#{transport.originContactInfo},		#{transport.destCode},				#{transport.dlvName},
+ 			#{transport.dlvAdrs1},				#{transport.dlvAdrs2},		#{transport.destCity},			#{transport.destState},				#{transport.destZipCode},				#{transport.destContactInfo}, 
+ 			#{transport.mileage},					#{transport.vin},				#{transport.bodySerial},			#{transport.unitGvw},					#{transport.poCategory},				#{transport.vehicleCategory}, 
+ 			#{transport.vehicleType},				#{transport.fuelType},		#{transport.slprCode},			#{transport.aeroRoof},				#{transport.aeroSide},				#{transport.aeroCab}, 
+ 			#{transport.decking},					#{transport.numDecks},		#{transport.freightCharge},		#{transport.penskeAddOnCharge},		#{transport.totalAmount}, 
+ 			#{transport.trnstPo},					#{transport.transitPoDate},	#{transport.actDelvry},			#{transport.actualDeliveryReported},	#{transport.fluids},					#{transport.breakDown}, 
+ 			#{transport.tolls},					#{transport.misc},			#{transport.revisedPOAmount},		#{transport.isPOAmountAccepted},		#{transport.penskeComment},			#{transport.transporterComment}, 
+ 			#{transport.transporterAssignDate},	#{transport.lastChangedDate},	#{transport.companyCode},									
+ 			#{transport.reportId},				#{transport.liftgateMake},	#{transport.liftgateModel},		#{transport.estimatedDeliveryDate},	#{transport.fuelCharge},				#{transport.parentVendor},
+ 			#{transport.penskePo},				#{transport.advNoticeSeq},	#{transport.transmissionType},	#{transport.canadaTax}
+ 		)
+ 		</foreach>
+ 	</insert>
+
+ </mapper>

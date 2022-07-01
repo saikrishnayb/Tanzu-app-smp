@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.penske.apps.buildmatrix.dao.BuildMatrixCroDAO">
+
+	<!--***** BUILD MATRIX WORKFLOW *****-->
+	
+	<!-- CRO ORDERS -->
+	<select id="getApprovedOrdersForBuildMatrix" resultType="com.penske.apps.buildmatrix.domain.ApprovedOrder">
+		SELECT
+			v.OrderId,
+			v.DeliveryId,
+			v.LocationNumber,
+			v.DeliveryDate as deliveryDate,
+			v.Region,
+			v.Area,
+			v.District,
+			v.DistrictDesc,
+			v.AddCount,
+			v.ReplaceCount,
+			v.PackageName,
+			CASE WHEN v.REARDOORINSTALLED = 'YES' then 1 ELSE 0 END AS hasReardoorUnits,
+			CASE WHEN v.LIFTGATEINSTALLED = 'YES' then 1 ELSE 0 END AS hasLiftgateUnits,
+			CASE WHEN v.REEFERINSTALLED = 'YES' then 1 ELSE 0 END AS hasReeferUnits,
+			o.ApprovalStatus
+		FROM v_ApprovedOrdersForBuildMatrix v
+		JOIN t_Order o
+ 			ON o.OrderId = v.OrderId
+	</select>
+	
+	<select id="getApprovedOrdersByIds" resultType="com.penske.apps.buildmatrix.domain.ApprovedOrder">
+		SELECT 
+			v.OrderId,    
+			v.DeliveryId,    
+			v.LocationNumber,    
+			v.DeliveryDate as deliveryDate,    
+			v.Region,    
+			v.Area,    
+			v.District,    
+			v.DistrictDesc,    
+			v.AddCount,    
+			v.ReplaceCount,    
+			v.PackageName,
+			CASE WHEN v.REARDOORINSTALLED = 'YES' then 1 ELSE 0 END AS hasReardoorUnits,
+			CASE WHEN v.LIFTGATEINSTALLED = 'YES' then 1 ELSE 0 END AS hasLiftgateUnits,
+			CASE WHEN v.REEFERINSTALLED = 'YES' then 1 ELSE 0 END AS hasReeferUnits,
+			o.ApprovalStatus
+		FROM v_ApprovedOrdersForBuildMatrix v   
+		JOIN t_Order o     
+			ON o.OrderId = v.OrderId
+		JOIN (VALUES 
+				<foreach close="" separator="," open="" collection="orderKeys" item="orderKey" >
+					(#{orderKey.orderId}, #{orderKey.deliveryId})
+				</foreach>
+				) AS keys (orderId, deliveryId) 
+			ON v.orderId = keys.orderId AND v.deliveryId = keys.deliveryId
+	</select>
+	
+	<select id="getOrderReportOptions" resultType="com.penske.apps.buildmatrix.domain.ReportResultOptionModel">
+		SELECT
+			ord.OrderId,
+			opt.OptionDesc AS optionDescription,
+			opt.OptionGroupId,
+			optGrp.GroupDescription AS optionGroupDescription
+		FROM t_Order ord
+		JOIN t_OrderSelectedOptions selectedOpt ON selectedOpt.OrderId = ord.OrderId
+		JOIN t_Options opt ON opt.OptionId = selectedOpt.OptionId AND opt.PackageId = ord.PackageId AND opt.VersionId = ord.VersionId
+		JOIN t_OptionGroup optGrp ON optGrp.GroupId = opt.OptionGroupId
+		<if test="orderIds != null">
+			WHERE ord.OrderId IN (
+				<foreach collection="orderIds" item="orderId" separator=",">#{orderId}</foreach>
+			)
+		</if>
+		ORDER BY ord.OrderId, opt.OptionGroupId
+		
+	</select>
+</mapper>

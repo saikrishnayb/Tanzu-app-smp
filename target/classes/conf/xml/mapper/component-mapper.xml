@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.2//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.penske.apps.adminconsole.dao.ComponentDao">
+
+<!-- Template Page Start -->
+	<select id="getAllTemplates"  resultType="com.penske.apps.adminconsole.model.Template">
+  
+          WITH components AS (
+            SELECT COUNT(EXPORT_TO_EXCEL) AS excelExportCount, TEMPLATE_ID
+            FROM SMC.SMC_TEMPLATE_COMPONENTS
+            WHERE EXPORT_TO_EXCEL = 'Y'
+            GROUP BY TEMPLATE_ID
+          )
+  
+ 		  SELECT templateMaster.TEMPLATE_ID as templateID,
+ 		    CASE WHEN templateMaster.STATUS = 'A' THEN 1 ELSE 0 END AS active,
+            templateMaster.TEMPLATE_HASH as templateHash, 
+            templateMaster.TEMPLATE_NAME as templateName,
+            templateMaster.TEMPLATE_DESC as templateDesc, 
+            PO_CATEGORY_ASSOC_ID as poCatAssID,
+            COALESCE(CATEGORY,'') as poCatDesc,
+            COALESCE(SUBCATEGORY,'') as poSubCatDesc ,
+            CASE WHEN (COALESCE(components.excelExportCount, 0)) > 0 THEN 1 ELSE 0 END as hasExcelExport
+       FROM SMC.SMC_TEMPLATE_MASTER templateMaster
+ INNER JOIN SMC.V_SMC_PO_CATEGORY_COMBINATIONS  catCombinations
+            ON templateMaster.PO_CATEGORY_ASSOC_ID = catCombinations.ASSOC_ID
+  LEFT JOIN components
+            ON templateMaster.TEMPLATE_ID = components.TEMPLATE_ID
+ 	</select>
+ 	
+ 	<select id="getTemplatesById"  resultType="com.penske.apps.adminconsole.model.Template">
+ 		SELECT TEMPLATE_ID as templateID, TEMPLATE_HASH as templateHash, TEMPLATE_NAME as templateName,
+ 		 TEMPLATE_DESC as templateDesc, PO_CATEGORY_ASSOC_ID as poCatAssID  FROM SMC.SMC_TEMPLATE_MASTER 
+ 		 WHERE  TEMPLATE_ID=#{templateID}
+ 	</select>
+ 	
+ 	<select id="getAllComponent"  resultType="com.penske.apps.adminconsole.model.Components">
+ 		SELECT COMPONENT_ID as componentId, DISPLAY_NAME as componentName,FULL_NAME as fullName FROM SMC.V_SMC_AVAILABLE_COMPONENTS
+ 	</select>
+ 	
+ 	<insert id="addTemplate">
+ 		INSERT 	INTO SMC.SMC_TEMPLATE_MASTER  
+ 				(TEMPLATE_HASH,TEMPLATE_DESC,TEMPLATE_NAME,
+ 				CREATED_BY,MODIFIED_BY,PO_CATEGORY_ASSOC_ID,STATUS) 
+ 		VALUES 	(#{templateHash},#{templateDesc},#{templateDesc}, #{createdBy},#{createdBy},#{poCatAssID},'A')
+ 		 <selectKey resultType="int" keyProperty="templateID" order="AFTER" >
+           SELECT IDENTITY_VAL_LOCAL() as identity_val FROM SYSIBM.SYSDUMMY1
+		</selectKey> 
+ 	</insert>
+ 	
+ 	<insert id="addTemplateComponent">
+ 		INSERT INTO SMC.SMC_TEMPLATE_COMPONENTS
+ 		(TEMPLATE_ID, COMPONENT_ID, COMPONENT_ACCESS, AVAIL_TO_OTHER_PO, EXPORT_TO_EXCEL, 
+ 		CREATED_BY, CREATED_DATE, MODIFIED_BY, MODIFIED_DATE)
+ 		VALUES 	(#{templateId},#{componentId},#{editRequiredStr},#{dispOtherPOStr},#{excelStr},#{createdBy}
+ 		,CURRENT_TIMESTAMP,#{modifiedBy},CURRENT_TIMESTAMP)
+ 	</insert>
+	
+	<update id="updateTemplateComponent">
+ 		UPDATE SMC.SMC_TEMPLATE_COMPONENTS
+ 		SET 
+	 		 COMPONENT_ACCESS = #{editRequiredStr}, 
+	 		 AVAIL_TO_OTHER_PO = #{dispOtherPOStr},
+	 		 EXPORT_TO_EXCEL = #{excelStr}, 
+	 		 MODIFIED_BY = #{modifiedBy},
+	 		 MODIFIED_DATE = CURRENT_TIMESTAMP
+ 		WHERE 
+ 		     TEMPLATE_ID = #{templateId} AND COMPONENT_ID = #{componentId}
+ 	</update>
+	
+	<update id="updateTemplate">
+ 		UPDATE SMC.SMC_TEMPLATE_MASTER 
+		SET TEMPLATE_HASH=#{templateHash},TEMPLATE_DESC=#{templateDesc},TEMPLATE_NAME=#{templateDesc},
+ 			MODIFIED_BY=#{createdBy},PO_CATEGORY_ASSOC_ID=#{poCatAssID}, MODIFIED_DATE=CURRENT_TIMESTAMP
+ 		WHERE TEMPLATE_ID = #{templateID}
+ 	</update>
+		
+ 	<update id="deActivateTemplate">
+ 		UPDATE SMC.SMC_TEMPLATE_MASTER SET STATUS='I' WHERE TEMPLATE_ID = #{templateID}
+ 	</update>
+ 	
+ 	<update id="activateTemplate">
+ 		UPDATE SMC.SMC_TEMPLATE_MASTER SET STATUS='A' WHERE TEMPLATE_ID = #{templateID}
+ 	</update>
+ 	
+ 	<select id="isTemplateComponentExist" resultType="_boolean">
+	 SELECT CASE WHEN Count(COMPONENT_ID) > 0 THEN 1 ELSE 0 END  FROM SMC.SMC_TEMPLATE_COMPONENTS WHERE TEMPLATE_ID = #{templateId} AND COMPONENT_ID = #{componentId}
+ 	</select>
+ 	
+ 	<delete  id="deleteTemplateComponents">
+ 		DELETE 	FROM SMC.SMC_TEMPLATE_COMPONENTS
+ 		WHERE TEMPLATE_ID = #{templateId} AND COMPONENT_ID IN <foreach collection="deletedTempComponents" item="ComponentId" separator="," open="(" close=")">#{ComponentId}</foreach>
+ 	</delete>
+ 	<select id="getTemplateComponentById" resultType="com.penske.apps.adminconsole.model.Components">
+	  SELECT STM.TEMPLATE_ID as templateId, STM.TEMP_COMP_ID as templateComponentId, STM.COMPONENT_ID as componentId,
+            COUNT(SCRO.RULE_ID) AS ruleCount,STM.COMPONENT_ACCESS as editRequiredStr,STM.AVAIL_TO_OTHER_PO as dispOtherPOStr,STM.EXPORT_TO_EXCEL as excelStr
+       		FROM SMC.SMC_TEMPLATE_COMPONENTS STM LEFT OUTER JOIN SMC.SMC_COMPONENT_RULE_OVERRIDES SCRO on SCRO.TEMP_COMP_ID = STM.TEMP_COMP_ID WHERE STM.TEMPLATE_ID=#{templateID} 
+				GROUP BY STM.TEMPLATE_ID, STM.TEMP_COMP_ID,STM.COMPONENT_ID,STM.COMPONENT_ACCESS,STM.AVAIL_TO_OTHER_PO,STM.EXPORT_TO_EXCEL
+ 	</select>
+ 	
+ 	<select id="getTemplateComponentByTempId" resultType="com.penske.apps.adminconsole.model.LoadSheetComponentDetails">
+ 	  Select
+			STM.COMPONENT_ID AS componentId,
+			COMPONENT_TYPE AS componentType,
+			GROUP_NAME AS componentGroup,
+			DISPLAY_NAME AS  componentName
+	  FROM 
+	       SMC.SMC_TEMPLATE_COMPONENTS STM 
+	  JOIN 
+	       SMC.V_SMC_AVAILABLE_COMPONENTS SAC 
+	   ON 
+	       STM.COMPONENT_ID = SAC.COMPONENT_ID
+      WHERE 
+          TEMPLATE_ID=#{templateId}
+          ORDER BY
+				DISPLAY_NAME
+ 	</select>
+ 	
+ 	<select id="findTemplateExist"  resultType="int">
+ 		Select TEMPLATE_ID from SMC.SMC_TEMPLATE_MASTER WHERE PO_CATEGORY_ASSOC_ID=#{poCatAssID}
+ 	</select>
+ 	
+ 	<select id="getAllPoAssociationForAdd"  resultType="com.penske.apps.adminconsole.model.TemplatePoAssociation">
+		SELECT CATEGORY || '/' || SUBCATEGORY as poCatSubCatDesc, ASSOC_ID as poCatAssocID FROM SMC.V_SMC_PO_CATEGORY_COMBINATIONS
+		WHERE ASSOC_ID NOT IN (Select PO_CATEGORY_ASSOC_ID from SMC.SMC_TEMPLATE_MASTER where PO_CATEGORY_ASSOC_ID Is NOT NULL)
+ 	</select>
+ 	
+ 	<select id="getAllPoAssociationForEdit"  resultType="com.penske.apps.adminconsole.model.TemplatePoAssociation">
+		  SELECT combinations.CATEGORY || '/' || combinations.SUBCATEGORY as poCatSubCatDesc, 
+                 combinations.ASSOC_ID as poCatAssocID,
+                 templateMaster.TEMPLATE_ID as templateId
+            FROM SMC.V_SMC_PO_CATEGORY_COMBINATIONS combinations
+                 INNER JOIN SMC.SMC_TEMPLATE_MASTER templateMaster
+                 ON templateMaster.PO_CATEGORY_ASSOC_ID = combinations.ASSOC_ID
+ 	</select>
+<!-- Template Page End -->	
+		
+  
+  <!-- Component Management *****************************************************************************************-->
+  <select id="loadAllAvailableComponents"  resultType="com.penske.apps.adminconsole.model.Component">
+	SELECT
+		SGF.COMPONENT_GROUP,
+		SGF.SUB_GROUP,
+		SGF.SUB_COMPONENT_NAME,
+		SGF.COMPONENT_ID,
+		SGF.COMPONENT_GROUP_ID AS componentGroupNumber,
+		SGF.COMPONENT_TYPE,
+		SGF.DISPLAY_SEQUENCE,
+		CASE WHEN CID.COMPONENT_ID IS NULL THEN 'FALSE' ELSE 'TRUE' END AS VISIBLE,
+		CASE WHEN CID.ALLOW_DUPLICATES = 'Y' THEN 'TRUE' ELSE 'FALSE' END AS allowDuplicates
+	FROM CORP.VEHCMPSGF SGF
+	LEFT JOIN SMC.SMC_COMPONENT_INFO_DETAILS CID ON SGF.COMPONENT_ID = CID.COMPONENT_ID
+  </select>	
+  
+   <select id="getComponentGroup" resultType="com.penske.apps.suppliermgmt.domain.ComponentGroup">
+    SELECT  COMP_GROUP_ID AS groupId,
+            GROUP_NAME,
+            GROUP_SEQUENCE,
+            COMP_GRP_NUMBER AS groupNumber,
+            COMP_SECTION_ID AS sectionId
+       FROM SMC.SMC_COMPONENT_GROUPS
+      WHERE COMP_GRP_NUMBER = #{groupNumber}
+  </select>
+	
+  <insert id="copyCorpComponentRow">
+    INSERT INTO SMC.SMC_COMPONENT_INFO_DETAILS 
+                (
+                  COMPONENT_ID,
+                  DISPLAY_NAME,
+                  COMP_GROUP_ID,
+                  COMPONENT_TYPE,
+                  IS_VEHICLE_COMP,
+                  VISIBILITY,
+                  ALLOW_DUPLICATES,
+                  COMPONENT_SEQUENCE,
+                  GEN_MISSING_COUNT
+                )
+         SELECT COMPONENT_ID,
+                trim(comp.COMPONENt_GROUP) || (case when comp.sub_group != ' ' THEN ' '||trim(comp.sub_group) else '' end) ||' '||trim(comp.SUB_COMPONENT_NAME),
+                <!-- Look up the component group ID in SMC that maps to the component group in the CORP tables (their IDs may be different) -->
+                grp.COMP_GROUP_ID,
+                comp.COMPONENT_TYPE,
+                'N' AS IS_VEHICLE_COMP,
+                'Y' AS VISIBILITY,
+                'Y' AS ALLOW_DUPLICATES,
+                comp.DISPLAY_SEQUENCE, 
+                'Y' AS GEN_MISSING_COUNT
+           FROM CORP.VEHCMPSGF comp
+           <!--
+           		This is admittedly a strange join, and it looks like it should be based on COMPONENT_GROUP_ID = COMP_GROUP_ID.
+           		However, SMC_COMPONENT_GROUPS.COMP_GROUP_ID does not mean the same thing as VEHCMPSGF.COMPONENT_GROUP_ID.
+           		The COMP_GRP_NUMBER in SMC_COMPONENT_GROUPS is what maps to VEHCMPSGF.COMPONENT_GROUP_ID
+           -->
+          LEFT JOIN SMC.SMC_COMPONENT_GROUPS grp ON grp.COMP_GRP_NUMBER = comp.COMPONENT_GROUP_ID
+          WHERE COMPONENT_ID = #{componentId}
+  </insert>
+  
+  <insert id="copyCorpComponentGroupRow">
+    INSERT INTO SMC.SMC_COMPONENT_GROUPS
+                (
+                  GROUP_NAME,
+                  GROUP_SEQUENCE,
+                  COMP_GRP_NUMBER,
+                  COMP_SECTION_ID
+                )
+         SELECT grp.COMPONENT_GROUP,
+                (SELECT MAX(GROUP_SEQUENCE) + 1 FROM SMC.SMC_COMPONENT_GROUPS) AS GROUP_SEQUENCE,
+                grp.COMPONENT_GROUP_ID,
+                3 AS COMP_SECTION_ID
+           FROM CORP.VEHCMPGRF grp
+          WHERE grp.COMPONENT_GROUP_ID = #{groupId}
+  </insert>
+  
+   <update id="allowDuplicateComponents" >
+		UPDATE SMC.SMC_COMPONENT_INFO_DETAILS CID 
+		SET 
+		<choose>
+			<when test="allowDuplicates == true">CID.ALLOW_DUPLICATES = 'Y'</when>
+			<otherwise>CID.ALLOW_DUPLICATES = 'N'</otherwise>
+	          </choose> 
+		WHERE 
+		CID.COMPONENT_ID= #{componentId}
+	</update>
+	
+	<select id="getComponentById"  resultType="com.penske.apps.adminconsole.model.Component">
+  	SELECT SGF.COMPONENT_GROUP, 
+               SGF.SUB_GROUP, 
+               SGF.SUB_COMPONENT_NAME, 
+               SGF.COMPONENT_ID, 
+  		   SGF.COMPONENT_GROUP_ID,
+               SGF.COMPONENT_TYPE, 
+               SGF.DISPLAY_SEQUENCE, 
+               CASE WHEN CID.COMPONENT_ID IS NULL THEN 'FALSE' ELSE 'TRUE' END AS VISIBLE,
+               CASE WHEN CID.ALLOW_DUPLICATES = 'Y' THEN 'TRUE' ELSE 'FALSE' END AS allowDuplicates 
+          FROM CORP.VEHCMPSGF SGF
+     LEFT JOIN SMC.SMC_COMPONENT_INFO_DETAILS CID
+  		   ON SGF.COMPONENT_ID = CID.COMPONENT_ID
+  	WHERE SGF.COMPONENT_ID = #{componentId}
+  </select>
+	
+	<select id="getAllHoldPayments" resultType="com.penske.apps.adminconsole.model.HoldPayment">
+		SELECT  
+			HOLD_PAYMENT_ID AS holdPayementId,
+            COMPONENT_ID AS componentId,
+            VENDOR_ID AS vendorId
+       FROM SMC.SMC_COMPONENT_HOLD_PAYMENT
+	</select>
+	
+	<select id="getHoldPaymentsByComponentId" resultType="com.penske.apps.adminconsole.model.HoldPayment">
+		SELECT  
+			HOLD_PAYMENT_ID AS holdPaymentId,
+            COMPONENT_ID AS componentId,
+            VENDOR_ID AS vendorId
+       FROM SMC.SMC_COMPONENT_HOLD_PAYMENT
+       WHERE COMPONENT_ID = #{componentId}
+	</select>
+	
+	<insert id="addHoldPayments">
+		INSERT INTO SMC.SMC_COMPONENT_HOLD_PAYMENT (COMPONENT_ID, VENDOR_ID, CREATED_BY,CREATED_DATE,MODIFIED_BY,MODIFIED_DATE)
+		VALUES 
+			<foreach collection="holdPaymentstoAdd" item="holdPayment" separator="," >
+				(#{holdPayment.componentId}, #{holdPayment.vendorId}, #{user.sso}, CURRENT_TIMESTAMP, #{user.sso}, CURRENT_TIMESTAMP)
+			</foreach>
+	</insert>
+	
+	<delete id="deleteHoldPayments">
+		DELETE FROM SMC.SMC_COMPONENT_HOLD_PAYMENT 
+		WHERE HOLD_PAYMENT_ID IN (
+			<foreach collection="holdPaymentsToDelete" item="holdPayment" separator="," >
+				#{holdPayment.holdPaymentId}
+			</foreach>
+		)
+	</delete>
+    
+</mapper>

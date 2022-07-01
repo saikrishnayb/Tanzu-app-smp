@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.2//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.penske.apps.adminconsole.dao.CategoryManagementDao">
+
+<select id="getAllSubCategories" resultType="com.penske.apps.adminconsole.model.SubCategory">
+	SELECT 
+		sub.PO_SUBCATEGORY as subCategoryName,
+		sub.PO_SUBCATEGORY_ID as subCategoryId,
+		sub.DESCRIPTION as description,
+		sub.STATUS as status
+		
+	FROM 
+		SMC.SMC_PO_SUBCATEGORY sub 
+
+</select>
+
+<!-- subCategory -->
+
+
+<select id="getSelectedSubCategory" resultType="com.penske.apps.adminconsole.model.SubCategory">
+SELECT 
+	PO_SUBCATEGORY as subCategoryName,
+	PO_SUBCATEGORY_ID as subCategoryId,
+	DESCRIPTION as description,
+	STATUS as status
+FROM 
+	SMC.SMC_PO_SUBCATEGORY
+WHERE
+	PO_SUBCATEGORY_ID=#{subCategoryId}
+
+</select>
+<update id="updateSubCategory">
+
+UPDATE 
+SMC.SMC_PO_SUBCATEGORY 
+SET 
+	PO_SUBCATEGORY =#{subCategoryName},
+	DESCRIPTION =#{description},
+	STATUS =#{status}
+WHERE
+	PO_SUBCATEGORY_ID=#{subCategoryId}
+	
+</update>
+
+<insert id="insertSubCategory">
+INSERT 
+into 
+SMC.SMC_PO_SUBCATEGORY (PO_SUBCATEGORY,  DESCRIPTION,  STATUS,created_by,created_date) 
+values(#{subCategoryName} ,#{description},#{status},#{createdBy},CURRENT_TIMESTAMP)
+</insert>
+
+
+<!-- Category Association -->
+<select id="getAllCategoryAssociation" resultType="com.penske.apps.adminconsole.model.CategoryAssociation">
+
+SELECT 
+ 		asoc.PO_Category_ASSOC_ID as associationId,
+		POC.PO_CATEGORY_ID as poCategoryId, 
+		POC.PO_CATEGORY as poCategoryName, 
+		SUBC.PO_SUBCATEGORY as subCategoryName,
+		SUBC.PO_SUBCATEGORY_ID as subCategoryId,
+		POC.Status as poCatStatus,
+		SUBC.Status as subCatStatus,
+		asoc.ACTIVE as assocStatus
+	FROM SMC.SMC_PO_CATEGORY_ASSOC asoc
+	LEFT JOIN 	
+			SMC.SMC_PO_CATEGORY POC 
+		ON POC.PO_CATEGORY_ID = asoc.PO_CATEGORY_ID
+	LEFT JOIN SMC.SMC_PO_SUBCATEGORY SUBC
+		ON SUBC.PO_SUBCATEGORY_ID = asoc.PO_SUBCATEGORY_ID
+	<!--  WHERE POC.Status = 'A'
+	AND asoc.ACTIVE='1' -->
+</select>	
+
+<select id="getSubCategories" resultType="com.penske.apps.adminconsole.model.SubCategory">
+SELECT 
+		SUBC.PO_SUBCATEGORY as subCategoryName,
+		SUBC.PO_SUBCATEGORY_ID as subCategoryId
+FROM
+		SMC.SMC_PO_SUBCATEGORY SUBC
+WHERE
+		SUBC.PO_SUBCATEGORY_ID not in(SELECT asoc.PO_SUBCATEGORY_ID from SMC.SMC_PO_CATEGORY_ASSOC asoc where asoc.PO_CATEGORY_ID =#{poCategoryId})
+		
+</select>
+
+<insert id="addCategoryAssociation">
+INSERT 
+INTO 
+	SMC.SMC_PO_CATEGORY_ASSOC(PO_CATEGORY_ID,  PO_SUBCATEGORY_ID, MAKE_MODEL_YEAR_REQ, VEHICLE_TYPE_REQ, VEHICLE_SIZE_REQ) 
+VALUES (#{poCategoryId},#{subCategoryId},
+	<choose>
+		<when test="makeModelYearRequired == true">'Y'</when>
+		<otherwise>'N'</otherwise>
+	</choose>,
+		<choose>
+		<when test="vehicleTypeRequired == true">'Y'</when>
+		<otherwise>'N'</otherwise>
+	</choose>,
+		<choose>
+		<when test="vehicleSizeRequired == true">'Y'</when>
+		<otherwise>'N'</otherwise>
+	</choose>)
+
+</insert>
+
+<select id="getMaxSubCategoryId" resultType="Integer">
+
+SELECT
+	COALESCE(MAX(PO_SUBCATEGORY_ID), 0) AS categoryId
+FROM
+	SMC.SMC_PO_SUBCATEGORY
+</select>
+
+<update id="modifySubCatStatus">
+	UPDATE 	SMC.SMC_PO_SUBCATEGORY
+	SET		STATUS = #{status}
+	WHERE	PO_SUBCATEGORY_ID = #{subCatId}
+</update>
+
+<update id="modifySubCatAssocStatus">
+	UPDATE 	SMC.SMC_PO_CATEGORY_ASSOC 
+	SET 	ACTIVE = #{status} 
+	WHERE 	PO_SUBCATEGORY_ID = #{subCatId}
+</update>
+
+<update id="modifyAssociationStatus">
+	UPDATE 	SMC.SMC_PO_CATEGORY_ASSOC 
+	SET 	ACTIVE = #{status} 
+	WHERE 	PO_CATEGORY_ASSOC_ID = #{assId}
+</update>
+
+<select id="getAnyOtherAssociationExist" resultType="Integer"> 
+	SELECT COALESCE(COUNT(1),0) as cnt FROM SMC.SMC_PO_CATEGORY_ASSOC
+	 where (PO_CATEGORY_ID=#{poCatId} OR PO_SUBCATEGORY_ID=#{subCatId}) AND PO_CATEGORY_ASSOC_ID !=#{assId}
+</select >
+
+<select id="getSubCategoryByName" resultType="com.penske.apps.adminconsole.model.SubCategory">
+SELECT 
+	PO_SUBCATEGORY as subCategoryName,
+	PO_SUBCATEGORY_ID as subCategoryId,
+	DESCRIPTION as description,
+	STATUS as status
+FROM 
+	SMC.SMC_PO_SUBCATEGORY
+WHERE
+	UPPER(PO_SUBCATEGORY)=UPPER(#{subCategoryName})
+
+</select>
+
+<select id="getEditCategoryAssociation"  resultType="com.penske.apps.adminconsole.model.CategoryAssociation">
+SELECT 
+ 		asoc.po_category_ASSOC_ID as associationId,
+		POC.PO_CATEGORY_ID as poCategoryId, 
+		POC.PO_CATEGORY as poCategoryName, 
+		SUBC.PO_SUBCATEGORY as subCategoryName,
+		SUBC.PO_SUBCATEGORY_ID as subCategoryId,
+		CASE WHEN asoc.MAKE_MODEL_YEAR_REQ = 'Y' then 1 ELSE 0 END AS makeModelYearRequired,
+		CASE WHEN asoc.VEHICLE_TYPE_REQ = 'Y' then 1 ELSE 0 END AS vehicleTypeRequired,
+		CASE WHEN asoc.VEHICLE_SIZE_REQ = 'Y' then 1 ELSE 0 END AS vehicleSizeRequired
+	FROM SMC.SMC_PO_CATEGORY_ASSOC asoc
+	LEFT JOIN 	
+			SMC.SMC_PO_CATEGORY POC 
+		ON POC.PO_CATEGORY_ID = asoc.PO_CATEGORY_ID
+	LEFT JOIN SMC.SMC_PO_SUBCATEGORY SUBC
+		ON SUBC.PO_SUBCATEGORY_ID = asoc.PO_SUBCATEGORY_ID
+	WHERE
+		asoc.po_category_ASSOC_ID  = #{associationId}
+		
+</select>
+
+<update id="updateCategoryAssociation">
+		UPDATE 	SMC.SMC_PO_CATEGORY_ASSOC 
+	SET 	MAKE_MODEL_YEAR_REQ =
+	<choose>
+		<when test="makeModelYearRequired == true">'Y'</when>
+		<otherwise>'N'</otherwise>
+	</choose>,VEHICLE_TYPE_REQ =
+		<choose>
+		<when test="vehicleTypeRequired == true">'Y'</when>
+		<otherwise>'N'</otherwise>
+	</choose>,VEHICLE_SIZE_REQ =
+		<choose>
+		<when test="vehicleSizeRequired == true">'Y'</when>
+		<otherwise>'N'</otherwise>
+	</choose>
+	WHERE 	PO_CATEGORY_ASSOC_ID = #{associationId}
+</update>
+
+
+
+</mapper>

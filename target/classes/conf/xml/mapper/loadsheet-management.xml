@@ -1,0 +1,772 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.2//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.penske.apps.adminconsole.dao.LoadsheetManagementDao">
+
+
+    <!-- To get Component rules in loadsheet management page -->
+  	<select id="getLoadsheetComponents" resultType="com.penske.apps.adminconsole.model.ComponentVisibilityModel"> 
+		SELECT 	SCV.CMP_VISIBLE_ID AS componentVisibilityId,
+		SCV.CAT_TYPE_ID AS categoryId,
+		SCV.COMPONENT_ID AS componentId,
+		TRIM(VCS.COMPONENT_GROUP) AS compGroup,
+		TRIM(VCS.SUB_GROUP) AS subGroup,
+		TRIM(VCS.SUB_COMPONENT_NAME) AS componentName,
+		SCV.V2B_VISIBILITY AS screen2b,
+		SCV.LOADSHEET_VISIBILITY AS lsOverride,
+		(SELECT COUNT(SCRO.RULE_ID) FROM SMC.SMC_COMPONENT_RULE_OVERRIDES SCRO WHERE SCRO.CMP_VISIBLE_ID = SCV.CMP_VISIBLE_ID) AS ruleCount
+		FROM SMC.SMC_COMPONENT_VISIBILITY SCV
+		JOIN CORP.VEHCMPSGF VCS on SCV.COMPONENT_ID=VCS.COMPONENT_ID
+		JOIN SMC.SMC_CAT_TYPE_MASTER SCM ON SCV.CAT_TYPE_ID=SCM.CAT_TYPE_ID
+		WHERE SCM.PO_CATEGORY=#{category} AND SCM.TYPE=#{type} AND SCV.LOADSHEET_VISIBILITY !='' 
+		ORDER BY compGroup,subGroup,componentName
+ 		
+ 	</select>
+ 	
+ 	<!-- To Load the Details in Load Sheet Management Page-->
+	<select  id="getLoadsheetManagementDetails" resultType="com.penske.apps.adminconsole.model.LoadsheetManagement">
+		SELECT 	CAT_TYPE_ID						AS  catTypeId,
+				PO_CATEGORY 					AS 	category,
+				TYPE       						AS	type,
+				USES_DEFAULT  					AS	usesDefault,
+				FIRST_NAME||' '||LAST_NAME		AS 	editedBy,
+				CTM.MODIFIED_DATE				AS	editedDate
+		FROM
+				SMC.SMC_CAT_TYPE_MASTER CTM
+		LEFT JOIN 
+				SMC.SMC_USER_MASTER SUMC 
+		ON 		SUMC.SSO=CTM.MODIFIED_BY
+	</select>
+	
+	
+	<!-- To Load the Details in Load Sheet Management Page-->
+	<select  id="getUsesDefaultForCategoryAndType" resultType="String">
+		SELECT 	USES_DEFAULT FROM SMC.SMC_CAT_TYPE_MASTER SCM
+		WHERE SCM.PO_CATEGORY=#{category} AND SCM.TYPE=#{type} 
+	</select>
+	
+	<!-- To Load the Details in Load Sheet Management Page-->
+	<select  id="getLoadsheetRules" resultType="com.penske.apps.adminconsole.model.RuleMaster">
+		SELECT 	CVRM.RULE_ID							AS 	ruleId,
+				NAME       								AS	ruleName,
+				DESCRIPTION								AS	description,
+				COUNT(CRO.RULE_ID)						AS	timesUsed,
+				SUMC.FIRST_NAME||' '||SUMC.LAST_NAME	AS 	createdBy,
+				CVRM.CREATED_DATE						AS	createdDate,
+				SUME.FIRST_NAME||' '||SUME.LAST_NAME	AS 	editBy,
+				CVRM.MODIFIED_DATE						AS	editDate
+		FROM
+				SMC.SMC_CMP_VISIBILITY_RULES_MASTER CVRM
+		LEFT JOIN 
+				SMC.SMC_USER_MASTER SUMC
+		ON 		SUMC.SSO=CVRM.CREATED_BY 	 
+		LEFT JOIN 
+				SMC.SMC_USER_MASTER SUME
+		ON		SUME.SSO=CVRM.MODIFIED_BY
+		LEFT JOIN
+				SMC.SMC_COMPONENT_RULE_OVERRIDES CRO
+		ON		CVRM.RULE_ID = CRO.RULE_ID
+		WHERE 
+		       CVRM.RULE_TYPE = 'L'
+		GROUP BY
+				CVRM.RULE_ID,NAME,DESCRIPTION,SUMC.FIRST_NAME||' '||SUMC.LAST_NAME,CVRM.CREATED_DATE,SUME.FIRST_NAME||' '||SUME.LAST_NAME,CVRM.MODIFIED_DATE
+	</select>
+	
+	<!-- Get all the Loadsheet Rule names -->
+ 	<select id="getAllLoadsheetRuleNames" resultType="String">
+ 		SELECT 
+				TRIM(NAME)
+		FROM
+				SMC.SMC_CMP_VISIBILITY_RULES_MASTER
+		WHERE
+			RULE_TYPE = 'L'
+		<if test="ruleId != 0">
+			AND
+				RULE_ID NOT IN ( #{ruleId} ) 
+		</if>
+	</select>
+
+	<!-- Get all the Unit Template Rule names by templateId -->
+ 	<select id="getAllUnitTemplateRuleNamesByTemplateId" resultType="String">
+ 		SELECT 
+				TRIM(rule.NAME)
+		FROM SMC.SMC_COMPONENT_RULE_OVERRIDES 	 outcome
+		JOIN SMC.SMC_TEMPLATE_COMPONENTS		 comp ON comp.TEMP_COMP_ID = outcome.TEMP_COMP_ID
+		JOIN SMC.SMC_CMP_VISIBILITY_RULES_MASTER rule ON rule.RULE_ID = outcome.RULE_ID
+		WHERE
+			comp.TEMPLATE_ID = #{templateId}
+		<if test="ruleId != 0">
+			AND
+				rule.RULE_ID NOT IN ( #{ruleId} ) 
+		</if>
+	</select>
+	
+	<!-- To Insert the Rule master Details -->
+ 	<insert id="insertRuleMasterDetails" useGeneratedKeys="true" keyProperty="rule.ruleId" keyColumn="RULE_ID" >
+ 		INSERT INTO 
+ 					SMC.SMC_CMP_VISIBILITY_RULES_MASTER 
+ 					(NAME,			DESCRIPTION,			CREATED_BY,			MODIFIED_BY,RULE_TYPE)
+ 		VALUES 		(#{rule.ruleName},	#{rule.description},	#{user.sso},	#{user.sso},#{rule.ruleType})
+ 	</insert>
+ 	
+ 	<!-- To insert the rule definition -->
+ 	<insert id="insertRuleDefinitions">
+ 		INSERT INTO 
+ 					SMC.SMC_CMP_VISIBILITY_RULES_DEFINITION
+ 					(RULE_ID,			CRITERIA_GROUP,				COMPONENT_ID,			COMPONENT_TYPE,
+ 					 OPERAND,			COMPONENT_VALUE,			CREATED_BY,				MODIFIED_BY)
+ 		VALUES		
+ 			 <foreach item="ruleDef" collection="ruleDefList" separator=",">
+			 		(#{ruleDef.ruleId},	#{ruleDef.criteriaGroup},	#{ruleDef.componentId},	#{ruleDef.componentType},
+ 					 #{ruleDef.operand},#{ruleDef.value},			#{user.sso},	#{user.sso})
+ 			 </foreach>
+ 	</insert>
+ 	
+ 	<!-- To Update the rule master details -->
+ 	<update id="updateRuleMasterDetails">
+ 		UPDATE
+ 				SMC.SMC_CMP_VISIBILITY_RULES_MASTER
+ 		<set>		
+ 				NAME			=	#{rule.ruleName},
+ 				DESCRIPTION		=	#{rule.description},
+ 				MODIFIED_BY		=	#{user.sso},
+ 				MODIFIED_DATE	=	CURRENT_TIMESTAMP
+ 		</set>
+ 		WHERE
+ 				RULE_ID		=	#{rule.ruleId}
+ 				
+ 	</update>
+ 	<!-- To update rule definition details -->
+ 	<update id="updateRuleDefinitions">
+ 		
+		 	UPDATE
+		 			SMC.SMC_CMP_VISIBILITY_RULES_DEFINITION
+		 	<set>		
+		 			CRITERIA_GROUP	=	#{ruleDef.criteriaGroup},
+		 			COMPONENT_ID	=	#{ruleDef.componentId},
+		 			COMPONENT_TYPE	=	#{ruleDef.componentType},
+		 			OPERAND			=	#{ruleDef.operand},
+		 			COMPONENT_VALUE	=	#{ruleDef.value},
+		 			MODIFIED_BY		=	#{user.sso},
+		 			MODIFIED_DATE	=	CURRENT_TIMESTAMP
+		 	</set>
+		 	WHERE	
+		 			RULE_DEF_ID		=	#{ruleDef.ruleDefId}
+		 	AND 	
+		 			RULE_ID			=	#{ruleDef.ruleId}
+	 	
+ 	</update>
+ 	
+ 	<!-- Delete Rule Definition details -->
+ 	<delete id="deleteRuleDefinitions">
+ 		DELETE
+ 		FROM
+ 				SMC.SMC_CMP_VISIBILITY_RULES_DEFINITION
+ 		WHERE
+ 				RULE_DEF_ID IN 
+ 				<foreach item="ruleDefId"  collection="ruleDefIdList" open="(" separator="," close=")">
+ 					#{ruleDefId}
+ 				</foreach>
+ 				
+ 	</delete>
+ 	
+ 	<!-- To delete Rule Association before deleting rule -->
+ 	<delete id="deleteRuleAssociation">
+ 		DELETE
+ 		FROM
+ 				SMC.SMC_COMPONENT_RULE_OVERRIDES
+ 		WHERE
+ 				RULE_ID=	#{ruleId}
+ 	</delete>
+ 	
+ 	<!-- Delete Rule details in rule master -->
+ 	<delete id="deleteRuleMasterDetails">
+ 		DELETE
+ 		FROM
+ 				SMC.SMC_CMP_VISIBILITY_RULES_MASTER
+ 		WHERE
+ 				RULE_ID =	#{ruleId} 
+ 	</delete>
+ 	<!-- Delete rule def details asscoiated to deleted ruleid -->
+ 	<delete id="deleteRuleDefDetails">
+ 		DELETE
+ 		FROM
+ 				SMC.SMC_CMP_VISIBILITY_RULES_DEFINITION
+ 		WHERE
+ 				RULE_ID =	#{ruleId} 
+ 	</delete>
+ 	
+ 	
+ 	<!-- Query to fetch the rule definition details based on ruleID -->
+ 	<select id="getRuleDetails" resultMap="ruleDetailsMap" >
+		SELECT 
+ 				RULE_ID AS RULE_ID,
+ 				TRIM(NAME) AS NAME, 
+ 				TRIM(DESCRIPTION) AS DESCRIPTION 
+ 		FROM 
+ 		 		SMC.SMC_CMP_VISIBILITY_RULES_MASTER 
+ 		 WHERE 	
+ 		 		RULE_ID=#{ruleId}
+ 	</select>
+ 	
+ 	
+ 	<resultMap id="ruleDetailsMap" type="com.penske.apps.adminconsole.model.RuleMaster">
+		 <id property="ruleId" column="RULE_ID" />
+		 <result property="ruleName" column="NAME" />
+		 <result property="description" column="DESCRIPTION" />
+		 <collection property="ruleDefinitionsList" column="RULE_ID" ofType="com.penske.apps.adminconsole.model.RuleDefinitions" javaType="ArrayList" select="getRuleDefDetails"/> 
+	 </resultMap>
+	 
+	 <select id="getRuleDefDetails" parameterType="int" resultMap="ruleDefMap">
+	
+		SELECT  
+				RULE_DEF_ID,
+				CRITERIA_GROUP,
+				COMPONENT_TYPE,
+				COMPONENT_ID,
+				OPERAND,
+				COMPONENT_VALUE
+		FROM
+				SMC.SMC_CMP_VISIBILITY_RULES_DEFINITION
+		WHERE 
+				RULE_ID=#{ruleId}
+	</select>
+	 
+	  <resultMap id="ruleDefMap" type="com.penske.apps.adminconsole.model.RuleDefinitions">
+	 	<id property="ruleId" column="RULE_ID" />
+	 	<result property="ruleDefId" column="RULE_DEF_ID" />
+	 	<result property="criteriaGroup" column="CRITERIA_GROUP" />
+	 	<result property="componentType" column="COMPONENT_TYPE" />
+	 	<result property="componentId" column="COMPONENT_ID" />
+	 	<result property="operand" column="OPERAND" />
+	 	<result property="value" column="COMPONENT_VALUE" />
+	 </resultMap>
+	 
+	  <select id="getTemplateComponentRuleVisibilty" resultType="com.penske.apps.adminconsole.model.TemplateComponentRuleAssociation">
+	
+		SELECT 
+		      VISIBILITY_OVERRIDE AS lsOverride
+		FROM 
+		     SMC.SMC_COMPONENT_RULE_OVERRIDES 
+		WHERE 
+				TEMP_COMP_ID = #{templateComponentId}
+			AND RULE_ID=#{ruleId}
+				 
+	</select>
+	
+	
+	<!-- To get load sheet sequences for selected category and type -->
+  	<select id="getLoadsheetSequences" resultType="com.penske.apps.adminconsole.model.LoadsheetSequenceMaster"> 
+		SELECT
+			SEQ_MASTER_ID AS id,
+			NAME AS name,
+			DESCRIPTION AS description,
+			PO_CATEGORY AS category,
+			TYPE AS type,
+			LSM.OEM AS oem,
+			FIRST_NAME||' '||LAST_NAME AS editedBy,
+			LSM.MODIFIED_DATE AS editedDate
+		FROM SMC.SMC_LOADSHEET_SEQ_MASTER LSM
+		JOIN SMC.SMC_USER_MASTER SUMC ON LSM.MODIFIED_BY=SUMC.SSO 
+        <where>
+          <if test="category !=null and category !=''">
+			LSM.PO_CATEGORY=#{category}
+          </if>
+          <if test="type !=null and type !=''">
+			AND LSM.TYPE=#{type}
+          </if>
+		</where>
+		
+ 	</select> 
+ 	
+ 	<!-- To get load sheet sequences from navigation link -->
+  	<select id="getLoadsheetSequence" resultType="com.penske.apps.adminconsole.model.LoadsheetSequenceMaster"> 
+		SELECT
+			SEQ_MASTER_ID AS id,
+			NAME AS name,
+			DESCRIPTION AS description,
+			PO_CATEGORY AS category,
+			TYPE AS type,
+			LSM.OEM AS oem,
+			FIRST_NAME||' '||LAST_NAME AS editedBy,
+			LSM.MODIFIED_DATE AS editedDate
+		FROM SMC.SMC_LOADSHEET_SEQ_MASTER LSM
+		JOIN SMC.SMC_USER_MASTER SUMC ON LSM.MODIFIED_BY=SUMC.SSO 
+ 	</select> 
+ 	
+ 	<!-- To get Load sheet category list in Load Sheet Sequencing Page-->
+	<select  id="getCategoryList" resultType="String">
+		SELECT 	DISTINCT TRIM(PO_CATEGORY) AS PO_CATEGORY
+		FROM
+		SMC.SMC_CAT_TYPE_MASTER ORDER BY PO_CATEGORY
+		
+	</select>
+	<!-- To get Load sheet type list in Load Sheet Sequencing Page-->
+	<select  id="getTypeList" resultType="String">
+		SELECT DISTINCT TRIM(TYPE) AS TYPE
+		FROM
+		SMC.SMC_CAT_TYPE_MASTER
+		<where>
+		   TYPE != 'DEFAULT'
+		<if test="category != null and category !='' ">
+			AND PO_CATEGORY = #{category}
+       	</if>
+       	</where>
+        ORDER BY TYPE
+	</select>
+ 	<select  id="getMfrList" resultType="String">
+		 SELECT DISTINCT (MFNAME ||' - ('|| MFCODE ||')') as MFR 
+        FROM 
+           CORP.FVEHMFR
+		WHERE
+				MFTYP${poCategoryType.mfrFieldCode} = #{poCategoryType.mfrFieldCode}
+		ORDER BY MFR
+		
+	</select>
+ 	
+	<!-- TO get component rules-->
+	<select  id="getComponentRules" resultType="com.penske.apps.adminconsole.model.RuleMaster">
+		SELECT 	DISTINCT RULE_ID AS 	ruleId,
+                NAME  AS	ruleName,
+		        LOWER(NAME) as Name
+		FROM SMC.SMC_CMP_VISIBILITY_RULES_MASTER WHERE RULE_TYPE = 'L' ORDER BY Name
+	</select>
+	
+	<!-- TO get component visibility rules-->
+	<select  id="getComponentVisibilityRules" resultType="com.penske.apps.adminconsole.model.ConfigureRule">
+		SELECT 	RULE_ID AS 	ruleId,
+				PRIORITY  AS priority,          
+                VISIBILITY_OVERRIDE AS lsOverride
+		FROM SMC.SMC_COMPONENT_RULE_OVERRIDES
+		WHERE CMP_VISIBLE_ID=#{componentVisibleId} ORDER BY PRIORITY
+	</select>
+	
+	<!-- To delete the rules associated to the component -->
+    <delete  id="deleteComponentVisibilityRules">
+ 		DELETE FROM SMC.SMC_COMPONENT_RULE_OVERRIDES WHERE CMP_VISIBLE_ID=#{componentVisibilityId}
+ 	</delete>
+ 	
+ 	<!-- To associate list of rules to the component -->
+ 	<insert id="saveComponentVisibilityRules">
+		INSERT INTO SMC.SMC_COMPONENT_RULE_OVERRIDES (CMP_VISIBLE_ID,RULE_ID, PRIORITY,VISIBILITY_OVERRIDE,CREATED_BY,
+		CREATED_DATE, MODIFIED_BY, MODIFIED_DATE) VALUES
+		<foreach collection="rule" item="item" separator=",">
+		(#{componentVisibilityId},#{item.ruleId},#{item.priority},#{item.lsOverride},#{createdBy},CURRENT_TIMESTAMP,#{createdBy},CURRENT_TIMESTAMP)
+		 </foreach>
+    </insert>
+    
+     	
+ 	<!-- To associate list of rules to the component -->
+ 	<insert id="saveTemplateComponentVisibilityRules">
+		INSERT INTO SMC.SMC_COMPONENT_RULE_OVERRIDES (TEMP_COMP_ID,RULE_ID, PRIORITY,VISIBILITY_OVERRIDE,CREATED_BY,
+		CREATED_DATE, MODIFIED_BY, MODIFIED_DATE) VALUES
+		(#{templateComponentId},#{ruleId},#{priority},#{lsOverride},#{createdBy},CURRENT_TIMESTAMP,#{createdBy},CURRENT_TIMESTAMP)
+    </insert>
+    
+     	<!-- To associate list of rules to the component -->
+ 	<insert id="updateTemplateComponentVisibilityRules">
+		UPDATE SMC.SMC_COMPONENT_RULE_OVERRIDES
+		<set>
+		VISIBILITY_OVERRIDE = #{lsOverride},
+		CREATED_BY			= #{createdBy},
+		CREATED_DATE		= CURRENT_TIMESTAMP,
+		MODIFIED_BY			= #{createdBy},
+		MODIFIED_DATE		= CURRENT_TIMESTAMP
+		</set>
+		WHERE TEMP_COMP_ID = #{templateComponentId} AND RULE_ID = #{ruleId}
+    </insert>
+    
+ 	<!-- To get the list of components for dropwdown in create rules -->
+	<select id="getComponents" resultType="com.penske.apps.adminconsole.model.LoadSheetComponentDetails">
+		SELECT 	COMPONENT_ID 				AS componentId,
+				COMPONENT_TYPE				AS componentType,
+				TRIM(COMPONENt_GROUP)		AS componentGroup,
+				TRIM(SUB_GROUP)				AS subGroup,
+				TRIM(SUB_COMPONENT_NAME) 	AS componentName
+		FROM
+				CORP.VEHCMPSGF 
+		ORDER BY
+				COMPONENt_GROUP,SUB_GROUP,SUB_COMPONENT_NAME
+				
+	</select>
+	
+	
+ 	
+ 	<!-- To get Loadsheet Category Assigned for the rule -->
+ 	<select id="getAssignedLoadsheetCategories" resultType="com.penske.apps.adminconsole.model.LoadsheetManagement" >
+ 		SELECT
+ 				CTM.CAT_TYPE_ID			AS 	catTypeId,
+				CTM.PO_CATEGORY			AS 	category,
+				CTM.TYPE				AS 	type,
+				CTM.USES_DEFAULT  		AS	usesDefault,
+				VCS.COMPONENT_GROUP		AS 	componentGroup,
+				VCS.SUB_GROUP			AS	subGroup,
+				VCS.SUB_COMPONENT_NAME	AS 	component,
+				VCS.COMPONENT_ID		AS	componentId,
+				CRO.VISIBILITY_OVERRIDE AS lsOverride
+		FROM 
+				SMC.SMC_COMPONENT_VISIBILITY SCV
+		JOIN 	
+				SMC.SMC_COMPONENT_RULE_OVERRIDES CRO
+		ON	
+				CRO.CMP_VISIBLE_ID = SCV.CMP_VISIBLE_ID
+		JOIN 	
+				CORP.VEHCMPSGF VCS 
+		ON 
+				SCV.COMPONENT_ID=VCS.COMPONENT_ID 
+		JOIN 
+				SMC.SMC_CAT_TYPE_MASTER CTM 
+		ON 
+				CTM.CAT_TYPE_ID = SCV.CAT_TYPE_ID
+		
+		WHERE 
+				RULE_ID=#{ruleId}
+ 		
+ 	</select>
+	
+	
+	
+	<!-- TO get Unassigned Components For create loadsheet seq -->
+	<select id="getUnAssignedComponents" resultType="com.penske.apps.adminconsole.model.LoadSheetComponentDetails">
+		SELECT 	
+  				DISTINCT VCS.COMPONENT_ID	    AS componentId,
+  				TRIM(VCS.COMPONENT_GROUP)		AS componentGroup,
+  				TRIM(VCS.SUB_GROUP)				AS subGroup,
+  				TRIM(VCS.SUB_COMPONENT_NAME)	AS componentName
+		FROM 
+				SMC.SMC_COMPONENT_VISIBILITY SCV
+		JOIN 
+				CORP.VEHCMPSGF VCS 
+		ON   
+				SCV.COMPONENT_ID=VCS.COMPONENT_ID
+		JOIN 
+				SMC.SMC_CAT_TYPE_MASTER SCM 
+		ON 	
+				SCV.CAT_TYPE_ID=SCM.CAT_TYPE_ID
+		<where>		
+		  SCV.LOADSHEET_VISIBILITY !=''
+		<if test="category != null and type != null">
+		
+        	<if test="category !='' ">
+			 AND	SCM.PO_CATEGORY = #{category}
+			 
+			 <if test="type == ''">
+				AND SCM.TYPE = 'DEFAULT'
+			</if>
+			 
+       		</if>
+			<if test="type != ''">
+				AND SCM.TYPE = #{type}
+			</if>
+		
+		</if>
+		</where>
+		Order By componentGroup,subGroup,componentName
+	</select>
+	
+	<!-- Creating Loadsheet Sequencing -->
+	<!-- insert into seq master Table -->
+	<insert id="insertSeqMasterDetails" useGeneratedKeys="true" keyProperty="seqMaster.id" keyColumn="SEQ_MASTER_ID" >
+		INSERT INTO 
+					SMC.SMC_LOADSHEET_SEQ_MASTER 
+					(NAME,		DESCRIPTION,	PO_CATEGORY,	TYPE,	OEM,
+					CREATED_BY, CREATED_DATE,	MODIFIED_BY,	MODIFIED_DATE) 
+		VALUES 
+					(#{seqMaster.name}, #{seqMaster.description}, #{seqMaster.category}, #{seqMaster.type}, #{seqMaster.oem},
+					#{user.sso}, CURRENT_TIMESTAMP, #{user.sso}, CURRENT_TIMESTAMP)
+	</insert>
+	
+	<!-- insert into group master table -->
+	<insert id="insertGrpMasterDetails" useGeneratedKeys="true" keyProperty="grpMaster.grpMasterId" keyColumn="GRP_MASTER_ID" >
+		INSERT INTO 
+					SMC.SMC_LOADSHEET_GROUP_MASTER 
+					(SEQ_MASTER_ID,	NAME,	DISPLAY_SEQ,	CREATED_BY, 
+					CREATED_DATE,	MODIFIED_BY,	MODIFIED_DATE) 
+		VALUES 
+					(#{grpMaster.seqMasterId}, #{grpMaster.name}, #{grpMaster.displaySeq}, 
+					#{user.sso}, CURRENT_TIMESTAMP, #{user.sso}, CURRENT_TIMESTAMP)
+	</insert>
+	
+	<!-- insert into component grp sequencing table -->
+	<insert id="insertCmpGrpSeqDetails" >
+		INSERT INTO 
+					SMC.SMC_LOADSHEET_CMP_GROUP_SEQ 
+					(GRP_MASTER_ID,	COMPONENT_ID,	DISPLAY_SEQ,
+					CREATED_BY,	CREATED_DATE,	MODIFIED_BY,	MODIFIED_DATE) 
+		VALUES 
+				<foreach item="cmpGrpSeq" collection="cmpGrpSeqList" separator=",">
+					(#{cmpGrpSeq.grpMasterId},#{cmpGrpSeq.componentId},#{cmpGrpSeq.displaySeq},
+					#{user.sso}, CURRENT_TIMESTAMP, #{user.sso}, CURRENT_TIMESTAMP)
+				</foreach>
+	</insert>
+	
+	<!-- Queries to get the sequence details based on seqMasterId  -->
+	<!-- Get sequence master details -->
+	<select id="getSequenceMasterDetails" resultMap="sequenceMasterDetailsMap">
+		SELECT 
+				SEQ_MASTER_ID,
+				TRIM(NAME) AS NAME,
+				TRIM(DESCRIPTION) AS DESCRIPTION,
+				PO_CATEGORY,
+				TYPE,
+				OEM
+		FROM
+				SMC.SMC_LOADSHEET_SEQ_MASTER
+		WHERE
+				SEQ_MASTER_ID = #{seqMasterId}
+	</select>
+	
+	<resultMap id="sequenceMasterDetailsMap" type="com.penske.apps.adminconsole.model.LoadsheetSequenceMaster">
+		 <id property="id" column="SEQ_MASTER_ID" />
+		 <result property="name" column="NAME" />
+		 <result property="description" column="DESCRIPTION" />
+		 <result property="category" column="PO_CATEGORY" />
+		 <result property="type" column="TYPE" />
+		 <result property="oem" column="OEM" />
+		 <collection property="groupMasterList" column="SEQ_MASTER_ID" ofType="com.penske.apps.adminconsole.model.LoadsheetSequenceGroupMaster" javaType="ArrayList" select="getGroupMasterDetails"/> 
+	</resultMap>
+	
+	<!-- get Group master details -->
+	<select id="getGroupMasterDetails" resultMap="groupMasterDetailsMap">
+		SELECT 
+				GRP_MASTER_ID,
+				SEQ_MASTER_ID,
+				TRIM(NAME) as NAME,
+				DISPLAY_SEQ
+		FROM 
+				SMC.SMC_LOADSHEET_GROUP_MASTER
+		WHERE
+				SEQ_MASTER_ID = #{id}
+		ORDER BY
+				DISPLAY_SEQ
+	</select>
+	
+	<resultMap id="groupMasterDetailsMap" type="com.penske.apps.adminconsole.model.LoadsheetSequenceGroupMaster">
+		<id property="grpMasterId" column="GRP_MASTER_ID" />
+		<result property="seqMasterId" column="SEQ_MASTER_ID" />
+		<result property="name" column="NAME" />
+		<result property="displaySeq" column="DISPLAY_SEQ" />
+		<collection property="compGrpSeqList" column="GRP_MASTER_ID" ofType="com.penske.apps.adminconsole.model.LoadsheetCompGrpSeq" javaType="ArrayList" select="getCompGroupSeqDetails"/>
+	</resultMap>
+	
+	<!-- to get the componet details based on group id -->
+	<select id="getCompGroupSeqDetails" resultMap="compGrpSeqDetailsMap">
+		SELECT 
+				CMP_GRP_SEQ_ID,
+				GRP_MASTER_ID,
+				CGS.COMPONENT_ID,
+				DISPLAY_SEQ,
+				COMPONENT_GROUP,
+				SUB_GROUP,
+				SUB_COMPONENT_NAME
+		FROM
+				SMC.SMC_LOADSHEET_CMP_GROUP_SEQ CGS
+		JOIN
+				CORP.VEHCMPSGF CMP
+		ON
+				CMP.COMPONENT_ID=CGS.COMPONENT_ID
+		WHERE
+				GRP_MASTER_ID = #{grpMasterId}
+		ORDER BY
+				DISPLAY_SEQ
+	</select>
+	
+	<resultMap id="compGrpSeqDetailsMap" type="com.penske.apps.adminconsole.model.LoadsheetCompGrpSeq">
+		<result property="compGrpSeqId" column="CMP_GRP_SEQ_ID" />
+		<result property="grpMasterId" column="GRP_MASTER_ID" />
+		<result property="componentId" column="COMPONENT_ID" />
+		<result property="displaySeq" column="DISPLAY_SEQ" />
+		<result property="componentGroup" column="COMPONENT_GROUP" />
+		<result property="subGroup" column="SUB_GROUP" />
+		<result property="componentName" column="SUB_COMPONENT_NAME" />
+	</resultMap>
+	
+	<!-- Queries to update load sheetSeqeuncing -->
+	<!-- Update Seqmaster Details -->
+	<update id="updateSeqMasterDetails">
+	
+		UPDATE 
+				SMC.SMC_LOADSHEET_SEQ_MASTER
+				
+		<set>
+				NAME			=	#{seqMaster.name},
+				DESCRIPTION		=	#{seqMaster.description},
+				OEM				=	#{seqMaster.oem},
+				MODIFIED_BY		=	#{user.sso},
+		 		MODIFIED_DATE	=	CURRENT_TIMESTAMP
+		</set>
+		WHERE
+				SEQ_MASTER_ID 	= 	#{seqMaster.id}
+				
+	</update>
+	
+	<update id="updateGrpMasterDetails">
+		
+		UPDATE
+				SMC.SMC_LOADSHEET_GROUP_MASTER
+		<set>
+				NAME 			=	#{grpMaster.name},
+				DISPLAY_SEQ 	= 	#{grpMaster.displaySeq},
+				MODIFIED_BY		=	#{user.sso},
+		 		MODIFIED_DATE	=	CURRENT_TIMESTAMP
+		</set>
+		WHERE 
+				GRP_MASTER_ID	=	#{grpMaster.grpMasterId}
+		
+	</update>
+	
+	<delete id="deleteGrpMasterDetails">
+		DELETE FROM
+			SMC.SMC_LOADSHEET_GROUP_MASTER
+		WHERE
+			GRP_MASTER_ID NOT IN
+			<foreach item="grpMasterId"  collection="groupMasterIdList" open="(" separator="," close=")">
+ 					#{grpMasterId}
+ 			</foreach>	 
+ 		AND 
+ 			SEQ_MASTER_ID = #{seqMasterId}
+	</delete>
+	
+	<delete id="deleteGrpMaster">
+		DELETE FROM
+			SMC.SMC_LOADSHEET_GROUP_MASTER
+		WHERE
+ 			SEQ_MASTER_ID = #{seqMasterId}
+	</delete>
+	
+	<update id="updateCmpGrpSeqDeatils">
+		UPDATE
+				SMC.SMC_LOADSHEET_CMP_GROUP_SEQ
+		<set>
+				DISPLAY_SEQ		= 	#{cmpGrpSeq.displaySeq},
+				MODIFIED_BY		=	#{user.sso},
+		 		MODIFIED_DATE	=	CURRENT_TIMESTAMP
+		</set>
+		WHERE
+				GRP_MASTER_ID 	=	#{cmpGrpSeq.grpMasterId}
+		AND
+				CMP_GRP_SEQ_ID	=	#{cmpGrpSeq.compGrpSeqId}
+		AND 
+				COMPONENT_ID 	= 	#{cmpGrpSeq.componentId}
+	</update>
+	
+	<delete id="deleteCmpGrpSeqDetails">
+		DELETE FROM
+				SMC.SMC_LOADSHEET_CMP_GROUP_SEQ
+		WHERE
+				CMP_GRP_SEQ_ID NOT IN
+				<foreach item="compGrpSeqId"  collection="compGrpSeqIdList" open="(" separator="," close=")">
+					#{compGrpSeqId}
+ 				</foreach>
+ 		AND
+ 				GRP_MASTER_ID = #{grpMasterId}
+	</delete>
+	
+	<delete id="deleteCmpGrpSeq">
+		DELETE FROM
+				SMC.SMC_LOADSHEET_CMP_GROUP_SEQ
+		WHERE
+ 				GRP_MASTER_ID = #{grpMasterId}
+	</delete>
+	
+	
+	<!-- To delete a load sheet component group sequence details -->
+ 	<delete id="deleteLoadsheetGroupSequnece">
+ 		DELETE
+ 		FROM
+ 				SMC.SMC_LOADSHEET_CMP_GROUP_SEQ
+ 		WHERE
+ 				GRP_MASTER_ID IN(SELECT GRP_MASTER_ID FROM  SMC.SMC_LOADSHEET_GROUP_MASTER WHERE SEQ_MASTER_ID=#{sequenceId})
+ 	</delete>
+	
+	<!-- To delete a load sheet sequence group master -->
+ 	<delete id="deleteLoadsheetGroupMaster">
+ 		DELETE
+ 		FROM
+ 				SMC.SMC_LOADSHEET_GROUP_MASTER
+ 		WHERE
+ 				SEQ_MASTER_ID=	#{sequenceId}
+ 				
+ 				
+ 	</delete>
+ 	
+ 	<!-- To delete a load sheet sequence from load sheet sequence master -->
+ 	<delete id="deleteLoadsheetSequenceMaster">
+ 		DELETE
+ 		FROM
+ 				SMC.SMC_LOADSHEET_SEQ_MASTER
+ 		WHERE
+ 				SEQ_MASTER_ID=	#{sequenceId}
+ 	</delete>	
+ 	
+ 	
+ 	<!-- Get all the sequence names -->
+ 	<select id="getAllSequenceNames" resultType="String">
+ 		SELECT 
+				TRIM(NAME)
+		FROM
+				SMC.SMC_LOADSHEET_SEQ_MASTER
+		<if test="sequenceId != 0">
+		WHERE
+				SEQ_MASTER_ID NOT IN ( #{sequenceId} ) 
+		</if>
+	</select>
+	
+	<!-- Get sequence count for selected category,type and oem -->
+ 	<select id="getSequenceCount" resultType="int">
+ 		SELECT 
+				count(*)
+		FROM
+				SMC.SMC_LOADSHEET_SEQ_MASTER
+		WHERE
+		   PO_CATEGORY=#{category} 
+		<if test="type != null">
+				 AND TYPE=#{type}
+		</if>
+		<if test="mfr != null">
+				AND OEM=#{mfr}
+		</if>
+		<if test="sequenceId != 0">
+				AND SEQ_MASTER_ID NOT IN ( #{sequenceId} ) 
+		</if>
+	</select>
+	
+	
+	<select id="getRulesByTemplateComponentId" resultType="com.penske.apps.adminconsole.model.RuleMaster">
+ 		SELECT SCMRM.RULE_ID AS ruleId,
+ 				SCMRM.NAME AS ruleName,
+ 				SCRO.PRIORITY AS priority
+ 		from SMC.SMC_CMP_VISIBILITY_RULES_MASTER  SCMRM
+		LEFT JOIN SMC.SMC_COMPONENT_RULE_OVERRIDES SCRO  ON SCRO.RULE_ID = SCMRM.RULE_ID
+		WHERE SCRO.TEMP_COMP_ID=#{templateComponentId} ORDER BY priority
+ 	</select>
+	<select id="getRulesByComponentIdAndTemplateId" resultType="String">	
+		SELECT compInfo.DISPLAY_NAME || ' - ' || rule.NAME
+			FROM SMC.SMC_COMPONENT_RULE_OVERRIDES outcome
+			JOIN SMC.SMC_TEMPLATE_COMPONENTS comp ON comp.TEMP_COMP_ID = outcome.TEMP_COMP_ID
+			JOIN SMC.SMC_CMP_VISIBILITY_RULES_MASTER rule ON rule.RULE_ID = outcome.RULE_ID
+			JOIN SMC.SMC_CMP_VISIBILITY_RULES_DEFINITION criteria ON criteria.RULE_ID = rule.RULE_ID
+			JOIN SMC.SMC_COMPONENT_INFO_DETAILS compInfo ON compInfo.COMPONENT_ID = comp.COMPONENT_ID
+			WHERE comp.TEMPLATE_ID = #{templateId}
+			AND (comp.COMPONENT_ID = #{componentId} OR criteria.COMPONENT_ID = #{componentId})
+		GROUP BY compInfo.DISPLAY_NAME || ' - ' || rule.NAME ORDER BY compInfo.DISPLAY_NAME || ' - ' || rule.NAME
+ 	</select>
+	
+	<!-- To Update component rules priority  -->
+ 	<update id="updateComponentRulePriority">
+ 		UPDATE
+ 				SMC.SMC_COMPONENT_RULE_OVERRIDES
+ 		<set>		
+ 				PRIORITY		=	#{priority},
+ 				MODIFIED_BY		=	#{modifiedBy},
+ 				MODIFIED_DATE	=	CURRENT_TIMESTAMP
+ 		</set>
+ 		WHERE
+ 				RULE_ID		 =	#{ruleId}
+ 			AND TEMP_COMP_ID = #{templateComponentId}
+ 				
+ 	</update>
+	
+ 	<select id="getRuleCountByTemplateComponentId" resultType="int">
+ 		select count(RULE_ID) from SMC.SMC_COMPONENT_RULE_OVERRIDES where TEMP_COMP_ID=#{templateComponentId}
+ 	</select>
+</mapper>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.2//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.penske.apps.adminconsole.dao.DynamicRuleDao">
+ 	
+ 	<select id="getAllDynamicRulesByStatus" resultType="com.penske.apps.adminconsole.model.DynamicRule">
+ 		SELECT	DYNAMIC_RULE_ID AS dynamicRuleId,
+ 				PRIORITY AS priority,
+ 				CORP AS corpCode,
+ 				MANUFACTURER AS manufacturer,
+ 				MODEL AS model,
+ 				STATUS AS status,
+ 				MODEL_YEAR AS modelYear
+ 		
+ 		FROM	SMC.SMC_DYNAMIC_RULES
+ 		WHERE STATUS=#{status}
+ 	
+ 	</select>
+ 	
+ 	<select id="getDynamicRuleById" resultType="com.penske.apps.adminconsole.model.DynamicRule">
+ 		SELECT	DYNAMIC_RULE_ID AS dynamicRuleId,
+ 				PRIORITY AS priority,
+ 				CORP AS corpCode,
+ 				MANUFACTURER AS manufacturer,
+ 				MODEL AS model,
+ 				MODEL_YEAR AS modelYear,
+ 				STATUS AS status
+ 				
+ 		FROM	SMC.SMC_DYNAMIC_RULES
+ 		
+ 		WHERE	DYNAMIC_RULE_ID = #{value}
+ 	</select>
+ 	
+ 	<select id="getDynamicRuleByPriority" resultType="Integer">
+ 		SELECT	1
+ 		
+ 		FROM	SMC.SMC_DYNAMIC_RULES
+ 		
+ 		WHERE	PRIORITY = #{value}
+ 		AND		STATUS = 'A'
+ 		FETCH FIRST 1 ROW ONLY
+ 	</select>
+ 	
+ 	<select id="getDynamicRuleByNonPriority" resultType="com.penske.apps.adminconsole.model.DynamicRule">
+ 		SELECT	DYNAMIC_RULE_ID AS dynamicRuleId,
+ 				PRIORITY AS priority,
+ 				STATUS AS status
+ 		FROM	SMC.SMC_DYNAMIC_RULES 
+ 		where 
+ 		CORP=#{corpCode} 
+ 		AND MANUFACTURER=#{manufacturer}
+ 		AND MODEL=#{model}
+ 		AND MODEL_YEAR=#{modelYear}
+ 	</select>
+ 	
+ 	<select id="getAllCorpCodes" resultType="string">
+ 			select LOOKUP_VALUE from smc.smc_lookup where LOOKUP_NAME = 'CORP' and LOOKUP_STATUS = 'A'
+ 	</select>
+ 	
+ 		<select id="getAvailableStatus" resultType="string">
+ 			select LOOKUP_VALUE from smc.smc_lookup where LOOKUP_NAME = 'CORP'
+ 	</select>
+ 	<select id="getAllVehicleMakes" resultType="com.penske.apps.adminconsole.model.VehicleMake">
+	SELECT DISTINCT TRIM(MFCODE) AS abbreviation,
+	  	Trim(MFNAME) As makeName 
+	FROM CORP.FVEHMFR A RIGHT OUTER JOIN SMC.SMC_SPEC_HEADER B 
+		ON A.MFCODE= B.OEM 
+	WHERE MFNAME IS NOT NULL And MFNAME != ''
+ 	</select>
+ 	
+ 	<select id="getVehicleModelsByMake" resultType="String">
+ 		SELECT	DISTINCT TRIM(MODEL)
+		FROM	SMC.SMC_SPEC_HEADER
+		WHERE	OEM = #{value}
+ 	</select>
+ 	
+ 	<insert id="addDynamicRule">
+ 		INSERT INTO SMC.SMC_DYNAMIC_RULES
+		(PRIORITY, CORP,  MANUFACTURER,  MODEL,  MODEL_YEAR,  STATUS, CREATED_BY,CREATED_DATE, MODIFIED_BY, MODIFIED_DATE)
+		VALUES( #{priority}, #{corpCode}, #{manufacturer}, #{model}, #{modelYear},#{status},#{createdBy},CURRENT_TIMESTAMP, #{modifiedBy},CURRENT_TIMESTAMP )
+ 	</insert>
+ 	
+ 	<update id="modifyDynamicRule">
+ 		UPDATE	SMC.SMC_DYNAMIC_RULES
+ 		
+ 		SET		PRIORITY = #{priority},
+ 				CORP = #{corpCode},
+ 				MANUFACTURER = #{manufacturer},
+ 				MODEL = #{model},
+ 				MODEL_YEAR = #{modelYear},
+ 				STATUS = #{status},
+ 				MODIFIED_BY =#{modifiedBy},
+ 				MODIFIED_DATE = CURRENT_TIMESTAMP
+ 		WHERE	DYNAMIC_RULE_ID = #{dynamicRuleId}
+ 	</update>
+ 	
+ <update id="reOrderPriority">
+ 	UPDATE SMC.SMC_DYNAMIC_RULES
+	SET PRIORITY = PRIORITY + 1
+	WHERE PRIORITY >=#{newPriority} AND STATUS = 'A'
+ </update>
+ 
+ <select id="getMaxPriority" resultType="Integer">
+  SELECT COALESCE(MAX(PRIORITY)+1,1) as maxPriority FROM SMC.SMC_DYNAMIC_RULES WHERE STATUS = 'A'
+ </select>
+ 
+  <delete id="deleteDynamicRule">
+  	DELETE FROM SMC.SMC_DYNAMIC_RULES WHERE DYNAMIC_RULE_ID = #{dynamicRuleId}
+  </delete>
+  
+</mapper>

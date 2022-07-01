@@ -1,0 +1,17 @@
+#tolerance-form select {
+	margin-bottom: 0px;
+	width: 100%;
+}
+
+#tolerance-form input {
+	margin-bottom: 0px;
+	width: 100%;
+}
+
+#cancelButton {
+	padding-right: 10px;
+}
+
+.modal-content .modal-footer {
+	margin-top: 10px;
+}

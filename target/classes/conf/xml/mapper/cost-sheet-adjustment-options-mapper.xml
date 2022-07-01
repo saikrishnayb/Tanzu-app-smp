@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.2//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.penske.apps.adminconsole.dao.CostAdjustmentOptionDao">
+
+	<select id="getAllAdjustmentOptions" resultType="com.penske.apps.adminconsole.model.CostAdjustmentOption">
+		SELECT
+			OPTION_ID AS optionId,
+			ORDER_CODE AS orderCode
+		FROM SMC.SMC_COST_ADJUSTMENT_OPTIONS
+	</select>
+
+	<select id="getAdjustmentOption" resultType="com.penske.apps.adminconsole.model.CostAdjustmentOption">
+		SELECT
+			OPTION_ID AS optionId,
+			ORDER_CODE AS orderCode
+		FROM SMC.SMC_COST_ADJUSTMENT_OPTIONS
+		WHERE
+			OPTION_ID = #{caOptionId}
+	</select>
+
+	<insert id="addAdjustmentOption">
+		INSERT INTO SMC.SMC_COST_ADJUSTMENT_OPTIONS (
+			ORDER_CODE
+		) VALUES (
+			#{caOption.orderCode}
+		)
+	</insert>
+
+	<update id="updateAdjustmentOption">
+		UPDATE SMC.SMC_COST_ADJUSTMENT_OPTIONS
+		SET
+			ORDER_CODE = #{caOption.orderCode}
+		WHERE
+			OPTION_ID = #{caOption.optionId}
+	</update>
+
+	<delete id="deleteAdjustmentOption">
+		DELETE
+		FROM SMC.SMC_COST_ADJUSTMENT_OPTIONS
+		WHERE
+			OPTION_ID = #{caOptionId}
+	</delete>
+
+</mapper>

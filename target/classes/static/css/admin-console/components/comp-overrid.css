@@ -1,0 +1,23 @@
+.edit-buttons-90{
+	
+	width: 30%;
+	text-align: right;
+	margin-top: 5px;
+	clear: both;
+}
+
+.edit-buttons-100{
+	width: 100%;
+	text-align: right;
+	margin-top: 5px;
+	clear: both;
+}
+
+a { 
+	text-decoration: none; 
+}
+
+.visiblity-form-container > #visiblity-override-form > .single-line-content > label {
+    width: 30%;
+    display: inline-block;
+}

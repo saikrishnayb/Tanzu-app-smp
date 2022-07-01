@@ -1,0 +1,124 @@
+#mainContent ul, #mainContent ol , .ui-dialog-content ul, .ui-dialog-content ol{
+  list-style: disc;
+  margin-left: 0px;
+  margin-top: 5px
+}
+
+#list1 {
+  left-margin: 0;
+}
+
+.fieldset {
+  border: 0;
+}
+
+.legend-view {
+  width: 100%;
+  margin-top: 10px;
+  padding-left: 8px;
+}
+
+#right-padding {
+  padding-right: 10px;
+}
+
+.chkbox-display {
+   margin-left: 22px;;
+}
+
+#check-uncheck-display {
+   display: -webkit-inline-box;
+}
+
+.no-text-decoration {
+   text-decoration: none;
+}
+
+.tier-main-div .tier-div {
+	float: left;
+	width: 30%;
+	margin-left: 1%;
+}
+
+.vertical-line {
+	border-right: 1px solid silver;
+	/* height: this will be set dynamically based on max height of tier1-div/tier2-div/tier3-div*/
+}
+
+/* Remove default bullets */
+ul, #myUL {
+  list-style-type: none;
+}
+
+/* Remove margins and padding from the parent ul */
+#myUL {
+  margin: 0;
+  padding: 0;
+}
+
+.filter {
+  margin-bottom: 0.4rem;
+  padding-right: 15px;
+   border-radius: 3px;
+}
+.alf-delete {
+  text-decoration: none;
+  color: #ffffff;
+  background: #cccccc;
+  border-radius: 50%;
+  display: inline-block;
+  font-size: 75%;
+  line-height: 0.95;
+  padding: 0 2px;
+  position: absolute;
+  margin: 4px 0 0 -14px;
+  opacity: 0;
+} 
+.alf-delete:hover {
+  opacity: 1;
+}
+.filterable {
+  margin:0;
+  padding: 0;
+  list-style: none;
+  margin-left:10%;
+}
+.filterable .potential {
+  font-weight: bold;
+}
+.filterable li {
+  list-style: none;
+  margin-bottom: 0.4rem;
+}
+.filterable label {
+  font-weight: bold;
+  cursor: pointer;
+}
+.filterable label:before {
+  content: "\25B6";
+  color: black;
+  display: inline-block;
+  margin-right: 6px;
+}
+.filterable .expanded:before {
+  transform: rotate(90deg);
+}
+.filterable ul {
+  display: none;
+  margin: 0 0 0 20px;
+  padding: 0;
+}
+.district-values{
+  padding-left: 19px;
+}
+.save-proximity{
+  display: inline-block;
+  text-align: right;
+  width: 100%;
+}
+
+.cancel-button-container{
+  position:fixed;
+  bottom:10%;
+  padding: 5px 920px;
+}

@@ -1,0 +1,75 @@
+.status-dialog-spinner {
+	height: 60px;
+}
+
+.overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 9999;
+	background-color: #000000;
+	opacity: 0.3;
+}
+
+.overlay.page-loading::before {
+	opacity: 0.3;
+	background-color: #ffffff;
+}
+
+.overlay.partial-mask {
+	position: absolute;
+}
+
+.overlay.spinner::after, .status-dialog-spinner.spinner::after {
+	position: absolute;
+	margin: auto;
+	left: 0;
+	right: 0;
+	top: 50%;
+	z-index: 999;
+	display: block;
+	width: 1em;
+	height: 1em;
+	font-size: 10px;
+	content: '';
+	transform: translateY(-50%);
+	animation: spinner 1500ms infinite linear;
+	border-radius: 0.5em;
+	box-shadow: rgba(0, 0, 0, 0.75) 1.5em 0 0 0, rgba(0, 0, 0, 0.75) 1.1em
+		1.1em 0 0, rgba(0, 0, 0, 0.75) 0 1.5em 0 0, rgba(0, 0, 0, 0.75) -1.1em
+		1.1em 0 0, rgba(0, 0, 0, 0.75) -1.5em 0 0 0, rgba(0, 0, 0, 0.75)
+		-1.1em -1.1em 0 0, rgba(0, 0, 0, 0.75) 0 -1.5em 0 0,
+		rgba(0, 0, 0, 0.75) 1.1em -1.1em 0 0;
+}
+
+/* Animation */
+@keyframes spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/** Ellipsis loading animation **/
+.ellipsis-loading {
+	font-size: 30px;
+}
+
+.ellipsis-loading:after {
+	overflow: hidden;
+	display: inline-block;
+	vertical-align: bottom;
+	animation: ellipsis steps(4, end) 900ms infinite;
+	content: "\2026"; /* ascii code for the ellipsis character */
+	width: 0px;
+}
+
+@keyframes ellipsis {
+  to {
+    width: 1.25em;    
+  }
+}

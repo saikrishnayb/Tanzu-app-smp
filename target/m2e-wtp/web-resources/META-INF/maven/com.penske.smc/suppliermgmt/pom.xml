@@ -1,0 +1,239 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	
+	<parent>
+		<groupId>com.penske.mis.common</groupId>
+		<artifactId>web-parent</artifactId>
+		<version>1.0.0-DJ-WEB-14-623584b</version>
+	</parent>
+		
+	<modelVersion>4.0.0</modelVersion>
+	
+	<groupId>com.penske.smc</groupId>
+	<artifactId>suppliermgmt</artifactId>
+	<version>0.0.1-cicd</version>
+	<packaging>war</packaging>
+	
+	<name>SMC Home and Admin Console</name>
+	<description>Proivides outer frame, home page, and admin console for SMC web application.</description>
+	
+	<properties>
+		<app-name>suppliermgmt-cicd</app-name>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<development.distribution.url>${repository.server.root}/salesnet-mvn-development-local/</development.distribution.url>
+	</properties>
+	
+	<profiles>
+		<profile>
+			<!--
+				This profile defines the dependencies that come from other modules in the SMC project.
+				It is active by default (due to the "activation" block using a "!" in the property name, so the JARs will normally be resolved from Maven.
+				It may be helpful to disable this profile in a developer's local workstation, however, if they are also developing code for the dependencies at the same time.
+				Disabling this profile allows the developer to provide the code for the dependency themselves (ex: by adding the dependency project to this application's build path directly). 
+			-->
+			<id>resolve-smc-jars</id>
+			<activation>
+				<property>
+					<!-- This makes the profile active by default, unless the "exclude-smc-jars" system property is defined when running the build. -->
+					<name>!exclude-smc-jars</name>
+				</property>
+			</activation>
+			<dependencies>
+				<!-- Dependencies on other SMC projects -->
+				<dependency>
+					<groupId>com.penske.smc.common</groupId>
+					<artifactId>smccore</artifactId>
+					<version>0.0.1-cicd</version>
+				</dependency>
+				<dependency>
+					<groupId>com.penske.smc.common</groupId>
+					<artifactId>smccore</artifactId>
+					<version>0.0.1-cicd</version>
+					<classifier>tests</classifier>
+					<scope>test</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>2.6.5</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	
+	<dependencies>
+		<!-- PTL Commons JARs -->
+		<dependency>
+			<groupId>com.penske.mis.common.sharedlib</groupId>
+			<artifactId>dlinks_filter</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.penske.mis.common.sharedlib</groupId>
+			<artifactId>reuse</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.penske.mis.common.customlib</groupId>
+			<artifactId>uiframework</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.penske.mis.common.customlib</groupId>
+			<artifactId>usrcreationsvc-client</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>com.penske.mis.common.customlib</groupId>
+		    <artifactId>ldapjdk</artifactId>
+		</dependency>
+				
+		<!-- Publicly-available JARs -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+	    <dependency>
+	        <groupId>org.springframework.boot</groupId>
+	        <artifactId>spring-boot-devtools</artifactId>
+	        <optional>true</optional>
+	    </dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-log4j2</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>com.ibm.db2.jcc</groupId>
+		    <artifactId>db2-spring-boot-starter</artifactId>
+		    <version>0.0.1</version>
+		    <scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mybatis.spring.boot</groupId>
+		    <artifactId>mybatis-spring-boot-starter</artifactId>
+		    <version>2.2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.session</groupId>
+			<artifactId>spring-session-data-redis</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.tomcat.embed</groupId>
+		    <artifactId>tomcat-embed-jasper</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>javax.servlet</groupId>
+		    <artifactId>jstl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.commons</groupId>
+		    <artifactId>commons-text</artifactId>
+		    <version>1.9</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>3.15</version>
+		</dependency>
+		
+		<!-- Runtime-only JARs -->
+		<dependency>
+			<!-- Needed for email logging -->
+		    <groupId>com.sun.mail</groupId>
+		    <artifactId>jakarta.mail</artifactId>
+		    <scope>runtime</scope>
+		</dependency>
+<!-- 		<dependency> -->
+<!-- 		    <groupId>net.sf.jt400</groupId> -->
+<!-- 		    <artifactId>jt400-jdk8</artifactId> -->
+<!-- 		    <version>10.7</version> -->
+<!-- 		    <scope>runtime</scope> -->
+<!-- 		</dependency> -->
+
+		
+		<!-- Test-only JARs -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	
+	<build>
+		<finalName>${app-name}</finalName>
+		<plugins>
+			<plugin>
+	            <groupId>org.springframework.boot</groupId>
+	            <artifactId>spring-boot-maven-plugin</artifactId>
+	            <version>2.6.5</version>
+	            <executions>
+	            	<execution>
+	            		<goals>
+	            			<goal>repackage</goal>
+	            		</goals>
+	            	</execution>
+	            </executions>
+	        </plugin>
+	        <plugin>
+	        	<artifactId>maven-war-plugin</artifactId>
+	        	<configuration>
+	        		<!-- Ensure that our local credentials do not get distributed with the WAR -->
+	        		<packagingExcludes>WEB-INF/classes/config/db.local.properties</packagingExcludes>
+	        	</configuration>
+	        </plugin>
+		</plugins>
+	</build>
+	
+	<distributionManagement>
+		<snapshotRepository>
+			<id>salesnet-development</id>
+			<name>salesnet development repository</name>
+			<url>${development.distribution.url}</url>
+		</snapshotRepository>
+		<repository>
+			<id>salesnet-development</id>
+			<name>salesnet development repository</name>
+			<url>${development.distribution.url}</url>
+			<uniqueVersion>false</uniqueVersion>
+		</repository>
+	</distributionManagement>
+</project>

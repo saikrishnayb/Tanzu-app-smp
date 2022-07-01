@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.2//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.penske.apps.adminconsole.dao.AlertDao">
+ 	
+ 	<select id="getAllAlertsAndHeaders" resultType="com.penske.apps.adminconsole.model.Alert">
+ 		SELECT 	* 
+
+		FROM (SELECT	ah.HEADER_ID AS alertId,
+						'HEADER' AS alertType,
+						t.TAB_KEY AS tabKey,
+						t.TABNAME AS tabName,
+						ah.DISPLAY_SEQUENCE AS displaySequence,
+						ah.HEADER_NAME AS headerName,
+						ah.HEADER_ID AS headerId,
+						'None' AS alertName,
+						1 AS visibilityPenske,
+						1 AS visibilityVendor,
+						'None' AS templateName,
+						ah.HELP_TEXT AS helpText
+				
+				FROM	SMC.SMC_ALERT_HEADER ah,
+						SMC.SMC_TAB_MASTER t
+				
+				WHERE	ah.TAB_ID = t.TAB_ID
+				AND		t.DASHBOARD_TAB = 1
+				
+				UNION ALL
+				
+				SELECT	a.ALERT_ID AS alertId,
+						'DETAIL' AS alertType,
+						t.TAB_KEY AS tabKey,
+						t.TABNAME AS tabName,
+						a.DISPLAY_SEQUENCE AS displaySequence,
+						ah.HEADER_NAME AS headerName,
+						a.HEADER_ID AS headerId,
+						a.ALERT_NAME AS alertName,
+						a.VISIBILITY_PENSKE AS visibilityPenske,
+						a.VISIBILITY_VENDOR AS visibilityVendor,
+						st.TEMPLATE_NAME AS templateName,
+						a.HELP_TEXT AS helpText
+				
+				FROM	SMC.SMC_ALERTS a,
+						SMC.SMC_ALERT_HEADER ah,
+						SMC.SMC_TAB_MASTER t,
+						SMC.SMC_SEARCH_TEMPLATES st
+				
+				WHERE	a.HEADER_ID = ah.HEADER_ID
+				AND		ah.TAB_ID = t.TAB_ID
+				AND		a.TEMPLATE_ID = st.TEMPLATE_ID
+				AND		t.DASHBOARD_TAB = 1) T1
+
+		ORDER BY tabKey, headerId, alertType DESC, displaySequence
+ 	</select>
+ 	
+ 	<select id="getAllTemplateNames" resultType="com.penske.apps.adminconsole.model.SearchTemplate">
+ 		SELECT	TEMPLATE_ID AS templateId,
+				TEMPLATE_NAME AS templateName
+		
+		FROM	SMC.SMC_SEARCH_TEMPLATES
+		
+		ORDER BY templateName
+ 	</select>
+ 	
+ 	<update id="modifyAlertHeader">
+ 		UPDATE 	SMC.SMC_ALERT_HEADER
+ 		
+ 		SET		HEADER_NAME = #{headerName},
+ 				HELP_TEXT = #{helpText},
+ 				DISPLAY_SEQUENCE = #{displaySequence}
+ 				
+ 		WHERE	HEADER_ID = #{alertId}
+ 	</update>
+ 	
+ 	<update id="modifyAlertDetail">
+ 		UPDATE 	SMC.SMC_ALERTS
+ 		
+ 		SET		ALERT_NAME = #{alertName},
+ 				HELP_TEXT = #{helpText},
+ 				DISPLAY_SEQUENCE = #{displaySequence},
+ 				VISIBILITY_PENSKE = #{visibilityPenske},
+ 				VISIBILITY_VENDOR = #{visibilityVendor}
+ 				
+ 		WHERE	ALERT_ID = #{alertId}
+ 	</update>
+
+</mapper>

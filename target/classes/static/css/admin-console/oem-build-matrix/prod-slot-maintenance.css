@@ -1,0 +1,66 @@
+.slot-maintenance-table-top {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.slot-maintenance-table-top  div {
+	display: inline-block;
+}
+
+#slot-maintenance-table td,
+.dataTables_scrollHead th {
+	text-align: center !important;
+}
+
+.available-slot-input{
+	width: 70px;
+    text-align: center;
+    margin-bottom: 0px !important;
+    margin-top: 2px;
+}
+
+.allocated-region-slots-div {
+	height: 5px;
+	margin-bottom: 5px;
+}
+.allocated-region-slots {
+	font-weight: bold;
+    font-size: smaller;
+}
+
+.year-div{
+	padding-left: 35px;
+}
+
+.plant-header-row th{
+	border-radius: 5px;
+	border: 2px solid white;
+}
+
+.slot-table-header{
+	width: 150px !important;
+}
+
+.no-slots-message{
+	font-weight: bold;
+	margin-top: 20px;
+	text-align: center;
+}
+
+.now-viewing-row span {
+	padding-right: 10px;
+}
+
+.search-div div {
+    padding-right: 35px;
+}
+
+.prod-date-week-col{
+	width: 60px !important;
+	text-align: center !important;
+}
+
+/* fix for fixed columns *shrug emoji* */
+.DTFC_LeftBodyWrapper:nth-child(2) .dataTable.no-footer.DTFC_Cloned thead{
+	display: none;
+}

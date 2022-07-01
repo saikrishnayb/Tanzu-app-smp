@@ -1,0 +1,15 @@
+.confirm-selection-table-top {
+	margin-bottom: 10px;
+}
+
+.confirm-selection-table-top div {
+	display: inline-block;
+}
+
+.confirm-selection-table-top .badge-div .badge {
+	margin-right: 10px;
+}
+
+.too-many-bodies-div {
+	color: #a94442;
+}

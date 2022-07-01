@@ -1,0 +1,22 @@
+.import-slots-table-top {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.import-slots-table-top  div {
+	display: inline-block;
+}
+
+.import-slots-table-header{
+	width: 150px !important;
+}
+
+.invalid-slot-td {
+	color: #CC0000 !important;
+	font-weight: bold;
+}
+
+/* fix for fixed columns *shrug emoji* */
+.DTFC_LeftBodyWrapper:nth-child(2) .dataTable.no-footer.DTFC_Cloned thead{
+	display: none;
+}

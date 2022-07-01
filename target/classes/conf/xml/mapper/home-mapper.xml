@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.penske.apps.suppliermgmt.dao.HomeDashboardDao">
+
+  	<select id="selectTabs" resultType="com.penske.apps.suppliermgmt.model.Tab">  
+ 		SELECT	DISTINCT(ST.TAB_KEY) AS tabKey,
+ 				ST.TAB_ID AS tabId,
+ 				ST.TABNAME AS tabName,
+				ST.IMG_URL AS imageUrl,
+				ST.DISPLAY_SEQUENCE AS displaySequence
+
+		FROM	SMC.SMC_TAB_MASTER ST
+		JOIN SMC.SMC_SECURITY_FUNCTION SF 
+		ON ST.TAB_ID = SF.TAB_ID 
+		JOIN SMC.SMC_ROLE_SEC_FUNCTIONS RSF
+		ON RSF.SEC_FUNC_ID = SF.SEC_FUNC_ID
+		WHERE	ST.DASHBOARD_TAB = #{dashBoardId} AND RSF.ROLE_ID=#{roleId} AND  ST.STATUS= #{status} AND SF.NAME IN ('ORDER_FULFILLMENT_TAB','ORDER_CONFIRMATION_TAB','PRODUCTION_TAB') 
+		ORDER BY DISPLAY_SEQUENCE ASC
+		
+	</select>  
+
+	<select id="selectHeaders" resultType="com.penske.apps.suppliermgmt.model.AlertHeader">
+		SELECT	SAH.HEADER_NAME AS headerName,
+				SAH.HELP_TEXT AS helpText,
+				SAH.HEADER_ID AS headerId,
+				SAH.HEADER_KEY AS headerKey
+		
+		FROM	SMC.SMC_ALERT_HEADER SAH
+		JOIN 	SMC.SMC_TAB_MASTER ST
+		ON 		SAH.TAB_ID = ST.TAB_ID
+		
+		WHERE	ST.TAB_KEY = #{tab}
+		
+		ORDER BY SAH.DISPLAY_SEQUENCE ASC
+	</select>
+	
+	<select id="selectAlerts" resultType="com.penske.apps.suppliermgmt.model.Alert">
+		SELECT	SA.ALERT_ID AS alertId,
+				SA.ALERT_KEY AS alertKey,
+				SA.ALERT_NAME AS alertName,
+				SA.ACTIONABLE AS actionable,
+				SA.HELP_TEXT AS helpText,
+				ST.TEMPLATE_KEY AS templateKey,
+				SA.COMPLIANCE_TEXT AS complianceText
+		
+		FROM	SMC.SMC_ALERTS SA
+		LEFT JOIN  	SMC.SMC_SEARCH_TEMPLATES ST
+		ON		SA.TEMPLATE_ID = ST.TEMPLATE_ID
+		
+		WHERE	SA.HEADER_ID = #{headerId}
+		<!-- Penske User -->
+		<choose>
+			<when test="userType == penskeUserType">
+				AND SA.VISIBILITY_PENSKE = 1
+			</when>
+			<otherwise>
+				AND SA.VISIBILITY_VENDOR = 1
+			</otherwise>
+		</choose>
+		ORDER BY SA.DISPLAY_SEQUENCE ASC
+	</select>
+ 
+  <select id="getOrderConfirmationAlertCountsByAlertKey"  statementType="CALLABLE" resultType="com.penske.apps.suppliermgmt.domain.AlertCount">
+    {
+      CALL SMC.SMC_GENERATE_ALERTS_FOR_HOME_ORDER_CONFIRMATION(#{sso})   
+    }    
+   </select>
+   <select id="getOrderFullfillmentCountsByAlertKey"  statementType="CALLABLE" resultType="com.penske.apps.suppliermgmt.domain.AlertCount">
+    {
+      CALL SMC.SMC_GENERATE_ALERTS_FOR_HOME_ORDER_FULFILLMENT(#{sso})   
+    }    
+   </select>
+   <select id="getProductionAlertCountsByAlertKey"  statementType="CALLABLE" resultType="com.penske.apps.suppliermgmt.domain.AlertCount">
+    {
+      CALL SMC.SMC_GENERATE_ALERTS_FOR_HOME_PRODUCTION(#{sso})   
+    }    
+   </select>
+</mapper>

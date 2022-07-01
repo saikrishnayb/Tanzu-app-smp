@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.2//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.penske.apps.adminconsole.dao.GlobalSettingsDao">
+
+	<update id="updateGlobalSettingsByKeyName">
+		UPDATE 	SMC.SMC_GLOBAL_SETTINGS
+		
+		SET 	VALUE = #{value}
+		
+		WHERE 	KEY_NAME = #{keyName}
+	</update>
+	
+	<select id="selectGlobalSettingsValueByKeyName" resultType="String">
+		SELECT 	VALUE
+		
+		FROM 	SMC.SMC_GLOBAL_SETTINGS
+		
+		WHERE 	KEY_NAME = #{keyName}
+	</select>
+</mapper>

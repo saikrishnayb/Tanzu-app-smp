@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.2//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.penske.apps.adminconsole.dao.RoleDao">
+	
+	<select id="getSecurityFunctionTabs" resultType="com.penske.apps.adminconsole.model.Tab">
+		SELECT	DISTINCT 
+				tab.TAB_KEY AS tabKey,
+				tab.TABNAME AS tabName
+				
+		FROM 	SMC.SMC_ROLE_SEC_FUNCTIONS rfn, 
+				SMC.SMC_SECURITY_FUNCTION sfn, 
+				SMC.SMC_TAB_MASTER tab 
+				
+		WHERE 	rfn.SEC_FUNC_ID = sfn.SEC_FUNC_ID 
+		AND 	sfn.TAB_ID = tab.TAB_ID
+		<if test="value != 0">
+		AND		rfn.ROLE_ID = #{value}
+		</if>
+	</select>
+	
+	<select id="getRolePermissions" resultType="com.penske.apps.adminconsole.model.Permission">
+		SELECT	sfn.SEC_FUNC_ID AS securityFunctionId,
+				sfn.NAME AS name,
+				sfn.DESCRIPTION as description
+		FROM 	SMC.SMC_ROLE_SEC_FUNCTIONS rfn, 
+				SMC.SMC_SECURITY_FUNCTION sfn, 
+				SMC.SMC_TAB_MASTER tab 
+				
+		WHERE 	rfn.SEC_FUNC_ID = sfn.SEC_FUNC_ID 
+		AND 	sfn.TAB_ID = tab.TAB_ID
+		<if test="roleId != 0">
+		AND		rfn.ROLE_ID = #{roleId}
+		</if>
+		AND		tab.TAB_KEY = #{tabKey}
+        AND sfn.STATUS = 'A'
+	</select>
+	
+	<select id="getRoleSecurityFunctions" resultType="Integer">
+		SELECT	SEC_FUNC_ID
+		
+		FROM	SMC.SMC_ROLE_SEC_FUNCTIONS
+		
+		WHERE	ROLE_ID = #{value}
+	</select>
+	
+	<select id="getBaseRoleId" resultType="com.penske.apps.adminconsole.model.Role">
+		SELECT	role.ROLE_ID AS roleId,
+				role.ROLE_NAME AS roleName,
+				role.DESCRIPTION AS roleDescription,
+				role.BASE_ROLE_ID AS baseRoleId,
+				role.STATUS AS status
+				
+		FROM	SMC.smc_user_roles role
+		
+		WHERE	role.ROLE_ID = #{value}
+	</select>
+		
+	<select id="getUsersByRoleId" resultType="Integer">
+		WITH ROLE_TREE (ROLE_ID) AS (
+				SELECT ROLE_ID
+				FROM SMC.SMC_USER_ROLES role
+				WHERE role.ROLE_ID = #{value}
+				  AND role.STATUS = 'A'
+			UNION ALL
+				SELECT child.ROLE_ID
+				FROM SMC.SMC_USER_ROLES child, ROLE_TREE
+				WHERE child.BASE_ROLE_ID = ROLE_TREE.ROLE_ID
+				  AND child.status = 'A'
+		)
+		SELECT	1
+		FROM	SMC.SMC_USER_MASTER usr
+		WHERE	usr.STATUS = 'A'
+		  AND usr.ROLE_ID IN (
+			SELECT ROLE_ID FROM ROLE_TREE
+		  )
+		FETCH FIRST ROW ONLY
+	</select>
+	
+	<select id="getNewRoleId" resultType="Integer">
+		SELECT	MAX(ROLE_ID)
+
+		FROM	SMC.smc_user_roles
+	</select>
+	
+	<insert id="addRole">
+		INSERT INTO SMC.smc_user_roles
+		( ROLE_NAME, <if test="baseRoleId != 0">BASE_ROLE_ID,</if>DESCRIPTION,OEM, STATUS,CREATED_BY,
+ 				CREATED_DATE,MODIFIED_BY,MODIFIED_DATE)
+		VALUES( #{roleName}, <if test="baseRoleId != 0">#{baseRoleId},</if> #{roleDescription},#{oem} ,'A',#{createdBy},CURRENT_TIMESTAMP,#{createdBy},CURRENT_TIMESTAMP )
+	</insert>
+	
+	<insert id="addRoleSecurityFunction">
+		INSERT INTO SMC.SMC_ROLE_SEC_FUNCTIONS
+		( SEC_FUNC_ID, ROLE_ID )
+		VALUES( #{functionId}, #{roleId} )
+	</insert>
+	
+	<delete id="removeRoleSecurityFunction">
+		DELETE FROM	SMC.SMC_ROLE_SEC_FUNCTIONS
+
+		WHERE	SEC_FUNC_ID = #{functionId}
+		<!--AND 	ROLE_ID = #{roleId} -->
+		
+		 AND 	ROLE_ID IN (SELECT ROLE_ID
+		
+							FROM SMC.smc_user_roles 
+							
+							START WITH ROLE_ID = #{roleId} 
+							CONNECT BY BASE_ROLE_ID = PRIOR ROLE_ID)
+		
+	</delete>
+	
+	<update id="modifyRoleName">
+		UPDATE	SMC.smc_user_roles
+		
+		SET		ROLE_NAME = #{roleName},
+				MODIFIED_BY =#{modifiedBy},
+				DESCRIPTION = #{roleDescription},
+ 				MODIFIED_DATE = CURRENT_TIMESTAMP,
+ 				BASE_ROLE_ID = #{baseRoleId}
+		WHERE	ROLE_ID = #{roleId}
+	</update>
+	
+	<delete id="removeAllFunctionByRoleAndDescend">
+		DELETE FROM	SMC.SMC_ROLE_SEC_FUNCTIONS
+
+		WHERE ROLE_ID IN (SELECT ROLE_ID
+							FROM SMC.smc_user_roles WHERE STATUS='A'
+							START WITH ROLE_ID = #{roleId} 
+							CONNECT BY BASE_ROLE_ID = PRIOR ROLE_ID)
+	</delete>
+	
+	<update id="modifyRoleStatus">
+		UPDATE	SMC.smc_user_roles
+		SET		STATUS = 'I',
+				MODIFIED_BY =#{modifiedBy},
+ 				MODIFIED_DATE = CURRENT_TIMESTAMP
+		WHERE ROLE_ID IN(
+				SELECT ROLE_ID	FROM SMC.smc_user_roles WHERE STATUS='A'
+				START WITH ROLE_ID = #{roleId} 
+				CONNECT BY BASE_ROLE_ID = PRIOR ROLE_ID
+			)	
+		<!--  ROLE_ID = #{roleId}-->
+	</update>
+
+	<select id="getMyRoles" resultType="com.penske.apps.adminconsole.model.Role">
+		WITH ROLE_TREE (ROLE_ID) AS (
+			SELECT ROLE_ID
+			FROM SMC.SMC_USER_ROLES role
+			WHERE role.ROLE_ID = #{currUserRoleId}
+		UNION ALL
+			SELECT child.ROLE_ID
+			FROM SMC.SMC_USER_ROLES child, ROLE_TREE
+			WHERE child.BASE_ROLE_ID = ROLE_TREE.ROLE_ID
+		), ORG_TREE (ORG_ID) AS (
+			SELECT ORG_ID
+			FROM SMC.SMC_ORG_MASTER org
+			WHERE org.ORG_ID = #{currOrgId}
+		UNION ALL
+			SELECT child.ORG_ID
+			FROM SMC.SMC_ORG_MASTER child, ORG_TREE
+			WHERE child.PARENT_ORG_ID = ORG_TREE.ORG_ID
+		) 
+		SELECT r.ROLE_ID, r.ROLE_NAME ,(select ROLE_NAME from
+			SMC.smc_user_roles where ROLE_ID=r.BASE_ROLE_ID) as
+			baseRoleName,r.DESCRIPTION AS roleDescription,r.BASE_ROLE_ID as baseRoleId,r.status as status,r.oem as oem,
+			(SELECT NAME FROM SMC.SMC_ORG_MASTER as orgMst where r.oem=orgMst.ORG_ID) as orgName
+			FROM SMC.SMC_USER_ROLES r
+			JOIN ROLE_TREE ON ROLE_TREE.ROLE_ID = r.ROLE_ID 
+			WHERE r.STATUS = 'A'
+			  AND OEM IN (
+				SELECT ORG_ID FROM ORG_TREE
+			  )
+			<if test="roleName != null">
+			  <bind name="pattern" value="'%' + roleName + '%'" />
+			  AND LOWER(r.ROLE_NAME) like LOWER(#{pattern})
+			</if>
+			<choose>
+				<when test="baseRoleId == -1">
+				AND	r.BASE_ROLE_ID IS NULL
+				</when>
+				<when test="baseRoleId != 0">
+				AND	r.BASE_ROLE_ID= #{baseRoleId}
+				</when>
+			</choose>
+		ORDER BY r.ROLE_ID
+	</select>
+	
+	<select id="checkRoleExist" resultType="int">
+		SELECT ROLE_ID FROM SMC.smc_user_roles 
+			WHERE ROLE_NAME=#{roleName} AND BASE_ROLE_ID=#{baseRoleId} AND OEM=#{oem} AND STATUS='A' 
+	</select>
+	
+	<select id="getMyDescendRoleWithParentOthOrg" resultType="com.penske.apps.adminconsole.model.Role">
+		 WITH ORG_TREE (ORG_ID) AS (
+				SELECT ORG_ID
+				FROM SMC.SMC_ORG_MASTER org
+				WHERE org.ORG_ID = #{orgId}
+			UNION ALL
+				SELECT child.ORG_ID
+				FROM SMC.SMC_ORG_MASTER child, ORG_TREE
+				WHERE child.PARENT_ORG_ID = ORG_TREE.ORG_ID
+		), ROLE_TREE (ROLE_ID) AS (
+				SELECT ROLE_ID
+				FROM SMC.SMC_USER_ROLES role
+				WHERE role.ROLE_ID = #{roleId}
+			UNION ALL
+				SELECT child.ROLE_ID
+				FROM SMC.SMC_USER_ROLES child, ROLE_TREE
+				WHERE child.BASE_ROLE_ID = ROLE_TREE.ROLE_ID
+		)
+		 	SELECT
+		 		ROLE_ID AS roleId,
+		 		BASE_ROLE_ID as baseRoleId,
+		 		ROLE_NAME AS roleName,
+		 		OEM, 
+				(select ROLE_NAME from SMC.smc_user_roles where ROLE_ID=BASE_ROLE_ID) as baseRoleName,
+				(SELECT NAME FROM SMC.SMC_ORG_MASTER where ORG_ID=OEM) as orgName
+		 		FROM 	SMC.smc_user_roles 
+		 		WHERE	STATUS = 'A'  AND ROLE_ID = #{roleId}
+	 	UNION
+	 		SELECT
+	 			r.ROLE_ID AS roleId,
+	 			r.BASE_ROLE_ID as baseRoleId,
+	 			r.ROLE_NAME AS roleName,
+	 			r.OEM, 
+				(select ROLE_NAME from SMC.smc_user_roles where ROLE_ID=BASE_ROLE_ID) as baseRoleName,
+				(SELECT NAME FROM SMC.SMC_ORG_MASTER where ORG_ID=OEM) as orgName
+	 		FROM 	SMC.smc_user_roles r
+	 		JOIN ROLE_TREE ON ROLE_TREE.ROLE_ID = r.ROLE_ID
+	 		WHERE	STATUS = 'A'
+	      	AND OEM IN (
+				SELECT ORG_ID FROM ORG_TREE
+			)
+	 	ORDER BY roleId
+	</select> 
+	
+	
+	<select id="getMyDescendRoleByRoleIdOrgId" resultType="com.penske.apps.adminconsole.model.Role">
+		WITH ORG_TREE (ORG_ID) AS (
+				SELECT ORG_ID
+				FROM SMC.SMC_ORG_MASTER org
+				WHERE org.ORG_ID = #{orgId}
+			UNION ALL
+				SELECT child.ORG_ID
+				FROM SMC.SMC_ORG_MASTER child, ORG_TREE
+				WHERE child.PARENT_ORG_ID = ORG_TREE.ORG_ID
+		), ROLE_TREE (ROLE_ID) AS (
+				SELECT ROLE_ID
+				FROM SMC.SMC_USER_ROLES role
+				WHERE role.ROLE_ID = #{roleId}
+			UNION ALL
+				SELECT child.ROLE_ID
+				FROM SMC.SMC_USER_ROLES child, ROLE_TREE
+				WHERE child.BASE_ROLE_ID = ROLE_TREE.ROLE_ID
+		)
+		SELECT 	r.ROLE_ID AS roleId, r.BASE_ROLE_ID as baseRoleId, r.ROLE_NAME AS roleName, r.OEM
+	 	FROM 	SMC.smc_user_roles r
+	 	JOIN ROLE_TREE ON ROLE_TREE.ROLE_ID = r.ROLE_ID
+	 	WHERE	STATUS = 'A'
+	      AND   OEM IN (
+			SELECT ORG_ID FROM ORG_TREE
+		  ) 
+	 	ORDER BY ROLE_ID
+	</select>
+	<select id="getMyDescendRoleByOrgId" resultType="String">
+		WITH ORG_TREE (ORG_ID) AS (
+				SELECT ORG_ID
+				FROM SMC.SMC_ORG_MASTER org
+				WHERE org.ORG_ID = #{orgId}
+			UNION ALL
+				SELECT child.ORG_ID
+				FROM SMC.SMC_ORG_MASTER child, ORG_TREE
+				WHERE child.PARENT_ORG_ID = ORG_TREE.ORG_ID
+		), ROLE_TREE (ROLE_ID) AS (
+				SELECT ROLE_ID
+				FROM SMC.SMC_USER_ROLES role
+			UNION ALL
+				SELECT child.ROLE_ID
+				FROM SMC.SMC_USER_ROLES child, ROLE_TREE
+				WHERE child.BASE_ROLE_ID = ROLE_TREE.ROLE_ID
+		)
+		SELECT   r.ROLE_NAME AS roleName
+			FROM     SMC.SMC_USER_ROLES r
+			JOIN ROLE_TREE ON ROLE_TREE.ROLE_ID = r.ROLE_ID
+			WHERE    STATUS = 'A'
+			AND      OEM IN (
+					SELECT ORG_ID FROM ORG_TREE
+			)
+		ORDER BY ROLE_NAME
+	</select>
+</mapper>

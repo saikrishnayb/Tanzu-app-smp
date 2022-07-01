@@ -1,0 +1,85 @@
+.slot-results-table-top {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.slot-results-table-top  div {
+	display: inline-block;
+}
+
+.Filter-div {
+    margin-left: 3px;
+}
+
+.width-75 {
+	width: 75px;
+}
+
+.width-55 {
+	width: 60px;
+}
+
+.change-required {
+	margin-left: 5px;
+	color: #C8050A;
+	font-size: medium;
+}
+
+.production-slot-actions {
+color: #FFFFFF !important;
+}
+
+.unit-selection{
+	padding-right: 2px;
+}
+
+.hideOption{
+	display:none !important;
+}
+#order-column{
+	width: 80px;
+}
+#slot-search{
+	width: 110px;
+}
+.delete-confrim-button-row{
+  padding-top: 10px;
+}
+.confirm-modal-content{
+	padding-top: 5px !important;
+	padding-bottom: 5px !important;
+}
+.formLbl {
+	font-weight: bold;
+}
+
+#errorMessage {
+	margin-bottom: 10px;
+}
+
+#update-reservation-table{
+	width: 100%;
+}
+#save-reservation-div{
+	padding-top: 12px;	
+}
+
+.update-res-input{
+	width: 170px;
+}
+
+#view-diagnostic-info-popup-modal {
+    overflow-y: hidden !important;
+}
+
+.debug-info{
+	white-space: pre-wrap;
+    margin-top: 15px;
+}
+
+.debug-info-modal-body{
+	margin-left: 1px;
+    max-height: 500px;
+    overflow-y: auto;
+	width: 800px !important;
+}

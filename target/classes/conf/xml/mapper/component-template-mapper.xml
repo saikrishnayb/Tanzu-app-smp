@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.2//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.penske.apps.adminconsole.dao.ComponentVendorTemplateDao">
+	 
+<select id="getPoCategories"  resultType="com.penske.apps.adminconsole.model.PoCategory">
+
+SELECT 
+	PO_CATEGORY as categoryName,
+	PO_CATEGORY_ID as categoryId,
+	DESCRIPTION as description,
+	STATUS as status
+FROM 
+	SMC.SMC_PO_CATEGORY
+
+
+</select>
+
+  	<!-- Queries for Excel Sequence Templates -->
+  	
+  	<!-- Query to get the Excel Sequence -->
+  	<select id="getExcelSeqTemplates" resultType="com.penske.apps.adminconsole.model.Template">
+  		SELECT 
+  				TEMPLATE_ID 	AS	templateID,
+  				TEMPLATE_NAME	AS	templateName
+  		FROM
+  				SMC.SMC_TEMPLATE_MASTER MST
+  		INNER JOIN SMC.SMC_PO_CATEGORY_ASSOC ASS
+  		ON MST.PO_CATEGORY_ASSOC_ID = ASS.PO_CATEGORY_ASSOC_ID
+  		WHERE ACTIVE = 1
+          <if test="templateId != null">
+            AND TEMPLATE_ID = #{templateId}
+          </if>
+  		ORDER BY
+  				TEMPLATE_NAME
+  	</select>
+  	
+  	<!-- Query to get the template components -->
+  	<select id="getTemplateComponentSequences" resultType="com.penske.apps.adminconsole.model.ComponentSequence">
+  		SELECT
+            AV.DISPLAY_NAME AS displayName,
+            AV.COMPONENT_ID AS componentId,
+            UCTS.COMPONENT_SEQUENCE AS componentSequence
+		FROM SMC.UNIT_COMPONENTS_TEMPLATE_SEQUENCE_FOR_EXCEL UCTS
+		JOIN SMC.V_SMC_AVAILABLE_COMPONENTS AV ON UCTS.COMPONENT_ID=AV.COMPONENT_ID
+		WHERE UCTS.TEMPLATE_ID=#{templateId}
+		ORDER by UCTS.COMPONENT_SEQUENCE
+
+  	</select>
+
+    <!-- To Update the template component sequence -->
+ 	<update id="updateTemplateComponentSequence">
+ 		UPDATE
+ 				SMC.UNIT_COMPONENTS_TEMPLATE_SEQUENCE_FOR_EXCEL
+ 		<set>		
+ 				COMPONENT_SEQUENCE  = #{componentSequence}
+ 				
+ 		</set>
+ 		WHERE
+ 				TEMPLATE_ID		 =	#{templateId}
+ 				AND COMPONENT_ID =	#{componentId}
+ 				
+ 	</update>
+
+
+</mapper>

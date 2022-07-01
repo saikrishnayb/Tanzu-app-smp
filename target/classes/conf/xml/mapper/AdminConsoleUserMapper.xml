@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.2//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.penske.apps.suppliermgmt.dao.AdminConsoleUserDAO">
+	
+	<delete id = "deleteBuddyList" parameterType = "com.penske.apps.suppliermgmt.model.Buddies"> 
+ 		DELETE FROM SMC.SMC_BUDDIES 
+ 		WHERE 
+ 		SSO = #{userSso}
+ 	</delete>
+ 	
+	<!-- if random users selected in buddies -->			
+	<insert id = "addBuddyList" parameterType="list">
+ 		INSERT INTO SMC.SMC_BUDDIES(SSO, BUDDY_SSO, USER_DEPT, CREATED_BY,CREATED_DATE,SELECTION_TYPE)
+ 		VALUES
+ 		<foreach item="item"  collection="list" separator=",">
+ 	 		(#{item.sso},#{item.buddySso}, #{item.userDept}, #{item.sso},CURRENT_TIMESTAMP,#{item.selectionType})
+ 		</foreach>
+ 	</insert>	
+ 	
+ 	<!-- if all users selected in buddies -->
+ 	<insert id = "addBuddyBasedOnselectionType" parameterType="com.penske.apps.suppliermgmt.model.Buddies">
+ 		INSERT INTO SMC.SMC_BUDDIES(SSO, BUDDY_SSO, USER_DEPT, CREATED_BY,CREATED_DATE,SELECTION_TYPE)
+ 		VALUES
+ 		
+ 	 		(#{sso},#{buddySso}, #{userDept}, #{sso},CURRENT_TIMESTAMP,#{selectionType})
+ 		
+ 	</insert>
+ 	
+ 	<select id="getSelectionType" parameterType="String" resultType="String">
+ 		SELECT DISTINCT(SELECTION_TYPE) FROM SMC.SMC_BUDDIES WHERE SSO=#{loggedInSso} AND BUDDY_SSO=#{loggedInSso}
+ 	</select>
+ 	
+ 	<select id="getExistingBuddiesListFromUserMaster" parameterType="String" resultType="com.penske.apps.suppliermgmt.model.Buddies">
+ 	
+ 		SELECT SSO AS buddySso
+		FROM SMC.SMC_USER_MASTER
+		<where>
+			( TYPE_ID=1
+			<if test="selectionType != 'ALL'">
+			
+				<if test="selectionType == 'ALLBUYERS'">
+					AND DEPT_ID=1
+				</if>
+				<if test="selectionType == 'ALLPLANNING'">
+					AND DEPT_ID=2
+				</if>
+				--Only get active buddies VOD-1902
+				AND STATUS = 'A'
+			</if>
+			)
+			OR SSO=#{loggedInSso}
+ 		</where>
+ 		
+ 		
+ 		
+ 	</select>
+ 	
+ 	<select id="getExistingBuddiesList" resultType="com.penske.apps.suppliermgmt.model.Buddies">
+		select
+		buddies.SSO AS sso,
+		buddies.BUDDY_SSO AS buddySso,
+		buddies.USER_DEPT AS userDept,
+		buddies.CREATED_BY AS createdBy,
+		buddies.CREATED_DATE AS createdDate,
+		buddies.SELECTION_TYPE AS selectionType
+		FROM SMC.SMC_BUDDIES buddies
+		--Only get active buddies VOD-1902
+		INNER JOIN SMC.SMC_USER_MASTER userMaster
+		           ON userMaster.SSO = buddies.BUDDY_SSO
+	 WHERE buddies.SSO=#{userSso}
+		 AND userMaster.STATUS = 'A'
+	</select>
+ 	<select id="getDeptDetailList" resultType="com.penske.apps.suppliermgmt.model.LabelValue">
+ 	select 
+ 	DEPT_ID AS labelId,
+ 	USER_DEPT AS labelValue
+ 	from SMC.SMC_USER_DEPT
+ 	</select>
+	<select id="getTermsAndCondition" resultType="String" >
+		select TC_TEXT from SMC.SMC_TERMS_AND_CONDITIONS 
+		where status = #{status} 
+		and START_DATE &lt;= #{date} 
+		and END_DATE &gt;= #{date}
+	</select>
+ 
+ 
+ 
+   
+  <resultMap id="organizationMap" type="com.penske.apps.suppliermgmt.domain.Organization">
+    <result property="organizationId" column="ORG_ID"/>
+    <result property="name" column="NAME"/>
+    <result property="description" column="DESCRIPTION"/>
+    <result property="parentOrganizationId" column="PARENT_ORG_ID"/>
+    
+    <collection property="vendors" column="{orgId = ORG_ID}" ofType="com.penske.apps.adminconsole.model.Vendor" 
+                                                             select="com.penske.apps.adminconsole.dao.VendorDao.getVendors"
+                                                             fetchType="lazy"/>
+    
+  </resultMap>
+  
+  <select id="getAllOrganizations" resultMap="organizationMap">
+    SELECT ORG_ID,
+           NAME,
+           DESCRIPTION,
+           PARENT_ORG_ID
+      FROM SMC.SMC_ORG_MASTER
+     WHERE ORG_ID != 1 --Dont show the base penske org -Dave Roth 1/18/2017
+  </select>
+  
+  <select id="getOrganizationWithOrgId" resultMap="organizationMap">
+    SELECT ORG_ID,
+           NAME,
+           DESCRIPTION,
+           PARENT_ORG_ID
+      FROM SMC.SMC_ORG_MASTER
+     WHERE ORG_ID = #{orgId}
+  </select>
+  
+  <select id="getUserVendorFilterSelections" resultType="com.penske.apps.suppliermgmt.domain.UserVendorFilterSelection">
+         SELECT orgMaster.ORG_ID,
+                vendorFilter.VENDOR_ID,
+                vendorFilter.IS_ACTIVE
+          FROM SMC.SMC_VENDOR_FILTER vendorFilter
+               INNER JOIN SMC.SMC_ORG_VENDOR_ASSOC vendorAssoc
+               ON vendorAssoc.VENDOR_ID = vendorFilter.VENDOR_ID
+               
+               INNER JOIN SMC.SMC_ORG_MASTER orgMaster
+               ON orgMaster.ORG_ID = vendorAssoc.ORG_ID
+    
+         WHERE vendorFilter.USER_ID = #{userId}
+           AND orgMaster.PARENT_ORG_ID = 1 -- only loads orgs which have a parent equal to 1 (Penske) -- Dave Roth
+  </select>
+  
+  <delete id="deletePreviousUserVendorFilters">
+    DELETE FROM SMC.SMC_VENDOR_FILTER
+          WHERE USER_ID = #{userId}
+  </delete>
+  
+  <insert id="saveUserVendorFilterSelections">
+    INSERT INTO SMC.SMC_VENDOR_FILTER (VENDOR_ID,USER_ID,IS_ACTIVE)
+         VALUES 
+               <foreach collection="vendorIds" item="vendorId" separator=",">
+                (#{vendorId}, #{userId},1)
+               </foreach>
+  
+  </insert>
+  
+  <update id="toggleVendorFilter">
+    UPDATE SMC.SMC_VENDOR_FILTER
+       SET IS_ACTIVE = CASE WHEN IS_ACTIVE = 1 THEN 0 ELSE 1 END
+     WHERE USER_ID = #{userId}
+  </update>
+ 		
+</mapper>
+

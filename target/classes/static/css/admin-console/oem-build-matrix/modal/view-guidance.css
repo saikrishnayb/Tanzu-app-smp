@@ -1,0 +1,18 @@
+#view-guidance-table{
+	width: 100%;
+}
+
+.group-key-row {
+	color: #FFFFFF !important;
+	background-color: #2D73CF;
+	ehight
+}
+
+.group-key-td {
+	font-weight: bold;
+}
+
+#view-guidance-table th,
+#view-guidance-table td {
+	padding: 5px;
+}

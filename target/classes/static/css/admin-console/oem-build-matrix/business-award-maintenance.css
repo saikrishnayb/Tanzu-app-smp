@@ -1,0 +1,33 @@
+.business-award-maint-table-top {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.business-award-maint-table-top div {
+	display: inline-block;
+}
+
+.second-level-group td {
+	color: #828282;
+    font-size: 21px;
+    font-weight: normal;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+}
+.total-row td{
+	height: 45px;
+}
+.invalid-percentage td,
+.invalid-percentage label {
+	color: #DC3545;
+}
+
+.invalid-percentage input[disabled].total-percentage {
+	background-color: #F7D9D9 !important;
+}
+
+#business-award-maint-table input[type="text"]{
+	margin-bottom: 0px;
+	margin-right: 2px;
+	width: 100px;
+}

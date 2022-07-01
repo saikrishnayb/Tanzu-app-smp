@@ -1,0 +1,164 @@
+.build-mix-top {
+	margin-bottom: 10px;
+}
+
+.badge-div {
+	margin-bottom: 10px;
+}
+
+.build-mix-top .badge-div .badge,
+.build-mix-top .weeks-badge-div .badge{
+	margin-right: 10px;
+}
+
+.attribute-container {
+	border: 1px solid #EBEBEB;
+	border-radius: 10px;
+	padding: 10px;
+	min-width: 320px;
+	margin-bottom: 10px;
+}
+
+.attribute-header h2 {
+	display: inline-block;
+}
+
+.attribute-header {
+	margin-top: 10px;
+}
+
+.attribute-table-container .attribute-table{
+	width: 100%;
+}
+
+.attribute-table input { 
+	margin: 0px;
+	width: 50px;
+	text-align: right;
+	padding-right:4px;
+}
+
+.attribute-table td:first-child {
+	padding-left: 5px;
+}
+
+.attribute-total-row {
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+.attribute-total-row td{
+	font-weight: bold;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.total-percentage,
+.total-units {
+	display:inline-block;
+	width:50px;
+	padding-right:4px;
+}
+
+.text-align-right {
+	text-align:right;
+}
+
+.text-align-center {
+	text-align:center;
+}
+
+/* .attribute-row {
+	margin-bottom: 10px;
+} */
+
+.percent-sign,
+.units-label {
+	margin-left: 10px;
+}
+
+.attribute-table {
+	margin-bottom: 0px;
+}
+
+.unit-percent-input {
+	min-width: 100px;
+}
+
+.attribute-value-td {
+	width: 16%;
+} 
+
+.debug-option-label{
+	text-align: left;
+}
+
+.debug-option{
+    display: inline-block;
+    width: 15px;
+}
+
+.attribute-table thead tr th{
+	background-color: unset;
+}
+
+.reset-link{
+	margin-left: 10px;
+}
+/* .attribute-table .attribute-percentage-td,
+.attribute-table .attribute-units-td {
+	width: 80px;
+} */
+
+.switch {
+  display: inline-block;
+  height: 15px;
+  position: relative;
+  width: 30px;
+}
+
+.switch input {
+  display:none;
+}
+
+.slider {
+  background-color: #ccc;
+  bottom: 0;
+  cursor: pointer;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: .4s;
+}
+
+.slider:before {
+  background-color: #fff;
+  bottom: 3px;
+  content: "";
+  height: 10px;
+  left: 2px;
+  position: absolute;
+  transition: .4s;
+  width: 10px;
+}
+
+input:checked + .slider {
+  background-color: #66bb6a;
+}
+
+input:checked + .slider:before {
+  transform: translateX(16px);
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.slider-container {
+	display:inline-block;
+}

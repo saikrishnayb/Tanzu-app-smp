@@ -1,0 +1,10 @@
+.confirm-selection-table-top {
+	margin-bottom: 10px;
+}
+.confirm-selection-table-top div {
+	display: inline-block;
+}
+
+.confirm-selection-table-top .badge-div label {
+	margin-left: 10px;
+}

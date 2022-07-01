@@ -1,0 +1,11 @@
+.editable > * {
+  margin-left: 3px;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+/* Why are we importing org.css..... */
+.ui-dialog {
+  margin-top: inherit !important;
+}
+

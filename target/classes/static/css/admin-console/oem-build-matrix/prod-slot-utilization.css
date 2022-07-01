@@ -1,0 +1,76 @@
+.slot-utilization-table-top {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.slot-utilization-table-top  div,
+.now-viewing-row div{
+	display: inline-block;
+}
+
+#slot-utilization-table td,
+.dataTables_scrollHead th {
+	text-align: center !important;
+}
+
+/* #slot-utilization-table thead { 
+	position: sticky;
+	display: block;
+	top: 0;
+	z-index:999;
+}
+ */
+.available-badge {
+	background-color: #2D73CF;
+}
+
+.issued-badge {
+	background-color: #CDCDCD;
+	color: #454545;
+}
+
+.search-div div {
+	padding-right: 35px;
+}
+
+.now-viewing-row span {
+	padding-right: 10px;
+}
+
+/* .first-col {
+	min-width: 100px;
+} */
+
+/* .region-row .first-col {
+	background-color: inherit;
+} */
+/* 
+.region-row th, */
+.plant-header-row th{
+	border-radius: 5px;
+	border: 2px solid white;
+}
+
+.badge-row th {
+	background-color: inherit;
+}
+
+.no-plants-message{
+	font-weight: bold;
+	margin-top: 20px;
+	text-align: center;
+}
+
+table.dataTable {
+	margin: 0px !important;
+}
+
+.prod-date-week-col{
+	width: 60px !important;
+	text-align: center !important;
+}
+
+/* fix for fixed columns *shrug emoji* */
+.DTFC_LeftBodyWrapper:nth-child(2) .dataTable.no-footer.DTFC_Cloned thead{
+	display: none;
+}
