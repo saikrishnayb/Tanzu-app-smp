@@ -2,11 +2,11 @@
 #.factorypath
 #.project
 #.settings
-.vscode
-.apt_generated
+#.vscode
+#.apt_generated
 #/src/main/java/rebel.xml
 #/src/main/resources/rebel.xml
-/src/main/resources/config/db.local.properties
-/target/
-/bin/
+#/src/main/resources/config/db.local.properties
+#/target/
+#/bin/
 #rebel.xml
