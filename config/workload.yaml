@@ -1,0 +1,14 @@
+apiVersion: carto.run/v1alpha1
+kind: Workload
+metadata:
+  name: tanzu-smc-app
+  labels:
+    apps.tanzu.vmware.com/workload-type: web
+    app.kubernetes.io/part-of: tanzu-smc-app
+spec:
+  source:
+    git:
+      url: https://git-codecommit.us-east-2.amazonaws.com/v1/repos/smc-app
+      ref:
+        branch: tanzu-sai
+        tag: tap-1.0
